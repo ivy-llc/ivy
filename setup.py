@@ -25,7 +25,6 @@ def _strip(line):
 
 
 def _replace_logos_html(txt):
-
     # html-containing chunks
     chunks = txt.split(".. raw:: html")
 
@@ -88,19 +87,19 @@ with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
 
 setup(
-    name="ivy-core",
+    name="ivy",
     version=__version__,
-    author="Ivy Team",
-    author_email="ivydl.team@gmail.com",
+    author="Unify",
+    author_email="hello@unify.ai",
     description=(
         "The unified machine learning framework, enabling framework-agnostic "
         "functions, layers and libraries."
     ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
-    url="https://lets-unify.ai/ivy",
+    url="https://unify.ai/ivy",
     project_urls={
-        "Docs": "https://lets-unify.ai/docs/ivy/",
+        "Docs": "https://unify.ai/docs/ivy/",
         "Source": "https://github.com/unifyai/ivy",
     },
     packages=setuptools.find_packages(),

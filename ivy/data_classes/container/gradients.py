@@ -21,8 +21,8 @@ class _ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.stop_gradient also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -74,7 +74,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "stop_gradient",
@@ -100,8 +99,8 @@ class _ContainerWithGradients(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.stop_gradient. This method simply
-        wraps the function, and so the docstring for ivy.stop_gradient also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.stop_gradient also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -153,7 +152,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
         }
-
         """
         return self._static_stop_gradient(
             self,
@@ -259,7 +257,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 0.024, 0.096]),
             b: ivy.array([0.216, 0.384, 0.6])
         })
-
         """
         return ivy.adam_step(
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
@@ -274,8 +271,9 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Update weights ws of some function, given the true or effective derivatives
-        of some cost c with respect to ws, [dc/dw for w in ws].
+        """
+        Update weights ws of some function, given the true or effective derivatives of
+        some cost c with respect to ws, [dc/dw for w in ws].
 
         Parameters
         ----------
@@ -339,7 +337,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0., 1., 2.]),
             b: ivy.array([3., 4., 5.])
         }
-
         """
         return ivy.optimizer_update(
             self, effective_grad, lr, stop_gradients=stop_gradients, out=out
@@ -355,10 +352,9 @@ class _ContainerWithGradients(ContainerBase):
         out: ivy.Container = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.gradient_descent_update.
-        This method simply wraps the function, and so the docstring for
-        ivy.gradient_descent_update also applies to this method
-        with minimal changes.
+        ivy.Container instance method variant of ivy.gradient_descent_update. This
+        method simply wraps the function, and so the docstring for
+        ivy.gradient_descent_update also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -420,7 +416,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([0.85, 1.94, 2.97]),
             b: ivy.array([2.88, 4.69, 1.47])
         }
-
         """
         return ivy.gradient_descent_update(
             self,
@@ -440,7 +435,8 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: bool = True,
         out: Optional[ivy.Container] = None,
     ):
-        """Update weights ws of some function, given the derivatives of some cost c with
+        """
+        Update weights ws of some function, given the derivatives of some cost c with
         respect to ws, [dc/dw for w in ws], by applying Layerwise Adaptive Rate Scaling
         (LARS) method.
 
@@ -466,7 +462,6 @@ class _ContainerWithGradients(ContainerBase):
         -------
         ret
             The new function weights ws_new, following the LARS updates.
-
         """
         return ivy.lars_update(
             self,
@@ -492,7 +487,8 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Update weights ws of some function, given the derivatives of some cost c with
+        """
+        Update weights ws of some function, given the derivatives of some cost c with
         respect to ws, using ADAM update. `[reference]
 
         <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -580,7 +576,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([1.00000016e-05, 9.00000086e-05, 9.00000086e-05]),
             b: ivy.array([9.00000086e-05, 4.00000063e-05, 4.00000063e-05])
         })
-
         """
         return ivy.adam_update(
             self,
@@ -613,7 +608,8 @@ class _ContainerWithGradients(ContainerBase):
         stop_gradients: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Update weights ws of some function, given the derivatives of some cost c with
+        """
+        Update weights ws of some function, given the derivatives of some cost c with
         respect to ws, [dc/dw for w in ws], by applying LAMB method.
 
         Parameters
@@ -707,7 +703,6 @@ class _ContainerWithGradients(ContainerBase):
             a: ivy.array([4.0e-05, 9.0e-05, 3.6e-04]),
             b: ivy.array([0.00036, 0.00016, 0.00049])
         })
-
         """
         return ivy.lamb_update(
             self,

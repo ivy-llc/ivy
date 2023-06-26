@@ -24,8 +24,8 @@ class _ContainerWithLosses(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.cross_entropy. This method simply
-        wraps the function, and so the docstring for ivy.cross_entropy also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.cross_entropy also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -182,8 +182,11 @@ class _ContainerWithLosses(ContainerBase):
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        epsilon: Union[float, ivy.Container] = 1e-7,
+        from_logits: bool = False,
+        epsilon: Union[float, ivy.Container] = 0.0,
         reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[Union[int, ivy.Container]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -201,10 +204,21 @@ class _ContainerWithLosses(ContainerBase):
             input array or container containing true labels.
         pred
             input array or container containing Predicted labels.
+        from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
         epsilon
             a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-            the loss. If epsilon is ``0``, no smoothing will be applied.
-            Default: ``1e-7``.
+            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal
+            to the number of classes.
+        axis
+            Axis along which to compute crossentropy.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -254,7 +268,10 @@ class _ContainerWithLosses(ContainerBase):
             true,
             pred,
             epsilon=epsilon,
+            from_logits=from_logits,
             reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -267,8 +284,11 @@ class _ContainerWithLosses(ContainerBase):
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        epsilon: Union[float, ivy.Container] = 1e-7,
+        from_logits: bool = False,
+        epsilon: Union[float, ivy.Container] = 0.0,
         reduction: str = "none",
+        pos_weight: Optional[Union[ivy.Container, ivy.Array, ivy.NativeArray]] = None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -276,9 +296,9 @@ class _ContainerWithLosses(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.binary_cross_entropy. This
-        method simply wraps the function, and so the docstring for
-        ivy.binary_cross_entropy also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.binary_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.binary_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -286,10 +306,22 @@ class _ContainerWithLosses(ContainerBase):
             input container containing true labels.
         pred
             input array or container containing Predicted labels.
+         from_logits
+            Whether `pred` is expected to be a logits tensor. By
+            default, we assume that `pred` encodes a probability distribution.
         epsilon
-            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-            the loss. If epsilon is ``0``, no smoothing will be applied.
-            Default: ``1e-7``.
+            a float in [0.0, 1.0] specifying the amount of smoothing when
+            calculating the loss. If epsilon is ``0``, no smoothing will be applied.
+            Default: ``0``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'none'``.
+        pos_weight
+            a weight for positive examples. Must be an array with length equal
+            to the number of classes.
+        axis
+            Axis along which to compute crossentropy.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -299,11 +331,12 @@ class _ContainerWithLosses(ContainerBase):
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is
-            ``False``.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
 
         Returns
         -------
@@ -325,7 +358,10 @@ class _ContainerWithLosses(ContainerBase):
             self,
             pred,
             epsilon=epsilon,
+            from_logits=from_logits,
             reduction=reduction,
+            pos_weight=pos_weight,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -439,9 +475,9 @@ class _ContainerWithLosses(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.sparse_cross_entropy. This
-        method simply wraps the function, and so the docstring for
-        ivy.sparse_cross_entropy also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.sparse_cross_entropy. This method
+        simply wraps the function, and so the docstring for ivy.sparse_cross_entropy
+        also applies to this method with minimal changes.
 
         Parameters
         ----------

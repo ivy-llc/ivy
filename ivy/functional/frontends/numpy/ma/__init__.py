@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import from_existing_data
 from .from_existing_data import *
 from . import ones_and_zeros

@@ -90,7 +90,7 @@ We train a policy which is conditioned on the environment state, and the startin
    :width: 100%
 
 Ivy Memory
----------
+----------
 
 `Ivy Memory <https://github.com/unifyai/memory>`_ provides differentiable memory modules, including learnt modules such as Neural Turing Machines (NTM), but also parameter-free modules such as End-to-End Egospheric Spatial Memory (ESM).
 

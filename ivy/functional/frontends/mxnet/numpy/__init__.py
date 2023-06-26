@@ -1,101 +1,102 @@
-# flake8: noqa
 import ivy
 from ivy.utils.exceptions import handle_exceptions
-from ivy.functional.frontends.numpy import (
-    float32,
-    float64,
-    float16,
-    uint8,
-    int32,
-    int8,
-    int64,
-    bool_,
-)
-
-bool = bool
-
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-from ivy.utils.backend.handler import _FrontendDictHandler
 
-with _FrontendDictHandler() as importer:
+# Constructing dtypes are required as ivy.<dtype>
+# will change dynamically on the backend and may not be available
+_int8 = ivy.IntDtype("int8")
+_int16 = ivy.IntDtype("int16")
+_int32 = ivy.IntDtype("int32")
+_int64 = ivy.IntDtype("int64")
+_uint8 = ivy.UintDtype("uint8")
+_uint16 = ivy.UintDtype("uint16")
+_uint32 = ivy.UintDtype("uint32")
+_uint64 = ivy.UintDtype("uint64")
+_bfloat16 = ivy.FloatDtype("bfloat16")
+_float16 = ivy.FloatDtype("float16")
+_float32 = ivy.FloatDtype("float32")
+_float64 = ivy.FloatDtype("float64")
+_complex64 = ivy.ComplexDtype("complex64")
+_complex128 = ivy.ComplexDtype("complex128")
+_bool = ivy.Dtype("bool")
 
-    mxnet_promotion_table = {
-        (ivy.bool, ivy.bool): ivy.bool,
-        (ivy.bool, ivy.int8): ivy.int8,
-        (ivy.bool, ivy.int32): ivy.int32,
-        (ivy.bool, ivy.int64): ivy.int64,
-        (ivy.bool, ivy.uint8): ivy.uint8,
-        (ivy.bool, ivy.bfloat16): ivy.bfloat16,
-        (ivy.bool, ivy.float16): ivy.float16,
-        (ivy.bool, ivy.float32): ivy.float32,
-        (ivy.bool, ivy.float64): ivy.float64,
-        (ivy.bool, ivy.bool): ivy.bool,
-        (ivy.int8, ivy.bool): ivy.int8,
-        (ivy.int8, ivy.int8): ivy.int8,
-        (ivy.int8, ivy.int32): ivy.int32,
-        (ivy.int8, ivy.int64): ivy.int64,
-        (ivy.int32, ivy.bool): ivy.int32,
-        (ivy.int32, ivy.int8): ivy.int32,
-        (ivy.int32, ivy.int32): ivy.int32,
-        (ivy.int32, ivy.int64): ivy.int64,
-        (ivy.int64, ivy.bool): ivy.int64,
-        (ivy.int64, ivy.int8): ivy.int64,
-        (ivy.int64, ivy.int32): ivy.int64,
-        (ivy.int64, ivy.int64): ivy.int64,
-        (ivy.uint8, ivy.bool): ivy.uint8,
-        (ivy.uint8, ivy.uint8): ivy.uint8,
-        (ivy.int32, ivy.uint8): ivy.int32,
-        (ivy.int64, ivy.uint8): ivy.int64,
-        (ivy.uint8, ivy.int32): ivy.int32,
-        (ivy.uint8, ivy.int64): ivy.int64,
-        (ivy.float16, ivy.bool): ivy.float16,
-        (ivy.float16, ivy.float16): ivy.float16,
-        (ivy.float16, ivy.float32): ivy.float32,
-        (ivy.float16, ivy.float64): ivy.float64,
-        (ivy.float32, ivy.bool): ivy.float32,
-        (ivy.float32, ivy.float16): ivy.float32,
-        (ivy.float32, ivy.float32): ivy.float32,
-        (ivy.float32, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.bool): ivy.float64,
-        (ivy.float64, ivy.float16): ivy.float64,
-        (ivy.float64, ivy.float32): ivy.float64,
-        (ivy.float64, ivy.float64): ivy.float64,
-        (ivy.int8, ivy.float16): ivy.float16,
-        (ivy.float16, ivy.int8): ivy.float16,
-        (ivy.int8, ivy.float32): ivy.float32,
-        (ivy.float32, ivy.int8): ivy.float32,
-        (ivy.int8, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.int8): ivy.float64,
-        (ivy.int32, ivy.float16): ivy.float64,
-        (ivy.float16, ivy.int32): ivy.float64,
-        (ivy.int32, ivy.float32): ivy.float64,
-        (ivy.float32, ivy.int32): ivy.float64,
-        (ivy.int32, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.int32): ivy.float64,
-        (ivy.int64, ivy.float16): ivy.float64,
-        (ivy.float16, ivy.int64): ivy.float64,
-        (ivy.int64, ivy.float32): ivy.float64,
-        (ivy.float32, ivy.int64): ivy.float64,
-        (ivy.int64, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.int64): ivy.float64,
-        (ivy.uint8, ivy.float16): ivy.float16,
-        (ivy.float16, ivy.uint8): ivy.float16,
-        (ivy.uint8, ivy.float32): ivy.float32,
-        (ivy.float32, ivy.uint8): ivy.float32,
-        (ivy.uint8, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.uint8): ivy.float64,
-        (ivy.bfloat16, ivy.bfloat16): ivy.bfloat16,
-        (ivy.bfloat16, ivy.uint8): ivy.bfloat16,
-        (ivy.uint8, ivy.bfloat16): ivy.bfloat16,
-        (ivy.bfloat16, ivy.int8): ivy.bfloat16,
-        (ivy.int8, ivy.bfloat16): ivy.bfloat16,
-        (ivy.bfloat16, ivy.float32): ivy.float32,
-        (ivy.float32, ivy.bfloat16): ivy.float32,
-        (ivy.bfloat16, ivy.float64): ivy.float64,
-        (ivy.float64, ivy.bfloat16): ivy.float64,
-    }
+mxnet_promotion_table = {
+    (_bool, _bool): _bool,
+    (_bool, _int8): _int8,
+    (_bool, _int32): _int32,
+    (_bool, _int64): _int64,
+    (_bool, _uint8): _uint8,
+    (_bool, _bfloat16): _bfloat16,
+    (_bool, _float16): _float16,
+    (_bool, _float32): _float32,
+    (_bool, _float64): _float64,
+    (_bool, _bool): _bool,
+    (_int8, _bool): _int8,
+    (_int8, _int8): _int8,
+    (_int8, _int32): _int32,
+    (_int8, _int64): _int64,
+    (_int32, _bool): _int32,
+    (_int32, _int8): _int32,
+    (_int32, _int32): _int32,
+    (_int32, _int64): _int64,
+    (_int64, _bool): _int64,
+    (_int64, _int8): _int64,
+    (_int64, _int32): _int64,
+    (_int64, _int64): _int64,
+    (_uint8, _bool): _uint8,
+    (_uint8, _uint8): _uint8,
+    (_int32, _uint8): _int32,
+    (_int64, _uint8): _int64,
+    (_uint8, _int32): _int32,
+    (_uint8, _int64): _int64,
+    (_float16, _bool): _float16,
+    (_float16, _float16): _float16,
+    (_float16, _float32): _float32,
+    (_float16, _float64): _float64,
+    (_float32, _bool): _float32,
+    (_float32, _float16): _float32,
+    (_float32, _float32): _float32,
+    (_float32, _float64): _float64,
+    (_float64, _bool): _float64,
+    (_float64, _float16): _float64,
+    (_float64, _float32): _float64,
+    (_float64, _float64): _float64,
+    (_int8, _float16): _float16,
+    (_float16, _int8): _float16,
+    (_int8, _float32): _float32,
+    (_float32, _int8): _float32,
+    (_int8, _float64): _float64,
+    (_float64, _int8): _float64,
+    (_int32, _float16): _float64,
+    (_float16, _int32): _float64,
+    (_int32, _float32): _float64,
+    (_float32, _int32): _float64,
+    (_int32, _float64): _float64,
+    (_float64, _int32): _float64,
+    (_int64, _float16): _float64,
+    (_float16, _int64): _float64,
+    (_int64, _float32): _float64,
+    (_float32, _int64): _float64,
+    (_int64, _float64): _float64,
+    (_float64, _int64): _float64,
+    (_uint8, _float16): _float16,
+    (_float16, _uint8): _float16,
+    (_uint8, _float32): _float32,
+    (_float32, _uint8): _float32,
+    (_uint8, _float64): _float64,
+    (_float64, _uint8): _float64,
+    (_bfloat16, _bfloat16): _bfloat16,
+    (_bfloat16, _uint8): _bfloat16,
+    (_uint8, _bfloat16): _bfloat16,
+    (_bfloat16, _int8): _bfloat16,
+    (_int8, _bfloat16): _bfloat16,
+    (_bfloat16, _float32): _float32,
+    (_float32, _bfloat16): _float32,
+    (_bfloat16, _float64): _float64,
+    (_float64, _bfloat16): _float64,
+}
 
 
 @handle_exceptions
@@ -105,7 +106,7 @@ def promote_types_mxnet(
     /,
 ) -> ivy.Dtype:
     """
-    Promotes the datatypes type1 and type2, returning the data type they promote to
+    Promote the datatypes type1 and type2, returning the data type they promote to.
 
     Parameters
     ----------
@@ -133,12 +134,14 @@ def promote_types_of_mxnet_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given native array inputs to a common dtype
-    based on type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promote the dtype of the given native array inputs to a common dtype based on type
+    promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")

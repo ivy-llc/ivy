@@ -22,7 +22,7 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of
+        """Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -92,7 +92,7 @@ class _ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of
+        """Copy an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -162,10 +162,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` static method variant of `ivy.broadcast_arrays`.
-        This method simply wraps the function,
-        and so the docstring for `ivy.broadcast_arrays`
-        also applies to this method with minimal changes.
+        `ivy.Container` static method variant of `ivy.broadcast_arrays`. This method
+        simply wraps the function, and so the docstring for `ivy.broadcast_arrays` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -239,10 +238,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` instance method variant of `ivy.broadcast_arrays`.
-        This method simply wraps the function,
-        and so the docstring for `ivy.broadcast_arrays`
-        also applies to this method with minimal changes.
+        `ivy.Container` instance method variant of `ivy.broadcast_arrays`. This method
+        simply wraps the function, and so the docstring for `ivy.broadcast_arrays` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -317,10 +315,9 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        `ivy.Container` static method variant of `ivy.broadcast_to`.
-        This method simply wraps the function, and so the docstring
-        for `ivy.broadcast_to` also applies to this
-        method with minimal changes.
+        `ivy.Container` static method variant of `ivy.broadcast_to`. This method simply
+        wraps the function, and so the docstring for `ivy.broadcast_to` also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -376,10 +373,9 @@ class _ContainerWithDataTypes(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        `ivy.Container` instance method variant of `ivy.broadcast_to`.
-        This method simply wraps the function, and so the docstring
-        for `ivy.broadcast_to` also applies to this
-        method with minimal changes.
+        `ivy.Container` instance method variant of `ivy.broadcast_to`. This method
+        simply wraps the function, and so the docstring for `ivy.broadcast_to` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -411,7 +407,6 @@ class _ContainerWithDataTypes(ContainerBase):
                           [4, 5],
                           [4, 5]])
         }
-
         """
         return self._static_broadcast_to(
             self,
@@ -434,8 +429,8 @@ class _ContainerWithDataTypes(ContainerBase):
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.can_cast`. This method simply
-        wraps the function, and so the docstring for `ivy.can_cast` also applies to
-        this method with minimal changes.
+        wraps the function, and so the docstring for `ivy.can_cast` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -494,8 +489,8 @@ class _ContainerWithDataTypes(ContainerBase):
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.can_cast`. This method simply
-        wraps the function, and so the docstring for `ivy.can_cast` also applies to
-        this method with minimal changes.
+        wraps the function, and so the docstring for `ivy.can_cast` also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -706,7 +701,6 @@ class _ContainerWithDataTypes(ContainerBase):
             y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
                max=1.7976931348623157e+308, dtype=float64)
         }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "finfo",
@@ -752,7 +746,6 @@ class _ContainerWithDataTypes(ContainerBase):
             y: finfo(resolution=1e-15, min=-1.7976931348623157e+308, \
                max=1.7976931348623157e+308, dtype=float64)
         }
-
         """
         return self._static_finfo(
             self,
@@ -815,7 +808,6 @@ class _ContainerWithDataTypes(ContainerBase):
             x: iinfo(min=-32768, max=32767, dtype=int16),
             y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
          }
-
         """
         return ContainerBase.cont_multi_map_in_function(
             "iinfo",
@@ -834,9 +826,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` instance method variant of `ivy.iinfo`. This method
-         simply wraps the function, and so the docstring for `ivy.iinfo`
-         also applies to this method with minimal changes.
+        `ivy.Container` instance method variant of `ivy.iinfo`. This method simply wraps
+        the function, and so the docstring for `ivy.iinfo` also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -883,7 +875,6 @@ class _ContainerWithDataTypes(ContainerBase):
             x: iinfo(min=-128, max=127, dtype=int8),
             y: iinfo(min=-32768, max=32767, dtype=int16)
         }
-
         """
         return self._static_iinfo(
             self,
@@ -937,9 +928,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` static method variant of `is_float_dtype`. This method
-        simply wraps this function, so the docstring of `is_float_dtype`
-        roughly applies to this method.
+        `ivy.Container` static method variant of `is_float_dtype`. This method simply
+        wraps this function, so the docstring of `is_float_dtype` roughly applies to
+        this method.
 
         Parameters
         ----------
@@ -1008,10 +999,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` instance method variant of `ivy.is_float_dtype`.
-        This method simply wraps the function,
-        and so the docstring for `ivy.is_float_dtype`
-        also applies to this method with minimal changes.
+        `ivy.Container` instance method variant of `ivy.is_float_dtype`. This method
+        simply wraps the function, and so the docstring for `ivy.is_float_dtype` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------
@@ -1149,9 +1139,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` static method variant of `is_complex_dtype`. This method
-        simply wraps this function, so the docstring of `is_complex_dtype`
-        roughly applies to this method.
+        `ivy.Container` static method variant of `is_complex_dtype`. This method simply
+        wraps this function, so the docstring of `is_complex_dtype` roughly applies to
+        this method.
 
         Parameters
         ----------
@@ -1208,10 +1198,9 @@ class _ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        `ivy.Container` instance method variant of `ivy.is_complex_dtype`.
-        This method simply wraps the function,
-        and so the docstring for `ivy.is_complex_dtype`
-        also applies to this method with minimal changes.
+        `ivy.Container` instance method variant of `ivy.is_complex_dtype`. This method
+        simply wraps the function, and so the docstring for `ivy.is_complex_dtype` also
+        applies to this method with minimal changes.
 
         Parameters
         ----------

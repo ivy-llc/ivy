@@ -1,6 +1,5 @@
 import sys
-
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+from run_tests_CLI.get_all_tests import BACKENDS
 
 
 def main():

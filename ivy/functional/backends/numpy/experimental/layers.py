@@ -2,13 +2,47 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
+from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
+
+
+def _determine_depth_max_pooling(x, kernel, strides, dims):
+    # determine depth pooling
+    depth_pooling = False
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1]
+        if kernel[-1] != 1:
+            depth_pooling = True
+            if any(np.array(spatial_kernel) != 1):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x.shape[-1] % kernel[-1] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+            kernel = [kernel[-1], *[1] * (dims - 1)]
+            strides = [strides[-1], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            strides = strides[1:-1] if len(strides) == dims + 2 else strides
+    return x, kernel, strides, depth_pooling
 
 
 def max_pool1d(
@@ -21,7 +55,6 @@ def max_pool1d(
     data_format: str = "NWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -79,7 +112,6 @@ def max_pool2d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 2
     elif len(kernel) == 1:
@@ -108,34 +140,41 @@ def max_pool2d(
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
 
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 2
+    )
     x_shape = list(x.shape[1:3])
     filters = np.ones((list(kernel)), dtype=x.dtype)
-    for j in range(2):
-        if dilation[j] > 1:
-            filters = _add_dilations(filters, dilation[j], axis=j, values=0)
-    kernel = list(filters.shape)
-    pad_list = padding
-    if isinstance(padding, str):
-        pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-        pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-        pad_list = [(pad_h // 2, pad_h - pad_h // 2), (pad_w // 2, pad_w - pad_w // 2)]
-    pad_list = list(pad_list)
-    if ceil_mode:
-        for i in range(2):
-            pad_list[i] = _padding_ceil_mode(
-                x_shape[i], kernel[i], pad_list[i], strides[i]
-            )
+    if not depth_pooling:
+        for j in range(2):
+            if dilation[j] > 1:
+                filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+            pad_list = [
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        pad_list = list(pad_list)
+        if ceil_mode:
+            for i in range(2):
+                pad_list[i] = _padding_ceil_mode(
+                    x_shape[i], kernel[i], pad_list[i], strides[i]
+                )
 
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            *pad_list,
-            (0, 0),
-        ],
-        "constant",
-        constant_values=-math.inf,
-    )
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
 
     x_shape = x.shape
     new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
@@ -161,6 +200,9 @@ def max_pool2d(
 
     # B x OH x OW x O
     res = sub_matrices.max(axis=(3, 4))
+
+    if depth_pooling:
+        res = np.transpose(res, (0, 2, 3, 1))
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
@@ -176,7 +218,6 @@ def max_pool3d(
     data_format: str = "NDHWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:
@@ -234,6 +275,30 @@ def max_pool3d(
     return res
 
 
+def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
+    if isinstance(padding, str):
+        pad_specific = [
+            _handle_padding(x_shape[i], strides[i], kernel[i], padding)
+            for i in range(dim)
+        ]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dim)
+        ]
+    else:
+        pad_specific = [sum(padding[i]) for i in range(dim)]
+
+    c = []
+    if ceil_mode:
+        for i in range(dim):
+            padding[i], c_i = _padding_ceil_mode(
+                x_shape[i], kernel[i], padding[i], strides[i], True
+            )
+            c.append(c_i)
+            pad_specific[i] = sum(padding[i])
+    return padding, pad_specific, c
+
+
 def avg_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int]],
@@ -242,9 +307,10 @@ def avg_pool1d(
     /,
     *,
     data_format: str = "NWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel]
     elif len(kernel) == 1:
@@ -257,16 +323,19 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
+    x_shape = x.shape[1:-1]
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 1
+    )
 
-    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -285,6 +354,28 @@ def avg_pool1d(
 
     res = np.mean(sub_matrices, axis=2)
 
+    if (not count_include_pad or ceil_mode) and any(pad_specific):
+        if not count_include_pad:
+            num_padded_values = np.array(
+                ivy.map(
+                    _get_num_padded_values,
+                    constant={
+                        "p": pad_specific[0],
+                        "n": x.shape[1] - pad_specific[0],
+                        "k": kernel[0],
+                        "s": strides[0],
+                    },
+                    unique={
+                        "i": np.arange(res.shape[1]),
+                    },
+                ),
+                dtype=res.dtype,
+            )
+        else:
+            num_padded_values = np.zeros(res.shape[1], dtype=res.dtype)
+            num_padded_values[-1] = c[0]
+        res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
+
     if data_format == "NCW":
         return res.swapaxes(1, 2)
     return res
@@ -298,12 +389,15 @@ def avg_pool2d(
     /,
     *,
     data_format: str = "NHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
+    if isinstance(kernel, int):
+        kernel = [kernel] * 2
+    elif len(kernel) == 1:
+        kernel = [kernel[0]] * 2
 
     if isinstance(strides, int):
         strides = [strides] * 2
@@ -314,17 +408,17 @@ def avg_pool2d(
         x = np.transpose(x, (0, 2, 3, 1))
 
     x_shape = list(x.shape[1:3])
-    pad_h = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 2
+    )
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -345,7 +439,50 @@ def avg_pool2d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(3, 4))
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(3, 4)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(3, 4))
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
+        if not count_include_pad:
+            num_padded_values = [
+                np.array(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x.shape[i + 1] - pad_specific[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": np.arange(res.shape[i + 1]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(2)
+            ]
+        else:
+            num_padded_values = []
+            for i in range(2):
+                num_pad = np.zeros(res.shape[i + 1], dtype=res.dtype)
+                num_pad[-1] = c[i]
+                num_padded_values.append(num_pad)
+        num_padded_values1 = num_padded_values[0][:, None]
+        num_padded_values2 = num_padded_values[1][None, :]
+        num_padded_values = (
+            num_padded_values1 * kernel[1]
+            + num_padded_values2 * kernel[0]
+            - num_padded_values1 * num_padded_values2
+        )
+        kernel_mul = np.prod(kernel)
+        res = (kernel_mul * res) / (kernel_mul - np.expand_dims(num_padded_values, -1))
+
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
@@ -359,9 +496,11 @@ def avg_pool3d(
     /,
     *,
     data_format: str = "NDHWC",
+    count_include_pad: bool = False,
+    ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-
     if isinstance(kernel, int):
         kernel = [kernel] * 3
     elif len(kernel) == 1:
@@ -376,20 +515,18 @@ def avg_pool3d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
+    padding, pad_specific, c = _get_padded_values(
+        x_shape, kernel, strides, padding, ceil_mode, 3
+    )
 
     x = np.pad(
         x,
         [
             (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
+            *padding,
             (0, 0),
         ],
-        "edge",
+        constant_values=0.0,
     )
 
     x_shape = x.shape
@@ -413,7 +550,55 @@ def avg_pool3d(
     )
 
     # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(4, 5, 6))
+    if divisor_override is not None:
+        res = np.sum(sub_matrices, axis=(4, 5, 6)) / divisor_override
+    else:
+        res = np.mean(sub_matrices, axis=(4, 5, 6))
+
+    if (
+        (not count_include_pad or ceil_mode)
+        and any(pad_specific)
+        and not divisor_override
+    ):
+        if not count_include_pad:
+            num_padded_values = [
+                np.array(
+                    ivy.map(
+                        _get_num_padded_values,
+                        constant={
+                            "p": pad_specific[i],
+                            "n": x.shape[i + 1] - pad_specific[i],
+                            "k": kernel[i],
+                            "s": strides[i],
+                        },
+                        unique={
+                            "i": np.arange(res.shape[i + 1]),
+                        },
+                    ),
+                    dtype=res.dtype,
+                )
+                for i in range(3)
+            ]
+        else:
+            num_padded_values = []
+            for i in range(3):
+                num_pad = np.zeros(res.shape[i + 1], dtype=res.dtype)
+                num_pad[-1] = c[i]
+                num_padded_values.append(num_pad)
+        num_padded_values1 = num_padded_values[0].reshape((-1, 1, 1))
+        num_padded_values2 = num_padded_values[1].reshape((1, -1, 1))
+        num_padded_values3 = num_padded_values[2].reshape((1, 1, -1))
+        num_padded_values = (
+            num_padded_values1 * kernel[1] * kernel[2]
+            + num_padded_values2 * kernel[0] * kernel[2]
+            + num_padded_values3 * kernel[0] * kernel[1]
+            + num_padded_values1 * num_padded_values2 * num_padded_values3
+            - num_padded_values1 * num_padded_values2 * kernel[2]
+            - num_padded_values1 * num_padded_values3 * kernel[1]
+            - num_padded_values2 * num_padded_values3 * kernel[0]
+        )
+        kernel_mul = np.prod(kernel)
+        res = (kernel_mul * res) / (kernel_mul - np.expand_dims(num_padded_values, -1))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -449,9 +634,14 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return np.fft.fft(x, n, dim, norm)
+    if x.dtype in [np.uint64, np.int64, np.float64, np.complex128]:
+        out_dtype = np.complex128
+    else:
+        out_dtype = np.complex64
+    return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
+@with_supported_dtypes({"1.25.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -547,6 +737,20 @@ def dct(
     return dct_out.astype(np.float32) if cast_final else dct_out
 
 
+def idct(
+    x: np.ndarray,
+    /,
+    *,
+    type: Literal[1, 2, 3, 4] = 2,
+    n: Optional[int] = None,
+    axis: int = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
+    return dct(x, type=inverse_type, n=n, axis=axis, norm=norm, out=out)
+
+
 def dropout1d(
     x: np.ndarray,
     prob: float,
@@ -557,18 +761,45 @@ def dropout1d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCW":
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = np.transpose(x, perm)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = np.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -581,21 +812,20 @@ def dropout3d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
-        is_batched = len(x.shape) == 5
+        x_shape = x.shape
+        is_batched = len(x_shape) == 5
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(
@@ -628,3 +858,67 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def fft2(
+    x: np.ndarray,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
+
+
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
+def embedding(
+    weights: np.ndarray,
+    indices: np.ndarray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    embeddings = np.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = np.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = np.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings

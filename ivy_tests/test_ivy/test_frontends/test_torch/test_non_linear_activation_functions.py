@@ -1,6 +1,7 @@
 # global
 import ivy
 from hypothesis import assume, strategies as st
+import random
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1047,128 +1048,6 @@ def test_torch_normalize(
     )
 
 
-@st.composite
-def _generate_data_layer_norm(
-    draw,
-    *,
-    available_dtypes,
-    large_abs_safety_factor=50,
-    small_abs_safety_factor=50,
-    safety_factor_scale="log",
-    min_num_dims=1,
-    max_num_dims=5,
-    valid_axis=True,
-    allow_neg_axes=False,
-    max_axes_size=1,
-    force_int_axis=True,
-    ret_shape=True,
-    abs_smallest_val=None,
-    allow_inf=False,
-    allow_nan=False,
-    exclude_min=False,
-    exclude_max=False,
-    min_value=None,
-    max_value=None,
-    shared_dtype=False,
-    min_dim_size=None,
-    max_dim_size=None,
-    group=False,
-):
-    results = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=available_dtypes,
-            large_abs_safety_factor=large_abs_safety_factor,
-            small_abs_safety_factor=small_abs_safety_factor,
-            safety_factor_scale=safety_factor_scale,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-            valid_axis=valid_axis,
-            allow_neg_axes=allow_neg_axes,
-            max_axes_size=max_axes_size,
-            force_int_axis=force_int_axis,
-            ret_shape=ret_shape,
-        )
-    )
-
-    dtype, values, axis, shape = results
-
-    if group:
-        channel_size = shape[1]
-        group_list = [*range(1, max_dim_size)]
-        group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
-        group_size = draw(st.sampled_from(group_list))
-        weight_shape = [shape[1]]
-        bias_shape = [shape[1]]
-    else:
-        weight_shape = shape[axis:]
-        bias_shape = shape[axis:]
-
-    arg_dict = {
-        "available_dtypes": dtype,
-        "abs_smallest_val": abs_smallest_val,
-        "min_value": min_value,
-        "max_value": max_value,
-        "large_abs_safety_factor": large_abs_safety_factor,
-        "small_abs_safety_factor": small_abs_safety_factor,
-        "allow_inf": allow_inf,
-        "allow_nan": allow_nan,
-        "exclude_min": exclude_min,
-        "exclude_max": exclude_max,
-        "min_num_dims": min_num_dims,
-        "max_num_dims": max_num_dims,
-        "shared_dtype": shared_dtype,
-        "ret_shape": False,
-    }
-
-    results_weight = draw(helpers.dtype_and_values(shape=weight_shape, **arg_dict))
-    results_bias = draw(helpers.dtype_and_values(shape=bias_shape, **arg_dict))
-    results_new_std = draw(helpers.dtype_and_values(shape=shape, **arg_dict))
-
-    _, weight_values = results_weight
-    _, bias_values = results_bias
-    _, new_std_values = results_new_std
-
-    axis = shape[axis:]
-    if group:
-        return dtype, values, weight_values, bias_values, group_size
-    return dtype, values, axis, weight_values, bias_values, new_std_values
-
-
-@handle_frontend_test(
-    fn_tree="torch.nn.functional.layer_norm",
-    dtype_x_and_axis=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    epsilon=st.floats(min_value=0.01, max_value=0.1),
-)
-def test_torch_layer_norm(
-    *,
-    dtype_x_and_axis,
-    epsilon,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    dtype, x, axis, weight, bias, new_std = dtype_x_and_axis
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-1,
-        atol=1e-1,
-        input=x[0],
-        normalized_shape=axis,
-        weight=weight[0],
-        bias=bias[0],
-        eps=epsilon,
-    )
-
-
 # softplus
 @handle_frontend_test(
     fn_tree="torch.nn.functional.softplus",
@@ -1202,95 +1081,291 @@ def test_torch_softplus(
     )
 
 
-# group_norm
+@st.composite
+def mha_forward_args(draw, dtypes):
+    dtype = draw(dtypes)
+    embed_dim = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=2)) * 3
+    seq_len = draw(helpers.ints(min_value=2, max_value=4))
+    shape = (
+        seq_len,
+        batch_size,
+        embed_dim,
+    )
+
+    heads = draw(helpers.ints(min_value=1, max_value=4))
+    head_dim = embed_dim // heads
+    if head_dim * heads != embed_dim:
+        heads = 1
+        head_dim = embed_dim
+
+    if dtype[0] == "float32":
+        is_causal = False
+    else:
+        is_causal = draw(helpers.array_bools(size=1))[0]
+
+    q = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    k = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    v = draw(
+        helpers.array_values(dtype=dtype[0], shape=shape, min_value=0.1, max_value=1)
+    )
+    in_proj_weight = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim * 3, embed_dim),
+        )
+    )
+    in_proj_bias = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim * 3,),
+        )
+    )
+
+    if random.randint(0, 1) == 0:
+        use_separate_proj_weight = True
+        q_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+        k_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+        v_proj_weight = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                min_value=0.1,
+                max_value=1,
+                shape=(embed_dim, embed_dim),
+            )
+        )
+    else:
+        use_separate_proj_weight = False
+        q_proj_weight = None
+        k_proj_weight = None
+        v_proj_weight = None
+
+    out_proj_weight = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim, embed_dim),
+        )
+    )
+    out_proj_bias = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            min_value=0.1,
+            max_value=1,
+            shape=(embed_dim,),
+        )
+    )
+    bias_k = random.choice(
+        [
+            draw(
+                helpers.array_values(
+                    dtype=dtype[0],
+                    min_value=0.1,
+                    max_value=1,
+                    shape=(embed_dim,),
+                )
+            ),
+            None,
+        ]
+    )
+    bias_v = bias_k
+
+    if bias_k is None:
+        static_k = random.choice(
+            [
+                draw(
+                    helpers.array_values(
+                        dtype=dtype[0],
+                        min_value=0.1,
+                        max_value=1,
+                        shape=(batch_size * heads, seq_len, head_dim),
+                    )
+                ),
+                None,
+            ]
+        )
+        static_v = static_k
+    else:
+        static_k = None
+        static_v = None
+
+    attn_mask = ivy.ones((seq_len, seq_len), dtype=dtype[0])
+    key_padding_mask = random.choice(
+        [
+            ivy.random_normal(shape=(seq_len, seq_len), dtype=dtype[0]) > 0,
+            None,
+        ]
+    )
+
+    return (
+        dtype,
+        q,
+        k,
+        v,
+        heads,
+        use_separate_proj_weight,
+        embed_dim,
+        in_proj_weight,
+        in_proj_bias,
+        out_proj_weight,
+        out_proj_bias,
+        q_proj_weight,
+        k_proj_weight,
+        v_proj_weight,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        attn_mask,
+        key_padding_mask,
+        is_causal,
+    )
+
+
+# gumbel_softmax
 @handle_frontend_test(
-    fn_tree="torch.nn.functional.group_norm",
-    dtype_x_and_axis=_generate_data_layer_norm(
+    fn_tree="torch.nn.functional.gumbel_softmax",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=2,
-        max_dim_size=4,
-        group=True,
     ),
-    epsilon=st.floats(min_value=0.01, max_value=0.1),
+    tau=st.floats(min_value=0),
+    hard=st.booleans(),
+    eps=st.floats(min_value=0, max_value=1),
+    dim=st.integers(),
     test_with_out=st.just(False),
+    test_inplace=st.booleans(),
 )
-def test_torch_group_norm(
-    dtype_x_and_axis,
-    epsilon,
+def test_torch_gumbel_softmax(
+    *,
+    dtype_and_x,
+    tau,
+    hard,
+    eps,
+    dim,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
 ):
-    dtype, x, weight, bias, group_size = dtype_x_and_axis
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        logits=x[0],
+        tau=tau,
+        hard=hard,
+        eps=eps,
+        dim=dim,
+    )
+
+
+# multi_head_attention_forward
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.multi_head_attention_forward",
+    dtype_mha_args=mha_forward_args(
+        dtypes=helpers.get_dtypes("valid"),
+    ),
+    add_zero_attn=st.just(False),
+    dropout_p=st.sampled_from([0.0, 0.1, 0.2]),
+    training=st.booleans(),
+    need_weights=st.booleans(),
+    average_attn_weights=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_torch_multi_head_attention_forward(
+    *,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    dtype_mha_args,
+    add_zero_attn,
+    dropout_p,
+    training,
+    need_weights,
+    average_attn_weights,
+):
+    (
+        dtype,
+        q,
+        k,
+        v,
+        heads,
+        use_separate_proj_weight,
+        embed_dim,
+        in_proj_weight,
+        in_proj_bias,
+        out_proj_weight,
+        out_proj_bias,
+        q_proj_weight,
+        k_proj_weight,
+        v_proj_weight,
+        bias_k,
+        bias_v,
+        static_k,
+        static_v,
+        attn_mask,
+        key_padding_mask,
+        is_causal,
+    ) = dtype_mha_args
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        input=x[0],
-        num_groups=group_size,
-        weight=weight[0],
-        bias=bias[0],
-        eps=epsilon,
-    )
-
-
-@st.composite
-def _generate_batch_norm_data(draw):
-    input_dtype, input, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-            min_num_dims=2,
-            max_num_dims=4,
-            min_dim_size=5,
-            ret_shape=True,
-            large_abs_safety_factor=25,
-            small_abs_safety_factor=25,
-            safety_factor_scale="log",
-        )
-    )
-    weight = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
-    bias = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
-    running_mean = draw(helpers.array_values(dtype=input_dtype[0], shape=shape[1]))
-    running_var = draw(
-        helpers.array_values(dtype=input_dtype[0], shape=shape[1], min_value=0)
-    )
-    return input_dtype, input, weight, bias, running_mean, running_var
-
-
-# batch_norm
-@handle_frontend_test(
-    fn_tree="torch.nn.functional.batch_norm",
-    data=_generate_batch_norm_data(),
-    momentum=helpers.floats(min_value=0.01, max_value=0.1),
-    eps=helpers.floats(min_value=1e-5, max_value=0.1),
-    training=st.booleans(),
-    test_with_out=st.just(False),
-)
-def test_torch_batch_norm(
-    *,
-    data,
-    momentum,
-    eps,
-    training,
-    frontend,
-    test_flags,
-    fn_tree,
-):
-    input_dtype, input, weight, bias, running_mean, running_var = data
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype * 5,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        input=input[0],
-        running_mean=running_mean,
-        running_var=running_var,
-        weight=weight,
-        bias=bias,
+        on_device=on_device,
+        test_values=not training or dropout_p == 0.0,
+        query=q,
+        key=k,
+        value=v,
+        embed_dim_to_check=embed_dim,
+        num_heads=heads,
+        in_proj_weight=in_proj_weight,
+        in_proj_bias=in_proj_bias,
+        bias_k=bias_k,
+        bias_v=bias_v,
+        add_zero_attn=add_zero_attn,
+        dropout_p=dropout_p,
+        out_proj_weight=out_proj_weight,
+        out_proj_bias=out_proj_bias,
         training=training,
-        momentum=momentum,
-        eps=eps,
+        key_padding_mask=key_padding_mask,
+        need_weights=need_weights,
+        attn_mask=attn_mask,
+        use_separate_proj_weight=use_separate_proj_weight,
+        q_proj_weight=q_proj_weight,
+        k_proj_weight=k_proj_weight,
+        v_proj_weight=v_proj_weight,
+        static_k=static_k,
+        static_v=static_v,
+        average_attn_weights=average_attn_weights,
+        is_causal=is_causal,
     )

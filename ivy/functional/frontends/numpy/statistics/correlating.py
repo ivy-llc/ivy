@@ -7,8 +7,8 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 def correlate(a, v, mode=None, *, old_behavior=False):
     dtypes = [x.dtype for x in [a, v]]
     mode = mode if mode is not None else "valid"
-    ivy.utils.assertions.check_equal(a.ndim, 1)
-    ivy.utils.assertions.check_equal(v.ndim, 1)
+    ivy.utils.assertions.check_equal(a.ndim, 1, as_array=False)
+    ivy.utils.assertions.check_equal(v.ndim, 1, as_array=False)
     n = min(a.shape[0], v.shape[0])
     m = max(a.shape[0], v.shape[0])
     if a.shape[0] >= v.shape[0]:

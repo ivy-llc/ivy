@@ -12,6 +12,10 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 
 @to_ivy_arrays_and_back
 def matrix_rank(a, tol=None, validate_args=False, name=None):
+    # TODO:The tests will fail because output shapes mismatch
+    # DO NOT for any reason change anything with the backend function
+    # all the fixes must be here as the backend function is
+    # working as expected and in compliance with Array API
     return ivy.astype(ivy.matrix_rank(a, atol=tol), ivy.int32)
 
 
@@ -35,9 +39,10 @@ def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
 
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.9.0 and below": (
+        "2.12.0 and below": (
             "float16",
             "float32",
             "float64",
@@ -48,7 +53,6 @@ def eigvalsh(tensor, name=None):
     },
     "tensorflow",
 )
-@to_ivy_arrays_and_back
 def matmul(
     a,
     b,
@@ -61,25 +65,28 @@ def matmul(
     output_type=None,
     name=None,
 ):
-    if adjoint_a:
-        if transpose_a:
-            raise ivy.utils.exceptions.IvyException(
-                "Only one of `transpose_a` and `adjoint_a` can be True. "
-                "Received `transpose_a`=True, `adjoint_a`=True."
-            )
-        a = ivy.adjoint(a)
-    if adjoint_b:
-        if transpose_b:
-            raise ivy.utils.exceptions.IvyException(
-                "Only one of `transpose_b` and `adjoint_b` can be True. "
-                "Received `transpose_b`=True, `adjoint_b`=True."
-            )
-        b = ivy.adjoint(b)
-    return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
+    if transpose_a and adjoint_a:
+        raise ivy.utils.exceptions.IvyException(
+            "Only one of `transpose_a` and `adjoint_a` can be True. "
+            "Received `transpose_a`=True, `adjoint_a`=True."
+        )
+    if transpose_b and adjoint_b:
+        raise ivy.utils.exceptions.IvyException(
+            "Only one of `transpose_b` and `adjoint_b` can be True. "
+            "Received `transpose_b`=True, `adjoint_b`=True."
+        )
+    return ivy.matmul(
+        a,
+        b,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
+        adjoint_a=adjoint_a,
+        adjoint_b=adjoint_b,
+    )
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)
     return ivy.solve(matrix, rhs)
@@ -87,7 +94,7 @@ def solve(matrix, rhs):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 def logdet(matrix, name=None):
@@ -100,7 +107,7 @@ def slogdet(input, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
     chol, rhs = check_tensorflow_casting(chol, rhs)
     y = ivy.solve(chol, rhs)
@@ -114,7 +121,7 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float32", "float64", "int32")}, "tensorflow"
+    {"2.12.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
     a, b = check_tensorflow_casting(a, b)
@@ -126,7 +133,7 @@ def tensordot(a, b, axes, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "float16",
             "bfloat16",
             "int8",
@@ -147,7 +154,7 @@ def tensorsolve(a, b, axes):
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
@@ -170,7 +177,7 @@ norm.supported_dtypes = (
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
     tensor = tf_frontend.convert_to_tensor(
         tensor, dtype=ivy.dtype(tensor), dtype_hint="Any"
@@ -181,7 +188,7 @@ def normalize(tensor, ord="euclidean", axis=None, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
@@ -250,3 +257,54 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def adjoint(matrix, name=None):
     return ivy.adjoint(matrix)
+
+
+@to_ivy_arrays_and_back
+def diag(
+    diagonal,
+    /,
+    k=0,
+    *,
+    num_rows=None,
+    num_cols=None,
+    padding_value=0,
+    align="RIGHT_LEFT",
+    name="diag",
+):
+    # TODO: Implement ivy.matrix_diag in ivy API
+    diagonal = ivy.array(diagonal)
+    shape = list(diagonal.shape)
+    shape[-1] += abs(k)
+
+    output = ivy.full(shape + [shape[-1]], padding_value)
+    if k > 0:
+        for i in range(shape[-1]):
+            try:
+                output[..., i, i + k] = diagonal[..., i]
+            except IndexError:
+                break
+
+    else:
+        for i in range(shape[-1]):
+            try:
+                output[..., i + abs(k), i] = diagonal[..., i]
+            except IndexError:
+                break
+
+    size = 1
+    for dim in output.shape:
+        size *= dim
+    if (num_cols and num_rows) and (size == (num_cols * num_rows)):
+        output = ivy.reshape(output, (num_rows, num_cols))
+    return ivy.astype(output, ivy.dtype(diagonal))
+
+
+@to_ivy_arrays_and_back
+def band_part(input, num_lower, num_upper, name=None):
+    m, n = ivy.meshgrid(
+        ivy.arange(input.shape[-2]), ivy.arange(input.shape[-1]), indexing="ij"
+    )
+    mask = ((num_lower < 0) | ((m - n) <= num_lower)) & (
+        (num_upper < 0) | ((n - m) <= num_upper)
+    )
+    return ivy.where(mask, input, ivy.zeros_like(input))

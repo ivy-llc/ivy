@@ -1,8 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow import math
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _reduce_strides_dilations(dim, stride, dilations):
@@ -120,7 +119,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -146,7 +145,7 @@ def conv3d_transpose(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -174,7 +173,7 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -201,9 +200,7 @@ def separable_conv2d(
 
 @to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
-    ndims = len(x.shape)
-    x = ivy.permute_dims(x, axes=(0, *range(2, ndims), 1))
-    ret = ivy.batch_norm(
+    xnormalized, _, _ = ivy.batch_norm(
         x,
         mean,
         variance,
@@ -211,7 +208,7 @@ def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name
         scale=scale,
         eps=variance_epsilon,
     )
-    return ivy.permute_dims(ret, axes=(0, ndims - 1, *range(1, ndims - 1)))
+    return xnormalized
 
 
 @to_ivy_arrays_and_back
@@ -219,19 +216,6 @@ def dropout(x, rate, noise_shape=None, seed=None, name=None):
     return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
 
 
-@with_unsupported_dtypes(
-    {
-        "2.9.1": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "bool",
-            "bfloat16",
-        )
-    },
-    "tensorflow",
-)
 @to_ivy_arrays_and_back
 def silu(features, beta: float = 1.0):
     beta = ivy.astype(ivy.array(beta), ivy.dtype(features))
@@ -240,7 +224,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -263,7 +247,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "int8",
             "int16",
             "int32",
@@ -293,35 +277,28 @@ def weighted_cross_entropy_with_logits(
     return ivy.add(first_term, second_term)
 
 
-@with_supported_dtypes(
-    {"2.9.0 and below": ("float32", "float16", "bfloat16")}, "tensorflow"
-)
+@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
-    input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
+    input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
 ):
     input_shape = ivy.shape(input)
+    depth = input_shape[-1]
     ivy.utils.assertions.check_equal(
         ivy.get_num_dims(input),
         4,
         message="4D input, but got input with sizes " + str(input_shape),
+        as_array=False,
     )
-    input_perm = ivy.astype(ivy.permute_dims(input, axes=[0, 3, 1, 2]), input.dtype)
-    bias = ivy.astype(ivy.array(bias), input.dtype)
-    alpha = ivy.astype(ivy.array(alpha), input.dtype)
-    beta = ivy.astype(ivy.array(beta), input.dtype)
-    sqr_sum = ivy.astype(ivy.zeros_like(input_perm), input.dtype)
-    for p in range(input_shape[0]):
-        sqr_sum[p] = [
-            sum(
-                ivy.pow(
-                    input_perm[p][max(c - depth_radius, 0) : c + depth_radius + 1], 2.0
-                )
-            )
-            for c in range(input_shape[3])
-        ]
-    div = ivy.multiply(input_perm, ivy.pow(math.add(sqr_sum * alpha, bias), -beta))
-    return ivy.permute_dims(div, [0, 2, 3, 1])
+    sqr_sum = ivy.empty(input_shape[:-1] + (0,), dtype=ivy.dtype(input))
+    for d in range(depth):
+        start = max(0, d - depth_radius)
+        end = min(d + depth_radius + 1, depth)
+        inter_channel_sum = ivy.sum(
+            input[:, :, :, start:end] ** 2, axis=3, keepdims=True
+        )
+        sqr_sum = ivy.concat([sqr_sum, inter_channel_sum], axis=-1)
+    return ivy.divide(input, ivy.pow(ivy.add(sqr_sum * alpha, bias), beta))
 
 
 @to_ivy_arrays_and_back
@@ -398,65 +375,25 @@ def convolution(
     dilations=None,
     name=None,
 ):
-    # Tensorflow backend doesn't support NCW, NCHW or NCDHW on CPU
-    DATA_FORMATS = ["NWC", "NHWC", "NDHWC"]
-    ALLOWED_NUM_SPATIAL_DIMS = [1, 2, 3]
-    PADDINGS = ["VALID", "SAME"]
-
-    # Perform necessary assertions first
-
-    # Figure out input dims N
-    input_rank = input.ndim
-    filters_rank = filters.ndim
-
-    if filters_rank:
-        num_spatial_dims = int(filters_rank - 2)
-    elif input_rank:
-        num_spatial_dims = int(input_rank - 2)
-
-    # Incompatible N-D convolution
-    if num_spatial_dims not in ALLOWED_NUM_SPATIAL_DIMS:
-        raise ValueError(
-            "`num_spatial_dims` must be 1, 2, or 3. "
-            f"Received: num_spatial_dims={num_spatial_dims}."
-        )
-
-    # Incompatible padding
-    if padding not in PADDINGS:
-        raise ValueError(
-            f"Value for attr `padding` is not in the list of allowed values: {PADDINGS}"
-        )
-
-    # The number of dimensions corresponding to num_batches
-    if input_rank:
-        num_batch_dims = int(input_rank - num_spatial_dims - 1)
-    elif filters_rank:
-        num_batch_dims = 1
-
-    # Figure out the channel_index
-    if data_format is None or data_format in DATA_FORMATS:
-        channel_index = num_batch_dims + num_spatial_dims
-    else:
-        channel_index = num_batch_dims
-
-    input_shape = ivy.array(ivy.shape(input))
-    filters_shape = ivy.array(ivy.shape(filters))
-    input_depth = input_shape[channel_index]
-    filters_depth = filters_shape[-2]
-
-    # Inconsistent input and filter depths
-    if input_depth != filters_depth:
-        raise ValueError(
-            f"`input` and `filter` must have the same depth: "
-            f"{input_depth} vs {filters_depth}."
-        )
-
-    if data_format.startswith("NC"):
-        data_format = "channel_first"
-    else:
+    num_spatial_dims = input.ndim - 2
+    if data_format is None or not data_format.startswith("NC"):
         data_format = "channel_last"
+    else:
+        data_format = "channel_first"
 
-    output = ivy.conv_general_dilated(
+    channel_index = -1 if data_format == "channel_last" else 1
+    input_depth = ivy.shape(input)[channel_index]
+    filters_depth = ivy.shape(filters)[-2]
+
+    feature_group_count = 1
+    if input_depth != filters_depth:
+        if input_depth % filters_depth != 0:
+            raise ValueError(
+                "input depth must be evenly divisible by filter depth: "
+                f"{input_depth} vs {filters_depth}"
+            )
+        feature_group_count = input_depth // filters_depth
+    return ivy.conv_general_dilated(
         input,
         filters,
         strides,
@@ -464,16 +401,17 @@ def convolution(
         dims=num_spatial_dims,
         data_format=data_format,
         dilations=dilations,
+        feature_group_count=feature_group_count,
     )
 
-    return output
 
-
+@with_unsupported_dtypes({"2.11.1 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
@@ -484,12 +422,69 @@ def relu6(features, name=None):
     return ivy.relu6(features)
 
 
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
+
+
+@with_unsupported_dtypes({"2.12.0 and below": "float16"}, "tensorflow")
+@to_ivy_arrays_and_back
+def leaky_relu(features, alpha=0.2, name=None):
+    return ivy.leaky_relu(features, alpha=alpha)
 
 
 @to_ivy_arrays_and_back
 def crelu(features, axis=-1, name=None):
     c = ivy.concat([features, -features], axis=axis)
     return ivy.relu(c)
+
+
+@to_ivy_arrays_and_back
+def avg_pool(input, ksize, strides, padding, data_format="NWC", name=None):
+    if len(ivy.shape(input)) == 3:
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+    elif len(ivy.shape(input)) == 4:
+        return ivy.avg_pool2d(input, ksize, strides, padding, data_format=data_format)
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool3d
+@to_ivy_arrays_and_back
+def avg_pool3d(input, ksize, strides, padding, data_format="NDHWC", name=None):
+    return ivy.avg_pool3d(input, ksize, strides, padding, data_format=data_format)
+
+
+# avg_pool1d
+@to_ivy_arrays_and_back
+def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+# pool
+@to_ivy_arrays_and_back
+def pool(
+    input,
+    window_shape,
+    pooling_type,
+    strides=None,
+    padding="VALID",
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    return ivy.pool(
+        input,
+        window_shape,
+        pooling_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+# log_poisson_loss
+@to_ivy_arrays_and_back
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
