@@ -124,3 +124,27 @@ def test_paddle_randn(
         shape=shape,
         dtype=dtype,
     )
+
+@handle_frontend_test(
+    fn_tree="paddle.randperm",
+    input_dtypes=st.sampled_from(["int64"]),
+    dtype=st.sampled_from(["float32", "float64","int32", "int64"]),
+)
+
+def test_paddle_randperm(
+    *,
+    input_dtypes,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        dtype=dtype,
+    )
+
