@@ -2151,3 +2151,24 @@ def test_tensorflow_truncatemod(
         x=x[0],
         y=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.unravel_index",
+    indices=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=0, max_value=49
+    ),
+    dims=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=50
+    ),
+)
+def test_unravel_index(*, indices, dims, frontend, test_flags, fn_tree, on_device):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=indices[0],
+        dims=dims[0],
+    )
