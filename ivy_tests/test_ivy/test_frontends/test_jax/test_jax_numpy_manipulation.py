@@ -1660,3 +1660,40 @@ def test_jax_numpy_blackman(
         on_device=on_device,
         M=m,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.frombuffer",
+     dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        num_arrays= 1,
+    ),
+   count=helpers.ints(min_value=0, max_value=10),
+    offset =helpers.ints(min_value=-1, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False), 
+  
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_frombuffer(
+    *,
+    dtype_and_x,
+   count, offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    dtype,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        count = count, offset = offset,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x= x,
+        dtype = dtype,
+       
+    )
