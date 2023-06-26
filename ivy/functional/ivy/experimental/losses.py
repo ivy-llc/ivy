@@ -4,12 +4,12 @@ from typing import Union
 # local
 import ivy
 from ivy.func_wrapper import (
-    handle_exceptions,
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
 )
+from ivy.utils.exceptions import handle_exceptions
 
 
 # log_poisson_loss
