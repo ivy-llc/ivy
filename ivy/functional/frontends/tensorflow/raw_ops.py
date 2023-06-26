@@ -888,7 +888,6 @@ def Imag(
     input,
     Tout=ivy.float32,
     name="Imag",
-    
 ):
     Tout = ivy.as_ivy_dtype(Tout) if Tout is not None else ivy.float32
     return ivy.astype(ivy.imag(input), Tout)
