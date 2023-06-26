@@ -91,8 +91,8 @@ def test_paddle_mse_loss(
         label=x[1],
         reduction=reduction,
     )
-      
-      
+
+
 # cosine embedding loss
 @st.composite
 def _cos_embd_loss_helper(draw):
