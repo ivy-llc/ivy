@@ -3,7 +3,6 @@ from typing import Optional, Tuple, Sequence, Union
 import jax.numpy as jnp
 import jax.scipy.linalg as jla
 from ivy.functional.backends.jax import JaxArray
-from jax.lax import Precision
 import ivy
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -143,11 +142,10 @@ def multi_dot(
 def dot(
     x1: JaxArray,
     x2: JaxArray,
-    out: Optional[JaxArray] = None,
-    precision: Optional[Precision] = None
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return jnp.dot(a=x1, b=x2, out=out, precision=precision)
+    return jnp.dot(a=x1, b=x2, out=out)
 
 
 dot.support_native_out = True

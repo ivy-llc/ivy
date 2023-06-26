@@ -1,7 +1,6 @@
 # global
 import abc
 from typing import Optional, Union, Tuple, List, Sequence
-import jax.lax
 
 # local
 import ivy
@@ -140,7 +139,6 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         /,
         *,
         out: Optional[ivy.Array] = None,
-        # precision: Optional[jax.lax.Precision] = None
     ) -> ivy.Array:
         return ivy.dot(self._data, b, out=out)
 

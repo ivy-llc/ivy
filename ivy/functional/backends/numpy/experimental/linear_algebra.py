@@ -167,7 +167,7 @@ def dot(
     x2: np.ndarray,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.dot(a=x1, b=x2)
+    return np.dot(a=x1, b=x2, out=out)
 
 
 dot.support_native_out = True

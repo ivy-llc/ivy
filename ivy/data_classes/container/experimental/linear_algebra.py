@@ -1,8 +1,6 @@
 # global
 from typing import Union, Optional, List, Dict, Tuple, Sequence
 
-import jax
-
 # local
 from ivy.data_classes.container.base import ContainerBase
 import ivy
@@ -794,7 +792,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-        precision: Optional[jax.lax.Precision] = None
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.dot. This method simply wraps
@@ -811,8 +808,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             optional output array, for writing the result to. It must have a valid
             shape, i.e. the resulting shape after applying regular matrix multiplication
             to the inputs.
-        precision
-            optional parameter to set precision type for jax backend.
 
         Returns
         -------
@@ -832,7 +827,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             x1,
             x2,
             out=out,
-            # precision=precision,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -849,7 +843,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = True,
         out: Optional[ivy.Container] = None,
-        # precision: Optional[jax.lax.Precision] = None
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.dot. This method simply wraps
@@ -870,7 +863,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-            # precision=precision
         )
 
     @staticmethod
