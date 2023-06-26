@@ -4,6 +4,7 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 
 import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
@@ -962,7 +963,7 @@ def test_paddle_all(
     init_tree="paddle.to_tensor",
     method_name="allclose",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), 
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1000,8 +1001,8 @@ def test_paddle_allclose(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
-    
+
+
 # sort
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1085,7 +1086,7 @@ def test_paddle_any(
         on_device=on_device,
     )
 
-    
+
 #  isinf
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1119,7 +1120,6 @@ def test_paddle_isinf(
     )
 
 
-    
 # astype
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1157,8 +1157,7 @@ def test_paddle_astype(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
 
 #  isfinite
 @handle_frontend_method(
@@ -1224,7 +1223,7 @@ def test_paddle_erf(
         frontend=frontend,
         on_device=on_device,
     )
-    
+
 
 # subtract
 @handle_frontend_method(
@@ -1236,6 +1235,68 @@ def test_paddle_erf(
     ),
 )
 def test_paddle_subtract(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# bitwise_xor
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="bitwise_xor",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+)
+def test_paddle_bitwise_xor(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"y": x[1]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# logical_xor
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="logical_xor",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+)
+def test_paddle_logical_xor(
     dtypes_and_x,
     frontend_method_data,
     init_flags,

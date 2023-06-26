@@ -13,7 +13,7 @@ def to_tensor(data, /, *, dtype=None, place=None, stop_gradient=True):
     return Tensor(array, dtype=dtype, place=place)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": "int8"}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": "int8"}, "paddle")
 @to_ivy_arrays_and_back
 def ones(shape, /, *, dtype=None, name=None):
     dtype = "float32" if dtype is None else dtype
@@ -21,7 +21,7 @@ def ones(shape, /, *, dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
+    {"2.5.0 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def ones_like(x, /, *, dtype=None, name=None):
@@ -29,7 +29,7 @@ def ones_like(x, /, *, dtype=None, name=None):
     return ivy.ones_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": "int8"}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": "int8"}, "paddle")
 @to_ivy_arrays_and_back
 def zeros(shape, /, *, dtype=None, name=None):
     dtype = "float32" if dtype is None else dtype
@@ -37,7 +37,7 @@ def zeros(shape, /, *, dtype=None, name=None):
 
 
 @with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
+    {"2.5.0 and below": ("uint8", "int8", "complex64", "complex128")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def zeros_like(x, /, *, dtype=None, name=None):
@@ -57,7 +57,7 @@ def full_like(x, fill_value, /, *, dtype=None, name=None):
     return ivy.full_like(x, fill_value, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def arange(start, end=None, step=1, dtype=None, name=None):
     return ivy.arange(start, end, step=step, dtype=dtype)
@@ -71,3 +71,8 @@ def empty(shape, dtype=None):
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, dtype=None, name=None):
     return ivy.eye(num_rows, num_columns, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def empty_like(x, dtype=None, name=None):
+    return ivy.empty_like(x, dtype=dtype)
