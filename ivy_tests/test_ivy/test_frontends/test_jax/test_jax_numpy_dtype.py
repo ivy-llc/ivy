@@ -67,3 +67,24 @@ def test_jax_numpy_promote_types(
         test_values=False,
     )
     assert str(ret._ivy_dtype) == frontend_ret[0].name
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.result_type",
+    a=helpers.get_dtypes(),
+    b=helpers.get_dtypes(),
+    c=helpers.get_dtypes(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_result_type(*, a, b, c, test_flags, on_device, fn_tree, frontend):
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=[],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        b=b,
+        c=c,
+    )
+    assert str(ret._ivy_dtype) == frontend_ret[0].name
