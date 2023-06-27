@@ -219,17 +219,18 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
-        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+            arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -1206,12 +1207,27 @@ def _dtype_device_wrapper_creator(attrib, t):
             "unsigned": ivy.valid_uint_dtypes,
             "complex": ivy.valid_complex_dtypes,
         }
+
         for key, value in version_dict.items():
-            for i, v in enumerate(value):
-                if v in typesets:
-                    version_dict[key] = (
-                        version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
-                    )
+            # check if value is a dict too, in case of device_dtype decorators
+            if isinstance(value, dict):
+                for key2, value2 in value.items():
+                    for i, v in enumerate(value2):
+                        if v in typesets:
+                            version_dict[key][key2] = (
+                                version_dict[key][key2][:i]
+                                + typesets[v]
+                                + version_dict[key][key2][i + 1 :]
+                            )
+            else:
+                # usual decorator case
+                for i, v in enumerate(value):
+                    if v in typesets:
+                        version_dict[key] = (
+                            version_dict[key][:i]
+                            + typesets[v]
+                            + version_dict[key][i + 1 :]
+                        )
 
         def _wrapped(func):
             val = _versioned_attribute_factory(

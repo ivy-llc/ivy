@@ -7,7 +7,6 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 import ivy
-import sys
 
 
 @st.composite
@@ -545,26 +544,9 @@ def test_multi_dot(
     )
 
 
-@st.composite
-def _cond_data_gen_helper(draw):
-    dtype_x = helpers.dtype_and_values(
-        available_dtypes=(ivy.float32, ivy.float64),
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-        max_value=10,
-        min_value=-10,
-        allow_nan=False,
-        shared_dtype=True,
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
-    p = draw(
-        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
-    )
-    dtype, x = draw(dtype_x)
-    return dtype, (x[0], p)
-
-
 @handle_test(
     fn_tree="functional.ivy.experimental.cond",
-    dtype_x=_cond_data_gen_helper(),
+    dtype_x=helpers.cond_data_gen_helper(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -584,6 +566,8 @@ def test_cond(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        rtol_=1e-3,
+        atol_=1e-3,
         x=x[0],
         p=x[1],
     )

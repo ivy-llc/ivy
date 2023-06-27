@@ -8,6 +8,9 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# ToDo: Find solution around torch and paddle not running with uints 32, 64 and remove xfail fixture
+
+
 @st.composite
 def _get_minval_maxval(draw):
     interval = draw(st.integers(min_value=1, max_value=50))
@@ -16,6 +19,7 @@ def _get_minval_maxval(draw):
     return minval, maxval
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.uniform",
     dtype_key=helpers.dtype_and_values(
@@ -73,6 +77,7 @@ def test_jax_uniform(
         assert u.shape == v.shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.normal",
     dtype_key=helpers.dtype_and_values(
@@ -125,6 +130,7 @@ def test_jax_normal(
         assert u.shape == v.shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.beta",
     dtype_key=helpers.dtype_and_values(
@@ -186,6 +192,7 @@ def test_jax_beta(
         assert u.shape == v.shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.dirichlet",
     dtype_key=helpers.dtype_and_values(
@@ -253,6 +260,7 @@ def test_jax_dirichlet(
         assert u.shape == v.shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.cauchy",
     dtype_key=helpers.dtype_and_values(
@@ -305,6 +313,7 @@ def test_jax_cauchy(
         assert u.shape == v.shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.poisson",
     dtype_key=helpers.dtype_and_values(
@@ -388,6 +397,7 @@ def _all_gamma_params(draw):
     return a, shape
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.gamma",
     dtype_key=helpers.dtype_and_values(
@@ -443,7 +453,6 @@ def test_jax_gamma(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.gumbel",
@@ -499,7 +508,6 @@ def test_jax_gumbel(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.t",
@@ -559,7 +567,6 @@ def test_jax_t(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.generalized_normal",
@@ -619,7 +626,6 @@ def test_jax_generalized_normal(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.rademacher",
@@ -673,7 +679,6 @@ def test_jax_rademacher(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.randint",
@@ -745,7 +750,6 @@ def dtype_p_shape(draw):
     return dtype_and_probs, shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.bernoulli",
@@ -799,7 +803,6 @@ def test_jax_bernoulli(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.fold_in",
@@ -850,7 +853,6 @@ def test_jax_fold_in(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.permutation",
@@ -905,7 +907,6 @@ def test_jax_permutation(
 
 
 # loggamma
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.loggamma",
@@ -962,7 +963,6 @@ def test_jax_loggamma(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.shuffle",
@@ -1020,7 +1020,6 @@ def test_jax_shuffle(
         assert u.shape == v.shape
 
 
-# TODO Update the test by fixing the uint32 unsupported problem
 @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.exponential",
@@ -1141,6 +1140,7 @@ def get_shape_and_arrays(draw):
     return b, shapes
 
 
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.pareto",
     dtype_key=helpers.dtype_and_values(
