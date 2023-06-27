@@ -248,6 +248,21 @@ class Tensor:
                 "int16",
                 "int32",
                 "int64",
+            )
+        },
+        "paddle",
+    )
+    def bitwise_or(self, y, out=None, name=None):
+        return paddle_frontend.bitwise_or(self, y, out=out)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
                 "float32",
                 "float64",
             )
