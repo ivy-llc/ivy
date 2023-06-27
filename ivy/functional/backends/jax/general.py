@@ -67,11 +67,11 @@ def get_item(
     *,
     copy: bool = None,
 ) -> JaxArray:
-    if copy:
-        return x.copy()
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         query, expected_shape = _mask_to_index(query, x)
-    return x.at[query]
+    if copy:
+        return x.__getitem__(query).copy()
+    return x.__getitem__(query)
 
 
 def set_item(
