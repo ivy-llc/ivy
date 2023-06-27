@@ -58,6 +58,41 @@ def test_paddle_binary_cross_entropy_with_logits(
     )
 
 
+# mse_loss
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.mse_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_paddle_mse_loss(
+    dtype_and_x,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        reduction=reduction,
+    )
+
+
 # cosine embedding loss
 @st.composite
 def _cos_embd_loss_helper(draw):
