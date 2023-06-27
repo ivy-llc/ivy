@@ -64,6 +64,11 @@ def get_item(
 
     # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
+        if not len(query.shape):
+            if not query:
+                return paddle.to_tensor([], dtype=x.dtype)
+            else:
+                return paddle.unsqueeze(x, 0)
         if x.dtype in [
             paddle.int8,
             paddle.int16,
@@ -108,7 +113,6 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> np.ndarray:
-
     val = paddle.to_tensor(val, dtype=x.dtype)
 
     if ivy.is_array(query) and ivy.is_bool_dtype(query):

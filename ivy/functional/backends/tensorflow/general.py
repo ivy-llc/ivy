@@ -61,6 +61,11 @@ def get_item(
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
     if dtype is tf.bool:
+        if not len(query.shape):
+            if not query:
+                return tf.constant([], shape=(0,), dtype=x.dtype)
+            else:
+                return tf.expand_dims(x, 0)
         return tf.boolean_mask(x, query)
     # ToDo tf.int16 is listed as supported, but it fails
     # temporary fix till issue is fixed by TensorFlow
@@ -77,7 +82,6 @@ def set_item(
     *,
     copy: Optional[bool] = False,
 ) -> Union[tf.Tensor, tf.Variable]:
-
     val = tf.cast(val, x.dtype)
 
     if ivy.is_array(query) and ivy.is_bool_dtype(query):

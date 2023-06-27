@@ -68,6 +68,11 @@ def get_item(
     copy: bool = None,
 ) -> JaxArray:
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            if not query:
+                return jnp.array([], dtype=x.dtype)
+            else:
+                return jnp.expand_dims(x, 0)
         query, expected_shape = _mask_to_index(query, x)
     if copy:
         return x.__getitem__(query).copy()
