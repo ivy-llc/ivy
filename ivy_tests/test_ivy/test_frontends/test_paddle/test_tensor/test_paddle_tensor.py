@@ -1568,7 +1568,6 @@ def test_paddle_cumsum(
     ),
 )
 def test_paddle_angle(
-
     dtype_and_x,
     frontend_method_data,
     init_flags,
