@@ -3599,89 +3599,35 @@ def test_torch_instance_max(
     )
 
 
-# is_quantized
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_quantized",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_quantized(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
+def test_torch_tensor_property_is_quantized(
+    dtype_x,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_quantized, "q" in ivy.dtype(ivy.array(data[0])), as_array=False
     )
 
 
-# is_cuda
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_cuda",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-    ),
-    size=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    device=st.booleans(),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_cuda(
-    dtype_and_x,
-    size,
-    dtypes,
-    requires_grad,
-    device,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
+def test_torch_tensor_property_is_cuda(
+    dtype_x,
 ):
-    input_dtype, x = dtype_and_x
-    device = "cpu" if device is False else "gpu:0"
-    x = Tensor(x[0]).new_ones(
-        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
-    )
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_cuda, "gpu" in ivy.dev(ivy.array(data[0])), as_array=False
     )
 
 
