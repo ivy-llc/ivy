@@ -836,7 +836,6 @@ def test_lerp(
     on_device,
     ground_truth_backend,
 ):
-    test_flags.with_out = False
     input_dtypes, start, end, weight = data
     helpers.test_function(
         input_dtypes=input_dtypes,
