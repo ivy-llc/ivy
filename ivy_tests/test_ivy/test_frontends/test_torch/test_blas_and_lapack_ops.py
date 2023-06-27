@@ -681,19 +681,12 @@ def test_torch_trapz(
     dtype_y_x,
     use_x,
     dim,
-    dx,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
     dtype, y, x = dtype_y_x
-    if use_x:
-        test_flags.num_positional_args = 2
-        kwargs = {"y": y, "x": x, "dim": -1}
-    else:
-        test_flags.num_positional_args = 1
-        kwargs = {"y": y, "dx": dx, "dim": dim}
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
