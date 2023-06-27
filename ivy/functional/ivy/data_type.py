@@ -150,10 +150,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             f_supported = get_fn(fn, False)
             if is_partial_mixed:
                 out = {
-                    "compositional": merge_fn(
-                        wrapper(f_supported["compositional"]), out
+                    "compositional": tuple(
+                        merge_fn(wrapper(f_supported["compositional"]), out)
                     ),
-                    "primary": merge_fn(wrapper(f_supported["primary"]), out),
+                    "primary": tuple(merge_fn(wrapper(f_supported["primary"]), out)),
                 }
             else:
                 out = merge_fn(wrapper(f_supported), out)
@@ -1638,7 +1638,11 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
                 fn, supported_dtypes, set.intersection, function_supported_dtypes
             )
 
-        return tuple(supported_dtypes)
+        return (
+            supported_dtypes
+            if isinstance(supported_dtypes, dict)
+            else tuple(supported_dtypes)
+        )
 
 
 @handle_exceptions
@@ -1686,7 +1690,11 @@ def function_unsupported_dtypes(
                 fn, unsupported_dtypes, set.union, function_unsupported_dtypes
             )
 
-        return tuple(unsupported_dtypes)
+        return (
+            unsupported_dtypes
+            if isinstance(unsupported_dtypes, dict)
+            else tuple(unsupported_dtypes)
+        )
 
 
 @handle_exceptions

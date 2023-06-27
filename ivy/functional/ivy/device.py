@@ -1188,7 +1188,11 @@ def function_supported_devices(
                 fn, supported_devices, set.intersection, function_supported_devices
             )
 
-        return tuple(supported_devices)
+        return (
+            supported_devices
+            if isinstance(supported_devices, dict)
+            else tuple(supported_devices)
+        )
 
 
 @handle_exceptions
@@ -1236,7 +1240,11 @@ def function_unsupported_devices(
                 fn, unsupported_devices, set.union, function_unsupported_devices
             )
 
-        return tuple(unsupported_devices)
+        return (
+            unsupported_devices
+            if isinstance(unsupported_devices, dict)
+            else tuple(unsupported_devices)
+        )
 
 
 # Profiler #
