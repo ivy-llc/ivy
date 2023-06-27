@@ -339,10 +339,7 @@ def _fmod(
     out=None,
     *,
     where=True,
-    casting="same_kind",
-    order="K",
     dtype=None,
-    subok=True,
 ):
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
