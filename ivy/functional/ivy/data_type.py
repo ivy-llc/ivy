@@ -1597,6 +1597,16 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
+def _return_dtypes(fn, dtypes):
+    if (
+        "frontend" in fn.__module__
+        and ivy.current_backend_str() == fn.__module__.rsplit(".")[3]
+    ):
+        if isinstance(dtypes, dict):
+            return dtypes["primary"]
+    return dtypes if isinstance(dtypes, dict) else tuple(dtypes)
+
+
 @handle_exceptions
 @handle_nestable
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
@@ -1639,12 +1649,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
             supported_dtypes = _nested_get(
                 fn, supported_dtypes, set.intersection, function_supported_dtypes
             )
-
-        return (
-            supported_dtypes
-            if isinstance(supported_dtypes, dict)
-            else tuple(supported_dtypes)
-        )
+    return _return_dtypes(fn, supported_dtypes)
 
 
 @handle_exceptions
@@ -1692,11 +1697,7 @@ def function_unsupported_dtypes(
                 fn, unsupported_dtypes, set.union, function_unsupported_dtypes
             )
 
-        return (
-            unsupported_dtypes
-            if isinstance(unsupported_dtypes, dict)
-            else tuple(unsupported_dtypes)
-        )
+    return _return_dtypes(fn, unsupported_dtypes)
 
 
 @handle_exceptions
