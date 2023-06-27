@@ -203,10 +203,10 @@ def elu(
     name=None,
 ):
     prod = ivy.multiply(alpha, ivy.expm1(x))
-    ret = ivy.where(x > 0, 0, prod)
+    ret = ivy.where(x > 0, x, prod)
     return ret
 
-  
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def mish(x, name=None):

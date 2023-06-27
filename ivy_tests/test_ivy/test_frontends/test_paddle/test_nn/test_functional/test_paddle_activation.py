@@ -486,8 +486,8 @@ def test_paddle_elu(
         x=x[0],
         alpha=alpha,
     )
-      
-      
+
+
 # mish
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.mish",
