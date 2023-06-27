@@ -133,12 +133,10 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     )
 
 
-# TODO FIX container method and out argument handling
 @handle_test(
     fn_tree="functional.ivy.experimental.instance_norm",
     data=_instance_and_batch_norm_helper(min_dims=3),
     training=st.booleans(),
-    container_flags=st.just([False]),
 )
 def test_instance_norm(
     *,
@@ -178,7 +176,6 @@ def test_instance_norm(
     fn_tree="functional.ivy.experimental.batch_norm",
     data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
-    container_flags=st.just([False]),
 )
 def test_batch_norm(
     *,
