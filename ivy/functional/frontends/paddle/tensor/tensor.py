@@ -280,3 +280,7 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def cumprod(self, dim=None, dtype=None, name=None):
         return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def is_complex(self, name=None):
+        return paddle_frontend.is_complex(self._ivy_array)
