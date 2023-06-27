@@ -915,6 +915,10 @@ class Tensor:
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
 
+    def bitwise_not_(self):
+        self.ivy_array = self.bitwise_not().ivy_array
+        return self
+
     def bitwise_and_(self, other):
         self.ivy_array = self.bitwise_and(other).ivy_array
         return self

@@ -18,7 +18,11 @@ def argsort(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     kind = "stable" if stable else "quicksort"
-    return np.argsort(-x, axis=axis, kind=kind) if descending else np.argsort(x, axis=axis, kind=kind) 
+    return (
+        np.argsort(-x, axis=axis, kind=kind)
+        if descending
+        else np.argsort(x, axis=axis, kind=kind)
+    )
 
 
 def sort(
