@@ -394,8 +394,8 @@ class ndarray:
     ):
         return np_frontend.copy(self)
 
-    def __deepcopy__(self, memo):
-        return self.__class__(np_frontend.copy(self))
+    def __deepcopy__(self, memo, /):
+        return self.ivy_array.__deepcopy__(memo)
 
     def __neg__(
         self,
