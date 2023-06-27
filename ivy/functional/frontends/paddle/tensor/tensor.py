@@ -195,9 +195,8 @@ class Tensor:
     def isfinite(self, name=None):
         return ivy.isfinite(self._ivy_array)
 
-    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
-    def all(self, axis=None, keepdim=False, dtype=None, name=None):
-        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+    def all(self, axis=None, keepdim=False, name=None):
+        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim)
 
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
@@ -208,6 +207,23 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_or(self, y, out=None, name=None):
+        return paddle_frontend.logical_or(self, y, out=out)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
@@ -230,3 +246,38 @@ class Tensor:
     )
     def bitwise_not(self, out=None, name=None):
         return paddle_frontend.bitwise_not(self, out=out)
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_xor(self, y, out=None, name=None):
+        return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def greater_than(self, y, name=None):
+        return paddle_frontend.greater_than(self, y)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def rsqrt(self, name=None):
+        return ivy.reciprocal(ivy.sqrt(self._ivy_array))
