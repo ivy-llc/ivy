@@ -149,11 +149,13 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             is_partial_mixed = hasattr(fn, "handle_mixed_function")
             f_supported = get_fn(fn, False)
             if is_partial_mixed:
+                compos = merge_fn(wrapper(f_supported["compositional"]), out)
+                primary = merge_fn(wrapper(f_supported["primary"]), out)
                 out = {
-                    "compositional": tuple(
-                        merge_fn(wrapper(f_supported["compositional"]), out)
+                    "compositional": (
+                        compos if isinstance(compos, dict) else tuple(compos)
                     ),
-                    "primary": tuple(merge_fn(wrapper(f_supported["primary"]), out)),
+                    "primary": primary if isinstance(primary, dict) else tuple(primary),
                 }
             else:
                 out = merge_fn(wrapper(f_supported), out)
