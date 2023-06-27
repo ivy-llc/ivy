@@ -6,54 +6,132 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.l1_normalize",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
+    ),
+)
+def test_l1_normalize(
+    *,
+    dtype_values_axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    x_dtype, x, axis = dtype_values_axis
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        axis=axis,
+    )
+
+
 @st.composite
-def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
-    x_dtype, x, shape = draw(
+def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
+    data_format = draw(st.sampled_from(["NSC", "NCS"]))
+    shape1, shape2, shape3, shape4 = draw(
+        helpers.mutually_broadcastable_shapes(
+            num_shapes=4, min_dims=min_dims, min_side=2
+        )
+    )
+    shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
+    if test_function == "instance_norm":
+        shape1 = shape2 = shape3 = shape4 = (shape[-1],)
+
+    if data_format == "NCS":
+        shape = (shape[0], shape[-1], *shape[1:-1])
+
+    x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes(
+                "float",
+            ),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
             safety_factor_scale="log",
-            min_num_dims=min_num_dims,
-            max_num_dims=4,
-            min_dim_size=min_dim_size,
-            ret_shape=True,
+            shape=shape,
             max_value=999,
             min_value=-1001,
+        )
+    )
+
+    _, mean = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape1,
+            min_value=-1001,
+            max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
     _, variance = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
-            shape=(shape[-1],),
-            max_value=999,
+            shape=shape2,
             min_value=0,
-        )
-    )
-    _, others = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype * 3,
-            shape=(shape[-1],),
             max_value=999,
-            min_value=-1001,
-            num_arrays=3,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
         )
     )
-    return x_dtype, x[-1], others[0], others[1], others[2], variance[0]
+    _, offset = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape3,
+            min_value=-1001,
+            max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+        )
+    )
+    _, scale = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape4,
+            min_value=-1001,
+            max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+        )
+    )
+    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
+    momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
+    return (
+        x_dtype,
+        x[0],
+        mean[0],
+        variance[0],
+        offset[0],
+        scale[0],
+        eps,
+        momentum,
+        data_format,
+    )
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.instance_norm",
-    data=_instance_and_batch_norm_helper(min_num_dims=3, min_dim_size=2),
-    eps=helpers.floats(min_value=1e-5, max_value=0.1),
-    momentum=helpers.floats(min_value=0.0, max_value=1.0),
+    data=_instance_and_batch_norm_helper(min_dims=3),
     training=st.booleans(),
 )
 def test_instance_norm(
     *,
     data,
-    eps,
-    momentum,
     training,
     test_flags,
     backend_fw,
@@ -61,7 +139,7 @@ def test_instance_norm(
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x, scale, offset, mean, variance = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -80,22 +158,19 @@ def test_instance_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
     )
 
 
 # batch_norm
 @handle_test(
     fn_tree="functional.ivy.experimental.batch_norm",
-    data=_instance_and_batch_norm_helper(min_num_dims=1, min_dim_size=2),
-    eps=helpers.floats(min_value=1e-5, max_value=0.1),
-    momentum=helpers.floats(min_value=0.0, max_value=1.0),
+    data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
 )
 def test_batch_norm(
     *,
     data,
-    eps,
-    momentum,
     training,
     test_flags,
     backend_fw,
@@ -103,7 +178,7 @@ def test_batch_norm(
     on_device,
     ground_truth_backend,
 ):
-    x_dtype, x, scale, offset, mean, variance = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
@@ -111,8 +186,8 @@ def test_batch_norm(
         fn_name=fn_name,
         on_device=on_device,
         xs_grad_idxs=[[0, 0]],
-        rtol_=1e-1,
-        atol_=1e-1,
+        rtol_=1e-2,
+        atol_=1e-2,
         input_dtypes=x_dtype,
         x=x,
         mean=mean,
@@ -122,4 +197,5 @@ def test_batch_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
     )

@@ -18,12 +18,12 @@ def angle(z, deg=False):
 
 
 @to_ivy_arrays_and_back
-def _imag(val):
+def imag(val):
     return ivy.imag(val)
 
 
 @to_ivy_arrays_and_back
-def _real(val):
+def real(val):
     return ivy.real(val)
 
 

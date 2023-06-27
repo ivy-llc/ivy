@@ -101,8 +101,8 @@ def eager_benchmark(
     output_path="./report.csv",
 ):
     """
-    Function to benchmark the function or module passed in input on the required
-    backends and devices.
+    Benchmark the function or module passed in input on the required backends and
+    devices.
 
     Parameters
     ----------
@@ -200,7 +200,6 @@ def eager_benchmark(
     ...     args=args,
     ...     output_path="./ivy/report.csv"
     ... )
-
     """
     backends = ivy.default(backends, [])
     devices = ivy.default(devices, [])
@@ -277,7 +276,7 @@ def visualize_speed_up(
     labels: Union[List[str], str] = None,
 ):
     """
-    Function to visualize the speed up results stored in the csv.
+    Visualize the speed up results stored in the csv.
 
     Parameters
     ----------
@@ -314,7 +313,6 @@ def visualize_speed_up(
     ...     devices=["gpu:0"],
     ...     labels=["GELU"],
     ... )
-
     """
     file_path = ivy.default(file_path, "./report.csv")
     output_path = ivy.default(output_path, "./saved_fig.png")

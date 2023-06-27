@@ -1,25 +1,13 @@
-# flake8: noqa
-import ivy
-from ivy.utils.exceptions import handle_exceptions
-
 # global
+import sys
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
-# Constructing dtypes are required as ivy.<dtype>
-# will change dynamically on the backend and may not be available
-int8 = ivy.IntDtype("int8")
-int16 = ivy.IntDtype("int16")
-int32 = ivy.IntDtype("int32")
-int64 = ivy.IntDtype("int64")
-uint8 = ivy.UintDtype("uint8")
-bfloat16 = ivy.FloatDtype("bfloat16")
-float16 = ivy.FloatDtype("float16")
-float32 = ivy.FloatDtype("float32")
-float64 = ivy.FloatDtype("float64")
-complex64 = ivy.ComplexDtype("complex64")
-complex128 = ivy.ComplexDtype("complex128")
-bool = ivy.Dtype("bool")
+# local
+import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -204,7 +192,7 @@ def promote_types_torch(
     /,
 ) -> ivy.Dtype:
     """
-    Promotes the datatypes type1 and type2, returning the data type they promote to
+    Promote the datatypes type1 and type2, returning the data type they promote to.
 
     Parameters
     ----------
@@ -232,12 +220,14 @@ def promote_types_of_torch_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given native array inputs to a common dtype
-    based on type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promote the dtype of the given native array inputs to a common dtype based on type
+    promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
     # Ignore type of 0-dim arrays to mimic torch
     x1 = ivy.asarray(x1)
@@ -245,7 +235,6 @@ def promote_types_of_torch_inputs(
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
     if not x1.shape == () and x2.shape == () and type1 == type2:
-        x1 = ivy.asarray(x1)
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
@@ -253,10 +242,7 @@ def promote_types_of_torch_inputs(
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
-    else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
+    elif x1.dtype != x2.dtype:
         promoted = promote_types_torch(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
@@ -264,6 +250,7 @@ def promote_types_of_torch_inputs(
 
 
 from . import nn
+from .nn.functional import softmax, relu
 from . import tensor
 from .tensor import *
 from . import blas_and_lapack_ops
@@ -296,4 +283,10 @@ from . import linalg
 from . import func
 from .func import *
 
+
 _frontend_array = tensor
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

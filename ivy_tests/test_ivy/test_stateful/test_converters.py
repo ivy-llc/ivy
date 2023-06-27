@@ -193,7 +193,8 @@ class PaddleLinearModule(paddle.nn.Layer):
 
     def forward(self, x):
         return self._linear(x)
-    
+
+
 class PaddleModule(paddle.nn.Layer):
     def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(PaddleModule, self).__init__()
@@ -206,7 +207,7 @@ class PaddleModule(paddle.nn.Layer):
         x = paddle.nn.functional.tanh(self._linear0(x))
         x = paddle.nn.functional.tanh(self._linear1(x))
         return paddle.nn.functional.tanh(self._linear2(x))[0]
-    
+
 
 NATIVE_MODULES = {
     "torch": TorchModule,

@@ -1,3 +1,5 @@
+.. title:: Home
+
 .. include:: ../README.rst
 
 .. toctree::
@@ -11,6 +13,7 @@
   overview/extensions.rst
   overview/contributing.rst
   overview/deep_dive.rst
+  Examples <https://unify.ai/demos/>
   overview/faq.rst
   overview/glossary.rst
 
@@ -20,6 +23,7 @@
   :maxdepth: -1
   :caption: Compiling and Transpiling
 
+  compiler/setting_up.rst
   compiler/compiler.rst
   compiler/transpiler.rst
 

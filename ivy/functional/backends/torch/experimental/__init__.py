@@ -3,7 +3,6 @@ import torch as torch
 
 backend_version = {"version": torch.__version__.split("+")[0]}
 
-# flake8: noqa
 from .activations import *
 from .converters import *
 from .creation import *

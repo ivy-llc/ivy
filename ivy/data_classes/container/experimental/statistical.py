@@ -30,8 +30,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.<func_name>. This method simply wraps
-        the function, and so the docstring for ivy.histogram also applies to this
-        method with minimal changes.
+        the function, and so the docstring for ivy.histogram also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -235,9 +235,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.median. This method simply wraps
-        the function, and so the docstring for ivy.median also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -287,9 +287,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         keepdims: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.median. This method simply
-        wraps the function, and so the docstring for ivy.median also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.median. This method simply wraps
+        the function, and so the docstring for ivy.median also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -339,9 +340,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.nanmean. This method simply wraps
-        the function, and so the docstring for ivy.nanmean also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.nanmean. This method simply wraps the
+        function, and so the docstring for ivy.nanmean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -399,9 +400,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.nanmean. This method simply
-        wraps the function, and so the docstring for ivy.nanmean also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanmean. This method simply wraps
+        the function, and so the docstring for ivy.nanmean also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -456,10 +458,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.quantile.
-        This method simply wraps the function, and so the docstring
-        for ivy.quantile also applies to this method with minimal
-        changes.
+        """
+        ivy.Container static method variant of ivy.quantile. This method simply wraps
+        the function, and so the docstring for ivy.quantile also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -581,10 +583,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.quantile.
-        This method simply wraps the function, and so the docstring
-        for ivy.quantile also applies to this method with minimal
-        changes.
+        """
+        ivy.Container instance method variant of ivy.quantile. This method simply wraps
+        the function, and so the docstring for ivy.quantile also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -757,9 +759,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         rowvar: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.corrcoef. This method simply
-        wraps the function, and so the docstring for ivy.corrcoef also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.corrcoef. This method simply wraps
+        the function, and so the docstring for ivy.corrcoef also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -798,6 +801,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: bool = False,
+        overwrite_input: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -805,9 +809,9 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.median. This method simply wraps
-        the function, and so the docstring for ivy.median also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -819,6 +823,8 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         keepdims
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one.
+        overwrite_input
+            If True, then allow use of memory of input array for calculations.
         out
             optional output array, for writing the result to.
 
@@ -830,11 +836,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.zeros((3, 4, 5)), b=ivy.zeros((2,7,6)))
-        >>> ivy.Container.static_nanmedian(x, 0, -1).shape
+        >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]))
+        >>> ivy.Container.static_nanmedian(x)
         {
-            a: (4, 5, 3)
-            b: (7, 6, 2)
+            a: ivy.array(3.)
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -842,6 +847,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             input,
             axis=axis,
             keepdims=keepdims,
+            overwrite_input=overwrite_input,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -855,12 +861,13 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Tuple[int], int]] = None,
         keepdims: bool = False,
-        overwrite_input: Optional[bool] = False,
+        overwrite_input: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Array instance method variant of ivy.nanmedian. This method simply
-        wraps the function, and so the docstring for ivy.nanmedian also applies to
-        this method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.nanmedian. This method simply wraps
+        the function, and so the docstring for ivy.nanmedian also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -895,11 +902,19 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
-        >>> a.nanmedian(a)
-            3.0
-        >>> a.nanmedian(a, axis=0)
-            array([6.5, 2. , 2.5])
+        With :class:`ivy.Container` input and default backend set as `numpy`:
+        >>> x = ivy.Container(a=ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]]),
+                b=ivy.array([[12, 10, 34], [45, 23, ivy.nan]]))
+        >>> x.nanmedian()
+        {
+            a: ivy.array(3.),
+            b: ivy.array(23.)
+        }
+        >>> x.nanmedian(axis=0)
+        {
+            a: ivy.array([6.5, 2., 2.5]),
+            b: ivy.array([28.5, 16.5, 34.])
+        }
         """
         return self.static_nanmedian(
             self, axis=axis, keepdims=keepdims, overwrite_input=overwrite_input, out=out
@@ -968,9 +983,10 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         minlength: int = 0,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Array instance method variant of ivy.bincount. This method simply
-        wraps the function, and so the docstring for ivy.bincount also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
+        function, and so the docstring for ivy.bincount also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -995,3 +1011,89 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             array([6.5, 2. , 2.5])
         """
         return self.static_bincount(self, weights=weights, minlength=minlength, out=out)
+
+    @staticmethod
+    def static_igamma(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.igamma. This method simply wraps the
+        function, and so the docstring for ivy.igamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "igamma",
+            a,
+            x=x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def igamma(
+        self: ivy.Container,
+        /,
+        *,
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.igamma. This method simply wraps
+        the function, and so the docstring for ivy.igamma also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return self.static_igamma(self, x=x, out=out)

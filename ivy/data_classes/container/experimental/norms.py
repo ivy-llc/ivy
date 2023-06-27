@@ -5,6 +5,121 @@ import ivy
 
 class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
+    def static_l1_normalize(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.l1_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l1_normalize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container with leaves to be normalized.
+        axis
+            The axis along which to normalize.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the normalized leaves.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.5, 1.5, 2.5], [3.5, 4.5, 5.5]])))
+        ...                    b=ivy.array([[-1., -1.], [-1., -0.5]]]))
+        >>> y = ivy.Container.static_l1_normalize(x, axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[0.1, 0.3, 0.5],
+                          [0.35, 0.45, 0.55]]),
+            b: ivy.array([[-0.5, -0.5],
+                          [-0.5, -0.25]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "l1_normalize",
+            x,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def l1_normalize(
+        self,
+        axis: Optional[int] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out=None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.l1_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l1_normalize also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container with leaves to be normalized.
+        axis
+            The axis along which to normalize.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is False.
+        out
+            Optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container containing the normalized leaves.
+        """
+        return self.static_l1_normalize(
+            self,
+            axis=axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         axis: Optional[int] = None,
@@ -15,10 +130,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         out=None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.l2_normalize.
-        This method simply wraps the function, and so the
-        docstring for ivy.l2_normalize also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.l2_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l2_normalize also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -79,10 +193,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
         out=None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.l2_normalize.
-        This method simply wraps the function, and so the
-        docstring for ivy.l2_normalize also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.l2_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l2_normalize also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -145,6 +259,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -158,36 +273,28 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
-        ivy.Container static method variant of ivy.batch_norm.
-        This method simply wraps the function, and so the docstring
-        for ivy.batch_norm also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.batch_norm. This method simply wraps
+        the function, and so the docstring for ivy.batch_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of default shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
             C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         offset
             An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         scale
             A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -196,9 +303,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
             optional output arrays, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -227,6 +337,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             training=training,
             eps=eps,
             momentum=momentum,
+            data_format=data_format,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -245,6 +356,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -258,36 +370,28 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
-        ivy.Container instance method variant of ivy.batch_norm.
-        This method simply wraps the function, and so the docstring
-        for ivy.batch_norm also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.batch_norm. This method simply
+        wraps the function, and so the docstring for ivy.batch_norm also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of default shape (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array used for input's normalization. It can be of any shape
+            braodcastable to (N,*S,C).
         offset
             An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         scale
             A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            It can be of any shape broadcastable to (N,*S,C).
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -296,9 +400,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
-            optional output array, for writing the result to.
-            Parameters
+            optional output arrays, for writing the result to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -326,6 +433,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             training=training,
             eps=eps,
             momentum=momentum,
+            data_format=data_format,
             out=out,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -345,6 +453,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -358,47 +467,40 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
-        ivy.Container static method variant of ivy.instance_norm.
-        This method simply wraps the function, and so the docstring
-        for ivy.instance_norm also applies to this method with minimal changes.
+        ivy.Container static method variant of ivy.instance_norm. This method simply
+        wraps the function, and so the docstring for ivy.instance_norm also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         x
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of shape default (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array of size C used for input's normalization.
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array of size C used for input's normalization.
         offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            An offset array of size C. If present, will be added
+             to the normalized input.
         scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            A scale array of size C. If present, the scale
+             is applied to the normalized input.
         training
-            If true, calculate and use the mean and variance of `x`. Otherwise, use the
-            provided `mean` and `variance`.
+            If true, calculate and use the mean and variance of `x`.
+             Otherwise, use the provided `mean` and `variance`.
         eps
             A small float number to avoid dividing by 0.
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
             optional output arrays, for writing the result to.
-            Parameters
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -428,6 +530,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             eps=eps,
             momentum=momentum,
             out=out,
+            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -445,6 +548,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
         training: bool = False,
         eps: float = 1e-5,
         momentum: float = 1e-1,
+        data_format: str = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -458,36 +562,26 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
-        ivy.Container instance method variant of ivy.instance_norm.
-        This method simply wraps the function, and so the docstring
-        for ivy.instance_norm also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.instance_norm. This method simply
+        wraps the function, and so the docstring for ivy.instance_norm also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
         self
-            Input array of shape (N, *S, C), where N is the batch dimension,
+            Input array of shape default (N, *S, C), where N is the batch dimension,
             *S corresponds to any number of spatial dimensions and
              C corresponds to the channel dimension.
         mean
-            Mean array used for input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any
-            shape broadcastble to the input shape.
+            Mean array of size C used for input's normalization.
         variance
-            Variance array for the input's normalization. If ``training=True``
-            then it must be one dimensional with size equal to the size of
-            channel dimension C. If ``training=False`` then it can be of any shape
-            broadcastble to the input shape.
+            Variance array of size C used for input's normalization.
         offset
-            An offset array. If present, will be added to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal
-            to the size of channel dimension C. If ``training=False`` then it can
-            be of any shape broadcastble to the input shape.
+            An offset array of size C. If present, will be added
+            to the normalized input.
         scale
-            A scale array. If present, the scale is applied to the normalized input.
-            If ``training=True`` then it must be one dimensional with size equal to
-            the size of channel dimension C. If ``training=False`` then it can be of
-            any shape broadcastble to the input shape.
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
         training
             If true, calculate and use the mean and variance of `x`. Otherwise, use the
             provided `mean` and `variance`.
@@ -496,9 +590,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
         momentum
              the value used for the running_mean and running_var computation.
               Default value is 0.1.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         out
-            optional output array, for writing the result to.
-            Parameters
+            optional output arrays, for writing the result to.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -527,6 +624,7 @@ class _ContainerWithNormsExperimental(ContainerBase):
             eps=eps,
             momentum=momentum,
             out=out,
+            data_format=data_format,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -545,10 +643,9 @@ class _ContainerWithNormsExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.lp_normalize.
-        This method simply wraps the function, and so the
-        docstring for ivy.lp_normalize also applies to this method
-        with minimal changes.
+        ivy.Container static method variant of ivy.lp_normalize. This method simply
+        wraps the function, and so the docstring for ivy.lp_normalize also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -613,10 +710,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.l2_normalize.
-        This method simply wraps the function, and so the
-        docstring for ivy.l2_normalize also applies to this method
-        with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.l2_normalize. This method simply
+        wraps the function, and so the docstring for ivy.l2_normalize also applies to
+        this method with minimal changes.
 
         Parameters
         ----------

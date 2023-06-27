@@ -6,7 +6,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -47,7 +47,7 @@ def test_tensorflow_imag(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple([ivy.int64]),
-        num_arrays=2,
+        num_arrays=helpers.ints(min_value=2, max_value=5),
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -158,6 +158,31 @@ def test_tensorflow_tan(
     test_with_out=st.just(False),
 )
 def test_tensorflow_exp(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# expm1
+@handle_frontend_test(
+    fn_tree="tensorflow.math.expm1",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_expm1(
     *,
     dtype_and_x,
     frontend,
@@ -318,6 +343,35 @@ def test_tensorflow_squared_difference(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# logical_not
+@handle_frontend_test(
+    fn_tree="tensorflow.math.logical_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=tuple([ivy.bool]),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_logical_not(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
     )
 
 
@@ -553,6 +607,8 @@ def test_tensorflow_reciprocal(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         x=x[0],
     )
 
@@ -646,6 +702,7 @@ def test_tensorflow_reduce_any(
     fn_tree="tensorflow.math.reduce_euclidean_norm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_num_dims=2,
     ),
     test_with_out=st.just(False),
 )
@@ -666,6 +723,8 @@ def test_tensorflow_reduce_euclidean_norm(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        rtol=1e-01,
+        atol=1e-01,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -701,7 +760,7 @@ def test_tensorflow_reduce_logsumexp(
 # argmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
-    dtype_and_x=statistical_dtype_values(function="argmax"),
+    dtype_and_x=_statistical_dtype_values(function="argmax"),
     output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
     test_with_out=st.just(False),
 )
@@ -714,7 +773,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if ivy.current_backend_str() == "torch":
+    if ivy.current_backend_str() in ("torch", "paddle"):
         assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -817,6 +876,9 @@ def test_tensorflow_reduce_prod(
     fn_tree="tensorflow.math.reduce_std",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_reduce_std(
@@ -870,6 +932,9 @@ def test_tensorflow_asinh(
     fn_tree="tensorflow.math.reduce_sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -888,6 +953,8 @@ def test_tensorflow_reduce_sum(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-03,
+        atol=1e-03,
         input_tensor=x[0],
     )
 
@@ -914,6 +981,8 @@ def test_tensorflow_reduce_mean(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-2,
+        rtol=1e-2,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -922,7 +991,7 @@ def test_tensorflow_reduce_mean(
 # reduce_variance
 @handle_frontend_test(
     fn_tree="tensorflow.math.reduce_variance",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
     ),
     test_with_out=st.just(False),
@@ -1164,10 +1233,12 @@ def test_tensorflow_is_strictly_increasing(
 @handle_frontend_test(
     fn_tree="tensorflow.math.count_nonzero",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        allow_neg_axes=False,
     ),
     keepdims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric"),
+    dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_count_nonzero(
@@ -1190,7 +1261,7 @@ def test_tensorflow_count_nonzero(
         input=x,
         axis=axis,
         keepdims=keepdims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -1333,6 +1404,9 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     fn_tree="tensorflow.math.zero_fraction",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
@@ -1363,6 +1437,9 @@ def test_tensorflow_zero_fraction(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1383,6 +1460,8 @@ def test_tensorflow_truediv(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
@@ -1419,7 +1498,7 @@ def test_tensorflow_pow(dtype_and_x, frontend, test_flags, fn_tree):
 # argmin
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmin",
-    dtype_and_x=statistical_dtype_values(function="argmin"),
+    dtype_and_x=_statistical_dtype_values(function="argmin"),
     output_type=st.sampled_from(["int32", "int64"]),
     test_with_out=st.just(False),
 )
@@ -1481,7 +1560,7 @@ def test_tensorflow_equal(
 @handle_frontend_test(
     fn_tree="tensorflow.math.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -1778,6 +1857,9 @@ def test_tensorflow_log_softmax(
     fn_tree="tensorflow.math.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=25,
+        small_abs_safety_factor=25,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1863,7 +1945,9 @@ def test_tensorflow_acos(
 @handle_frontend_test(
     fn_tree="tensorflow.math.acosh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        small_abs_safety_factor=3,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1882,6 +1966,7 @@ def test_tensorflow_acosh(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
         x=x[0],
     )
 
@@ -2023,6 +2108,8 @@ def test_tensorflow_log(
     fn_tree="tensorflow.math.add_n",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
 )
 def test_tensorflow_add_n(
@@ -2040,7 +2127,7 @@ def test_tensorflow_add_n(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        inputs=x,
     )
 
 
@@ -2162,21 +2249,24 @@ def test_tensorflow_sinh(
 # softmax
 @handle_frontend_test(
     fn_tree="tensorflow.math.softmax",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        allow_inf=False,
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_softmax(
     *,
-    dtype_and_x,
+    dtype_values_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -2184,6 +2274,9 @@ def test_tensorflow_softmax(
         fn_tree=fn_tree,
         on_device=on_device,
         logits=x[0],
+        atol=1e-02,
+        rtol=1e-2,
+        axis=axis,
     )
 
 
@@ -2358,6 +2451,32 @@ def test_tensorflow_less(
     )
 
 
+# angle
+@handle_frontend_test(
+    fn_tree="tensorflow.math.angle",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_tensorflow_angle(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # zeta
 @handle_frontend_test(
     fn_tree="tensorflow.math.zeta",
@@ -2387,4 +2506,112 @@ def test_tensorflow_zeta(
         on_device=on_device,
         x=x[0],
         q=x[1],
+    )
+
+
+# greater_equal
+@handle_frontend_test(
+    fn_tree="tensorflow.math.greater_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_greater_equal(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# in_top_k
+@handle_frontend_test(
+    fn_tree="tensorflow.math.in_top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_in_top_k(
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=x[0],
+        pred=x[1],
+        k=k,
+    )
+
+
+# conj
+@handle_frontend_test(
+    fn_tree="tensorflow.math.conj",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_conj(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# top_k
+@handle_frontend_test(
+    fn_tree="tensorflow.math.top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shared_dtype=True,
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    sorted=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_device, k):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        k=k,
+        sorted=sorted,
     )

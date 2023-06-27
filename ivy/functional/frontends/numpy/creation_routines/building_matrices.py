@@ -36,3 +36,12 @@ def vander(x, N=None, increasing=False):
     elif ivy.is_bool_dtype or ivy.is_int_dtype(x):
         x = x.astype(ivy.int64)
     return ivy.vander(x, N=N, increasing=increasing)
+
+
+# diagflat
+@to_ivy_arrays_and_back
+def diagflat(v, k=0):
+    ret = ivy.diagflat(v, offset=k)
+    while len(ivy.shape(ret)) < 2:
+        ret = ret.expand_dims(axis=0)
+    return ret

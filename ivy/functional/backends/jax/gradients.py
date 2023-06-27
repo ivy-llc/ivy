@@ -4,7 +4,7 @@
 import jax
 import jax.lax as jlax
 from ivy.functional.backends.jax import JaxArray, NativeArray
-from typing import Optional, Callable, Sequence, Union
+from typing import Optional, Callable, Sequence, Union, Tuple
 
 
 # local
@@ -144,12 +144,17 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(jax.jacfwd(grad_fn)((ivy.to_native(x_in))))
+    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+    callback_fn = lambda x_in: ivy.to_ivy(
+        jax.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
+        nested=True,
+    )
     return callback_fn
 
 
-def grad(func: Callable):
+def grad(func: Callable, argnums: Union[int, Tuple[int]] = 0):
     grad_fn = lambda x_in: ivy.to_native(func(x_in))
-    callback_fn = lambda x_in: ivy.to_ivy(jax.grad(grad_fn)(ivy.to_native(x_in)))
+    callback_fn = lambda x_in: ivy.to_ivy(
+        jax.grad(grad_fn, argnums)(ivy.to_native(x_in))
+    )
     return callback_fn

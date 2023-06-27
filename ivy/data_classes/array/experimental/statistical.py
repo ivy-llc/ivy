@@ -97,9 +97,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.median. This method simply
-        wraps the function, and so the docstring for ivy.median also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.median. This method simply wraps the
+        function, and so the docstring for ivy.median also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -138,9 +139,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmean. This method simply
-        wraps the function, and so the docstring for ivy.nanmean also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmean. This method simply wraps the
+        function, and so the docstring for ivy.nanmean also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -188,10 +190,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         interpolation: str = "linear",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.quantile.
-        This method simply wraps the function, and so the docstring
-        for ivy.quantile also applies to this method with minimal
-        changes.
+        """
+        ivy.Array instance method variant of ivy.quantile. This method simply wraps the
+        function, and so the docstring for ivy.quantile also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -272,9 +274,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         rowvar: bool = True,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.corrcoef. This method simply
-        wraps the function, and so the docstring for ivy.corrcoef also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.corrcoef. This method simply wraps the
+        function, and so the docstring for ivy.corrcoef also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -315,9 +318,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         overwrite_input: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.nanmedian. This method simply
-        wraps the function, and so the docstring for ivy.nanmedian also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.nanmedian. This method simply wraps the
+        function, and so the docstring for ivy.nanmedian also applies to this method
+        with minimal changes.
 
         Parameters
         ----------
@@ -353,11 +357,13 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-        >>> a = ivy.Array([[10.0, ivy.nan, 4], [3, 2, 1]])
-        >>> a.nanmedian(a)
-            3.0
-        >>> a.nanmedian(a, axis=0)
-            array([6.5, 2. , 2.5])
+        With :class:`ivy.array` input and default backend set as `numpy`:
+
+        >>> a = ivy.array([[10.0, ivy.nan, 4], [3, 2, 1]])
+        >>> a.nanmedian()
+            ivy.array(3.)
+        >>> a.nanmedian(axis=0)
+            ivy.array([6.5, 2. , 2.5])
         """
         return ivy.nanmedian(
             self._data,
@@ -375,9 +381,10 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         minlength: int = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.bincount. This method simply
-        wraps the function, and so the docstring for ivy.bincount also applies to
-        this method with minimal changes.
+        """
+        ivy.Array instance method variant of ivy.bincount. This method simply wraps the
+        function, and so the docstring for ivy.bincount also applies to this method with
+        minimal changes.
 
         Parameters
         ----------
@@ -410,5 +417,45 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
             self._data,
             weights=weights,
             minlength=minlength,
+            out=out,
+        )
+
+    def igamma(
+        self: ivy.Array,
+        /,
+        *,
+        x: Union[ivy.Array, ivy.NativeArray],
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.igamma. This method simply wraps the
+        function, and so the docstring for ivy.igamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        x
+            An additional input array.
+            `x` has the same type as `a`.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The lower incomplete gamma function of the array elements.
+
+        Examples
+        --------
+        >>> a = ivy.array([2.5])
+        >>> x = ivy.array([1.7, 1.2])
+        >>> a.igamma(x)
+            ivy.array([0.3614, 0.2085])
+        """
+        return ivy.igamma(
+            self._data,
+            x=x,
             out=out,
         )

@@ -86,6 +86,7 @@ def test_numpy_real(
 # conj
 @handle_frontend_test(
     fn_tree="numpy.conj",
+    aliases=["numpy.conjugate"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),

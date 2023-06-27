@@ -7,11 +7,14 @@ import functools
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def to_ivy_dtype(dtype):
     if not dtype or isinstance(dtype, str):
         return dtype
+    if isinstance(dtype, np_frontend.dtype):
+        return dtype.ivy_dtype
     return frontend.as_dtype(dtype).ivy_dtype
 
 
@@ -35,8 +38,10 @@ def handle_tf_dtype(fn: Callable) -> Callable:
         elif len(args) == (dtype_pos + 1):
             dtype = args[dtype_pos]
             args = args[:-1]
-        dtype = to_ivy_dtype(dtype)
-        return fn(*args, dtype=dtype, **kwargs)
+        if dtype is not None:
+            dtype = to_ivy_dtype(dtype)
+            return fn(*args, dtype=dtype, **kwargs)
+        return fn(*args, **kwargs)
 
     dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
     _handle_tf_dtype.handle_tf_dtype = True
@@ -69,7 +74,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_tf(*args, **kwargs):
         """
-        Converts all `TensorFlow.Tensor` instances in both the positional and keyword
+        Convert all `TensorFlow.Tensor` instances in both the positional and keyword
         arguments into `ivy.Array` instances, and then calls the function with the
         updated arguments.
 
@@ -111,8 +116,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_tf(*args, **kwargs):
         """
-        Calls the function, and then converts all `tensorflow.Tensor` instances in
-        the function return into `ivy.Array` instances.
+        Call the function, and then converts all `tensorflow.Tensor` instances in the
+        function return into `ivy.Array` instances.
 
         Parameters
         ----------
@@ -144,7 +149,8 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
 
 # update kwargs dictionary keys helper
 def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
-    """A helper function for updating the key-word only arguments dictionary.
+    """
+    Update the key-word only arguments dictionary.
 
     Parameters
     ----------
@@ -172,9 +178,9 @@ def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
 
 def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
     """
-    Mapping the raw_ops function with its respective frontend alias function,
-    as the implementations of raw_ops is way similar to that of frontend functions,
-    except that only arguments are passed as key-word only in raw_ops functions.
+    Map the raw_ops function with its respective frontend alias function, as the
+    implementations of raw_ops is way similar to that of frontend functions, except that
+    only arguments are passed as key-word only in raw_ops functions.
 
     Parameters
     ----------

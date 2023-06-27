@@ -31,8 +31,8 @@ def take_along_axis(arr, indices, axis, mode="fill"):
 
 
 @to_ivy_arrays_and_back
-def tril_indices(n_rows, n_cols=None, k=0):
-    return ivy.tril_indices(n_rows, n_cols, k)
+def tril_indices(n, k=0, m=None):
+    return ivy.tril_indices(n, m, k)
 
 
 @to_ivy_arrays_and_back
@@ -53,7 +53,7 @@ def tril_indices_from(arr, k=0):
 # unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape):
-    ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
+    ret = [x.astype(indices.dtype) for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
 
 

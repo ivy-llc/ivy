@@ -36,7 +36,6 @@ from ivy.data_classes.container.experimental import (
     _ContainerWithImageExperimental,
     _ContainerWithLayersExperimental,
     _ContainerWithLinearAlgebraExperimental,
-    _ContainerWithLossesExperimental,
     _ContainerWithManipulationExperimental,
     _ContainerWithNormsExperimental,
     _ContainerWithRandomExperimental,
@@ -80,7 +79,6 @@ class Container(
     _ContainerWithImageExperimental,
     _ContainerWithLayersExperimental,
     _ContainerWithLinearAlgebraExperimental,
-    _ContainerWithLossesExperimental,
     _ContainerWithManipulationExperimental,
     _ContainerWithNormsExperimental,
     _ContainerWithRandomExperimental,
@@ -197,9 +195,9 @@ class Container(
         return self.cont_map(lambda x, _: operator.ipow(x, power), map_sequences=True)
 
     def __add__(self, other):
-        """
-        ivy.Container special method for the add operator, calling :code:`operator.add`
-        for each of the corresponding leaves of the two containers.
+        """ivy.Container special method for the add operator, calling
+        :code:`operator.add` for each of the corresponding leaves of the two
+        containers.
 
         Parameters
         ----------

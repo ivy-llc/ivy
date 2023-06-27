@@ -1,7 +1,7 @@
 Building Blocks
 ===============
 
-.. _`out argument`: https://lets-unify.ai/docs/ivy/deep_dive/inplace_updates.html#out-argument
+.. _`out argument`: https://unify.ai/docs/ivy/deep_dive/inplace_updates.html#out-argument
  
 Here we explain the components of Ivy which are fundamental to its usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
@@ -120,7 +120,7 @@ For example, the function :func:`prod`  is shown below:
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """Calculates the product of input array x elements.
+        """Calculate the product of input array x elements.
 
         x
             input array. Should have a numeric data type.

@@ -19,8 +19,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 def _ceil(
     x,
     /,
-    *,
     out=None,
+    *,
     where=True,
     casting="same_kind",
     order="k",
@@ -93,7 +93,7 @@ def _trunc(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def rint(
+def _rint(
     x,
     /,
     out=None,

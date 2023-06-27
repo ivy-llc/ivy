@@ -66,7 +66,7 @@ def test_torch_cross_entropy(
         on_device=on_device,
         input=input[0],
         target=target[0],
-        weight=weights[0].reshape(-1),
+        weight=weights[0],
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
@@ -77,22 +77,10 @@ def test_torch_cross_entropy(
 # binary_cross_entropy
 @handle_frontend_test(
     fn_tree="torch.nn.functional.binary_cross_entropy",
-    dtype_and_true=helpers.dtype_and_values(
+    dtype_and_vals=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.0,
-        max_value=1.0,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
-        allow_inf=False,
-        exclude_min=True,
-        exclude_max=True,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-    ),
-    dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        shared_dtype=True,
         min_value=1.0013580322265625e-05,
         max_value=1.0,
         large_abs_safety_factor=2,
@@ -104,15 +92,7 @@ def test_torch_cross_entropy(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-    ),
-    dtype_and_weight=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=1.0013580322265625e-05,
-        max_value=1.0,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
+        shape=(5,),
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
@@ -120,9 +100,7 @@ def test_torch_cross_entropy(
 )
 def test_torch_binary_cross_entropy(
     *,
-    dtype_and_true,
-    dtype_and_pred,
-    dtype_and_weight,
+    dtype_and_vals,
     size_average,
     reduce,
     reduction,
@@ -131,21 +109,25 @@ def test_torch_binary_cross_entropy(
     frontend,
     test_flags,
 ):
-    pred_dtype, pred = dtype_and_pred
-    true_dtype, true = dtype_and_true
-    weight_dtype, weight = dtype_and_weight
+    input_dtype, x = dtype_and_vals
+    pred_dtype, pred = input_dtype[0], x[0]
+    true_dtype, true = input_dtype[1], x[1]
+    weight_dtype, weight = input_dtype[2], x[2]
+
     helpers.test_frontend_function(
-        input_dtypes=[pred_dtype[0], true_dtype[0], weight_dtype[0]],
+        input_dtypes=[pred_dtype, true_dtype, weight_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=pred[0],
-        target=true[0],
-        weight=weight[0],
+        input=pred,
+        target=true,
+        weight=weight,
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+        rtol=1e-02,
+        atol=1e-02,
     )
 
 

@@ -70,29 +70,12 @@ def get_gradient_arguments_with_lr(
     return dtypes, arrays, lr
 
 
-@pytest.mark.parametrize("grads", [True, False])
-def test_with_grads(grads):
-    assert ivy.with_grads(with_grads=grads) == grads
-
-
-@pytest.mark.parametrize("grads", [True, False])
-def test_set_with_grads(grads):
-    ivy.set_with_grads(grads)
-    assert ivy.with_grads(with_grads=None) == grads
-
-
-@pytest.mark.parametrize("grads", [True, False])
-def test_unset_with_grads(grads):
-    ivy.set_with_grads(grads)
-    with_grads_stack = ivy.with_grads_stack.copy()
-    ivy.unset_with_grads()
-    assert with_grads_stack[0:-1] == ivy.with_grads_stack
-
-
 # stop_gradient
 @handle_test(
     fn_tree="functional.ivy.stop_gradient",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     preserve_type=st.booleans(),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
@@ -229,6 +212,28 @@ def test_jac(x, dtype, func, backend_fw):
     ivy.previous_backend()
     ivy.set_backend("tensorflow")
     var = _variable(ivy.array(x, dtype=dtype))
+    fn = ivy.jac(func)
+    jacobian_gt = fn(var)
+    jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)
+    for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+        assert jacobian.shape == jacobian_from_gt.shape
+        assert np.allclose(jacobian, jacobian_from_gt)
+
+    # Test nested input
+    func = lambda xs: (2 * xs[1]["x2"], xs[0])
+
+    ivy.set_backend(fw)
+    var1 = _variable(ivy.array(x[0], dtype=dtype))
+    var2 = _variable(ivy.array(x[1], dtype=dtype))
+    var = [var1, {"x2": var2}]
+    fn = ivy.jac(func)
+    jacobian = fn(var)
+    jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
+    ivy.previous_backend()
+    ivy.set_backend("tensorflow")
+    var1 = _variable(ivy.array(x[0], dtype=dtype))
+    var2 = _variable(ivy.array(x[1], dtype=dtype))
+    var = [var1, {"x2": var2}]
     fn = ivy.jac(func)
     jacobian_gt = fn(var)
     jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)

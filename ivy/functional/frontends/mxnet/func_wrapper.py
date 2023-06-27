@@ -32,9 +32,11 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_mxnet(*args, **kwargs):
         """
-        Converts all `ndarray.NDArray` instances in both the positional and keyword
-        arguments into `ivy.Array` instances, and then calls the function with the
-        updated arguments.
+        Convert `ndarray.NDArray` into `ivy.Array` instances.
+
+        Convert all `ndarray.NDArray` instances in both the positional
+        and keyword arguments into `ivy.Array` instances, and then calls
+        the function with the updated arguments.
         """
         # convert all arrays in the inputs to ivy.Array instances
         new_args = ivy.nested_map(
@@ -53,8 +55,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_mxnet(*args, **kwargs):
         """
-        Calls the function, and then converts all `ivy.Array` instances in
-        the function return into `ndarray.NDArray` instances.
+        Convert `ivy.Array` into `ndarray.NDArray` instances.
+
+        Call the function, and then converts all `ivy.Array` instances
+        in the function return into `ndarray.NDArray` instances.
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
@@ -68,8 +72,11 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-    and return arrays are all converted to `ndarray.NDArray` instances.
+    Wrap `fn` so it receives and returns `ivy.Array` instances.
+
+    Wrap `fn` so that input arrays are all converted to `ivy.Array`
+    instances and return arrays are all converted to `ndarray.NDArray`
+    instances.
     """
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 

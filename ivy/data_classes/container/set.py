@@ -13,15 +13,16 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.unique_all. This method simply
-        wraps the function, and so the docstring for ivy.unique_all also applies
-        to this method with minimal changes.
+        ivy.Container static method variant of ivy.unique_all. This method simply wraps
+        the function, and so the docstring for ivy.unique_all also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -30,6 +31,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -75,6 +79,7 @@ class _ContainerWithSet(ContainerBase):
             "unique_all",
             x,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -86,6 +91,7 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -93,8 +99,8 @@ class _ContainerWithSet(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_all. This method simply
-        wraps the function, and so the docstring for ivy.unique_all also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.unique_all also applies to this
+        method with minimal changes.
 
         Parameters
         ----------
@@ -103,6 +109,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -147,6 +156,7 @@ class _ContainerWithSet(ContainerBase):
         return self._static_unique_all(
             self,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -165,8 +175,8 @@ class _ContainerWithSet(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_counts. This method simply
-        wraps the function, and so the docstring for ivy.unique_counts also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.unique_counts also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -228,9 +238,9 @@ class _ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.unique_counts. This method
-        simply wraps the function, and so the docstring for ivy.unique_counts
-        also applies to this method with minimal changes.
+        ivy.Container instance method variant of ivy.unique_counts. This method simply
+        wraps the function, and so the docstring for ivy.unique_counts also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -314,8 +324,8 @@ class _ContainerWithSet(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.unique_values.
-        This method simply wraps the function and applies it on the container.
+        ivy.Container instance method variant of ivy.unique_values. This method simply
+        wraps the function and applies it on the container.
 
         Parameters
         ----------
@@ -399,8 +409,8 @@ class _ContainerWithSet(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.unique_inverse also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -464,8 +474,8 @@ class _ContainerWithSet(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_inverse. This method simply
-        wraps the function, and so the docstring for ivy.unique_inverse also applies
-        to this method with minimal changes.
+        wraps the function, and so the docstring for ivy.unique_inverse also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
@@ -508,7 +518,6 @@ class _ContainerWithSet(ContainerBase):
             a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],
             b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]
         }
-
         """
         return self._static_unique_inverse(
             self,

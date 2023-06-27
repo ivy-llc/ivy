@@ -1,22 +1,23 @@
 # is used to create a base image where we then manually install cuda and cudnn
-FROM ubuntu:20.04
+FROM debian:buster
 WORKDIR /ivy
-ARG cuda=["11.2"]
+
 
 COPY ../docker/multicuda_framework_directory.py .
 COPY ../docker/multicuda_requirements.txt .
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Moscow
-RUN \
+RUN grep security /etc/apt/sources.list | tee /etc/apt/security.sources.list && \
+    apt-get update && \
+    apt-get upgrade -o Dir::Etc::SourceList=/etc/apt/security.sources.list -y &&\
     apt-get -y update && \
     apt-get install -y gnupg  \
     curl  \
     wget  \
     software-properties-common  \
     gcc  \
-    nano \
-    pip
+    nano
 
 
 
