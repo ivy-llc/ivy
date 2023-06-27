@@ -428,6 +428,10 @@ def handle_frontend_test(
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
+
+    Returns
+    -------
+    object
     """
     fn_tree = "ivy.functional.frontends." + fn_tree
     if aliases is not None:
