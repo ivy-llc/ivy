@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -76,3 +76,12 @@ def eye(num_rows, num_columns=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def empty_like(x, dtype=None, name=None):
     return ivy.empty_like(x, dtype=dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64", "bool")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def assign(x, output=None):
+    return ivy.copy_array(ivy.to_ivy(x), out=output)
