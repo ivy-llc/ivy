@@ -70,7 +70,7 @@ there are any errors, it will not allow you to commit your code. You can fix the
 
 You should expect to see something similar to the following output when you run the checks:
 
-.. code-block::
+.. code-block:: text
 
     [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
     black....................................................................Passed
@@ -84,7 +84,7 @@ You should expect to see something similar to the following output when you run 
 
 If something goes wrong, you will see the following output:
 
-.. code-block::
+.. code-block:: text
 
     [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
     black....................................................................Failed
