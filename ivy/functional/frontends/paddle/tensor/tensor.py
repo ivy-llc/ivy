@@ -276,3 +276,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16","bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
