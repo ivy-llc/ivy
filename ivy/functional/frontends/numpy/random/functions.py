@@ -155,7 +155,7 @@ def negative_binomial(n, p, size=None):
 @to_ivy_arrays_and_back
 def bytes(length):
     # ToDo : This frontend function will simply when ivy.bytes() is implemented.
-    random_numbers = ivy.random_uniform(shape=[length], low=0, high=256, seed=0)
+    random_numbers = ivy.random_uniform(shape=[length], low=0, high=256)
     # convert to integers
     random_integers = ivy.floor(random_numbers)
     # convert to uint8 and then to numpy array
