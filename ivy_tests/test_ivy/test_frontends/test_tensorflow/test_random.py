@@ -360,34 +360,48 @@ def test_tensorflow_gamma(
 
 
 # stateless_categorical
-@handle_frontend_test(
-    fn_tree="tensorflow.random.stateless_categorical",
-    logits=st.arrays(
-        dtype=helpers.get_dtypes("float", full=False),
-        shape=helpers.get_shape(
+@st.composite
+def _logits_num_samples_seed_dtype(draw):
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
+    logits_shape = draw(
+        helpers.get_shape(
             allow_none=False,
-            min_num_dims=1,
-            max_num_dims=5,
+            min_num_dims=2,
+            max_num_dims=3,
             min_dim_size=1,
-            max_dim_size=10,
-        ),
-        dtype=helpers.get_dtypes("int", full=False),
-    ),
-    num_samples=helpers.ints(min_value=1, max_value=10),
-    seed=helpers.ints(min_value=0, max_value=10),
+            max_dim_size=5,
+        )
+    )
+    logits = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=10, shape=logits_shape
+        )
+    )
+    num_samples = draw(st.integers(min_value=1, max_value=10))
+    seed = draw(
+        helpers.dtype_and_values(
+            available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+        )
+    )
+    return logits, num_samples, seed, dtype
+
+
+@handle_frontend_test(
+    fn_tree="ivy.random.stateless_categorical",
+    logits_num_samples_seed_dtype=_logits_num_samples_seed_dtype(),
     test_with_out=st.just(False),
 )
 def test_ivy_stateless_categorical(
     frontend,
     fn_tree,
     on_device,
-    logits,
-    num_samples,
-    seed,
+    logits_num_samples_seed_dtype,
     test_flags,
 ):
+    logits, num_samples, seed, dtype = logits_num_samples_seed_dtype
+    input_dtypes, seed = seed
     helpers.test_frontend_function(
-        input_dtypes=logits.dtype,
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -395,5 +409,6 @@ def test_ivy_stateless_categorical(
         test_values=False,
         logits=logits,
         num_samples=num_samples,
-        seed=seed,
+        seed=seed[0],
+        dtype=dtype[0],
     )
