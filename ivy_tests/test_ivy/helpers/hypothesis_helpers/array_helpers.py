@@ -5,6 +5,7 @@ from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
+import sys
 
 # local
 import ivy
@@ -1854,3 +1855,76 @@ def dtype_array_index(
                 step = draw(st.integers(max_value=-1, min_value=-s))
             index += (slice(start, end, step),)
     return dtype, array, index
+
+
+@st.composite
+def cond_data_gen_helper(draw):
+    dtype_x = helpers.dtype_and_values(
+        available_dtypes=(ivy.float32, ivy.float64),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        max_value=10,
+        min_value=-10,
+        allow_nan=False,
+        shared_dtype=True,
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
+    p = draw(
+        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
+    )
+    dtype, x = draw(dtype_x)
+    return dtype, (x[0], p)
+
+
+# helpers for tests (core and frontend) related to solve function
+@st.composite
+def get_first_solve_matrix(draw, adjoint=True):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    if adjoint:
+        adjoint = draw(st.booleans())
+        if adjoint:
+            matrix = np.transpose(np.conjugate(matrix))
+    return input_dtype, matrix, adjoint
+
+
+@st.composite
+def get_second_solve_matrix(draw):
+    # batch_shape, shared, random_size
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )

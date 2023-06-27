@@ -14,6 +14,7 @@ from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
@@ -412,7 +413,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -763,3 +764,36 @@ def fft2(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
+
+
+def ifftn(
+    x: JaxArray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fft.ifftn(x, s, axes, norm)
+
+
+@with_unsupported_dtypes(
+    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
+)
+def embedding(
+    weights: JaxArray,
+    indices: JaxArray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    embeddings = jnp.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = jnp.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = jnp.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )

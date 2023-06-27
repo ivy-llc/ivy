@@ -7,7 +7,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 from ivy.func_wrapper import with_supported_dtypes
 
 
-@with_supported_dtypes({"2.9.0 and below": ("float",)}, "tensorflow")
+@with_supported_dtypes({"2.12.0 and below": ("float",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def extract_patches(images, sizes, strides, rates, padding):
     depth = images.shape[-1]
