@@ -1448,3 +1448,32 @@ def test_paddle_greater_than(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# floor_divide
+def test_paddle_floor_divide(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtypes_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+    # Absolute tolerance is 1
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "x1": x[0],
+            "x2": x[1],
+        },  # Fix method_all_as_kwargs_np argument names
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        atol_=1,
+    )

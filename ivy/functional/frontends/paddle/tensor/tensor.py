@@ -276,3 +276,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def floor_divide(self, x1, x2, name=None):
+        return ivy.floor_divide(self._ivy_array, x1, x2)
