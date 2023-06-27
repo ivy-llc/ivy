@@ -11,7 +11,7 @@ from operator import mul
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
 import multiprocessing as _multiprocessing
-from ivy.functional.ivy.general import _parse_ellipsis, _parse_index
+from ivy.functional.ivy.general import _parse_ellipsis, _broadcast_to, _parse_query
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -98,6 +98,62 @@ def get_item(
             )
         return x.cast("float32").__getitem__(query).cast(x.dtype)
     return x.__getitem__(query)
+
+
+def set_item(
+    x: Union[np.ndarray],
+    query: Union[np.ndarray, Tuple],
+    val: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> np.ndarray:
+
+    val = paddle.to_tensor(val, dtype=x.dtype)
+
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if query.shape != x.shape:
+            if len(query.shape) > len(x.shape):
+                raise ivy.exceptions.IvyException("too many indices")
+            elif not len(query.shape):
+                query = ivy.broadcast_to(query, (x.shape[0],))._data
+        expected_shape = x[query].shape
+        query = paddle.where(query)
+    elif query == () or (
+        query is Ellipsis
+        or (isinstance(query, (tuple, list)) and query == (Ellipsis,))
+        or (isinstance(query, slice) and query is slice(None, None, None))
+    ):
+        return val
+    else:
+        query = (query,) if not isinstance(query, (tuple, list)) else query
+        query = _parse_ellipsis(query, len(x.shape)) if Ellipsis in query else query
+        query = _parse_query(query, x.shape)
+        query = paddle_backend.stack(
+            [
+                paddle.reshape(value, (-1,))
+                for value in paddle_backend.meshgrid(
+                    *[
+                        (
+                            paddle.arange(idx.start, idx.stop, idx.step)
+                            if isinstance(idx, slice)
+                            else paddle.to_tensor([idx % s])
+                        )
+                        for s, idx in zip(x.shape, query)
+                    ],
+                    indexing="ij",
+                )
+            ],
+            axis=-1,
+        )
+        expected_shape = ivy.gather_nd(x, query).shape
+
+    val = _broadcast_to(val, expected_shape)._data
+
+    ret = _scatter_nd_replace(x, query, val, reduce="assign")
+    if not copy:
+        return ivy.inplace_update(x, ret)
+    return ret
 
 
 def to_numpy(
