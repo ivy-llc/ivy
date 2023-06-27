@@ -70,7 +70,7 @@ there are any errors, it will not allow you to commit your code. You can fix the
 
 You should expect to see something similar to the following output when you run the checks:
 
-.. code-block:: bash
+.. code-block::
 
     [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
     black....................................................................Passed
@@ -84,7 +84,7 @@ You should expect to see something similar to the following output when you run 
 
 If something goes wrong, you will see the following output:
 
-.. code-block:: bash
+.. code-block::
 
     [INFO] Stashing unstaged files to ~/.cache/pre-commit/patch1687898304-8072.
     black....................................................................Failed
@@ -111,7 +111,7 @@ There are some helpful extensions for VS Code that can detect and format your co
 is the list of extensions that we recommend:
 
 * `Black Formatter <https://marketplace.visualstudio.com/items?itemName=ms-python.black-formatter>`_
-* `Flake8 <https://marketplace.visualstudio.com/items?itemName=ms-python.flake8>`_
+* `Flake8 Extension <https://marketplace.visualstudio.com/items?itemName=ms-python.flake8>`_
 
 PyCharm
 ~~~~~~~
