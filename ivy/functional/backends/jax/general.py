@@ -50,6 +50,16 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
+def _mask_to_index(query, x):
+    if query.shape != x.shape:
+        if len(query.shape) > len(x.shape):
+            raise ivy.exceptions.IvyException("too many indices")
+        elif not len(query.shape):
+            query = jnp.tile(query, x.shape[0])
+    expected_shape = x[query].shape
+    return jnp.where(query), expected_shape
+
+
 def get_item(
     x: JaxArray,
     /,
@@ -58,8 +68,10 @@ def get_item(
     copy: bool = None,
 ) -> JaxArray:
     if copy:
-        return x.__getitem__(query).copy()
-    return x.__getitem__(query)
+        return x.copy()
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        query, expected_shape = _mask_to_index(query, x)
+    return x.at[query]
 
 
 def set_item(
@@ -73,14 +85,8 @@ def set_item(
     if copy:
         x = x.copy()
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if query.shape != x.shape:
-            if len(query.shape) > len(x.shape):
-                raise ivy.exceptions.IvyException("too many indices")
-            elif not len(query.shape):
-                query = jnp.tile(query, x.shape[0])
-        expected_shape = x[query].shape
+        query, expected_shape = _mask_to_index(query, x)
         val = _broadcast_to(val, expected_shape)._data
-        query = jnp.where(query)
     return x.at[query].set(val)
 
 
