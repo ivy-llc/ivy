@@ -278,5 +278,13 @@ class Tensor:
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumsum(self, axis=None, dtype=None, name=None):
+        return ivy.cumsum(self._ivy_array, axis=axis, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
