@@ -256,3 +256,4 @@ def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 @handle_out_argument
 def bitwise_not(x, /, *, name=None, out=None):
     return ivy.bitwise_invert(x, out=out)
+    
