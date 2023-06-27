@@ -131,30 +131,9 @@ def unsorted_segment_min(
     segment_ids: torch.Tensor,
     num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    if not (isinstance(num_segments, int)):
-        raise ValueError("num_segments must be of integer type")
-
-    valid_dtypes = [torch.int32, torch.int64]
-
-    if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an int32 or int64 dtype")
-
-    if data.shape[0] != segment_ids.shape[0]:
-        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
-
-    if isinstance(num_segments, torch.Tensor):
-        num_segments = num_segments.item()
-
-    if torch.max(segment_ids) >= num_segments:
-        error_message = (
-            f"segment_ids[{torch.argmax(segment_ids)}] = "
-            f"{torch.max(segment_ids)} is out of range [0, {num_segments})"
-        )
-        raise ValueError(error_message)
-
-    if num_segments <= 0:
-        raise ValueError("num_segments must be positive")
-
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
     if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
         init_val = torch.finfo(data.dtype).max
     elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:

@@ -107,28 +107,9 @@ def unsorted_segment_min(
     segment_ids: paddle.Tensor,
     num_segments: Union[int, paddle.Tensor],
 ) -> paddle.Tensor:
-    if not (isinstance(num_segments, int)):
-        raise ValueError("num_segments must be of integer type")
-    valid_dtypes = [paddle.int32, paddle.int64]
-
-    if segment_ids.dtype not in valid_dtypes:
-        raise ValueError("segment_ids must have an int32 or int64 dtype")
-    if data.shape[0] != segment_ids.shape[0]:
-        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
-
-    if isinstance(num_segments, paddle.Tensor):
-        num_segments = num_segments.item()
-
-    if paddle.max(segment_ids) >= num_segments:
-        error_message = (
-            f"segment_ids[{paddle.argmax(segment_ids)}] = "
-            f"{paddle.max(segment_ids)} is out of range [0, {num_segments})"
-        )
-        raise ValueError(error_message)
-
-    if num_segments <= 0:
-        raise ValueError("num_segments must be positive")
-
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
     if data.dtype == paddle.float32:
         init_val = 3.4028234663852886e38  # float32 max
     elif data.dtype == paddle.float64:
