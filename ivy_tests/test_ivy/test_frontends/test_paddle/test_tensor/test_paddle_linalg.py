@@ -643,6 +643,9 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
 def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
 
+    if not matrix_is_stable(x[0]):
+        return
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
