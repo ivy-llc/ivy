@@ -645,11 +645,81 @@ class Tensor:
         _data = ivy.empty(size, dtype=dtype, device=device)
         return torch_frontend.tensor(_data)
 
+    def stride(self, dim=None):
+        if dim is None:
+            strides = []
+            for i in range(self.dim()):
+                stride = 1
+                for j in range(i + 1, self.dim()):
+                    stride *= self.size(j)
+                strides.append(stride)
+            return tuple(strides)
+        else:
+            stride = 1
+            for i in range(dim + 1, self.dim()):
+                stride *= self.size(i)
+            return stride
+
     def unfold(self, dimension, size, step):
-        slices = []
-        for i in range(0, self.shape[dimension] - size + 1, step):
-            slices.append(self.ivy_array[i : i + size])
-        return torch_frontend.stack(slices)
+        def canonicalize_dim(rank: int, idx: int, wrap_scalar: bool = True) -> int:
+            if rank < 0:
+                msg = f"Rank cannot be negative but got {rank}"
+                raise IndexError(msg)
+
+            if rank == 0:
+                if not wrap_scalar:
+                    msg = f"Dimension specified as {idx} but tensor has no dimensions"
+                    raise IndexError(msg)
+                rank = 1
+
+            if idx >= 0 and idx < rank:
+                return idx
+
+            if idx < 0:
+                _idx = idx + rank
+            else:
+                _idx = idx
+
+            if _idx < 0 or _idx >= rank:
+                # Same error message as in aten/src/ATen/WrapDimUtils.h:49
+                msg = (
+                    "Dimension out of range (expected to be in range of [{0}, {1}], but"
+                    " got {2})".format(-rank, rank - 1, idx)
+                )
+                raise IndexError(msg)
+
+            return _idx
+
+        def _get_unfold_shape_stride(
+            a_shape, a_stride, dimension: int, size: int, step: int
+        ):
+            a_ndim = len(a_shape)
+            dim = canonicalize_dim(a_ndim, dimension, wrap_scalar=True)
+            max_size = 1 if a_ndim == 0 else a_shape[dim]
+            last_stride = 1 if a_ndim == 0 else a_stride[dim]
+
+            if size > max_size:
+                raise RuntimeError(
+                    f"Maximum size for tensor at dimension {dim} is {max_size} but size"
+                    f" is {size}"
+                )
+
+            if step <= 0:
+                raise RuntimeError(f"Step is {step} but must be > 0")
+            shape = list(a_shape)
+            strides = list(a_stride)
+            shape.append(size)
+            strides.append(last_stride)
+            if dim < a_ndim:
+                shape[dim] = (shape[dim] - size) // step + 1
+                strides[dim] *= step
+            return shape, strides
+
+        shape, strides = _get_unfold_shape_stride(
+            self.shape, self.stride(), dimension, size, step
+        )
+
+        return self.as_strided(shape, strides)
 
     def long(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
