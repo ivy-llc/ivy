@@ -1000,6 +1000,7 @@ def _get_input_and_block(draw):
     return x_dtypes, xs
 
 
+# TODO: uncomment when block is reimplemented
 # @handle_frontend_test(
 #     fn_tree="jax.numpy.block",
 #     input_x_shape=_get_input_and_block(),
