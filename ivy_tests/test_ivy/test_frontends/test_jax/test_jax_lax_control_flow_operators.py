@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import pytest
 
 
 @handle_frontend_test(
@@ -214,6 +215,7 @@ def test_jax_lax_while_loop(
         min_num_dims=1,
         min_dim_size=1,
     ),
+    unroll=st.just(1),    
 )
 def test_jax_lax_scan(
     *,
