@@ -333,5 +333,5 @@ def blackman(M):
     return ret
 
 @to_ivy_arrays_and_back
-def frombuffer(x,dtype,count,offset):
-    return ivy.frombuffer(x,dtype,count,offset)
+def frombuffer(buffer, dtype='float', count=-1, offset=0):
+    return ivy.frombuffer(buffer,dtype,count,offset)
