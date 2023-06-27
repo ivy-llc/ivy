@@ -112,6 +112,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/-RGXxrP849k" class="video">
     </iframe>
