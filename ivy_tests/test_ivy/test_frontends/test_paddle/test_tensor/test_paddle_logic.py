@@ -493,4 +493,3 @@ def test_paddle_bitwise_not(
         on_device=on_device,
         x=x[0],
     )
-    
