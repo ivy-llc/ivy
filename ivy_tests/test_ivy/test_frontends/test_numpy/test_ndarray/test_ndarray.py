@@ -3076,6 +3076,9 @@ def test_numpy_instance_rshift__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtypes[1]).bits - 1), dtype=input_dtypes[1]
+    )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
