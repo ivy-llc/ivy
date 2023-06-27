@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64")},
+    {"2.5.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -21,7 +21,7 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64")},
+    {"2.5.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -29,5 +29,9 @@ def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
 
 
-def randn(shape, dtype=None, seed=0, name=None):
-    return ivy.random_normal(shape=shape, dtype=dtype, seed=seed)
+def randn(shape, dtype=None, name=None):
+    if dtype not in ["float32", "float64"]:
+        raise ivy.exceptions.IvyError(
+            "Unsupported dtype for randn, only float32 and float64 are supported, "
+        )
+    return ivy.random_normal(shape=shape, dtype=dtype, seed=None)

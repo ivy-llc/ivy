@@ -15,7 +15,7 @@ We want our ML unification journey to be as inclusive as possible, this is all o
 The contributor guide is split into the sections below, it's best to go from start to finish, but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
 
-| (a) :ref:`Setting Up`
+| (a) `Setting Up <https://unify.ai/docs/ivy/overview/contributing/setting_up.html>`_
 | Building the right environment 🏛️
 |
 | (b) :ref:`The Basics`

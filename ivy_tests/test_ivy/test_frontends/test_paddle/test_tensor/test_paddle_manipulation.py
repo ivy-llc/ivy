@@ -199,3 +199,96 @@ def test_paddle_concat(
         x=xs,
         axis=unique_idx,
     )
+
+
+# tile
+@st.composite
+def _tile_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            ret_shape=True,
+        )
+    )
+    repeats = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=1, max_value=3),
+            size=len(shape),
+        )
+    )
+    return dtype, x, repeats
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tile",
+    dt_x_repeats=_tile_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_tile(
+    *,
+    dt_x_repeats,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, repeats = dt_x_repeats
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        repeat_times=repeats,
+    )
+
+
+# split
+@st.composite
+def _split_helper(draw):
+    dtypes, values, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=4,
+            ret_shape=True,
+        )
+    )
+    axis = draw(st.sampled_from(range(len(shape))))
+    num_eles = shape[axis]
+    splits = [i for i in range(1, num_eles + 1) if num_eles % i == 0]
+    num_splits = draw(st.sampled_from(splits))
+    return dtypes, values, num_splits, axis
+
+
+@handle_frontend_test(
+    fn_tree="paddle.split",
+    dt_x_num_splits_axis=_split_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_split(
+    *,
+    dt_x_num_splits_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, num_splits, axis = dt_x_num_splits_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        num_or_sections=num_splits,
+        axis=axis,
+    )
