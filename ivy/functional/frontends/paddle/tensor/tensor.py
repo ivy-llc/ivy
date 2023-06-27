@@ -261,5 +261,8 @@ class Tensor:
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
     def max(self, axis=None, keepdim=False, name=None):
         return ivy.max(self._ivy_array, axis=axis, keepdims=keepdim)

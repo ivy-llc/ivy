@@ -1388,10 +1388,9 @@ def test_paddle_rsqrt(
     init_tree="paddle.to_tensor",
     method_name="max",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(
-            helpers.get_dtypes("int32", "int64", "float32", "float64")
-        ),
-        min_axis=None,
+        available_dtypes=st.one_of(helpers.get_dtypes("valid")),
+        min_axis=-1,
+        max_axis=0,
         min_num_dims=1,
         force_int_axis=False,
     ),
