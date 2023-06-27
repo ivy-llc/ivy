@@ -125,8 +125,8 @@ def quantile(
     dtype=None,
     keepdims=False,
 ):
-    with with_unsupported_dtypes():
-        x = ivy.as_array(x)
+   
+    x = ivy.as_array(x)
     ret = ivy.quantile(
         x, q, axis=axis, interpolation=interpolation, kind=kind, order=order
     )
