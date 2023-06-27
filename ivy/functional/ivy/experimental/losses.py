@@ -1,5 +1,5 @@
 # global
-from typing import Union
+from typing import Union, Optional
 
 # local
 import ivy
@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.ivy.losses import _reduce_loss
 
 
 # log_poisson_loss
