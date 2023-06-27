@@ -208,7 +208,7 @@ class Tensor:
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def log1p(self, name=None):
         return ivy.log1p(self._ivy_array)
 
@@ -261,6 +261,30 @@ class Tensor:
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
 
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def greater_than(self, y, name=None):
+        return paddle_frontend.greater_than(self, y)
+
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumsum(self, axis=None, dtype=None, name=None):
+        return ivy.cumsum(self._ivy_array, axis=axis, dtype=dtype)

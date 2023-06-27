@@ -180,7 +180,7 @@ def block(arr, block_size):
 
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
-    return ivy.squeeze(a, axis)
+    return ivy.squeeze(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
