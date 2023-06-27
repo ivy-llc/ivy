@@ -253,4 +253,3 @@ def gcd(x, y, name=None):
 def fmin(x, y, name=None):
     return ivy.fmin(x, y)
 
-
