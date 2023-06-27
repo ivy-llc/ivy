@@ -4,6 +4,7 @@ from typing import Callable
 import sys
 import traceback as tb
 import io
+from IPython import get_ipython
 
 # Helpers #
 # ------- #
@@ -129,6 +130,19 @@ def _combine_messages(*messages, include_backend=True):
     return delimiter.join(default)
 
 
+def is_notebook() -> bool:
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True   # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            return False  # Terminal running IPython
+        else:
+            return False  # Other type (?)
+    except NameError:
+        return False      # Probably standard Python interpreter
+    
+
 class IvyException(Exception):
     def __init__(self, *messages, include_backend=False):
         self.native_error = (
@@ -243,6 +257,7 @@ def handle_exceptions(fn: Callable) -> Callable:
             )
         except (Exception, IvyBackendException) as e:
             _write_traceback_history(buffer)
+            print('Is notebook: ', is_notebook())
             raise ivy.utils.exceptions.IvyBackendException(
                 fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
