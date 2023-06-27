@@ -1487,7 +1487,6 @@ def test_paddle_cumprod(
     )
 
 
-
 # is_complex
 @handle_frontend_method(
     class_tree=CLASS_TREE,
