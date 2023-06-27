@@ -93,7 +93,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
-        array_fn = lambda x: ivy.is_array(x) or hasattr(x, 'ivy_array')
+        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
