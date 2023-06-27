@@ -1414,7 +1414,7 @@ def test_paddle_instance_ceil(
         on_device=on_device,
     )
 
-    
+
 #bitwise_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1445,7 +1445,7 @@ def test_paddle_bitwise_and(
         on_device=on_device,
     )
 
-    
+
 # greater_than
 @handle_frontend_method(
     class_tree=CLASS_TREE,
