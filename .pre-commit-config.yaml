@@ -26,6 +26,6 @@ repos:
         # Exclude everything in frontends except __init__.py, and func_wrapper.py
         exclude: 'ivy/functional/(frontends|backends)/(?!.*/func_wrapper\.py$).*(?!__init__\.py$)'
   - repo: https://github.com/PyCQA/flake8-bugbear
-    rev: v23.6.5
+    rev: 23.6.5
     hooks:
       - id: flake8-bugbear
