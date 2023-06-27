@@ -195,9 +195,8 @@ class Tensor:
     def isfinite(self, name=None):
         return ivy.isfinite(self._ivy_array)
 
-    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
-    def all(self, axis=None, keepdim=False, dtype=None, name=None):
-        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
+    def all(self, axis=None, keepdim=False, name=None):
+        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim)
 
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
@@ -274,3 +273,7 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return ivy.logical_not(self.ivy_array)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def rsqrt(self, name=None):
+        return ivy.reciprocal(ivy.sqrt(self._ivy_array))
