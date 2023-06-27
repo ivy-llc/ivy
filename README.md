@@ -12,7 +12,7 @@ If anyone has any question feel free to ping me (Guillermo) or use the Community
 
 ## Creating a Notebook for Demo
 
-To ensure that similar formats are used across the demo notebooks, a template is created to help you get started! It is located in [assets/template.ipynb](assets/template.ipynb)! Please make a copy of it to start creating a demo!
+To ensure that similar formats are used across the demo notebooks, a template is created to help you get started! It is located in [assets/01_template.ipynb](assets/01_template.ipynb)! Please make a copy of it to start creating a demo!
 
 1. Firstly, please update the file name to be match the topic of your demo. Then, place the notebook in its relevant folder.
 
