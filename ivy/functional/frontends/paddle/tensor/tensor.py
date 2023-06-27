@@ -276,3 +276,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def minimum(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.minimum(self._ivy_array, y_ivy)
