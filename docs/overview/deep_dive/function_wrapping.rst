@@ -78,7 +78,7 @@ Partial Mixed Function Support
 #. `handle_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function.
 #.  The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed.
 #.  For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this decorator, one must
-#.  add the :code:`partial_mixed_handler` attribute containing the lambda function to the backend implementation. Here's an `_example` from the torch backend implementation of linear.
+#.  add the :code:`partial_mixed_handler` attribute containing the lambda function to the backend implementation. Here's an `example`_ from the torch backend implementation of linear.
 
 Exception Handling 
 ^^^^^^^^^^^^^^^^^^

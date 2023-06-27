@@ -954,7 +954,6 @@ def _check_arguments(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def pad(
@@ -1209,6 +1208,15 @@ def pad(
     return padded
 
 
+pad.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1397,7 +1405,7 @@ def dstack(
                [[2, 3]],
                [[3, 4]]])
     """
-    return ivy.current_backend().dstack(arrays)
+    return ivy.current_backend().dstack(arrays, out=out)
 
 
 @handle_nestable
@@ -1680,10 +1688,10 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
 
 
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 def put_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1835,6 +1843,15 @@ def as_strided(
     )
 
 
+as_strided.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
@@ -1949,6 +1966,7 @@ def _interleave(a, b, axis):
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
+@handle_array_function
 def associative_scan(
     x: Union[ivy.Array, ivy.NativeArray],
     fn: Callable,

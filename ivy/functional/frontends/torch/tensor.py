@@ -135,6 +135,10 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv(self, mat, vec, *, beta=1, alpha=1):
+        return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -402,13 +406,15 @@ class Tensor:
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
-    def new_zeros(self, *size, dtype=None, device=None, requires_grad=False):
+    def new_zeros(
+        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+    ):
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
-                size[0], dtype=dtype, device=device, requires_grad=requires_grad
+                size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
         return torch_frontend.zeros(
-            size, dtype=dtype, device=device, requires_grad=requires_grad
+            size=size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
     def to(self, *args, **kwargs):
@@ -553,10 +559,9 @@ class Tensor:
 
         return torch_frontend.tensor(ivy.expand(self.ivy_array, tuple(size)))
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def expand_as(self, other):
         return self.expand(
-            size=ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
+            ivy.shape(other.ivy_array if isinstance(other, Tensor) else other)
         )
 
     def detach(self):
@@ -599,6 +604,9 @@ class Tensor:
 
     def dim(self):
         return self.ivy_array.ndim
+
+    def heaviside(self, values, *, out=None):
+        return torch_frontend.heaviside(self, values, out=out)
 
     def new_full(
         self,
@@ -650,9 +658,11 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
 
+    @property
     def is_quantized(self):
         return "q" in ivy.dtype(self.ivy_array)
 
+    @property
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
@@ -885,6 +895,9 @@ class Tensor:
     def softmax(self, dim=None, dtype=None):
         return torch_frontend.nn.functional.softmax(self, dim=dim, dtype=dtype)
 
+    def repeat_interleave(self, repeats, dim=None, *, output_size=None):
+        return torch_frontend.repeat_interleave(self, repeats, dim)
+
     def repeat(self, *args, repeats=None):
         if args and repeats:
             raise ivy.utils.exceptions.IvyException(
@@ -907,6 +920,10 @@ class Tensor:
 
     def remainder(self, other, *, out=None):
         return torch_frontend.remainder(self, other, out=out)
+
+    def bitwise_not_(self):
+        self.ivy_array = self.bitwise_not().ivy_array
+        return self
 
     def bitwise_and_(self, other):
         self.ivy_array = self.bitwise_and(other).ivy_array
@@ -937,6 +954,9 @@ class Tensor:
     def fix_(self):
         self.ivy_array = self.fix().ivy_array
         return self
+
+    def isinf(self):
+        return torch_frontend.isinf(self._ivy_array)
 
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
@@ -1159,7 +1179,7 @@ class Tensor:
         self.ivy_array = self.to(self.dtype).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
