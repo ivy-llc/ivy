@@ -1580,11 +1580,7 @@ def test_paddle_angle(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-
             "value": x[0],
-
-            "data": x[0],
-
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
