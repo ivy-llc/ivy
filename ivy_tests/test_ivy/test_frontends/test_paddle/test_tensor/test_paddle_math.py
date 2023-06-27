@@ -974,7 +974,6 @@ def test_paddle_cumprod(
     )
 
 
-
 # gcd
 @handle_frontend_test(
     fn_tree="paddle.gcd",
@@ -982,7 +981,7 @@ def test_paddle_cumprod(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         min_num_dims=1,
-        shared_dtype=True
+        shared_dtype=True,
     ),
 )
 def test_paddle_gcd(
