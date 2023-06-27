@@ -59,7 +59,8 @@ class ndarray:
 
     @property
     def flat(self):
-        return self.reshape(-1)
+        self = self.flatten()
+        return self
 
     # Setters #
     # --------#
