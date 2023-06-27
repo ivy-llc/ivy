@@ -170,7 +170,7 @@ class ModuleConverters:
                 params_dict = _hk_flat_map_to_dict(params_hk)
                 self._hk_params = ivy.Container(params_dict, dynamic_backend=False)
                 param_iterator = self._hk_params.cont_to_iterator()
-                _, param0 = next(param_iterator)
+                _, param0 = next(param_iterator, ["_", 0])
                 if hasattr(param0, "device"):
                     self._dev = ivy.as_ivy_dev(param0.device())
                 else:
@@ -301,7 +301,7 @@ class ModuleConverters:
                 params_dict = flax.core.unfreeze(params_fx)
                 self._fx_params = ivy.Container(params_dict, dynamic_backend=False)
                 param_iterator = self._fx_params.cont_to_iterator()
-                _, param0 = next(param_iterator)
+                _, param0 = next(param_iterator, ["_", 0])
                 self._dev = ivy.as_ivy_dev(ivy.dev(param0))
 
             def _forward(self, *a, **kw):
