@@ -7,9 +7,36 @@ on:
     tags:
       - v*
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs at 00:00 every Sunday
 
 jobs:
   update-docs:
     name: Update docs
     uses: unifyai/workflows/.github/workflows/docs.yml@master
     secrets: inherit
+
+  squash:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: master  
+        fetch-depth: 0  
+
+    - name: Setup Git user
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "GitHub Actions Bot"
+
+    - name: Pull latest changes
+      run: git pull origin master 
+
+    - name: Squash commits
+      run: |
+        git reset $(git commit-tree HEAD^{tree} -m "Weekly squash commit")
+        
+    - name: Force push single commit
+      run: git push -f origin master
