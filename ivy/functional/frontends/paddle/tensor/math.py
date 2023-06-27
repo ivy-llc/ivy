@@ -1,9 +1,7 @@
 # global
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
@@ -128,7 +126,13 @@ def pow(x, y, name=None):
     return ivy.pow(x, y)
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
+@to_ivy_arrays_and_back
+def conj(x, name=None):
+    return ivy.conj(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def floor(x, name=None):
     return ivy.floor(x)
@@ -166,8 +170,20 @@ def deg2rad(x, name=None):
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def gcd(x, y, name=None):
+    return ivy.gcd(x, y)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def tan(x, name=None):
     return ivy.tan(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def atan2(x, y, name=None):
+    return ivy.atan2(x, y)
 
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
@@ -178,6 +194,12 @@ def square(x, name=None):
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
+def sign(x, name=None):
+    return ivy.sign(x)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
 def neg(x, name=None):
     return ivy.negative(x)
 
@@ -186,6 +208,24 @@ def neg(x, name=None):
 @to_ivy_arrays_and_back
 def exp(x, name=None):
     return ivy.exp(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cumprod(x, dim=None, dtype=None, name=None):
+    return ivy.cumprod(x, axis=dim, dtype=dtype)
 
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
