@@ -50,10 +50,6 @@ class GEGLU(Module):
         x, gates = ivy.split(inputs, num_or_size_splits=2, axis=-1)
         x = ivy.gelu(x)
         return ivy.gelu(gates) * x
-    
-    
-    
-    
 
 
 class ReLU(Module):
