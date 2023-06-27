@@ -229,6 +229,10 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
+        # for partial mixed functions we should pass the backend function
+        # to ivy.function_supported_devices_and_dtypes
+        if hasattr(_fn, "mixed_backend_wrappers") and ivy.__dict__[fn_name] != _fn:
+            _fn = ivy.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
         devices_and_dtypes = (
             tuple(devices_and_dtypes.values())
