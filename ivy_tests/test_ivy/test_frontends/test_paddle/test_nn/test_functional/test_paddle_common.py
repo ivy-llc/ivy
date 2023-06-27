@@ -47,7 +47,7 @@ def test_paddle_cosine_similarity(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.dropout2d",
     d_type_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         shared_dtype=True,
         min_value=2,
