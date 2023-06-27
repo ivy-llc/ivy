@@ -88,5 +88,5 @@ def eye(num_rows, num_columns=None, dtype=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def triu(x, name=None):
-    return ivy.triu(x)
+def triu(x, diagonal=0, name=None):
+    return ivy.triu(x, k=diagonal)
