@@ -77,17 +77,18 @@ def test_numpy_quantile(
         test_flags=test_flags,
     )
 
-    np_frontend_helpers.test_frontend_function(
-        a=values[0][0],
-        q=values[0][1],
-        axis=axis,
-        out=None,
-        overwrite_input=None,
-        method="linear",
-        keepdims=keep_dims,
-        interpolation=None,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        input_dtypes=input_dtypes,
-    )
+    for interpolation in ["linear", "lower", "higher", "midpoint", "nearest"]:
+        np_frontend_helpers.test_frontend_function(
+            a=values[0][0],
+            q=values[0][1],
+            axis=axis,
+            out=None,
+            overwrite_input=None,
+            method=interpolation,
+            keepdims=keep_dims,
+            interpolation=interpolation,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input_dtypes=input_dtypes,
+        )
