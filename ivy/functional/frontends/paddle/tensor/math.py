@@ -234,12 +234,10 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
-
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def maximum(x, axis=None, keepdim=False, name=None):
     return ivy.maximum(x, axis=axis, keepdims=keepdim)
-
 
 
 @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
@@ -247,9 +245,8 @@ def maximum(x, axis=None, keepdim=False, name=None):
 def gcd(x, y, name=None):
     return ivy.gcd(x, y)
 
-  
+
 @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
 @to_ivy_arrays_and_back
 def fmin(x, y, name=None):
     return ivy.fmin(x, y)
-

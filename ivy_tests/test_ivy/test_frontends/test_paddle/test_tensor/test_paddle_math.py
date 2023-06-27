@@ -974,7 +974,6 @@ def test_paddle_cumprod(
     )
 
 
-
 # gcd
 @handle_frontend_test(
     fn_tree="paddle.gcd",
@@ -1029,6 +1028,8 @@ def test_paddle_fmin(
         x=x[0],
         y=x[1],
     )
+
+
 # max
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.maximum",
@@ -1039,7 +1040,7 @@ def test_paddle_fmin(
         min_num_dims=0,
         max_num_dims=4,
         force_int_axis=False,
-        ),
+    ),
 )
 def test_paddle_maximum(
     *,
@@ -1058,4 +1059,3 @@ def test_paddle_maximum(
         on_device=on_device,
         x=x[0],
     )
-    
