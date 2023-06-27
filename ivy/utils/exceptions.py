@@ -186,6 +186,11 @@ class IvyDtypePromotionError(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
+class IvyUnsupportedDtypeError(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     buffer = io.StringIO()
 
@@ -240,6 +245,11 @@ def handle_exceptions(fn: Callable) -> Callable:
             _write_traceback_history(buffer)
             raise ivy.utils.exceptions.IvyValueError(
                 fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+            )
+        except (Exception, IvyUnsupportedDtypeError) as e:
+            _write_traceback_history(buffer)
+            raise ivy.utils.exceptions.IvyUnsupportedDtypeError(
+                fn.__name__, str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:
             _write_traceback_history(buffer)

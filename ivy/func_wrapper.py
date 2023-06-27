@@ -1074,6 +1074,33 @@ def _wrap_function(
     return to_wrap
 
 
+def raise_unsupported_dtype_error(x, intersect, kwarg_case=False):
+    if not intersect:
+        raise Exception("No dictionary to compare with")
+    if kwarg_case:
+        # for the case when we pass on a string which we got from kwargs['dtype']
+        dtype = str(ivy.as_ivy_dtype(x))
+        if dtype in intersect:
+            raise ivy.utils.exceptions.IvyUnsupportedDtypeError(
+                f"One of the input dtypes '{dtype}' is not supported "
+            )
+        return x
+
+    # for the cases when these are arrays or objects with dtype attribute
+
+    if hasattr(x, "dtype"):
+        dtype = str(ivy.as_ivy_dtype(x.dtype))
+    else:
+        return x
+
+    if dtype in intersect:
+        raise ivy.utils.exceptions.IvyUnsupportedDtypeError(
+            f"One of the input dtypes '{dtype}' is not supported "
+        )
+
+    return x
+
+
 def casting_modes_ops(fn):
     @functools.wraps(fn)
     def method(*args, **kwargs):
@@ -1092,6 +1119,21 @@ def casting_modes_ops(fn):
             if not intersect:
                 # no unsupported dtype specified
                 return fn(*args, **kwargs)
+        # first make sure casting mode is not enabled
+        if not ivy.is_any_casting() and ivy.throw_error_for_dtypes:
+            # we do our magic, and throw the unsupported dtype exception
+            if "dtype" in kwargs and kwargs["dtype"] is not None:
+                raise_unsupported_dtype_error(kwargs["dtype"], intersect, True)
+            ivy.nested_map(
+                args,
+                lambda x: raise_unsupported_dtype_error(x, intersect),
+                include_derived=True,
+            )
+            ivy.nested_map(
+                kwargs, lambda x: raise_unsupported_dtype_error(x, intersect)
+            )
+            # since no casting is enabled and no unsupported dtype been passed
+            # simply return by calling the function
 
         if "dtype" in kwargs and kwargs["dtype"] is not None:
             dtype = caster(kwargs["dtype"], intersect)
