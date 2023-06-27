@@ -7,7 +7,7 @@ from . import backend_version
 from ivy import with_unsupported_dtypes
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
 def reduce(
     operand: np.ndarray,
     init_value: Union[int, float],

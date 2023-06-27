@@ -116,8 +116,8 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -243,7 +243,7 @@ def clip(
     return jnp.where(x < x_min, x_min, x)
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

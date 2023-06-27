@@ -14,6 +14,7 @@ from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
 
@@ -169,6 +170,13 @@ def general_pool(
     else:
         pad_list = [(0, 0)] * (dim + 2)
 
+    if not ivy.is_array(inputs):
+        inputs = jnp.array(inputs)
+    if not ivy.is_array(init):
+        init = jnp.array(init)
+    promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
+    inputs = inputs.astype(promoted_type)
+    init = init.astype(promoted_type)
     y = jlax.reduce_window(
         inputs, init, reduce_fn, dims, strides, pad_list, window_dilation=dilation
     )
@@ -405,7 +413,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.11 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -724,3 +732,68 @@ def reduce_window(
         base_dilation,
         window_dilation,
     )
+
+
+def fft2(
+    x: JaxArray,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
+
+
+def ifftn(
+    x: JaxArray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fft.ifftn(x, s, axes, norm)
+
+
+@with_unsupported_dtypes(
+    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
+)
+def embedding(
+    weights: JaxArray,
+    indices: JaxArray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    embeddings = jnp.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = jnp.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = jnp.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )

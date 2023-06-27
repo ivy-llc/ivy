@@ -10,7 +10,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def diagflat(
     x: paddle.Tensor,
@@ -43,7 +43,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -145,12 +145,14 @@ def cov(
     if x2 is not None:
         if not rowVar and x2.shape[0] != 1:
             x2 = paddle.transpose(x2, perm=tuple(range(len(x2.shape) - 1, -1, -1)))
-        if len(x2.shape)>1:
-          X = paddle.concat([X, x2], axis=0)
+        if len(x2.shape) > 1:
+            X = paddle.concat([X, x2], axis=0)
         else:
-          X = paddle.stack([X, x2], axis=0)
+            X = paddle.stack([X, x2], axis=0)
 
-    if not rowVar:    
-      X = paddle.transpose(X, perm=tuple(range(len(X.shape) - 1, -1, -1)))
+    if not rowVar:
+        X = paddle.transpose(X, perm=tuple(range(len(X.shape) - 1, -1, -1)))
 
-    return paddle.linalg.cov(X, rowvar=rowVar, ddof=ddof, fweights=fweights, aweights=aweights)
+    return paddle.linalg.cov(
+        X, rowvar=rowVar, ddof=ddof, fweights=fweights, aweights=aweights
+    )
