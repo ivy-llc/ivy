@@ -938,7 +938,7 @@ def test_paddle_reciprocal(
         x=x[0],
     )
 
-    
+
 # cumprod
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cumprod",
