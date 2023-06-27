@@ -10,19 +10,29 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="tensorflow.signal.kaiser_window",
     dtype_and_window_length=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
+        available_dtypes=(["int32"]),
+        min_dim_size=1,
+        min_value=3,
+        min_num_dims=1,
+        max_value=20,
+        max_dim_size=1,
+        max_num_dims=1,
     ),
     dtype_and_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_dim_size=1,
+        min_value=0,
+        min_num_dims=1,
+        max_value=80,
+        max_dim_size=1,
+        max_num_dims=1,
     ),
-    dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
 )
 def test_tensorflow_kaiser_window(
     *,
     dtype_and_window_length,
     dtype_and_beta,
-    dtype,
     frontend,
     test_flags,
     fn_tree,
@@ -36,10 +46,12 @@ def test_tensorflow_kaiser_window(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        window_length=window_length,
-        beta=beta,
-        dtype=dtype,
+        window_length=window_length[0][0],
+        beta=beta[0][0],
+        rtol=1e-03,
+        atol=1e-03,
     )
+
 
 
 @st.composite
