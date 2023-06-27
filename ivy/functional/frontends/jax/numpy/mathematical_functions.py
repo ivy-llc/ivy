@@ -13,17 +13,14 @@ from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
 def sign(x, /):
     return ivy.sign(x, out=None)
 
-
 @to_ivy_arrays_and_back
 def absolute(x, /):
     return ivy.abs(x)
-
 
 @to_ivy_arrays_and_back
 def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
-
 
 @to_ivy_arrays_and_back
 def angle(z, deg=False):
