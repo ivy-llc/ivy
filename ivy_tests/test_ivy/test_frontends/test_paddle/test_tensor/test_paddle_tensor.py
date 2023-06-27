@@ -1415,7 +1415,7 @@ def test_paddle_instance_ceil(
     )
 
 
-#bitwise_and
+# bitwise_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -1479,5 +1479,3 @@ def test_paddle_greater_than(
         frontend=frontend,
         on_device=on_device,
     )
-
-    
