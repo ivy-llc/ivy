@@ -93,5 +93,5 @@ def empty_like(x, dtype=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def tril(x, name=None):
-    return ivy.tril(x)
+def tril(x, diagonal=0, name=None):
+    return ivy.tril(x, k=diagonal)
