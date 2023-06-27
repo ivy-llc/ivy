@@ -54,37 +54,40 @@ def test_numpy_nanpercentile(
 # quantile
 @handle_frontend_test(
     fn_tree="ivy.quantile",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
-        min_num_dims=1,
-        max_num_dims=1,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    q=st.floats(),
-    keepdims=st.booleans(),
-    mode=st.sampled_from(["valid", "same", "full"]),
-    test_with_out=st.just(False),
+    dtype_values_axis=_statistical_dtype_values(function="quantile"),
+    where=np_frontend_helpers.where(),
+    keep_dims=st.booleans(),
 )
 def test_numpy_quantile(
-    dtype_and_x,
-    q,
-    keepdims,
-    mode,
+    dtype_values_axis,
+    where,
     frontend,
     test_flags,
     fn_tree,
     on_device,
+    keep_dims,
 ):
-    input_dtypes, xs = dtype_and_x
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
+    input_dtypes, values, axis = dtype_values_axis
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtypes,
         test_flags=test_flags,
+    )
+
+    np_frontend_helpers.test_frontend_function(
+        a=values[0][0],
+        q=values[0][1],
+        axis=axis,
+        out=None,
+        overwrite_input=None,
+        method="linear",
+        keepdims=keep_dims,
+        interpolation=None,
+        frontend=frontend,
         fn_tree=fn_tree,
-        on_device=on_device,
-        x=xs[0],
-        q=q,
-        keepdims=keepdims,
-        mode=mode,
+        test_flags=test_flags,
+        input_dtypes=input_dtypes,
     )
