@@ -208,6 +208,7 @@ class Tensor:
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
     
+    
     @with_supported_dtypes({"2.4.2 and below": (
             "bool",
             "uint8",
