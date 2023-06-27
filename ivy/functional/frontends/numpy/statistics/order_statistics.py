@@ -109,27 +109,28 @@ def nanpercentile(
                 resultarray.append(arrayofpercentiles)
         return resultarray
 
-@handle_numpy_out
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
+
+
+@ivy.numpy_frontend
+@ivy.handle_numpy_out
+@ivy.handle_numpy_dtype
+@ivy.to_ivy_arrays_and_back
+@ivy.handle_numpy_casting
+@ivy.from_zero_dim_arrays_to_scalar
 def quantile(
-    x,
+    a,
     q,
     /,
     *,
     axis=None,
-    interpolation="linear",
-    kind="increasing",
-    order="k",
-    dtype=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
     keepdims=False,
+    interpolation=None,
 ):
-   
-    x = ivy.as_array(x)
+
     ret = ivy.quantile(
-        x, q, axis=axis, interpolation=interpolation, kind=kind, order=order
+        a, q, axis=axis, out=out, overwrite_input=overwrite_input, method=method, keepdims=keepdims, interpolation=interpolation
     )
-    if keepdims:
-        ret = ivy.expand_dims(ret, axis)
-    return ret.astype(dtype, copy=False)
+    return ret
