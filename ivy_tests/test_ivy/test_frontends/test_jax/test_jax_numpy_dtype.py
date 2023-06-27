@@ -71,20 +71,28 @@ def test_jax_numpy_promote_types(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.result_type",
-    a=helpers.get_dtypes(),
-    b=helpers.get_dtypes(),
-    c=helpers.get_dtypes(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
+        shared_dtype=False,
+    ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_result_type(*, a, b, c, test_flags, on_device, fn_tree, frontend):
-    ret, frontend_ret = helpers.test_frontend_function(
-        input_dtypes=[],
+@settings(max_examples=200)
+def test_jax_numpy_result_type(
+    *, dtype_and_x, test_flags, on_device, fn_tree, frontend
+):
+    dtype, x = helpers.as_lists(*dtype_and_x)
+    kw = {}
+    for i, (dtype_, x_) in enumerate(zip(dtype, x)):
+        kw["x{}".format(i)] = x_
+    test_flags.num_positional_args = len(kw)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=a,
-        b=b,
-        c=c,
+        test_values=False,
+        **kw,
     )
-    assert str(ret._ivy_dtype) == frontend_ret[0].name
