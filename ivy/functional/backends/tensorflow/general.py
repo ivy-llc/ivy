@@ -91,7 +91,7 @@ def set_item(
     elif query == () or (
         query is Ellipsis
         or (isinstance(query, (tuple, list)) and query == (Ellipsis,))
-        or (isinstance(query, slice) and query in slice(None, None, None))
+        or (isinstance(query, slice) and query is slice(None, None, None))
     ):
         return val
     else:
@@ -115,7 +115,7 @@ def set_item(
             ],
             axis=-1,
         )
-        expected_shape = ivy.gather_nd(x,query).shape
+        expected_shape = ivy.gather_nd(x, query).shape
 
     val = _broadcast_to(val, expected_shape)._data
 
