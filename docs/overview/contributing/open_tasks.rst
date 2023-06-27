@@ -251,7 +251,6 @@ Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submod
 (where ivy.current_backend(x).function_name() is called), refer the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
 to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
 you can refer the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
-Sometimes, the respective backends do not behave in a similar way. There is a guide for that  ______ on how to deal with a situation like this.
 
 **Compositional Functions**
 
