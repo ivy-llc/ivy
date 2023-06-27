@@ -994,5 +994,5 @@ def test_paddle_maximum(
         test_flags=test_flags,
         on_device=on_device,
         x=x[0],
-       
     )
+    
