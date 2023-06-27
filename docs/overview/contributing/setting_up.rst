@@ -274,6 +274,19 @@ Windows
    a. In the left panel select "System Interpreter".
    b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
 #. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+#. Everyone using PyCharm with the latest docker image and facing issues after setting up everything. All you need to do is add the paths here once, and then go to :code:`File--> Save all` for this configuration to persist. Just as shown in the image below, The paths would be:
+
+   .. code-block:: none
+
+       /opt/fw/numpy
+       /opt/fw/jax
+       /opt/fw/tensorflow
+       /opt/fw/torch
+       /opt/fw/paddle
+       /opt/fw/mxnet
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/pycharm_with_docker/docker_newimage_fix.png?raw=true
+  :width: 420
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -284,7 +297,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
@@ -324,7 +337,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
@@ -408,7 +421,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
@@ -782,7 +795,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
