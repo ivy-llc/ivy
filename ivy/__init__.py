@@ -654,7 +654,10 @@ finally:
         if backend_framework in sys.modules:
             if backend_framework not in _imported_frameworks_before_compiler:
                 _not_imported_backends.remove(backend_framework)
-
+try:
+    from .compiler.autotune import autotune
+except:
+    pass
 
 # add instance methods to Ivy Array and Container
 from ivy.functional.ivy import (
