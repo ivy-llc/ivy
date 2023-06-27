@@ -921,7 +921,7 @@ def test_paddle_instance_multiply(
     init_tree="paddle.to_tensor",
     method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("float")),
+        available_dtypes=helpers.get_dtypes("bool"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
