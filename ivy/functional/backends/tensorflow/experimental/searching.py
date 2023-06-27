@@ -9,7 +9,7 @@ from . import backend_version
 
 @with_supported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.12.0 and below": (
             "int32",
             "int64",
         )

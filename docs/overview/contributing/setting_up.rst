@@ -274,6 +274,19 @@ Windows
    a. In the left panel select "System Interpreter".
    b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
 #. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+#. Everyone using PyCharm with the latest docker image and facing issues after setting up everything. All you need to do is add the paths here once, and then go to :code:`File--> Save all` for this configuration to persist. Just as shown in the image below, The paths would be:
+
+   .. code-block:: none
+
+       /opt/fw/numpy
+       /opt/fw/jax
+       /opt/fw/tensorflow
+       /opt/fw/torch
+       /opt/fw/paddle
+       /opt/fw/mxnet
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/pycharm_with_docker/docker_newimage_fix.png?raw=true
+  :width: 420
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -568,6 +581,67 @@ Ubuntu
 
 For windows users, the file path should be entered with "/" (forward-slashes), for other OS it would be the regular "\\" (back-slashes).
 
+WSL
+***
+ 
+It is understandable that working with computationally heavy tools like Docker and PyCharm is not always comfortable for developers.
+By utilizing WSL, you can run a Linux distribution on your Windows machine and in addition, venv is leveraged to create 
+isolated Python environments eliminating the need for a full-fledged containerization solution like Docker, and with VSCode being an appropriate alternative to PyCharm, 
+the steps explained below will help you in setting up a less resource-intensive Ivy environment.
+
+#. Install `WSL <https://learn.microsoft.com/en-us/windows/wsl/install>`_.
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_. 
+   You can follow `this guide <https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode>`_ to integrate WSL into VSCode.
+#. Open the WSL terminal by typing in the name of your Linux distribution in the windows start menu (e.g. :code:`Ubuntu`).
+#. Create a virtual environment by following the steps below:
+
+   a. Install the python virtual environment package :code:`venv`.
+
+      .. code-block:: none
+
+         sudo apt install python3-venv
+
+   b. Create your virtual environment named :code:`ivy_dev`.
+
+      .. code-block:: none
+
+         python3 -m venv ivy_dev
+
+   c. Activate your environment.
+
+      .. code-block:: none
+
+         source ivy_dev/bin/activate
+
+
+#. You can now install the Ivy package from Github by running:
+
+   .. code-block:: none
+
+      pip install git+https://github.com/unifyai/ivy.git
+
+#. If you want to set up a local repository, you can do so by following `this guide <https://unify.ai/docs/ivy/overview/contributing/setting_up.html#forking-and-cloning-the-repo>`_ 
+   as explained above and install the required development dependencies by running:
+
+   .. code-block:: none
+
+      cd ivy/
+
+   .. code-block:: none
+
+      pip install -r requirements/requirements.txt
+
+#. Once done, you can now open VSCode right from your terminal and get started with your development by just running:
+   
+   .. code-block:: none
+
+      code .
+
+#. To set up the Python Interpreter in VSCode, go to the command palette (Ctrl+Shift+P) and type **Python: Select Interpreter** and select the environment you created. 
+   For a more detailed explanation, you can follow `this guide <https://code.visualstudio.com/docs/python/environments#_working-with-python-interpreters>`_.
+#. Now that your development environment is set up, you can now run tests locally by running :code:`pytest test_fle_path::test_fn_name` in the terminal or
+   if you want to set up testing in VSCode, you may follow the guide **Setting Up Testing** for VSCode as explained below, next to this subsection.
+
 GitHub Codespaces
 *****************
 
@@ -598,18 +672,38 @@ Now we are ready to begin!
 
 Just follow the steps outlined below:
 
-1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
+1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on three dots, then click ``new with options...``.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true
    :width: 420
 
-2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop".
+2. You will get the following screen, then you will select the branch.
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/select_branch.png?raw=true
+   :width: 420
+
+3. The you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
+   
+      - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
+      - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
+      - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
+      - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
+      - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from latest image from dockerhub.
+      - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from latest image from dockerhub.
+   
+   For now, we will select :code:`Ivy Development Environment (image)`.
+   Select your region and prefered machine type, then click on "Create Codespace".
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/devcontainer_config.png?raw=true
+   :width: 420
+
+4. This will open up a new tab, where you click on "Open this codespaces on VS code desktop".
 Give the relevant permissions to the browser to open up Visual Studio Code.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/open_vscode_desktop.png?raw=true
    :width: 420
 
-3. Once visual studio code opens up, it will start building the remote container.
+5. Once visual studio code opens up, it will start building the remote container.
 In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box.
 Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process.
 Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
@@ -622,12 +716,12 @@ Log of container being built would look like below:
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true
    :width: 420
 
-4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
+6. Once the container is built, you would see the following output log saying "Finished configuring codespace".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/codespace_built.png?raw=true
    :width: 420
 
-5. That's it, you have just setup GitHub codespaces and can start developing Ivy.
+7. That's it, you have just setup GitHub codespaces and can start developing Ivy.
 The configuration files install all the required packages, extensions for you to get started quickly.
 
 **Opening an existing Codespace**
@@ -681,7 +775,19 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
+4. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
+
+5. To simply run the tests using play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+
+.. code-block:: json
+
+      {
+         "python.testing.pytestArgs": [
+            "./ivy_tests/test_ivy/",
+         ],
+         "python.testing.unittestEnabled": false,
+         "python.testing.pytestEnabled": true
+      }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 

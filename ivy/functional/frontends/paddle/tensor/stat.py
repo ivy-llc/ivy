@@ -6,7 +6,11 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
@@ -14,7 +18,11 @@ def mean(input, axis=None, keepdim=False, out=None):
     return ret
 
 
+
 @with_unsupported_dtypes({"2.4.2 and below": ("complex", "int8")}, "paddle")
+
+@with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
+
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)
@@ -24,9 +32,19 @@ def numel(x, name=None):
         length = 1  # if 0 dimensional tensor with 1 element
     return ivy.array([prod if prod > 0 else ivy.array(length, dtype=ivy.int64)])
 
+
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def median(y, axis=None, keepdim=False,out=None):
     mid = ivy.median(y, axis=axis, keepdims=keepdim,out=out)
     mid = ivy.expand_dims(mid, axis=-1) if mid.ndim == 0 else mid
     return mid
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+    )
+

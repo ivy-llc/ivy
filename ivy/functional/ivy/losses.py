@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
+
 # Helpers #
 # ------- #
 
@@ -94,8 +95,11 @@ def binary_cross_entropy(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    epsilon: float = 1e-7,
+    from_logits: bool = False,
+    epsilon: float = 0.0,
     reduction: str = "none",
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -107,9 +111,21 @@ def binary_cross_entropy(
         input array containing true labels.
     pred
         input array containing Predicted labels.
+    from_logits
+        Whether `pred` is expected to be a logits tensor. By
+        default, we assume that `pred` encodes a probability distribution.
     epsilon
         a float in [0.0, 1.0] specifying the amount of smoothing when calculating the
-        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.
+        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+    reduction
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'none'``.
+    pos_weight
+        a weight for positive examples. Must be an array with length equal to the number
+        of classes.
+    axis
+        Axis along which to compute crossentropy.
     out
         optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
@@ -130,6 +146,29 @@ def binary_cross_entropy(
     >>> z = ivy.binary_cross_entropy(x, y)
     >>> print(z)
     ivy.array([0.223,0.223,0.357,1.61])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> z = ivy.binary_cross_entropy(x, y, reduction='mean')
+    >>> print(z)
+    ivy.array(7.6666193)
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> pos_weight = ivy.array([1, 2, 3, 4])
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True)
+    ivy.array([[2.67164493e+00, 4.05471958e-03, 7.32684899e-02, 5.30496836e+00]])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> pos_weight = ivy.array([1, 2, 3, 4])
+    >>> z = ivy.binary_cross_entropy(x, y, pos_weight=pos_weight, from_logits=True, reduction='sum', axis=1) # noqa: E501
+    ivy.array([8.05393649])
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> z = ivy.binary_cross_entropy(x, y, reduction='none', epsilon=0.5)
+    ivy.array([[11.49992943,  3.83330965,  3.83330965, 11.49992943]])
 
     >>> x = ivy.array([[0, 1, 0, 0]])
     >>> y = ivy.array([[0.6, 0.2, 0.7, 0.3]])
@@ -183,13 +222,50 @@ def binary_cross_entropy(
     ivy.array([0.223, 0.223, 0.223, 0.223])
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    return _reduce_loss(
-        reduction,
-        ivy.add(ivy.log(pred) * true, ivy.log(1 - pred) * (1 - true)),
-        None,
-        out,
-    )
+
+    if not (0.0 <= epsilon <= 1.0):
+        raise ValueError("epsilon should be a float in [0, 1]")
+
+    if not from_logits and pos_weight is not None:
+        raise ValueError("pos_weight is only allowed when from_logits is set to True")
+
+    true = true.astype(pred.dtype)
+
+    epsilon = ivy.asarray(epsilon, dtype=pred.dtype)
+
+    true = true * (1.0 - epsilon) + 0.5 * epsilon
+
+    if from_logits:
+        if pos_weight is not None:
+            num_classes = pred.shape[0] if len(pred.shape) == 1 else pred.shape[1]
+            if pos_weight.shape[0] != num_classes:
+                raise ValueError(
+                    "pos_weight must have the same size as the number of classes in"
+                    " pred at non-singleton dimension 1"
+                )
+            epsilon_ = 1e-7
+            pred = ivy.sigmoid(pred)
+            pred = ivy.clip(pred, epsilon_, 1 - epsilon_)
+            loss = -(
+                true * -ivy.log(pred) * pos_weight + (1 - true) * -ivy.log(1 - pred)
+            )
+        else:
+            zeros = ivy.zeros_like(pred, dtype=pred.dtype)
+            cond = pred >= zeros
+            relu_logits = ivy.where(cond, pred, zeros)
+            neg_abs_logits = ivy.where(cond, -pred, pred)
+            loss = (
+                ivy.add(relu_logits - pred * true, ivy.log1p(ivy.exp(neg_abs_logits)))
+                * -1
+            )
+    else:
+        epsilon_ = 1e-7
+        pred = ivy.clip(pred, epsilon_, 1 - epsilon_)
+        loss = true * ivy.log(pred + epsilon_) + (1 - true) * ivy.log(
+            1 - pred + epsilon_
+        )
+
+    return _reduce_loss(reduction, loss, axis, out)
 
 
 @handle_exceptions

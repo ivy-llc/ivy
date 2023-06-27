@@ -100,39 +100,44 @@ def test_linspace(
 # logspace
 @handle_test(
     fn_tree="functional.ivy.logspace",
-    dtype_and_start_stop=helpers.dtype_and_values(
+    dtype_and_start_stop_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=None,
-        max_value=None,
+        min_value=-1e5,
+        max_value=1e5,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
-        large_abs_safety_factor=24,
-        small_abs_safety_factor=24,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False),
     num=helpers.ints(min_value=1, max_value=5),
-    base=helpers.floats(min_value=0.1, max_value=3.0),
-    axis=st.none(),
+    base=helpers.floats(min_value=0.1, max_value=20.0),
+    endpoint=st.booleans(),
 )
 def test_logspace(
     *,
-    dtype_and_start_stop,
+    dtype_and_start_stop_axis,
+    dtype,
     num,
     base,
-    axis,
+    endpoint,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, start_stop = dtype_and_start_stop
+    input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
@@ -144,6 +149,8 @@ def test_logspace(
         num=num,
         base=base,
         axis=axis,
+        endpoint=endpoint,
+        dtype=dtype[0],
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
@@ -188,25 +195,38 @@ def test_arange(
     )
 
 
+@st.composite
+def _asarray_helper(draw):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=st.integers(min_value=1, max_value=10),
+            min_num_dims=0,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+            shared_dtype=True,
+        )
+    )
+    dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
+        )
+    )[-1]
+    return x_dtype, x, dtype
+
+
 # asarray
 # TODO: Fix container, instance methods and as_variable
 @handle_test(
     fn_tree="functional.ivy.asarray",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=st.integers(min_value=1, max_value=10),
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
-    ),
+    x_dtype_x_and_dtype=_asarray_helper(),
     as_list=st.booleans(),
     test_gradients=st.just(False),
 )
 def test_asarray(
     *,
-    dtype_and_x,
+    x_dtype_x_and_dtype,
     as_list,
     test_flags,
     backend_fw,
@@ -214,7 +234,7 @@ def test_asarray(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    x_dtype, x, dtype = x_dtype_x_and_dtype
 
     if as_list:
         if isinstance(x, list):
@@ -222,7 +242,7 @@ def test_asarray(
                 (
                     list(i)
                     if len(i.shape) > 0
-                    else [complex(i) if "complex" in dtype[0] else float(i)]
+                    else [complex(i) if "complex" in x_dtype[0] else float(i)]
                 )
                 for i in x
             ]
@@ -252,13 +272,13 @@ def test_asarray(
             )
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         object_in=x,
-        dtype=dtype[0],
+        dtype=dtype,
         device=on_device,
         ground_truth_backend=ground_truth_backend,
     )
@@ -401,9 +421,9 @@ def test_from_dlpack(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -594,10 +614,6 @@ def test_ones(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
 )
 def test_ones_like(
@@ -645,10 +661,10 @@ def test_tril(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -681,10 +697,10 @@ def test_triu(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -705,7 +721,7 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
@@ -736,7 +752,7 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -920,4 +936,40 @@ def test_frombuffer(
         count=count,
         offset=offset,
         ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.triu_indices",
+    n_rows=st.integers(min_value=0, max_value=5),
+    n_cols=st.integers(min_value=0, max_value=5) | st.just(None),
+    k=st.integers(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("integer"),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_triu_indices(
+    *,
+    n_rows,
+    n_cols,
+    k,
+    input_dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype = input_dtype
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
     )

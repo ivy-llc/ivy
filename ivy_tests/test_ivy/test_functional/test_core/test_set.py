@@ -14,9 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_test
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=3,
         min_dim_size=1,
-        max_dim_size=3,
     ),
     test_gradients=st.just(False),
 )
@@ -49,9 +47,7 @@ def test_unique_values(
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=5,
         force_int_axis=True,
         valid_axis=True,
     ),
@@ -94,9 +90,7 @@ def test_unique_all(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
-        max_num_dims=5,
         min_dim_size=2,
-        max_dim_size=5,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -130,9 +124,7 @@ def test_unique_counts(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
-        max_num_dims=5,
         min_dim_size=2,
-        max_dim_size=5,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),

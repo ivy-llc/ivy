@@ -62,10 +62,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
     def beta(
         self: ivy.Array,
-        alpha: Union[int, ivy.Array, ivy.NativeArray],
         beta: Union[int, ivy.Array, ivy.NativeArray],
         /,
         *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
@@ -102,9 +102,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
             the array.
         """
         return ivy.beta(
-            alpha,
+            self,
             beta,
-            shape=self.shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             seed=seed,
@@ -113,10 +113,10 @@ class _ArrayWithRandomExperimental(abc.ABC):
 
     def gamma(
         self: ivy.Array,
-        alpha: Union[int, ivy.Array, ivy.NativeArray],
         beta: Union[int, ivy.Array, ivy.NativeArray],
         /,
         *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
@@ -130,11 +130,12 @@ class _ArrayWithRandomExperimental(abc.ABC):
         Parameters
         ----------
         self
-            Input Array.
-        alpha
-            The first parameter of the gamma distribution.
+            Input Array and the first parameter of the gamma distribution.
         beta
             The second parameter of the gamma distribution.
+        shape
+            If the given shape is, e.g '(m, n, k)', then 'm * n * k' samples are drawn.
+            (Default value = 'None', where 'ivy.shape(logits)' samples are drawn)
         device
             device on which to create the array.
         dtype
@@ -153,9 +154,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
             the input array.
         """
         return ivy.gamma(
-            alpha,
+            self,
             beta,
-            shape=self.shape,
+            shape=shape,
             device=device,
             dtype=dtype,
             seed=seed,
@@ -169,6 +170,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         seed: Optional[int] = None,
+        fill_value: Optional[Union[float, int]] = 0,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -188,6 +190,9 @@ class _ArrayWithRandomExperimental(abc.ABC):
             type will be the default floating-point data type. Default ``None``
         seed
             A python integer. Used to create a random seed distribution
+        fill_value
+            if lam is negative, fill the output array with this value
+            on that specific dimension.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -214,6 +219,7 @@ class _ArrayWithRandomExperimental(abc.ABC):
             device=device,
             dtype=dtype,
             seed=seed,
+            fill_value=fill_value,
             out=out,
         )
 

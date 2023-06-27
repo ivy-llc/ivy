@@ -52,15 +52,17 @@ def min(
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
        minimum value is implementation-defined. Specification-compliant libraries may
-       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point
-       input array, return ``NaN``), or return the maximum possible value for the input array ``x``
-       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
 
     **Special Cases**
 
     For floating-point operands,
 
-    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -72,10 +74,11 @@ def min(
         minimum values must be computed over multiple axes. Default: ``None``.
 
     keepdims
-        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
-        (dimensions) must not be included in the result. Default: ``False``.
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see :ref:`broadcasting`). Otherwise,
+        if ``False``, the reduced axes (dimensions) must not be included in the result.
+        Default: ``False``.
     out
         optional output array, for writing the result to.
 
@@ -90,7 +93,8 @@ def min(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -193,7 +197,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -411,7 +416,8 @@ def prod(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.prod.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -495,8 +501,10 @@ def std(
 
     Let ``N`` equal the number of elements over which to compute the standard deviation.
 
-    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``N - correction`` is less than or equal to ``0``,
+        the standard deviation is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -508,16 +516,17 @@ def std(
         integers, standard deviations must be computed over multiple axes.
         Default: ``None``.
     correction
-        degrees of freedom adjustment. Setting this parameter to a value other than ``0``
-        has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to ``N-c`` where ``N`` corresponds to the total number of
-        elements over which the standard deviation is computed and ``c`` corresponds to
-        the provided degrees of freedom adjustment. When computing the standard deviation
-        of a population, setting this parameter to ``0`` is the standard choice (i.e.,
-        the provided array contains data constituting an entire population). When computing
-        the corrected sample standard deviation, setting this parameter to ``1`` is the
-        standard choice (i.e., the provided array contains data sampled from a larger
-        population; this is commonly referred to as Bessel's correction).
+        degrees of freedom adjustment. Setting this parameter to a value other
+        than ``0`` has the effect of adjusting the divisor during the calculation of the
+        standard deviation according to ``N-c`` where ``N`` corresponds to the total
+        number of elements over which the standard deviation is computed and ``c``
+        corresponds to the provided degrees of freedom adjustment. When computing the
+        standard deviation of a population, setting this parameter to ``0`` is the
+        standard choice (i.e., the provided array contains data constituting an
+        entire population). When computing the corrected sample standard deviation,
+        setting this parameter to ``1`` is the standard choice (i.e., the provided array
+        contains data sampled from a larger population; this is commonly referred to as
+        Bessel's correction).
         Default: ``0``.
     keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as
@@ -538,14 +547,15 @@ def std(
         .. note::
            While this specification recommends that this function only accept input
            arrays having a real-valued floating-point data type, specification-compliant
-           array libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input array
-           ``x`` has an integer data type, the returned array must have the default
-           real-valued floating-point data type.
+           array libraries may choose to accept input arrays having an integer data
+           type. While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have
+           the default real-valued floating-point data type.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.std.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -805,7 +815,8 @@ def var(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.var.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1029,21 +1040,6 @@ def cumprod(
     reverse
         Whether to perform the cumprod from last to first element in the selected
         axis. Default is ``False`` (from first to last element)
-    dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
-        floating-point) of x has a smaller range of values than the data type of x
-        (e.g., x has data type int64 and the default data type is int32, or x has data
-        type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
-        type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
-        have an unsigned integer data type having the same number of bits as the default
-        integer data type (e.g., if the default integer data type is int32, the returned
-        array must have a uint32 data type). If the data type (either specified or
-        resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1161,12 +1157,13 @@ def cummax(
     /,
     *,
     axis: int = 0,
+    exclusive: bool = False,
     reverse: bool = False,
-    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the cumulative maximum of the elements along a given axis.
+    Return a tuple containing the cumulative maximum of elements of input along the
+    given axis and index location of each maximum value found along the given axis.
 
     Parameters
     ----------
@@ -1174,27 +1171,11 @@ def cummax(
         Input array.
     axis
         Axis along which the cumulative maximum is computed. Default is ``0``.
+    exclusive
+        Whether to perform cummax exclusively. Default is ``False``.
     reverse
         Whether to perform the cummax from last to first element in the selected
         axis. Default is ``False`` (from first to last element)
-    dtype
-        Data type of the returned array. Default is ``None``.
-        If None, if the default data type corresponding to the data type “kind”
-        (integer or floating-point) of x has a smaller range of values than the
-        data type of x (e.g., x has data type int64 and the default data type
-        is int32, or x has data type uint64 and the default data type is int64),
-        the returned array must have the same data type as x.
-        If x has a floating-point data type, the returned array must have the
-        default floating-point data type.
-        If x has a signed integer data type (e.g., int16), the returned array
-        must have the default integer data type.
-        If x has an unsigned integer data type (e.g., uint16), the returned
-        array must have an unsigned integer data type having the same number of
-        bits as the default integer data type (e.g., if the default integer data
-        type is int32, the returned array must have a uint32 data type).
-        If the data type (either specified or resolved) differs from the data type
-        of x, the input array should be cast to the specified data type before
-        computing the product.
     out
         Optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1208,56 +1189,59 @@ def cummax(
     Examples
     --------
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([1, 5, 2, 0])
-    >>> y = ivy.cummax(x)
+
+    >>> x = ivy.array([-86, -19, 41, 88, -5, 80, 32, 87, -90, -12])
+    >>> y = ivy.cummax(x, exclusive=False, reverse=False)
     >>> print(y)
-    ivy.array([1, 5, 5, 5])
-    >>> x = ivy.array([[6, 4, 2],
-    ...                [1, 3, 0]])
-    >>> y = ivy.zeros((2,3))
-    >>> ivy.cummax(x, axis=0, reverse=True, out=y)
+    [ivy.array([-86, -19, 41, 88, 88, 88, 88, 88, 88, 88]),
+      ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3])]
+
+    >>> x = ivy.array([ 14,  15,  49, -24, -39])
+    >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
     >>> print(y)
-    ivy.array([[6, 4, 2],
-        [6, 4, 2]])
-    >>> x = ivy.array([[2, 4, 5],
-    ...                [3, 6, 5],
-    ...                [1, 3, 10]])
-    >>> ivy.cummax(x,axis=1,reverse=True, dtype='int64', out=x)
+    [ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2])]
+
+    >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
+    >>> ivy.cummax(x, axis=0, reverse=False, dtype='int64', out=x)
     >>> print(x)
-    ivy.array([[ 5,  5,  5],
-        [ 6,  6,  5],
-        [ 10,  10, 10]])
-    With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
-    ...                   b=ivy.array([[3, 5, 7]]))
-    >>> y = ivy.cummax(x, axis= 0)
+    [ivy.array([[ 63,  43, -16,  -4], [ 63,  82,  59,  33]]),
+    ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
+
+    >>> x = ivy.array([[-36,  83, -81],
+    ...                [ 23,  29,  63],
+    ...                [-83,  85,   2],
+    ...                [ 31,  25, -86],
+    ...                [-10, -52,   0],
+    ...                [ 22,  38,  55],
+    ...                [ 33,  54, -16]])
+    >>> y = ivy.cummax(x, axis=1, exclusive=True, reverse=False)
     >>> print(y)
-    {
-        a: ivy.array([[1, 3, 5]]),
-        b: ivy.array([[3, 5, 7]])
-    }
-    >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
-    ...                   b=ivy.array([[3, 5, 8],
-    ...                                [5, 6, 5]]),
-    ...                   c=ivy.array([[2, 4, 1],
-    ...                                [3, 6, 9],
-    ...                                [0, 2, 3]]))
-    >>> y = ivy.Container(a = ivy.zeros((1, 3)),
-    ...                   b = ivy.zeros((2, 3)),
-    ...                   c = ivy.zeros((3,3)))
-    >>> ivy.cummax(x,axis=1,reverse=True, out=y)
+    [ivy.array([[ 0,  0, 83],
+                [ 0, 23, 29],
+                [ 0,  0, 85],
+                [ 0, 31, 31],
+                [ 0,  0,  0],
+                [ 0, 22, 38],
+                [ 0, 33, 54]]), ivy.array([[0, 0, 2],
+                [0, 1, 2],
+                [0, 0, 2],
+                [0, 1, 1],
+                [0, 0, 0],
+                [0, 1, 2],
+                [0, 1, 2]])]
+
+    >>> x = ivy.array([73, 15, 47])
+    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=True)
     >>> print(y)
-    {
-    a: ivy.array([[4., 4., 4.]]),
-    b: ivy.array([[8., 8., 8.],
-                    [6., 6., 5.]]),
-    c: ivy.array([[4., 4., 1.],
-                    [9., 9., 9.],
-                    [3., 3., 3.]])
-    }
+    [ivy.array([47, 47,  0]), ivy.array([0, 0, 0])]
+
+    >>> x = ivy.array([-47, -14, -67, 15, -23, -45])
+    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=False)
+    >>> print(y)
+    [ivy.array([ 15, 15, 15, 15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0])]
     """
     return current_backend(x).cummax(
-        x, axis=axis, reverse=reverse, dtype=dtype, out=out
+        x, reverse=reverse, axis=axis, exclusive=exclusive, out=out
     )
 
 
