@@ -150,3 +150,16 @@ def negative_binomial(n, p, size=None):
         size = (size,)
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
+
+
+@to_ivy_arrays_and_back
+def bytes(length):
+    # ToDo : This frontend function will simply when ivy.bytes() is implemented.
+    random_numbers = ivy.random_uniform(shape=[length], low=0, high=256, seed=0)
+    # convert to integers
+    random_integers = ivy.floor(random_numbers)
+    # convert to uint8 and then to numpy array
+    numpy_array = ivy.to_numpy(random_integers.astype("uint8"))
+    # convert numpy array to bytes
+    random_bytes = numpy_array.tobytes()
+    return random_bytes
