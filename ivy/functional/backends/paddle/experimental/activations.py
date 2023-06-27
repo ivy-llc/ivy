@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def logit(x: paddle.Tensor, /, *, eps: Optional[float] = None, out=None):
     if x.dtype in [paddle.float32, paddle.float64]:

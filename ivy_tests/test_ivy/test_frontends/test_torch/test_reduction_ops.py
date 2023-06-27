@@ -491,6 +491,7 @@ def test_torch_var(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -503,16 +504,18 @@ def test_torch_min(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, input, axis = dtype_input_axis
+    inputs = {f"input{i}": input[i] for i in range(len(input))}
+    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
+    test_flags.num_positional_args = len(input)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        dim=axis,
-        keepdim=keepdim,
+        **inputs,
+        **kwargs,
     )
 
 
@@ -594,6 +597,7 @@ def test_torch_moveaxis(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -606,16 +610,18 @@ def test_torch_max(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, input, axis = dtype_input_axis
+    inputs = {f"input{i}": input[i] for i in range(len(input))}
+    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
+    test_flags.num_positional_args = len(input)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        dim=axis,
-        keepdim=keepdim,
+        **inputs,
+        **kwargs,
     )
 
 
@@ -820,13 +826,14 @@ def test_torch_logsumexp(
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
-    test_with_out=st.just(False),
+    sorted=st.booleans(),
 )
 def test_torch_unique(
     *,
     dtype_x_axis,
     return_inverse,
     return_counts,
+    sorted,
     on_device,
     fn_tree,
     frontend,
@@ -841,7 +848,7 @@ def test_torch_unique(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        sorted=True,
+        sorted=sorted,
         return_inverse=return_inverse,
         return_counts=return_counts,
         dim=axis,
