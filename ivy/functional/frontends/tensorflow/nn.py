@@ -488,3 +488,13 @@ def pool(
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
     return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
+
+
+# ctc_unique_labels
+@to_ivy_arrays_and_back
+def ctc_unique_labels(labels, name=None):
+    ctc_labels = ivy.unique_all(labels, by_value=False)
+    unique_pad = ivy.pad(
+        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    )
+    return unique_pad, ctc_labels[2]
