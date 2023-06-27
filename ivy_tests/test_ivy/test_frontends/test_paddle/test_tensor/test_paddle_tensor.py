@@ -1499,7 +1499,7 @@ def test_paddle_cumprod(
     ),
 )
 def test_paddle_is_complex(
-  dtype_and_x,
+    dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -1520,6 +1520,7 @@ def test_paddle_is_complex(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
