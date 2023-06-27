@@ -3903,6 +3903,8 @@ class ContainerBase(dict, abc.ABC):
             # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
+            # Checks if console supports color
+            has_color_support = os.isatty(sys.stdout.fileno()) and os.name != "nt"
             json_dumped_str = '":'.join(
                 [
                     (
@@ -3915,6 +3917,8 @@ class ContainerBase(dict, abc.ABC):
                                     ),
                                     self._default_key_color,
                                 )
+                                if has_color_support
+                                else Container.cont_trim_key(sub_str.split(' "')[-1], self._key_length_limit)
                             ]
                         )
                         if i < split_size - 1
