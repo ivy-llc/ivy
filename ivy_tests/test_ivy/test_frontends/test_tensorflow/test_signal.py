@@ -53,7 +53,6 @@ def test_tensorflow_kaiser_window(
     )
 
 
-
 @st.composite
 def valid_idct(draw):
     dtype, x = draw(
