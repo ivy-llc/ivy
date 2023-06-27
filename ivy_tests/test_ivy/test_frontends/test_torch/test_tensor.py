@@ -3605,7 +3605,7 @@ def test_torch_instance_max(
     init_tree="torch.tensor",
     method_name="is_quantized",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("qint8"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_instance_is_quantized(
