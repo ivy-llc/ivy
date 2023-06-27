@@ -1266,6 +1266,7 @@ def _generate_characteristic_equation_solver_dtype_and_arrays(draw):
 
     return input_dtype, matrix
 
+
 @handle_frontend_test(
     fn_tree="torch.linalg.characteristic_equation_solver",
     dtype_x=_generate_characteristic_equation_solver_dtype_and_arrays(),
@@ -1288,7 +1289,6 @@ def test_torch_characteristic_equation_solver(
         tensors=x,
     )
 
-# solve_ex
 
 @handle_frontend_test(
     fn_tree="torch.linalg.solve_ex",

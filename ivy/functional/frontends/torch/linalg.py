@@ -249,7 +249,7 @@ def vander(x, N=None):
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
 
-  
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def characteristic_equation_solver(matrix):
@@ -258,6 +258,7 @@ def characteristic_equation_solver(matrix):
         [1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype
     )
     return ivy.roots(coefficients)
+
 
 @to_ivy_arrays_and_back
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
@@ -271,4 +272,5 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
         else:
             result = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+
             return result, info
