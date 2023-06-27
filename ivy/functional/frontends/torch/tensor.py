@@ -658,9 +658,11 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
 
+    @property
     def is_quantized(self):
         return "q" in ivy.dtype(self.ivy_array)
 
+    @property
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
