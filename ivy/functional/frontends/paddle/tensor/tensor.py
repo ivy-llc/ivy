@@ -291,3 +291,19 @@ class Tensor:
     )
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def equal(self, y, name=None):
+        return paddle_frontend.equal(self, y)
