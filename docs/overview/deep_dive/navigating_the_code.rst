@@ -84,7 +84,7 @@ Functions written here look something like the following, (explained in much mor
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        My function does something cool.
+        Explanation of the function.
 
         .. note::
             This is an important note.
@@ -114,12 +114,12 @@ Functions written here look something like the following, (explained in much mor
         Returns
         -------
         ret
-            a cooler array.
+            an array.
 
         Examples
         --------
 
-        Some cool examples go here
+        Some examples go here
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
