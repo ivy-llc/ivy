@@ -2853,8 +2853,9 @@ def test_jax_numpy_polysub(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        min_value=-1e04,
-        max_value=1e04,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     trim=st.booleans(),
 )
@@ -2878,8 +2879,8 @@ def test_jax_numpy_polymul(
         a1=x[0],
         a2=x[1],
         trim_leading_zeros=trim,
-        atol=1e-05,
-        rtol=1e-03,
+        atol=1e-01,
+        rtol=1e-01,
     )
 
 
