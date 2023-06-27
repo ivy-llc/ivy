@@ -232,3 +232,12 @@ def cumprod(x, dim=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def angle(x, name=None):
+    return ivy.angle(x)
