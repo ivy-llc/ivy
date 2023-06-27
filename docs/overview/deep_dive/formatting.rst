@@ -135,7 +135,7 @@ but not on IDE GUIs. So you might see a cryptic error message like one of the fo
    :alt: git commit error in PyCharm
 
 We recommend you commit your code from the terminal when you contribute to Ivy. But if you want to commit from your IDE,
-you can always either click on "Open Git Log" or "Show details in console" to see the error message.
+you can always either click on "Show Command Output" or "Show details in console" to see the error message.
 
 And be aware that some of the linters we use format your code automatically like ``black`` and ``autoflake``. So you
 will need to add the changes to your commit and commit again.
