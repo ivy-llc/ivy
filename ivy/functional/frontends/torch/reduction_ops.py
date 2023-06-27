@@ -2,7 +2,6 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
-import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -126,13 +125,7 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def min(*input, dim=None, axis=None, keepdim=False, out=None):
-    if len(input) == 1:
-        input = input[0]
-    elif len(input) == 2:
-        return torch_frontend.minimum(*input)
-    if dim is None:
-        dim = axis
+def min(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -148,11 +141,7 @@ def min(*input, dim=None, axis=None, keepdim=False, out=None):
 
 
 @to_ivy_arrays_and_back
-def max(*input, dim=None, axis=None, keepdim=False, out=None):
-    if len(input) == 1:
-        input = input[0]
-    elif len(input) == 2:
-        return torch_frontend.maximum(*input)
+def max(input, dim=None, axis=None, keepdim=False, *, out=None):
     if dim is None:
         dim = axis
     if dim is None:

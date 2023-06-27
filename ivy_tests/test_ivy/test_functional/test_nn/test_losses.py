@@ -9,14 +9,11 @@ from ivy_tests.test_ivy.helpers import handle_test
 # cross_entropy
 @handle_test(
     fn_tree="functional.ivy.cross_entropy",
-    dtype_true_axis=helpers.dtype_values_axis(
+    dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
-        valid_axis=True,
-        allow_neg_axes=True,
-        force_int_axis=True,
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -25,12 +22,14 @@ from ivy_tests.test_ivy.helpers import handle_test
         allow_inf=False,
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
+    axis=helpers.ints(min_value=-1, max_value=0),
     epsilon=helpers.floats(min_value=0.0, max_value=1.0),
 )
 def test_cross_entropy(
-    dtype_true_axis,
+    dtype_and_true,
     dtype_and_pred,
     reduction,
+    axis,
     epsilon,
     test_flags,
     backend_fw,
@@ -39,7 +38,7 @@ def test_cross_entropy(
     ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
-    true_dtype, true, axis = dtype_true_axis
+    true_dtype, true = dtype_and_true
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -209,4 +208,58 @@ def test_sparse_cross_entropy(
         axis=axis,
         epsilon=epsilon,
         reduction=reduction,
+    )
+
+
+# log_poisson_loss
+@handle_test(
+    fn_tree="functional.ivy.log_poisson_loss",
+    dtype_and_targets=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_log_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
+)
+def test_log_poisson_loss(
+    dtype_and_targets,
+    dtype_and_log_input,
+    compute_full_loss,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    targets_dtype, targets = dtype_and_targets
+    log_input_dtype, log_input = dtype_and_log_input
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=targets_dtype + log_input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        targets=targets[0],
+        log_input=log_input[0],
+        compute_full_loss=compute_full_loss,
+        atol_=1e-2,
     )

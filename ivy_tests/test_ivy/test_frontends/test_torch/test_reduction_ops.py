@@ -491,7 +491,6 @@ def test_torch_var(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -504,18 +503,16 @@ def test_torch_min(
     frontend,
     test_flags,
 ):
-    input_dtype, input, axis = dtype_input_axis
-    inputs = {f"input{i}": input[i] for i in range(len(input))}
-    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
-    test_flags.num_positional_args = len(input)
+    input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **inputs,
-        **kwargs,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdim,
     )
 
 
@@ -597,7 +594,6 @@ def test_torch_moveaxis(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -610,18 +606,16 @@ def test_torch_max(
     frontend,
     test_flags,
 ):
-    input_dtype, input, axis = dtype_input_axis
-    inputs = {f"input{i}": input[i] for i in range(len(input))}
-    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
-    test_flags.num_positional_args = len(input)
+    input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        **inputs,
-        **kwargs,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdim,
     )
 
 
