@@ -154,7 +154,7 @@ def test_numpy_tensorinv(
     dtype, x, ind = params
     if ivy.current_backend_str() == "paddle":
         # Paddle only supports ndim from 0 to 9
-        assume(x.shape[0] < 10)
+        assume(x.ndim <= 9)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
