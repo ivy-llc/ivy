@@ -210,6 +210,22 @@ class Tensor:
 
     @with_supported_dtypes(
         {
+            "2.4.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def bitwise_and(x, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(x, y)
+
+    @with_supported_dtypes(
+        {
             "2.5.0 and below": (
                 "bool",
                 "int8",
