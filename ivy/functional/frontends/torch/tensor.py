@@ -778,7 +778,7 @@ class Tensor:
         return torch_frontend.flatten(self, start_dim, end_dim)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def cumsum(self, dim, dtype):
+    def cumsum(self, dim, *, dtype=None):
         return torch_frontend.cumsum(self, dim, dtype=dtype)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
@@ -1140,6 +1140,10 @@ class Tensor:
         return torch_frontend.less(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def __le__(self, other):
+        return torch_frontend.less_equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __or__(self, other):
         return torch_frontend.bitwise_or(self, other)
 
@@ -1337,10 +1341,14 @@ class Tensor:
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
+    gt = greater
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_(self, other):
         self.ivy_array = ivy.astype(self.greater(other).ivy_array, self.dtype)
         return self
+
+    gt_ = greater_
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
@@ -1348,10 +1356,44 @@ class Tensor:
     def greater_equal(self, other, *, out=None):
         return torch_frontend.greater_equal(self, other, out=out)
 
+    ge = greater_equal
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_equal_(self, other):
         self.ivy_array = ivy.astype(self.greater_equal(other).ivy_array, self.dtype)
         return self
+
+    ge_ = greater_equal_
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def less(self, other, *, out=None):
+        return torch_frontend.less(self, other, out=out)
+
+    lt = less
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def less_(self, other):
+        self.ivy_array = ivy.astype(self.less(other).ivy_array, self.dtype)
+        return self
+
+    lt_ = less_
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def less_equal(self, other, *, out=None):
+        return torch_frontend.less_equal(self, other, out=out)
+
+    le = less_equal
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def less_equal_(self, other):
+        self.ivy_array = ivy.astype(self.less_equal(other).ivy_array, self.dtype)
+        return self
+
+    le_ = less_equal_
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
