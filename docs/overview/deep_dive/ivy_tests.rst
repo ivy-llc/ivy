@@ -55,7 +55,8 @@ Ivy Tests
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
 .. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
+.. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
 
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
@@ -764,7 +765,9 @@ The CI Pipeline runs the entire collection of Ivy Tests for the module that is b
 You will need to make sure the Ivy Test is passing for each Ivy function you introduce/modify.
 If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
 
-You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+You can also run the tests locally before making a PR. The instructions differ according to the IDE you are using. For
+PyCharm and Visual Studio Code you can refer to the `Setting Up Testing in PyCharm`_ section and `Setting up for Free`_
+section respectively.
 
 Re-Running Failed Ivy Tests
 ---------------------------

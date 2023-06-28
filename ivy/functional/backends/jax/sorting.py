@@ -18,9 +18,12 @@ def argsort(
     stable: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    x = -1 * jnp.searchsorted(jnp.unique(x), x) if descending else x
     kind = "stable" if stable else "quicksort"
-    return jnp.argsort(x, axis, kind=kind)
+    return (
+        jnp.argsort(-x, axis=axis, kind=kind)
+        if descending
+        else jnp.argsort(x, axis=axis, kind=kind)
+    )
 
 
 def sort(
