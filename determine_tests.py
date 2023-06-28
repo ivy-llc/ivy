@@ -95,8 +95,8 @@ def main():
             for test in removed_tests:
                 f.write(test + "\n")
         added_tests = list(added_tests)
-        if len(added_tests) > 1:
-            added_tests = added_tests[:1]
+        if len(added_tests) > 10:
+            added_tests = added_tests[:10]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests
