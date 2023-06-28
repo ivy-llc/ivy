@@ -167,11 +167,7 @@ multi_dot.support_native_out = True
 
 
 def dot(
-    x1: torch.Tensor,
-    x2: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     torch.dot(x1, x2)

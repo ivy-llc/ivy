@@ -1,7 +1,6 @@
 # global
 from typing import Union, Optional, Tuple, List, Sequence
 
-import jax.lax
 
 # local
 import ivy
@@ -516,8 +515,8 @@ def dot(
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
-    Compute the dot product of two vectors in a single function call, while
-    selecting the fastest evaluation order.
+    Compute the dot product of two vectors in a single function call, while selecting
+    the fastest evaluation order.
 
     Parameters
     ----------
@@ -548,7 +547,6 @@ def dot(
     # >>> C = ivy.zeros(100)
     # >>> ivy.dot(A, B, out=C)
     # >>> print(C)
-
     """
     return current_backend(a, b).dot(a, b, out=out)
 

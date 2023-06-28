@@ -547,10 +547,7 @@ def test_multi_dot(
 @handle_test(
     fn_tree="functional.ivy.experimental.dot",
     dtype_xy=helpers.dtype_and_values(
-        available_dtypes=(
-            ivy.float32,
-            ivy.float64
-        ),
+        available_dtypes=(ivy.float32, ivy.float64),
         num_arrays=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,

@@ -162,11 +162,7 @@ def multi_dot(
 multi_dot.support_native_out = True
 
 
-def dot(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def dot(x1: np.ndarray, x2: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.dot(a=x1, b=x2, out=out)
 
 

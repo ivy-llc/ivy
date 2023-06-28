@@ -1,6 +1,5 @@
 from typing import Union, Optional, Tuple, List, Sequence
 
-import numpy as np
 import tensorflow as tf
 from functools import reduce as _reduce
 
@@ -152,11 +151,7 @@ def multi_dot(
     return dot_out
 
 
-def dot(
-    x1: tf.Tensor,
-    x2: tf.Tensor,
-    out: Optional[tf.Tensor] = None
-) -> tf.Tensor:
+def dot(x1: tf.Tensor, x2: tf.Tensor, out: Optional[tf.Tensor] = None) -> tf.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return tf.experimental.numpy.dot(x1, x2)
 
