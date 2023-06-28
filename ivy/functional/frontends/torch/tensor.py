@@ -1418,6 +1418,10 @@ class Tensor:
         ).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def cholesky(self, upper=False):
+        return torch_frontend.cholesky(self, upper=upper)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
