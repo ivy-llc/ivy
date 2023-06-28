@@ -1554,3 +1554,47 @@ def test_paddle_angle(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="diagonal",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=["bool", "int32", "int64", "float32", "float64"],
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
+    ),
+    offset=st.integers(min_value=-1, max_value=1),
+)
+def test_paddle_diagonal(
+    dtype_x_axis,
+    offset,
+    on_device,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        on_device=on_device,
+        frontend=frontend,
+        init_all_as_kwargs_np={
+            "data": x[0],
+
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "axis1" : axis[0],
+            "axis2" : axis[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+    )
