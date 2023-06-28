@@ -312,9 +312,21 @@ class Tensor:
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
 
+
     @with_supported_dtypes(
                 {"2.5.0 and below": ("bool", "int32", "int64", "float32", "float64")},
                 "paddle",
             )
     def diagonal(self, offset=0, axis1=0, axis2=1, name=None):
         return ivy.diagonal(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmax(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmax(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmin(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmin(self._ivy_array, y_ivy)
+
