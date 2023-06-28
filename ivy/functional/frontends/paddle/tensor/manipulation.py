@@ -38,3 +38,12 @@ def concat(x, axis, name=None):
 @to_ivy_arrays_and_back
 def tile(x, repeat_times, name=None):
     return ivy.tile(x, repeats=repeat_times)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("int16", "complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def split(x, num_or_sections, axis=0, name=None):
+    return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)

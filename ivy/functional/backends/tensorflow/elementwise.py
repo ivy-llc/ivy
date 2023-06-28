@@ -378,7 +378,7 @@ def isinf(
         return tf.zeros_like(x, tf.bool)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
 def isnan(
     x: Union[tf.Tensor, tf.Variable],
     /,
