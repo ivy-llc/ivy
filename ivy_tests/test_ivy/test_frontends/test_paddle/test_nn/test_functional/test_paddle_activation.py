@@ -413,7 +413,7 @@ def test_paddle_rrelu(
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.tanhshrink",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_tanhshrink(
@@ -432,5 +432,56 @@ def test_paddle_tanhshrink(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        x=x[0],
+    )
+
+
+# relu_
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.relu_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_relu_(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
+# mish
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.mish",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        safety_factor_scale="log",
+        small_abs_safety_factor=20,
+    ),
+)
+def test_paddle_mish(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )

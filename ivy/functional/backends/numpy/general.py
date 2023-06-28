@@ -29,7 +29,13 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+def get_item(
+    x: np.ndarray,
+    /,
+    query: np.ndarray,
+    *,
+    copy: bool = None,
+) -> np.ndarray:
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
@@ -430,7 +436,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,
