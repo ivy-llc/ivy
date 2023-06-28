@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import mxnet as mx
 
 # local
-from ivy.func_wrapper import handle_mixed_function
+from ivy.func_wrapper import handle_partial_mixed_function
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -182,7 +182,7 @@ def ifft(
     raise IvyNotImplementedException()
 
 
-@handle_mixed_function(
+@handle_partial_mixed_function(
     lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
         not align_corners
         and mode
