@@ -332,3 +332,15 @@ class Tensor:
     def fmax(self, y, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.fmax(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmin(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmin(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def minimum(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.minimum(self._ivy_array, y_ivy)
