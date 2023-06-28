@@ -628,7 +628,7 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
                 allow_nan=False,
             )
         )
-        if np.linalg.det(matrix[1][0]) != 0 and matrix_is_stable(matrix[1][0]):
+        if np.linalg.det(matrix[1][0]) != 0:
             break
 
     return matrix[0], matrix[1]
