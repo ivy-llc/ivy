@@ -983,6 +983,7 @@ def test_jax_numpy_size(
         axis=axis,
     )
 
+
 # array_str
 @handle_frontend_test(
     fn_tree="jax.numpy.array_str",
@@ -1021,5 +1022,4 @@ def test_jax_numpy_array_str(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        )
-    
+    )
