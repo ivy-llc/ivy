@@ -135,6 +135,10 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv(self, mat, vec, *, beta=1, alpha=1):
+        return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -654,9 +658,11 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
 
+    @property
     def is_quantized(self):
         return "q" in ivy.dtype(self.ivy_array)
 
+    @property
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
@@ -744,7 +750,7 @@ class Tensor:
         return torch_frontend.flatten(self, start_dim, end_dim)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def cumsum(self, dim, dtype):
+    def cumsum(self, dim, *, dtype=None):
         return torch_frontend.cumsum(self, dim, dtype=dtype)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
