@@ -146,7 +146,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
-            is_partial_mixed = hasattr(fn, "handle_mixed_function")
+            is_partial_mixed = hasattr(fn, "partial_mixed_handler")
             f_supported = get_fn(fn, False)
             if is_partial_mixed:
                 compos = merge_fn(wrapper(f_supported["compositional"]), out)
@@ -1597,16 +1597,6 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
-def _return_dtypes(fn, dtypes):
-    if (
-        "frontend" in fn.__module__
-        and ivy.current_backend_str() == fn.__module__.rsplit(".")[3]
-    ):
-        if isinstance(dtypes, dict):
-            return dtypes["primary"]
-    return dtypes if isinstance(dtypes, dict) else tuple(dtypes)
-
-
 @handle_exceptions
 @handle_nestable
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
@@ -1638,7 +1628,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
             "in a particular backend"
         ),
     )
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_supported_dtypes(fn.compos, recurse=recurse),
             "primary": _get_dtypes(fn, complement=False),
@@ -1649,7 +1639,11 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
             supported_dtypes = _nested_get(
                 fn, supported_dtypes, set.intersection, function_supported_dtypes
             )
-    return _return_dtypes(fn, supported_dtypes)
+    return (
+        supported_dtypes
+        if isinstance(supported_dtypes, dict)
+        else tuple(supported_dtypes)
+    )
 
 
 @handle_exceptions
@@ -1685,7 +1679,7 @@ def function_unsupported_dtypes(
             "in a particular backend"
         ),
     )
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_unsupported_dtypes(fn.compos, recurse=recurse),
             "primary": _get_dtypes(fn, complement=True),
@@ -1697,7 +1691,11 @@ def function_unsupported_dtypes(
                 fn, unsupported_dtypes, set.union, function_unsupported_dtypes
             )
 
-    return _return_dtypes(fn, unsupported_dtypes)
+    return (
+        unsupported_dtypes
+        if isinstance(unsupported_dtypes, dict)
+        else tuple(unsupported_dtypes)
+    )
 
 
 @handle_exceptions

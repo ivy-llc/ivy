@@ -1143,16 +1143,6 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
-def _return_devices(fn, devices):
-    if (
-        "frontend" in fn.__module__
-        and ivy.current_backend_str() == fn.__module__.rsplit(".")[3]
-    ):
-        if isinstance(devices, dict):
-            return devices["primary"]
-    return devices if isinstance(devices, dict) else tuple(devices)
-
-
 @handle_exceptions
 @handle_nestable
 def function_supported_devices(
@@ -1186,7 +1176,7 @@ def function_supported_devices(
             "exist in a particular backend"
         ),
     )
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_supported_devices(fn.compos, recurse=recurse),
             "primary": _get_devices(fn, complement=False),
@@ -1198,7 +1188,11 @@ def function_supported_devices(
                 fn, supported_devices, set.intersection, function_supported_devices
             )
 
-    return _return_devices(fn, supported_devices)
+    return (
+        supported_devices
+        if isinstance(supported_devices, dict)
+        else tuple(supported_devices)
+    )
 
 
 @handle_exceptions
@@ -1234,7 +1228,7 @@ def function_unsupported_devices(
             "exist in a particular backend"
         ),
     )
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
             "primary": _get_devices(fn, complement=True),
@@ -1245,7 +1239,11 @@ def function_unsupported_devices(
             unsupported_devices = ivy.functional.data_type._nested_get(
                 fn, unsupported_devices, set.union, function_unsupported_devices
             )
-    return _return_devices(fn, unsupported_devices)
+    return (
+        unsupported_devices
+        if isinstance(unsupported_devices, dict)
+        else tuple(unsupported_devices)
+    )
 
 
 # Profiler #

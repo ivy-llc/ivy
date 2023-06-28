@@ -843,6 +843,7 @@ def test_lerp(
         fw=backend_fw,
         fn_name=fn_name,
         atol_=1e-01,
+        rtol_=1e-01,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         input=start,

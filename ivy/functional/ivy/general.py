@@ -3633,7 +3633,7 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
     supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
 
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         supported_devices = supported_devices["primary"]
         supported_dtypes = supported_dtypes["primary"]
 
@@ -3684,16 +3684,6 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
     return supported
 
 
-def _return_devices_dtypes(fn, devices_dtypes):
-    if (
-        "frontend" in fn.__module__
-        and ivy.current_backend_str() == fn.__module__.rsplit(".")[3]
-    ):
-        if "primary" in devices_dtypes:
-            return devices_dtypes["primary"]
-    return devices_dtypes
-
-
 @handle_exceptions
 @handle_nestable
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
@@ -3722,7 +3712,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
         ),
     )
 
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_supported_devices_and_dtypes(
                 fn.compos, recurse=recurse
@@ -3740,7 +3730,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
                 wrapper=lambda x: x,
             )
 
-    return _return_devices_dtypes(fn, supported_devices_dtypes)
+    return supported_devices_dtypes
 
 
 @handle_exceptions
@@ -3770,7 +3760,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
             "attributes cannot both exist in a particular backend"
         ),
     )
-    if hasattr(fn, "handle_mixed_function"):
+    if hasattr(fn, "partial_mixed_handler"):
         return {
             "compositional": function_unsupported_devices_and_dtypes(
                 fn.compos, recurse=recurse
@@ -3787,7 +3777,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
                 function_unsupported_devices_and_dtypes,
                 wrapper=lambda x: x,
             )
-    return _return_devices_dtypes(fn, unsupported_devices_dtypes)
+    return unsupported_devices_dtypes
 
 
 @handle_exceptions
