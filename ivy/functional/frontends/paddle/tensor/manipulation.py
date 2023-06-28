@@ -47,11 +47,3 @@ def tile(x, repeat_times, name=None):
 @to_ivy_arrays_and_back
 def split(x, num_or_sections, axis=0, name=None):
     return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)
-
-@with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "bool", "int8", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def tolist(x):
-    return ivy.to_list(x)

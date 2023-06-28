@@ -292,27 +292,3 @@ def test_paddle_split(
         num_or_sections=num_splits,
         axis=axis,
     )
-
-@handle_frontend_test(
-    fn_tree="paddle.tolist",
-    dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-        ),
-)
-def test_paddle_tolist(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
