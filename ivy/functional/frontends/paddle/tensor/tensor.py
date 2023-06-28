@@ -221,8 +221,8 @@ class Tensor:
         },
         "paddle",
     )
-    def bitwise_and(x, y, out=None, name=None):
-        return paddle_frontend.bitwise_and(x, y)
+    def bitwise_and(self, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(self, y)
 
     @with_supported_dtypes(
         {
@@ -306,8 +306,8 @@ class Tensor:
         },
         "paddle",
     )
-    def greater_equal(self, y, name=None):
-        return paddle_frontend.greater_equal(self, y)
+    def less_than(self, y, name=None):
+        return paddle_frontend.less_than(self, y)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def cumprod(self, dim=None, dtype=None, name=None):
@@ -344,3 +344,19 @@ class Tensor:
     def minimum(self, y, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.minimum(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def greater_equal(self, y, name=None):
+        return paddle_frontend.greater_equal(self, y)
