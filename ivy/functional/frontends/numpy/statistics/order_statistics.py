@@ -120,12 +120,12 @@ def quantile(
     axis=None,
     out=None,
     overwrite_input=False,
-    method='linear',
+    method="linear",
     keepdims=False,
     interpolation=None,
     ):
 
-    if method == 'linear' and interpolation != None:
+    if method == "linear" and interpolation != None:
         method = interpolation
     ret = ivy.quantile(
         a,
