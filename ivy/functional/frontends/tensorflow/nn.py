@@ -532,15 +532,14 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
 
 @to_ivy_arrays_and_back
 def normalize_moments(counts, mean_ss, variance_ss, shift, name=None):
-    divisor = ivy.reciprocal(counts, name="divisor")
+    divisor = ivy.reciprocal(counts)
     if shift is not None:
-        shifted_mean = ivy.multiply(mean_ss, divisor, name="shifted_mean")
-        mean = ivy.add(shifted_mean, shift, name="mean")
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = ivy.add(shifted_mean, shift)
     else:  # no shift.
-        shifted_mean = ivy.multiply(mean_ss, divisor, name="mean")
+        shifted_mean = ivy.multiply(mean_ss, divisor)
         mean = shifted_mean
     variance = ivy.subtract(
         ivy.multiply(variance_ss, divisor),
-        ivy.square(shifted_mean),
-        name="variance")
+        ivy.square(shifted_mean))
     return (mean, variance)
