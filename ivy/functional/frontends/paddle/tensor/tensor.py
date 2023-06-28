@@ -312,7 +312,6 @@ class Tensor:
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
 
-
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def maximum(self, other, name=None):
         return ivy.maximum(self._ivy_array, other)
@@ -333,4 +332,3 @@ class Tensor:
     def minimum(self, y, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.minimum(self._ivy_array, y_ivy)
-
