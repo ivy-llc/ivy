@@ -234,10 +234,13 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
-def gcd(x, y, name=None):
-    return ivy.gcd(x, y)
+def angle(x, name=None):
+    return ivy.angle(x)
 
 
 @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
@@ -250,3 +253,17 @@ def fmin(x, y, name=None):
 @to_ivy_arrays_and_back
 def logit(x, eps=None, name=None):
     return ivy.logit(x, eps=eps)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+@to_ivy_arrays_and_back
+def fmax(x, y, name=None):
+    return ivy.fmax(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)

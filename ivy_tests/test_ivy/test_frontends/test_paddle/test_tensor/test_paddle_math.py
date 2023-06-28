@@ -1055,3 +1055,82 @@ def test_paddle_logit(
         x=x[0],
         eps=1e-2,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.angle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_paddle_angle(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.fmax",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+    ),
+)
+def test_paddle_fmax(
+    *,
+    dtypes_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.minimum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_minimum(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
