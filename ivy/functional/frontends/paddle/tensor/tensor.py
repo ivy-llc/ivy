@@ -311,3 +311,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
+
+    @with_supported_dtypes(
+                {"2.5.0 and below": ("bool", "int32", "int64", "float32", "float64")},
+                "paddle",
+            )
+    def diagonal(self, offset=0, axis1=0, axis2=1, name=None):
+        return ivy.diagonal(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2)
