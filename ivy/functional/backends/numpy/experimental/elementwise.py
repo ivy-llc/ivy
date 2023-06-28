@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -281,9 +281,9 @@ def ldexp(
 
 
 def frexp(
-    x: np.ndarray,
-    /,
-    *,
-    out: Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]] = (None, None),
+    x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
 ) -> Tuple[np.ndarray, np.ndarray]:
-    return np.frexp(x, out=out)
+    if out is None:
+        return np.frexp(x, out=(None, None))
+    else:
+        return np.frexp(x, out=out)

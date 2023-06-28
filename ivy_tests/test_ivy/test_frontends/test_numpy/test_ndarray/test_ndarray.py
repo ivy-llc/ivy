@@ -60,7 +60,7 @@ def test_numpy_ndarray_property_dtype(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
 
 
 @given(
@@ -75,7 +75,7 @@ def test_numpy_ndarray_property_shape(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape), as_array=False)
 
 
 @given(
@@ -90,7 +90,7 @@ def test_numpy_ndarray_property_ndim(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 @given(
@@ -114,6 +114,25 @@ def test_numpy_ndarray_property_T(
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="numpy",
     )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        num_arrays=1,
+        ret_shape=True,
+    )
+)
+def test_numpy_ndarray_property_flat(dtype_x):
+    dtype, data, shape = dtype_x
+
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+
+    flat_ivy = x.flat
+    flat_ivy = flat_ivy.ivy_array.to_numpy()
+    flat_generated = ivy.to_numpy(data[0]).flatten()
+    ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
 
 
 @handle_frontend_method(
@@ -3177,6 +3196,44 @@ def test_numpy_instance_ptp(
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__rshift__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_rshift__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtypes[1]).bits - 1), dtype=input_dtypes[1]
+    )
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

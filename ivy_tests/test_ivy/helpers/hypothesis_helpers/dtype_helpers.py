@@ -354,26 +354,35 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
         def cast_filter(d):
             if ivy_backend.is_int_dtype(d):
                 max_val = ivy_backend.iinfo(d).max
+                min_val = ivy_backend.iinfo(d).min
             elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
                 max_val = ivy_backend.finfo(d).max
+                min_val = ivy_backend.finfo(d).min
             else:
                 max_val = 1
+                min_val = -1
             if x is None:
                 if ivy_backend.is_int_dtype(dtype):
                     max_x = ivy_backend.iinfo(dtype).max
+                    min_x = ivy_backend.iinfo(dtype).min
                 elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
                     dtype
                 ):
                     max_x = ivy_backend.finfo(dtype).max
+                    min_x = ivy_backend.finfo(dtype).min
                 else:
                     max_x = 1
+                    min_x = -1
             else:
-                max_x = np.max(np.abs(np.asarray(x)))
-            return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+                max_x = np.max(np.asarray(x))
+                min_x = np.min(np.asarray(x))
+            return (
+                max_x <= max_val
+                and min_x >= min_val
+                and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+            )
 
         cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
         if x is None:
             return dtype, cast_dtype
-        if "uint" in cast_dtype:
-            x = np.abs(np.asarray(x))
         return dtype, x, cast_dtype

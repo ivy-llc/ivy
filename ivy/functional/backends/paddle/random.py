@@ -23,7 +23,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -54,7 +54,7 @@ def random_uniform(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def random_normal(
@@ -68,7 +68,7 @@ def random_normal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
@@ -95,7 +95,7 @@ def multinomial(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
@@ -130,6 +130,7 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
+    return
 
 
 def shuffle(

@@ -4,6 +4,7 @@ from typing import Union, Optional, Tuple
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
+    handle_partial_mixed_function,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -95,8 +96,8 @@ def l2_normalize(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def batch_norm(
@@ -203,10 +204,20 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
+batch_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def instance_norm(
@@ -319,6 +330,16 @@ def instance_norm(
         runningvariance = ivy.inplace_update(out[2], runningvariance)
 
     return (xnormalized, runningmean, runningvariance)
+
+
+instance_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
 
 
 @handle_exceptions

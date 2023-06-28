@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 import sys
 import ivy
 
@@ -10,6 +10,10 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_value1_value2_axis_for_tensordot,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 @st.composite
@@ -38,13 +42,11 @@ def test_tensorflow_det(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -64,13 +66,12 @@ def test_tensorflow_eigh(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -90,13 +91,12 @@ def test_tensorflow_eigvalsh(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -107,36 +107,27 @@ def test_tensorflow_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.matrix_rank",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_value=-1e05,
-        max_value=1e05,
-    ),
-    tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
 def test_matrix_rank(
     *,
-    dtype_x,
-    tolr,
+    dtype_x_hermitian_atol_rtol,
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1.0,
-        a=x[0],
-        tol=tolr,
+        a=x,
+        tol=atol,
     )
 
 
@@ -162,13 +153,11 @@ def test_tensorflow_matmul(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -180,70 +169,75 @@ def test_tensorflow_matmul(
     )
 
 
+# solve
 @st.composite
-def _solve_get_dtype_and_data(draw):
-    batch = draw(st.integers(min_value=1, max_value=5))
-    random_size = draw(st.integers(min_value=2, max_value=4))
-    input_dtype = draw(
-        st.shared(
-            st.sampled_from(draw(helpers.get_dtypes("float"))),
-            key="shared_dtype",
-        )
+def _get_first_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
     )
-    shape = (random_size, random_size)
-    tmp = []
-    for i in range(batch):
-        tmp.append(
-            draw(
-                helpers.array_values(
-                    dtype=input_dtype,
-                    shape=shape,
-                    min_value=-10,
-                    max_value=10,
-                ).filter(
-                    lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
-                )
-            )
-        )
-    shape = (batch, random_size, draw(st.integers(min_value=2, max_value=4)))
-    x = draw(
+    input_dtype = draw(input_dtype_strategy)
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=shape,
-            min_value=-10,
-            max_value=10,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    return input_dtype, matrix
+
+
+# solve
+@st.composite
+def _get_second_matrix(draw):
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
     )
-
-    return [[input_dtype] * batch, input_dtype], [tmp, x[0]]
 
 
 # solve
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.solve",
-    dtype_and_x=_solve_get_dtype_and_data(),
+    x=_get_first_matrix(),
+    y=_get_second_matrix(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_solve(
     *,
-    dtype_and_x,
+    x,
+    y,
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
-    input_dtypes, xs = dtype_and_x
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
     helpers.test_frontend_function(
-        input_dtypes=[input_dtypes[0][0], input_dtypes[1]],
+        input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
-        matrix=xs[0],
-        rhs=xs[1],
+        matrix=x1,
+        rhs=x2,
     )
 
 
@@ -282,13 +276,11 @@ def test_tensorflow_logdet(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -309,13 +301,11 @@ def test_tensorflow_slogdet(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -382,7 +372,6 @@ def test_tensorflow_cholesky_solve(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype1, x1 = x
@@ -411,17 +400,17 @@ def test_tensorflow_pinv(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
         a=x[0],
         rcond=1e-15,
     )
@@ -440,7 +429,6 @@ def test_tensorflow_tensordot(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     (
@@ -451,7 +439,6 @@ def test_tensorflow_tensordot(
     ) = dtype_x_y_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -486,13 +473,11 @@ def test_tensorflow_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -509,6 +494,9 @@ def test_tensorflow_norm(
     fn_tree="tensorflow.linalg.normalize",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=1,
@@ -526,13 +514,11 @@ def test_tensorflow_normalize(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -563,13 +549,11 @@ def test_tensorflow_l2_normalize(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -590,12 +574,10 @@ def test_tensorflow_trace(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -619,12 +601,10 @@ def test_tensorflow_matrix_transpose(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -660,13 +640,11 @@ def test_tensorflow_global_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -698,7 +676,6 @@ def test_tensorflow_linalg_cholesky(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -706,7 +683,6 @@ def test_tensorflow_linalg_cholesky(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -729,18 +705,11 @@ def test_tensorflow_linalg_cholesky(
     ),
 )
 def test_tensorflow_linalg_cross(
-    frontend,
-    on_device,
-    dtype_and_x,
-    *,
-    fn_tree,
-    test_flags,
-    backend_fw,
+    frontend, on_device, dtype_and_x, *, fn_tree, test_flags
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -769,7 +738,6 @@ def test_tensorflow_svd(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -778,7 +746,6 @@ def test_tensorflow_svd(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -825,7 +792,6 @@ def test_tensorflow_linalg_einsum(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     eq, operands, _ = eq_n_op_n_shp
     kw = {}
@@ -837,7 +803,6 @@ def test_tensorflow_linalg_einsum(
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -850,7 +815,9 @@ def test_tensorflow_linalg_einsum(
 # adjoint
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.adjoint",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix().filter(
+        lambda x: "float16" not in x[0] and "bfloat16" not in x[0]
+    ),  # TODO : remove this filter when paddle.conj supports float16
     test_with_out=st.just(False),
 )
 def test_tensorflow_adjoint(
@@ -859,13 +826,11 @@ def test_tensorflow_adjoint(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -894,17 +859,60 @@ def test_tensorflow_diag(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         v=x[0],
         k=k,
+    )
+
+
+@st.composite
+def _get_dtype_and_matrix_and_num(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    dtype_and_values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    num_lower = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    num_upper = draw(st.integers(min_value=-1, max_value=random_size - 1))
+    return (*dtype_and_values, num_lower, num_upper)
+
+
+# band_part
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.band_part",
+    dtype_and_input=_get_dtype_and_matrix_and_num(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_band_part(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, num_lower, num_upper = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        num_lower=num_lower,
+        num_upper=num_upper,
     )

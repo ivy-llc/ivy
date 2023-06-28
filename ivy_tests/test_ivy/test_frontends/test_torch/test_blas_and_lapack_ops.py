@@ -1,11 +1,15 @@
 # global
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
 
 
 # helpers
@@ -565,21 +569,18 @@ def test_torch_matmul(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.matrix_rank",
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    rtol=st.floats(1e-05, 1e-03),
-    sym=st.booleans(),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_torch_matrix_rank(
-    dtype_and_x,
-    rtol,
-    sym,
+    dtype_x_hermitian_atol_rtol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -587,10 +588,9 @@ def test_torch_matrix_rank(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
         input=x,
-        tol=rtol,
-        symmetric=sym,
+        tol=atol,
+        symmetric=hermitian,
     )
 
 

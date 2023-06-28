@@ -1,7 +1,6 @@
 import pickle
 import numpy as np
 import os
-import paddle
 
 from hypothesis import given, assume
 
@@ -17,7 +16,7 @@ import ivy_tests.test_ivy.helpers as helpers
 # pickling array test to str
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid",prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=0,
@@ -28,7 +27,7 @@ def test_pickle_to_string(dtype_and_x, on_device):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
-    
+
     # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
     if ivy.backend == "paddle":
         x = x.to_numpy()
@@ -42,7 +41,7 @@ def test_pickle_to_string(dtype_and_x, on_device):
 # pickling array test to disk
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid",prune_function=False),
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         min_num_dims=0,
         max_num_dims=5,
         min_dim_size=0,
@@ -53,7 +52,7 @@ def test_pickle_to_and_from_disk(dtype_and_x, on_device):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
-    
+
     # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
     if ivy.backend == "paddle":
         x = x.to_numpy()

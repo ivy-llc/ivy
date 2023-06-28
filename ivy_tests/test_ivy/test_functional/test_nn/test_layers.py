@@ -112,6 +112,7 @@ def _dropout_helper(draw):
     seed=helpers.ints(min_value=0, max_value=100),
     dtype=helpers.get_dtypes("float", full=False),
     test_gradients=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_dropout(
     *,

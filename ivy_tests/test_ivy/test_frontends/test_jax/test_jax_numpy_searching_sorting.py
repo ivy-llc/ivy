@@ -29,12 +29,10 @@ def test_jax_numpy_argmax(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -59,13 +57,11 @@ def test_jax_numpy_argwhere(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -94,13 +90,11 @@ def test_jax_numpy_argsort(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -111,31 +105,30 @@ def test_jax_numpy_argsort(
 
 
 # msort
-@handle_frontend_test(
-    fn_tree="jax.numpy.msort",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        min_dim_size=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_msort(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-    )
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.msort",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_num_dims=2,
+#         min_dim_size=2,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_jax_numpy_msort(
+#     dtype_and_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         a=x[0],
+#     )
+# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline enabled.
 
 
 # nonzero
@@ -151,13 +144,11 @@ def test_jax_numpy_nonzero(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -184,14 +175,12 @@ def test_jax_numpy_nanargmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -220,14 +209,12 @@ def test_jax_numpy_nanargmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -248,13 +235,11 @@ def test_jax_numpy_extract(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     cond, xs, dtype = broadcastables
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -276,20 +261,17 @@ def test_jax_numpy_extract(
     ),
     test_with_out=st.just(False),
 )
-def test_numpy_sort(
+def test_jax_numpy_sort(
     *,
     dtype_x_axis,
     frontend,
     fn_tree,
     on_device,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -312,13 +294,11 @@ def test_jax_numpy_flatnonzero(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -345,14 +325,12 @@ def test_jax_numpy_sort_complex(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -400,13 +378,11 @@ def test_numpy_searchsorted(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -433,7 +409,6 @@ def test_jax_numpy_where(
     fn_tree,
     on_device,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     x = x[0]
@@ -479,9 +454,7 @@ def _unique_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
 )
-def test_jax_numpy_unique(
-    fn_inputs, frontend, test_flags, backend_fw, fn_tree, on_device
-):
+def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
     arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
     helpers.test_frontend_function(
         input_dtypes=arr_dtype,

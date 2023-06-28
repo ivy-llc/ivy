@@ -379,7 +379,7 @@ def test_function(
                 ),
                 lambda x: not x,
             ), "the array in out argument does not contain same value as the returned"
-            if not max(test_flags.container) and ivy.native_inplace_support:
+            if not max(test_flags.container) and ivy_backend.native_inplace_support:
                 # these backends do not always support native inplace updates
                 assert not ivy_backend.nested_any(
                     ivy_backend.nested_multi_map(
@@ -623,6 +623,17 @@ def test_frontend_function(
 
         # Make copy for arguments for functions that might use
         # inplace update by default
+        copy_kwargs = copy.deepcopy(args)
+        copy_args = copy.deepcopy(kwargs)
+        # strip the decorator to get an Ivy array
+        # ToDo, fix testing for jax frontend for x32
+        if frontend == "jax":
+            importlib.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
+
+        # Make copy for arguments for functions that might use
+        # inplace update by default
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
 
@@ -729,25 +740,29 @@ def test_frontend_function(
                 assert ivy_backend.is_array(ret)
                 array_fn = ivy_backend.is_array
 
-            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
-                # the function provides optional inplace update
-                # set inplace update to be True and check
-                # if returned reference is inputted reference
-                # and if inputted reference's content is correctly updated
-                copy_kwargs["inplace"] = True
-                first_array = ivy_backend.func_wrapper._get_first_array(
-                    *copy_args, array_fn=array_fn, **copy_kwargs
-                )
-                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
-                assert first_array is ret_
-            else:
-                # the function provides inplace update by default
-                # check if returned reference is inputted reference
-                first_array = ivy_backend.func_wrapper._get_first_array(
-                    *args, array_fn=array_fn, **kwargs
-                )
-                ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
-                assert first_array is ret_
+        if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
+            # the function provides optional inplace update
+            # set inplace update to be True and check
+            # if returned reference is inputted reference
+            # and if inputted reference's content is correctly updated
+            copy_kwargs["inplace"] = True
+            copy_kwargs["as_ivy_arrays"] = False
+            first_array = ivy_backend.func_wrapper._get_first_array(
+                *copy_args, array_fn=array_fn, **copy_kwargs
+            )
+            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+            assert first_array is ret_
+        else:
+            # the function provides inplace update by default
+            # check if returned reference is inputted reference
+            copy_kwargs["as_ivy_arrays"] = False
+            first_array = ivy_backend.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
+            assert first_array is ret_
+
+    # create NumPy args
 
         ret_np_flat = flatten_and_to_np(backend=backend_to_test, ret=ret)
 
@@ -1791,6 +1806,8 @@ def wrap_frontend_function_args(argument):
             return ivy_frontend.output_to_native_arrays(
                 ivy_frontend.frontend_outputs_to_ivy_arrays(argument)
             )
+    if ivy_frontend.nested_any(argument, lambda x: isinstance(x, ivy_frontend.Shape)):
+        return argument.shape
     return argument
 
 
