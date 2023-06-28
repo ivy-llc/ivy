@@ -80,7 +80,7 @@ def empty_like(x, dtype=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.4.2 and below": (
+        "2.5.0 and below": (
             "uint8",
             "int8",
             "int16",
