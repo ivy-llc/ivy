@@ -698,4 +698,3 @@ def test_paddle_transpose(
         x=x[0],
         perm=perm,
     )
-
