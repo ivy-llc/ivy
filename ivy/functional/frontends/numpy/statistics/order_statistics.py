@@ -123,6 +123,6 @@ def quantile(a,
              keepdims=False,
              *,
              interpolation=None):
-                 ret = ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+                 ret = ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
                                    )
                  return ret
