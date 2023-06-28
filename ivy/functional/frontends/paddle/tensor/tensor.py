@@ -214,6 +214,22 @@ class Tensor:
 
     @with_supported_dtypes(
         {
+            "2.4.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def bitwise_and(x, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(x, y)
+
+    @with_supported_dtypes(
+        {
             "2.5.0 and below": (
                 "bool",
                 "int8",
@@ -295,3 +311,24 @@ class Tensor:
     )
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def rad2deg(self, name=None):
+        return ivy.rad2deg(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmax(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmax(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmin(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmin(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def minimum(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.minimum(self._ivy_array, y_ivy)
