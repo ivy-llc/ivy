@@ -193,7 +193,7 @@ def relu_(x, name=None):
     return x
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def elu(
     x,
