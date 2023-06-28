@@ -12,31 +12,76 @@ from typing import Optional, Union, Callable, Tuple, Any
 
 # Private #
 
-
 def _compute_cost_and_update_grads(
-    cost_fn,
-    order,
-    batch,
-    variables,
-    outer_v,
-    keep_outer_v,
-    average_across_steps_or_final,
-    all_grads,
-    unique_outer,
-    batched,
-    num_tasks,
-):
+    cost_fn: Callable,
+    order: int,
+    batch: Union[ivy.Array, ivy.NativeArray],
+    variables: ivy.Container,
+    outer_v: ivy.Container,
+    keep_outer_v: bool,
+    average_across_steps_or_final: bool,
+    all_grads: list,
+    unique_outer: bool,
+    batched: bool,
+    num_tasks: int,
+) -> ivy.Array:
+    """
+    Ivy Container method variant of ivy._compute_cost_and_update_grads. This method simply wraps the
+    function, and so the docstring for ivy._compute_cost_and_update_grads also applies to this method
+    with minimal changes.
+
+    Parameters
+    ----------
+    cost_fn : Callable
+        The cost function to be minimized.
+    order : int
+        The order of the gradient.
+    batch : Union[ivy.Array, ivy.NativeArray]
+        The batch of data.
+    variables : ivy.Container
+        The variables to be updated.
+    outer_v : ivy.Container
+        The outer variables.
+    keep_outer_v : bool
+        Whether to keep the outer variables.
+    average_across_steps_or_final : bool
+        Whether to average across steps or final.
+    all_grads : list
+        The list of all gradients.
+    unique_outer : bool
+        Whether the outer variables are unique.
+    batched : bool
+        Whether the operation is batched.
+    num_tasks : int
+        The number of tasks.
+
+    Returns
+    -------
+    ivy.Array
+        The cost after the gradient update.
+
+    Examples
+    --------
+    >>> import ivy
+    >>> def cost_fn(batch, v): return ivy.sum(batch * v)
+    >>> variables = ivy.Container({'x': ivy.array([1.0, 2.0])})
+    >>> outer_v = ivy.Container({'x': ivy.array([0.5, 0.5])})
+    >>> batch = ivy.array([1.0, 2.0])
+    >>> _compute_cost_and_update_grads(cost_fn, 1, batch, variables, outer_v, True, True, [], True, True, 1)
+    array(4.5)
+    """
+    def cost_fn_with_variables(v):
+        return cost_fn(batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v)
+    
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
-            lambda v: cost_fn(
-                batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
-            ),
-            (
+            cost_fn_with_variables(
                 variables.cont_at_key_chains(outer_v, ignore_none=True)
                 if keep_outer_v
                 else variables.cont_prune_key_chains(outer_v, ignore_none=True)
-            ),
+                    ),
             retain_grads=False,
+            v=variables.cont_set_at_key_chains(outer_v) if unique_outer else variables
         )
         var = (
             variables.cont_at_key_chains(outer_v, ignore_none=True)
