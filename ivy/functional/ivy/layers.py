@@ -1043,8 +1043,8 @@ def conv1d_transpose(
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int, int]],
-    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    strides: Union[int, Tuple[int, int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = 0,
     /,
     *,
     data_format: str = "NHWC",
