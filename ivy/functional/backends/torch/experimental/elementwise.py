@@ -346,7 +346,6 @@ def lerp(
     return torch.lerp(input, end, weight, out=out)
 
 
-
 lerp.support_native_out = True
 lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
     _are_suitable_types_for_torch_lerp(input, end, weight)
