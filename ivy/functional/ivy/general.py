@@ -2808,26 +2808,31 @@ def set_item(
     return current_backend(x).set_item(x, query, val, copy=copy)
 
 
-def _parse_query(indices, shape):
-    indices = list(indices) if isinstance(indices, tuple) else indices
+def _parse_query(indices, shape, allow_neg_step=True):
+    ind_type = type(indices)
+    indices = list(indices) if isinstance(indices, tuple) else [indices] if not isinstance(indices, list) else indices
     for i, idx in enumerate(indices):
         s = shape[i]
         if isinstance(idx, slice):
             step = 1 if idx.step is None else idx.step
             if idx.start is None:
-                start = 0 if step >= 0 else s
+                start = 0 if step >= 0 else s-1
             else:
                 start = idx.start
+            start = start + s if start < 0 else start
             if idx.stop is None:
-                stop = s if step >= 0 else 0
+                stop = s if step >= 0 else -1
             else:
                 stop = idx.stop
-            start = start + s if start < 0 else start
-            stop = stop + s if stop < 0 else stop
-            indices[i] = slice(start, stop, step)
+            stop = stop + s if stop < 0 and idx.stop is not None else stop
+            indices[i] = slice(start, stop, step) if step >= 0 or allow_neg_step else ivy.arange(start, stop, step).to_list()
+        elif idx is Ellipsis:
+            pass
         else:
             indices[i] = idx + s if idx < 0 else idx
-    return indices
+    if ind_type not in (tuple, list):
+        return indices[0]
+    return tuple(indices)
 
 
 def _numel(shape):
