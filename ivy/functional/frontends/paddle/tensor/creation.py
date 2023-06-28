@@ -79,5 +79,5 @@ def empty_like(x, dtype=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def diagflat(x, offset=None, name=None):
+def diagflat(x, offset=0, name=None):
     return ivy.diagflat(x, offset=offset)

@@ -366,7 +366,7 @@ def test_paddle_empty_like(
 @handle_frontend_test(
     fn_tree="paddle.diagflat",
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
