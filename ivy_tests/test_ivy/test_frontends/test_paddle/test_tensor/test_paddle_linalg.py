@@ -657,3 +657,37 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         atol=1e-5,
         p=p,
     )
+
+# dot
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.dot", 
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(1,),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        max_dim_size=2,
+        min_dim_size=1,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_dot(
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1]
+    )
