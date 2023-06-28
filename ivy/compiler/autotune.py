@@ -9,6 +9,9 @@ from typing import Callable, Optional, Tuple
 
 
 SUPPORTED_FRAMEWORKS = ["torch", "tensorflow", "flax", "haiku"]  # flax, haiku?
+
+FRAMEWORKS_TO_INSTALL_PIP = ["numpy","torch", "tensorflow", "jax", "jaxlib", "dm-haiku", "flax", "keras"]
+FRAMEWORKS_TO_INSTALL_CONDA = ["numpy", "pytorch", "tensorflow", "jax", "jaxlib", "dm-haiku", "flax", "keras"]
 ITERATIONS = (
     100  # number of iterations used when benchmarking runtime post transpilation
 )
@@ -30,26 +33,26 @@ def create_conda_environment(env_name):
 def install_frameworks(environment, use_conda=False):
     if not use_conda:
         activate_script = os.path.join(environment, "bin", "activate")
-        framework_names = " ".join(SUPPORTED_FRAMEWORKS)
+        framework_names = " ".join(FRAMEWORKS_TO_INSTALL_PIP)
         subprocess.call(
-            f"source {activate_script} && pip install {framework_names}", shell=True
+            f". {activate_script} && pip install {framework_names}", shell=True, stdout=subprocess.DEVNULL
         )
     else:
         activate_script = f"conda activate {environment}"
-        framework_names = " ".join(SUPPORTED_FRAMEWORKS)
+        framework_names = " ".join(FRAMEWORKS_TO_INSTALL_CONDA)
         subprocess.call(
-            f"{activate_script} && conda install -y {framework_names}", shell=True
+            f"{activate_script} && conda install -y {framework_names}", shell=True, stdout=subprocess.DEVNULL
         )
 
 
 def cleanup_environment(environment, use_conda=False):
     if not use_conda:
         activate_script = os.path.join(environment, "bin", "activate")
-        subprocess.call(f"source {activate_script} && deactivate", shell=True)
+        subprocess.call(f". {activate_script} && deactivate", shell=True, stdout=subprocess.DEVNULL)
         shutil.rmtree(environment)
     else:
         subprocess.call(f"conda deactivate", shell=True)
-        subprocess.call(f"conda env remove -y -n {environment}", shell=True)
+        subprocess.call(f"conda env remove -y -n {environment}", shell=True, stdout=subprocess.DEVNULL)
 
 
 def autotune(
