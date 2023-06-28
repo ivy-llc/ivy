@@ -27,9 +27,9 @@ Function Types
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131
 .. _`ivy.linear`: https://github.com/unifyai/ivy/blob/207515ff1a815ace1a976ea37e8cff1419965e36/ivy/functional/ivy/layers.py#L31
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/functional/backends/torch/layers.py#L30
+.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/torch/layers.py#L30
 .. _`_wrap_function checks`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L980
-.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L1231
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 .. _`handle`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
 .. _`repo`: https://github.com/unifyai/ivy
