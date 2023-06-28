@@ -34,9 +34,8 @@ def full(
     device=None,
     requires_grad=None,
 ):
-    ret = ivy.full(
-        shape=size, fill_value=fill_value, dtype=dtype, device=device, out=out
-    )
+    fill_value = ivy.to_scalar(fill_value)
+    ret = ivy.full(size, fill_value, dtype=dtype, device=device, out=out)
     return ret
 
 
@@ -226,6 +225,7 @@ def full_like(
     requires_grad=False,
     memory_format=None,
 ):
+    fill_value = ivy.to_scalar(fill_value)
     return ivy.full_like(input, fill_value, dtype=dtype, device=device)
 
 
