@@ -1603,8 +1603,8 @@ def test_log_poisson_loss(
         compute_full_loss=compute_full_loss,
         atol=1e-2,
     )
-    
-    
+
+
 # weighted moments
 @handle_frontend_test(
     fn_tree="tensorflow.nn.weighted_moments",
@@ -1641,4 +1641,4 @@ def test_tensorflow_weighted_moments(
         axes=axis,
         frequency_weights=fw[0],
         keepdims=keepdims,
-    )    
+    )

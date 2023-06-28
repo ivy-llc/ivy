@@ -7,17 +7,13 @@ from hypothesis import strategies as st, assume
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_first_matrix,
-    _get_second_matrix,
-)
 
 
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_solve(
@@ -175,8 +171,8 @@ def test_numpy_tensorinv(
 # lstsq
 @handle_frontend_test(
     fn_tree="numpy.linalg.lstsq",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_lstsq(
