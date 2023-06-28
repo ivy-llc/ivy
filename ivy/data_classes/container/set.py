@@ -361,6 +361,7 @@ class _ContainerWithSet(ContainerBase):
         Example
         -------
         1. Get the unique values of a container.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values()
         >>> print(y)
@@ -369,7 +370,9 @@ class _ContainerWithSet(ContainerBase):
             'b': [2, 3],
             'c': [4]
         }
+
         2. Get the unique values of a container along a specific key chain.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values(key_chains=["a", "b"])
         >>> print(y)
@@ -377,7 +380,9 @@ class _ContainerWithSet(ContainerBase):
             'a': [1, 2, 3],
             'b': [2, 3]
         }
+
         3. Get the unique values of a container and store them in a new container.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = ivy.Container()
         >>> y = x.unique_values(out=y)
