@@ -259,3 +259,11 @@ def logit(x, eps=None, name=None):
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
     return ivy.fmax(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)
