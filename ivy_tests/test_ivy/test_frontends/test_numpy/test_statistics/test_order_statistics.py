@@ -86,7 +86,7 @@ def test_numpy_quantile(
         overwrite_input=None,
         method=interpolation,
         keepdims=keep_dims,
-        interpolation=interpolation,
+        interpolation=None,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
