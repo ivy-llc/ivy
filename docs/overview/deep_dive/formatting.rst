@@ -91,7 +91,7 @@ If something goes wrong, you will see the following output:
     - hook id: black
     - files were modified by this hook
 
-    reformatted ivy\stateful\activations.py
+    reformatted ivy/stateful/activations.py
 
     All done! ✨ 🍰 ✨
     1 file reformatted.
