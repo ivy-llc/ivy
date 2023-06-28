@@ -1563,3 +1563,82 @@ def test_tensorflow_pool(
         data_format=data_format,
         dilations=dilation,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.log_poisson_loss",
+    dtype_target_log_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        shared_dtype=True,
+    ),
+    compute_full_loss=st.sampled_from([True, False]),
+    test_with_out=st.just(False),
+)
+def test_log_poisson_loss(
+    *,
+    dtype_target_log_inputs,
+    compute_full_loss,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, input_values = dtype_target_log_inputs
+    targets, log_input = input_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        targets=targets,
+        log_input=log_input,
+        compute_full_loss=compute_full_loss,
+        atol=1e-2,
+    )
+
+
+# weighted moments
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.weighted_moments",
+    dtype_and_x_and_axis=_statistical_dtype_values(function="mean"),
+    dtype_and_fw=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0.00001,
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_weighted_moments(
+    *,
+    dtype_and_x_and_axis,
+    dtype_and_fw,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_and_x_and_axis
+    fw_dtype, fw = dtype_and_fw
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axes=axis,
+        frequency_weights=fw[0],
+        keepdims=keepdims,
+    )
