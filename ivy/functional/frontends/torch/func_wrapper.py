@@ -157,28 +157,3 @@ def torch_to_numpy_style_args(func):
         return func(*args, **new_kwargs)
 
     return wrapper
-
-
-# numpy_compatibility_arg_names = {
-#     "dim": ["axis"],
-#     # "keepdim": ["keepdims"],
-#     # "input": ["x", "a", "x1"],
-#     # "other": ["x2"],
-# }
-
-# def torch_to_numpy_style_args(func):
-#     """
-#     Decorator for translating argument names from PyTorch style to NumPy style.
-#     """
-#     @functools.wraps(func)
-#     def wrapper(*args, **kwargs):
-#         # Translate PyTorch-style args to NumPy-style args
-#         new_kwargs = {}
-#         for k, v in kwargs.items():
-#             ivy_names = numpy_compatibility_arg_names.get(k, [k])
-#             for ivy_name in ivy_names:
-#                 new_kwargs[ivy_name] = v
-#         if 'axis' in new_kwargs:
-#             new_kwargs['dim'] = new_kwargs.pop('axis')
-#         return func(*args, **new_kwargs)
-#     return wrapper
