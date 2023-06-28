@@ -93,7 +93,7 @@ def random_normal(
     )
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -179,6 +179,8 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x.shape == ():
+        return x
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:

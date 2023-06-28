@@ -91,7 +91,7 @@ def moveaxis(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -130,7 +130,7 @@ def flipud(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
+    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -176,7 +176,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -372,24 +372,33 @@ def atleast_2d(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
         ary = ivy.array(ary, copy=copy).data
-        if ary.ndim < 3:
-            with ivy.ArrayMode(False):
-                res.append(ivy.expand_dims(ary, axis=list(range(3 - ary.ndim))))
+        if ary.ndim == 0:
+            result = ary.reshape((1, 1, 1))
+        elif ary.ndim == 1:
+            result = ary[None, :, None]
+        elif ary.ndim == 2:
+            result = ary[:, :, None]
         else:
-            res.append(ary)
+            result = ary
+        res.append(result)
     if len(res) == 1:
         return res[0]
-    return res
+    else:
+        return res
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def take_along_axis(
@@ -548,7 +557,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,

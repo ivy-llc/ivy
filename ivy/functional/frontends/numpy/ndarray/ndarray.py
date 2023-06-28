@@ -336,8 +336,13 @@ class ndarray:
             out=out,
         )
 
-    def tofile(self, fid, sep="", format_="%s"):
-        return self._ivy_array.to_file(fid, sep=sep, format_=format_)
+    def tofile(self, fid, /, sep="", format_="%s"):
+        if self.ndim == 0:
+            string = str(self)
+        else:
+            string = sep.join([str(item) for item in self.tolist()])
+        with open(fid, "w") as f:
+            f.write(string)
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
@@ -389,8 +394,8 @@ class ndarray:
     ):
         return np_frontend.copy(self)
 
-    def __deepcopy__(self, memo):
-        return self.__class__(np_frontend.copy(self))
+    def __deepcopy__(self, memo, /):
+        return self.ivy_array.__deepcopy__(memo)
 
     def __neg__(
         self,
@@ -523,3 +528,6 @@ class ndarray:
         xmax = self.max(axis=axis, out=out, keepdims=keepdims)
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
+
+    def __rshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value)

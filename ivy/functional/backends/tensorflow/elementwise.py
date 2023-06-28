@@ -379,7 +379,7 @@ def isinf(
         return ivy.where(where, tf.zeros_like(x, tf.bool), x)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": ("complex", "bool")}, backend_version)
 def isnan(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -483,14 +483,13 @@ def logaddexp(
     where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # ToDo: implement using tf.experimental.numpy.logaddexp if this becomes stable and
-    # supports gradients in future
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+
     dtype = x1.dtype
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return ivy.where(
-        where, ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype), (x1, x2)
+        where, tf.experimental.numpy.logaddexp(x1, x2), (x1, x2)
     )
 
 
@@ -530,7 +529,13 @@ def logaddexp2(
     if not ivy.is_float_dtype(x1):
         x1 = tf.cast(x1, ivy.default_float_dtype(as_native=True))
         x2 = tf.cast(x2, ivy.default_float_dtype(as_native=True))
-    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2))
+    amax = ivy.maximum(x1, x2)
+    delta = x1 - x2
+    return ivy.where(
+        ivy.isnan(delta),
+        x1 + x2,
+        amax + ivy.log1p(ivy.exp2(-ivy.abs(delta))) / ivy.log(2.0).astype(amax.dtype),
+    )
 
 
 def logical_and(

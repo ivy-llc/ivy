@@ -70,7 +70,12 @@ def histogram(
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float",)},
+    {
+        "2.12.0 and below": (
+            "float",
+            "complex",
+        )
+    },
     backend_version,
 )
 def median(
