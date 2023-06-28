@@ -311,3 +311,19 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "uint8",
+                "int8",
+                "int16",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def equal_all(self, y, name=None):
+        return paddle_frontend.equal_all(self, y)
