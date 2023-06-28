@@ -1,10 +1,10 @@
 # # TODO: uncomment after frontend is not required
 # global
-from hypothesis import strategies as st
+# from hypothesis import strategies as st
 
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+# # local
+# import ivy_tests.test_ivy.helpers as helpers
+# from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # ### Helpers ###
@@ -106,34 +106,34 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 #     return dtype, x, type, n, axis, norm
 
 
-@st.composite
-def x_and_fft2(draw):
-    min_fft2_points = 2
-    dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
-    x_dim = draw(
-        helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
-        )
-    )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=tuple(x_dim),
-            min_value=-1e5,
-            max_value=1e5,
-            allow_inf=False,
-            large_abs_safety_factor=2.5,
-            small_abs_safety_factor=2.5,
-            safety_factor_scale="log",
-        )
-    )
-    s = (
-        draw(st.integers(min_fft2_points, 256)),
-        draw(st.integers(min_fft2_points, 256)),
-    )
-    dim = draw(st.sampled_from([(0, 1), (-1, -2), (1, 0)]))
-    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
-    return dtype, x, s, dim, norm
+# @st.composite
+# def x_and_fft2(draw):
+#     min_fft2_points = 2
+#     dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
+#     x_dim = draw(
+#         helpers.get_shape(
+#             min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
+#         )
+#     )
+#     x = draw(
+#         helpers.array_values(
+#             dtype=dtype[0],
+#             shape=tuple(x_dim),
+#             min_value=-1e5,
+#             max_value=1e5,
+#             allow_inf=False,
+#             large_abs_safety_factor=2.5,
+#             small_abs_safety_factor=2.5,
+#             safety_factor_scale="log",
+#         )
+#     )
+#     s = (
+#         draw(st.integers(min_fft2_points, 256)),
+#         draw(st.integers(min_fft2_points, 256)),
+#     )
+#     dim = draw(st.sampled_from([(0, 1), (-1, -2), (1, 0)]))
+#     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+#     return dtype, x, s, dim, norm
 
 
 # ### Tests ###
@@ -252,28 +252,28 @@ def x_and_fft2(draw):
 #     )
 
 
-# fft2
-@handle_frontend_test(
-    fn_tree="scipy.fft.fft2",
-    d_x_d_s_n=x_and_fft2(),
-    test_with_out=st.just(False),
-)
-def test_fft2(
-    d_x_d_s_n,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    dtype, x, s, ax, norm = d_x_d_s_n
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x,
-        s=s,
-        axes=ax,
-        norm=norm,
-    )
+# # fft2
+# @handle_frontend_test(
+#     fn_tree="scipy.fft.fft2",
+#     d_x_d_s_n=x_and_fft2(),
+#     test_with_out=st.just(False),
+# )
+# def test_fft2(
+#     d_x_d_s_n,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     dtype, x, s, ax, norm = d_x_d_s_n
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x,
+#         s=s,
+#         axes=ax,
+#         norm=norm,
+#     )
