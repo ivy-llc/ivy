@@ -888,3 +888,11 @@ def fft2(
     # Apply the same normalization as 'backward' in NumPy
     tf_fft2 = _fft2_norm(tf_fft2, s, dim, norm)
     return tf_fft2
+
+
+def overlap_and_add(
+    signal: Union[tf.Tensor, tf.Variable],
+    frame_step: int,
+    name: str = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.overlap_and_add(signal=signal, frame_step=frame_step, name=name)

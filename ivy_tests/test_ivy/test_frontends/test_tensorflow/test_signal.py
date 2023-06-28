@@ -91,3 +91,44 @@ def test_tensorflow_idct(
         norm=norm,
         atol=1e-01,
     )
+
+
+@st.composite
+def valid_overlad_and_add(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            max_value=1e6,
+            min_value=-1e6,
+            min_num_dims=2,
+            shared_dtype=True,
+        )
+    )
+    frame_step = draw(helpers.ints(min_value=1, max_value=1e6))
+    return dtype, x, frame_step
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.signal.overlap_and_add",
+    dtype_x_and_args=valid_overlad_and_add(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_overlap_and_add(
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, frame_step = dtype_x_and_args
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        signal=x[0],
+        frame_step=frame_step,
+        name=None,
+    )
