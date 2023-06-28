@@ -44,6 +44,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
     _get_dtype_and_square_matrix,
+    _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
@@ -9814,7 +9815,7 @@ def test_torch_instance_addcdiv_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="cholesky",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(),
     upper=st.booleans(),
 )
 def test_torch_instance_cholesky(
@@ -9827,8 +9828,9 @@ def test_torch_instance_cholesky(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    x = x[0]
     # make symmetric positive-definite
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    x = np.matmul(x.swapaxes(-1, -2), x) + np.identity(x.shape[-1]) * 1e-3
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
