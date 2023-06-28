@@ -87,11 +87,11 @@ def reshape(input, shape):
 
 
 @to_ivy_arrays_and_back
-def squeeze(input, dim):
+def squeeze(input, dim=None):
     if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
             return input
-    return ivy.squeeze(input, dim)
+    return ivy.squeeze(input, axis=dim)
 
 
 @to_ivy_arrays_and_back
@@ -210,14 +210,14 @@ def split(tensor, split_size_or_sections, dim=0):
 
 @to_ivy_arrays_and_back
 def tensor_split(input, indices_or_sections, dim=0):
-    if isinstance(indices_or_sections, (list, tuple)):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
         indices_or_sections = (
             ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[dim]])
             .astype(ivy.int8)
             .to_list()
         )
     return ivy.split(
-        input, num_or_size_splits=indices_or_sections, axis=dim, with_remainder=False
+        input, num_or_size_splits=indices_or_sections, axis=dim, with_remainder=True
     )
 
 
@@ -228,40 +228,43 @@ def unbind(input, dim=0):
     return tuple([x.reshape(tuple(shape)) for x in split(input, 1, dim=dim)])
 
 
-def _get_indices_or_sections(indices_or_sections, indices, sections):
-    if not ivy.exists(indices_or_sections):
-        if ivy.exists(indices) and not ivy.exists(sections):
-            indices_or_sections = indices
-        elif ivy.exists(sections) and not ivy.exists(indices):
-            indices_or_sections = sections
-        else:
-            raise ivy.utils.exception.IvyError(
-                "got invalid argument for indices_or_sections"
-            )
-    return indices_or_sections
-
-
 @to_ivy_arrays_and_back
-def dsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
-    indices_or_sections = _get_indices_or_sections(
-        indices_or_sections, indices, sections
-    )
+def dsplit(input, indices_or_sections, /):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[2]])
+            .astype(ivy.int8)
+            .to_list()
+        )
     return tuple(ivy.dsplit(input, indices_or_sections))
 
 
 @to_ivy_arrays_and_back
-def hsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
-    indices_or_sections = _get_indices_or_sections(
-        indices_or_sections, indices, sections
-    )
+def hsplit(input, indices_or_sections=None, /):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        if input.ndim == 1:
+            indices_or_sections = (
+                ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[0]])
+                .astype(ivy.int8)
+                .to_list()
+            )
+        else:
+            indices_or_sections = (
+                ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[1]])
+                .astype(ivy.int8)
+                .to_list()
+            )
     return tuple(ivy.hsplit(input, indices_or_sections))
 
 
 @to_ivy_arrays_and_back
-def vsplit(input, indices_or_sections=None, /, *, indices=None, sections=None):
-    indices_or_sections = _get_indices_or_sections(
-        indices_or_sections, indices, sections
-    )
+def vsplit(input, indices_or_sections=None, /):
+    if isinstance(indices_or_sections, (list, tuple, ivy.Array)):
+        indices_or_sections = (
+            ivy.diff(indices_or_sections, prepend=[0], append=[input.shape[0]])
+            .astype(ivy.int8)
+            .to_list()
+        )
     return tuple(ivy.vsplit(input, indices_or_sections))
 
 
@@ -284,21 +287,6 @@ def conj(input):
 
 @to_ivy_arrays_and_back
 def index_add(input, dim, index, source, *, alpha=1, out=None):
-    # Potential Bug:
-    #   There is an issue with the torch backend (not caused by ivy)
-    #   where half precision (float16) values get ignored in summation:
-    #
-    #   >>> a = torch.tensor(-14., dtype=torch.float16)
-    #   >>> b = torch.tensor(1.014, dtype=torch.float16)
-    #   >>> a+b
-    #   tensor(-12.9844, dtype=torch.float16)
-    #   >>> a = torch.tensor(-24., dtype=torch.float16)
-    #   >>> a+b
-    #   tensor(-22.9844, dtype=torch.float16)
-    #   >>> a = torch.tensor(-34., dtype=torch.float16)
-    #   >>> a+b
-    #   tensor(-33., dtype=torch.float16)
-    #   >>>
     input = ivy.swapaxes(input, dim, 0)
     source = ivy.swapaxes(source, dim, 0)
     _to_adds = []
@@ -309,7 +297,7 @@ def index_add(input, dim, index, source, *, alpha=1, out=None):
             _to_adds.append(ivy.zeros_like(source[0]))
         _to_add_cum = ivy.get_item(source, index[0][1])
         while (1 < len(index)) and (index[0][0] == index[1][0]):
-            _to_add_cum = ivy.add(_to_add_cum, ivy.get_item(source, index.pop(1)[1]))
+            _to_add_cum = _to_add_cum + ivy.get_item(source, index.pop(1)[1])
         index.pop(0)
         _to_adds.append(_to_add_cum)
     while len(_to_adds) < input.shape[0]:
@@ -322,3 +310,45 @@ def index_add(input, dim, index, source, *, alpha=1, out=None):
     ret = ivy.add(input, _to_adds, alpha=alpha)
     ret = ivy.swapaxes(ret, 0, dim, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def index_copy(input, dim, index, source, *, out=None):
+    input = ivy.swapaxes(input, dim, 0)
+    source = ivy.swapaxes(source, dim, 0)
+    index = sorted(zip(ivy.to_list(index), range(len(index))), key=(lambda x: x[0]))
+    res = []
+    while index:
+        _curr_idx = index[0][0]
+        for i in range(len(res), _curr_idx):
+            res.append(ivy.get_item(input, i))
+        while (1 < len(index)) and (index[0][0] == index[1][0]):
+            index.pop(0)
+        res.append(ivy.get_item(source, index[0][1]))
+        index.pop(0)
+    for i in range(len(res), input.shape[0]):
+        res.append(ivy.get_item(input, i))
+    res = ivy.stack(res)
+    if len(input.shape) < 2:
+        res = ivy.flatten(res)
+
+    return ivy.swapaxes(res, 0, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def masked_select(input, mask, out=None):
+    return ivy.flatten(input[mask], out=out)
+
+
+@to_ivy_arrays_and_back
+def take(input, index):
+    input = ivy.reshape(input, (-1,))
+    return ivy.gather(input, index, axis=0)
+
+
+@to_ivy_arrays_and_back
+def narrow(input, dim, start, length):
+    num_dims = ivy.get_num_dims(input)
+    slices = [slice(None)] * num_dims
+    slices[dim] = slice(start, start + length)
+    return input[tuple(slices)]

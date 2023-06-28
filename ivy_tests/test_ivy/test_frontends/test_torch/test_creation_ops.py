@@ -2,6 +2,7 @@
 import ivy
 from hypothesis import strategies as st, assume
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,12 +14,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @st.composite
 def _fill_value(draw):
+    with_array = draw(st.sampled_from([True, False]))
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        ret = draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+        ret = draw(helpers.ints(min_value=-5, max_value=5))
+    else:
+        ret = draw(helpers.floats(min_value=-5, max_value=5))
+    if with_array:
+        return np.array(ret, dtype=dtype)
+    else:
+        return ret
 
 
 @st.composite
@@ -258,7 +265,6 @@ def test_torch_empty(
     fn_tree="torch.arange",
     start_stop_step=_start_stop_step(),
     dtype=helpers.get_dtypes("float", full=False),
-    number_positional_args=st.just(3),
 )
 def test_torch_arange(
     *,
@@ -279,6 +285,7 @@ def test_torch_arange(
         start=start,
         end=stop,
         step=step,
+        out=None,
         dtype=dtype[0],
         device=on_device,
     )
@@ -687,4 +694,49 @@ def test_torch_from_dlpack(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+    )
+
+
+@st.composite
+def _get_dtype_buffer_count_offset(draw):
+    dtype, value = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        )
+    )
+    value = np.array(value)
+    length = value.size
+    value = value.tobytes()
+
+    offset = draw(helpers.ints(min_value=0, max_value=length - 1))
+    count = draw(helpers.ints(min_value=-(2**30), max_value=length - offset))
+    if count == 0:
+        count = -1
+    offset = offset * np.dtype(dtype[0]).itemsize
+
+    return dtype, value, count, offset
+
+
+@handle_frontend_test(
+    fn_tree="torch.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+)
+def test_torch_frombuffer(
+    dtype_buffer_count_offset,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
     )

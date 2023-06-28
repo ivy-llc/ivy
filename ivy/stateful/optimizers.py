@@ -72,8 +72,7 @@ class Optimizer(abc.ABC):
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
         Update nested variables container v from update step, using nested grads
-        container. Override this abstract method with child class custom
-        implementation.
+        container. Override this abstract method with child class custom implementation.
 
         Parameters
         ----------
@@ -86,7 +85,6 @@ class Optimizer(abc.ABC):
         -------
         ret
             The updated variables, following update step.
-
         """
         raise ivy.utils.exceptions.IvyNotImplementedException
 
@@ -96,7 +94,7 @@ class Optimizer(abc.ABC):
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
         """
-        Calls the custom child step function implementation
+        Call the custom child step function implementation.
 
         Parameters
         ----------
@@ -136,7 +134,7 @@ class Optimizer(abc.ABC):
         self, v: ivy.Container, grads: ivy.Container, ignore_missing: bool = False
     ):
         """
-        Update nested variables container v from overridden private self._step
+        Update nested variables container v from overridden private self._step.
 
         Parameters
         ----------
@@ -153,7 +151,6 @@ class Optimizer(abc.ABC):
         -------
         ret
             The updated variables, following update step.
-
         """
         self._count += 1
         self._initialized = True
@@ -198,8 +195,8 @@ class SGD(Optimizer):
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by gradient descent step,
-        using nested gradients container.
+        Update nested variables container v by gradient descent step, using nested
+        gradients container.
 
         Parameters
         ----------
@@ -212,7 +209,6 @@ class SGD(Optimizer):
         -------
         ret
             The new updated variables container, following gradient descent step.
-
         """
         return ivy.gradient_descent_update(
             v,
@@ -234,7 +230,6 @@ class SGD(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -290,7 +285,6 @@ class LARS(Optimizer):
         -------
         ret
             The new updated variables container, following LARS step.
-
         """
         return ivy.lars_update(
             v,
@@ -313,7 +307,6 @@ class LARS(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({})
 
 
@@ -373,8 +366,8 @@ class Adam(Optimizer):
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by Adam update step,
-        using nested grads container.
+        Update nested variables container v by Adam update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -387,7 +380,6 @@ class Adam(Optimizer):
         -------
         ret
             The updated variables, following Adam update step.
-
         """
         if self._first_pass:
             self._mw = grads
@@ -422,7 +414,6 @@ class Adam(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})
 
 
@@ -489,8 +480,8 @@ class LAMB(Optimizer):
 
     def _step(self, v: ivy.Container, grads: ivy.Container):
         """
-        Update nested variables container v by LAMB update step,
-        using nested grads container.
+        Update nested variables container v by LAMB update step, using nested grads
+        container.
 
         Parameters
         ----------
@@ -526,7 +517,8 @@ class LAMB(Optimizer):
         return new_v
 
     def set_state(self, state: ivy.Container):
-        """Set state of the optimizer.
+        """
+        Set state of the optimizer.
 
         Parameters
         ----------
@@ -538,5 +530,4 @@ class LAMB(Optimizer):
 
     @property
     def state(self):
-
         return ivy.Container({"mw": self._mw, "vw": self._vw})

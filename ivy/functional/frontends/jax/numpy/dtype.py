@@ -10,10 +10,6 @@ from ivy.functional.frontends.numpy import dtype as np_dtype
 
 @to_ivy_arrays_and_back
 def can_cast(from_, to, casting="safe"):
-    """
-    Returns True if casting betweer two dtypes is possible according to casting rules,
-    False otherwise.
-    """
     ivy.utils.assertions.check_elem_in_list(
         casting,
         ["no", "equiv", "safe", "same_kind", "unsafe"],
@@ -81,3 +77,8 @@ def promote_types(type1, type2, /):
     if isinstance(type2, np_dtype):
         type2 = type2._ivy_dtype
     return np_dtype(promote_types_jax(type1, type2))
+
+
+@to_ivy_arrays_and_back
+def result_type(*args):
+    return ivy.result_type(*args)

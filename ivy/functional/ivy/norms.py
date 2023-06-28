@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_function,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,12 +19,13 @@ from ivy.utils.exceptions import handle_exceptions
 # ------#
 
 
-@handle_array_function
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_out_argument
+@inputs_to_ivy_arrays
+@handle_array_function
 def layer_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     normalized_idxs: List[int],
@@ -35,7 +37,8 @@ def layer_norm(
     new_std: float = 1.0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Applies Layer Normalization over a mini-batch of inputs
+    """
+    Apply Layer Normalization over a mini-batch of inputs.
 
     Parameters
     ----------
@@ -137,6 +140,3 @@ def layer_norm(
         return ivy.multiply(ivy.multiply(x, scale), new_std, out=out)
 
     return ivy.multiply(x, new_std, out=out)
-
-
-layer_norm.mixed_function = True

@@ -54,6 +54,7 @@ def map_nested_dicts(ob, func):
 # Tests #
 # ------#
 
+
 # index_nest
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": (((2,), (4,)), ((6,), (8,)))}}]
@@ -270,7 +271,6 @@ def test_all_nested_indices_w_extra_nest_types():
 
 # copy_nest
 def test_copy_nest():
-
     nest = {
         "a": [ivy.array([0]), ivy.array([1])],
         "b": {"c": [ivy.array([[2], [4]]), ivy.array([[6], [8]])]},
@@ -288,10 +288,16 @@ def test_copy_nest():
     assert nest["b"]["c"][0] is nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
 
+    from collections import namedtuple
+
+    NAMEDTUPLE = namedtuple("OutNamedTuple", ["x", "y"])
+    nest = NAMEDTUPLE(x=ivy.array([1.0]), y=ivy.array([2.0]))
+    copied_nest = ivy.copy_nest(nest, include_derived=True)
+    assert isinstance(copied_nest, NAMEDTUPLE)
+
 
 # copy_nest_w_extra_nest_types
 def test_copy_nest_w_extra_nest_types():
-
     nest = {
         "a": [ivy.array([0]), ivy.array([1])],
         "b": {"c": [ivy.array([2, 4]), ivy.array([6, 8])]},
@@ -390,7 +396,6 @@ def test_prune_nest_at_indices(nest, indices):
 @pytest.mark.parametrize("index", [("a", 0, 0), ("a", 1, 0), ("b", "c", 0)])
 @pytest.mark.parametrize("value", [1])
 def test_insert_into_nest_index(nest, index, value):
-
     ivy.insert_into_nest_at_index(nest, index, value)
 
     assert ivy.index_nest(nest, index) == value
@@ -403,7 +408,6 @@ def test_insert_into_nest_index(nest, index, value):
 @pytest.mark.parametrize("indices", [(("a", 0, 0), ("b", "c", 1, 0))])
 @pytest.mark.parametrize("values", [(1, 2)])
 def test_insert_into_nest_at_indices(nest, indices, values):
-
     ivy.insert_into_nest_at_indices(nest, indices, values)
 
     def indices_nest(nest, indices):

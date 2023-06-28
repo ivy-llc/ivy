@@ -34,9 +34,8 @@ def full(
     device=None,
     requires_grad=None,
 ):
-    ret = ivy.full(
-        shape=size, fill_value=fill_value, dtype=dtype, device=device, out=out
-    )
+    fill_value = ivy.to_scalar(fill_value)
+    ret = ivy.full(size, fill_value, dtype=dtype, device=device, out=out)
     return ret
 
 
@@ -97,31 +96,23 @@ def zeros_like(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def arange(
-    *args,
+    start=0,
+    end=None,
+    step=1,
+    *,
     out=None,
     dtype=None,
     layout=None,
     device=None,
     requires_grad=False,
 ):
-    if len(args) == 1:
-        end = args[0]
-        start = 0
-        step = 1
-    elif len(args) == 3:
-        start, end, step = args
-    else:
-        ivy.utils.assertions.check_true(
-            len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported",
-        )
-    return ivy.arange(start, end, step, dtype=dtype, device=device)
+    return ivy.arange(start, end, step, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def range(
     *args,
     dtype=None,
@@ -132,6 +123,10 @@ def range(
     if len(args) == 1:
         end = args[0]
         start = 0
+        step = 1
+    elif len(args) == 2:
+        end = args[1]
+        start = args[0]
         step = 1
     elif len(args) == 3:
         start, end, step = args
@@ -157,7 +152,7 @@ def range(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -174,7 +169,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,
@@ -197,8 +192,7 @@ def logspace(
 def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
-    ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
-    return ret
+    return ivy.eye(n, m, dtype=dtype, device=device, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -231,6 +225,7 @@ def full_like(
     requires_grad=False,
     memory_format=None,
 ):
+    fill_value = ivy.to_scalar(fill_value)
     return ivy.full_like(input, fill_value, dtype=dtype, device=device)
 
 
@@ -285,3 +280,15 @@ def asarray(
     copy=None,
 ):
     return ivy.asarray(obj, copy=copy, dtype=dtype, device=device)
+
+
+@to_ivy_arrays_and_back
+def frombuffer(
+    buffer,
+    *,
+    dtype,
+    count=-1,
+    offset=0,
+    requires_grad=False,
+):
+    return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)

@@ -1,5 +1,4 @@
 from typing import Callable, Optional, List, Union, Iterable, Tuple
-from ._compiler import transpile as _transpile, compile as _compile, unify as _unify
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -29,8 +28,9 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    """Takes `fn` and compiles it into a more efficient composition of
-    backend operations.
+    from ._compiler import compile as _compile
+    """
+    Take `fn` and compiles it into a more efficient composition of backend operations.
 
     Parameters
     ----------
@@ -120,9 +120,10 @@ def transpile(
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    """Transpiles Callable objects passed as arguments.
-    If args and kwargs are specified, transpilation is performed eagerly,
-    otherwise, transpilation will happen lazily.
+    from ._compiler import transpile as _transpile
+    """
+    Transpile Callable objects passed as arguments. If args and kwargs are specified,
+    transpilation is performed eagerly, otherwise, transpilation will happen lazily.
 
     Parameters
     ----------
@@ -167,6 +168,7 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
+    from ._compiler import unify as _unify
 
     return _unify(
         *objs,

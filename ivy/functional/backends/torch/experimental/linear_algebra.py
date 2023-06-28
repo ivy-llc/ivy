@@ -11,7 +11,7 @@ from .. import backend_version
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 
-@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -166,6 +166,7 @@ def multi_dot(
 multi_dot.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.0 and below": ("float16", "bfloat16")}, backend_version)
 def cond(
     x: torch.Tensor,
     /,
@@ -177,3 +178,59 @@ def cond(
 
 
 cond.support_native_out = False
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def cov(
+    x1: torch.Tensor,
+    x2: torch.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[torch.Tensor] = None,
+    aweights: Optional[torch.Tensor] = None,
+    dtype: Optional[torch.dtype] = None,
+) -> torch.Tensor:
+    # dtype casts separately
+    if fweights is not None:
+        fweights = fweights.type(torch.int64)
+    if aweights is not None:
+        aweights = aweights.type(torch.float64)
+
+    if x1.dim() > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if x2.dim() > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if ddof is None:
+        if bias == 0:
+            ddof = 1
+        else:
+            ddof = 0
+
+    if dtype is None:
+        x1 = x1.type(torch.float64)
+        if x2 is not None:
+            x2 = x2.type(torch.float64)
+    else:
+        x1 = x1.type(dtype)
+        if x2 is not None:
+            x2 = x2.type(dtype)
+
+    X = x1
+    if not rowVar and len(x1.shape) != 1:
+        X = torch.t(x1)
+
+    if x2 is not None:
+        if not rowVar and len(x2.shape) != 1:
+            x2 = torch.t(x2)
+        X = torch.vstack((X, x2))
+
+    return torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
+
+
+cov.support_native_out = False

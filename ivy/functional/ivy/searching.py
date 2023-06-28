@@ -19,12 +19,12 @@ from ivy.func_wrapper import (
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -35,9 +35,10 @@ def argmax(
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices of the maximum values along a specified axis. When the
-    maximum value occurs multiple times, only the indices corresponding to the first
-    occurrence are returned.
+    """
+    Return the indices of the maximum values along a specified axis. When the maximum
+    value occurs multiple times, only the indices corresponding to the first occurrence
+    are returned.
 
     Parameters
     ----------
@@ -70,7 +71,8 @@ def argmax(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmax.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -111,7 +113,6 @@ def argmax(
     >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
-
     """
     return current_backend(x).argmax(
         x,
@@ -123,25 +124,26 @@ def argmax(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     select_last_index: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices of the minimum values along a specified axis. When the
-    minimum value occurs multiple times, only the indices corresponding to the first
-    occurrence are returned.
+    """
+    Return the indices of the minimum values along a specified axis. When the minimum
+    value occurs multiple times, only the indices corresponding to the first occurrence
+    are returned.
 
     Parameters
     ----------
@@ -155,7 +157,7 @@ def argmin(
         singleton dimensions, and, accordingly, the result must be compatible with the
         input array (see Broadcasting). Otherwise, if False, the reduced axes
         (dimensions) must not be included in the result. Default = False.
-    output_dtype
+    dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
     out
         if axis is None, a zero-dimensional array containing the index of the first
@@ -171,7 +173,8 @@ def argmin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -216,23 +219,22 @@ def argmin(
         a:ivy.array(1),
         b:ivy.array(0)
     }
-
     """
     return current_backend(x).argmin(
         x,
         axis=axis,
         keepdims=keepdims,
-        output_dtype=output_dtype,
+        dtype=dtype,
         select_last_index=select_last_index,
         out=out,
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -241,7 +243,8 @@ def nonzero(
     size: Optional[int] = None,
     fill_value: Number = 0,
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
-    """Returns the indices of the array elements which are non-zero.
+    """
+    Return the indices of the array elements which are non-zero.
 
     Parameters
     ----------
@@ -274,7 +277,8 @@ def nonzero(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.nonzero.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -365,12 +369,12 @@ def nonzero(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -379,7 +383,8 @@ def where(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns elements chosen from x or y depending on condition.
+    """
+    Return elements chosen from x or y depending on condition.
 
     Parameters
     ----------
@@ -402,7 +407,8 @@ def where(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.where.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -455,19 +461,20 @@ def where(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the indices of all non-zero elements of the input array.
+    """
+    Return the indices of all non-zero elements of the input array.
 
     Parameters
     ----------
@@ -519,6 +526,5 @@ def argwhere(
         a: ivy.array([[0]]),
         b: ivy.array([[0], [1]])
     }
-
     """
     return current_backend(x).argwhere(x, out=out)

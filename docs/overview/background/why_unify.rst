@@ -10,7 +10,7 @@ Ivy just makes a wonderful thing **even better**…
 We’ll give two clear examples of how Ivy can streamline your ML workflow and save you **weeks** of development time.
 
 No More Re-implementations 🚧
-----------------------------
+-----------------------------
 
 Let’s say `DeepMind <https://deepmind.com>`_ release an awesome paper in JAX, and you’d love to try it out using your own framework of choice.
 Let’s use `PerceiverIO <https://deepmind.com/research/open-source/perceiver-IO>`_ as an example.
@@ -39,7 +39,7 @@ We have turned a 4-step process which can take 100s of hours into a 1-step proce
 Taking things further, we can use this automatic conversion tool to open up **all** ML tools to **everyone** regardless of their framework.
 
 “Infinite” Shelf-Life ✅
------------------------
+------------------------
 
 Wouldn’t it be nice if we could write some code once and know that it won’t become quickly obsolete among the frantic rush of framework development?
 

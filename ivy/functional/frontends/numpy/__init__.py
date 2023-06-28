@@ -1,6 +1,10 @@
-# flake8: noqa
+# global
+import sys
+
+# local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -8,6 +12,7 @@ from . import ndarray
 from .ndarray import *
 from . import scalars
 from .scalars import *
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -432,41 +437,33 @@ def promote_types_of_numpy_inputs(
     /,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
-    Promotes the dtype of the given ivy array inputs to a common dtype
-    based on numpy type promotion rules. While passing float or integer values or any
-    other non-array input to this function, it should be noted that the return will
-    be an array-like object. Therefore, outputs from this function should be used
-    as inputs only for those functions that expect an array-like or tensor-like objects,
-    otherwise it might give unexpected results.
+    Promote the dtype of the given ivy array inputs to a common dtype based on numpy
+    type promotion rules.
+
+    While passing float or integer values or any other non-array input
+    to this function, it should be noted that the return will be an
+    array-like object. Therefore, outputs from this function should be
+    used as inputs only for those functions that expect an array-like or
+    tensor-like objects, otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic numpy
-    if (
-        hasattr(x1, "shape")
-        and x1.shape == ()
-        and not (hasattr(x2, "shape") and x2.shape == ())
-    ):
-        x1 = ivy.to_scalar(x1)
-    if (
-        hasattr(x2, "shape")
-        and x2.shape == ()
-        and not (hasattr(x1, "shape") and x1.shape == ())
-    ):
-        x2 = ivy.to_scalar(x2)
+    # ToDo: Overflows not working properly for numpy, if a scalar or 0-dim
+    #   is passed with an array, it should go to the next largest dtype that
+    #   can hold the value without overflow. E.g a np.array([5], 'int8') + 300 operation
+    #   results in np.array([305]) with int16 dtype
+    x1 = ivy.asarray(x1)
+    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
-        x1 = ivy.asarray(x1)
+    # Ignore type of 0-dim arrays or scalars to mimic numpy
+    if not x1.shape == () and x2.shape == () and type1 == type2:
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
+    elif x1.shape == () and not x2.shape == () and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-        x2 = ivy.asarray(x2)
     else:
-        x1 = ivy.asarray(x1)
-        x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
@@ -510,6 +507,7 @@ from .linalg.matrix_and_vector_products import (
     # einsum,
     # einsum_path,
     kron,
+    cross,
 )
 
 from .linalg.decompositions import cholesky, qr, svd
@@ -530,26 +528,30 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sign,
     _sqrt,
     _square,
+    _lcm,
+    _gcd,
+    _clip,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (
+from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
     _add,
     _divide,
     _float_power,
     _floor_divide,
     _fmod,
     _mod,
+    _modf,
     _multiply,
     _negative,
     _positive,
     _power,
     _reciprocal,
     _subtract,
-    _true_divide,
     _divmod,
+    _remainder,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (
+from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
     _arccos,
     _arcsin,
     _arctan,
@@ -561,9 +563,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
     _degrees,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (
-    _imag,
-    _real,
+from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
+    _conj,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -579,6 +580,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.rounding import (
     _ceil,
     _trunc,
     _floor,
+    _rint,
 )
 
 from ivy.functional.frontends.numpy.logic.comparison import (
@@ -590,7 +592,7 @@ from ivy.functional.frontends.numpy.logic.comparison import (
     _not_equal,
 )
 
-from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (
+from ivy.functional.frontends.numpy.mathematical_functions.exponents_and_logarithms import (  # noqa
     _exp,
     _exp2,
     _expm1,
@@ -626,6 +628,11 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _fmin,
 )
 
+from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
+    _nextafter,
+    _spacing,
+)
+
 _frontend_array = array
 
 # initializing ufuncs #
@@ -645,6 +652,7 @@ float_power = ufunc("_float_power")
 floor_divide = ufunc("_floor_divide")
 fmod = ufunc("_fmod")
 mod = ufunc("_mod")
+modf = ufunc("_modf")
 multiply = ufunc("_multiply")
 negative = ufunc("_negative")
 positive = ufunc("_positive")
@@ -672,7 +680,6 @@ trunc = ufunc("_trunc")
 equal = ufunc("_equal")
 greater = ufunc("_greater")
 greater_equal = ufunc("_greater_equal")
-imag = ufunc("_imag")
 less = ufunc("_less")
 less_equal = ufunc("_less_equal")
 not_equal = ufunc("_not_equal")
@@ -695,10 +702,23 @@ logical_xor = ufunc("_logical_xor")
 matmul = ufunc("_matmul")
 maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
-real = ufunc("_real")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
 fmin = ufunc("_fmin")
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")
+conj = ufunc("_conj")
+rint = ufunc("_rint")
+nextafter = ufunc("_nextafter")
+conjugate = ufunc("_conj")
+lcm = ufunc("_lcm")
+gcd = ufunc("_gcd")
+spacing = ufunc("_spacing")
+clip = ufunc("_clip")
+remainder = ufunc("_remainder")
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

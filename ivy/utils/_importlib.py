@@ -1,3 +1,4 @@
+import ivy
 import sys
 from importlib.util import resolve_name, module_from_spec
 from ivy.utils.backend import ast_helpers
@@ -5,6 +6,12 @@ from ivy.utils.backend import ast_helpers
 
 import_cache = {}
 path_hooks = []
+
+# Note that any modules listed as 'to skip' should not depend on the Ivy backend state.
+# If they do, the behavior of ivy.with_backend is undefined and may not function as
+# expected. Import these modules along with Ivy initialization, as the import logic
+# assumes they exist in sys.modules.
+MODULES_TO_SKIP = ["ivy.compiler"]
 
 
 class LocalIvyImporter:
@@ -18,7 +25,6 @@ class LocalIvyImporter:
     def __exit__(self, *exc):
         path_hooks.remove(self.finder)
         sys.meta_path.remove(self.finder)
-        _clear_cache()
 
 
 def _clear_cache():
@@ -27,7 +33,7 @@ def _clear_cache():
 
 
 def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=0):
-    """Handles absolute and relative from_import statement"""
+    """Handle absolute and relative from_import statement."""
     module_exist = name != ""
     name = "." * level + name
     module = _import_module(name, package)
@@ -62,7 +68,7 @@ def _from_import(name: str, package=None, mod_globals=None, from_list=(), level=
 
 def _absolute_import(name: str, asname=None, mod_globals=None):
     """
-    Handles absolute import statement
+    Handle absolute import statement
     :param name:
     :return:
     """
@@ -89,6 +95,15 @@ def _import_module(name, package=None):
         parent_name, _, child_name = absolute_name.rpartition(".")
         parent_module = _import_module(parent_name)
         path = parent_module.__spec__.submodule_search_locations
+
+    # Return the one from global Ivy if the module is marked to skip
+    for module_to_skip in MODULES_TO_SKIP:
+        if absolute_name.startswith(module_to_skip):
+            if path is not None:
+                # Set reference to self in parent, if exist
+                setattr(parent_module, child_name, sys.modules[absolute_name])
+            return sys.modules[absolute_name]
+
     for finder in path_hooks:
         spec = finder.find_spec(absolute_name, path)
         if spec is not None:
@@ -98,7 +113,10 @@ def _import_module(name, package=None):
         raise ModuleNotFoundError(msg, name=absolute_name)
     module = module_from_spec(spec)
     import_cache[absolute_name] = module
-    spec.loader.exec_module(module)
+    if ivy.is_local():
+        spec.loader.exec_module(module, ivy._compiled_id)
+    else:
+        spec.loader.exec_module(module)
     if path is not None:
         # Set reference to self in parent, if exist
         setattr(parent_module, child_name, module)

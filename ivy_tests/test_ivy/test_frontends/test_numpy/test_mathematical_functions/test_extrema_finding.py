@@ -20,7 +20,6 @@ from ivy import inf
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -215,7 +214,6 @@ def test_numpy_nanmin(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
@@ -357,7 +355,6 @@ def test_numpy_fmax(
                 shared_dtype=True,
             )
         ],
-        get_dtypes_kind="numeric",
     ),
     where=np_frontend_helpers.where(),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(

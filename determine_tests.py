@@ -4,38 +4,9 @@ import os  # noqa
 import bz2
 import _pickle as cPickle
 import sys
+from run_tests_CLI.get_all_tests import get_all_tests
 
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
-
-
-def get_all_tests():
-    os.system(
-        "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest"
-        " python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy "
-        "--my_test_dump true > test_names "
-        # noqa
-    )
-    test_names_without_backend = []
-    test_names = []
-    with open("test_names") as f:
-        for line in f:
-            if "ERROR" in line:
-                break
-            if not line.startswith("ivy_tests"):
-                continue
-            test_name = line[:-1]
-            pos = test_name.find("[")
-            if pos != -1:
-                test_name = test_name[:pos]
-            test_names_without_backend.append(test_name)
-
-    for test_name in test_names_without_backend:
-        for backend in BACKENDS:
-            test_backend = test_name + "," + backend
-            test_names.append(test_backend)
-
-    test_names = list(set(test_names))
-    return test_names
+MAX_TESTS = 10
 
 
 def get_tests(_tests_file, _line):
@@ -55,8 +26,7 @@ def determine_tests_line(_tests_file, _line, _tests_to_run):
     return _tests_to_run
 
 
-MAX_TESTS = 10
-if __name__ == "__main__":
+def main():
     tests = bz2.BZ2File("tests.pbz2", "rb")
     tests = cPickle.load(tests)
     ref_commit_hash = tests["commit"]
@@ -113,7 +83,7 @@ if __name__ == "__main__":
                 tests_to_run = determine_tests_line(tests_file, line, tests_to_run)
         break
 
-    if len(sys.argv) >= 2 and sys.argv[1] == "extra":
+    if len(sys.argv) >= 2 and sys.argv[1] == "1":
         print("Checking for any new tests added!")
         new_tests = get_all_tests()
         print("Done!")
@@ -189,3 +159,7 @@ if __name__ == "__main__":
         for test_index in tests_to_run:
             test = tests["index_mapping"][test_index]
             f.write(test + "\n")
+
+
+if __name__ == "__main__":
+    main()

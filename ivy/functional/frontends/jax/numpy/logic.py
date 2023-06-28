@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 @to_ivy_arrays_and_back
@@ -37,52 +38,52 @@ def array_equiv(a1, a2) -> bool:
 
 
 @to_ivy_arrays_and_back
-def isneginf(x, out=None):
-    return ivy.isneginf(x, out=out)
+def isneginf(x, /, out=None):
+    return ivy.isinf(x, detect_positive=False, out=out)
 
 
 @to_ivy_arrays_and_back
-def isposinf(x, out=None):
-    return ivy.isposinf(x, out=out)
+def isposinf(x, /, out=None):
+    return ivy.isinf(x, detect_negative=False, out=out)
 
 
 @to_ivy_arrays_and_back
-def not_equal(x1, x2):
+def not_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.not_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def less(x1, x2):
+def less(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def less_equal(x1, x2):
+def less_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.less_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater(x1, x2):
+def greater(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def greater_equal(x1, x2):
+def greater_equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.greater_equal(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def isnan(x, out=None):
-    return ivy.isnan(x, out=out)
+def isnan(x, /):
+    return ivy.isnan(x)
 
 
 @to_ivy_arrays_and_back
-def equal(x1, x2):
+def equal(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.equal(x1, x2)
 
@@ -93,24 +94,24 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 @to_ivy_arrays_and_back
-def bitwise_and(x1, x2):
+def bitwise_and(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_and(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_not(x):
+def bitwise_not(x, /):
     return ivy.bitwise_invert(x)
 
 
 @to_ivy_arrays_and_back
-def bitwise_or(x1, x2):
+def bitwise_or(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_or(x1, x2)
 
 
 @to_ivy_arrays_and_back
-def bitwise_xor(x1, x2):
+def bitwise_xor(x1, x2, /):
     x1, x2 = promote_jax_arrays(x1, x2)
     return ivy.bitwise_xor(x1, x2)
 
@@ -129,12 +130,14 @@ alltrue = all
 
 
 sometrue = any
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
 # known issue in jnp's documentation of arguments
 # https://github.com/google/jax/issues/9119
 def logical_and(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     if x1.dtype == "complex128" or x2.dtype == "complex128":
         x1 = ivy.astype(x1, ivy.complex128)
         x2 = ivy.astype(x2, ivy.complex128)
@@ -182,7 +185,8 @@ def isscalar(x, /):
 
 @to_ivy_arrays_and_back
 def left_shift(x1, x2):
-    return ivy.isscalar(x1, x2)
+    # TODO: implement
+    raise IvyNotImplementedException()
 
 
 @to_ivy_arrays_and_back
@@ -213,10 +217,4 @@ def iscomplex(x: any):
 
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
-    if x.ndim == 0:
-        return ivy.is_complex_dtype(ivy.dtype(x))
-    for ele in x:
-        if ivy.is_complex_dtype(ivy.dtype(ele)):
-            return True
-        else:
-            return False
+    return ivy.is_complex_dtype(ivy.dtype(x))

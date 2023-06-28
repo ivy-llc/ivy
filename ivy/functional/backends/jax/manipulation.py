@@ -35,27 +35,32 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    return jnp.concatenate(xs, axis)
+    try:
+        return jnp.concatenate(xs, axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
     x: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Union[int, Sequence[int]] = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except IndexError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
     x: JaxArray,
     /,
     *,
+    copy: Optional[bool] = None,
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -63,7 +68,12 @@ def flip(
 
 
 def permute_dims(
-    x: JaxArray, /, axes: Tuple[int, ...], *, out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    axes: Tuple[int, ...],
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.transpose(x, axes)
 
@@ -106,8 +116,9 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if x.shape == ():
@@ -128,7 +139,10 @@ def stack(
     axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.stack(arrays, axis=axis)
+    try:
+        return jnp.stack(arrays, axis=axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 # Extra #
@@ -139,7 +153,8 @@ def split(
     x: JaxArray,
     /,
     *,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    copy: Optional[bool] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int], JaxArray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[JaxArray]:
@@ -151,6 +166,8 @@ def split(
                 )
             )
         return [x]
+    if isinstance(num_or_size_splits, jnp.ndarray):
+        num_or_size_splits = num_or_size_splits.tolist()
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
     elif isinstance(num_or_size_splits, int) and with_remainder:
@@ -226,7 +243,7 @@ def clip(
     return jnp.where(x < x_min, x_min, x)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
@@ -238,7 +255,14 @@ def constant_pad(
     return jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 
 
-def unstack(x: JaxArray, /, *, axis: int = 0, keepdims: bool = False) -> List[JaxArray]:
+def unstack(
+    x: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    axis: int = 0,
+    keepdims: bool = False,
+) -> List[JaxArray]:
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
@@ -256,6 +280,12 @@ def zero_pad(
 
 
 def swapaxes(
-    x: JaxArray, axis0: int, axis1: int, /, *, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis0: int,
+    axis1: int,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.swapaxes(x, axis0, axis1)
