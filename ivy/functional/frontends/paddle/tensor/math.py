@@ -235,6 +235,30 @@ def reciprocal(x, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isnan(x, name=None):
+    return ivy.isnan(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isfinite(x, name=None):
+    return ivy.isfinite(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isinf(x, name=None):
+    return ivy.isinf(x)
+
+
+@with_supported_dtypes(
     {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
     "paddle",
 )
