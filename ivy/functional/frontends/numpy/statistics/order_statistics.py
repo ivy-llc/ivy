@@ -111,12 +111,12 @@ def nanpercentile(
 
 
 
-@ivy.numpy_frontend
-@ivy.handle_numpy_out
-@ivy.handle_numpy_dtype
-@ivy.to_ivy_arrays_and_back
-@ivy.handle_numpy_casting
-@ivy.from_zero_dim_arrays_to_scalar
+@numpy_frontend
+@handle_numpy_out
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_scalar
 def quantile(
     a,
     q,
