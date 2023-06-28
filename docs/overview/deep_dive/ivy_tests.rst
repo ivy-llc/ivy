@@ -40,7 +40,7 @@ Ivy Tests
 .. _`test_manipulation`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py
 .. _`test_layers`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/test_functional/test_nn/test_layers.py
 .. _`keyword`:https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1108
-.. _`arguments`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1354
+.. _`arguments`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L184
 .. _`documentation`: https://hypothesis.readthedocs.io/en/latest/quickstart.html
 .. _`test_gelu`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_nn/test_activations.py#L104
 .. _`test_array_function`: https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401
@@ -50,10 +50,20 @@ Ivy Tests
 .. _`ivy tests channel`: https://discord.com/channels/799879767196958751/982738436383445073
 .. _`ivy tests forum`: https://discord.com/channels/799879767196958751/1028297802826121326
 .. _`test helpers`:  https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers
-.. _`get_dtypes`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L60
-.. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
-.. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
-.. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
+.. _`get_dtypes`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L84
+.. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L286
+.. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L544
+.. _`array_values`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L1389
+.. _`array_dtypes`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/dtype_helpers.py#L295
+.. _`array_bools`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L19
+.. _`valid_axes`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1086
+.. _`reshape_shapes`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L132
+.. _`subsets`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L161
+.. _`get_shape`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L181
+.. _`get_bounds`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L262
+.. _`get_probs`: https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/helpers.py#L1510
+.. _`get_axis`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/hypothesis_helpers/general_helpers.py#L297
+.. _`num_positional_args`: https://github.com/unifyai/ivy/blob/master/ivy_tests/test_ivy/helpers/testing_helpers.py#L88
 .. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
 .. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
 .. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
