@@ -118,10 +118,11 @@ def quantile(a,
              q,
              axis=None,
              out=None,
+             overwrite_input=False,
+             method="linear",
              keepdims=False,
              *,
-             interpolation="linear"):
-                 ret = ivy.quantile(
-                     a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
-                 )
+             interpolation=None):
+                 ret = ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+                                   )
                  return ret
