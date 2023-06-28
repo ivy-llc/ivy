@@ -623,17 +623,31 @@ def test_numpy_reciprocal(
         subok=True,
     )
 
+
 def get_numeric_dtypes_without_complex():
-    numeric_dtypes = ['int8', 'int16', 'int32', 'int64', 'uint8', 'uint16', 'uint32', 'uint64', 'float16', 'float32', 'float64']
+    numeric_dtypes = [
+        "int8",
+        "int16",
+        "int32",
+        "int64",
+        "uint8",
+        "uint16",
+        "uint32",
+        "uint64",
+        "float16",
+        "float32",
+        "float64",
+    ]
     return numeric_dtypes
+
 
 @handle_frontend_test(
     fn_tree="numpy.fmod",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                #available_dtypes=helpers.get_dtypes("numeric"),
-                available_dtypes = get_numeric_dtypes_without_complex(),
+                available_dtypes=helpers.get_dtypes("numeric"),
+                # available_dtypes = get_numeric_dtypes_without_complex(),
                 num_arrays=2,
                 shared_dtype=True,
                 large_abs_safety_factor=6,
