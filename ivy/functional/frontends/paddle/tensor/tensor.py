@@ -328,3 +328,7 @@ class Tensor:
     def minimum(self, y, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.minimum(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def std(self, axis=None, unbiased=True, keepdim=False, name=None):
+        return ivy.std(self._ivy_array, axis=axis, keepdims=keepdim)
