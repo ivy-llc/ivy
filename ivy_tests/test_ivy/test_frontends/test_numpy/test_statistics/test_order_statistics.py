@@ -57,6 +57,7 @@ def test_numpy_nanpercentile(
     dtype_values_axis=_statistical_dtype_values(function="quantile"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
+    interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]
 )
 def test_numpy_quantile(
     dtype_values_axis,
@@ -77,7 +78,6 @@ def test_numpy_quantile(
         test_flags=test_flags,
     )
 
-    interpolation = st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"])
     np_frontend_helpers.test_frontend_function(
         a=values[0][0],
         q=values[0][1],
