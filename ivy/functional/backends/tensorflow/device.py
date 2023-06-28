@@ -106,7 +106,7 @@ def handle_soft_device_variable(*args, **kwargs):
             [args, kwargs],
             lambda x: (
                 tf.identity(x)
-                if (isinstance(x, tf.Tensor) and x.device != default_device)
+                if (ivy.is_native_array(x) and x.device != default_device)
                 else x
             ),
         )

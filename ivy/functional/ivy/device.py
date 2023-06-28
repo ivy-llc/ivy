@@ -136,15 +136,17 @@ class DefaultDevice:
 
 
 def handle_soft_device_variable(*args, **kwargs):
+    ivy.set_array_mode(False)
     default_device = ivy.default_device()
     args, kwargs = ivy.nested_map(
         [args, kwargs],
         lambda x: (
-            x.to_device(default_device)
-            if (isinstance(x, ivy.Array) and ivy.dev(x) != default_device)
+            ivy.to_device(x, default_device)
+            if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
             else x
         ),
     )
+    ivy.unset_array_mode()
     return args, kwargs
 
 

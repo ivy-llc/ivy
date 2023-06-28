@@ -95,19 +95,6 @@ def tpu_is_available() -> bool:
     return False
 
 
-def handle_soft_device_variable(*args, **kwargs):
-    default_device = ivy.default_device(as_native=True)
-    args, kwargs = ivy.nested_map(
-        [args, kwargs],
-        lambda x: (
-            paddle.to_tensor(x, place=default_device)
-            if (isinstance(x, paddle.Tensor) and x.place != default_device)
-            else x
-        ),
-    )
-    return args, kwargs
-
-
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper Paddle profiler
