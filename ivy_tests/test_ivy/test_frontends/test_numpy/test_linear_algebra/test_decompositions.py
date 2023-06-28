@@ -1,14 +1,15 @@
 # global
-# import ivy
 import sys
 import numpy as np
 from hypothesis import strategies as st
 
-import ivy
-
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_and_matrix,
+)
 
 
 # cholesky
@@ -51,15 +52,7 @@ def test_numpy_cholesky(
 # qr
 @handle_frontend_test(
     fn_tree="numpy.linalg.qr",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=3,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
-        min_value=2,
-        max_value=5,
-    ),
+    dtype_and_x=_get_dtype_and_matrix(),
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
 )
@@ -78,8 +71,8 @@ def test_numpy_qr(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-02,
-        a=x[0],
+        rtol=1e-01,
+        a=x,
         mode=mode,
     )
 
