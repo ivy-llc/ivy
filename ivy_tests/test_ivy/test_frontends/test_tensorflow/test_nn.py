@@ -1646,22 +1646,18 @@ def test_tensorflow_weighted_moments(
 @handle_frontend_test(
     fn_tree="tensorflow.nn.normalize_moments",
     dtype_and_counts=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
     ),
     dtype_and_mean=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
     ),
     dtype_and_var=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
     ),
     dtype_and_shift=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=1,
     ),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_tensorflow_normalize_moments(
     *,
@@ -1687,5 +1683,5 @@ def test_tensorflow_normalize_moments(
         counts=counts[0],
         mean_ss=mean[0],
         variance_ss=var[0],
-        shift=shift[0]
+        shift=shift[0],
     )
