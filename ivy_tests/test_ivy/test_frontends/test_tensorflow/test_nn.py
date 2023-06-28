@@ -1642,3 +1642,47 @@ def test_tensorflow_weighted_moments(
         frequency_weights=fw[0],
         keepdims=keepdims,
     )
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.normalize_moments",
+    dtype_and_counts=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=25,
+        max_value=1000
+    ),
+    dtype_and_mean_and_axis =_statistical_dtype_values(function="mean"),
+    dtype_and_var_and_axis =_statistical_dtype_values(function="var"),
+    dtype_and_shift=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0.01,
+        max_value=10
+    )
+)
+def test_tensorflow_weighted_moments(
+    *,
+    dtype_and_counts,
+    dtype_and_mean_and_axis,
+    dtype_and_var_and_axis,
+    dtype_and_shift,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, counts = dtype_and_counts
+    dtype, mean, axis = dtype_and_mean_and_axis
+    dtype, var, axis = dtype_and_var_and_axis
+    dtype, shift = dtype_and_shift
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        counts=counts[0],
+        variance_ss=var[0],
+        mean_ss=mean[0],
+        shift=shift[0]
+    )
