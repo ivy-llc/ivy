@@ -87,7 +87,8 @@ silu.support_native_out = True
 def elu(
     x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    ret = np.where(x > 0, x, alpha * np.expm1(x)).astype(x.dtype)
+    exp = np.expm1(x)
+    ret = np.where(x > 0, x, np.multiply(alpha, exp)).astype(x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret).astype(x.dtype)
     return ret

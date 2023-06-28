@@ -99,7 +99,7 @@ def elu(
     x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     if x.dtype in [paddle.float32, paddle.float64]:
-        return F.elu(x)
+        return F.elu(x, alpha=alpha)
     if paddle.is_complex(x):
         ret = (
             paddle_backend.where(
