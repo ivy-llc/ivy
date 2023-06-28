@@ -336,12 +336,12 @@ def test_jax_numpy_sum(
         axis = axis[0]
     where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtypes,
+        input_dtype=[input_dtypes],
         test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=[input_dtypes],
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
