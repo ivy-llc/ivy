@@ -210,6 +210,22 @@ class Tensor:
 
     @with_supported_dtypes(
         {
+            "2.4.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def bitwise_and(x, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(x, y)
+
+    @with_supported_dtypes(
+        {
             "2.5.0 and below": (
                 "bool",
                 "int8",
@@ -276,3 +292,22 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumsum(self, axis=None, dtype=None, name=None):
+        return ivy.cumsum(self._ivy_array, axis=axis, dtype=dtype)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+        "paddle",
+    )
+    def angle(self, name=None):
+        return ivy.angle(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def rad2deg(self, name=None):
+        return ivy.rad2deg(self._ivy_array)

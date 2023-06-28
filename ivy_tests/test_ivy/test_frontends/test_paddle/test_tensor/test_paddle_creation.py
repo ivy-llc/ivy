@@ -362,6 +362,36 @@ def test_paddle_empty_like(
     )
 
 
+# tril
+@handle_frontend_test(
+    fn_tree="paddle.tril",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_paddle_tril(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=values[0],
+        diagonal=diagonal,
+    )
+  
+  
 # diagflat
 @handle_frontend_test(
     fn_tree="paddle.diagflat",
@@ -393,4 +423,5 @@ def test_paddle_diagflat(
         test_values=False,
         x=x[0],
         offset=offset,
-    )
+        )
+
