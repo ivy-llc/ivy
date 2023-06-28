@@ -292,6 +292,10 @@ class Tensor:
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def rad2deg(self, name=None):
+        return ivy.rad2deg(self._ivy_array)
+
     @with_supported_dtypes(
         {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
