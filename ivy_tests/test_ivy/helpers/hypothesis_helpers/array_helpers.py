@@ -1832,22 +1832,22 @@ def dtype_array_index(
         )
     )
     if allow_mask and draw(st.booleans()):
-        mask_shape = shape[:draw(st.integers(0, len(shape)))]
+        mask_shape = shape[: draw(st.integers(0, len(shape)))]
         index = draw(
             helpers.array_values(
-                dtype='bool',
+                dtype="bool",
                 shape=mask_shape,
             ).filter(lambda x: np.sum(x) > 0)
         )
         dtype.append("bool")
         return dtype, array, index
     dtype.append("int32")
-    supported_index_types = ["int", "slice"] if allow_slices else ["int"]
+    supported_index_types = ["int", "slice", "seq"] if allow_slices else ["int", "seq"]
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
             min_size=len(shape),
-            max_size=len(shape)
+            max_size=len(shape),
         )
     )
     index = [
@@ -1855,16 +1855,41 @@ def dtype_array_index(
             draw(st.integers(min_value=-s + 1, max_value=s - 1))
             if index_type == "int"
             else (
-                slice(
-                    start := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
-                    end := draw(st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))),
-                    draw(st.integers(min_value=1, max_value=s))
-                    if (0 if start is None else s + start if start < 0 else start) <
-                       (s - 1 if end is None else s + end if end < 0 else end)
-                    else (
-                        draw(st.integers(max_value=-1, min_value=-s))
-                        if allow_neg_step
-                        else assume(False)
+                draw(
+                    st.lists(
+                        st.integers(min_value=-s + 1, max_value=s - 1),
+                        max_size=20,
+                    )
+                )
+                if index_type == "seq"
+                else (
+                    slice(
+                        start := draw(
+                            st.one_of(
+                                st.integers(min_value=-s + 1, max_value=s - 1),
+                                st.just(None),
+                            )
+                        ),
+                        end := draw(
+                            st.one_of(
+                                st.integers(min_value=-s + 1, max_value=s - 1),
+                                st.just(None),
+                            )
+                        ),
+                        (
+                            draw(st.integers(min_value=1, max_value=s))
+                            if (
+                                0
+                                if start is None
+                                else s + start if start < 0 else start
+                            )
+                            < (s - 1 if end is None else s + end if end < 0 else end)
+                            else (
+                                draw(st.integers(max_value=-1, min_value=-s))
+                                if allow_neg_step
+                                else assume(False)
+                            )
+                        ),
                     )
                 )
             )
@@ -1872,9 +1897,10 @@ def dtype_array_index(
         for s, index_type in zip(shape, index_types)
     ]
     if draw(st.booleans()):
-        start = draw(st.integers(min_value=0, max_value=len(index)-1))
-        end = draw(st.integers(min_value=start, max_value=len(index)-1))
-        index = index[:start] + [Ellipsis] + index[end:]
+        start = draw(st.integers(min_value=0, max_value=len(index) - 1))
+        end = draw(st.integers(min_value=start, max_value=len(index) - 1))
+        if start != end:
+            index = index[:start] + [Ellipsis] + index[end:]
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
