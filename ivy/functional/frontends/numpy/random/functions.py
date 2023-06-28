@@ -150,3 +150,12 @@ def negative_binomial(n, p, size=None):
         size = (size,)
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def weibull(a, size=None):
+    if a < 0:
+        return 0
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")  # Array of uniform random numbers between 0 and 1
+    x = ivy.pow(-ivy.log(1 - u), 1 / a)
+    return x
