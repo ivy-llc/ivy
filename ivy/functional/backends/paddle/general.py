@@ -49,6 +49,16 @@ def get_item(
         if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
             x = x.cast("float32")
         ret = x.__getitem__(query)
+        if hasattr(query, '__iter__'):
+            to_squeeze = [i if i < len(ret.shape) else -1 for i, q in enumerate(query) if isinstance(q, Number)]
+            if len(to_squeeze):
+                ret = ret.squeeze(axis=to_squeeze)
+            if Ellipsis in query:
+                ellipsis_index = query.index(Ellipsis)
+                if ellipsis_index >= len(ret.shape):
+                    ret = ret.unsqueeze(axis=-1)
+                else:
+                    ret = ret.unsqueeze(axis=ellipsis_index)
         ret_numel = functools.reduce(mul, ret.shape) if len(ret.shape) > 0 else 0
         if (
             isinstance(query, Number)
@@ -67,25 +77,8 @@ def get_item(
             if not query:
                 return paddle.to_tensor([], dtype=x.dtype)
             else:
-                return paddle.unsqueeze(x, 0)
-        if x.dtype in [
-            paddle.int8,
-            paddle.int16,
-            paddle.uint8,
-            paddle.float16,
-            paddle.complex64,
-            paddle.complex128,
-            paddle.bool,
-        ]:
-            if paddle.is_complex(x):
-                return paddle.complex(
-                    paddle.masked_select(x.real(), query),
-                    paddle.masked_select(x.imag(), query),
-                )
-            return paddle.masked_select(x.cast("float32"), query).cast(x.dtype)
-        return paddle.masked_select(x, query)
+                return ivy.expand_dims(x, axis=0)._data
 
-    query = query.cast("int64")
     if x.dtype in [
         paddle.int8,
         paddle.int16,
