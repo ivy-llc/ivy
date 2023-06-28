@@ -1642,7 +1642,7 @@ def test_frontend_method(
         )
         if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
             frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
-        elif ivy.isscalar(frontend_ret):
+        elif gt_backend.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
             # tuplify the frontend return

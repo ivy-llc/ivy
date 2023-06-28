@@ -672,7 +672,7 @@ def handle_frontend_method(
     if is_hypothesis_test:
         callable_method = getattr(method_class, method_name)
         if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(fn_name=init_tree[4:])
+            init_num_positional_args = num_positional_args(fn_name=init_tree)
 
         if method_num_positional_args is None:
             method_num_positional_args = num_positional_args_method(
