@@ -51,13 +51,12 @@ def test_numpy_nanpercentile(
         input_dtypes=input_dtypes,
     )
 
-# quantile
 @handle_frontend_test(
     fn_tree="ivy.quantile",
     dtype_values_axis=_statistical_dtype_values(function="quantile"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
-    interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]
+    interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"])
 )
 def test_numpy_quantile(
     dtype_values_axis,
@@ -75,7 +74,7 @@ def test_numpy_quantile(
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtypes,
-        test_flags=test_flags,
+        test_flags=test_flags
     )
 
     np_frontend_helpers.test_frontend_function(
@@ -90,5 +89,5 @@ def test_numpy_quantile(
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
-        input_dtypes=input_dtypes,
-        )
+        input_dtypes=input_dtypes
+    )
