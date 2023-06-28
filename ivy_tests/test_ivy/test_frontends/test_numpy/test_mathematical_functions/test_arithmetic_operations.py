@@ -646,8 +646,8 @@ def get_numeric_dtypes_without_complex():
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric"),
-                # available_dtypes = get_numeric_dtypes_without_complex(),
+                # available_dtypes=helpers.get_dtypes("numeric"),
+                available_dtypes=get_numeric_dtypes_without_complex(),
                 num_arrays=2,
                 shared_dtype=True,
                 large_abs_safety_factor=6,
