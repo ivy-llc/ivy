@@ -8,16 +8,16 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_first_matrix,
-    _get_second_matrix,
+    _get_first_matrix_and_dtype,
+    _get_second_matrix_and_dtype,
 )
 
 
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=_get_first_matrix_and_dtype(),
+    y=_get_second_matrix_and_dtype(),
     test_with_out=st.just(False),
 )
 def test_numpy_solve(
@@ -28,7 +28,7 @@ def test_numpy_solve(
     fn_tree,
     on_device,
 ):
-    dtype1, x1, _ = x
+    dtype1, x1 = x
     dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
@@ -175,8 +175,8 @@ def test_numpy_tensorinv(
 # lstsq
 @handle_frontend_test(
     fn_tree="numpy.linalg.lstsq",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=_get_first_matrix_and_dtype(),
+    y=_get_second_matrix_and_dtype(),
     test_with_out=st.just(False),
 )
 def test_numpy_lstsq(
@@ -187,7 +187,7 @@ def test_numpy_lstsq(
     fn_tree,
     on_device,
 ):
-    dtype1, a, _ = x
+    dtype1, a = x
     dtype2, b = y
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
