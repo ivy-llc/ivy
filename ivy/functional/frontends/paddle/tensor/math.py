@@ -234,10 +234,13 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
-def gcd(x, y, name=None):
-    return ivy.gcd(x, y)
+def angle(x, name=None):
+    return ivy.angle(x)
 
 
 @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
