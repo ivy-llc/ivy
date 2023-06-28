@@ -104,13 +104,13 @@ def get_item(
 
 
 def set_item(
-    x: Union[np.ndarray],
-    query: Union[np.ndarray, Tuple],
-    val: np.ndarray,
+    x: paddle.Tensor,
+    query: Union[paddle.Tensor, Tuple],
+    val: paddle.Tensor,
     /,
     *,
     copy: Optional[bool] = False,
-) -> np.ndarray:
+) -> paddle.Tensor:
     val = paddle.to_tensor(val, dtype=x.dtype)
 
     if ivy.is_array(query) and ivy.is_bool_dtype(query):

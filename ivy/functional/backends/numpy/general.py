@@ -43,7 +43,7 @@ def get_item(
 
 @_scalar_output_to_0d_array
 def set_item(
-    x: Union[np.ndarray],
+    x: np.ndarray,
     query: Union[np.ndarray, Tuple],
     val: np.ndarray,
     /,

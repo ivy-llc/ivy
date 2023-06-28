@@ -80,7 +80,7 @@ def get_item(
 
 
 def set_item(
-    x: Union[JaxArray],
+    x: JaxArray,
     query: Union[JaxArray, Tuple],
     val: JaxArray,
     /,

@@ -104,7 +104,7 @@ def get_item(
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def set_item(
-    x: Union[torch.Tensor],
+    x: torch.Tensor,
     query: Union[torch.Tensor, Tuple],
     val: torch.Tensor,
     /,
