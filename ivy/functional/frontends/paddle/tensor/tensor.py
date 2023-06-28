@@ -221,8 +221,8 @@ class Tensor:
         },
         "paddle",
     )
-    def bitwise_and(x, y, out=None, name=None):
-        return paddle_frontend.bitwise_and(x, y)
+    def bitwise_and(self, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(self, y)
 
     @with_supported_dtypes(
         {
