@@ -85,8 +85,8 @@ def to_device(
     return x
 
 
-def handle_soft_device_variable(*args, **kwargs):
-    return args, kwargs
+def handle_soft_device_variable(*args, fn, **kwargs):
+    return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):

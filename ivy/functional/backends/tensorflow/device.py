@@ -99,7 +99,7 @@ def tpu_is_available() -> bool:
         return False
 
 
-def handle_soft_device_variable(*args, **kwargs):
+def handle_soft_device_variable(*args, fn, **kwargs):
     default_device = ivy.default_device(as_native=True)
     with tf.device(default_device):
         args, kwargs = ivy.nested_map(
@@ -110,7 +110,7 @@ def handle_soft_device_variable(*args, **kwargs):
                 else x
             ),
         )
-    return args, kwargs
+        return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):
