@@ -117,20 +117,16 @@ def nanpercentile(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def quantile(
-    a,
-    q,
-    /,
-    *,
-    axis=None,
-    out=None,
-    overwrite_input=False,
-    method="linear",
-    keepdims=False,
-    interpolation=None,
-):
-
-    ret = ivy.quantile(
-        a, q, axis=axis, out=out, overwrite_input=overwrite_input, method=method, keepdims=keepdims, interpolation=interpolation
-    )
-    return ret
+def quantile(a,
+             q,
+             axis=None,
+             out=None,
+             overwrite_input=False,
+             method="linear",
+             keepdims=False,
+             *,
+             interpolation=None):
+                 ret = ivy.quantile(
+                     a, q, axis=axis, out=out, overwrite_input=overwrite_input, method=method, keepdims=keepdims, interpolation=interpolation
+                 )
+                 return ret
