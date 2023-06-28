@@ -43,7 +43,7 @@ def get_item(
 ) -> paddle.Tensor:
     if copy:
         x = paddle.clone(x)
-    # regular queries x[idx_1,idx_2,...,idx_i]
+
     if not isinstance(query, paddle.Tensor):
         x_dtype = x.dtype
         if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
@@ -62,7 +62,6 @@ def get_item(
             return ret.cast(x_dtype)
         return ret
 
-    # masked queries x[bool_1,bool_2,...,bool_i]
     if query.dtype == paddle.bool:
         if not len(query.shape):
             if not query:
@@ -87,7 +86,6 @@ def get_item(
         return paddle.masked_select(x, query)
 
     query = query.cast("int64")
-    # array queries idx = Tensor(idx_1,idx_2,...,idx_i), x[idx]
     if x.dtype in [
         paddle.int8,
         paddle.int16,
