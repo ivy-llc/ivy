@@ -797,3 +797,4 @@ def embedding(
         embeddings = jnp.where(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
+    return embeddings
