@@ -71,7 +71,12 @@ class _ContainerWithCreation(ContainerBase):
             lists, lists of tuples, tuples, tuples of tuples, tuples of lists and
             ndarrays.
         copy
-            boolean, indicating whether or not to copy the input. Default: ``None``.
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device

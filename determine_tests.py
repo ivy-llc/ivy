@@ -5,9 +5,6 @@ import bz2
 import _pickle as cPickle
 import sys
 from run_tests_CLI.get_all_tests import get_all_tests
-import tracemalloc
-
-tracemalloc.start()
 
 MAX_TESTS = 10
 
@@ -98,8 +95,8 @@ def main():
             for test in removed_tests:
                 f.write(test + "\n")
         added_tests = list(added_tests)
-        if len(added_tests) > 1:
-            added_tests = added_tests[:1]
+        if len(added_tests) > 10:
+            added_tests = added_tests[:10]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests
@@ -166,8 +163,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    snapshot = tracemalloc.take_snapshot()
-    top_stats = snapshot.statistics("lineno")
-
-    for stat in top_stats[:10]:
-        print(stat)

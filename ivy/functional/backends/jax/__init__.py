@@ -81,7 +81,7 @@ native_bool = jnp.dtype("bool")
 
 # update these to add new dtypes
 valid_dtypes = {
-    "0.4.11 and below": (
+    "0.4.13 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -100,7 +100,7 @@ valid_dtypes = {
     )
 }
 valid_numeric_dtypes = {
-    "0.4.11 and below": (
+    "0.4.13 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -119,7 +119,7 @@ valid_numeric_dtypes = {
 }
 
 valid_int_dtypes = {
-    "0.4.11 and below": (
+    "0.4.13 and below": (
         ivy.int8,
         ivy.int16,
         ivy.int32,
@@ -132,12 +132,12 @@ valid_int_dtypes = {
 }
 
 valid_uint_dtypes = {
-    "0.4.11 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+    "0.4.13 and below": (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
 }
 valid_float_dtypes = {
-    "0.4.11 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+    "0.4.13 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 }
-valid_complex_dtypes = {"0.4.11 and below": (ivy.complex64, ivy.complex128)}
+valid_complex_dtypes = {"0.4.13 and below": (ivy.complex64, ivy.complex128)}
 
 
 # leave these untouched
@@ -152,12 +152,12 @@ valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version
 # invalid data types
 
 # update these to add new dtypes
-invalid_dtypes = {"0.4.11 and below": ()}
-invalid_numeric_dtypes = {"0.4.11 and below": ()}
-invalid_int_dtypes = {"0.4.11 and below": ()}
-invalid_float_dtypes = {"0.4.11 and below": ()}
-invalid_uint_dtypes = {"0.4.11 and below": ()}
-invalid_complex_dtypes = {"0.4.11 and below": ()}
+invalid_dtypes = {"0.4.13 and below": ()}
+invalid_numeric_dtypes = {"0.4.13 and below": ()}
+invalid_int_dtypes = {"0.4.13 and below": ()}
+invalid_float_dtypes = {"0.4.13 and below": ()}
+invalid_uint_dtypes = {"0.4.13 and below": ()}
+invalid_complex_dtypes = {"0.4.13 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)

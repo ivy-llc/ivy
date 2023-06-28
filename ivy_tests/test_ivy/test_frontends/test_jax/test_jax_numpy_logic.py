@@ -773,7 +773,8 @@ def test_jax_numpy_isscalar(
 @handle_frontend_test(
     fn_tree="jax.numpy.left_shift",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
     ),
 )
 def test_jax_numpy_left_shift(
@@ -791,7 +792,8 @@ def test_jax_numpy_left_shift(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        x1=x[0],
+        x2=x[1],
     )
 
 
