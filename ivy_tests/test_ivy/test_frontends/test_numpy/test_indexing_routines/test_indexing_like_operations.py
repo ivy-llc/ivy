@@ -147,7 +147,6 @@ def test_numpy_put_along_axis(
         num_arrays=3,
         min_num_dims=1,
         max_num_dims=3,
-        dtype=["float32", "bool", "float32"],
     ),
     test_with_out=st.just(False),
 )
