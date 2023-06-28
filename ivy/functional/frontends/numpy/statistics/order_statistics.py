@@ -123,7 +123,7 @@ def quantile(a,
              keepdims=False,
              *,
              interpolation=None):
-                 if method is "linear" and interpolation is not None:
+                 if method=="linear" and interpolation!=None:
                      method=interpolation
                  ret = ivy.quantile(a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
                                    )
