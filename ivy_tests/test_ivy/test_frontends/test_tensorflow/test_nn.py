@@ -1660,7 +1660,7 @@ def test_tensorflow_weighted_moments(
         max_value=10
     )
 )
-def test_tensorflow_weighted_moments(
+def test_tensorflow_normalize_moments(
     *,
     dtype_and_counts,
     dtype_and_mean_and_axis,
