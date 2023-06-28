@@ -974,13 +974,15 @@ def test_paddle_cumprod(
     )
 
 
+
 # gcd
 @handle_frontend_test(
     fn_tree="paddle.gcd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        shared_dtype=True,
+        min_num_dims=1,
+        shared_dtype=True
     ),
 )
 def test_paddle_gcd(
@@ -995,8 +997,8 @@ def test_paddle_gcd(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
-        test_flags=test_flags,
         fn_tree=fn_tree,
+        test_flags=test_flags,
         on_device=on_device,
         x=x[0],
         y=x[1],
