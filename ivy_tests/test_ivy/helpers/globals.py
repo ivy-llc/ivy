@@ -120,6 +120,7 @@ def _get_ivy_mxnet(version=None):
 
 def setup_api_test(
     backend: str,
+    ground_truth_backend: str,
     device: str,
     test_data: TestData = None,
 ):
@@ -127,12 +128,14 @@ def setup_api_test(
         _set_test_data(test_data)
     _set_backend(backend)
     _set_device(device)
+    _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
     _unset_backend()
     _unset_device()
+    _unset_ground_truth_backend()
 
 
 def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
