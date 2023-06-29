@@ -362,6 +362,70 @@ def test_paddle_empty_like(
     )
 
 
+# tril
+@handle_frontend_test(
+    fn_tree="paddle.tril",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_paddle_tril(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=values[0],
+        diagonal=diagonal,
+    )
+
+
+# triu
+@handle_frontend_test(
+    fn_tree="paddle.triu",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_paddle_triu(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
+        x=values[0],
+        diagonal=diagonal,
+    )
+
 # triu_indices
 @handle_frontend_test(
     fn_tree="paddle.triu_indices",
@@ -397,4 +461,6 @@ def test_paddle_triu_indices(
         col=col,
         offset=offset,
         dtype=dtype[0],
-    )
+        )
+    
+    
