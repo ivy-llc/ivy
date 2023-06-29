@@ -119,14 +119,6 @@ def triu(x, diagonal=0, name=None):
 @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def triu_indices(row, col=None, offset=0, dtype="int64"):
-    print("===============================================")
-    print("row: ", row)
-    print("col: ", col)
-    print("offset: ", offset)
-    print("dtype: ", dtype)
     arr = ivy.triu_indices(row, col, offset)
-    print("Done: arr = ivy.triu_indices(row, col, offset)")
-    print("arr: ", arr)
     arr = ivy.astype(arr, ivy.as_native_dtype(dtype))
-    print("Done: arr = ivy.astype(arr, ivy.as_native_dtype(dtype))")
     return arr
