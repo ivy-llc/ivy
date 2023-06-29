@@ -199,7 +199,6 @@ class Tensor:
     def all(self, axis=None, keepdim=False, dtype=None, name=None):
         return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
-
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
         return ivy.allclose(
