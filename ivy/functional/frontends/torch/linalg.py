@@ -154,18 +154,20 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def inv_ex(A, *, check_errors=False, out=None):
-    try:
-        inputInv = ivy.inv(A, out=out)
-        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
-        return inputInv, info
-    except RuntimeError as e:
+    if ivy.any(ivy.det(A) == 0):
         if check_errors:
-            raise RuntimeError(e)
+            raise RuntimeError("Singular Matrix")
         else:
-            inputInv = A * math.nan
+            inv = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
-            return inputInv, info
+    else:
+        inv = ivy.inv(A, out=out)
+        # TODO: info should return an array containing the diagonal element of the LU decomposition
+        #  of the input matrix that is exactly zero
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
+    return inv, info
 
 
 @to_ivy_arrays_and_back

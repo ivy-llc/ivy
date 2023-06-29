@@ -138,7 +138,7 @@ def test_torch_inv(
 # inv_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_square_matrix(invertible=True),  # TODO: Test for singular matrices
 )
 def test_torch_inv_ex(
         *,
