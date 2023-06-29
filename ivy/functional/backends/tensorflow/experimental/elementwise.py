@@ -456,18 +456,17 @@ def ldexp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    out_dtype = x1.dtype
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if tf.math.reduce_any(tf.math.less(x2, 0)):
         pos_exp = tf.cast(tf.math.greater_equal(x2, 0), x2.dtype) * x2
         neg_exp = tf.cast(tf.math.less(x2, 0), x2.dtype) * x2
-        pos_exp = tf.cast(pos_exp, x1.dtype)
-        neg_exp = tf.cast(neg_exp, x2.dtype)
         ret = tf.cast(x1, pos_exp.dtype) * tf.math.pow(2, pos_exp)
         ret = tf.cast(ret, neg_exp.dtype) / tf.math.pow(2, -neg_exp)
     else:
         x2 = tf.cast(x2, x1.dtype)
         ret = x1 * tf.math.pow(2, x2)
-    return ret
+    return tf.cast(ret, out_dtype)
 
 
 @with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)

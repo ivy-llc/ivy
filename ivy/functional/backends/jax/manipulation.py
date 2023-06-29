@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
+import numpy as np
 
 # local
 import ivy
@@ -116,8 +117,8 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -179,7 +180,7 @@ def split(
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = jnp.cumsum(jnp.array(num_or_size_splits[:-1]))
+        num_or_size_splits = np.cumsum(np.array(num_or_size_splits[:-1]))
     return jnp.split(x, num_or_size_splits, axis)
 
 
@@ -243,7 +244,7 @@ def clip(
     return jnp.where(x < x_min, x_min, x)
 
 
-@with_unsupported_dtypes({"0.4.12 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,
