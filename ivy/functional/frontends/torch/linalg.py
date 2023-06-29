@@ -25,7 +25,10 @@ def divide(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def inv(A, *, out=None):
+    if ivy.any(ivy.det(A) == 0):
+        raise RuntimeError("Singular Matrix")
     return ivy.inv(A, out=out)
 
 
