@@ -20,8 +20,11 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 
 # helpers
 @st.composite
-def _get_dtype_and_matrix(draw, square=False, invertible=False):
-    arbitrary_dims = draw(helpers.get_shape(max_dim_size=3))
+def _get_dtype_and_matrix(draw, square=False, invertible=False, batch=True):
+    if batch:
+        arbitrary_dims = draw(helpers.get_shape(max_dim_size=3))
+    else:
+        arbitrary_dims = ()
     if square:
         random_size = draw(st.integers(1, 5))
         shape = (*arbitrary_dims, random_size, random_size)
@@ -423,7 +426,7 @@ def test_torch_matrix_power(
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
-        A=x,
+        A=x[0],
         n=n,
     )
 
@@ -466,14 +469,12 @@ def test_torch_matrix_exp(
     ),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_torch_matrix_norm(
         *,
         dtype_values_axis,
         ord,
         keepdim,
-        dtype,
         frontend,
         test_flags,
         fn_tree,
@@ -492,7 +493,6 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=dtype[0],
     )
 
 

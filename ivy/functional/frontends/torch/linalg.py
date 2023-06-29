@@ -113,16 +113,8 @@ def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
-def matrix_exp(A):
-    return ivy.matrix_exp(A)
-
-
-@with_supported_dtypes(
-    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
-)
-@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
     if "complex" in ivy.as_ivy_dtype(input.dtype):
         input = ivy.abs(input)
@@ -132,7 +124,7 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def cross(input, other, *, dim=None, out=None):
     return torch_frontend.miscellaneous_ops.cross(input, other, dim=dim, out=out)
 
@@ -274,16 +266,6 @@ def multi_dot(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
-def characteristic_equation_solver(matrix):
-    eigenvalues = ivy.eigenvalues(matrix)
-    coefficients = ivy.array(
-        [1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype
-    )
-    return ivy.roots(coefficients)
-
-
-@to_ivy_arrays_and_back
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
     try:
         result = ivy.solve(A, B, out=out)
@@ -295,5 +277,4 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
         else:
             result = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
-
             return result, info

@@ -324,6 +324,10 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex",)}},
+    backend_version,
+)
 def matrix_power(
     x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
