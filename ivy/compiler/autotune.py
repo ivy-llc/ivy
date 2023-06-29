@@ -9,7 +9,7 @@ from typing import Callable, Optional, Tuple
 import matplotlib.pyplot as plt
 
 
-SUPPORTED_FRAMEWORKS = ["torch", "tensorflow", "flax", "haiku"]  # flax, haiku?
+SUPPORTED_FRAMEWORKS = ["torch", "tensorflow", "jax", "flax", "haiku"]  # flax, haiku?
 
 FRAMEWORKS_TO_INSTALL_PIP = [
     "numpy",
@@ -83,12 +83,11 @@ def cleanup_environment(environment, use_conda=False):
             stdout=subprocess.DEVNULL,
         )
 
-def plot_graph(results, crop_fig="full", k=0):
 
+def plot_graph(results, crop_fig="full", k=0):
     runtime_values = []
     memory_usage_values = []
     labels = []
-
 
     for framework in results.keys():
         for device in results[framework].keys():
@@ -108,7 +107,9 @@ def plot_graph(results, crop_fig="full", k=0):
                 labels.append(framework + " - " + device)
 
     scores = {}
-    for label, runtime, memory_usage in zip(labels, runtime_values, memory_usage_values):
+    for label, runtime, memory_usage in zip(
+        labels, runtime_values, memory_usage_values
+    ):
         score = runtime + memory_usage * k
         if score in scores:
             scores[score].append(label)
@@ -122,24 +123,40 @@ def plot_graph(results, crop_fig="full", k=0):
     plt.grid(False)
 
     for label, x, y in zip(labels, memory_usage_values, runtime_values):
-        plt.annotate(label, (x, y), xytext=(0,-12), textcoords='offset points', fontsize=8)
-        plt.text(x, y+0.00002, f"{y:.4f}", ha="center", va="bottom", fontsize=8)
+        plt.annotate(
+            label, (x, y), xytext=(0, -12), textcoords="offset points", fontsize=8
+        )
+        plt.text(x, y + 0.00002, f"{y:.4f}", ha="center", va="bottom", fontsize=8)
 
     for score, data_points in scores.items():
         if len(data_points) > 1:
-            plt.plot(memory_usage_values, [score] * len(memory_usage_values), linestyle="--", alpha=0.5, label=f"Score: {score}")
+            plt.plot(
+                memory_usage_values,
+                [score] * len(memory_usage_values),
+                linestyle="--",
+                alpha=0.5,
+                label=f"Score: {score}",
+            )
             for data_point in data_points:
                 index = labels.index(data_point)
                 x = memory_usage_values[index]
-    
+
     best_score = min(scores.keys())
     best_data_point = scores[best_score][0]
     best_index = labels.index(best_data_point)
-    plt.scatter(memory_usage_values[best_index], runtime_values[best_index], marker="o", facecolors="none", edgecolors="red", s=100, label="Best Score")
+    plt.scatter(
+        memory_usage_values[best_index],
+        runtime_values[best_index],
+        marker="o",
+        facecolors="none",
+        edgecolors="red",
+        s=100,
+        label="Best Score",
+    )
 
     plt.savefig("performance_comparison.png")
 
-    
+
 def autotune(
     *objs: Callable,
     install_all_frameworks: bool = True,
@@ -147,7 +164,7 @@ def autotune(
     source: Optional[str] = None,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
-    params_v = None, 
+    params_v=None,
     k: float = 0,
     save_fig: bool = False,
     crop_fig: str = "full",
@@ -208,7 +225,7 @@ def autotune(
                         transpiled_function(*x)
                     end_time = time.perf_counter()
                 except Exception as e:
-                    print("Function call failed with {framework}: {e}")
+                    print(f"Function call failed with {framework}: {e}")
                     continue
                 run_time = end_time - start_time
                 run_time /= ITERATIONS
