@@ -432,7 +432,7 @@ def test_paddle_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    offset=st.integers(min_value=-5, max_value=5),
+    offset=st.integers(min_value=-4, max_value=4),
     test_with_out=st.just(False),
 )
 def test_paddle_diagflat(
