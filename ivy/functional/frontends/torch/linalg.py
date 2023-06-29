@@ -98,6 +98,12 @@ def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def matrix_exp(A):
+    return ivy.matrix_exp(A)
+
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
