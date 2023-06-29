@@ -1316,3 +1316,29 @@ def test_paddle_logical_xor(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# eig
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="eig",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_paddle_eig(
+    dtype_and_x, frontend_method_data, init_flags, method_flags, frontend, on_device
+):
+    input_dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
