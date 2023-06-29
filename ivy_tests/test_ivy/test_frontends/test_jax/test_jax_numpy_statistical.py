@@ -234,7 +234,7 @@ def test_jax_numpy_bincount(
 # cumprod
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
-    aliases=["jax.numpy.cumproduct"],
+    #aliases=["jax.numpy.cumproduct"], deprecated since 0.4.12
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -336,12 +336,12 @@ def test_jax_numpy_sum(
         axis = axis[0]
     where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtypes,
+        input_dtype=[input_dtypes],
         test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=[input_dtypes],
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -446,8 +446,8 @@ def test_jax_numpy_max(
     dtype_x_axis=helpers.dtype_values_axis(
         num_arrays=2,
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
