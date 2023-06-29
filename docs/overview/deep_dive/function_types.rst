@@ -27,9 +27,9 @@ Function Types
 .. _`ivy.default_dtype`: https://github.com/unifyai/ivy/blob/8482eb3fcadd0721f339a1a55c3f3b9f5c86d8ba/ivy/functional/ivy/data_type.py#L879
 .. _`ivy.get_all_arrays_on_dev`: https://github.com/unifyai/ivy/blob/08ebc4d6d5e200dcbb8498b213538ffd550767f3/ivy/functional/ivy/device.py#L131
 .. _`ivy.linear`: https://github.com/unifyai/ivy/blob/207515ff1a815ace1a976ea37e8cff1419965e36/ivy/functional/ivy/layers.py#L31
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/functional/backends/torch/layers.py#L30
+.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/torch/layers.py#L30
 .. _`_wrap_function checks`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L980
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L1231
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 .. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 .. _`handle`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/func_wrapper.py#L1027-L1030
 .. _`repo`: https://github.com/unifyai/ivy
@@ -124,8 +124,8 @@ However, as just explained, *mixed* functions implement a compositional approach
 Therefore, when no backend is explicitly set, then the compositional implementation is always used for *mixed* functions, even for backends that have a more efficient backend-specific implementation.
 Typically the backend should always be set explicitly though (using :func:`ivy.set_backend` for example), and in this case the efficient backend-specific implementation will always be used if it exists.
 
-There may be instances wherein the backend function is not able to encompass the full range of possible cases that ivy wants to support. One example of this is `ivy.linear`_ for which ivy supports 3D weight matrices whereas the torch native function :code:`torch.nn.functional.linear` only supports 2D weight matrices. In such cases, we should add the `partial_mixed_handler`_ attribute to the backend function with a lambda function specifying the conditions on the input to switch between the primary and compositional implementations. When the backend is set, the `_wrap_function checks`_ if the :code:`partial_mixed_handler` attribute was added to the primary function and, if it's found, it applies the `handle_mixed_function`_ decorator and also adds the compositional function's reference as an attribute called :code:`compos` to the function.
-When the function is called with some parameters, the :code:`handle_mixed_function` decorator first applies the lambda function on the input, and if the condition evaluates to True, the primary implementation is used and otherwise the compositional implementation which was preserved in the function as the `compos` attribute is invoked.
+There may be instances wherein the backend function is not able to encompass the full range of possible cases that ivy wants to support. One example of this is `ivy.linear`_ for which ivy supports 3D weight matrices whereas the torch native function :code:`torch.nn.functional.linear` only supports 2D weight matrices. In such cases, we should add the `partial_mixed_handler`_ attribute to the backend function with a lambda function specifying the conditions on the input to switch between the primary and compositional implementations. When the backend is set, the `_wrap_function checks`_ if the :code:`partial_mixed_handler` attribute was added to the primary function and, if it's found, it applies the `handle_partial_mixed_function`_ decorator and also adds the compositional function's reference as an attribute called :code:`compos` to the function.
+When the function is called with some parameters, the :code:`handle_partial_mixed_function` decorator first applies the lambda function on the input, and if the condition evaluates to True, the primary implementation is used and otherwise the compositional implementation which was preserved in the function as the `compos` attribute is invoked.
 In case of the torch backend implementation of :code:`ivy.linear`, the lambda function simply checks whether the weight matrix has a dimensionality of 2. This decorator not only enables us to leverage the performance advantages offered by the backend function but also facilitates the support of super-set behavior. For further insights into decorators, please refer to the :ref:`Function Wrapping` section.
 
 We must add the :code:`mixed_backend_wrappers` attribute to the compositional implementation of mixed functions to specify which additional wrappers need to be applied to the primary implementation and which ones from the compositional implementation should be skipped.
@@ -210,6 +210,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video">
     </iframe>
