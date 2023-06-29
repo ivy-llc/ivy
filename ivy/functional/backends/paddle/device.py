@@ -11,7 +11,7 @@ from paddle.fluid.libpaddle import Place
 from paddle.fluid import core
 from paddle.framework import _get_paddle_place
 
-_paddle_dev_types = (
+_paddle_dev_types = Union[
     core.Place,
     core.XPUPlace,
     core.CPUPlace,
@@ -21,13 +21,15 @@ _paddle_dev_types = (
     core.IPUPlace,
     core.MLUPlace,
     core.CustomPlace,
-)
+]
 
 # API #
 # ----#
 
 
-def dev(x: paddle.Tensor, /, *, as_native: bool = False) -> Union[ivy.Device, Place]:
+def dev(
+    x: paddle.Tensor, /, *, as_native: bool = False
+) -> Union[ivy.Device, _paddle_dev_types]:
     dv = x.place
     if as_native:
         return dv
@@ -36,7 +38,7 @@ def dev(x: paddle.Tensor, /, *, as_native: bool = False) -> Union[ivy.Device, Pl
 
 def to_device(
     x: paddle.Tensor,
-    device: Union[ivy.Device, Place],
+    device: Union[ivy.Device, _paddle_dev_types],
     /,
     *,
     stream: Optional[int] = None,
@@ -105,7 +107,7 @@ def as_native_dev(
 
 
 def is_native_dev(device, /):
-    return isinstance(device, _paddle_dev_types)
+    return isinstance(device, _paddle_dev_types.__args__)
 
 
 def clear_mem_on_dev(device: Place, /):
