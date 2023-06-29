@@ -17,9 +17,7 @@ _paddle_dev_types = Union[
     core.CPUPlace,
     core.CUDAPinnedPlace,
     core.CUDAPlace,
-    core.NPUPlace,
     core.IPUPlace,
-    core.MLUPlace,
     core.CustomPlace,
 ]
 
@@ -88,7 +86,7 @@ def as_ivy_dev(
 def as_native_dev(
     device: Union[ivy.Device, str, _paddle_dev_types],
     /,
-) -> Optional[Place]:
+) -> _paddle_dev_types:
     if is_native_dev(device):
         return device
     if isinstance(device, str):
