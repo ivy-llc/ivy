@@ -210,6 +210,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def erf(x, name=None):
+    return ivy.erf(x)
+
+
 @with_supported_dtypes(
     {
         "2.4.2 and below": (
@@ -232,6 +238,30 @@ def cumprod(x, dim=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isnan(x, name=None):
+    return ivy.isnan(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isfinite(x, name=None):
+    return ivy.isfinite(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isinf(x, name=None):
+    return ivy.isinf(x)
 
 
 @with_supported_dtypes(
@@ -259,3 +289,11 @@ def logit(x, eps=None, name=None):
 @to_ivy_arrays_and_back
 def fmax(x, y, name=None):
     return ivy.fmax(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)
