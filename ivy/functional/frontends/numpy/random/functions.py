@@ -164,4 +164,3 @@ def standard_cauchy(size=None):
 def rayleigh(scale, size=None):
     x = ivy.rayleigh(scale, size, dtype="float64")
     return x
-

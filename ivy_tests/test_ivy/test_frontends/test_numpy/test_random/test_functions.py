@@ -608,6 +608,7 @@ def test_numpy_standard_cauchy(
         exclude_min=True,
     ),
     size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
 )
 def test_numpy_rayleigh(
     input_dtypes,
