@@ -14,12 +14,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @st.composite
 def _fill_value(draw):
+    with_array = draw(st.sampled_from([True, False]))
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
     if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
+        ret = draw(helpers.ints(min_value=0, max_value=5))
     elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+        ret = draw(helpers.ints(min_value=-5, max_value=5))
+    else:
+        ret = draw(helpers.floats(min_value=-5, max_value=5))
+    if with_array:
+        return np.array(ret, dtype=dtype)
+    else:
+        return ret
 
 
 @st.composite
