@@ -180,7 +180,6 @@ to Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `formatting channel`_ or in the `formatting forum`_!
 
-.. This video should be considered deprecated. It will be replaced with a new video soon.
 **Video**
 
 .. raw:: html
