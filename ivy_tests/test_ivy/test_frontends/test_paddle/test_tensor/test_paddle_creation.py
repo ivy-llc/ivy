@@ -420,3 +420,58 @@ def test_paddle_triu(
         x=values[0],
         diagonal=diagonal,
     )
+
+
+@st.composite
+def _custom_diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    # p = draw(helpers.number(min_value=0, max_value=50))
+    # return dtype, x, k, p
+    return dtype, x, k
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="paddle.diag",
+    # dtype_and_x_k_p=_custom_diag_helper(),
+    dtype_and_x_k=_custom_diag_helper(),
+    # p=helpers.number(min_value=0, max_value=50)
+    p=st.floats(0, 1),
+)
+def test_paddle_diag(
+    # dtype_and_x_k_p,
+    dtype_and_x_k,
+    p,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    # dtype, x, k, p = dtype_and_x_k_p
+    dtype, x, k = dtype_and_x_k
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=k,
+        padding_value=p,
+    )

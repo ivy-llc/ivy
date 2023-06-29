@@ -114,3 +114,13 @@ def tril(x, diagonal=0, name=None):
 @to_ivy_arrays_and_back
 def triu(x, diagonal=0, name=None):
     return ivy.triu(x, k=diagonal)
+
+
+@to_ivy_arrays_and_back
+def diag(x, offset=0, padding_value=0, name=None):
+    d = ivy.diag(x, k=offset)
+    if len(x.shape) == 1:
+        if padding_value:
+            d_mask = ivy.eye(d.shape[0], k=offset)
+            d[d_mask] = padding_value
+    return d
