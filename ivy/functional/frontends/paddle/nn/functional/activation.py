@@ -202,7 +202,7 @@ def elu(
     alpha=1.0,
     name=None,
 ):
-    return ivy.elu(x, alpha=alpha)
+    return ivy.elu(x, alpha)
 
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
