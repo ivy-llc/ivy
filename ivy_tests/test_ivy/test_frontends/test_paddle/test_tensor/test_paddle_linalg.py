@@ -658,6 +658,7 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         p=p,
     )
 
+
 # dot
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.dot",
@@ -668,7 +669,7 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         max_num_dims=2,
         min_value=-10,
         max_value=10,
-        shared_dtype=True
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
 )
