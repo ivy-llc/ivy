@@ -83,14 +83,10 @@ ArgMin = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Asin(*, x, name="asin"):
-    return ivy.asin(x)
+Asin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.asin))
 
 
-@to_ivy_arrays_and_back
-def Atan(*, x, name="atan"):
-    return ivy.atan(x)
+Atan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.atan))
 
 
 @to_ivy_arrays_and_back
