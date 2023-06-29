@@ -14,6 +14,8 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
+        additional_dependencies:
+        - flake8-bugbear
         exclude: ^.*__init__.py$
   - repo: https://github.com/PyCQA/docformatter
     rev: v1.6.3
