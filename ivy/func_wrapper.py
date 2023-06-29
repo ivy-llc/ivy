@@ -27,7 +27,7 @@ FN_DECORATORS = [
     "handle_view_indexing",
     "handle_view",
     "handle_array_like_without_promotion",
-    "handle_mixed_function",
+    "handle_partial_mixed_function",
     "handle_nestable",
     "handle_exceptions",
     "handle_nans",
@@ -219,17 +219,18 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
     arr = None
     if args:
-        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(args, arr_idxs[0])
         else:
-            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+            arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
             if arr_idxs:
                 arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
+        arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
         if arr_idxs:
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
@@ -974,6 +975,27 @@ def handle_nestable(fn: Callable) -> Callable:
     return _handle_nestable
 
 
+# Partial Mixed Function Handling #
+
+
+def handle_partial_mixed_function(fn) -> Callable:
+    @functools.wraps(fn)
+    def _handle_partial_mixed_function(*args, **kwargs):
+        handle_mixed_in_backend = False
+        if not hasattr(fn, "partial_mixed_handler"):
+            handle_mixed_in_backend = True
+        else:
+            compos = getattr(fn, "compos")
+            condition = getattr(fn, "partial_mixed_handler")
+
+        if handle_mixed_in_backend or condition(*args, **kwargs):
+            return fn(*args, **kwargs)
+        return compos(*args, **kwargs)
+
+    _handle_partial_mixed_function.handle_partial_mixed_function = True
+    return _handle_partial_mixed_function
+
+
 # Functions #
 
 
@@ -1035,7 +1057,11 @@ def _wrap_function(
             setattr(to_wrap, attr, getattr(original, attr))
 
         mixed_fn = hasattr(original, "mixed_backend_wrappers") and original != to_wrap
-        partial_mixed = mixed_fn and hasattr(to_wrap, "partial_mixed_handler")
+        partial_mixed = (
+            mixed_fn
+            and hasattr(original, "handle_partial_mixed_function")
+            and hasattr(to_wrap, "partial_mixed_handler")
+        )
         add_wrappers, skip_wrappers = [], []
         if mixed_fn:
             backend_wrappers = getattr(original, "mixed_backend_wrappers")
@@ -1044,19 +1070,13 @@ def _wrap_function(
 
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
+                if partial_mixed and attr == "handle_partial_mixed_function":
+                    to_wrap.compos = original
+                    to_wrap = handle_partial_mixed_function(to_wrap)
                 if attr not in skip_wrappers:
                     to_wrap = getattr(ivy, attr)(to_wrap)
-
-            elif mixed_fn:
-                if attr == "handle_mixed_function":
-                    if partial_mixed:
-                        to_wrap.compos = original
-                        to_wrap = handle_mixed_function(
-                            getattr(to_wrap, "partial_mixed_handler")
-                        )(to_wrap)
-                    continue
-                if attr in add_wrappers:
-                    to_wrap = getattr(ivy, attr)(to_wrap)
+            if attr in add_wrappers:
+                to_wrap = getattr(ivy, attr)(to_wrap)
 
         # we should remove the all the decorators
         # after handle_mixed_fuction in FN_DECORATORS
@@ -1065,7 +1085,7 @@ def _wrap_function(
         if partial_mixed:
             array_spec = to_wrap.compos.__dict__["array_spec"]
             for attr in FN_DECORATORS[
-                -1 : FN_DECORATORS.index("handle_mixed_function") : -1
+                -1 : FN_DECORATORS.index("handle_partial_mixed_function") : -1
             ]:
                 if hasattr(to_wrap.compos, attr):
                     to_wrap.compos = to_wrap.compos.__wrapped__
@@ -1349,22 +1369,6 @@ def handle_nans(fn: Callable) -> Callable:
 
     _handle_nans.handle_nans = True
     return _handle_nans
-
-
-def handle_mixed_function(condition) -> Callable:
-    def inner_function(fn):
-        @functools.wraps(fn)
-        def _handle_mixed_function(*args, **kwargs):
-            compos = getattr(_handle_mixed_function, "compos")
-            if condition(*args, **kwargs):
-                return fn(*args, **kwargs)
-
-            return compos(*args, **kwargs)
-
-        _handle_mixed_function.handle_mixed_functions = True
-        return _handle_mixed_function
-
-    return inner_function
 
 
 attribute_dict = {

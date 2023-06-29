@@ -167,6 +167,7 @@ def test_avg_pool1d(
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
@@ -175,12 +176,17 @@ def test_avg_pool2d(
     count_include_pad,
     ceil_mode,
     divisor_override,
+    data_format,
     test_flags,
     backend_fw,
     on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
+
+    if data_format == "NCHW":
+        x[0] = x[0].reshape((x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2]))
+
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -194,6 +200,7 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
         divisor_override=divisor_override,
