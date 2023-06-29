@@ -93,3 +93,21 @@ def silu(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     if paddle.is_complex(x):
         return x * (1.0 / (1.0 + paddle_backend.exp(-x)))
     return F.silu(x.cast("float32")).cast(x.dtype)
+
+
+def elu(
+    x: paddle.Tensor, /, *, alpha: float = 1.0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    if x.dtype in [paddle.float32, paddle.float64]:
+        return F.elu(x, alpha=alpha)
+
+    if paddle.is_complex(x):
+        ret = (
+            paddle_backend.where(
+                paddle_backend.greater(x, 0),
+                x,
+                paddle_backend.multiply(alpha, paddle_backend.expm1(x)),
+            ),
+        )
+        return ret
+    return F.elu(x.cast("float32"), alpha).cast(x.dtype)

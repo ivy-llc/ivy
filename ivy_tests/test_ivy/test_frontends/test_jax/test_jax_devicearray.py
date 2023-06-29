@@ -415,7 +415,6 @@ def test_jax_devicearray_ravel(
         max_dim_size=100,
         min_num_dims=2,
     ),
-
 )
 def test_jax_devicearray_sort(
     dtype_x_axis,
