@@ -1480,7 +1480,7 @@ def test_paddle_greater_than(
         on_device=on_device,
     )
 
-    
+
 # logical_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
