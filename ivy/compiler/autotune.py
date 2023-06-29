@@ -83,7 +83,7 @@ def cleanup_environment(environment, use_conda=False):
             stdout=subprocess.DEVNULL,
         )
 
-def plot_graph(results, k=0):
+def plot_graph(results, crop_fig="full", k=0):
 
     runtime_values = []
     memory_usage_values = []
@@ -94,12 +94,20 @@ def plot_graph(results, k=0):
         for device in results[framework].keys():
             runtime = results[framework][device]["runtime"]
             memory_usage = results[framework][device]["memory_usage"]
-            runtime_values.append(runtime)
-            memory_usage_values.append(memory_usage)
-            labels.append(framework + " - " + device)
+            if crop_fig == "gpu" and "gpu" in device:
+                runtime_values.append(runtime)
+                memory_usage_values.append(memory_usage)
+                labels.append(framework + " - " + device)
+            elif crop_fig == "cpu" and "cpu" in device:
+                runtime_values.append(runtime)
+                memory_usage_values.append(memory_usage)
+                labels.append(framework + " - " + device)
+            elif crop_fig == "full":
+                runtime_values.append(runtime)
+                memory_usage_values.append(memory_usage)
+                labels.append(framework + " - " + device)
 
     scores = {}
-
     for label, runtime, memory_usage in zip(labels, runtime_values, memory_usage_values):
         score = runtime + memory_usage * k
         if score in scores:
@@ -142,6 +150,7 @@ def autotune(
     params_v = None, 
     k: float = 0,
     save_fig: bool = False,
+    crop_fig: str = "full",
     kwargs: Optional[dict] = None,
 ):
     global SUPPORTED_FRAMEWORKS
@@ -229,7 +238,7 @@ def autotune(
             cleanup_environment(environment, use_conda=use_conda)
         return
     if save_fig:
-        plot_graph(results, k)
+        plot_graph(results, crop_fig, k)
     # Clean up environment
     if install_all_frameworks:
         cleanup_environment(environment, use_conda=use_conda)
