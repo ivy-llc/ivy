@@ -17,8 +17,9 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipul
     _st_tuples_or_int,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
-     _get_dtype_buffer_count_offset,
+    _get_dtype_buffer_count_offset,
 )
+
 
 @st.composite
 def _get_clip_inputs(draw):
@@ -1670,7 +1671,7 @@ def test_jax_numpy_blackman(
     test_with_out=st.just(False),
 )
 def test_jax_numpy_frombuffer(
-   *,
+    *,
     dtype_buffer_count_offset,
     on_device,
     fn_tree,
@@ -1679,7 +1680,7 @@ def test_jax_numpy_frombuffer(
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
     helpers.test_frontend_function(
-       input_dtypes=input_dtype,
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1688,5 +1689,4 @@ def test_jax_numpy_frombuffer(
         dtype=input_dtype[0],
         count=count,
         offset=offset,
-       
     )
