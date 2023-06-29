@@ -15,5 +15,14 @@ def quantile(
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    ret = ivy.quantile(a, q, axis=axis, keepdims=keepdims, out=out)
+    ret = ivy.quantile(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        out=out,
+        overwrite_input=overwrite_input,
+        method=method,
+        interpolation=interpolation,
+    )
     return ret
