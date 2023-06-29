@@ -6,3 +6,5 @@ from . import correlating
 from .correlating import *
 from . import histograms
 from .histograms import *
+from . import quantile
+from .quantile import *
