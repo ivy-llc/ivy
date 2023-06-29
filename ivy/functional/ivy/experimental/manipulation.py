@@ -18,6 +18,7 @@ import math
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
+    handle_partial_mixed_function,
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
@@ -32,6 +33,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @handle_view
 @inputs_to_ivy_arrays
@@ -185,7 +187,7 @@ flatten.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 

@@ -307,6 +307,7 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
     array_api_dtypes=False,
+    shape_key="shape",
 ):
     """
     Draws a list of arrays with elements from the given corresponding data types.
@@ -512,7 +513,7 @@ def dtype_and_values(
                     min_dim_size=min_dim_size,
                     max_dim_size=max_dim_size,
                 ),
-                key="shape",
+                key=shape_key,
             )
         )
     values = []

@@ -129,5 +129,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 .. raw:: html
 
     <iframe width="420" height="315" allow="fullscreen;"
-    src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">
+    src="https://www.youtube.com/embed/JXQ8aI8vJ_8" class="video">
     </iframe>
