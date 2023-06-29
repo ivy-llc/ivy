@@ -17,11 +17,12 @@ import ivy
 
 
 def _kaiser_window(M, beta):
-    Z = float((M-1)/2)
-    n = paddle.arange(-Z,Z+1,step=1)
-    for_sqrt = ivy.sqrt(1-((4*(n**2)/(M-1)**2)))
-    ret = ivy.i0(beta*for_sqrt)/ivy.i0(beta)
+    Z = float((M - 1) / 2)
+    n = paddle.arange(-Z, Z + 1, step=1)
+    for_sqrt = ivy.sqrt(1 - ((4 * (n**2) / (M - 1) ** 2)))
+    ret = ivy.i0(beta * for_sqrt) / ivy.i0(beta)
     return ret
+
 
 # Array API Standard #
 # -------------------#
