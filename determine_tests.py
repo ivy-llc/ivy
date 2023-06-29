@@ -95,6 +95,18 @@ def main():
             for test in removed_tests:
                 f.write(test + "\n")
         added_tests = list(added_tests)
+        print(added_tests)
+        # if it is a PR, we must check that the tests added were in the files_changes
+        if len(sys.argv) >= 3 and sys.argv[2] == "pr":
+            relevant_added_tests = []
+            for test in added_tests:
+                test_path = test.split("::")[0]
+                for file in modified_files:
+                    if test_path in file.new_path:
+                        relevant_added_tests.append(test)
+                        break
+            added_tests = relevant_added_tests
+            print(added_tests)
         if len(added_tests) > 10:
             added_tests = added_tests[:10]
         # Add these new_tests in the Mapping
@@ -105,9 +117,9 @@ def main():
         for i in range(old_num_tests, num_tests):
             tests["tests_mapping"][new_tests[i]] = i
         directories = (
-            [x[0] for x in os.walk("ivy")]
-            + [x[0] for x in os.walk("ivy_tests/test_ivy")]
-            + ["ivy_tests"]
+                [x[0] for x in os.walk("ivy")]
+                + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+                + ["ivy_tests"]
         )
         directories_filtered = [
             x
