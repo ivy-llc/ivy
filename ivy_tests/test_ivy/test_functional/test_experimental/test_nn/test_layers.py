@@ -61,7 +61,6 @@ def test_max_pool2d(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
     on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
@@ -78,7 +77,6 @@ def test_max_pool2d(
         )
     )
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -272,18 +270,9 @@ def valid_dct(draw):
     dtype_x_and_args=valid_dct(),
     test_gradients=st.just(False),
 )
-def test_dct(
-    *,
-    dtype_x_and_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_dct(*, dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -304,17 +293,9 @@ def test_dct(
     dtype_x_and_args=valid_dct(),
     test_gradients=st.just(False),
 )
-def test_idct(
-    dtype_x_and_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_idct(dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -425,13 +406,7 @@ def _interp_args(draw, mode=None, mode_list=None):
     number_positional_args=st.just(2),
 )
 def test_interpolate(
-    dtype_x_mode,
-    antialias,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_x_mode, antialias, test_flags, backend_fw, fn_name, on_device
 ):
     (
         input_dtype,
@@ -443,7 +418,6 @@ def test_interpolate(
         recompute_scale_factor,
     ) = dtype_x_mode
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -494,18 +468,9 @@ def x_and_fft(draw):
     ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
-def test_fft(
-    *,
-    d_x_d_n_n,
-    test_flags,
-    backend_fw,
-    on_device,
-    fn_name,
-    ground_truth_backend,
-):
+def test_fft(*, d_x_d_n_n, test_flags, backend_fw, on_device, fn_name):
     dtype, x, dim, norm, n = d_x_d_n_n
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -549,11 +514,9 @@ def test_dropout1d(
     backend_fw,
     on_device,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
@@ -601,11 +564,9 @@ def test_dropout2d(
     backend_fw,
     on_device,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
@@ -654,11 +615,9 @@ def test_dropout3d(
     backend_fw,
     on_device,
     fn_name,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
@@ -706,18 +665,10 @@ def x_and_ifft(draw):
     d_x_d_n_n=x_and_ifft(),
     test_gradients=st.just(False),
 )
-def test_ifft(
-    *,
-    d_x_d_n_n,
-    test_flags,
-    backend_fw,
-    fn_name,
-    ground_truth_backend,
-):
+def test_ifft(*, d_x_d_n_n, test_flags, backend_fw, fn_name):
     dtype, x, dim, norm, n = d_x_d_n_n
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -739,20 +690,12 @@ def test_ifft(
     number_positional_args=st.just(2),
 )
 def test_embedding(
-    *,
-    dtypes_indices_weights,
-    max_norm,
-    test_flags,
-    backend_fw,
-    on_device,
-    fn_name,
-    ground_truth_backend,
+    *, dtypes_indices_weights, max_norm, test_flags, backend_fw, on_device, fn_name
 ):
     dtypes, indices, weights, _ = dtypes_indices_weights
     dtypes = [dtypes[1], dtypes[0]]
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
         xs_grad_idxs=[[0, 0]],
@@ -782,7 +725,6 @@ def test_dft(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     if inverse:
         dtype, x, axis, norm, dft_length = d_xifft_axis_n_length
@@ -790,7 +732,6 @@ def test_dft(
         dtype, x, axis, norm, dft_length = d_xfft_axis_n_length
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -821,18 +762,10 @@ def test_dft(
     # TODO: need to debug for containers
 )
 def test_adaptive_avg_pool1d(
-    *,
-    dtype_and_x,
-    output_size,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -865,18 +798,10 @@ def test_adaptive_avg_pool1d(
     # TODO: need to debug for containers
 )
 def test_adaptive_avg_pool2d(
-    *,
-    dtype_and_x,
-    output_size,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -951,18 +876,9 @@ def _get_reduce_func(dtype):
     test_with_out=st.just(False),
     ground_truth_backend="jax",
 )
-def test_reduce_window(
-    *,
-    all_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
     dtypes, operand, init_value, computation, others, padding = all_args
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1016,18 +932,9 @@ def x_and_fft2(draw):
     container_flags=st.just([False]),
     test_gradients=st.just(False),
 )
-def test_fft2(
-    *,
-    d_x_d_s_n,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_fft2(*, d_x_d_s_n, test_flags, backend_fw, fn_name, on_device):
     dtype, x, s, dim, norm = d_x_d_s_n
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,

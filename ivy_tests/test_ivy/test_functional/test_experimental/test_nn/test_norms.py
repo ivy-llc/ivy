@@ -12,18 +12,9 @@ from ivy_tests.test_ivy.helpers import handle_test
         available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
     ),
 )
-def test_l1_normalize(
-    *,
-    dtype_values_axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -129,19 +120,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     data=_instance_and_batch_norm_helper(min_dims=3),
     training=st.booleans(),
 )
-def test_instance_norm(
-    *,
-    data,
-    training,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -168,19 +149,9 @@ def test_instance_norm(
     data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
 )
-def test_batch_norm(
-    *,
-    data,
-    training,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
