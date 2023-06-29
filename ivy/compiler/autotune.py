@@ -6,6 +6,7 @@ import subprocess
 import venv
 import os
 from typing import Callable, Optional, Tuple
+import matplotlib.pyplot as plt
 
 
 SUPPORTED_FRAMEWORKS = ["torch", "tensorflow", "flax", "haiku"]  # flax, haiku?
@@ -82,14 +83,64 @@ def cleanup_environment(environment, use_conda=False):
             stdout=subprocess.DEVNULL,
         )
 
+def plot_graph(results, k=0):
 
+    runtime_values = []
+    memory_usage_values = []
+    labels = []
+
+
+    for framework in results.keys():
+        for device in results[framework].keys():
+            runtime = results[framework][device]["runtime"]
+            memory_usage = results[framework][device]["memory_usage"]
+            runtime_values.append(runtime)
+            memory_usage_values.append(memory_usage)
+            labels.append(framework + " - " + device)
+
+    scores = {}
+
+    for label, runtime, memory_usage in zip(labels, runtime_values, memory_usage_values):
+        score = runtime + memory_usage * k
+        if score in scores:
+            scores[score].append(label)
+        else:
+            scores[score] = [label]
+
+    plt.scatter(memory_usage_values, runtime_values)
+    plt.xlabel("Memory Usage (GB)")
+    plt.ylabel("Runtime (s)")
+    plt.title("Performance Comparison")
+    plt.grid(False)
+
+    for label, x, y in zip(labels, memory_usage_values, runtime_values):
+        plt.annotate(label, (x, y), xytext=(0,-12), textcoords='offset points', fontsize=8)
+        plt.text(x, y+0.00002, f"{y:.4f}", ha="center", va="bottom", fontsize=8)
+
+    for score, data_points in scores.items():
+        if len(data_points) > 1:
+            plt.plot(memory_usage_values, [score] * len(memory_usage_values), linestyle="--", alpha=0.5, label=f"Score: {score}")
+            for data_point in data_points:
+                index = labels.index(data_point)
+                x = memory_usage_values[index]
+    
+    best_score = min(scores.keys())
+    best_data_point = scores[best_score][0]
+    best_index = labels.index(best_data_point)
+    plt.scatter(memory_usage_values[best_index], runtime_values[best_index], marker="o", facecolors="none", edgecolors="red", s=100, label="Best Score")
+
+    plt.savefig("performance_comparison.png")
+
+    
 def autotune(
     *objs: Callable,
-    install_all_frameworks=True,
-    use_conda=False,
+    install_all_frameworks: bool = True,
+    use_conda: bool = False,
     source: Optional[str] = None,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
+    k: float = 0,
+    save_fig: bool = False,
     kwargs: Optional[dict] = None,
 ):
     global SUPPORTED_FRAMEWORKS
@@ -102,7 +153,7 @@ def autotune(
         else:
             environment = create_virtual_environment()
 
-        install_frameworks(environment, use_conda=use_conda)    
+        install_frameworks(environment, use_conda=use_conda)
 
     import torch
 
@@ -129,9 +180,13 @@ def autotune(
             x = ivy.to_device(args, device)
 
             for framework in SUPPORTED_FRAMEWORKS:
-                transpiled_function = ivy.transpile(
-                    *objs, source=source, to=framework, args=x
-                )
+                try:
+                    transpiled_function = ivy.transpile(
+                        *objs, source=source, to=framework, args=x
+                    )
+                except Exception as e:
+                    print(f"Transpilation to {framework} failed: {e}")
+                    continue
                 (
                     ivy.set_backend(framework)
                     if framework not in ["flax", "haiku"]
@@ -169,6 +224,8 @@ def autotune(
         if install_all_frameworks:
             cleanup_environment(environment, use_conda=use_conda)
         return
+    if save_fig:
+        plot_graph(results, k)
     # Clean up environment
     if install_all_frameworks:
         cleanup_environment(environment, use_conda=use_conda)
