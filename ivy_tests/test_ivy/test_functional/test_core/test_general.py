@@ -5,8 +5,6 @@ import time
 import math
 from types import SimpleNamespace
 
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
-
 try:
     import tensorflow as tf
 except ImportError:
@@ -182,7 +180,7 @@ def test_array_equal(
 @handle_test(
     fn_tree="functional.ivy.get_item",
     ground_truth_backend="numpy",
-    dtypes_x_query=helpers.dtype_array_index(
+    dtypes_x_query=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
     copy=st.booleans(),
@@ -219,7 +217,7 @@ def test_get_item(
 @handle_test(
     fn_tree="functional.ivy.set_item",
     ground_truth_backend="numpy",
-    dtypes_x_query_val=_setitem_helper(
+    dtypes_x_query_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
