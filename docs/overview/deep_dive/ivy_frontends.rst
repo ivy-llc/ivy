@@ -18,7 +18,7 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
+.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
@@ -692,6 +692,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
     </iframe>
