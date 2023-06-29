@@ -139,6 +139,7 @@ def autotune(
     source: Optional[str] = None,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
+    params_v = None, 
     k: float = 0,
     save_fig: bool = False,
     kwargs: Optional[dict] = None,
@@ -171,7 +172,7 @@ def autotune(
     }
 
     ivy.transpile(
-        *objs, source=source, to="torch", args=args, kwargs=kwargs
+        *objs, source=source, to="torch", args=args, params_v=params_v, kwargs=kwargs
     )  # dummy transpile
 
     try:
