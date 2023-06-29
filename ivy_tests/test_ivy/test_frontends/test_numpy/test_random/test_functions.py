@@ -595,6 +595,7 @@ def test_numpy_standard_cauchy(
     )
 
 
+# rayleigh
 @handle_frontend_test(
     fn_tree="numpy.random.rayleigh",
     input_dtypes=helpers.get_dtypes("float"),
@@ -606,7 +607,7 @@ def test_numpy_standard_cauchy(
         max_value=100000,
         exclude_min=True,
     ),
-    size=helpers.get_shape(allow_none=True)
+    size=helpers.get_shape(allow_none=True),
 )
 def test_numpy_rayleigh(
     input_dtypes,
@@ -615,7 +616,7 @@ def test_numpy_rayleigh(
     test_flags,
     fn_tree,
     on_device,
-    scale
+    scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
