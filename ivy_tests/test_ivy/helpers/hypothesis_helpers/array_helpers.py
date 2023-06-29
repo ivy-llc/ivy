@@ -1871,7 +1871,7 @@ def dtype_array_query(
                     dtype=['int64'],
                 )
             )
-            new_index = new_index[1]
+            new_index = new_index[0]
         else:
             new_index = slice(
                 start := draw(
