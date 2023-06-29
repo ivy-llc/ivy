@@ -54,11 +54,10 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def mean(input, *, dtype=None):
-    if dtype is not None:
-        input = ivy.astype(input, dtype)
-
-    return ivy.mean(input)
+def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
+    if dim is None:
+        dim = axis
+    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
 @to_ivy_arrays_and_back
