@@ -1511,7 +1511,7 @@ def test_paddle_instance_logical_and(
         on_device=on_device,
     )
 
-    
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
@@ -1772,8 +1772,8 @@ def test_paddle_less_than(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
+
 # max
 @handle_frontend_method(
     class_tree=CLASS_TREE,
