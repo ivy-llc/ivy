@@ -153,8 +153,14 @@ def cond(x, p=None, name=None):
     return ivy.cond(x, p=p, out=name)
 
 # dot
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
-    return ivy.vecdot(x,y)
+    out = []
+    if ivy.get_num_dims(x) == 2:
+        for xi, yi in zip(x,y):
+            out.append(ivy.vecdot(xi, yi))
+        return ivy.array(out)
+    else: 
+        return ivy.vecdot(x, y)
