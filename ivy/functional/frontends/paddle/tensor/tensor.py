@@ -161,6 +161,24 @@ class Tensor:
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def clip(self, min=None, max=None, name=None):
+        ivy.utils.assertions.check_all_or_any_fn(
+            min,
+            max,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at most one of min or max can be None",
+        )
+        if min is None:
+            return ivy.minimum(self._ivy_array, max)
+        if max is None:
+            return ivy.maximum(self._ivy_array, min)
+        return ivy.clip(self._ivy_array, min, max)
+
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
