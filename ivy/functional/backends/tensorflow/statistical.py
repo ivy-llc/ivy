@@ -362,7 +362,7 @@ def __get_index(lst, indices=None, prefix=None):
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("unsigned","int8", "int16")},
+    {"2.12.0 and below": ("unsigned", "int8", "int16")},
     backend_version,
 )
 def einsum(

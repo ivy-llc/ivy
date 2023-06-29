@@ -667,8 +667,8 @@ def roll(
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -748,7 +748,7 @@ def squeeze(
         b: ivy.array([3., 4., 5.])
     }
     """
-    return current_backend(x).squeeze(x, axis, copy=copy, out=out)
+    return current_backend(x).squeeze(x, axis=axis, copy=copy, out=out)
 
 
 @handle_exceptions

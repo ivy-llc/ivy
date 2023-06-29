@@ -27,7 +27,7 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.9.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.utils.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -72,7 +72,7 @@ def clip_by_norm(t, clip_norm, axes=None):
     return t_clip
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
@@ -115,7 +115,7 @@ def foldl(
     return result
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -606,3 +606,8 @@ def truncatemod(x, y):
     x = ivy.broadcast_to(x, ivy.shape(y))
     y = ivy.broadcast_to(y, ivy.shape(x))
     return ivy.trunc(x / y) * y + (x % y)
+
+
+@to_ivy_arrays_and_back
+def unravel_index(indices, dims, out=None, name=None):
+    return ivy.unravel_index(indices, dims, out=out)
