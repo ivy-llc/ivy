@@ -171,8 +171,7 @@ def test_torch_inv_ex(
         max_num_dims=5,
         min_value=-1e4,
         max_value=1e4,
-    ),
-    test_with_out=st.just(False),
+    )
 )
 def test_torch_pinv(
         *,
@@ -191,6 +190,7 @@ def test_torch_pinv(
         on_device=on_device,
         input=x[0],
         atol=1e-02,
+        rtol=1e-02,
     )
 
 
@@ -223,8 +223,13 @@ def test_torch_det(
 # qr
 @handle_frontend_test(
     fn_tree="torch.linalg.qr",
-    dtype_and_input=_get_dtype_and_square_matrix(),
-    test_with_out=st.just(False),
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_value=-1e4,
+        max_value=1e4,
+    ),
 )
 def test_torch_qr(
         *,
