@@ -288,7 +288,7 @@ def avg_pool2d(
     if divisor_override is not None:
         # sum pooling then dividing by divisor_override if it is provided
         res = tf.nn.depthwise_conv2d(
-            x, tf.ones(kernel + [x.shape[-1], 1]), [1] + strides + [1], padding
+            x, tf.ones(kernel + (x.shape[-1], 1)), (1,) + strides + (1,), padding
         )
         res = res / divisor_override
     else:
