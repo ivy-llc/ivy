@@ -1095,6 +1095,7 @@ def nested_map(
         b: ivy.array([3., 4.])
     }
     """
+    
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
