@@ -180,7 +180,14 @@ def test_torch_tensor_property_ndim(
 ):
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+
+
+def test_torch_tensor_property_grad():
+    x = Tensor(ivy.array([1.0, 2.0, 3.0]))
+    grads = ivy.array([1.0, 2.0, 3.0])
+    x._grads = grads
+    assert ivy.array_equal(x.grad, grads)
 
 
 # chunk

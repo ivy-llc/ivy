@@ -23,6 +23,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self._grads = None
 
     def __len__(self):
         return len(self._ivy_array)
@@ -74,6 +75,10 @@ class Tensor:
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
+
+    @property
+    def grad(self):
+        return self._grads
 
     # Setters #
     # --------#
