@@ -16,13 +16,12 @@ import ivy
 # Code from cephes for i0
 
 
-def _kaiser_window(window_length, beta):
-    n = paddle.arange(0, window_length)
-    alpha = (window_length - 1) / 2.0
-    return paddle_backend.i0(
-        beta * paddle.sqrt(1 - paddle_backend.divide((n - alpha), alpha) ** 2.0)
-    ) / paddle_backend.i0(beta)
-
+def _kaiser_window(M, beta):
+    Z = float((M-1)/2)
+    n = paddle.arange(-Z,Z+1,step=1)
+    for_sqrt = ivy.sqrt(1-((4*(n**2)/(M-1)**2)))
+    ret = ivy.i0(beta*for_sqrt)/ivy.i0(beta)
+    return ret
 
 # Array API Standard #
 # -------------------#
@@ -30,8 +29,8 @@ def _kaiser_window(window_length, beta):
 
 def kaiser_window(
     window_length: int,
-    periodic: bool = True,
     beta: float = 12.0,
+    periodic: bool = False,
     *,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
@@ -39,9 +38,9 @@ def kaiser_window(
     if window_length < 2:
         return paddle.ones([window_length], dtype=dtype)
     if periodic is False:
-        return _kaiser_window(window_length, beta).cast(dtype)
+        return _kaiser_window(window_length, beta).astype(dtype)
     else:
-        return _kaiser_window(window_length + 1, beta)[:-1].cast(dtype)
+        return _kaiser_window(window_length + 1, beta)[:-1].astype(dtype)
 
 
 def vorbis_window(
