@@ -57,6 +57,11 @@ class ndarray:
     def ndim(self):
         return len(self.shape)
 
+    @property
+    def flat(self):
+        self = self.flatten()
+        return self
+
     # Setters #
     # --------#
 
