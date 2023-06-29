@@ -290,12 +290,12 @@ def test_torch_sum(
         min_value=-1e04,
         max_value=1e04,
     ),
-    dtype=helpers.get_dtypes("float_and_complex", full=False, none=True),
+    keepdims=st.booleans(),
 )
 def test_torch_mean(
     *,
     dtype_and_x,
-    dtype,
+    keepdims,
     on_device,
     fn_tree,
     frontend,
@@ -308,9 +308,9 @@ def test_torch_mean(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=0.001,
         input=x[0],
-        dtype=dtype[0],
+        dim=axis,
+        keepdim=keepdims,
     )
 
 

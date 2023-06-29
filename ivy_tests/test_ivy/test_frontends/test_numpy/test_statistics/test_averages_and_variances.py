@@ -354,7 +354,7 @@ def test_numpy_cov(
     fn_tree,
     on_device,
 ):
-    dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
+    dtype, x1, x2, rowvar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     np_frontend_helpers.test_frontend_function(
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         frontend=frontend,
@@ -365,7 +365,7 @@ def test_numpy_cov(
         atol=1e-2,
         m=x1,
         y=x2,
-        rowvar=rowVar,
+        rowvar=rowvar,
         bias=bias,
         ddof=ddof,
         fweights=fweights,
