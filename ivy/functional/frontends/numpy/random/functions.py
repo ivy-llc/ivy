@@ -159,3 +159,9 @@ def weibull(a, size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")  # Array of uniform random numbers between 0 and 1
     x = ivy.pow(-ivy.log(1 - u), 1 / a)
     return x
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def standard_cauchy(size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.tan(ivy.pi * (u - 0.5))

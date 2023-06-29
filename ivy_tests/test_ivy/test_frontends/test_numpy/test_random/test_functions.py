@@ -1,6 +1,7 @@
 # global,
 from hypothesis import strategies as st, assume
 import numpy as np
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -597,5 +598,31 @@ def test_numpy_weibull(
         on_device=on_device,
         test_values=False,
         a=a,
+        size=size,
+    )
+
+
+# standard_cauchy
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_cauchy",
+    input_dtypes=helpers.get_dtypes("integer", full=False),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_cauchy(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
         size=size,
     )
