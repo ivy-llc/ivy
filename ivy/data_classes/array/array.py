@@ -1,6 +1,5 @@
 # flake8: noqa
 # global
-import copy
 import functools
 import numpy as np
 from operator import mul
