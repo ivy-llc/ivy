@@ -6,6 +6,8 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
+from ivy.functions.numpy_casting import handle_numpy_casting
+
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
     if q.ndim == 1 and q.size < 10:
