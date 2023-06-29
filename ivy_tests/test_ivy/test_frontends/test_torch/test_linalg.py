@@ -162,11 +162,13 @@ def test_torch_inv_ex(
 
 
 # pinv
+# TODO: add testing for hermitian
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
+        max_num_dims=5,
         min_value=-1e4,
         max_value=1e4,
     ),
@@ -214,7 +216,7 @@ def test_torch_det(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=x,
+        A=x[0],
     )
 
 

@@ -33,8 +33,9 @@ def inv(A, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    # TODO: add handling for hermitian once complex numbers are supported
+    # TODO: add handling for hermitian
     if atol is None:
         return ivy.pinv(input, rtol=rtol, out=out)
     else:
@@ -49,6 +50,7 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def det(A, *, out=None):
     return ivy.det(A, out=out)
 
@@ -161,11 +163,11 @@ def inv_ex(A, *, check_errors=False, out=None):
             raise RuntimeError("Singular Matrix")
         else:
             inv = A * math.nan
+            # TODO: info should return an array containing the diagonal element of the LU decomposition
+            #  of the input matrix that is exactly zero
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
     else:
         inv = ivy.inv(A, out=out)
-        # TODO: info should return an array containing the diagonal element of the LU decomposition
-        #  of the input matrix that is exactly zero
         info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
     return inv, info
 
