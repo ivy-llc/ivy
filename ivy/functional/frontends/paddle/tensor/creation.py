@@ -121,10 +121,5 @@ def triu(x, diagonal=0, name=None):
 )
 @to_ivy_arrays_and_back
 def diagflat(x, offset=0, name=None):
-    print("===============================================")
-    print("x: ", x)
-    print("offset: ", offset)
     arr = ivy.diagflat(x, offset=offset)
-    print("Done: arr = ivy.diagflat(x, offset=offset)")
-    print("arr: ", arr)
     return arr
