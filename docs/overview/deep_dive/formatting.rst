@@ -19,7 +19,7 @@ Lint Checks
 -----------
 
 In addition to `black`_ and `flake8`_, Ivy uses other linters to help automate the formatting process, specially for
-issues `flake8`_ detects but doesn't fix automatically. In addition to that, we now validate docstring as part of our
+issues `flake8`_ detects but doesn't fix automatically. In addition to that, we validate docstring as part of our
 linting process. You can learn more about our docstring formatting in the :ref:`Docstrings` section.
 
 Right now, we use the following linters:
