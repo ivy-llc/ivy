@@ -509,7 +509,7 @@ def test_jax_numpy_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
-    #aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
+    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
