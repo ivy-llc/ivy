@@ -374,7 +374,7 @@ class Shape:
 
     @property
     def shape(self):
-        return self._shap
+        return self._shape
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
