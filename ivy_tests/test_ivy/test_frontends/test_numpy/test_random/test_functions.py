@@ -593,3 +593,37 @@ def test_numpy_standard_cauchy(
         test_values=False,
         size=size,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.rayleigh",
+    input_dtypes=helpers.get_dtypes("float"),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=100000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True)
+)
+def test_numpy_rayleigh(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    scale
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        scale=scale,
+        size=size,
+    )

@@ -157,3 +157,11 @@ def negative_binomial(n, p, size=None):
 def standard_cauchy(size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def rayleigh(scale, size=None):
+    x = ivy.rayleigh(scale, size, dtype="float64")
+    return x
+
