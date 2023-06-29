@@ -1852,3 +1852,94 @@ class AdaptiveAvgPool1d(Module):
             x,
             self._output_size,
         )
+
+
+# Interpolate #
+# ------------#
+
+
+class Interpolate(Module):
+    def __init__(
+        self,
+        size,
+        /,
+        *,
+        mode="linear",
+        scale_factor=None,
+        recompute_scale_factor=None,
+        align_corners=None,
+        antialias=False,
+    ):
+        """
+        Interpolate layer is used to down/up samples the input to the given size. The
+        algorithm used for interpolation is determined by mode.
+
+        Parameters
+        ----------
+        size
+            Output size.
+        mode
+            Interpolation mode. Can be one of the following:
+            - linear
+            - bilinear
+            - trilinear
+            - nearest
+            - nearest-exact
+            - area
+            - tf_area
+            - bicubic
+            - mitchellcubic
+            - lanczos3
+            - lanczos5
+            - gaussian
+        scale_factor
+            Multiplier for spatial size that defines the output size(overwrites `size`).
+        align_corners
+            If True, the corner pixels of the input and output tensors are aligned,
+            and thus preserving the values at the corner pixels. If False, the corner
+            pixels are not aligned, and the interpolation uses edge value padding for
+            out-of-boundary values.
+            only has an effect when mode is 'linear', 'bilinear',
+            'bicubic' or 'trilinear'. Default: False
+        recompute_scale_factor
+            Recompute the scale_factor for use in the interpolation calculation.
+            If True, then scale_factor must be passed in and will be used to
+            compute the `size`. If False, then size or scale_factor will be used
+            directly for interpolation. Default: None.
+        antialias
+            If True, antialiasing is applied when downsampling an image.
+            Supported modes: 'bilinear', 'bicubic'.
+        """
+        self._size = size
+        self._mode = mode
+        self._scale_factor = scale_factor
+        self._recompute_scale_factor = recompute_scale_factor
+        self._align_corners = align_corners
+        self._antialias = antialias
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+        Perform forward pass of the Interpolate layer.
+
+        Parameters
+        ----------
+        x
+            Inputs to process
+            *[batch x channels x [optional depth] x [optional height] x width]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the interpolate operation
+            *[batch_shape, out]*
+        """
+        return ivy.interpolate(
+            x,
+            size=self._size,
+            mode=self._mode,
+            scale_factor=self._scale_factor,
+            recompute_scale_factor=self._recompute_scale_factor,
+            align_corners=self._align_corners,
+            antialias=self._antialias,
+        )
