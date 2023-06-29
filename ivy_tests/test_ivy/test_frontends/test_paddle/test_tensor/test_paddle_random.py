@@ -123,6 +123,7 @@ def test_paddle_randn(
         test_values=False,
         shape=shape,
         dtype=dtype,
+
     )
 
 
@@ -162,3 +163,4 @@ def test_paddle_uniform_(
         max=max,
         seed=seed,
     )
+

@@ -28,7 +28,7 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
 
-
+  
 def randn(shape, dtype=None, name=None):
     if dtype not in ["float32", "float64"]:
         raise ivy.exceptions.IvyError(
@@ -47,3 +47,4 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(
         low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed
     )
+
