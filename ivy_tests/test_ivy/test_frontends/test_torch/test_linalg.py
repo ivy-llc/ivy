@@ -36,6 +36,34 @@ def _get_dtype_and_square_matrix(draw, invertible=False):
 
 
 @st.composite
+def _get_symmetrix_matrix(draw):
+    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("valid")))))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+    num_independnt_vals = int((random_size ** 2) / 2 + random_size / 2)
+    array_vals_flat = np.array(
+        draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    )
+    array_vals = np.zeros(batch_shape + (random_size, random_size))
+    c = 0
+    for i in range(random_size):
+        for j in range(random_size):
+            if j < i:
+                continue
+            array_vals[..., i, j] = array_vals_flat[..., c]
+            array_vals[..., j, i] = array_vals_flat[..., c]
+            c += 1
+    return [input_dtype], array_vals
+
+
+@st.composite
 def _get_dtype_and_matrix_non_singular(draw):
     while True:
         matrix = draw(
@@ -286,49 +314,15 @@ def test_torch_slogdet(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=x,
+        A=x[0],
     )
-
-
-@st.composite
-def _get_symmetrix_matrix(draw):
-    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("float")))))
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
-    num_independnt_vals = int((random_size ** 2) / 2 + random_size / 2)
-    array_vals_flat = np.array(
-        draw(
-            helpers.array_values(
-                dtype=input_dtype,
-                shape=tuple(list(batch_shape) + [num_independnt_vals]),
-                min_value=2,
-                max_value=5,
-            )
-        )
-    )
-    array_vals = np.zeros(batch_shape + (random_size, random_size))
-    c = 0
-    for i in range(random_size):
-        for j in range(random_size):
-            if j < i:
-                continue
-            array_vals[..., i, j] = array_vals_flat[..., c]
-            array_vals[..., j, i] = array_vals_flat[..., c]
-            c += 1
-    return [input_dtype], array_vals
 
 
 # eigvals
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvals",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=(
-                ivy.float32,
-                ivy.float64,
-                ivy.double,
-                ivy.complex64,
-                ivy.complex128,
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=10,
@@ -337,7 +331,6 @@ def _get_symmetrix_matrix(draw):
         max_value=1.0e5,
         shared_dtype=True,
     ),
-    test_with_out=st.just(False),
 )
 def test_torch_eigvals(
         *,
@@ -406,7 +399,6 @@ def test_torch_eigvals(
     fn_tree="torch.linalg.eigvalsh",
     dtype_x=_get_symmetrix_matrix(),
     UPLO=st.sampled_from(("L", "U")),
-    test_with_out=st.just(False),
 )
 def test_torch_eigvalsh(
         *,
@@ -735,7 +727,6 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.eig",
     dtype_and_input=_get_dtype_and_square_matrix(),
-    test_with_out=st.just(False),
 )
 def test_torch_eig(
         *,
@@ -1118,7 +1109,6 @@ def test_torch_lu_factor(
         min_value=-1e04,
         max_value=1e04,
     ),
-    test_with_out=st.just(False),
 )
 def test_torch_matmul(
         *,

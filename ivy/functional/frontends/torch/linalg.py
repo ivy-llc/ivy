@@ -56,9 +56,12 @@ def det(A, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def eigvals(input, *, out=None):
-    # TODO: add handling for out
-    return ivy.eigvals(input)
+    ret = ivy.eigvals(input)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_ivy_arrays_and_back
@@ -73,6 +76,7 @@ def eigh(a, /, UPLO="L", out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def qr(A, mode="reduced", *, out=None):
     if mode == "reduced":
         ret = ivy.qr(A, mode="reduced")
@@ -88,9 +92,12 @@ def qr(A, mode="reduced", *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def slogdet(A, *, out=None):
-    # TODO: add handling for out
-    return ivy.slogdet(A)
+    ret = ivy.slogdet(A)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret, keep_input_dtype=True)
+    return ret
 
 
 @with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
