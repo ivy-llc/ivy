@@ -52,7 +52,7 @@ def test_numpy_nanpercentile(
     )
 
 @handle_frontend_test(
-    fn_tree="numpy.quantile",
+    fn_tree="ivy.quantile",
     dtype_values_axis=_statistical_dtype_values(function="quantile"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
