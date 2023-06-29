@@ -1470,7 +1470,7 @@ def test_paddle_instance_logical_and(
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"self": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"y": x[1]},
         frontend_method_data=frontend_method_data,
