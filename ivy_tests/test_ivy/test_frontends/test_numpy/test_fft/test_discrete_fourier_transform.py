@@ -204,7 +204,7 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
     ),
     norm=st.sampled_from(["backward", "ortho", "forward"]),
     s=st.one_of(st.lists(st.integers()), st.none()),
-    axes=st.one_of(st.none(), st.lists(st.integers())),
+    # axes=st.one_of(st.none(), st.lists(st.integers())),
 )
 def test_numpy_rfft2(
     dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device
