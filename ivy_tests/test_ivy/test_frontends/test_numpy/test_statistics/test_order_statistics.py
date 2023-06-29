@@ -58,6 +58,7 @@ def test_numpy_nanpercentile(
     keep_dims=st.booleans(),
     interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
 )
+@handle_numpy_casting
 def test_numpy_quantile(
     dtype_values_axis,
     where,
