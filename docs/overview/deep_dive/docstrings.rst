@@ -14,7 +14,7 @@ In contrast, all backend implementations at :mod:`ivy/functional/backends/backen
 
 In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
-Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a template.
+Firstly, if the function exists in the `Array API Standard`_, then we start with the corresponding docstring as a template.
 These docstrings can be found under `spec/API_specification/array_api`_.
 
 Important: you should open the file in **raw** format.
