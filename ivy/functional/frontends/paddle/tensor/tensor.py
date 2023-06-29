@@ -354,3 +354,9 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def bmm(self, y, transpose_x=False, transpose_y=False, name=None):
+        return paddle_frontend.bmm(
+            self, y, transpose_x=transpose_x, transpose_y=transpose_y
+        )
