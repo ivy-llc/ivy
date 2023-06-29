@@ -30,8 +30,8 @@ def _kaiser_window(M, beta):
 
 def kaiser_window(
     window_length: int,
-    beta: float = 12.0,
     periodic: bool = False,
+    beta: float = 12.0,
     *,
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
