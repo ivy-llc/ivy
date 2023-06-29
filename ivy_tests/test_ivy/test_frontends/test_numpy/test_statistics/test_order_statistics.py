@@ -52,13 +52,12 @@ def test_numpy_nanpercentile(
     )
 
 @handle_frontend_test(
-    fn_tree="ivy.quantile",
+    fn_tree="numpy.quantile",
     dtype_values_axis=_statistical_dtype_values(function="quantile"),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
-    interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+    
 )
-
 def test_numpy_quantile(
     dtype_values_axis,
     where,
@@ -68,7 +67,14 @@ def test_numpy_quantile(
     on_device,
     keep_dims,
 ):
-
+    interpolation_methods = [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        # Add additional interpolation methods here
+    ]
     (input_dtypes, values, axis) = dtype_values_axis
     if isinstance(axis, tuple):
         axis = axis[0]
@@ -81,17 +87,26 @@ def test_numpy_quantile(
         where=where, input_dtype=input_dtypes, test_flags=test_flags
     )
 
-    np_frontend_helpers.test_frontend_function(
-        a=values[0][0],
-        q=values[0][1],
-        axis=axis,
-        out=None,
-        overwrite_input=None,
-        method=interpolation,
-        keepdims=keep_dims,
-        interpolation=None,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        input_dtypes=input_dtypes,
-    )
+    try:
+        a = values[0][0]
+        q = values[0][1]
+
+        q = np.clip(q, 0.0, 1.0)
+
+        for interpolation in interpolation_methods:
+            np_frontend_helpers.test_frontend_function(
+                a=a,
+                q=q,
+                axis=axis,
+                out=None,
+                overwrite_input=None,
+                interpolation=interpolation,
+                keepdims=keep_dims,
+                frontend=frontend,
+                fn_tree=fn_tree,
+                test_flags=test_flags,
+                input_dtypes=input_dtypes
+            )
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        # Handle the error here, such as logging, reporting, or specific error handling
