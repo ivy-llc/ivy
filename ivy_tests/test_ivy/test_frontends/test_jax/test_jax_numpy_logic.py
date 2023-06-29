@@ -967,3 +967,69 @@ def test_jax_numpy_iscomplexobj(
         on_device=on_device,
         x=x[0],
     )
+
+
+@st.composite
+def _func_and_shape_dtype_helper(draw):
+    # here assumption is that the input func will take the len(shape) no of parameters
+    def add_numbers(*args):
+        total = 0
+        for num in args:
+            total += num
+        return total
+
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
+
+    dtype = draw(
+        st.sampled_from(
+            [
+                "float16",
+                "float64",
+                "int8",
+                "int16",
+                "float32",
+                "int32",
+                "int64",
+            ]
+        )
+    )
+    return add_numbers, shape, dtype
+
+
+# fromfunction
+@handle_frontend_test(
+    fn_tree="jax.numpy.fromfunction",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    function_and_shape_and_dtype=_func_and_shape_dtype_helper(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_fromfunction(
+    dtype_and_x,
+    function_and_shape_and_dtype,
+    frontend,
+    on_device,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    function, shape, dtype = function_and_shape_and_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        function=function,
+        shape=shape,
+        dtype=dtype,
+    )
