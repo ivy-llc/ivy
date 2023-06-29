@@ -360,3 +360,41 @@ def test_paddle_empty_like(
         x=x[0],
         dtype=dtype[0],
     )
+
+
+# triu_indices
+@handle_frontend_test(
+    fn_tree="paddle.triu_indices",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer")
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    row=st.integers(min_value=1, max_value=5),
+    col=st.integers(min_value=1, max_value=5),
+    offset=st.integers(min_value=0, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_paddle_triu_indices(
+    dtype_and_x,
+    row,
+    col,
+    offset,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
+    )
