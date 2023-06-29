@@ -1,5 +1,6 @@
 # global
 import ast
+import logging
 import inspect
 import math
 from numbers import Number
@@ -146,19 +147,17 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
-            is_partial_mixed = hasattr(fn, "partial_mixed_handler")
             f_supported = get_fn(fn, False)
-            if is_partial_mixed:
-                compos = merge_fn(wrapper(f_supported["compositional"]), out)
-                primary = merge_fn(wrapper(f_supported["primary"]), out)
-                out = {
-                    "compositional": (
-                        compos if isinstance(compos, dict) else tuple(compos)
-                    ),
-                    "primary": primary if isinstance(primary, dict) else tuple(primary),
-                }
-            else:
-                out = merge_fn(wrapper(f_supported), out)
+            if hasattr(fn, "partial_mixed_handler"):
+                f_supported = merge_fn(
+                    wrapper(f_supported["compositional"]),
+                    wrapper(f_supported["primary"]),
+                )
+                logging.warning(
+                    "The function uses partial mixed functions in it's implementation"
+                    " and the returned dtypes maybe not be exact."
+                )
+            out = merge_fn(wrapper(f_supported), out)
             continue
         elif "frontend" in fn.__module__ or (
             hasattr(fn, "__name__") and "einops" in fn.__name__

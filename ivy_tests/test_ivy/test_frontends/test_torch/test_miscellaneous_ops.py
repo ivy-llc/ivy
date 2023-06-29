@@ -630,7 +630,7 @@ def test_torch_tril(
 @handle_frontend_test(
     fn_tree="torch.flatten",
     dtype_input_axes=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", mixed_fn_compos=False),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         min_num_dims=1,
         min_axes_size=2,

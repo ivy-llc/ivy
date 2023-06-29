@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float", mixed_fn_compos=False),
+            available_dtypes=helpers.get_dtypes("float"),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
             safety_factor_scale="log",
@@ -39,10 +39,8 @@ def _instance_and_batch_norm_helper(draw, *, min_num_dims=1, min_dim_size=1):
             num_arrays=3,
         )
     )
-    momentum = draw(
-        helpers.floats(min_value=0.01, max_value=0.1, mixed_fn_compos=False)
-    )
-    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1, mixed_fn_compos=False))
+    momentum = draw(helpers.floats(min_value=0.01, max_value=0.1))
+    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
     return x_dtype, x[-1], others[0], others[1], others[2], variance[0], momentum, eps
 
 

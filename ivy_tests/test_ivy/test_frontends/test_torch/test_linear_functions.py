@@ -38,10 +38,10 @@ def x_and_linear(draw, dtypes):
 @handle_frontend_test(
     fn_tree="torch.nn.functional.linear",
     dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("float", full=False, mixed_fn_compos=False),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
-def test_linear(
+def test_torch_linear(
     *,
     dtype_x_weight_bias,
     on_device,
