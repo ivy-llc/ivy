@@ -120,17 +120,9 @@ def triu(x, diagonal=0, name=None):
 @to_ivy_arrays_and_back
 def triu_indices(row, col=None, offset=0, dtype="int64"):
     try:
-        print("===============================================")
-        print("row: ", row)
-        print("col: ", col)
-        print("offset: ", offset)
-        print("dtype: ", dtype)
         arr = ivy.triu_indices(row, col, offset)
-        print("Done: arr = ivy.triu_indices(row, col, offset)")
-        print("arr: ", arr)
         arr = ivy.astype(arr, ivy.as_native_dtype(dtype))
-        print("Done: arr = ivy.astype(arr, ivy.as_native_dtype(dtype))")
         return arr
     except Exception as e:
-        print("All Mighty Error: ", e)
+        print("Generic Error: ", e)
         return arr
