@@ -143,7 +143,7 @@ if __name__ == "__main__":
     version_flag = sys.argv[4]
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
-    if len(sys.argv) > 7:
+    if len(sys.argv) > 7 and sys.argv[7] != "null":
         run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
