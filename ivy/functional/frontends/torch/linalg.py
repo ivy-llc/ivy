@@ -65,6 +65,7 @@ def eigvals(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def eigvalsh(input, UPLO="L", *, out=None):
     return ivy.eigvalsh(input, UPLO=UPLO, out=out)
 
@@ -100,13 +101,14 @@ def slogdet(A, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def cond(input, p=None, *, out=None):
     return ivy.cond(input, p=p, out=out)
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 

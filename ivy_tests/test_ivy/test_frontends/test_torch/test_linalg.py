@@ -20,10 +20,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 
 # helpers
 @st.composite
-def _get_dtype_and_square_matrix(draw, invertible=False):
+def _get_dtype_and_matrix(draw, square=False, invertible=False):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=3))
-    random_size = draw(st.integers(min_value=1, max_value=5))
-    shape = (*arbitrary_dims, random_size, random_size)
+    if square:
+        random_size = draw(st.integers(1, 5))
+        shape = (*arbitrary_dims, random_size, random_size)
+    else:
+        shape = (*arbitrary_dims, draw(st.integers(1, 5)), draw(st.integers(1, 5)))
     ret = helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         min_value=-10,
@@ -33,62 +36,6 @@ def _get_dtype_and_square_matrix(draw, invertible=False):
     if invertible:
         ret = ret.filter(lambda x: np.all(np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon))
     return draw(ret)
-
-
-@st.composite
-def _get_symmetrix_matrix(draw):
-    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("valid")))))
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
-    num_independnt_vals = int((random_size ** 2) / 2 + random_size / 2)
-    array_vals_flat = np.array(
-        draw(
-            helpers.array_values(
-                dtype=input_dtype,
-                shape=tuple(list(batch_shape) + [num_independnt_vals]),
-                min_value=2,
-                max_value=5,
-            )
-        )
-    )
-    array_vals = np.zeros(batch_shape + (random_size, random_size))
-    c = 0
-    for i in range(random_size):
-        for j in range(random_size):
-            if j < i:
-                continue
-            array_vals[..., i, j] = array_vals_flat[..., c]
-            array_vals[..., j, i] = array_vals_flat[..., c]
-            c += 1
-    return [input_dtype], array_vals
-
-
-@st.composite
-def _get_dtype_and_matrix_non_singular(draw):
-    while True:
-        matrix = draw(
-            helpers.dtype_and_values(
-                available_dtypes=(
-                    ivy.float64,
-                    ivy.double,
-                ),
-                min_value=-10,
-                max_value=10,
-                min_num_dims=2,
-                max_num_dims=2,
-                min_dim_size=1,
-                max_dim_size=5,
-                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
-                    lambda x: x[0] == x[1]
-                ),
-                allow_inf=False,
-                allow_nan=False,
-            )
-        )
-        if np.linalg.det(matrix[1][0]) != 0:
-            break
-
-    return matrix[0], matrix[1]
 
 
 # vector_norm
@@ -139,7 +86,7 @@ def test_torch_vector_norm(
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
     aliases=["torch.inverse"],
-    dtype_and_x=_get_dtype_and_square_matrix(invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
 )
 def test_torch_inv(
         *,
@@ -166,7 +113,7 @@ def test_torch_inv(
 # inv_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
-    dtype_and_x=_get_dtype_and_square_matrix(invertible=True),  # TODO: Test for singular matrices
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),  # TODO: Test for singular matrices
 )
 def test_torch_inv_ex(
         *,
@@ -193,13 +140,7 @@ def test_torch_inv_ex(
 # TODO: add testing for hermitian
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_value=-1e4,
-        max_value=1e4,
-    )
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_pinv(
         *,
@@ -226,7 +167,7 @@ def test_torch_pinv(
 @handle_frontend_test(
     fn_tree="torch.linalg.det",
     aliases=["torch.det"],
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
 )
 def test_torch_det(
         *,
@@ -251,13 +192,7 @@ def test_torch_det(
 # qr
 @handle_frontend_test(
     fn_tree="torch.linalg.qr",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_value=-1e4,
-        max_value=1e4,
-    ),
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_qr(
         *,
@@ -296,7 +231,7 @@ def test_torch_qr(
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
     aliases=["torch.slogdet"],
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
 )
 def test_torch_slogdet(
         *,
@@ -321,16 +256,7 @@ def test_torch_slogdet(
 # eigvals
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvals",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=10,
-        max_dim_size=10,
-        min_value=1.0,
-        max_value=1.0e5,
-        shared_dtype=True,
-    ),
+    dtype_x=_get_dtype_and_matrix(square=True),
 )
 def test_torch_eigvals(
         *,
@@ -394,10 +320,38 @@ def test_torch_eigvals(
     )
 
 
+@st.composite
+def _get_dtype_and_symmetrix_matrix(draw):
+    input_dtype = draw(st.shared(st.sampled_from(draw(helpers.get_dtypes("valid")))))
+    random_size = draw(helpers.ints(min_value=2, max_value=4))
+    batch_shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=3))
+    num_independnt_vals = int((random_size ** 2) / 2 + random_size / 2)
+    array_vals_flat = np.array(
+        draw(
+            helpers.array_values(
+                dtype=input_dtype,
+                shape=tuple(list(batch_shape) + [num_independnt_vals]),
+                min_value=2,
+                max_value=5,
+            )
+        )
+    )
+    array_vals = np.zeros(batch_shape + (random_size, random_size))
+    c = 0
+    for i in range(random_size):
+        for j in range(random_size):
+            if j < i:
+                continue
+            array_vals[..., i, j] = array_vals_flat[..., c]
+            array_vals[..., j, i] = array_vals_flat[..., c]
+            c += 1
+    return [input_dtype], array_vals
+
+
 # eigvalsh
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvalsh",
-    dtype_x=_get_symmetrix_matrix(),
+    dtype_x=_get_dtype_and_symmetrix_matrix(),
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigvalsh(
@@ -425,7 +379,7 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    dtype_and_x=_get_dtype_and_matrix_non_singular(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
@@ -448,7 +402,7 @@ def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags)
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
     aliases=["torch.matrix_power"],
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
     n=helpers.ints(min_value=2, max_value=5),
 )
 def test_torch_matrix_power(
@@ -645,7 +599,7 @@ def test_matrix_rank(
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     aliases=["torch.cholesky"],
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(),
     upper=st.booleans(),
 )
 def test_torch_cholesky(
@@ -726,7 +680,7 @@ def test_torch_svd(
 # eig
 @handle_frontend_test(
     fn_tree="torch.linalg.eig",
-    dtype_and_input=_get_dtype_and_square_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_eig(
         *,
@@ -821,7 +775,7 @@ def test_torch_eigh(
 # svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(),
 )
 def test_torch_svdvals(
         *,
