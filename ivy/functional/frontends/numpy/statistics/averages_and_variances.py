@@ -178,7 +178,7 @@ def cov(
     y=None,
     /,
     *,
-    rowVar=True,
+    rowvar=True,
     bias=False,
     ddof=None,
     fweights=None,
@@ -188,7 +188,7 @@ def cov(
     return ivy.cov(
         m,
         y,
-        rowVar=rowVar,
+        rowVar=rowvar,
         bias=bias,
         ddof=ddof,
         fweights=fweights,
