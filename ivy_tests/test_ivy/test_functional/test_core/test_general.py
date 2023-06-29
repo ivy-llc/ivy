@@ -219,7 +219,6 @@ def test_get_item(
     ground_truth_backend="numpy",
     dtypes_x_query_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
-        allow_neg_step=False,
     ),
     copy=st.booleans(),
     test_with_out=st.just(False),

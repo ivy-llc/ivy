@@ -272,7 +272,6 @@ def test_array__getitem__(
     ground_truth_backend="numpy",
     dtypes_x_query_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
-        allow_neg_step=False,
     ),
     # ToDo: fix container method
     method_container_flags=st.just([False]),
