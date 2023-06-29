@@ -1703,7 +1703,7 @@ def test_jax_special_rmatmul(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )

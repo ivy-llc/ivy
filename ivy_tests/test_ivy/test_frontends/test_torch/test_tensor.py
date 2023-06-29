@@ -2627,7 +2627,7 @@ def test_torch_instance_new_tensor(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
@@ -2654,38 +2654,12 @@ def test_torch_instance_getitem(
     )
 
 
-@st.composite
-def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
-    input_dtype, x, index = draw(
-        helpers.dtype_array_index(
-            available_dtypes=available_dtypes,
-            allow_neg_step=allow_neg_step,
-        )
-    )
-    real_shape = x[index].shape
-    if len(real_shape):
-        val_shape = real_shape[draw(st.integers(0, len(real_shape))):]
-    else:
-        val_shape = real_shape
-    val_dtype, val = draw(
-        helpers.dtype_and_values(
-            dtype=input_dtype,
-            shape=val_shape,
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
-        )
-    )
-    val_dtype = draw(helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x))[-1]
-    val = val[0].astype(val_dtype)
-    return input_dtype + [val_dtype], x, index, val
-
-
 # __setitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__setitem__",
-    dtypes_x_index_val=_setitem_helper(
+    dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),

@@ -10,7 +10,6 @@ from ivy_tests.test_ivy.helpers import (
     assert_all_close,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
@@ -2894,7 +2893,7 @@ def test_numpy_instance_tolist__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
@@ -2925,7 +2924,7 @@ def test_numpy_instance_getitem(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="__setitem__",
-    dtypes_x_index_val=_setitem_helper(
+    dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )

@@ -6,7 +6,6 @@ import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method, handle_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _setitem_helper
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -240,7 +239,7 @@ def test_array_property_T(
 
 @handle_method(
     method_tree="Array.__getitem__",
-    dtypes_x_query=helpers.dtype_array_index(
+    dtypes_x_query=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
@@ -271,7 +270,7 @@ def test_array__getitem__(
 @handle_method(
     method_tree="Array.__setitem__",
     ground_truth_backend="numpy",
-    dtypes_x_query_val=_setitem_helper(
+    dtypes_x_query_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),

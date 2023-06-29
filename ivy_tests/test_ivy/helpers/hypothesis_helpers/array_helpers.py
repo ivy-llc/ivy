@@ -1799,7 +1799,7 @@ def arrays_for_pooling(
 
 
 @st.composite
-def dtype_array_index(
+def dtype_array_query(
     draw,
     *,
     available_dtypes,
@@ -1807,7 +1807,6 @@ def dtype_array_index(
     max_num_dims=3,
     min_dim_size=1,
     max_dim_size=10,
-    allow_slices=True,
     allow_mask=True,
     allow_neg_step=True,
 ):
@@ -1842,60 +1841,67 @@ def dtype_array_index(
         dtype.append("bool")
         return dtype, array, index
     dtype.append("int32")
-    supported_index_types = ["int", "slice", "seq"] if allow_slices else ["int", "seq"]
+    supported_index_types = ["int", "slice", "list", "array"]
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
-            min_size=len(shape),
+            min_size=1,
             max_size=len(shape),
         )
     )
-    index = [
-        (
-            draw(st.integers(min_value=-s + 1, max_value=s - 1))
-            if index_type == "int"
-            else (
-                draw(
-                    st.lists(
-                        st.integers(min_value=-s + 1, max_value=s - 1),
-                        max_size=20,
-                    )
-                )
-                if index_type == "seq"
-                else (
-                    slice(
-                        start := draw(
-                            st.one_of(
-                                st.integers(min_value=-s + 1, max_value=s - 1),
-                                st.just(None),
-                            )
-                        ),
-                        end := draw(
-                            st.one_of(
-                                st.integers(min_value=-s + 1, max_value=s - 1),
-                                st.just(None),
-                            )
-                        ),
-                        (
-                            draw(st.integers(min_value=1, max_value=s))
-                            if (
-                                0
-                                if start is None
-                                else s + start if start < 0 else start
-                            )
-                            < (s - 1 if end is None else s + end if end < 0 else end)
-                            else (
-                                draw(st.integers(max_value=-1, min_value=-s))
-                                if allow_neg_step
-                                else assume(False)
-                            )
-                        ),
-                    )
+    index = []
+    for s, index_type in zip(shape, index_types):
+        if index_type == "int":
+            new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
+        elif index_type == "seq":
+            new_index = draw(
+                st.lists(
+                    st.integers(min_value=-s + 1, max_value=s - 1),
+                    min_size=1,
+                    max_size=20,
                 )
             )
-        )
-        for s, index_type in zip(shape, index_types)
-    ]
+        elif index_type == "array":
+            _, new_index = draw(
+                helpers.dtype_and_values(
+                    min_value=-s + 1,
+                    max_value=s - 1,
+                    min_num_dims=0,
+                    max_num_dims=1,
+                    dtype=['int64'],
+                )
+            )
+            new_index = new_index[1]
+        else:
+            new_index = slice(
+                start := draw(
+                    st.one_of(
+                        st.integers(min_value=-s + 1, max_value=s - 1),
+                        st.just(None),
+                    )
+                ),
+                end := draw(
+                    st.one_of(
+                        st.integers(min_value=-s + 1, max_value=s - 1),
+                        st.just(None),
+                    )
+                ),
+                (
+                    draw(st.integers(min_value=1, max_value=s))
+                    if (
+                        0
+                        if start is None
+                        else s + start if start < 0 else start
+                    )
+                    < (s - 1 if end is None else s + end if end < 0 else end)
+                    else (
+                        draw(st.integers(max_value=-1, min_value=-s))
+                        if allow_neg_step
+                        else assume(False)
+                    )
+                ),
+            )
+        index += [new_index]
     if draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
         end = draw(st.integers(min_value=start, max_value=len(index) - 1))
@@ -1905,6 +1911,47 @@ def dtype_array_index(
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
     return dtype, array, index
+
+
+@st.composite
+def dtype_array_query_val(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=3,
+    min_dim_size=1,
+    max_dim_size=10,
+    allow_mask=True,
+    allow_neg_step=True,
+):
+    input_dtype, x, query = draw(
+        helpers.dtype_array_query(
+            available_dtypes=available_dtypes,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            allow_mask=allow_mask,
+            allow_neg_step=allow_neg_step,
+        )
+    )
+    real_shape = x[query].shape
+    if len(real_shape):
+        val_shape = real_shape[draw(st.integers(0, len(real_shape))):]
+    else:
+        val_shape = real_shape
+    val_dtype, val = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtype,
+            shape=val_shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+        )
+    )
+    val_dtype = draw(helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x))[-1]
+    val = val[0].astype(val_dtype)
+    return input_dtype + [val_dtype], x, query, val
 
 
 @st.composite
