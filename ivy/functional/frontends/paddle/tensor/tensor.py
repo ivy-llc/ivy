@@ -345,6 +345,12 @@ class Tensor:
         y_ivy = _to_ivy_array(y)
         return ivy.minimum(self._ivy_array, y_ivy)
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def max(self, axis=None, keepdim=False, name=None):
+        return ivy.max(self._ivy_array, axis=axis, keepdims=keepdim)
+
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
