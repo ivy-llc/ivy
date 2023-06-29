@@ -193,11 +193,14 @@ def autotune(
                     if framework not in ["flax", "haiku"]
                     else ivy.set_backend("jax")
                 )
-
-                start_time = time.perf_counter()
-                for _ in range(ITERATIONS):
-                    transpiled_function(*x)
-                end_time = time.perf_counter()
+                try:
+                    start_time = time.perf_counter()
+                    for _ in range(ITERATIONS):
+                        transpiled_function(*x)
+                    end_time = time.perf_counter()
+                except Exception as e:
+                    print("Function call failed with {framework}: {e}")
+                    continue
                 run_time = end_time - start_time
                 run_time /= ITERATIONS
 
