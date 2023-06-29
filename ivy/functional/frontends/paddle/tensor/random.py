@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64")},
+    {"2.5.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -21,7 +21,7 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64")},
+    {"2.5.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -35,3 +35,15 @@ def randn(shape, dtype=None, name=None):
             "Unsupported dtype for randn, only float32 and float64 are supported, "
         )
     return ivy.random_normal(shape=shape, dtype=dtype, seed=None)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
+    x = ivy.array(x)
+    return ivy.random_uniform(
+        low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed
+    )

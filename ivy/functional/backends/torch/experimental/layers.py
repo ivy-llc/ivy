@@ -896,3 +896,14 @@ def fft2(
     return torch.tensor(
         torch.fft.fft2(x, s, dim, norm, out=out), dtype=torch.complex128
     )
+
+
+def ifftn(
+    x: torch.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)

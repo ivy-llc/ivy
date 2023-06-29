@@ -460,7 +460,7 @@ from . import fft
 from . import linalg
 from . import creation
 from .creation import *
-from .dtype import can_cast, promote_types
+from .dtype import *
 from .scalars import *
 from . import indexing
 from .indexing import *

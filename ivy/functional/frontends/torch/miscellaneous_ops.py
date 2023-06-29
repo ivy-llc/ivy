@@ -47,6 +47,8 @@ def roll(input, shifts, dims=None):
 def meshgrid(*tensors, indexing=None):
     if indexing is None:
         indexing = "ij"
+    if len(tensors) == 1 and isinstance(tensors[0], (list, tuple)):
+        tensors = tensors[0]
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
@@ -114,7 +116,7 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
