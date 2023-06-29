@@ -1932,11 +1932,10 @@ class Interpolate(Module):
         -------
         ret
             The outputs following the interpolate operation
-            *[batch_shape, out]*
         """
         return ivy.interpolate(
             x,
-            size=self._size,
+            self._size,
             mode=self._mode,
             scale_factor=self._scale_factor,
             recompute_scale_factor=self._recompute_scale_factor,
