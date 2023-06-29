@@ -1134,20 +1134,9 @@ class Array(
         return ivy.bitwise_right_shift(self._data, other)
 
     def __deepcopy__(self, memodict={}):
-        try:
-            return to_ivy(self._data.__deepcopy__(memodict))
-        except AttributeError:
-            # ToDo: try and find more elegant solution to jax inability to
-            #  deepcopy device arrays
-            if ivy.current_backend_str() == "jax":
-                np_array = copy.deepcopy(self._data)
-                jax_array = ivy.array(np_array)
-                return to_ivy(jax_array)
-            return to_ivy(copy.deepcopy(self._data))
-        except RuntimeError:
-            if ivy.current_backend_str() == "paddle":
-                return to_ivy(copy.deepcopy(self._data.numpy()))
-            return to_ivy(copy.deepcopy(self._data))
+        array_copy = ivy.copy_array(self._data)
+        memodict[id(self)] = array_copy
+        return to_ivy(array_copy)
 
     def __len__(self):
         if not len(self._data.shape):
