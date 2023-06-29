@@ -391,7 +391,7 @@ def test_paddle_tril(
         diagonal=diagonal,
     )
 
- 
+
 # triu
 @handle_frontend_test(
     fn_tree="paddle.triu",
@@ -420,6 +420,7 @@ def test_paddle_triu(
         x=values[0],
         diagonal=diagonal,
     )
+
 
 # diagflat
 @handle_frontend_test(
@@ -452,7 +453,4 @@ def test_paddle_diagflat(
         test_values=False,
         x=x[0],
         offset=offset,
-        )
-    
-    
-    
+    )

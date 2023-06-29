@@ -96,7 +96,7 @@ def empty_like(x, dtype=None, name=None):
 def tril(x, diagonal=0, name=None):
     return ivy.tril(x, k=diagonal)
 
-  
+
 @with_unsupported_dtypes(
     {
         "2.5.0 and below": (
@@ -119,4 +119,3 @@ def triu(x, diagonal=0, name=None):
 @to_ivy_arrays_and_back
 def diagflat(x, offset=0, name=None):
     return ivy.diagflat(x, offset=offset)
-
