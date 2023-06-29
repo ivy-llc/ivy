@@ -529,7 +529,6 @@ class ndarray:
 
     def trace(
         self,
-        a,
         *,
         offset=0,
         axis1=0,
@@ -539,7 +538,6 @@ class ndarray:
     ):
         return np_frontend.trace(
             self,
-            a,
             offset=offset,
             axis1=axis1,
             axis2=axis2,
