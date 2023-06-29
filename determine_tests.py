@@ -117,9 +117,9 @@ def main():
         for i in range(old_num_tests, num_tests):
             tests["tests_mapping"][new_tests[i]] = i
         directories = (
-                [x[0] for x in os.walk("ivy")]
-                + [x[0] for x in os.walk("ivy_tests/test_ivy")]
-                + ["ivy_tests"]
+            [x[0] for x in os.walk("ivy")]
+            + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+            + ["ivy_tests"]
         )
         directories_filtered = [
             x
