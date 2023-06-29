@@ -151,6 +151,7 @@ def negative_binomial(n, p, size=None):
     lambda_ = ivy.gamma(n, scale, shape=size)
     return ivy.poisson(lam=lambda_, shape=size)
 
+#Weibull
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def weibull(a, size=None):

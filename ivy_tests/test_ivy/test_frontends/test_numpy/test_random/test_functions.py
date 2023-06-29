@@ -567,6 +567,7 @@ def test_numpy_negative_binomial(
         p=p,
         size=size,
     )
+# Weibull
 @handle_frontend_test(
     fn_tree="numpy.random.weibull",
     input_dtypes=helpers.get_dtypes("float", index=2),
@@ -600,7 +601,6 @@ def test_numpy_weibull(
         a=a,
         size=size,
     )
-
 
 # standard_cauchy
 @handle_frontend_test(
