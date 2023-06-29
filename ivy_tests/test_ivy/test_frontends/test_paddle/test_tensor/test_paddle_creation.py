@@ -418,13 +418,11 @@ def test_paddle_triu(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        row=row,
-        col=col,
-        offset=offset,
         dtype=dtype[0],
         x=values[0],
         diagonal=diagonal,
     )
+
 
 # triu_indices
 @handle_frontend_test(
@@ -461,6 +459,4 @@ def test_paddle_triu_indices(
         col=col,
         offset=offset,
         dtype=dtype[0],
-        )
-    
-    
+    )
