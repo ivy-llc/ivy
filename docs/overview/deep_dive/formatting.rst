@@ -29,7 +29,7 @@ We use the following linters:
 * `autoflake <https://github.com/PyCQA/autoflake>`_
 * `docformatter <https://github.com/PyCQA/docformatter>`_
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
-* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (Still under development)
+* `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
 
 You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/master/setup.cfg>`_
 file.
