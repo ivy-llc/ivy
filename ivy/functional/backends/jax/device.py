@@ -43,7 +43,7 @@ def dev(
         )
         if as_native:  # fallback
             return jax.devices()[0]
-        # TODO: Find the code where JaxprTracer device is required 
+        # TODO: Find the code where JaxprTracer device is required
         # and get a cleaner workaround for this issue
         return ""  # change might break something
     try:
@@ -106,7 +106,8 @@ def as_native_dev(device, /):
             idx = int(dev_split[1])
         else:
             idx = 0
-        return jax.devices(device)[idx]
+        existing_devices = jax.devices(device)
+        return jax.devices(device)[min(idx, len(existing_devices) - 1)]
     else:
         raise ivy.utils.exceptions.IvyError(
             f"Cannot convert {device} to a JaX device. Expected a "

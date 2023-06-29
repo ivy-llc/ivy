@@ -11,6 +11,17 @@ from paddle.fluid.libpaddle import Place
 from paddle.fluid import core
 from paddle.framework import _get_paddle_place
 
+_paddle_dev_types = (
+    core.Place,
+    core.XPUPlace,
+    core.CPUPlace,
+    core.CUDAPinnedPlace,
+    core.CUDAPlace,
+    core.NPUPlace,
+    core.IPUPlace,
+    core.MLUPlace,
+    core.CustomPlace,
+)
 
 # API #
 # ----#
@@ -39,7 +50,10 @@ def to_device(
     return x
 
 
-def as_ivy_dev(device, /):
+def as_ivy_dev(
+    device: Union[str, _paddle_dev_types],
+    /,
+) -> ivy.Device:
     if isinstance(device, str):
         return ivy.Device(device)
 
@@ -70,7 +84,7 @@ def as_ivy_dev(device, /):
 
 
 def as_native_dev(
-    device: Union[ivy.Device, str, Place],
+    device: Union[ivy.Device, str, _paddle_dev_types],
     /,
 ) -> Optional[Place]:
     if is_native_dev(device):
@@ -83,7 +97,7 @@ def as_native_dev(
             )
         else:
             # Internal function handles more edge cases and devices
-            _get_paddle_place(device)
+            return _get_paddle_place(device)
     else:
         raise ivy.utils.exceptions.IvyError(
             f"{device} cannot be converted to paddle native device."
@@ -91,18 +105,7 @@ def as_native_dev(
 
 
 def is_native_dev(device, /):
-    return isinstance(
-        device,
-        (
-            core.Place,
-            core.XPUPlace,
-            core.CPUPlace,
-            core.CUDAPinnedPlace,
-            core.CUDAPlace,
-            core.IPUPlace,
-            core.CustomPlace,
-        ),
-    )
+    return isinstance(device, _paddle_dev_types)
 
 
 def clear_mem_on_dev(device: Place, /):
