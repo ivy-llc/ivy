@@ -420,3 +420,6 @@ def test_paddle_triu(
         x=values[0],
         diagonal=diagonal,
     )
+
+
+# nothing
