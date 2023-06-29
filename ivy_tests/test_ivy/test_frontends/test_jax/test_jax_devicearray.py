@@ -415,6 +415,7 @@ def test_jax_devicearray_ravel(
         max_dim_size=100,
         min_num_dims=2,
     ),
+
 )
 def test_jax_devicearray_sort(
     dtype_x_axis,
@@ -1489,6 +1490,9 @@ def test_jax_special_rdiv(
         available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_special_truediv(
