@@ -65,8 +65,11 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @torch_to_numpy_style_args
 @to_ivy_arrays_and_back
-def mean(input, dim=None, keepdim=False, *, out=None):
-    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+def mean(input, *, dtype=None):
+    if dtype is not None:
+        input = ivy.astype(input, dtype)
+
+    return ivy.mean(input)
 
 
 @torch_to_numpy_style_args

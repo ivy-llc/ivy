@@ -126,7 +126,7 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          python determine_tests.py ${{ matrix.branch }}
+          python determine_tests.py ${{ matrix.branch }} pr
           set -o pipefail
           python run_tests_pr.py new_failures_${{ matrix.branch }}.txt | tee test_results_${{ matrix.branch }}.txt
         continue-on-error: true
