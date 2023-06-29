@@ -30,11 +30,13 @@ def concat(
         for d in dtypes_list:
             dtype = ivy.promote_types(dtype, d)
     if dtype == paddle.int16:
+        print(xs)
         xs = list(map(lambda x: x.cast("int32"), xs))
-        return paddle.concat(xs, axis).cast("int16")
+        return paddle.concat(xs, axis=axis).cast("int16")
     else:
+        print(xs)
         xs = list(map(lambda x: x.cast(dtype), xs))
-        return paddle.concat(xs, axis)
+        return paddle.concat(xs, axis=axis)
 
 
 def expand_dims(
