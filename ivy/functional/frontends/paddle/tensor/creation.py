@@ -95,3 +95,22 @@ def empty_like(x, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def tril(x, diagonal=0, name=None):
     return ivy.tril(x, k=diagonal)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.5.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def triu(x, diagonal=0, name=None):
+    return ivy.triu(x, k=diagonal)
