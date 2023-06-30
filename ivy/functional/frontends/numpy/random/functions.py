@@ -163,3 +163,9 @@ def bytes(length):
     # convert numpy array to bytes
     random_bytes = numpy_array.tobytes()
     return random_bytes
+
+  
+@from_zero_dim_arrays_to_scalar
+def standard_cauchy(size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    return ivy.tan(ivy.pi * (u - 0.5))

@@ -406,6 +406,6 @@ or in the `continuous integration forum`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/eO268nc8WH4" class="video">
     </iframe>
