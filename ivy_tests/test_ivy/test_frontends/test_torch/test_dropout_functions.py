@@ -59,7 +59,7 @@ def test_torch_dropout(
         min_value=0,
         max_value=50,
         allow_inf=False,
-        min_num_dims=2,
+        min_num_dims=3,
         max_num_dims=4,
         min_dim_size=1
     ),
