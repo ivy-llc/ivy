@@ -1,7 +1,7 @@
+import jax.numpy as jnp
 from typing import Optional, Union, Tuple, Sequence
 
 from ivy.functional.backends.jax import JaxArray
-import jax.numpy as jnp
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -228,3 +228,39 @@ def bincount(
     else:
         ret = jnp.bincount(x, minlength=minlength).astype(x.dtype)
     return ret
+
+
+def cov(
+    x1: JaxArray,
+    x2: JaxArray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[JaxArray] = None,
+    aweights: Optional[JaxArray] = None,
+    dtype: Optional[jnp.dtype] = None,
+) -> JaxArray:
+    if not dtype:
+        x1 = jnp.asarray(x1, dtype=jnp.float64)
+
+    if jnp.ndim(x1) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if jnp.ndim(x2) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if fweights is not None:
+        fweights = jnp.asarray(fweights, dtype=jnp.int64)
+
+    return jnp.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )
