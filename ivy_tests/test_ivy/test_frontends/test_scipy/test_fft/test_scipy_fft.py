@@ -1,5 +1,5 @@
 # # TODO: uncomment after frontend is not required
-# global
+# # global
 # from hypothesis import strategies as st
 
 # # local
@@ -110,28 +110,19 @@
 # def x_and_fft2(draw):
 #     min_fft2_points = 2
 #     dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
-#     x_dim = draw(
-#         helpers.get_shape(
-#             min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
-#         )
-#     )
-#     x = draw(
-#         helpers.array_values(
-#             dtype=dtype[0],
-#             shape=tuple(x_dim),
-#             min_value=-1e5,
-#             max_value=1e5,
-#             allow_inf=False,
-#             large_abs_safety_factor=2.5,
-#             small_abs_safety_factor=2.5,
-#             safety_factor_scale="log",
-#         )
+#     x, dim = draw(
+#         helpers.arrays_and_axes(
+#             available_dtypes=dtype[0],
+#             min_dim_size=2,
+#             max_dim_size=100,
+#             min_num_dims=2,
+#             max_num_dims=4,
+#         ),
 #     )
 #     s = (
 #         draw(st.integers(min_fft2_points, 256)),
 #         draw(st.integers(min_fft2_points, 256)),
 #     )
-#     dim = draw(st.sampled_from([(0, 1), (-1, -2), (1, 0)]))
 #     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
 #     return dtype, x, s, dim, norm
 
@@ -272,7 +263,7 @@
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
-#         x=x,
+#         x=x[0],
 #         s=s,
 #         axes=ax,
 #         norm=norm,
