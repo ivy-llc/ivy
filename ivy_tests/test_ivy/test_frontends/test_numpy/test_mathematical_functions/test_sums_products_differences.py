@@ -411,12 +411,12 @@ def _either_x_dx(draw):
     rand_either=_either_x_dx(),
 )
 def test_numpy_trapz(
-        dtype_values_axis,
-        rand_either,
-        fn_tree,
-        frontend,
-        test_flags,
-        on_device,
+    dtype_values_axis,
+    rand_either,
+    fn_tree,
+    frontend,
+    test_flags,
+    on_device,
 ):
     input_dtype, y, axis = dtype_values_axis
     rand, either_x_dx = rand_either
