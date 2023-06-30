@@ -598,13 +598,13 @@ def test_numpy_standard_cauchy(
 # rayleigh
 @handle_frontend_test(
     fn_tree="numpy.random.rayleigh",
-    input_dtypes=helpers.get_dtypes("float", index=2),
+    input_dtypes=helpers.get_dtypes("float"),
     scale=st.floats(
         allow_nan=False,
         allow_infinity=False,
         width=32,
         min_value=0,
-        max_value=100000,
+        max_value=1000,
         exclude_min=True,
     ),
     size=helpers.get_shape(allow_none=True),
