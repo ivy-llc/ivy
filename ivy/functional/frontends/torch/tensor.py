@@ -552,7 +552,7 @@ class Tensor:
         if args and size:
             raise TypeError("expand() got multiple values for argument 'size'")
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 size = args[0]
             else:
                 size = args
