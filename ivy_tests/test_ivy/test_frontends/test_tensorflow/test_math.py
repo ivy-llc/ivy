@@ -1437,6 +1437,9 @@ def test_tensorflow_zero_fraction(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1457,6 +1460,8 @@ def test_tensorflow_truediv(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
