@@ -775,7 +775,7 @@ def _get_inv_square_matrices(draw):
                 large_abs_safety_factor=24,
                 small_abs_safety_factor=24,
                 safety_factor_scale="log",
-            )
+            ).filter(lambda x: helpers.matrix_is_stable(x))
         )
         try:
             np.linalg.tensorinv(a, ind)
