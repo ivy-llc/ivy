@@ -552,7 +552,7 @@ class Tensor:
         if args and size:
             raise TypeError("expand() got multiple values for argument 'size'")
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 size = args[0]
             else:
                 size = args
@@ -605,6 +605,9 @@ class Tensor:
     def dim(self):
         return self.ivy_array.ndim
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
     def heaviside(self, values, *, out=None):
         return torch_frontend.heaviside(self, values, out=out)
 

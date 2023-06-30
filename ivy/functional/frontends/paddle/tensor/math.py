@@ -210,6 +210,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def erf(x, name=None):
+    return ivy.erf(x)
+
+
 @with_supported_dtypes(
     {
         "2.4.2 and below": (
@@ -232,6 +238,12 @@ def cumprod(x, dim=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def lcm(x, y, name=None):
+    return ivy.lcm(x, y)
 
 
 @with_supported_dtypes(

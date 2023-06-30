@@ -185,7 +185,9 @@ def test_avg_pool2d(
     dtype, x, kernel, stride, pad = x_k_s_p
 
     if data_format == "NCHW":
-        x[0] = x[0].reshape((x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2]))
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
+        )
 
     helpers.test_function(
         ground_truth_backend="jax",
