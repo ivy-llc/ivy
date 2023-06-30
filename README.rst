@@ -18,7 +18,7 @@
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+   🚀 We are granting pilot access to **Ivy's Compiler and Transpiler** to some users, `join the waitlist <https://console.unify.ai/>`_ if you want to test them out!
 
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
@@ -35,23 +35,23 @@
 
     <div style="display: block;" align="center">
     <a href="https://unify.ai/">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.svg">
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.svg">
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/demos">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.svg">
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/design.html">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.svg">
     </a>
     <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
     <a href="https://unify.ai/docs/ivy/overview/faq.html">
-        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.png">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.svg">
     </a>
     </div>
 
@@ -235,9 +235,13 @@ The `Ivy Stateful API <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framew
 
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
-            ivy.Module.__init__(self)
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
+
+        def _build(self, *args, **kwargs):
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -256,9 +260,13 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
+
+        def _build(self, *args, **kwargs):
             self.linear0 = ivy.Linear(input_dim, 128)
             self.linear1 = ivy.Linear(128, output_dim)
-            ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -1431,22 +1439,30 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
             data_format="NCHW",
             device="cpu",
         ):
+            self.h_w = h_w
+            self.input_channels = input_channels
+            self.output_channels = output_channels
+            self.num_classes = num_classes
+            self.data_format = data_format
+            self.device = device
+            super().__init__()
+        
+        def _build(self, *args, **kwargs):
             self.extractor = ivy.Sequential(
-                ivy.Conv2D(input_channels, 6, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(self.input_channels, 6, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(16, output_channels, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(16, self.output_channels, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
             )
 
             self.classifier = ivy.Sequential(
                 # since padding is "SAME", this would be image_height x image_width x output_channels
-                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
+                ivy.Linear(self.h_w[0] * self.h_w[1] * self.output_channels, 512),
                 ivy.GELU(),
-                ivy.Linear(512, num_classes),
+                ivy.Linear(512, self.num_classes),
             )
-            ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = self.extractor(x)

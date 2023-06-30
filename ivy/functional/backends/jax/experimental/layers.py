@@ -171,9 +171,10 @@ def general_pool(
         pad_list = [(0, 0)] * (dim + 2)
 
     if not ivy.is_array(inputs):
-        inputs = jnp.array(inputs)
+        # if dtype is not set here, jax casts it to float64
+        inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init)
+        init = jnp.array(init, dtype=jnp.float32)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
@@ -413,7 +414,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -778,7 +779,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -797,3 +798,4 @@ def embedding(
         embeddings = jnp.where(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
+    return embeddings

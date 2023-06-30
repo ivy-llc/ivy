@@ -83,6 +83,8 @@ def permute(input, dims):
 
 @to_ivy_arrays_and_back
 def reshape(input, shape):
+    if isinstance(shape, ivy.functional.frontends.torch.Size):
+        shape = tuple(shape)
     return ivy.reshape(input, shape)
 
 
@@ -91,7 +93,7 @@ def squeeze(input, dim=None):
     if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
             return input
-    return ivy.squeeze(input, dim)
+    return ivy.squeeze(input, axis=dim)
 
 
 @to_ivy_arrays_and_back
