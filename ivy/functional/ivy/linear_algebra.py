@@ -1320,9 +1320,10 @@ def matrix_rank(
         Default: ``None``.
     
     hermitian
-        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
-        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
-        Instead, We just use the lower triangular of the matrix to compute.
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed
+        to be Hermitian, enabling a more efficient method for finding eigenvalues,
+        but x is not checked inside the function.Instead, We just use the lower
+        triangular of the matrix to compute.
         Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the

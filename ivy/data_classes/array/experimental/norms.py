@@ -20,10 +20,11 @@ class _ArrayWithNormsExperimental(abc.ABC):
         self
             Input array.
         axis
-            Axis or axes along which to normalize. If ``None``, the whole array is normalized.
+            Axis or axes along which to normalize. If ``None``,
+            the whole array is normalized.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
