@@ -1059,18 +1059,23 @@ def nested_map(
     Examples
     --------
     With :class:`Tuple` inputs:
+
     >>> x = ([[1., 2.], [3., 4.]])
     >>> function = lambda a : a * 2
     >>> ivy.nested_map(x, function)
     >>> print(x)
     ([[2., 4.], [6., 8.]])
+
     With :code:`Dict` input:
+
     >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
     >>> function = lambda a : a + 1
     >>> ivy.nested_map(x, function)
     >>> print(x)
     {1: [1, 2], 2: (4, 5)}
+
     With :code:`List` inputs:
+
     >>> x = [['a', 'b', 'c'],
     ...      ['d', 'e', 'f'],
     ...      ['g', ['h', 'i']]]
@@ -1078,7 +1083,29 @@ def nested_map(
     >>> ivy.nested_map(x, function)
     >>> print(x)
     [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+
+    >>> x = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    >>> ivy.nested_map(x, include_derived = True)
+    >>> print(x)
+    [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+
+    >>> x = ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
+    >>> ivy.nested_map(x, max_depth > 1)
+    >>> print(x)
+    ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
+
+    >>> x = ([23, 25, 1337], [63, 98, 6])
+    >>> ivy.nested_map(x, to_mutable = True)
+    >>> print(x)
+    [[23, 25, 1337], [63, 98, 6]]
+
+    >>> nest = ([3, 5, 7], [6, 9, 10])
+    >>> ivy.nested_map(nest, to_mutable = True, shallow = False)
+    >>> print(nest)
+    [[3, 5, 7], [6, 9, 10]]
+
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
     >>> function = lambda _: ivy.array([3., 4.])
     >>> ivy.nested_map(x, function)
