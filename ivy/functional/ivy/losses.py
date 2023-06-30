@@ -393,7 +393,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
              pred : Union[ivy.Array, ivy.NativeArray],
             /,
             *,
-             axis : int=-1,
+             axis : int=0,
              out : Optional[ivy.Array] = None
 )-> ivy.Array:
     """
@@ -407,7 +407,7 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
     pred
         input array containing predicted labels
     axis
-        the axis along which mse is computed. Default: ``-1``
+        the axis along which mse is computed. Default: ``0``
     out
         to write the result
 
@@ -437,5 +437,5 @@ def mse_loss(true : Union[ivy.Array, ivy.NativeArray],
 
     true = ivy.negative(true)
     diff = ivy.add(pred,true)
-    s_diff = ivy.multiply(diff,diff)
+    s_diff = ivy.square(diff)
     return ivy.mean(s_diff,out=out, axis=axis)
