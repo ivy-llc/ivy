@@ -611,14 +611,14 @@ def mish(
     return current_backend(x).mish(x, out=out)
 
 
-@handle_nestable
 @handle_exceptions
-@to_native_arrays_and_back
-@handle_out_argument
+@handle_nestable
 @handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 def hardswish(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """
     Apply the hardswish activation function element-wise.
