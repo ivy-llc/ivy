@@ -1419,7 +1419,7 @@ def test_fft_layer(
         on_device=on_device,
     )
 
-    
+
 # AvgPool1D
 @handle_method(
     method_tree="AvgPool1D.__call__",

@@ -1906,8 +1906,8 @@ class FFT(Module):
             n=self._n,
             out=self._out,
         )
-      
-      
+
+
 class AvgPool1D(Module):
     def __init__(
         self,
