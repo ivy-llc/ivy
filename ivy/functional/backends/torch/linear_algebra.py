@@ -11,6 +11,7 @@ import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from . import backend_version
+from .elementwise import _cast_for_unary_op
 
 
 # Array API Standard #
@@ -121,9 +122,14 @@ def inner(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
     if ivy.is_int_dtype(x1):
+        # https://github.com/pytorch/pytorch/issues/103366
         x1 = x1.long()
         x2 = x2.long()
-    return torch.inner(x1, x2, out=out).type(ret_dtype)
+        ret = torch.inner(x1, x2).type(ret_dtype)
+        if ivy.exists(out):
+            return ivy.inplace_update(out, ret)
+        return ret
+    return torch.inner(x1, x2, out=out)
 
 
 inner.support_native_out = True
@@ -238,11 +244,31 @@ def matrix_rank(
     hermitian: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if len(x.shape) < 2:
-        ret = torch.tensor(0)
+    if (x.ndim < 2) or (0 in x.shape):
+        return torch.tensor(0, dtype=torch.int64)
+    # we don't use the native matrix_rank function because the behaviour of the
+    # tolerance argument is difficult to unify
+    # return torch.linalg.matrix_rank(
+    #     x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    # )
+    if hermitian:
+        svd_values = torch.abs(torch.linalg.eigvalsh(x))
     else:
-        ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
-    return ret.to(dtype=x.dtype)
+        svd_values = torch.linalg.svdvals(x)
+    sigma = torch.max(svd_values, axis=-1, keepdim=False)[0]
+    atol = (
+        atol
+        if atol is not None
+        else torch.finfo(x.dtype).eps * max(x.shape[-2:]) * sigma
+    )
+    rtol = rtol if rtol is not None else 0.0
+    atol = _cast_for_unary_op(atol)
+    rtol = _cast_for_unary_op(rtol)
+    tol = torch.maximum(atol, rtol * sigma)
+    # make sure it's broadcastable again with svd_values
+    tol = torch.unsqueeze(tol, dim=-1)
+    ret = torch.count_nonzero(svd_values > tol, dim=-1)
+    return ret
 
 
 matrix_rank.support_native_out = True
@@ -252,7 +278,7 @@ def matrix_transpose(
     x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if conjugate:
-        torch.conj(x)
+        x = torch.conj(x)
     return torch.swapaxes(x, -1, -2)
 
 

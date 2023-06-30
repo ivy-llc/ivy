@@ -4,7 +4,7 @@
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
 import copy
-from collections import UserDict
+from collections import UserDict, OrderedDict
 
 # local
 import ivy
@@ -739,7 +739,7 @@ def nested_argwhere(
                     break
             else:
                 _indices += [ind]
-            if stop_after_n_found is not None and len(_indices) >= stop_after_n_found:
+            if stop_after_n_found is not None and n >= stop_after_n_found:
                 break
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
         if check_nests and fn(nest):
@@ -1055,45 +1055,6 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
-
-    Examples
-    --------
-    With :class:`Tuple` inputs:
-
-    >>> x = ([[1., 2.], [3., 4.]])
-    >>> function = lambda a : a * 2
-    >>> ivy.nested_map(x, function)
-    >>> print(x)
-    ([[2., 4.], [6., 8.]])
-
-    With :code:`Dict` input:
-
-    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
-    >>> function = lambda a : a + 1
-    >>> ivy.nested_map(x, function)
-    >>> print(x)
-    {1: [1, 2], 2: (4, 5)}
-
-    With :code:`List` inputs:
-
-    >>> x = [['a', 'b', 'c'],
-    ...      ['d', 'e', 'f'],
-    ...      ['g', ['h', 'i']]]
-    >>> function = lambda a: a + 'H'
-    >>> ivy.nested_map(x, function)
-    >>> print(x)
-    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
-    >>> function = lambda _: ivy.array([3., 4.])
-    >>> ivy.nested_map(x, function)
-    >>> print(x)
-    {
-        a: ivy.array([3., 4.]),
-        b: ivy.array([3., 4.])
-    }
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
@@ -1348,6 +1309,8 @@ def copy_nest(
         ]
         if to_mutable:
             return ret_list
+        if hasattr(nest, "_fields"):
+            return class_instance(**dict(zip(nest._fields, ret_list)))
         return class_instance(tuple(ret_list))
     elif check_fn(nest, list) or isinstance(nest, extra_nest_types):
         if isinstance(nest, (ivy.Array, ivy.NativeArray)):
@@ -1365,17 +1328,18 @@ def copy_nest(
         )
     elif check_fn(nest, dict):
         class_instance = type(nest)
-        return class_instance(
-            {
-                k: copy_nest(
-                    v,
-                    include_derived=include_derived,
-                    to_mutable=to_mutable,
-                    extra_nest_types=extra_nest_types,
-                )
-                for k, v in nest.items()
-            }
-        )
+        dict_ = {
+            k: copy_nest(
+                v,
+                include_derived=include_derived,
+                to_mutable=to_mutable,
+                extra_nest_types=extra_nest_types,
+            )
+            for k, v in nest.items()
+        }
+        if isinstance(nest, OrderedDict):
+            return class_instance(**dict_)
+        return class_instance(dict_)
     return nest
 
 
