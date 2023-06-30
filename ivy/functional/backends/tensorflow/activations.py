@@ -113,3 +113,8 @@ def mish(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return x * tf.math.tanh(tf.math.softplus(x))
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return x * tf.nn.relu6(x + 3) / 6
