@@ -29,3 +29,9 @@ def stack(x, axis=0, name=None):
 @to_ivy_arrays_and_back
 def concat(x, axis, name=None):
     return ivy.concat(x, axis=axis)
+
+
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16", "int8", "int16")}, "paddle")
+@to_ivy_arrays_and_back
+def squeeze(x, axis=None, name=None):
+    return ivy.squeeze(x, axis)
