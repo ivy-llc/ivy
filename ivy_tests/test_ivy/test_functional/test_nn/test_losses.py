@@ -215,7 +215,7 @@ def test_sparse_cross_entropy(
 @handle_test(
     fn_tree="functional.ivy.mse_loss",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
         max_value=2,
         allow_inf=False,
