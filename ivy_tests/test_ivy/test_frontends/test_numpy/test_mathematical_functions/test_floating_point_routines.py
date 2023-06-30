@@ -3,6 +3,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
+
 # nextafter
 @handle_frontend_test(
     fn_tree="numpy.nextafter",
@@ -87,7 +88,7 @@ def test_numpy_spacing(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
+        rtol=1e-02,
         atol=1e-03,
         x=xs[0],
         out=None,

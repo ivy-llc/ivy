@@ -269,7 +269,9 @@ def scatter_flat(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _to_device(target)
+    if target_given:
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_flat.support_native_out = True
@@ -436,7 +438,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,
