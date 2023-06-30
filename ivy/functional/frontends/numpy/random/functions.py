@@ -157,7 +157,7 @@ def negative_binomial(n, p, size=None):
 def weibull(a, size=None):
     if a < 0:
         return 0
-    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")  
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.pow(-ivy.log(1 - u), 1 / a)
 
 

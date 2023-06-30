@@ -604,6 +604,7 @@ def test_numpy_weibull(
         size=size,
     )
 
+
 # standard_cauchy
 @handle_frontend_test(
     fn_tree="numpy.random.standard_cauchy",
