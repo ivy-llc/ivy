@@ -83,6 +83,8 @@ def permute(input, dims):
 
 @to_ivy_arrays_and_back
 def reshape(input, shape):
+    if isinstance(shape, ivy.functional.frontends.torch.Size):
+        shape = tuple(shape)
     return ivy.reshape(input, shape)
 
 
