@@ -157,9 +157,10 @@ def conv_transpose(
     dilations=None,
     name=None,
 ):
+    N = len(input)-2
     dilations = 1 if dilations is None else dilations
-    if data_format=="NWC":
-        strides, dilations = _reduce_strides_dilations(1, strides, dilations)
+    if N==1:
+        strides, dilations = _reduce_strides_dilations(N, strides, dilations)
         filters = filters.swapaxes(-2, -1)
         return ivy.conv1d_transpose(
             input,
@@ -170,8 +171,8 @@ def conv_transpose(
             data_format=data_format,
             dilations=dilations,
         )
-    elif data_format=="NHWC":
-        strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+    elif N==2:
+        strides, dilations = _reduce_strides_dilations(N, strides, dilations)
         filters = filters.swapaxes(-2, -1)
         return ivy.conv2d_transpose(
             input,
@@ -182,8 +183,8 @@ def conv_transpose(
             data_format=data_format,
             dilations=dilations,
         )
-    else: 
-        strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+    elif N==3:
+        strides, dilations = _reduce_strides_dilations(N, strides, dilations)
         filters = filters.swapaxes(-2, -1)
         return ivy.conv3d_transpose(
             input,
@@ -194,6 +195,8 @@ def conv_transpose(
             data_format=data_format,
             dilations=dilations,
         )
+    else:
+        ivy.utils.exceptions.IvyException()
 
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
