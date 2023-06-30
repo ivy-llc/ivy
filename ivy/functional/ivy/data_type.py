@@ -154,8 +154,10 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
                     wrapper(f_supported["primary"]),
                 )
                 logging.warning(
-                    "The function uses partial mixed functions in it's implementation"
-                    " and the returned dtypes maybe not be exact."
+                    "This function includes the mixed partial function"
+                    f" 'ivy.{fn.__name__}'. Please note that the returned data types"
+                    " may not be exhaustive. Please check the dtypes of"
+                    f" `ivy.{fn.__name__}` for more details"
                 )
             out = merge_fn(wrapper(f_supported), out)
             continue
