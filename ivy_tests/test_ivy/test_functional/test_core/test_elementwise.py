@@ -2155,6 +2155,34 @@ def test_erf(
     )
 
 
+# erfinv
+@handle_test(
+    fn_tree="functional.ivy.erfinv",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_erfinv(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+    )
+
+
 @st.composite
 def min_max_helper(draw):
     use_where = draw(st.booleans())
