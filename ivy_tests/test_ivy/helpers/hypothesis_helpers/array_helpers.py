@@ -6,6 +6,7 @@ from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
 import sys
+import string
 
 # local
 import ivy
@@ -1929,3 +1930,54 @@ def get_second_solve_matrix(draw):
             dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
         )
     )
+
+
+@st.composite
+def einsum_helper(draw):
+    # Todo: generalize to n equations and arrays
+    shape_1 = draw(st.lists(st.integers(min_value=1, max_value=5),
+                            min_size=1,
+                            max_size=5))
+    shape_2 = draw(st.lists(st.integers(min_value=1, max_value=5),
+                            min_size=1,
+                            max_size=5))
+    dims_1 = len(shape_1)
+    dims_2 = len(shape_2)
+    same_dims = []
+    eq_1 = draw(st.lists(st.sampled_from(string.ascii_lowercase),
+                            min_size=dims_1,
+                            max_size=dims_1, unique=True))
+    eq_2 = draw(st.lists(st.sampled_from(string.ascii_lowercase),
+                            min_size=dims_2,
+                            max_size=dims_2, unique=True))
+    for i in range(min(dims_1, dims_2)):
+        change = draw(st.booleans())
+        if change:
+            shape_2[i] = shape_1[i]
+            eq_2[i] = eq_1[i]
+            same_dims.append(i)
+    shape_1 = tuple(shape_1)
+    shape_2 = tuple(shape_2)
+
+    eq_1 = ''.join(eq_1)
+    eq_2 = ''.join(eq_2)
+
+    dtype_1, value_1 = draw(dtype_and_values(
+        available_dtypes=["float32"],
+        shape=shape_1,
+
+    ))
+
+    dtype_2, value_2 = draw(dtype_and_values(
+        available_dtypes=["float32"],
+        shape=shape_2,
+    ))
+
+    output_length = min(dims_1, dims_2)
+    output_eq = draw(st.lists(st.sampled_from(eq_1+eq_2),
+                         min_size=output_length,
+                         max_size=output_length, unique=True))
+    output_eq = ''.join(output_eq)
+    eq = eq_1 + ',' + eq_2 + '->' + output_eq
+
+    return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]
