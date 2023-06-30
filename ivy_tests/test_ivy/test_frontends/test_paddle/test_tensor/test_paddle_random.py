@@ -188,5 +188,5 @@ def test_paddle_standard_normal(
         fn_tree=fn_tree,
         test_values=False,
         shape=shape,
-        dtype=dtype,
+        dtype=dtype[0],
     )
