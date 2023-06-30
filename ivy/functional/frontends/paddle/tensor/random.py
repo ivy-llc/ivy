@@ -50,7 +50,7 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float32", "float64")},
+    {"2.5.0 and below": ("float32", "float64")},
     "paddle",
 )
 @to_ivy_arrays_and_back
