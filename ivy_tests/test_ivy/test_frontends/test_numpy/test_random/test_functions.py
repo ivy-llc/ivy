@@ -598,7 +598,7 @@ def test_numpy_standard_cauchy(
 # rayleigh
 @handle_frontend_test(
     fn_tree="numpy.random.rayleigh",
-    input_dtypes=helpers.get_dtypes("float"),
+    input_dtypes=helpers.get_dtypes("float", index=2),
     scale=st.floats(
         allow_nan=False,
         allow_infinity=False,
