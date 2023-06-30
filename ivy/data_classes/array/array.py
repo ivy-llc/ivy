@@ -28,7 +28,7 @@ from .set import _ArrayWithSet
 from .sorting import _ArrayWithSorting
 from .statistical import _ArrayWithStatistical
 from .utility import _ArrayWithUtility
-from ivy.func_wrapper import handle_view_indexing, outputs_to_ivy_arrays
+from ivy.func_wrapper import handle_view_indexing
 from .experimental import (
     _ArrayWithSearchingExperimental,
     _ArrayWithActivationsExperimental,
@@ -425,13 +425,7 @@ class Array(
         return super().__getattribute__(item)
 
     def __getattr__(self, item):
-        try:
-            attr = self._data.__getattribute__(item)
-        except AttributeError:
-            attr = self._data.__getattr__(item)
-        if callable(attr):
-            return outputs_to_ivy_arrays(attr)
-        return to_ivy(attr)
+        raise AttributeError(f"'ivy.Array' object has no attribute '{item}'")
 
     @handle_view_indexing
     def __getitem__(self, query):
