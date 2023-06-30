@@ -148,7 +148,6 @@ def conv3d_transpose(
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv_transpose(
-    n,
     input,
     filters,
     output_shape,
@@ -159,18 +158,42 @@ def conv_transpose(
     name=None,
 ):
     dilations = 1 if dilations is None else dilations
-    strides, dilations = _reduce_strides_dilations(n, strides, dilations)
-    filters = filters.swapaxes(-2, -1)
-    return ivy.conv_transpose(
-        n,
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
+    if data_format=="NWC":
+        strides, dilations = _reduce_strides_dilations(1, strides, dilations)
+        filters = filters.swapaxes(-2, -1)
+        return ivy.conv1d_transpose(
+            input,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=data_format,
+            dilations=dilations,
+        )
+    elif data_format=="NHWC":
+        strides, dilations = _reduce_strides_dilations(2, strides, dilations)
+        filters = filters.swapaxes(-2, -1)
+        return ivy.conv2d_transpose(
+            input,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=data_format,
+            dilations=dilations,
+        )
+    else: 
+        strides, dilations = _reduce_strides_dilations(3, strides, dilations)
+        filters = filters.swapaxes(-2, -1)
+        return ivy.conv3d_transpose(
+            input,
+            filters,
+            strides,
+            padding,
+            output_shape=output_shape,
+            data_format=data_format,
+            dilations=dilations,
+        )
 
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
