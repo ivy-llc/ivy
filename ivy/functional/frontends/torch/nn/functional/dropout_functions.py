@@ -16,4 +16,6 @@ def dropout(input, p=0.5, training=True, inplace=False):
 def dropout1d(input, p=0.5, training=True, inplace=False):
     if inplace:
         return ivy.dropout1d(input, p, training=training, out=input)
+    if inplace:
+        return ivy.dropout1d(input, p, training=training, out=input)
     return ivy.dropout1d(input, p, training=training)
