@@ -1089,14 +1089,14 @@ def nested_map(
     >>> print(x)
     [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
 
-    >>> x = ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
-    >>> ivy.nested_map(x, max_depth > 1)
-    >>> print(x)
+    >>> nest = ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
+    >>> ivy.nested_map(nest, max_depth > 1)
+    >>> print(nest)
     ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
 
-    >>> x = ([23, 25, 1337], [63, 98, 6])
-    >>> ivy.nested_map(x, to_mutable = True)
-    >>> print(x)
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> ivy.nested_map(nest, to_mutable = True)
+    >>> print(nest)
     [[23, 25, 1337], [63, 98, 6]]
 
     >>> nest = ([3, 5, 7], [6, 9, 10])
