@@ -567,7 +567,9 @@ def test_numpy_negative_binomial(
         p=p,
         size=size,
     )
-# Weibull
+
+
+# weibull
 @handle_frontend_test(
     fn_tree="numpy.random.weibull",
     input_dtypes=helpers.get_dtypes("float", index=2),
