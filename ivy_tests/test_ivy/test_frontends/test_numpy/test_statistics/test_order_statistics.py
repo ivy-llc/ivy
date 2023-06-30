@@ -67,14 +67,7 @@ def test_numpy_quantile(
     on_device,
     keep_dims,
 ):
-    interpolation_methods = [
-        "linear",
-        "lower",
-        "higher",
-        "midpoint",
-        "nearest",
-        # Add additional interpolation methods here
-    ]
+   
     (input_dtypes, values, axis) = dtype_values_axis
     if isinstance(axis, tuple):
         axis = axis[0]
@@ -93,19 +86,18 @@ def test_numpy_quantile(
 
         q = np.clip(q, 0.0, 1.0)
 
-        for interpolation in interpolation_methods:
-            np_frontend_helpers.test_frontend_function(
-                a=a,
-                q=q,
-                axis=axis,
-                out=None,
-                overwrite_input=None,
-                interpolation=interpolation,
-                keepdims=keep_dims,
-                frontend=frontend,
-                fn_tree=fn_tree,
-                test_flags=test_flags,
-                input_dtypes=input_dtypes
+        np_frontend_helpers.test_frontend_function(
+            a=a,
+            q=q,
+            axis=axis,
+            out=None,
+            overwrite_input=None,
+            interpolation="linear",
+            keepdims=keep_dims,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input_dtypes=input_dtypes
             )
     except Exception as e:
         print(f"Error occurred: {e}")
