@@ -297,7 +297,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
@@ -337,7 +337,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
@@ -421,7 +421,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
@@ -795,7 +795,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
