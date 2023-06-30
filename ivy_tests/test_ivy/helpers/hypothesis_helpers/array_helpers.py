@@ -1050,7 +1050,6 @@ def array_indices_put_along_axis(
 
     Parameters
     ----------
-
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
@@ -1078,10 +1077,11 @@ def array_indices_put_along_axis(
     valid_bounds
         If False, the strategy may produce out-of-bounds indices.
     values
-        Custom values array to use instead of randomly generated values. Defaults to None.
+        Custom values array to use instead of randomly generated values. Defaults
+        to None.
     values_dtypes : Union[None, List[str]]
-        A list of dtypes for the values parameter. The function will use the dtypes returned by
-        'get_dtypes("valid")'.
+        A list of dtypes for the values parameter. The function will use the dtypes
+        returned by 'get_dtypes("valid")'.
 
     Returns
     -------
