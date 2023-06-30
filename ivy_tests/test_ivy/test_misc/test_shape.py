@@ -7,13 +7,13 @@ from ivy_tests.test_ivy.helpers import handle_method
 
 @handle_method(
     method_tree="Shape.__getitem__",
-    dtypes_x_query=helpers.dtype_array_index(
+    dtypes_x_key=helpers.dtype_array_index(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
 )
 def test_shape__getitem__(
-    dtypes_x_query,
+    dtypes_x_key,
     init_flags,
     method_flags,
     method_name,
@@ -21,7 +21,7 @@ def test_shape__getitem__(
     ground_truth_backend,
     on_device,
 ):
-    dtypes, x, query = dtypes_x_query
+    dtypes, x, key = dtypes_x_key
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
