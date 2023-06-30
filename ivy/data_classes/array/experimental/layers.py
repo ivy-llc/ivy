@@ -1024,3 +1024,53 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def gru(
+        self: ivy.Array,
+        w: Union[ivy.Array, ivy.NativeArray],
+        r: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        initial_h: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.gru. This method simply wraps the
+        function, and so the docstring for ivy.gru also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input sequences packed (and potentially padded) into one 3-D array
+            with the shape of [seq_length, batch_size, input_size].
+        w
+            The weight array for the gates. Concatenation of W and WB
+            along dimension 0. This array has shape
+            [num_directions, 3*hidden_size, input_size].
+        r
+            The recurrence weight array. Concatenation of R and RB
+            along dimension 0. This array has shape
+            [num_directions, 3*hidden_size, hidden_size].
+        b
+            The bias array for the gates. Concatenation of [Wb, Rb]
+            and [WBb, RBb] along dimension 0.
+            This tensor has shape [num_directions, 6*hidden_size]. If not specified,
+            it is assumed to be 0
+        initial_h
+            Optional initial value of the hidden. If not specified - assumed to be 0.
+            It has shape [num_directions, batch_size, hidden_size].
+
+        Returns
+        -------
+        ret
+            A tuple consisting of an array that concats all the intermediate output
+            values of the hidden and the last output value of the hidden.
+        """
+        return ivy.gru(
+            self._data,
+            w,
+            r,
+            b,
+            initial_h=initial_h,
+        )

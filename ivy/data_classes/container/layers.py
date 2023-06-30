@@ -2436,3 +2436,88 @@ class _ContainerWithLayers(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_gru(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        w: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        r: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        initial_h: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        return ContainerBase.cont_multi_map_in_function(
+            "gru",
+            x,
+            w,
+            r,
+            b,
+            initial_h=initial_h,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def gru(
+        self: ivy.Container,
+        w: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        r: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        initial_h: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.gru. This method simply wraps the
+        function, and so the docstring for ivy.gru also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input sequences packed (and potentially padded) into one 3-D array
+            with the shape of [seq_length, batch_size, input_size].
+        w
+            The weight array for the gates. Concatenation of W and WB
+            along dimension 0. This array has shape
+            [num_directions, 3*hidden_size, input_size].
+        r
+            The recurrence weight array. Concatenation of R and RB
+            along dimension 0. This array has shape
+            [num_directions, 3*hidden_size, hidden_size].
+        b
+            The bias array for the gates. Concatenation of [Wb, Rb]
+            and [WBb, RBb] along dimension 0.
+            This tensor has shape [num_directions, 6*hidden_size]. If not specified,
+            it is assumed to be 0
+        initial_h
+            Optional initial value of the hidden. If not specified - assumed to be 0.
+            It has shape [num_directions, batch_size, hidden_size].
+
+        Returns
+        -------
+        ret
+            A tuple consisting of an array that concats all the intermediate output
+            values of the hidden and the last output value of the hidden.
+        """
+        return self._static_gru(
+            self,
+            w,
+            r,
+            b,
+            initial_h=initial_h,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

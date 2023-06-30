@@ -2480,3 +2480,82 @@ def ifftn(
             [-0.48472244+0.30233797j]])
     """
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_nestable
+def gru(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    w: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    r: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    /,
+    *,
+    initial_h: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Compute an one-layer GRU. This operator is usually supported via some custom
+    implementation.
+
+    Parameters
+    ----------
+
+    x
+        The input sequences packed (and potentially padded) into one 3-D array
+        with the shape of [seq_length, batch_size, input_size].
+    w
+        The weight array for the gates. Concatenation of W and WB
+        along dimension 0. This array has shape
+        [num_directions, 3*hidden_size, input_size].
+    r
+        The recurrence weight array. Concatenation of R and RB
+        along dimension 0. This array has shape
+        [num_directions, 3*hidden_size, hidden_size].
+    b
+        The bias array for the gates. Concatenation of [Wb, Rb]
+        and [WBb, RBb] along dimension 0.
+        This tensor has shape [num_directions, 6*hidden_size]. If not specified,
+        it is assumed to be 0
+    initial_h
+        Optional initial value of the hidden. If not specified - assumed to be 0.
+        It has shape [num_directions, batch_size, hidden_size].
+
+    Returns
+    -------
+    ret
+        A tuple consisting of an array that concats all the intermediate output
+        values of the hidden and the last output value of the hidden.
+    """
+    seq_length, batch_size = x.shape[0:2]
+    hidden_size = r.shape[-1]
+
+    h_t = ivy.zeros((batch_size, hidden_size)) if initial_h is None else initial_h
+    h_list = []
+
+    [w_z, w_r, w_h] = ivy.split(w, num_or_size_splits=3)
+    [r_z, r_r, r_h] = ivy.split(r, num_or_size_splits=3)
+    [w_bz, w_br, w_bh, r_bz, r_br, r_bh] = ivy.split(b, num_or_size_splits=6)
+
+    gates_w = ivy.matrix_transpose(ivy.concat((w_z, w_r)))
+    gates_r = ivy.matrix_transpose(ivy.concat((r_z, r_r)))
+    gates_b = ivy.add(ivy.concat((w_bz, w_br)), ivy.concat((r_bz, r_br)))
+
+    for x in ivy.split(x, num_or_size_splits=seq_length, axis=0):
+        gates = ivy.matmul(x, gates_w) + ivy.matmul(h_t, gates_r) + gates_b
+        z, r = ivy.split(gates, num_or_size_splits=2, axis=-1)
+        z = ivy.sigmoid(z)
+        r = ivy.sigmoid(r)
+        h = ivy.tanh(
+            ivy.matmul(x, ivy.matrix_transpose(w_h))
+            + ivy.matmul(r * h_t, ivy.matrix_transpose(r_h))
+            + w_bh
+            + r_bh
+        )
+
+        h = (1 - z) * h + z * h_t
+        h_list.append(h)
+        h_t = h
+
+    y = ivy.concat(h_list)
+    y_h = y[-1]
+
+    return y, y_h
