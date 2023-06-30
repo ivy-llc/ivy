@@ -351,9 +351,138 @@ class Shape:
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __pow__(self, power, modulo=None):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __rdivmod__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    def __rtruediv__(self, other):
+        pass
+
+    def __rfloordiv__(self, other):
+        pass
+
+    def __ne__(self, other):
+        pass
+
     @property
     def shape(self):
         return self._shape
+
+    @property
+    def value(self):
+        return self._value
+
+    def concatenate(self, other):
+        if self._shape is None or other.dims is None:
+            raise ValueError("Unknown Shape")
+        else:
+            return Shape(self.dims + other.dims)
+
+    def index(self, index):
+        assert isinstance(self._shape, Shape)
+        if self._shape.rank is None:
+            return Shape(None)
+        else:
+            return self._shape[index]
+
+    @property
+    def shape(self):
+        return self._shape
+
+    def as_dimension(self):
+        if isinstance(self._shape, Shape):
+            return self._shape
+        else:
+            return Shape(self._shape)
+
+    def is_compatible_with(self, other):
+        return self._shape is None or other.value is None or self._shape == other.value
+
+    @property
+    def rank(self):
+        """Returns the rank of this shape, or None if it is unspecified."""
+        if self._shape is not None:
+            return len(self._shape)
+        return None
+
+    def assert_same_rank(self, other):
+        other = Shape(other)
+        if self.rank != other.rank:
+            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+
+    def assert_has_rank(self, rank):
+        if self.rank not in (None, rank):
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def unknown_shape(rank=None, **kwargs):
+        if rank is None and "ndims" in kwargs:
+            rank = kwargs.pop("ndims")
+        if kwargs:
+            raise TypeError("Unknown argument: %s" % kwargs)
+        if rank is None:
+            return Shape(None)
+        else:
+            return Shape([Shape(None)] * rank)
+
+    def with_rank(self, rank):
+        try:
+            return self.merge_with(unknown_shape(rank=rank))
+        except ValueError:
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def with_rank_at_least(self, rank):
+        if self.rank is not None and self.rank < rank:
+            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+        else:
+            return self
+
+    def with_rank_at_most(self, rank):
+        if self.rank is not None and self.rank > rank:
+            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+        else:
+            return self
+
+    def as_shape(shape):
+        if isinstance(shape, Shape):
+            return shape
+        else:
+            return Shape(shape)
+
+    @property
+    def dims(self):
+        if self._shape is None:
+            return None
+        # return [as_dimension(d) for d in self._shape]
+
+    @property
+    def ndims(self):
+        """Deprecated accessor for `rank`."""
+        return self.rank
+
+    @property
+    def is_fully_defined(self):
+        return self._shape is not None and all(
+            shape is not None for shape in self._shape
+        )
+
+    property
+
+    def num_elements(self):
+        if not self.is_fully_defined():
+            return None
+
+    @property
+    def assert_is_fully_defined(self):
+        if not self.is_fully_defined():
+            raise ValueError("Shape %s is not fully defined" % self)
 
     def as_list(self):
         if self._shape is None:
