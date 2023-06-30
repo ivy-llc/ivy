@@ -1187,3 +1187,54 @@ def ifftn(
         return out
     else:
         return result
+
+
+def _rfftn_norm(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    norm: str = "backward",
+):
+    n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
+    if norm == "backward":
+        return x
+    elif norm == "ortho":
+        return x / tf.sqrt(n)
+    elif norm == "forward":
+        return x / n
+    else:
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+def rfftn(
+    x: Union[tf.Tensor, tf.Variable],
+    *,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    norm: str = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if axes is None:
+        axes = list(range(len(s)))
+    elif s is None:
+        s = [x.shape[axis] for axis in axes]
+    elif len(s) != len(axes):
+        raise ValueError("s and axes must have the same length.")
+
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+    operation_name = f"RFFTn with s={s}, axes={axes}, norm={norm}"
+    tf_rfftn = tf.signal.rfft2d(x, fft_length=s, fft_axes=axes, name=operation_name)
+
+    # Apply the same normalization as 'backward' in NumPy
+    tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm)
+    return tf_rfftn

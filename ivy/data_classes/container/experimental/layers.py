@@ -2023,3 +2023,43 @@ class _ContainerWithLayersExperimental(ContainerBase):
             norm=norm,
             out=out,
         )
+
+    def rfftn(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axes: Optional[Union[int, Tuple[int]]] = None,
+        s: Optional[Sequence[int]] = None,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        Compute the n-dimensional discrete Fourier Transform for real input.
+
+        Parameters
+        ----------
+        axes : int or tuple of ints, optional
+            Axes over which to compute the FFT. If not given, the last `n` axes are
+            used.
+        s : sequence of ints, optional
+            Shape (length of each transformed axis) of the output. Along each axis,
+            if the given shape is smaller than
+            that of the input, the input is cropped. If it is larger, the input
+            is padded with zeros.
+        norm : {'backward', 'ortho', 'forward'}, optional
+            Normalization mode. Default is 'backward'.
+        out : array-like, optional
+            Output array. Must have the same shape and type as the expected output.
+
+        Returns
+        -------
+        transformed : Container
+            The n-dimensional discrete Fourier Transform of the input.
+        """
+        return self.static_rfftn(
+            self,
+            axes=axes,
+            s=s,
+            norm=norm,
+            out=out,
+        )

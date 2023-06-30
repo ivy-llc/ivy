@@ -2487,7 +2487,7 @@ def ifftn(
 @handle_out_argument
 @inputs_to_ivy_arrays
 def rfftn(
-    a: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     s: Optional[Sequence[int]] = None,
@@ -2537,11 +2537,10 @@ def rfftn(
         norm = "backward"
 
     if axes is None:
-        axes = list(range(a.ndim - len(s), a.ndim))
+        axes = list(range(x.ndim - len(s), x.ndim))
     elif s is None:
-        s = [a.shape[axis] for axis in axes]
+        s = [x.shape[axis] for axis in axes]
     elif len(s) != len(axes):
         raise ValueError("s and axes must have the same length.")
 
-    res = ivy.rfft(a, n=s, axes=axes, norm=norm)
-    return res
+    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm)
