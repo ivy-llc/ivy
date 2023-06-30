@@ -1,10 +1,17 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, integer_arrays_to_float
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    integer_arrays_to_float,
+    with_supported_dtypes,
+)
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@with_supported_dtypes(
+    {"1.12.0 and below": ("float32", "float64", "int32", "int64")}, "jax"
+)
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -434,6 +441,7 @@ def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
 
 
+@with_unsupported_dtypes({"1.12.0 and below": ("float16",)}, "jax")
 @to_ivy_arrays_and_back
 def copysign(input, other, *, out=None):
     return ivy.copysign(input, other, out=out)

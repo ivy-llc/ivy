@@ -17,7 +17,7 @@ __version__ = None
 
 import setuptools
 from pathlib import Path
-from distutils.core import setup
+from setuptools import setup
 
 
 def _strip(line):
@@ -86,6 +86,7 @@ long_description = "\n".join(lines)
 with open("ivy/_version.py") as f:
     exec(f.read(), __version__)
 
+
 setup(
     name="ivy",
     version=__version__,
@@ -96,13 +97,15 @@ setup(
         "functions, layers and libraries."
     ),
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://unify.ai/ivy",
     project_urls={
         "Docs": "https://unify.ai/docs/ivy/",
         "Source": "https://github.com/unifyai/ivy",
     },
+    include_package_data=True,
     packages=setuptools.find_packages(),
+
     install_requires=[
         _strip(line)
         for line in open("requirements/requirements.txt", "r", encoding="utf-8")
