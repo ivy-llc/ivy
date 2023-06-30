@@ -1174,17 +1174,17 @@ def infer_default_dtype(
 @inputs_to_ivy_arrays
 def default_dtype(
     *,
+    input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
-    item: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     as_native: bool = False,
 ) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """
     Parameters
     ----------
+    input
+        Number or array for inferring the dtype.
     dtype
         The dtype to be returned.
-    item
-        Number or array for inferring the dtype.
     as_native
         Whether to return the dtype as native dtype.
 
@@ -1193,25 +1193,58 @@ def default_dtype(
         Return ``dtype`` as native or ivy dtype if provided, else
         if ``item`` is given, return its dtype, otherwise return the
         global default dtype.
+
+    Examples
+    --------
+    >>> ivy.default_dtype()
+    'float32'
+
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype()
+    'bool'
+
+    >>> ivy.set_default_dtype(ivy.int16)
+    >>> ivy.default_dtype()
+    'int16'
+
+    >>> ivy.set_default_dtype(ivy.float64)
+    >>> ivy.default_dtype()
+    'float64'
+
+    >>> ivy.default_dtype(dtype="int32")
+    'int32'
+
+    >>> ivy.default_dtype(dtype=ivy.float16)
+    'float16'
+
+    >>> ivy.default_dtype(input=53.234)
+    'float64'
+
+    >>> ivy.default_dtype(input=[1, 2, 3])
+    'int32'
+
+    >>> x = ivy.array([5.2, 9.7], dtype="complex128")
+    >>> ivy.default_dtype(input=x)
+    'complex128'
     """
     if ivy.exists(dtype):
         if as_native is True:
             return ivy.as_native_dtype(dtype)
         return ivy.as_ivy_dtype(dtype)
     as_native = ivy.default(as_native, False)
-    if ivy.exists(item):
-        if hasattr(item, "override_dtype_check"):
-            return item.override_dtype_check()
-        elif isinstance(item, (list, tuple, dict)) and len(item) == 0:
+    if ivy.exists(input):
+        if hasattr(input, "override_dtype_check"):
+            return input.override_dtype_check()
+        elif isinstance(input, (list, tuple, dict)) and len(input) == 0:
             pass
-        elif ivy.is_complex_dtype(item):
-            return ivy.default_complex_dtype(input=item, as_native=as_native)
-        elif ivy.is_float_dtype(item):
-            return ivy.default_float_dtype(input=item, as_native=as_native)
-        elif ivy.is_uint_dtype(item):
-            return ivy.default_int_dtype(input=item, as_native=as_native)
-        elif ivy.is_int_dtype(item):
-            return ivy.default_int_dtype(input=item, as_native=as_native)
+        elif ivy.is_complex_dtype(input):
+            return ivy.default_complex_dtype(input=input, as_native=as_native)
+        elif ivy.is_float_dtype(input):
+            return ivy.default_float_dtype(input=input, as_native=as_native)
+        elif ivy.is_uint_dtype(input):
+            return ivy.default_int_dtype(input=input, as_native=as_native)
+        elif ivy.is_int_dtype(input):
+            return ivy.default_int_dtype(input=input, as_native=as_native)
         elif as_native:
             return ivy.as_native_dtype("bool")
         else:
