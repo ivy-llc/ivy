@@ -15,5 +15,5 @@ def dropout(input, p=0.5, training=True, inplace=False):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def dropout1d(input, p=0.5, training=True, inplace=False):
     if inplace:
-        return ivy.dropout1d(input, p, training=training, out=input)
-    return ivy.dropout1d(input, p, training=training)
+        return ivy.dropout1d(input, p, training=training, data_format="NCW", out=input)
+    return ivy.dropout1d(input, p, data_format="NCW", training=training)
