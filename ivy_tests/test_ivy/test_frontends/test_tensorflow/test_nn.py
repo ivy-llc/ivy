@@ -1166,6 +1166,7 @@ def test_tensorflow_moments(
         keepdims=keepdims,
     )
 
+
 # Normalize Moments
 @st.composite
 def _normalize_moments_helper(draw):
@@ -1198,9 +1199,9 @@ def _normalize_moments_helper(draw):
             max_num_dims=1,
             max_dim_size=1,
             min_dim_size=1,
-            )
+        )
     )
-    _,shift = draw(
+    _, shift = draw(
         helpers.dtype_and_values(
             available_dtypes=counts_dtype,
             shape=shape3,
@@ -1218,7 +1219,6 @@ def _normalize_moments_helper(draw):
     fn_tree="tensorflow.nn.normalize_moments",
     data=_normalize_moments_helper(),
 )
-
 def test_tensorflow_normalize_moments(
     *,
     data,
@@ -1227,7 +1227,6 @@ def test_tensorflow_normalize_moments(
     fn_tree,
     on_device,
 ):
- 
     counts_dtype, counts, mean, variance, shift = data
     helpers.test_frontend_function(
         input_dtypes=counts_dtype,
@@ -1242,7 +1241,6 @@ def test_tensorflow_normalize_moments(
         variance_ss=variance,
         shift=shift,
     )
-
 
 
 @st.composite
