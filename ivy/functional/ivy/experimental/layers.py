@@ -2498,7 +2498,6 @@ def gru(
 
     Parameters
     ----------
-
     x
         The input sequences packed (and potentially padded) into one 3-D array
         with the shape of [seq_length, batch_size, input_size].
