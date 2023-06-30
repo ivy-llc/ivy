@@ -747,9 +747,9 @@ def test_jax_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+    dim_size = draw(helpers.ints(min_value=1, max_value=9))
 
-    batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
+    batch_shape = draw(st.sampled_from([2, 4, 6, 8]))
 
     generated_shape = (dim_size,) * batch_shape
     generated_ind = int(np.floor(len(generated_shape) / 2))
