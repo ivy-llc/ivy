@@ -262,7 +262,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Ivy.Array instance method variant of ivy.elu. This method simply wraps the
+        Ivy.Array instance method variant of ivy.elu. This method tries to wrap the
         function, and so the docstring for ivy.elu also applies to this method with
         minimal.
 
@@ -283,9 +283,9 @@ class _ArrayWithActivationsExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([0.39, -0.85])
+        >>> x = ivy.array([0.59, -0.85])
         >>> y = x.elu()
         >>> print(y)
-        ivy.array([ 0.39, -0.57])
+        ivy.array([ 0.59, -0.57])
         """
         return ivy.elu(self._data, alpha=alpha, out=out)
