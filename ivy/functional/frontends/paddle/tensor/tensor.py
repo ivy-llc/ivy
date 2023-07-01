@@ -369,3 +369,6 @@ class Tensor:
     )
     def imag(self, name=None):
         return paddle_frontend.imag(self)
+
+    def is_tensor(self):
+        return paddle_frontend.is_tensor(self._ivy_array)
