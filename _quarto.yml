@@ -33,7 +33,7 @@ website:
           - "guides/03_transpiling_a_tf_model.ipynb" 
       - section: "Examples and Demos"
         contents:
-          - "examples_and_demos/01_using_ivy_resnet18.ipynb"
+          - "examples_and_demos/resnet_demo.ipynb"
           - "examples_and_demos/torch_to_jax.ipynb"
           - "examples_and_demos/mmpretrain_to_jax.ipynb"
           - "examples_and_demos/image_segmentation_with_ivy_unet.ipynb"
