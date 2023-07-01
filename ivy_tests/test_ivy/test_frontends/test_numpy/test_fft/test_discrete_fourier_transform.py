@@ -212,3 +212,36 @@ def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         axes=None,
         norm=norm,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.rfft2",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        # min_num_dims=2,
+        # max_num_dims=2,
+        # valid_axis=True,
+        # min_axes_size=2,
+        # max_axes_size=2,
+        # force_tuple_axis=True,
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    s=st.lists(st.integers(min_value=2, max_value=10)),
+    dim=st.tuples(st.integers(min_value=-2, max_value=-1)),
+)
+def test_numpy_rfft2(
+    dtype_input_axis, norm, s, dim, frontend, test_flags, fn_tree, on_device
+):
+    input_dtype, x, _ = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        x=x,
+        s=s,
+        dim=dim,
+        norm=norm,
+    )
