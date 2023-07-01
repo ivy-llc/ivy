@@ -1905,7 +1905,6 @@ class AvgPool1D(Module):
             data_format=self._data_format,
         )
 
-   
 
 class Dct(Module):
     def __init__(
