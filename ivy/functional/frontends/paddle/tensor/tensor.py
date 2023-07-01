@@ -356,6 +356,16 @@ class Tensor:
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128")},
+        "paddle",
+    )
+    def imag(self, name=None):
+        return paddle_frontend.imag(self)
+
+    def is_tensor(self):
+        return paddle_frontend.is_tensor(self._ivy_array)
+
     @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def std(self, axis=None, unbiased=True, keepdim=False, name=None):
         return ivy.std(self._ivy_array, axis=axis, keepdims=keepdim)
