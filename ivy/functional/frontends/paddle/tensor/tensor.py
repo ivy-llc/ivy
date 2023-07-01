@@ -365,3 +365,17 @@ class Tensor:
 
     def is_tensor(self):
         return paddle_frontend.is_tensor(self._ivy_array)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def isclose(self, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
+        return paddle_frontend.isclose(
+            self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
+        )
