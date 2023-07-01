@@ -2026,6 +2026,8 @@ def adaptive_avg_pool1d(
     vals = ivy.array(input.to_numpy()[..., idxw])
 
     if not adaptive_w:
+        if squeeze:
+            return ivy.squeeze(ivy.mean(vals, axis=-1), axis=0)
         return ivy.mean(vals, axis=-1)
 
     vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
@@ -2106,6 +2108,8 @@ def adaptive_avg_pool2d(
     vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
 
     if not adaptive_h and not adaptive_w:
+        if squeeze:
+            return ivy.squeeze(ivy.mean(vals, axis=(-3, -1)), axis=0)
         return ivy.mean(vals, axis=(-3, -1))
 
     vals, length_h = _mask(vals, length_h, range_max_h, dim=-2)
@@ -2192,6 +2196,8 @@ def adaptive_avg_pool3d(
     )
 
     if not adaptive_d and not adaptive_h and not adaptive_w:
+        if squeeze:
+            return ivy.squeeze(ivy.mean(vals, axis=(-5, -3, -1)), axis=0)
         return ivy.mean(vals, axis=(-5, -3, -1))
 
     vals, length_d = _mask(vals, length_d, range_max_d, dim=-3)
