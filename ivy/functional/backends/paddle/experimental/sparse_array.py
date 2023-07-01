@@ -32,9 +32,6 @@ def native_sparse_array(
     values=None,
     dense_shape=None,
     format="coo",
-    device=None,
-    requires_grad=False,
-    dtype=None,
 ) -> paddle.Tensor:
     format = format.lower()
 
