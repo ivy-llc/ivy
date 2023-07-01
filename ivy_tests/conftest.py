@@ -66,16 +66,6 @@ def pytest_addoption(parser):
         type=str,
         help="ivy traceback",
     )
-    parser.addoption(
-        "-D",
-        "--deterministic",
-        action="store_true",
-        default=False,
-        help=(
-            "Use hash of the test function as a seed, "
-            "disables Redis database if exists."
-        ),
-    )
 
 
 def pytest_configure(config):
