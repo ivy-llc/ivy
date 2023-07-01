@@ -3477,11 +3477,10 @@ def test_torch_instance_unfold(
     on_device,
 ):
     input_dtype, x, axis, size, step = dtype_values_args
-    print(axis, size, step)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "data": x,
+            "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
