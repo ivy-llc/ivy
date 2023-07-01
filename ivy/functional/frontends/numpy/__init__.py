@@ -548,6 +548,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _divmod,
+    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
@@ -715,6 +716,7 @@ lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
 spacing = ufunc("_spacing")
 clip = ufunc("_clip")
+remainder = ufunc("_remainder")
 
 # setting to specific version #
 # --------------------------- #
