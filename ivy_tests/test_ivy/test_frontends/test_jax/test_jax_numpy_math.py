@@ -2931,7 +2931,7 @@ def test_jax_numpy_signbit(
 #     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
 #     if ivy.current_backend_str() == "torch":
 #         assume(not test_flags.as_variable[0])
-#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools( # noqa: E501
 #         where=where,
 #         input_dtype=input_dtypes,
 #         test_flags=test_flags,
