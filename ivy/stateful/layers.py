@@ -1734,7 +1734,7 @@ class AvgPool3D(Module):
             Whether to use ceil or floor for creating the output shape.
         divisor_override
             If specified, it will be used as divisor,
-            otherwise kernel_size will be used.
+            otherwise kernel_size will be used. # noqa: E501
         """
         self._kernel_size = kernel_size
         self._stride = strides
@@ -1851,4 +1851,56 @@ class AdaptiveAvgPool1d(Module):
         return ivy.adaptive_avg_pool1d(
             x,
             self._output_size,
+        )
+
+
+class AvgPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take an average over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        data_format
+            "NCW" or "NWC". Defaults to "NWC".
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
         )

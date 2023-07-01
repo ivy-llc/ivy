@@ -5,6 +5,8 @@ from hypothesis import strategies as st, assume
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
+import sys
+import string
 
 # local
 import ivy
@@ -306,6 +308,7 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
     array_api_dtypes=False,
+    shape_key="shape",
 ):
     """
     Draws a list of arrays with elements from the given corresponding data types.
@@ -511,7 +514,7 @@ def dtype_and_values(
                     min_dim_size=min_dim_size,
                     max_dim_size=max_dim_size,
                 ),
-                key="shape",
+                key=shape_key,
             )
         )
     values = []
@@ -1047,7 +1050,6 @@ def array_indices_put_along_axis(
 
     Parameters
     ----------
-
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
@@ -1075,10 +1077,11 @@ def array_indices_put_along_axis(
     valid_bounds
         If False, the strategy may produce out-of-bounds indices.
     values
-        Custom values array to use instead of randomly generated values. Defaults to None.
+        Custom values array to use instead of randomly generated values. Defaults
+        to None.
     values_dtypes : Union[None, List[str]]
-        A list of dtypes for the values parameter. The function will use the dtypes returned by
-        'get_dtypes("valid")'.
+        A list of dtypes for the values parameter. The function will use the dtypes
+        returned by 'get_dtypes("valid")'.
 
     Returns
     -------
@@ -1855,9 +1858,161 @@ def dtype_array_index(
             index += (slice(start, end, step),)
     return dtype, array, index
 
+
 @st.composite
 def create_nested_input(draw, dimensions, leaf_values):
     if len(dimensions) != 1:
         return [draw(create_nested_input(dimensions[1:], leaf_values)) for _ in range(dimensions[0])]
     value = draw(st.sampled_from(leaf_values))
     return [value for _ in range(dimensions[0])]
+
+  
+@st.composite
+def cond_data_gen_helper(draw):
+    dtype_x = helpers.dtype_and_values(
+        available_dtypes=(ivy.float32, ivy.float64),
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        max_value=10,
+        min_value=-10,
+        allow_nan=False,
+        shared_dtype=True,
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
+    p = draw(
+        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
+    )
+    dtype, x = draw(dtype_x)
+    return dtype, (x[0], p)
+
+
+# helpers for tests (core and frontend) related to solve function
+@st.composite
+def get_first_solve_matrix(draw, adjoint=True):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    if adjoint:
+        adjoint = draw(st.booleans())
+        if adjoint:
+            matrix = np.transpose(np.conjugate(matrix))
+    return input_dtype, matrix, adjoint
+
+
+@st.composite
+def get_second_solve_matrix(draw):
+    # batch_shape, shared, random_size
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )
+
+
+@st.composite
+def einsum_helper(draw):
+    # Todo: generalize to n equations and arrays
+
+    # generate shapes as lists initially to allow updates in the loop ahead
+    shape_1 = draw(
+        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
+    )
+    shape_2 = draw(
+        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
+    )
+    dims_1 = len(shape_1)
+    dims_2 = len(shape_2)
+
+    # generate equations as lists to allow updates and use unique=True
+    eq_1 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_1,
+            max_size=dims_1,
+            unique=True,
+        )
+    )
+    eq_2 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_2,
+            max_size=dims_2,
+            unique=True,
+        )
+    )
+
+    # randomly change some of the dimensions and equations to match
+    for i in range(min(dims_1, dims_2)):
+        change = draw(st.booleans())
+        if change:
+            shape_2[i] = shape_1[i]
+            eq_2[i] = eq_1[i]
+
+    shape_1 = tuple(shape_1)
+    shape_2 = tuple(shape_2)
+
+    # join the lists to strings
+    eq_1 = "".join(eq_1)
+    eq_2 = "".join(eq_2)
+
+    # generate arrays and dtypes
+    dtype_1, value_1 = draw(
+        dtype_and_values(
+            available_dtypes=["float32"],
+            shape=shape_1,
+        )
+    )
+
+    dtype_2, value_2 = draw(
+        dtype_and_values(
+            available_dtypes=["float32"],
+            shape=shape_2,
+        )
+    )
+
+    output_length = min(dims_1, dims_2)
+    output_eq = draw(
+        st.lists(
+            st.sampled_from(eq_1 + eq_2),
+            min_size=output_length,
+            max_size=output_length,
+            unique=True,
+        )
+    )
+    output_eq = "".join(output_eq)
+
+    # explict einsum equation
+    eq = eq_1 + "," + eq_2 + "->" + output_eq
+
+    return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]

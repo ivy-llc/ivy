@@ -31,10 +31,10 @@ def concat(
             dtype = ivy.promote_types(dtype, d)
     if dtype == paddle.int16:
         xs = list(map(lambda x: x.cast("int32"), xs))
-        return paddle.concat(xs, axis).cast("int16")
+        return paddle.concat(xs, axis=axis).cast("int16")
     else:
         xs = list(map(lambda x: x.cast(dtype), xs))
-        return paddle.concat(xs, axis)
+        return paddle.concat(xs, axis=axis)
 
 
 def expand_dims(
@@ -116,13 +116,13 @@ def reshape(
         shape = [1]
     else:
         out_scalar = False
-    if len(x.shape) == 0:
-        x = paddle.reshape(x, shape=[1])
     if not allowzero:
         shape = [
             new_s if con else old_s
             for new_s, con, old_s in zip(shape, paddle.to_tensor(shape) != 0, x.shape)
         ]
+    if len(x.shape) == 0:
+        x = paddle.reshape(x, shape=[1])
     if copy:
         newarr = paddle.clone(x)
         if order == "F":
