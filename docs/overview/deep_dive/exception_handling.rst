@@ -64,12 +64,12 @@ This will ensure that the exceptions are truly unified for all the different typ
 The implementations of these custom classes are exactly the same as :code:`IvyError` class.
 Currently there are 5 custom exception classes in ivy.
 
-    1. :code:`IvyIndexError`: This Error is raised for anything Indexing related. For Instance, providing out of bound axis in any function.
-    2. :code:`IvyValueError`: This is for anything related to providing wrong values. For instance, passing :code:`high` value 
-                              smaller than :code:`low` value in :code:`ivy.random_uniform`.
-    3. :code:`IvyAttributeError`: This is raised when an undefined attribute is referenced.
-    4. :code:`IvyBroadcastShapeError`: This is raised whenever 2 shapes are expected to be broadcastable but are not.
-    5. :code:`IvyDtypePromotionError`: Similar to :code:`IvyBroadcastShapeError`, this is raised when 2 dtypes are expected to be promotable but are not.
+1. :code:`IvyIndexError`: This Error is raised for anything Indexing related. For Instance, providing out of bound axis in any function.
+2. :code:`IvyValueError`: This is for anything related to providing wrong values. For instance, passing :code:`high` value 
+                          smaller than :code:`low` value in :code:`ivy.random_uniform`.
+3. :code:`IvyAttributeError`: This is raised when an undefined attribute is referenced.
+4. :code:`IvyBroadcastShapeError`: This is raised whenever 2 shapes are expected to be broadcastable but are not.
+5. :code:`IvyDtypePromotionError`: Similar to :code:`IvyBroadcastShapeError`, this is raised when 2 dtypes are expected to be promotable but are not.
 
 The correct type of Exception class should be used for the corresponding type of error across the backends. This will truly unify all the exceptions raised in Ivy.
 
