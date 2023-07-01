@@ -187,7 +187,7 @@ def _get_dtype_values_axis_for_count_nonzero(
         )
     )
     axis = draw(st.one_of(st.just(axis), st.none()))
-    output_dtype = draw(helpers.get_dtypes(out_available_dtypes))
+    output_dtype = draw(st.one_of(helpers.get_dtypes(out_available_dtypes)))
     return [input_dtype, output_dtype], values, axis
 
 
