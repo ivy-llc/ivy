@@ -254,7 +254,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.silu(self._data, out=out)
 
-      
     def elu(
         self,
         /,
