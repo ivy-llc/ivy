@@ -240,6 +240,12 @@ def reciprocal(x, name=None):
     return ivy.reciprocal(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def lcm(x, y, name=None):
+    return ivy.lcm(x, y)
+
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
 )
