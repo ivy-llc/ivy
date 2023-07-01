@@ -98,6 +98,9 @@ def test_dev(*, dtype_and_x, test_flags):
             x = _variable(x)
 
         ret = ivy.dev(x)
+        nat_ret = ivy.dev(x, as_native=True)
+        # native test
+        assert ivy.is_native_dev(nat_ret)
         # type test
         assert isinstance(ret, str)
         # value test
@@ -144,29 +147,49 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags):
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
+def test_as_native_dev(*, dtype_and_x, test_flags):
     dtype, x = dtype_and_x
     dtype = dtype[0]
     x = x[0]
 
-    for device in _get_possible_devices():
+    for on_device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable:
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
-        ret = ivy.as_native_dev(ivy.dev(x))
+        ret = ivy.dev(x, as_native=True)
         # value test
         if ivy.current_backend_str() == "tensorflow":
             assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
                 device[1:].split(":")[-2:]
             )
-        elif ivy.current_backend_str() == "torch":
-            assert ret.type == device.type
         elif ivy.current_backend_str() == "paddle":
             assert ret._equals(device)
         else:
             assert ret == device
+
+
+# is_native_dev
+@handle_test(
+    fn_tree="functional.ivy.is_native_dev",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_is_native_dev(*, dtype_and_x, test_flags):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = x[0]
+
+    for on_device in _get_possible_devices():
+        x = ivy.asarray(x, device=on_device)
+        if test_flags.as_variable and ivy.is_float_dtype(dtype):
+            x = _variable(x)
+        native_dev = ivy.dev(x, as_native=True)
+        assert ivy.is_native_dev(native_dev)
+        if ivy.current_backend_str() != "numpy":
+            assert not ivy.is_native_dev(on_device)
 
 
 # Device Allocation #
@@ -630,7 +653,7 @@ def test_clear_cached_mem_on_dev():
 
 
 def get_cpu_percent():
-    output = subprocess.check_output(["top", "-bn1"])
+    output = str(subprocess.check_output(["top", "-bn1"]))
     cpu_percent = float(re.search(r"%Cpu\(s\):\s+([\d.]+)\s+us", output).group(1))
     return cpu_percent
 
@@ -643,7 +666,7 @@ def test_dev_util():
         # returns 0 as usage when run the second time in same line so simple
         # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
         if "cpu" in device:
-            assert 100 > ivy.dev_util(device) > 0
+            assert 100 >= ivy.dev_util(device) >= 0
             # Comparing CPU utilization using top. Two percentiles won't be directly
             # equal but absolute difference should be below a safe threshold
             assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10
