@@ -159,4 +159,4 @@ def cond(x, p=None, name=None):
 def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
     out = ivy.multiply(x, y)
-    return ivy.sum(out, axis=ivy.get_num_dims(x)-1, keepdims=False)
+    return ivy.sum(out, axis=ivy.get_num_dims(x) - 1, keepdims=False)
