@@ -796,12 +796,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.elu. This method simply wraps the
+        ivy.Container static method variant of ivy.elu. This method tries to wrap the
         function, and so the docstring for ivy.elu also applies to this method with
         minimal changes.
 
         Parameters
-        ----------
         x
             input container.
         alpha
@@ -859,12 +858,11 @@ class _ContainerWithActivationExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.elu. This method simply wraps the
+        ivy.Container instance method variant of ivy.elu. This method tries to wrap the
         function, and so the docstring for ivy.elu also applies to this method with
         minimal changes.
 
         Parameters
-        ----------
         self
             input container.
         alpha
