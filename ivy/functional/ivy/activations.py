@@ -418,14 +418,16 @@ def sigmoid(
     x
         input array.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        input broadcast to.
+        optional output array. If output array is provided then result
+        of sigmoid will be stored in output array instead of creating new
+        array for storing the result, shape of x and out must be same.
         default: None
 
     Returns
     -------
     ret
         an array containing the sigmoid activation of each element in ``x``.
+        sigmoid activation of x is defined as 1/(1+exp(-x)).
 
     Examples
     --------
@@ -437,15 +439,24 @@ def sigmoid(
     ivy.array([0.269, 0.731, 0.881])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = x.sigmoid()
+    >>> y = ivy.zeros(3)
+    >>> ivy.sigmoid(x,out=y)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-
-    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> x = ivy.array([[-1.3, 3.8, 2.1],
+    ...                [1.7, 4.2, -6.6]])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    ivy.array([[0.214, 0.978, 0.891],
+               [0.846,0.985,0.001]])
+
+    >>> x = ivy.array([[-1.3, 3.8, 2.1],
+    ...                [1.7, 4.2, -6.6]])
+    >>> ivy.sigmoid(x,out=x)
+    >>> print(x)
+    ivy.array([[0.214, 0.978, 0.891],
+               [0.846,0.985,0.001]])
     """
     return current_backend(x).sigmoid(x, out=out)
 
