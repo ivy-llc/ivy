@@ -1929,7 +1929,7 @@ interpolate.mixed_backend_wrappers = {
 }
 
 
-def _compute_idx(in_size, out_size, device):
+def _compute_idx(in_size: int, out_size: int, device):
     out_range = ivy.arange(out_size, device=device, dtype=ivy.int64)
     i0 = ivy.trunc_divide(out_range * in_size, out_size).astype(ivy.int64)
     maxlength = in_size // out_size + 1
@@ -1968,6 +1968,8 @@ def _mask(vals, length, range_max, dim):
         mask = ivy.greater_equal(range_max, ivy.expand_dims(length, axis=-1))
         if dim == -2:
             mask = _expand_to_dim(mask, 4)
+        if dim == -3:
+            mask = _expand_to_dim(mask, 6)
         vals = ivy.where(mask, 0.0, vals)
         length = _expand_to_dim(length, -dim)
         return vals, length
@@ -2116,6 +2118,95 @@ def adaptive_avg_pool2d(
         else:
             ret = ret + vals[..., i, :, j]
     pooled_output = ret / (length_h * length_w)
+
+    if squeeze:
+        return ivy.squeeze(pooled_output, axis=0)
+    return pooled_output
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def adaptive_avg_pool3d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
+) -> ivy.Array:
+    """
+    Apply a 3D adaptive average pooling over an input signal composed of several input
+    planes.
+
+    Parameters
+    ----------
+    input
+        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in)
+        where N is the batch dimension, C is the feature dimension, and D_in, H_in
+        and W_in are the 3 spatial dimensions.
+    output_size
+        Spatial output size.
+
+    Returns
+    -------
+        The result of the pooling operation. Will have shape (N, C, S_0, S_1, S_2)
+            or (C, S_0, S_1, S_2), where S = `output_size`
+    """
+    squeeze = False
+    if len(input.shape) == 4:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif len(input.shape) != 5:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported.",
+        )
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size, output_size)
+
+    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-3:], output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-3:], output_size))
+        kernel_size = tuple(
+            i_s - (o_s - 1) * st
+            for i_s, o_s, st in zip(input.shape[-3:], output_size, stride)
+        )
+        pooled_output = ivy.avg_pool3d(
+            input, kernel_size, stride, "VALID", data_format="NCDHW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxd, length_d, range_max_d, adaptive_d = _compute_idx(
+        input.shape[-3], output_size[-3], input.device
+    )
+    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
+        input.shape[-2], output_size[-2], input.device
+    )
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size[-1], input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(
+        input.to_numpy()[..., _expand_to_dim(idxd, 6), _expand_to_dim(idxh, 4), idxw]
+    )
+
+    if not adaptive_d and not adaptive_h and not adaptive_w:
+        return ivy.mean(vals, axis=(-5, -3, -1))
+
+    vals, length_d = _mask(vals, length_d, range_max_d, dim=-3)
+    vals, length_h = _mask(vals, length_h, range_max_h, dim=-2)
+    vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
+
+    ret = None
+    for i, j, k in itertools.product(
+        range(vals.shape[-5]), range(vals.shape[-3]), range(vals.shape[-1])
+    ):
+        if ret is None:
+            ret = vals[..., i, :, j, :, k]
+        else:
+            ret = ret + vals[..., i, :, j, :, k]
+    pooled_output = ret / (length_d * length_h * length_w)
 
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)

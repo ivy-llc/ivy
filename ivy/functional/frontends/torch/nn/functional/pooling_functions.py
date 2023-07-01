@@ -197,6 +197,20 @@ def adaptive_avg_pool2d(input, output_size):
     "torch",
 )
 @to_ivy_arrays_and_back
+def adaptive_avg_pool3d(input, output_size):
+    return ivy.adaptive_avg_pool3d(input, output_size)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+@to_ivy_arrays_and_back
 def lp_pool1d(input, norm_type, kernel_size, stride=None, ceil_mode=False):
     data_format = "NCW"
     padding = "VALID"
