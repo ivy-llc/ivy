@@ -180,7 +180,41 @@ class _ContainerWithActivationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
-        )
+        )    def elu(
+        self,
+        /,
+        *,
+        alpha: float = 1.0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.elu. This method simply wraps the
+        function, and so the docstring for ivy.elu also applies to this method with
+        minimal.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the elu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.elu()
+        >>> print(y)
+        ivy.array([ 0.39, -0.57])
+        """
+        return ivy.elu(self._data, alpha=alpha, out=out)
 
     def thresholded_relu(
         self: ivy.Container,
@@ -784,34 +818,124 @@ class _ContainerWithActivationExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_elu(
+    def _static_elu(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        alpha: Union[int, float] = 1.0,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ivy.elu(x, alpha=alpha, out=out)
+        """
+        ivy.Container static method variant of ivy.elu. This method simply wraps the
+        function, and so the docstring for ivy.elu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+             a container with the elu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = ivy.Container.static_elu(x)
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.57]),
+            b: ivy.array([1., -0.18])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "elu",
+            x,
+            alpha=alpha,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     def elu(
         self: ivy.Container,
         /,
         *,
-        alpha: Union[int, float] = 1.0,
+        alpha: ivy.Container = 1.0,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return self._container_function(
-            ivy.elu,
-            'elu',
-            in_kwargs={'alpha': alpha},
+        """
+        ivy.Container instance method variant of ivy.elu. This method simply wraps the
+        function, and so the docstring for ivy.elu also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+           a container with the elu unit function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
+        >>> y = x.elu()
+        >>> print(y)
+        {
+            a: ivy.array([0.38999999, -0.57]),
+            b: ivy.array([1., -0.18])
+        }
+        """
+        return self._static_elu(
+            self,
+            alpha=alpha,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

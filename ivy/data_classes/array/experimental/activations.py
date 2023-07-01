@@ -253,7 +253,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-0.26894143,  0.        ,  0.73105854])
         """
         return ivy.silu(self._data, out=out)
-        
+
+      
     def elu(
         self,
         /,
@@ -262,53 +263,30 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.elu. This method simply wraps the
+        Ivy.Array instance method variant of ivy.elu. This method simply wraps the
         function, and so the docstring for ivy.elu also applies to this method with
-        minimal changes.
+        minimal.
 
         Parameters
         ----------
         self
-            Input array.
+            input array.
         alpha
-            Scaling factor for the negative region. Default is 1.0.
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
         out
-            Optional output array, for writing the result to. It must have a shape
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            Array containing element-wise elu applied to x.
+            an array with the elu activation function applied element-wise.
 
         Examples
         --------
         >>> x = ivy.array([0.39, -0.85])
         >>> y = x.elu()
         >>> print(y)
-        ivy.array([0.39, -0.574])
-
-        >>> x = ivy.array([1.5, 0.7, -2.4])
-        >>> y = ivy.zeros(3)
-        >>> x.elu(out=y)
-        >>> print(y)
-        ivy.array([1.5, 0.7, -0.864664])
-
-        >>> x = ivy.array([[1.1, 2.2, 3.3],
-        ...                [-4.4, -5.5, -6.6]])
-        >>> x.elu(out=x)
-        >>> print(x)
-        ivy.array([[1.1, 2.2, 3.3],
-        [-0.994805, -0.995805, -0.996805]])
-
-        With :class:`ivy.Container` input:
-
-        >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> x.elu(out=x)
-        >>> print(x)
-        {
-            a: ivy.array([0.0, -0.864664]),
-            b: ivy.array([0.4, -0.574])
-        }
+        ivy.array([ 0.39, -0.57])
         """
         return ivy.elu(self._data, alpha=alpha, out=out)

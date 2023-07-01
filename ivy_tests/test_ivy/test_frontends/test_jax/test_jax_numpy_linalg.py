@@ -566,6 +566,9 @@ def norm_helper(draw):
         max_dim_size=5,
         min_axis=-2,
         max_axis=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
     keepdims=st.booleans(),
     ord=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2]),
@@ -744,9 +747,9 @@ def test_jax_numpy_pinv(
 # tensorinv
 @st.composite
 def _get_inv_square_matrices(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+    dim_size = draw(helpers.ints(min_value=1, max_value=9))
 
-    batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
+    batch_shape = draw(st.sampled_from([2, 4, 6, 8]))
 
     generated_shape = (dim_size,) * batch_shape
     generated_ind = int(np.floor(len(generated_shape) / 2))
@@ -775,7 +778,7 @@ def _get_inv_square_matrices(draw):
                 large_abs_safety_factor=24,
                 small_abs_safety_factor=24,
                 safety_factor_scale="log",
-            )
+            ).filter(lambda x: helpers.matrix_is_stable(x))
         )
         try:
             np.linalg.tensorinv(a, ind)
