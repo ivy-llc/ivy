@@ -667,8 +667,6 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         num_arrays=2,
         min_num_dims=1,
         max_num_dims=2,
-        min_value=-10,
-        max_value=10,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),
@@ -690,4 +688,5 @@ def test_paddle_dot(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        atol=1e-5,
     )

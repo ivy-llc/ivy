@@ -158,10 +158,5 @@ def cond(x, p=None, name=None):
 @to_ivy_arrays_and_back
 def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
-    out = []
-    if ivy.get_num_dims(x) == 2:
-        for xi, yi in zip(x, y):
-            out.append(ivy.vecdot(xi, yi))
-        return ivy.array(out)
-    else:
-        return ivy.vecdot(x, y)
+    out = ivy.multiply(x, y)
+    return ivy.sum(out, axis=ivy.get_num_dims(x)-1, keepdims=False)
