@@ -1929,7 +1929,7 @@ interpolate.mixed_backend_wrappers = {
 }
 
 
-def _compute_idx(in_size: int, out_size: int, device):
+def _compute_idx(in_size, out_size, device):
     out_range = ivy.arange(out_size, device=device, dtype=ivy.int64)
     i0 = ivy.trunc_divide(out_range * in_size, out_size).astype(ivy.int64)
     maxlength = in_size // out_size + 1
