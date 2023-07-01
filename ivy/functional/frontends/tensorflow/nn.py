@@ -4,6 +4,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
+
 def _reduce_strides_dilations(dim, stride, dilations):
     if not isinstance(stride, int):
         if len(stride) > dim:
@@ -318,6 +319,34 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     )
 
 
+@with_unsupported_dtypes(
+    {
+        "2.12.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def normalize_moments(counts, mean_ss, variance_ss, shift=None, name=None):
+    divisor = ivy.reciprocal(counts)
+    if shift is not None:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = ivy.add(shifted_mean, shift)
+    else:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = shifted_mean
+
+    variance = ivy.subtract(
+        ivy.multiply(variance_ss, divisor), ivy.square(shifted_mean)
+    )
+    return mean, variance
+
+
 @to_ivy_arrays_and_back
 def bias_add(value, bias, data_format=None, name=None):
     if data_format is None:
@@ -487,19 +516,23 @@ def pool(
 # log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
-    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)  
- 
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
 
-#weighted_moments
+
+# weighted_moments
 @to_ivy_arrays_and_back
 def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
-    fw_x_prod=frequency_weights * x
-    fw_x_prod=ivy.array(fw_x_prod)
-    weighted_input_sum = ivy.sum(fw_x_prod, axis=axes, keepdims=True).astype(fw_x_prod.dtype)
+    fw_x_prod = frequency_weights * x
+    fw_x_prod = ivy.array(fw_x_prod)
+    weighted_input_sum = ivy.sum(fw_x_prod, axis=axes, keepdims=True).astype(
+        fw_x_prod.dtype
+    )
 
     broadcasted_weights = frequency_weights + ivy.zeros_like(x)
-    broadcasted_weights=ivy.array(broadcasted_weights)
-    sum_of_weights = ivy.sum(broadcasted_weights, axis=axes, keepdims=True).astype(broadcasted_weights.dtype)
+    broadcasted_weights = ivy.array(broadcasted_weights)
+    sum_of_weights = ivy.sum(broadcasted_weights, axis=axes, keepdims=True).astype(
+        broadcasted_weights.dtype
+    )
 
     divisor = ivy.reciprocal(sum_of_weights)
 
@@ -509,13 +542,15 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
     x, weighted_mean = check_tensorflow_casting(x, weighted_mean)
     squared_difference = ivy.square(ivy.subtract(x, weighted_mean))
     if isinstance(squared_difference, complex):
-        squared_difference = squared_difference.real - squared_difference.imag*1j
+        squared_difference = squared_difference.real - squared_difference.imag * 1j
 
-    fw_sq_diff_prod=frequency_weights * squared_difference
-    fw_sq_diff_prod=ivy.array(fw_sq_diff_prod)
-    weighted_distsq = ivy.sum(fw_sq_diff_prod, axis=axes, keepdims=True).astype(fw_sq_diff_prod.dtype)
+    fw_sq_diff_prod = frequency_weights * squared_difference
+    fw_sq_diff_prod = ivy.array(fw_sq_diff_prod)
+    weighted_distsq = ivy.sum(fw_sq_diff_prod, axis=axes, keepdims=True).astype(
+        fw_sq_diff_prod.dtype
+    )
 
-    weighted_distsq, divisor=check_tensorflow_casting(weighted_distsq, divisor)
+    weighted_distsq, divisor = check_tensorflow_casting(weighted_distsq, divisor)
     weighted_variance = ivy.multiply(weighted_distsq, divisor)
 
     if not keepdims:

@@ -269,7 +269,9 @@ def scatter_flat(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _to_device(target)
+    if target_given:
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_flat.support_native_out = True
