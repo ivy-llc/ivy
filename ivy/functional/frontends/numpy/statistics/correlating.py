@@ -15,15 +15,15 @@ def correlate(a, v, mode=None, *, old_behavior=False):
         if mode == "full":
             r = n + m - 1
             for j in range(0, n - 1):
-                a = ivy.concat((ivy.array(0), a), axis=None)
+                a = ivy.concat((ivy.array([0]), a), axis=0)
         elif mode == "same":
             r = m
             right_pad = (n - 1) // 2
             left_pad = (n - 1) - (n - 1) // 2
-            for j in range(0, left_pad):
-                a = ivy.concat((ivy.array(0), a), axis=None)
-            for j in range(0, right_pad):
-                a = ivy.concat((a, ivy.array(0)), axis=None)
+            for _ in range(0, left_pad):
+                a = ivy.concat((ivy.array([0]), a), axis=0)
+            for _ in range(0, right_pad):
+                a = ivy.concat((a, ivy.array([0])), axis=0)
         elif mode == "valid":
             r = m - n + 1
         else:
@@ -36,15 +36,15 @@ def correlate(a, v, mode=None, *, old_behavior=False):
         if mode == "full":
             r = n + m - 1
             for j in range(0, n - 1):
-                v = ivy.concat((ivy.array(0), v), axis=None)
+                v = ivy.concat((ivy.array([0]), v), axis=0)
         elif mode == "same":
             r = m
             right_pad = (n - 1) // 2
             left_pad = (n - 1) - (n - 1) // 2
-            for j in range(0, left_pad):
-                v = ivy.concat((ivy.array(0), v), axis=None)
-            for j in range(0, right_pad):
-                v = ivy.concat((v, ivy.array(0)), axis=None)
+            for _ in range(0, left_pad):
+                v = ivy.concat((ivy.array([0]), v), axis=0)
+            for _ in range(0, right_pad):
+                v = ivy.concat((v, ivy.array([0])), axis=0)
         elif mode == "valid":
             r = m - n + 1
         else:

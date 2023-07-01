@@ -6193,7 +6193,7 @@ def lcm(
     With :class:`ivy.Array` input:
 
     >>> x1=ivy.array([2, 3, 4])
-    >>> x2=ivy.array([5, 8, 15])
+    >>> x2=ivy.array([5, 7, 15])
     >>> x1.lcm(x1, x2)
     ivy.array([10, 21, 60])
     """

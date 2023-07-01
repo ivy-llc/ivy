@@ -116,6 +116,25 @@ def test_numpy_ndarray_property_T(
     )
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        num_arrays=1,
+        ret_shape=True,
+    )
+)
+def test_numpy_ndarray_property_flat(dtype_x):
+    dtype, data, shape = dtype_x
+
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+
+    flat_ivy = x.flat
+    flat_ivy = flat_ivy.ivy_array.to_numpy()
+    flat_generated = ivy.to_numpy(data[0]).flatten()
+    ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -3076,6 +3095,9 @@ def test_numpy_instance_rshift__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
+    x[1] = np.asarray(
+        np.clip(x[1], 0, np.iinfo(input_dtypes[1]).bits - 1), dtype=input_dtypes[1]
+    )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
