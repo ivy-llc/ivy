@@ -365,3 +365,10 @@ class Tensor:
 
     def is_tensor(self):
         return paddle_frontend.is_tensor(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128")},
+        "paddle",
+    )
+    def real(self, name=None):
+        return paddle_frontend.real(self)
