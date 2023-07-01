@@ -106,12 +106,11 @@ class DeviceArray:
             order=order,
         )
 
-    def sort(self, axis=-1):
-        out_arr = jax_frontend.numpy.zeros_like(self)
+    def sort(self, axis=-1, order=None):
         return jax_frontend.numpy.sort(
             self,
             axis=axis,
-            out=out_arr,
+            order=order,
         )
 
     def __add__(self, other):
