@@ -513,7 +513,6 @@ def pool(
     )
 
 
-
 # sufficient_statistics
 @to_ivy_arrays_and_back
 def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
@@ -547,6 +546,7 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
     if sum_of_squares.ndim == 0:
         ivy.reshape(sum_of_squares, ())
     return count, sum_of_elements, sum_of_squares, shift
+
 
 # log_poisson_loss
 @to_ivy_arrays_and_back
