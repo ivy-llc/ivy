@@ -376,4 +376,4 @@ class Tensor:
         "paddle",
     )
     def real(self, name=None):
-        return paddle_frontend.real(self)
+        return ivy.real(self._ivy_array)
