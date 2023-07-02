@@ -8,7 +8,6 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
@@ -79,6 +78,10 @@ def random_normal(
     return paddle.normal(mean, std).cast(dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.4.2 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -91,7 +94,13 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if probs is None:
+        probs = paddle.ones((batch_size, num_samples)) / population_size
+        probs = paddle.cast(probs, paddle.float32)
+    if seed:
+        paddle.seed(seed)
+    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
+    return x
 
 
 @with_unsupported_device_and_dtypes(
