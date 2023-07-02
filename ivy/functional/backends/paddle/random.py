@@ -98,35 +98,8 @@ def multinomial(
         probs = paddle.ones((batch_size, num_samples)) / population_size
     if seed:
         paddle.seed(seed)
-    if not replace:
-        orig_probs_shape = list(probs.shape)
-        probs_flat = paddle.reshape(probs, (-1, orig_probs_shape[-1]))
-        probs_flat = probs_flat / paddle.sum(
-            probs_flat,
-            axis=-1,
-            keepdim=True,
-        )
-        probs_stack = paddle.split(probs_flat, probs_flat.shape[0], axis=0)
-        samples_stack = []
-        for prob in probs_stack:
-            logits = paddle.cast(paddle.log(prob), paddle.float64)
-            z = paddle.cast(
-                -paddle.log(
-                    -paddle.log(paddle.uniform(paddle.shape(logits), min=0, max=1))
-                ),
-                paddle.float64,
-            )
-            _, indices = paddle.topk(logits + z, k=num_samples)
-            samples_stack.append(indices)
-        samples_flat = paddle.stack(samples_stack)
-        return paddle.to_tensor(
-            paddle.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples])
-        )
-    else:
-        if len(probs.shape) == 1:
-            probs = probs[None]
-        dist = paddle.distribution.Categorical(paddle.log(probs))
-        return dist.sample([batch_size, num_samples]).squeeze(axis=-1)
+    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
+    return x
 
 
 @with_unsupported_device_and_dtypes(
