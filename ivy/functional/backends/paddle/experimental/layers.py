@@ -257,16 +257,11 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if training:
-        is_batched = len(x.shape) == 3
-        if data_format == "NCW":
-            perm = (0, 2, 1) if is_batched else (1, 0)
-            x = paddle.transpose(x, perm)
-        res = paddle.nn.functional.dropout(x, prob)
-        if data_format == "NCW":
-            res = paddle.transpose(res, perm)
-    else:
-        res = x
+    if data_format == "NCW":
+        x = paddle.moveaxis(x, -2,-1)
+    res = paddle.nn.functional.dropout(x, p=prob,training=training)
+    if data_format == "NCW":
+        res = paddle.moveaxis(res, -2,-1)
     return res
 
 
