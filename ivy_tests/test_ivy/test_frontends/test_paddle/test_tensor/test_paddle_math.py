@@ -937,7 +937,7 @@ def test_paddle_reciprocal(
         on_device=on_device,
         x=x[0],
     )
- 
+
 
 # lcm
 @handle_frontend_test(
@@ -952,12 +952,12 @@ def test_paddle_reciprocal(
     ),
 )
 def test_paddle_lcm(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -985,12 +985,12 @@ def test_paddle_lcm(
     ),
 )
 def test_paddle_cumprod(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
@@ -1019,12 +1019,12 @@ def test_paddle_cumprod(
     ),
 )
 def test_paddle_gcd(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1045,12 +1045,12 @@ def test_paddle_gcd(
     ),
 )
 def test_paddle_fmin(
-        *,
-        dtypes_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtypes_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_function(
@@ -1072,12 +1072,12 @@ def test_paddle_fmin(
     ),
 )
 def test_paddle_logit(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1099,12 +1099,12 @@ def test_paddle_logit(
     ),
 )
 def test_paddle_isnan(
-        *,
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1125,12 +1125,12 @@ def test_paddle_isnan(
     ),
 )
 def test_paddle_isfinite(
-        *,
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1151,12 +1151,12 @@ def test_paddle_isfinite(
     ),
 )
 def test_paddle_isinf(
-        *,
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1176,12 +1176,12 @@ def test_paddle_isinf(
     ),
 )
 def test_paddle_angle(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1201,12 +1201,12 @@ def test_paddle_angle(
     ),
 )
 def test_paddle_fmax(
-        *,
-        dtypes_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtypes_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_function(
@@ -1229,12 +1229,12 @@ def test_paddle_fmax(
     ),
 )
 def test_paddle_minimum(
-        *,
-        dtype_and_x,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags,
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1256,12 +1256,12 @@ def test_paddle_minimum(
     ),
 )
 def test_paddle_erf(
-        *,
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

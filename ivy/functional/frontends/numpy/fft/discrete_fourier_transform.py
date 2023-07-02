@@ -133,4 +133,3 @@ def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
     a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
     return a
-
