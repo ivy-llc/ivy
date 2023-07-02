@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         shared_dtype=True,
         min_value=2,
         max_value=5,
-        min_dim_size=2,
+        min_dim_size=4,
         shape=(4, 4),
     ),
     axis=st.integers(min_value=-1, max_value=1),
