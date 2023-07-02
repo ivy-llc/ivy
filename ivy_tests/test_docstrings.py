@@ -45,9 +45,14 @@ def trim(*, docstring):
     if "\n" in docstring:
         trimmed.append("")
 
-    # Return a single string:
-    return "\n".join(trimmed)
+    # Join the lines into a single string:
+    joined_lines = " ".join(trimmed)
 
+    # Remove the separator ("/") and continuation ("...") lines:
+    joined_lines = re.sub(r"/\s*\n\s*", "", joined_lines)
+    joined_lines = re.sub(r"\.\.\.\s*\n\s*", "", joined_lines)
+
+    return joined_lines
 
 def check_docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=2
