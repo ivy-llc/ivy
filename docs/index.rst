@@ -1,3 +1,5 @@
+.. title:: Home
+
 .. include:: ../README.rst
 
 .. toctree::
@@ -5,6 +7,7 @@
   :maxdepth: -1
   :caption: Overview
 
+  overview/get_started.rst
   overview/background.rst
   overview/design.rst
   overview/related_work.rst
@@ -21,6 +24,7 @@
   :maxdepth: -1
   :caption: Compiling and Transpiling
 
+  compiler/setting_up.rst
   compiler/compiler.rst
   compiler/transpiler.rst
 

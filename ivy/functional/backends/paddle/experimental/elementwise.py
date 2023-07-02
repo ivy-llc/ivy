@@ -18,7 +18,7 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")},
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
 def fmax(
@@ -34,7 +34,7 @@ def fmax(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def sinc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     y = ivy.pi * paddle.where(x == 0, paddle.to_tensor(1.0e-20, dtype=x.dtype), x)
@@ -69,7 +69,17 @@ def ldexp(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException
+    out_dtype = x1.dtype
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    with ivy.ArrayMode(False):
+        if ivy.any(ivy.less(x2, 0)):
+            pos_exp = ivy.greater_equal(x2, 0).astype(x2.dtype) * x2
+            neg_exp = ivy.less(x2, 0).astype(x2.dtype) * x2
+            ret = ivy.multiply(ivy.pow(2, pos_exp), x1)
+            ret = ivy.divide(ret, ivy.pow(2, -neg_exp))
+        else:
+            ret = ivy.multiply(ivy.pow(2, x2), x1)
+        return ivy.astype(ret, out_dtype, copy=False)
 
 
 def copysign(
@@ -79,17 +89,16 @@ def copysign(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
-        signs = ivy.sign(x2)
-        result = ivy.multiply(ivy.abs(x1), signs)
-        if result.shape == [1]:
-            result = paddle.fluid.layers.squeeze(result, [0])
-        return result
+    x2 = paddle_backend.where(
+        paddle_backend.equal(x2, 0.0), paddle_backend.divide(1.0, x2), x2
+    )
+    signs = paddle_backend.sign(x2)
+    result = paddle_backend.multiply(paddle_backend.abs(x1), signs)
+    return result
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "float16")}}, backend_version
 )
 def nansum(
     x: paddle.Tensor,
@@ -107,7 +116,7 @@ def nansum(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def isclose(
     a: paddle.Tensor,
@@ -171,7 +180,7 @@ def hypot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -211,7 +220,7 @@ def fix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def nextafter(
     x1: paddle.Tensor,
@@ -252,7 +261,7 @@ _BERNOULLI_COEFS = [
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -330,7 +339,7 @@ def _np_ndim(x):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32")},
+    {"2.5.0 and below": ("float64", "float32")},
     backend_version,
 )
 def gradient(
@@ -587,7 +596,7 @@ def count_nonzero(
 
 @with_supported_dtypes(
     {
-        "2.4.2 and below": (
+        "2.5.0 and below": (
             "complex64",
             "complex128",
             "float32",
