@@ -2191,9 +2191,7 @@ def test_array__deepcopy__(
 @handle_method(
     method_tree="Array.__len__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_dim_size=2,
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_array__len__(

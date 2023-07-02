@@ -22,7 +22,7 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -53,7 +53,7 @@ def random_uniform(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def random_normal(
@@ -130,7 +130,7 @@ def multinomial(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
