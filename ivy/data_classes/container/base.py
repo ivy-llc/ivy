@@ -2728,7 +2728,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[k] = self.cont_set_at_key_chains(v, return_dict[k], inplace)
             else:
                 return_dict[k] = v
-        return ivy.Container(return_dict, **self._config)
+        return return_dict
 
     def cont_overwrite_at_key_chains(
         self, target_dict, return_dict=None, inplace=False
@@ -2771,7 +2771,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             else:
                 return_dict[k] = v
-        return ivy.Container(return_dict, **self._config)
+        return return_dict
 
     def cont_prune_keys(self, query_keys, ignore_none=True):
         """

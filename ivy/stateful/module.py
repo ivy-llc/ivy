@@ -593,7 +593,9 @@ class Module(ModuleConverters, ModuleHelpers):
                 ivy.Container.cont_assert_identical_structure(
                     [created_n_found, v_from_constructor]
                 )
-                self.v = v_from_constructor
+                # propagate v_from_constructor to child variables
+                created_n_found.cont_set_at_key_chains(v_from_constructor, inplace=True)
+                self.v = created_n_found
         else:
             self.v = created_n_found
         # remove duplicates
