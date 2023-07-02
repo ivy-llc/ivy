@@ -257,7 +257,7 @@ def handle_exceptions(fn: Callable) -> Callable:
             )
         except (Exception, IvyBackendException) as e:
             _write_traceback_history(buffer)
-            print('Is notebook: ', is_notebook())
+            # print('Is notebook: ', is_notebook())
             raise ivy.utils.exceptions.IvyBackendException(
                 fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
             )
