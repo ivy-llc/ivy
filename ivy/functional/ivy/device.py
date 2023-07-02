@@ -314,7 +314,7 @@ def dev(
 
 
 @handle_exceptions
-def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
+def as_ivy_dev(device: Union[ivy.Device, ivy.NativeDevice, str], /) -> ivy.Device:
     """
     Convert device to string representation.
 
@@ -377,6 +377,39 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     device(type='cuda')
     """
     return ivy.current_backend().as_native_dev(device)
+
+
+@handle_exceptions
+def is_native_dev(device, /) -> bool:
+    """
+    Determine whether the input device is a Native device.
+
+    Parameters
+    ----------
+    dtype_in
+        The input device to check if it's a native device.
+        Determine whether the input data type is a native data type object.
+
+    Returns
+    -------
+    ret
+        Boolean, whether or not dtype_in is a native device.
+
+    Examples
+    --------
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.is_native_dev('/TPU:3')
+    True
+
+    >>> import torch
+    >>> device = torch.device("cuda")
+    >>> device
+    device(type='cuda')
+
+    >>> ivy.is_native_dev(device)
+    True
+    """
+    return ivy.current_backend().is_native_device(device)
 
 
 # Memory
