@@ -1953,3 +1953,60 @@ def test_paddle_isclose(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# cond
+@st.composite
+def _get_dtype_and_matrix_non_singular(draw, dtypes):
+    while True:
+        matrix = draw(
+            helpers.dtype_and_values(
+                available_dtypes=dtypes,
+                min_value=-10,
+                max_value=10,
+                min_num_dims=2,
+                max_num_dims=2,
+                min_dim_size=1,
+                max_dim_size=5,
+                shape=st.tuples(st.integers(1, 5), st.integers(1, 5)).filter(
+                    lambda x: x[0] == x[1]
+                ),
+                allow_inf=False,
+                allow_nan=False,
+            )
+        )
+        if np.linalg.det(matrix[1][0]) != 0:
+            break
+
+    return matrix[0], matrix[1]
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="cond",
+    dtype_and_x=_get_dtype_and_matrix_non_singular(dtypes=["float32", "float64"]),
+)
+def test_paddle_cond(
+    *,
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
