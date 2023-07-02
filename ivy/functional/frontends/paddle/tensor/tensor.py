@@ -384,3 +384,21 @@ class Tensor:
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                    "bool",
+                    "float16",
+                    "float32",
+                    "float64",
+                    "int32",
+                    "int64",
+                    "int8",
+                    "uint8",
+            )
+        },
+        "paddle",
+    )
+    def concat(self, x, axis=0, name=None):
+        return ivy.concat(x, axis)
