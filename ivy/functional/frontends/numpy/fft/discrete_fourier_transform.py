@@ -125,3 +125,11 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
+    return a
