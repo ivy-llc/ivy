@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -31,9 +31,3 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
     return ivy.nanquantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
     )
-
-
-@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
-@to_ivy_arrays_and_back
-def bincount(a, weights=None, minlength=0, out=None):
-    return ivy.bincount(a, weights=weights, minlength=minlength, out=out)

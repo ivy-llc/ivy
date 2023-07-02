@@ -387,6 +387,6 @@ class Tensor:
 
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def bincount(self, weights=None, minlength=0, out=None, name=None):
-        return paddle_frontend.bincount(
-            self, weights=weights, minlength=minlength, out=out
+        return ivy.bincount(
+            self._ivy_array, weights=weights, minlength=minlength, out=out
         )
