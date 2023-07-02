@@ -108,7 +108,7 @@ Using miniconda
 
    .. code-block:: none
       
-      conda create --name ivy_dev python=3.8.10
+      conda create --name ivy_dev python=3.10.0
 
 #. Activate the environment by:
 
