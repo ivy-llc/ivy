@@ -131,27 +131,18 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-    if correction == 1:
-        return tf.experimental.numpy.var(
-            x, axis=axis[0], out=out, keepdims=keepdims, dtype=x.dtype, ddof=1
-        )
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
         return ret
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
+        return (
+            tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+            * size
+            / (size - correction)
         )
 
 
