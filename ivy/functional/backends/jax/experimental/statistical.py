@@ -387,3 +387,13 @@ def cummin(
         else:
             dtype = _infer_dtype(x.dtype)
     return jlax.cummin(x, axis, reverse=reverse).astype(dtype)
+
+
+def igamma(
+    a: JaxArray,
+    /,
+    *,
+    x: JaxArray,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jlax.igamma(a=a, x=x)

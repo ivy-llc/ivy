@@ -14,7 +14,10 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 # Extra #
@@ -78,8 +81,15 @@ def random_normal(
     return paddle.normal(mean, std).cast(dtype)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
     backend_version,
 )
 def multinomial(
