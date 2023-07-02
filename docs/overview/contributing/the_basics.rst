@@ -40,7 +40,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
@@ -106,7 +106,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
@@ -158,7 +158,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
@@ -253,7 +253,7 @@ The code review process is explained in more detail in the following video.
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 

@@ -195,7 +195,7 @@ class Tensor:
     def isfinite(self, name=None):
         return ivy.isfinite(self._ivy_array)
 
-    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
     def all(self, axis=None, keepdim=False, dtype=None, name=None):
         return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
@@ -208,6 +208,39 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sort(self, axis=-1, descending=False, name=None):
         return ivy.sort(self._ivy_array, axis=axis, descending=descending)
+
+    @with_supported_dtypes(
+        {
+            "2.4.2 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "paddle",
+    )
+    def bitwise_and(self, y, out=None, name=None):
+        return paddle_frontend.bitwise_and(self, y)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_or(self, y, out=None, name=None):
+        return paddle_frontend.logical_or(self, y, out=out)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
@@ -223,3 +256,112 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_xor(self, y, out=None, name=None):
+        return paddle_frontend.logical_xor(self, y, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def greater_than(self, y, name=None):
+        return paddle_frontend.greater_than(self, y)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def rsqrt(self, name=None):
+        return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def less_than(self, y, name=None):
+        return paddle_frontend.less_than(self, y)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumprod(self, dim=None, dtype=None, name=None):
+        return ivy.cumprod(self._ivy_array, axis=dim, dtype=dtype)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def cumsum(self, axis=None, dtype=None, name=None):
+        return ivy.cumsum(self._ivy_array, axis=axis, dtype=dtype)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+        "paddle",
+    )
+    def angle(self, name=None):
+        return ivy.angle(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def rad2deg(self, name=None):
+        return ivy.rad2deg(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmax(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmax(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+    def fmin(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.fmin(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def minimum(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.minimum(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def max(self, axis=None, keepdim=False, name=None):
+        return ivy.max(self._ivy_array, axis=axis, keepdims=keepdim)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def deg2rad(self, name=None):
+        return ivy.deg2rad(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128")},
+        "paddle",
+    )
+    def imag(self, name=None):
+        return paddle_frontend.imag(self)
+
+    def is_tensor(self):
+        return paddle_frontend.is_tensor(self._ivy_array)
