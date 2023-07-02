@@ -96,6 +96,7 @@ def multinomial(
 ) -> paddle.Tensor:
     if probs is None:
         probs = paddle.ones((batch_size, num_samples)) / population_size
+        probs = paddle.cast(probs, paddle.float32)
     if seed:
         paddle.seed(seed)
     x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
