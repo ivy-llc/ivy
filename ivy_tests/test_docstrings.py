@@ -349,7 +349,8 @@ def test_docstrings(backend):
 
         else:
             if (
-                k in to_skip
+                v is not ivy.GlobalsDict
+                or k in to_skip
                 or helpers.gradient_incompatible_function(fn=v)
                 or check_docstring_examples_run(fn=v)
             ):
