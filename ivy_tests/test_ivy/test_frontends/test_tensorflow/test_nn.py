@@ -1692,7 +1692,7 @@ def test_tensorflow_sufficient_statistics(
         keepdims=keepdims,
         name=None,
     )
-  
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.log_poisson_loss",
