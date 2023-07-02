@@ -1,0 +1,88 @@
+import tensorflow as tf
+import torch
+import ivy
+import numpy as np
+
+
+#this is the model to train neural network and image classification
+def create_dataset():
+    x_train, y_train,x_test, y_test = tf.keras.datasets.mnist.load_data()
+    x_train = x_train.reshape((-1, 28*28)).astype(np.float32) / 255.0
+    x_test = x_test.reshape((-1, 28*28)).astype(np.float32) / 255.0
+    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
+    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+    return (x_train, y_train), (x_test, y_test)
+
+
+def create_tf_model():
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Dense(64, activation='relu', input_shape=(784,)),
+        tf.keras.layers.Dense(10, activation='softmax')
+    ])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    return model
+
+def create_pytorch_model():
+    model = torch.nn.Sequential(
+        torch.nn.Linear(784, 64),
+        torch.nn.ReLU(),
+        torch.nn.Linear(64, 10),
+        torch.nn.Softmax(dim=1)
+    )
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    return model, loss_fn, optimizer
+
+# Define the model using Ivy
+def create_ivy_model():
+    model = ivy.container.Sequential([
+        ivy.linear.Linear(784, 64),
+        ivy.activation.Relu(),
+        ivy.linear.Linear(64, 10),
+        ivy.activation.Softmax()
+    ])
+    loss_fn = ivy.loss.CrossEntropyLoss()
+    optimizer = ivy.optim.Adam(lr=0.001)
+    return model, loss_fn, optimizer
+
+
+def train_model(model, loss_fn, optimizer, x_train, y_train):
+    if isinstance(model, ivy.container.Sequential):
+        x_train = ivy.array(x_train)
+        y_train = ivy.array(y_train)
+    else:
+        x_train = tf.convert_to_tensor(x_train)
+        y_train = tf.convert_to_tensor(y_train)
+    for epoch in range(10):
+        if isinstance(model, ivy.container.Sequential):
+            y_pred = model(x_train)
+            loss = loss_fn(y_pred, y_train)
+            model.zero_grad()
+            loss.backward()
+            optimizer.step(model.parameters())
+        else:
+            with tf.GradientTape() as tape:
+                y_pred = model(x_train)
+                loss = loss_fn(y_pred, y_train)
+            gradients = tape.gradient(loss, model.trainable_variables)
+            optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+        accuracy = np.mean(np.argmax(y_pred.data, axis=1) == np.argmax(y_train.data, axis=1))
+        print(f"Epoch {epoch+1}: Loss={loss.item():.4f}, Accuracy={accuracy:.4f}")
+
+
+if __name__ == '__main__':
+    # Create and train the TensorFlow model
+    (x_train, y_train), _ = create_dataset()
+    tf_model = create_tf_model()
+    tf_model.summary()
+    tf_model.fit(x_train, y_train, epochs=10, batch_size=32)
+
+    # Create and train the PyTorch model
+    (x_train, y_train), _ = create_dataset()
+    pytorch_model, loss_fn, optimizer = create_pytorch_model()
+    train_model(pytorch_model, loss_fn, optimizer, x_train, y_train)
+
+    # Create and train the Ivy model
+    (x_train, y_train), _ = create_dataset()
+    ivy_model, loss_fn, optimizer = create_ivy_model()
+    train_model(ivy_model, loss_fn, optimizer, x_train, y_train)
