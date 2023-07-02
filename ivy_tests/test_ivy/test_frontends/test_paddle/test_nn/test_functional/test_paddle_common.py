@@ -134,3 +134,23 @@ def test_paddle_dropout(
         axis=axis,
         mode=mode,
     )
+
+#zeropad2d
+def test_paddle_zeropad2d(
+    *,
+    d_type_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+
+    )
