@@ -118,3 +118,47 @@ def test_numpy_trim_zeros(
         filt=x[0],
         trim=trim,
     )
+
+
+# insert
+@handle_frontend_test(
+    fn_tree="numpy.insert",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    return_index=st.booleans(),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+    none_axis=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_insert(
+    *,
+    dtype_x_axis,
+    return_index,
+    return_inverse,
+    return_counts,
+    none_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, xs, axis = dtype_x_axis
+    if none_axis:
+        axis = None
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        array=xs[0],
+        return_index=return_index,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
+    )
+

@@ -57,3 +57,18 @@ def trim_zeros(filt, trim="fb"):
             else:
                 last = last - 1
     return filt[first:last]
+
+
+@to_ivy_arrays_and_back
+def insert(arr, obj, values, axis=None):
+    if axis is None:
+        axis = ivy.int32(0)
+        arr = ivy.flatten(arr)
+        obj = ivy.int32(obj)
+    else:
+        arr = ivy.move_axis(arr, axis, 0)
+        obj = ivy.cast(obj, 'int32')
+    arr1 = ivy.slice(arr, 0, obj)
+    arr2 = ivy.slice(arr, obj, ivy.shape(arr)[0])
+    return ivy.concat((arr1, values, arr2), axis=0)
+
