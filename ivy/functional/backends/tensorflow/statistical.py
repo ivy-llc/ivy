@@ -131,23 +131,18 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
         return ret
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
+        return (
+            tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+            * size
+            / (size - correction)
         )
 
 
@@ -155,7 +150,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.12.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -178,7 +173,7 @@ def cumprod(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("float16", "bfloat16", "complex128", "complex64")},
+    {"2.12.0 and below": ("bfloat16", "complex")},
     backend_version,
 )
 def cummin(
@@ -357,11 +352,14 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
+@with_unsupported_dtypes(
+    {"2.12.0 and below": ("unsigned", "int8", "int16")},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)

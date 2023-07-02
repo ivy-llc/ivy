@@ -488,13 +488,7 @@ def test_cummin(
 # einsum
 @handle_test(
     fn_tree="functional.ivy.einsum",
-    eq_n_op_n_shp=st.sampled_from(
-        [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-        ]
-    ),
+    eq_n_op_n_shp=helpers.einsum_helper(),
     test_instance_method=st.just(False),
     dtype=helpers.get_dtypes("numeric", full=False),
 )
@@ -508,18 +502,18 @@ def test_einsum(
     on_device,
     ground_truth_backend,
 ):
-    eq, operands, true_shape = eq_n_op_n_shp
+    eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
     i = 0
-    x_dtype = np.dtype(dtype[0])
+    # x_dtype = np.dtype(dtype[0])
     for x_ in operands:
-        kw["x{}".format(i)] = x_.astype(x_dtype)
+        kw["x{}".format(i)] = x_.astype(dtypes[i])
         i += 1
     # len(operands) + 1 because of the equation
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,

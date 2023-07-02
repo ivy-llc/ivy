@@ -188,21 +188,22 @@ def test_tensorflow_clip_by_global_norm(
 
 @st.composite
 def _get_norm_clip_inputs(draw):
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+    dtype = draw(helpers.get_dtypes("numeric", full=False))
+
+    x_dtype, x, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=dtype,
             min_num_dims=1,
             min_value=-100,
             max_value=100,
+            force_int_axis=True,
+            valid_axis=True,
         )
     )
     norm_dtype, norm = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), shape=(1,)
-        )
+        helpers.dtype_and_values(available_dtypes=dtype, shape=(1,))
     )
-    print(x_dtype, x, norm_dtype, norm)
-    return x_dtype, x, norm_dtype, norm
+    return x_dtype[0], x, axis, norm
 
 
 # clip_by_norm
@@ -219,15 +220,16 @@ def test_tensorflow_clip_by_norm(
     fn_tree,
     on_device,
 ):
-    x_dtype, x, norm_dtype, norm = input_and_norm
+    x_dtype, x, axis, norm = input_and_norm
     helpers.test_frontend_function(
-        input_dtypes=[x_dtype, norm_dtype],
+        input_dtypes=[x_dtype, x_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         t=x[0],
         clip_norm=norm[0],
+        axes=axis,
     )
 
 
@@ -262,6 +264,58 @@ def test_tensorflow_eye(
         num_columns=n_cols,
         batch_shape=batch_shape,
         dtype=dtype[0],
+    )
+
+
+# foldl
+@handle_frontend_test(
+    fn_tree="tensorflow.foldl",
+    fn=st.sampled_from(
+        [
+            lambda a, b: a + b,
+            lambda a, b: a - b,
+            lambda a, b: a * b,
+        ],
+    ),
+    initializer=st.one_of(st.none(), st.floats(min_value=-1000, max_value=1000)),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=-1000,
+        max_value=1000,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    parallel_iterations=st.just(10),
+    swap_memory=st.booleans(),
+    name=st.none(),
+)
+def test_tensorflow_foldl(
+    *,
+    fn,
+    initializer,
+    dtype_and_values,
+    frontend,
+    fn_tree,
+    test_flags,
+    parallel_iterations,
+    swap_memory,
+    name,
+):
+    dtype, elems = dtype_and_values
+    elems = np.atleast_1d(elems)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        fn=fn,
+        elems=elems,
+        initializer=initializer,
+        parallel_iterations=parallel_iterations,
+        swap_memory=swap_memory,
+        name=name,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
     )
 
 
@@ -406,6 +460,9 @@ def _x_cast_dtype_shape(draw):
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=st.shared(helpers.get_shape(), key="value_shape"),
+            large_abs_safety_factor=10,
+            small_abs_safety_factor=10,
+            safety_factor_scale="log",
         ),
     )
     to_shape = draw(
@@ -473,7 +530,7 @@ def test_tensorflow_constant(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        value=x[0],
+        value=x[0].tolist() if x[0].ndim > 0 else x[0].item(),
         dtype=cast_dtype,
         shape=to_shape,
     )
@@ -522,7 +579,7 @@ def test_tensorflow_rank(
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, _ = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -852,7 +909,7 @@ def test_tensorflow_shape(
 @handle_frontend_test(
     fn_tree="tensorflow.shape_n",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), max_num_dims=5
+        available_dtypes=helpers.get_dtypes("valid"), min_num_dims=1, max_num_dims=5
     ),
     output_dtype=st.sampled_from(["int32", "int64"]),
 )
@@ -1545,53 +1602,59 @@ def _boolean_mask_helper(draw):
     dtype = draw(st.sampled_from(["float32", "float64"]))
 
     # Param: tensor
-    tensor = draw(
-        helpers.array_values(
-            dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
-        ),
+    # tensor = draw(
+    #     helpers.array_values(
+    #         dtype=dtype, shape=tensor_shape, min_value=-5.0, max_value=5.0
+    #     ),
+    # )
+
+    dtype, tensor, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=[dtype],
+            shape=tensor_shape,
+            min_value=-5.0,
+            max_value=5.0,
+            force_int_axis=True,
+            valid_axis=True,
+        )
     )
-    mask_dim = draw(helpers.number(min_value=1, max_value=len(tensor_shape)))
-    mask_shape = tensor_shape[:mask_dim]
+    mask_dim = draw(helpers.ints(min_value=1, max_value=len(tensor_shape) - axis))
+    mask_shape = tensor_shape[axis : mask_dim + axis]
 
     # Param:stop
     mask = draw(
         helpers.array_values(
-            allow_none=False,
+            allow_nan=False,
             dtype="bool",
             shape=mask_shape,
         ),
     )
-
-    return [dtype, "bool"], tensor, mask
+    return [dtype[0], "bool"], tensor, mask, axis
 
 
 # boolean_mask
 @handle_frontend_test(
     fn_tree="tensorflow.boolean_mask",
-    dtype_and_values=_boolean_mask_helper,
+    dtype_and_values=_boolean_mask_helper(),
 )
 def test_tensorflow_boolean_mask(
     *,
     dtype_and_values,
-    as_variable,
-    native_array,
-    num_positional_args,
+    test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, tensor, mask = dtype_and_values
+    input_dtype, tensor, mask, axis = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
+        test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        tensor=tensor,
+        tensor=tensor[0],
         mask=mask,
+        axis=axis,
     )
 
 
@@ -2055,4 +2118,57 @@ def test_tensorflow_truncatediv(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# Truncatemod
+@handle_frontend_test(
+    fn_tree="tensorflow.truncatemod",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_truncatemod(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[0], 0)))
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.unravel_index",
+    indices=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=0, max_value=49
+    ),
+    dims=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=50
+    ),
+)
+def test_unravel_index(*, indices, dims, frontend, test_flags, fn_tree, on_device):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=indices[0],
+        dims=dims[0],
     )

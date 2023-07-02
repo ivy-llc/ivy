@@ -52,7 +52,11 @@ def current_backend_str() -> str:
 @with_unsupported_dtypes(
     {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def get_item(x: tf.Tensor, /, query: tf.Tensor, *, copy: bool = None) -> tf.Tensor:
+def get_item(
+    x: Union[tf.Tensor, tf.Variable], /, query: tf.Tensor, *, copy: bool = None
+) -> Union[tf.Tensor, tf.Variable]:
+    if copy:
+        x = tf.identity(x)
     if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
@@ -179,6 +183,10 @@ def inplace_update(
     keep_input_dtype: bool = False,
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
+        if ensure_in_backend or ivy.is_native_array(x):
+            raise ivy.utils.exceptions.IvyException(
+                "TensorFlow does not support inplace updates of the tf.Tensor"
+            )
         if keep_input_dtype:
             val = ivy.astype(val, x.dtype)
         (x_native, val_native), _ = ivy.args_to_native(x, val)
@@ -188,10 +196,6 @@ def inplace_update(
                 x.data = x_native
             else:
                 x = ivy.Array(x_native)
-        elif ensure_in_backend:
-            raise ivy.utils.exceptions.IvyException(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
         elif ivy.is_ivy_array(x):
             x.data = val_native
             # Handle view updates
@@ -265,21 +269,25 @@ def scatter_flat(
         ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
     if not target_given:
         target = tf.zeros([size], dtype=updates.dtype)
-        return tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
+        res = tf.tensor_scatter_nd_update(target, tf.expand_dims(indices, -1), updates)
     else:
         if reduction == "sum":
-            return tf.tensor_scatter_nd_add(out, tf.expand_dims(indices, -1), updates)
+            res = tf.tensor_scatter_nd_add(target, tf.expand_dims(indices, -1), updates)
         elif reduction == "min":
             res = tf.tensor_scatter_nd_min(target, tf.expand_dims(indices, -1), updates)
         elif reduction == "max":
             res = tf.tensor_scatter_nd_max(target, tf.expand_dims(indices, -1), updates)
         elif reduction == "replace":
-            res = tf.tensor_scatter_nd_update(out, tf.expand_dims(indices, -1), updates)
+            res = tf.tensor_scatter_nd_update(
+                target, tf.expand_dims(indices, -1), updates
+            )
         else:
             raise ivy.utils.exceptions.IvyException(
                 "reduction is {}, but it must be one of "
                 '"sum", "min", "max" or "replace"'.format(reduction)
             )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
     return res
 
 
@@ -470,10 +478,18 @@ def scatter_nd(
     elif sum(updates.shape) >= sum(expected_shape):
         indices_shape = updates.shape[:1] + indices.shape[-1:]
         if sum(indices.shape) < sum(indices_shape):
-            indices = ivy.broadcast_to(indices, indices_shape)._data
+            indices = (
+                tf.broadcast_to(indices, shape)
+                if len(indices_shape) > tf.rank(indices)
+                else tf.broadcast_to(tf.reshape(indices, -1), indices_shape)
+            )
         else:
-            if ivy.assertions.check_broadcastable(updates.shape, expected_shape):
-                updates = ivy.reshape(updates, expected_shape)._data
+            updates = (
+                tf.broadcast_to(updates, expected_shape)
+                if len(expected_shape) > tf.rank(updates)
+                else tf.broadcast_to(tf.reshape(updates, -1), expected_shape)
+            )
+
     # implementation
     target = out
     target_given = ivy.exists(target)

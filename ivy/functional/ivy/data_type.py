@@ -497,7 +497,8 @@ def can_cast(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.can_cast.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.can_cast.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -590,7 +591,8 @@ def finfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.finfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.finfo.html>`_
     in the standard.
 
     Examples
@@ -666,7 +668,8 @@ def iinfo(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.iinfo.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.iinfo.html>`_
     in the standard.
 
     Examples
@@ -733,7 +736,8 @@ def result_type(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.data_type_functions.result_type.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.result_type.html>`_
     in the standard.
 
     Examples
@@ -1177,10 +1181,10 @@ def default_dtype(
     """
     Parameters
     ----------
-    dtype
-        The dtype to be returned.
     item
         Number or array for inferring the dtype.
+    dtype
+        The dtype to be returned.
     as_native
         Whether to return the dtype as native dtype.
 
@@ -1189,6 +1193,39 @@ def default_dtype(
         Return ``dtype`` as native or ivy dtype if provided, else
         if ``item`` is given, return its dtype, otherwise return the
         global default dtype.
+
+    Examples
+    --------
+    >>> ivy.default_dtype()
+    'float32'
+
+    >>> ivy.set_default_dtype(ivy.bool)
+    >>> ivy.default_dtype()
+    'bool'
+
+    >>> ivy.set_default_dtype(ivy.int16)
+    >>> ivy.default_dtype()
+    'int16'
+
+    >>> ivy.set_default_dtype(ivy.float64)
+    >>> ivy.default_dtype()
+    'float64'
+
+    >>> ivy.default_dtype(dtype="int32")
+    'int32'
+
+    >>> ivy.default_dtype(dtype=ivy.float16)
+    'float16'
+
+    >>> ivy.default_dtype(item=53.234)
+    'float64'
+
+    >>> ivy.default_dtype(item=[1, 2, 3])
+    'int32'
+
+    >>> x = ivy.array([5.2, 9.7], dtype="complex128")
+    >>> ivy.default_dtype(item=x)
+    'complex128'
     """
     if ivy.exists(dtype):
         if as_native is True:
@@ -2021,15 +2058,25 @@ def promote_types(
     query = [ivy.as_ivy_dtype(type1), ivy.as_ivy_dtype(type2)]
     query.sort(key=lambda x: str(x))
     query = tuple(query)
-    try:
+
+    def _promote(query):
         if array_api_promotion:
-            ret = ivy.array_api_promotion_table[query]
-        else:
-            ret = ivy.promotion_table[query]
+            return ivy.array_api_promotion_table[query]
+        return ivy.promotion_table[query]
+
+    try:
+        ret = _promote(query)
     except KeyError:
-        raise ivy.utils.exceptions.IvyDtypePromotionError(
-            "these dtypes are not type promotable"
-        )
+        # try again with the dtypes swapped
+        query = (query[1], query[0])
+        try:
+            ret = _promote(query)
+        except KeyError:
+            raise ivy.utils.exceptions.IvyDtypePromotionError(
+                "these dtypes ({} and {}) are not type promotable, ".format(
+                    type1, type2
+                )
+            )
     return ret
 
 

@@ -6,6 +6,7 @@ import builtins
 import numpy as np
 import sys
 import inspect
+import os
 
 
 import ivy.utils.backend.handler
@@ -77,12 +78,20 @@ class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
             ivy.utils.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
-            if dev_str != "cpu":
-                # ivy.assertions.check_equal(dev_str[3], ":")
+            if len(dev_str) > 3:
+                ivy.assertions.check_equal(
+                    dev_str[3],
+                    ":",
+                    False,
+                    "device string must be of the form 'device_type:device_id'",
+                )
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
                 )
+            elif len(dev_str) == 3:
+                if dev_str != "cpu":
+                    dev_str += ":0"
         return str.__new__(cls, dev_str)
 
 
@@ -262,6 +271,9 @@ class Shape:
     def __div__(self, other):
         return self._shape // other
 
+    def __floordiv__(self, other):
+        return self._shape // other
+
     def __mod__(self, other):
         return self._shape % other
 
@@ -328,8 +340,7 @@ class Shape:
 
     def __getitem__(self, key):
         try:
-            self._shape = self._shape[key]
-            return self
+            return self._shape[key]
         except (TypeError, IndexError):
             return None
 
@@ -348,9 +359,138 @@ class Shape:
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __pow__(self, power, modulo=None):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __rdivmod__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    def __rtruediv__(self, other):
+        pass
+
+    def __rfloordiv__(self, other):
+        pass
+
+    def __ne__(self, other):
+        pass
+
     @property
     def shape(self):
         return self._shape
+
+    @property
+    def value(self):
+        return self._value
+
+    def concatenate(self, other):
+        if self._shape is None or other.dims is None:
+            raise ValueError("Unknown Shape")
+        else:
+            return Shape(self.dims + other.dims)
+
+    def index(self, index):
+        assert isinstance(self._shape, Shape)
+        if self._shape.rank is None:
+            return Shape(None)
+        else:
+            return self._shape[index]
+
+    @property
+    def shape(self):
+        return self._shape
+
+    def as_dimension(self):
+        if isinstance(self._shape, Shape):
+            return self._shape
+        else:
+            return Shape(self._shape)
+
+    def is_compatible_with(self, other):
+        return self._shape is None or other.value is None or self._shape == other.value
+
+    @property
+    def rank(self):
+        """Returns the rank of this shape, or None if it is unspecified."""
+        if self._shape is not None:
+            return len(self._shape)
+        return None
+
+    def assert_same_rank(self, other):
+        other = Shape(other)
+        if self.rank != other.rank:
+            raise ValueError("Shapes %s and %s must have the same rank" % (self, other))
+
+    def assert_has_rank(self, rank):
+        if self.rank not in (None, rank):
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def unknown_shape(rank=None, **kwargs):
+        if rank is None and "ndims" in kwargs:
+            rank = kwargs.pop("ndims")
+        if kwargs:
+            raise TypeError("Unknown argument: %s" % kwargs)
+        if rank is None:
+            return Shape(None)
+        else:
+            return Shape([Shape(None)] * rank)
+
+    def with_rank(self, rank):
+        try:
+            return self.merge_with(unknown_shape(rank=rank))
+        except ValueError:
+            raise ValueError("Shape %s must have rank %d" % (self, rank))
+
+    def with_rank_at_least(self, rank):
+        if self.rank is not None and self.rank < rank:
+            raise ValueError("Shape %s must have rank at least %d" % (self, rank))
+        else:
+            return self
+
+    def with_rank_at_most(self, rank):
+        if self.rank is not None and self.rank > rank:
+            raise ValueError("Shape %s must have rank at most %d" % (self, rank))
+        else:
+            return self
+
+    def as_shape(shape):
+        if isinstance(shape, Shape):
+            return shape
+        else:
+            return Shape(shape)
+
+    @property
+    def dims(self):
+        if self._shape is None:
+            return None
+        # return [as_dimension(d) for d in self._shape]
+
+    @property
+    def ndims(self):
+        """Deprecated accessor for `rank`."""
+        return self.rank
+
+    @property
+    def is_fully_defined(self):
+        return self._shape is not None and all(
+            shape is not None for shape in self._shape
+        )
+
+    property
+
+    def num_elements(self):
+        if not self.is_fully_defined():
+            return None
+
+    @property
+    def assert_is_fully_defined(self):
+        if not self.is_fully_defined():
+            raise ValueError("Shape %s is not fully defined" % self)
 
     def as_list(self):
         if self._shape is None:
@@ -644,7 +784,7 @@ _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
     from .compiler.compiler import transpile, compile, unify
 except:  # noqa: E722
-    compile, transpile, unify = None, None, None
+    pass  # Added for the finally statment
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
@@ -841,22 +981,16 @@ def _assert_array_significant_figures_formatting(sig_figs):
 
 
 # ToDo: SF formating for complex number
-def _sf(x, sig_fig=3):
+def vec_sig_fig(x, sig_fig=3):
     if isinstance(x, np.bool_):
         return x
     if isinstance(x, complex):
         return complex(x)
-    if "float" in type(x).__name__:
-        x = float(
-            np.format_float_positional(
-                x, precision=sig_fig, unique=False, fractional=False, trim="k"
-            )
-        )
+    if np.issubdtype(x.dtype, np.floating):
+        x_positive = np.where(np.isfinite(x) & (x != 0), np.abs(x), 10 ** (sig_fig - 1))
+        mags = 10 ** (sig_fig - 1 - np.floor(np.log10(x_positive)))
+        return np.round(x * mags) / mags
     return x
-
-
-vec_sig_fig = np.vectorize(_sf)
-vec_sig_fig.__name__ = "vec_sig_fig"
 
 
 ivy.array_significant_figures = 10
@@ -1278,23 +1412,24 @@ GLOBAL_PROPS = [
     "tmp_dir",
     "shape_array_mode",
     "dynamic_backend",
+    "precise_mode",
 ]
 
 
 INTERNAL_FILENAMES = [
-    "ivy/compiler",
-    "ivy/functional",
-    "ivy/data_classes",
-    "ivy/stateful",
-    "ivy/utils",
-    "ivy_tests/test_ivy",
-    "ivy/func_wrapper.py",
-    "ivy/__init__.py",
+    os.path.join("ivy", "compiler"),
+    os.path.join("ivy", "functional"),
+    os.path.join("ivy", "data_classes"),
+    os.path.join("ivy", "stateful"),
+    os.path.join("ivy", "utils"),
+    os.path.join("ivy_tests", "test_ivy"),
+    os.path.join("ivy", "func_wrapper.py"),
+    os.path.join("ivy", "__init__.py"),
 ]
 
 
 def _is_from_internal(filename):
-    return ivy.any([fn in filename for fn in INTERNAL_FILENAMES])
+    return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
 
 class IvyWithGlobalProps(sys.modules[__name__].__class__):

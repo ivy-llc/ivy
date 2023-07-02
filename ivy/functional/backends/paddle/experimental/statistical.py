@@ -11,7 +11,7 @@ from . import backend_version
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -33,7 +33,7 @@ def median(
     keepdims: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    # keepdims is set to True because in versions up to 2.4.2
+    # keepdims is set to True because in versions up to 2.5.0
     # there was a problem when the axis was defined and it was the
     # only axis in the tensor so it needs to be handled manually
 
@@ -217,7 +217,7 @@ def _compute_quantile(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -304,14 +304,12 @@ def nanmedian(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
                 "uint8",
                 "float16",
-                "complex64",
-                "complex128",
                 "bool",
             )
         }
@@ -338,7 +336,7 @@ def unravel_index(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.0 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -390,3 +388,66 @@ def igamma(
         results.append(result)
 
     return paddle.to_tensor(results, dtype="float32").reshape(a.shape)
+
+
+def cov(
+    x1: paddle.Tensor,
+    x2: paddle.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[paddle.Tensor] = None,
+    aweights: Optional[paddle.Tensor] = None,
+    dtype: Optional[paddle.dtype] = None,
+) -> paddle.Tensor:
+    if fweights is not None:
+        fweights = fweights.astype("float64")
+
+    if aweights is not None:
+        aweights = aweights.astype("float64")
+
+    if ddof is not None and ddof != int(ddof):
+        raise ValueError("ddof must be an integer")
+
+    if len(x1.shape) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if len(x2.shape) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if ddof is None:
+        if bias == 0:
+            ddof = 1
+        else:
+            ddof = 0
+
+    if dtype is None:
+        x1 = x1.astype("float64")
+        if x2 is not None:
+            x2 = x2.astype("float64")
+    else:
+        x1 = x1.astype(dtype)
+        if x2 is not None:
+            x2 = x2.astype(dtype)
+
+    X = x1
+    if not rowVar and X.shape[0] != 1:
+        X = paddle.transpose(X, perm=tuple(range(len(X.shape) - 1, -1, -1)))
+
+    if x2 is not None:
+        if not rowVar and x2.shape[0] != 1:
+            x2 = paddle.transpose(x2, perm=tuple(range(len(x2.shape) - 1, -1, -1)))
+        if len(x2.shape) > 1:
+            X = paddle.concat([X, x2], axis=0)
+        else:
+            X = paddle.stack([X, x2], axis=0)
+
+    if not rowVar:
+        X = paddle.transpose(X, perm=tuple(range(len(X.shape) - 1, -1, -1)))
+
+    return paddle.linalg.cov(
+        X, rowvar=rowVar, ddof=ddof, fweights=fweights, aweights=aweights
+    )

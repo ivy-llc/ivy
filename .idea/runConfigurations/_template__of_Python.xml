@@ -5,10 +5,11 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="PYTHONPATH" value="/opt/miniconda/envs/multienv/lib/python3.10/site-packages:/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
     </envs>
-    <option name="SDK_HOME" value="docker://ivydl/ivy:latest/python3" />
-    <option name="WORKING_DIRECTORY" value="/ivy" />
-    <option name="IS_MODULE_SDK" value="false" />
+    <option name="SDK_HOME" value="" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="DockerContainerSettingsRunConfigurationExtension">

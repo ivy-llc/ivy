@@ -83,9 +83,9 @@ def test_max_pool2d(
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        on_device=on_device,
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -106,6 +106,7 @@ def test_max_pool3d(
     test_flags,
     backend_fw,
     fn_name,
+    on_device,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -113,6 +114,7 @@ def test_max_pool3d(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
+        on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -165,6 +167,7 @@ def test_avg_pool1d(
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
@@ -173,12 +176,19 @@ def test_avg_pool2d(
     count_include_pad,
     ceil_mode,
     divisor_override,
+    data_format,
     test_flags,
     backend_fw,
     on_device,
     fn_name,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
+
+    if data_format == "NCHW":
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
+        )
+
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,
@@ -192,6 +202,7 @@ def test_avg_pool2d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
         divisor_override=divisor_override,
@@ -844,7 +855,7 @@ def test_adaptive_avg_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool2d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_num_dims=3,
         max_num_dims=4,
         min_dim_size=5,
@@ -974,4 +985,133 @@ def test_reduce_window(
         padding=padding,
         base_dilation=others[2],
         window_dilation=None,
+    )
+
+
+@st.composite
+def x_and_fft2(draw):
+    min_fft2_points = 2
+    dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e5,
+            max_value=1e5,
+            allow_inf=False,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
+        )
+    )
+    s = (
+        draw(st.integers(min_fft2_points, 256)),
+        draw(st.integers(min_fft2_points, 256)),
+    )
+    dim = draw(st.sampled_from([(0, 1), (-1, -2), (1, 0)]))
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    return dtype, x, s, dim, norm
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.fft2",
+    d_x_d_s_n=x_and_fft2(),
+    ground_truth_backend="numpy",
+    container_flags=st.just([False]),
+    test_gradients=st.just(False),
+)
+def test_fft2(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, s, dim, norm = d_x_d_s_n
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        # rtol_=1e-2,
+        # atol_=1e-2,
+        x=x,
+        s=s,
+        dim=dim,
+        norm=norm,
+    )
+
+
+@st.composite
+def x_and_ifftn(draw):
+    min_fft_points = 2
+    dtype = draw(helpers.get_dtypes("complex"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e-10,
+            max_value=1e10,
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    norm = draw(st.sampled_from(["forward", "ortho", "backward"]))
+
+    # Shape for s can be larger, smaller or equal to the size of the input
+    # along the axes specified by axes.
+    # Here, we're generating a list of integers corresponding to each axis in axes.
+    s = draw(
+        st.lists(
+            st.integers(min_fft_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+
+    return dtype, x, axes, norm, s
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.ifftn",
+    d_x_d_s_n=x_and_ifftn(),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+)
+def test_ifftn(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, x, axes, norm, s = d_x_d_s_n
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
     )
