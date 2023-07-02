@@ -136,6 +136,18 @@ def test_paddle_dropout(
     )
 
 #zeropad2d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.zeropad2d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=2,
+        max_value=5,
+        min_dim_size=2,
+        shape=(4, 4),
+    ),
+)
 def test_paddle_zeropad2d(
     *,
     d_type_and_x,
