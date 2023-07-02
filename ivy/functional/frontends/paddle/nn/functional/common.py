@@ -66,13 +66,14 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
             ret = ivy.multiply(x, (1.0 - p))
     return ret
 
+
 @with_unsupported_dtypes({"2.4.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def zeropad2d(x, padding, data_format="NCHW", name=None):
     return ivy.pad(
         x,
         pad=padding,
-        mode='constant',
+        mode="constant",
         value=0,
         data_format=data_format,
         name=name,
