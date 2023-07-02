@@ -7,6 +7,7 @@
   :maxdepth: -1
   :caption: Overview
 
+  overview/get_started.rst
   overview/background.rst
   overview/design.rst
   overview/related_work.rst

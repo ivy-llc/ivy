@@ -513,6 +513,41 @@ def pool(
     )
 
 
+# sufficient_statistics
+@to_ivy_arrays_and_back
+def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
+    count = 1
+    shape = ivy.shape(x)
+    axes = list(set(axes))
+    for a in axes:
+        if ivy.to_scalar(a) < 0:
+            index = x.ndim + ivy.to_scalar(a)
+        else:
+            index = ivy.to_scalar(a)
+        count *= shape[index]
+    count = ivy.array(count, dtype=ivy.dtype(x))
+    if shift is None:
+        sum_of_elements = ivy.sum(x, axis=axes, keepdims=keepdims)
+        sum_of_squares = ivy.sum(ivy.square(x), axis=axes, keepdims=keepdims)
+    else:
+        sum_of_elements = ivy.sum(
+            (ivy.subtract(x, shift)), axis=axes, keepdims=keepdims
+        )
+        sum_of_squares = ivy.sum(
+            (ivy.square(ivy.subtract(x, shift))), axis=axes, keepdims=keepdims
+        )
+        if shift.ndim == 0:
+            ivy.reshape(shift, ())
+
+    if count.ndim == 0:
+        ivy.reshape(count, ())
+    if sum_of_elements.ndim == 0:
+        ivy.reshape(sum_of_elements, ())
+    if sum_of_squares.ndim == 0:
+        ivy.reshape(sum_of_squares, ())
+    return count, sum_of_elements, sum_of_squares, shift
+
+
 # log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
