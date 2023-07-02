@@ -23,3 +23,16 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
     cosine = numerator / denominator
     return cosine
+
+
+@with_unsupported_dtypes({"2.4.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def zeropad2d(x, padding, data_format="NCHW", name=None):
+    return ivy.pad(
+        x,
+        pad=padding,
+        mode='constant',
+        value=0,
+        data_format=data_format,
+        name=name,
+    )
