@@ -96,6 +96,34 @@ def avg_pool2d(
         stride,
         padding_str,
         data_format=data_format,
+        ceil_mode=ceil_mode,
+        count_include_pad=count_include_pad,
+        divisor_override=divisor_override,
+    )
+
+
+@to_ivy_arrays_and_back
+def max_pool1d(input, kernel_size, stride=None, padding=0):
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    stride = _broadcast_pooling_helper(stride, "1d", name="stride")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    kernel_pads = list(zip(kernel_size, padding))
+
+    data_format = "NCW"
+
+    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
+        raise ValueError(
+            "pad should be smaller than or equal to half of kernel size, "
+            f"but got padding={padding}, kernel_size={kernel_size}. "
+        )
+    # figure out whether to apply padding
+    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
+        padding_str = "SAME"
+    else:
+        padding_str = "VALID"
+
+    return ivy.max_pool1d(
+        input, kernel_size, stride, padding_str, data_format=data_format
     )
 
 

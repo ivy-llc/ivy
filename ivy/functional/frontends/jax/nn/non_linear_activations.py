@@ -84,6 +84,7 @@ def _reduction_dims(a, axis):
         len(canon_axis),
         len(set(canon_axis)),
         message=f"duplicate value in 'axis': {axis}",
+        as_array=False,
     )
 
     # TODO: deal with named axis
@@ -133,7 +134,7 @@ def gelu(x, approximate=True):
 def glu(x, axis=-1):
     size = x.shape[axis]
     ivy.utils.assertions.check_equal(
-        size % 2, 0, message="axis size must be divisible by 2"
+        size % 2, 0, message="axis size must be divisible by 2", as_array=False
     )
     x1, x2 = ivy.split(x, num_or_size_splits=2, axis=axis)
     return ivy.multiply(x1, ivy.sigmoid(x2))
@@ -147,14 +148,13 @@ def hard_swish(x):
 
 @to_ivy_arrays_and_back
 def hard_tanh(x):
-    x = ivy.asarray(x)
     n1 = -1
     if "uint" in str(x.dtype):
         dtype = x.dtype
         # tensorflow can't use -1 for uint
         n1 = ivy.asarray((1 << ivy.dtype_bits(dtype)) - 1, dtype=dtype)
 
-    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x))
+    return ivy.where(x > 1, 1, ivy.where(x < n1, n1, x)).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -182,9 +182,8 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         a = ivy.astype(a, dtype)
         b = ivy.asarray(b, dtype=dtype)
         a = ivy.where(b != 0, a, -ivy.inf)
-
+        a = ivy.astype(a, dtype)
     out_dtype = _batch_promotion(a, b, default_dtype="float32")
-
     pos_dims, dims = _reduction_dims(a, axis)
 
     amax = ivy.max(a, axis=pos_dims, keepdims=keepdims)
@@ -213,7 +212,6 @@ def logsumexp(a, axis=None, b=None, keepdims=False, return_sign=False):
         sumexp = ivy.sum(expsub, axis=dims, keepdims=keepdims)
         sign = ivy.stop_gradient(ivy.sign(sumexp))
         out = ivy.add(ivy.log(ivy.abs(sumexp)), amax)
-
     if return_sign:
         return out, sign
 
@@ -267,7 +265,7 @@ def sigmoid(x):
 
 
 @with_supported_dtypes(
-    {"0.4.10 and below": ("complex", "float")},
+    {"0.4.13 and below": ("complex", "float")},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -296,6 +294,7 @@ def softplus(x):
 
 @to_ivy_arrays_and_back
 def selu(x):
+    x = _type_conversion_64(x)
     return ivy.selu(x)
 
 

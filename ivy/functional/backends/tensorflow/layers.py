@@ -272,14 +272,19 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    # permuting dims based on formats
     if data_format == "channel_first":
         x = tf.transpose(x, (0, *range(2, dims + 2), 1))
+
+    if filter_format == "channel_first":
+        filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
 
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
@@ -330,14 +335,42 @@ def conv_general_dilated(
             dilations,
         )
     else:
-        res = tf.nn.conv3d(
-            x,
-            filters,
-            strides,
-            "VALID",
-            df,
-            dilations,
-        )
+        # grouped conv3d is not supported on CPU
+        # ToDO: change the condition of GPU when automatic device shifting
+        #  is implemented in ivy
+        if feature_group_count == 1 or tf.test.is_gpu_available():
+            res = tf.nn.conv3d(
+                x,
+                filters,
+                strides,
+                "VALID",
+                df,
+                dilations,
+            )
+        else:
+            res = tf.concat(
+                [
+                    tf.nn.conv3d(
+                        x[:, :, :, :, i : i + filters.shape[-2]],
+                        filters[
+                            :, :, :, :, j : j + filters.shape[-1] // feature_group_count
+                        ],
+                        strides,
+                        "VALID",
+                        df,
+                        dilations,
+                    )
+                    for i, j in zip(
+                        range(0, x.shape[-1], filters.shape[-2]),
+                        range(
+                            0,
+                            filters.shape[-1],
+                            filters.shape[-1] // feature_group_count,
+                        ),
+                    )
+                ],
+                axis=-1,
+            )
     res = tf.math.add(res, bias) if bias is not None else res
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))

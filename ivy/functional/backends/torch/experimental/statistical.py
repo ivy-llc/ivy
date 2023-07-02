@@ -26,8 +26,8 @@ def histogram(
     a: torch.Tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.Tensor, str]] = None,
-    axis: Optional[torch.Tensor] = None,
+    bins: Optional[Union[int, torch.Tensor]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[torch.dtype] = None,
@@ -183,9 +183,7 @@ def nanmean(
 nanmean.support_native_out = True
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
     q: Union[torch.Tensor, float],
@@ -227,7 +225,7 @@ def quantile(
     if keepdims:
         keepdim_shape = tuple(keepdim_shape)
         ret = ret.reshape(keepdim_shape)
-    return ret
+    return ret.to(a.dtype)
 
 
 quantile.support_native_out = True
@@ -354,3 +352,72 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def igamma(
+    a: torch.Tensor,
+    /,
+    *,
+    x: torch.Tensor,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.gammainc(a, x, out=out)
+
+
+igamma.support_native_out = True
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def cov(
+    x1: torch.Tensor,
+    x2: torch.Tensor = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[torch.Tensor] = None,
+    aweights: Optional[torch.Tensor] = None,
+    dtype: Optional[torch.dtype] = None,
+) -> torch.Tensor:
+    # dtype casts separately
+    if fweights is not None:
+        fweights = fweights.type(torch.int64)
+    if aweights is not None:
+        aweights = aweights.type(torch.float64)
+
+    if x1.dim() > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if x2.dim() > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
+    if ddof is None:
+        if bias == 0:
+            ddof = 1
+        else:
+            ddof = 0
+
+    if dtype is None:
+        x1 = x1.type(torch.float64)
+        if x2 is not None:
+            x2 = x2.type(torch.float64)
+    else:
+        x1 = x1.type(dtype)
+        if x2 is not None:
+            x2 = x2.type(dtype)
+
+    X = x1
+    if not rowVar and len(x1.shape) != 1:
+        X = torch.t(x1)
+
+    if x2 is not None:
+        if not rowVar and len(x2.shape) != 1:
+            x2 = torch.t(x2)
+        X = torch.vstack((X, x2))
+
+    return torch.cov(X, correction=ddof, fweights=fweights, aweights=aweights)
+
+
+cov.support_native_out = False

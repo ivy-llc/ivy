@@ -28,7 +28,7 @@ class LayerNorm(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
         elementwise_affine
             Whether to include learnable affine parameters, default is ``True``.
         new_std
@@ -100,7 +100,6 @@ class BatchNorm2D(Module):
         track_running_stats: bool = True,
         device=None,
         v=None,
-        training: bool = True,
         dtype=None,
     ):
         """
@@ -112,7 +111,7 @@ class BatchNorm2D(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
         data_format
             The ordering of the dimensions in the input, one of "NSC" or "NCS",
             where N is the batch dimension, S represents any number of spatial
@@ -138,7 +137,6 @@ class BatchNorm2D(Module):
         """
         self.num_features = num_features
         self._affine = affine
-        self.training = training
         self.data_format = data_format
         self._epsilon = eps
         self._momentum = momentum
@@ -172,7 +170,11 @@ class BatchNorm2D(Module):
             }
         return {}
 
-    def _forward(self, inputs):
+    def _forward(
+        self,
+        inputs,
+        training: bool = False,
+    ):
         """
         Perform forward pass of the BatchNorm layer.
 
@@ -180,6 +182,8 @@ class BatchNorm2D(Module):
         ----------
         inputs
             Inputs to process of shape N,C,*.
+        training
+            Determine the current phase (training/inference)
 
         Returns
         -------
@@ -193,11 +197,11 @@ class BatchNorm2D(Module):
             eps=self._epsilon,
             momentum=self._momentum,
             data_format=self.data_format,
-            training=self.training,
+            training=training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats:
+        if self._track_running_stats and training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 

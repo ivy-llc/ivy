@@ -1,4 +1,5 @@
 # global
+import math
 import numpy as np
 from typing import Union, Optional, Sequence, Tuple
 
@@ -170,7 +171,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,
@@ -207,7 +208,7 @@ def cumprod(
 cumprod.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
@@ -376,3 +377,20 @@ def einsum(
 
 
 einsum.support_native_out = True
+
+
+def igamma(
+    a: np.ndarray,
+    /,
+    *,
+    x: np.ndarray,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    def igamma_cal(a, x):
+        t = np.linspace(0, x, 10000, dtype=np.float64)
+        y = np.exp(-t) * (t ** (a - 1))
+        integral = np.trapz(y, t)
+        return np.float32(integral / math.gamma(a))
+
+    igamma_vec = np.vectorize(igamma_cal)
+    return igamma_vec(a, x)

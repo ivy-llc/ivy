@@ -4,6 +4,7 @@ import sys
 from pymongo import MongoClient
 
 submodules = (
+    "test_paddle",
     "test_functional",
     "test_experimental",
     "test_stateful",
@@ -12,7 +13,6 @@ submodules = (
     "test_jax",
     "test_numpy",
     "test_misc",
-    "test_paddle",
     "test_scipy",
 )
 db_dict = {
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     version_flag = sys.argv[4]
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
-    if len(sys.argv) > 7:
+    if len(sys.argv) > 7 and sys.argv[7] != "null":
         run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
@@ -181,28 +181,31 @@ if __name__ == "__main__":
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
-            update_individual_test_results(
-                db[coll[0]], coll[1], submod, backend, test_fn, res
-            )
-            frontend_version = None
-            if (
-                coll[0] == "numpy"
-                or coll[0] == "jax"
-                or coll[0] == "tensorflow"
-                or coll[0] == "torch"
-                or coll[0] == "paddle"
-            ):
-                frontend_version = "latest-stable"
-            update_individual_test_results(
-                db_multi[coll[0]],
-                coll[1],
-                submod,
-                backend,
-                test_fn,
-                res,
-                "latest-stable",
-                frontend_version,
-            )
+            if not with_gpu:
+                update_individual_test_results(
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
+                )
+                frontend_version = None
+                if (
+                    coll[0] == "numpy"
+                    or coll[0] == "jax"
+                    or coll[0] == "tensorflow"
+                    or coll[0] == "torch"
+                    or coll[0] == "paddle"
+                ):
+                    frontend_version = "latest-stable"
+                update_individual_test_results(
+                    db_multi[coll[0]],
+                    coll[1],
+                    submod,
+                    backend,
+                    test_fn,
+                    res,
+                    "latest-stable",
+                    frontend_version,
+                )
+            else:
+                print("GPU Test: Not Updating DB")
 
     try:
         with open("tests_to_remove", "r") as f:

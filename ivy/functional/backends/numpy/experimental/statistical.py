@@ -7,15 +7,15 @@ from . import backend_version
 
 
 @with_unsupported_dtypes(
-    {"1.24.3 and below": ("bfloat16",)},
+    {"1.25.0 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
     a: np.ndarray,
     /,
     *,
-    bins: Optional[Union[int, np.ndarray, str]] = None,
-    axis: Optional[np.ndarray] = None,
+    bins: Optional[Union[int, np.ndarray]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[np.dtype] = None,
@@ -231,3 +231,33 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def cov(
+    x1: np.ndarray,
+    x2: np.ndarray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[np.ndarray] = None,
+    aweights: Optional[np.ndarray] = None,
+    dtype: Optional[np.dtype] = None,
+) -> np.ndarray:
+    if fweights is not None:
+        fweights = fweights.astype(np.int64)
+
+    return np.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
+    )
+
+
+cov.support_native_out = False

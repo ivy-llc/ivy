@@ -120,6 +120,9 @@ def conv2d(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if isinstance(padding, int):
         padding = [(padding, padding)] * 2
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -254,13 +257,14 @@ def conv3d_transpose(
     )
 
 
-def _get_filter_dataformat(dims: int = 2):
+def _get_filter_dataformat(dims: int = 2, filter_format: str = "channel_last"):
+    first = True if filter_format == "channel_first" else False
     if dims == 1:
-        return "WIO"
+        return "WIO" if not first else "OIW"
     if dims == 2:
-        return "HWIO"
+        return "HWIO" if not first else "OIHW"
     elif dims == 3:
-        return "DHWIO"
+        return "DHWIO" if not first else "OIDHW"
 
 
 def conv_general_dilated(
@@ -272,6 +276,7 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
@@ -283,30 +288,37 @@ def conv_general_dilated(
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     if isinstance(padding, int):
         padding = [(padding, padding)] * dims
-    filter_df = _get_filter_dataformat(dims)
+    filter_df = _get_filter_dataformat(dims, filter_format)
     if not len(x_dilations) == x_dilations.count(1):
         new_pad = [0] * dims
-        if data_format == "channel_last":
-            x_shape = list(x.shape[1 : dims + 1])
-        else:
-            x_shape = list(x.shape[2:])
+        x_shape = (
+            list(x.shape[1 : dims + 1])
+            if data_format == "channel_last"
+            else list(x.shape[2:])
+        )
         x_shape = [
             x_shape[i] + (x_shape[i] - 1) * (x_dilations[i] - 1) for i in range(dims)
         ]
-        filter_shape = list(filters.shape[:dims])
-        filter_shape = [
-            filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
-            for i in range(dims)
+        f_shape = (
+            list(filters.shape[:dims])
+            if filter_format == "channel_last"
+            else list(filters.shape[2:])
+        )
+        f_shape = [
+            f_shape[i] + (f_shape[i] - 1) * (dilations[i] - 1) for i in range(dims)
         ]
         if isinstance(padding, str):
             for i in range(dims):
                 new_pad[i] = _handle_padding(
-                    x_shape[i], strides[i], filter_shape[i], padding
+                    x_shape[i], strides[i], f_shape[i], padding
                 )
             padding = [
                 (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
             ]
     df = _get_x_data_format(dims, data_format)
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     res = jlax.conv_general_dilated(
         x,
         filters,

@@ -1,5 +1,4 @@
 # global
-from __future__ import annotations
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
@@ -65,7 +64,6 @@ def vorbis_window(
 @infer_dtype
 def hann_window(
     size: int,
-    /,
     *,
     periodic: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -94,10 +92,10 @@ def hann_window(
 
     Functional Examples
     -------------------
-    >>> ivy.hann_window(4, True)
+    >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
-    >>> ivy.hann_window(7, False)
+    >>> ivy.hann_window(7, periodic = False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
     """
     return ivy.current_backend().hann_window(
@@ -193,18 +191,18 @@ def kaiser_bessel_derived_window(
     >>> ivy.kaiser_bessel_derived_window(5, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
-
     if window_length < 2:
-        return ivy.array([], dtype=dtype)
+        result = ivy.array([], dtype=dtype)
+        if ivy.exists(out):
+            ivy.inplace_update(out, result)
+        return result
     half_len = window_length // 2
     kaiser_w = ivy.kaiser_window(half_len + 1, False, beta, dtype=dtype)
     kaiser_w_csum = ivy.cumsum(kaiser_w)
     half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
     window = ivy.concat((half_w, half_w[::-1]), axis=0)
-    return window.astype(dtype)
-
-
-kaiser_bessel_derived_window.mixed_function = True
+    result = window.astype(dtype)
+    return result
 
 
 @handle_exceptions
@@ -213,7 +211,6 @@ kaiser_bessel_derived_window.mixed_function = True
 @infer_dtype
 def hamming_window(
     window_length: int,
-    /,
     *,
     periodic: bool = True,
     alpha: float = 0.54,
@@ -254,7 +251,6 @@ def hamming_window(
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
-
     if window_length < 2:
         return ivy.ones([window_length], dtype=dtype, out=out)
     if periodic:
@@ -262,12 +258,7 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
-    if ivy.exists(out):
-        ivy.inplace_update(out, result)
     return result
-
-
-hamming_window.mixed_function = True
 
 
 @handle_exceptions
@@ -278,7 +269,6 @@ def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: int = 0,
-    /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
@@ -374,7 +364,6 @@ def tril_indices(
 @infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     k: int = 0,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -546,6 +535,7 @@ def ndindex(
 @handle_exceptions
 def indices(
     dimensions: Sequence,
+    *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:

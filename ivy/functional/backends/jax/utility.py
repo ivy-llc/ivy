@@ -4,6 +4,7 @@ from typing import Union, Optional, Sequence
 
 # local
 from ivy.functional.backends.jax import JaxArray
+import ivy
 
 
 def all(
@@ -15,7 +16,10 @@ def all(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x = jnp.array(x, dtype="bool")
-    return jnp.all(x, axis, keepdims=keepdims)
+    try:
+        return jnp.all(x, axis, keepdims=keepdims)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def any(
@@ -27,4 +31,7 @@ def any(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x = jnp.array(x, dtype="bool")
-    return jnp.any(x, axis, keepdims=keepdims, out=out)
+    try:
+        return jnp.any(x, axis, keepdims=keepdims, out=out)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)

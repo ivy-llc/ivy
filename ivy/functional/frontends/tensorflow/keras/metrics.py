@@ -51,10 +51,16 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     def _in_top_k(targets, predictions, topk):
         # Sanity check
         ivy.utils.assertions.check_equal(
-            targets.ndim, 1, message="targets must be 1-dimensional"
+            targets.ndim,
+            1,
+            message="targets must be 1-dimensional",
+            as_array=False,
         )
         ivy.utils.assertions.check_equal(
-            predictions.ndim, 2, message="predictions must be 2-dimensional"
+            predictions.ndim,
+            2,
+            message="predictions must be 2-dimensional",
+            as_array=False,
         )
         targets_batch = ivy.shape(targets)[0]
         pred_batch = ivy.shape(predictions)[0]
@@ -66,6 +72,7 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
                     pred_batch, targets_batch
                 )
             ),
+            as_array=False,
         )
 
         # return array of top k values from the input

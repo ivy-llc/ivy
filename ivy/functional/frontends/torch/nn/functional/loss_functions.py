@@ -146,9 +146,14 @@ def binary_cross_entropy_with_logits(
     reduction="mean",
     pos_weight=None,
 ):
+    result = ivy.binary_cross_entropy(
+        target,
+        input,
+        reduction="none",
+        from_logits=True,
+        pos_weight=pos_weight,
+    )
     reduction = _get_reduction(reduction, size_average, reduce)
-    result = ivy.binary_cross_entropy_with_logits(target, input, pos_weight=pos_weight)
-
     if weight is not None:
         result = ivy.multiply(weight, result)
     result = reduction(result).astype(target.dtype)

@@ -88,12 +88,6 @@ def test_beta(
     *,
     dtype_and_alpha_beta,
     seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -179,26 +173,21 @@ def test_gamma(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
+        min_value=-2,
         max_value=5,
         min_num_dims=0,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    fill_value=helpers.floats(min_value=0, max_value=1),
     test_gradients=st.just(False),
 )
 def test_poisson(
     *,
     dtype_and_lam,
-    shape,
     dtype,
     seed,
+    fill_value,
     test_flags,
     backend_fw,
     fn_name,
@@ -206,7 +195,6 @@ def test_poisson(
     ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
-    shape = shape + ivy.shape(lam[0])
 
     def call():
         return helpers.test_function(
@@ -218,9 +206,10 @@ def test_poisson(
             fn_name=fn_name,
             test_values=False,
             lam=lam[0],
-            shape=shape,
+            shape=None,
             dtype=dtype[0],
             seed=seed,
+            fill_value=fill_value,
         )
 
     ret, ret_gt = call()

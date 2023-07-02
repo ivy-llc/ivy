@@ -3,6 +3,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
+    handle_array_like_without_promotion,
     handle_nestable,
     infer_dtype,
 )
@@ -22,8 +23,8 @@ def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
-    axis: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    axis: Optional[int] = None,
     extend_lower_interval: Optional[bool] = False,
     extend_upper_interval: Optional[bool] = False,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -423,6 +424,247 @@ def bincount(
     minlength: int = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
+    """
+    Count the number of occurrences of each value in an integer array.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    weights
+        An optional input array.
+    minlength
+        A minimum number of bins for the output array.
+
+    Returns
+    -------
+    ret
+        The bincount of the array elements.
+
+    Examples
+    --------
+    >>> a = ivy.Container([[10.0, ivy.nan, 4], [3, 2, 1]])
+    >>> a.bincount(a)
+        3.0
+    >>> a.bincount(a, axis=0)
+        array([6.5, 2. , 2.5])
+    """
     return ivy.current_backend(x).bincount(
         x, weights=weights, minlength=minlength, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def igamma(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    x: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """
+    Compute the regularized lower gamma function of ``a`` and ``x``.
+
+    Parameters
+    ----------
+    self
+        Input array.
+    x
+        An additional input array.
+        `x` has the same type as `a`.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The lower incomplete gamma function of the array elements.
+
+    Examples
+    --------
+    >>> a = ivy.array([2.5])
+    >>> x = ivy.array([1.7, 1.2])
+    >>> a.igamma(x)
+        ivy.array([0.3614, 0.2085])
+    """
+    return ivy.current_backend().igamma(a, x=x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def nanquantile(
+    a: ivy.Array,
+    q: Union[ivy.Array, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = "linear",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend(a).nanquantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def cov(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray] = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[ivy.Array] = None,
+    aweights: Optional[ivy.Array] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+) -> ivy.Array:
+    """
+    Compute the covariance of matrix x1, or variables x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        a 1D or 2D input array, with a numeric data type.
+    x2
+        optional second 1D or 2D input array, with a numeric data type.
+        Must have the same shape as ``self``.
+    rowVar
+        optional variable where each row of input is interpreted as a variable
+        (default = True). If set to False, each column is instead interpreted
+        as a variable.
+    bias
+        optional variable for normalizing input (default = False) by (N - 1) where
+        N is the number of given observations. If set to True, then normalization
+        is instead by N. Can be overridden by keyword ``ddof``.
+    ddof
+        optional variable to override ``bias`` (default = None). ddof=1 will return
+        the unbiased estimate, even with fweights and aweights given. ddof=0 will
+        return the simple average.
+    fweights
+        optional 1D array of integer frequency weights; the number of times each
+        observation vector should be repeated.
+    aweights
+        optional 1D array of observation vector weights. These relative weights are
+        typically large for observations considered "important" and smaller for
+        observations considered less "important". If ddof=0 is specified, the array
+        of weights can be used to assign probabilities to observation vectors.
+    dtype
+        optional variable to set data-type of the result. By default, data-type
+        will have at least ``numpy.float64`` precision.
+    out
+        optional output array, for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the covariance matrix of an input matrix, or the
+        covariance matrix of two variables. The returned array must have a
+        floating-point data type determined by Type Promotion Rules and must be
+        a square matrix of shape (N, N), where N is the number of variables in the
+        input(s).
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/signatures.linalg.cov.html>`_
+    in the standard.
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
+    >>> y = x.cov()
+    >>> print(y)
+    ivy.array([[ 1.,  1.  ],
+    ...        [ 1.,  1.  ]]
+
+    With :class:`ivy.Container` inputs:
+    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
+    >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
+    >>> z = ivy.Container.static_cov(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([ 1., -1., -1., -1.]
+                     [ 1.,  1., -1., -1.]),
+        b: ivy.array([-1., -1.,  1.,  1.]
+                     [-1.,  1.,  1.,  1.])
+    }
+
+    With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = ivy.Container(a=ivy.array([3. ,2. ,1.]), b=ivy.array([-1., -2., -3.]))
+    >>> z = ivy.cov(x, y)
+    >>> print(z)
+    {
+        a: ivy.array([ 1., -1.]
+                     [-1.,  1.]),
+        b: ivy.array([ 1., -1.]
+                     [-1.,  1.])
+    }
+
+    With :class:`ivy.Array` input and rowVar flag set to False (True by default):
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
+    >>> y = x.cov(rowVar=False)
+    >>> print(y)
+    ivy.array([[ 4.5,  4.5, 4.5 ],
+    ...        [ 4.5,  4.5, 4.5 ],
+    ...        [ 4.5,  4.5, 4.5 ]])
+
+    With :class:`ivy.Array` input and bias flag set to True (False by default):
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
+    >>> y = x.cov(bias=True)
+    >>> print(y)
+    ivy.array([[ 0.6667,  0.6667  ],
+    ...        [ 0.6667,  0.6667  ]]
+
+    With :class:`ivy.Array` input with both fweights and aweights given:
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
+
+    >>> fw = ivy.array([1,2,3])
+    >>> aw = ivy.array([ 1.2, 2.3, 3.4 ])
+    >>> y = x.cov(fweights=fw, aweights=aw)
+    >>> print(y)
+    ivy.array([[ 0.48447205,  0.48447205  ],
+    ...        [ 0.48447205,  0.48447205  ]]
+
+    With :class:`ivy.Array` input with both fweights and aweights given,
+    and rowVar set to False:
+    >>> x = ivy.array([[1,2,3],
+    ...                [4,5,6]])
+
+    >>> fw = ivy.array([1,3])
+    >>> aw = ivy.array([ 1.5, 4 ])
+    >>> y = x.cov(fweights=fw, aweights=aw, rowVar=False)
+    >>> print(y)
+    ivy.array([[ 1.22727273,  1.22727273, 1.22727273 ],
+    ...        [ 1.22727273,  1.22727273, 1.22727273 ],
+    ...        [ 1.22727273,  1.22727273, 1.22727273 ]])
+    """
+    return ivy.current_backend(x1).cov(
+        x1,
+        x2,
+        rowVar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
     )
