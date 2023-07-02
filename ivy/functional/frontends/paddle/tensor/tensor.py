@@ -161,6 +161,10 @@ class Tensor:
     def floor(self, name=None):
         return ivy.floor(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def floor_(self):
+        return ivy.floor(self._ivy_array)
+
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def tanh(self, name=None):
         return ivy.tanh(self._ivy_array)
@@ -379,7 +383,7 @@ class Tensor:
         return paddle_frontend.isclose(
             self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
-    
+
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
