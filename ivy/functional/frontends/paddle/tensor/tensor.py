@@ -379,8 +379,14 @@ class Tensor:
         return paddle_frontend.isclose(
             self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
-    
+
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+    def bincount(self, weights=None, minlength=0, out=None, name=None):
+        return paddle_frontend.bincount(
+            self, weights=weights, minlength=minlength, out=out
+        )
