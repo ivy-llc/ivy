@@ -363,6 +363,9 @@ class Tensor:
     def imag(self, name=None):
         return paddle_frontend.imag(self)
 
+    def is_tensor(self):
+        return paddle_frontend.is_tensor(self._ivy_array)
+
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)

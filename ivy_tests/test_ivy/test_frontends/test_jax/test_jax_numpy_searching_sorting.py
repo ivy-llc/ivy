@@ -128,7 +128,7 @@ def test_jax_numpy_argsort(
 #         fn_tree=fn_tree,
 #         a=x[0],
 #     )
-# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline enabled.
+# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline enabled. # noqa: E501
 
 
 # nonzero
