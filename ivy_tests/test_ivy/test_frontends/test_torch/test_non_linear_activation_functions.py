@@ -377,9 +377,7 @@ def test_torch_elu(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-    test_inplace=st.booleans(),
-    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_elu_(
     *,

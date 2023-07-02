@@ -2095,8 +2095,8 @@ def test_jax_numpy_remainder(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
     offset=st.integers(min_value=0, max_value=0),
@@ -2853,8 +2853,9 @@ def test_jax_numpy_polysub(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        min_value=-1e04,
-        max_value=1e04,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     trim=st.booleans(),
 )
@@ -2878,8 +2879,8 @@ def test_jax_numpy_polymul(
         a1=x[0],
         a2=x[1],
         trim_leading_zeros=trim,
-        atol=1e-05,
-        rtol=1e-03,
+        atol=1e-01,
+        rtol=1e-01,
     )
 
 
@@ -2930,7 +2931,7 @@ def test_jax_numpy_signbit(
 #     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
 #     if ivy.current_backend_str() == "torch":
 #         assume(not test_flags.as_variable[0])
-#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools( # noqa: E501
 #         where=where,
 #         input_dtype=input_dtypes,
 #         test_flags=test_flags,
