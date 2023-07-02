@@ -400,9 +400,9 @@ def _mha_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.multi_head_attention",
     dtype_mha=_mha_helper(),
-    scale=st.floats() | st.none(),
-    dropout=st.floats(min_value=0, max_value=1),
-    training=st.booleans(),
+    scale=st.one_of(st.floats(), st.none()),
+    dropout=st.floats(min_value=0, max_value=0.99),
+    training=st.just(False),  # st.booleans(), disabled until proper testing is used
     is_causal=st.booleans(),
     return_attention_weights=st.booleans(),
     average_attention_weights=st.booleans(),

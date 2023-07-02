@@ -1,7 +1,7 @@
 """Collection of Ivy neural network layers in functional form."""
 
 # global
-from typing import Optional, Tuple, Union, Callable, Sequence
+from typing import Optional, Tuple, Union, Sequence
 
 # local
 import ivy
@@ -22,6 +22,7 @@ from ivy.utils.exceptions import handle_exceptions
 # Extra #
 # ------#
 
+
 def _in_projection(
     q,
     k,
@@ -32,7 +33,9 @@ def _in_projection(
     """
     Projects query, key and value effeciently, depending on whether we are doing self-
     attention (query is key is value) or cross-attention (key is value) or an attention
-    where query, key and value are all diferrent. it is only used in
+    where query, key and value are all diferrent.
+
+    it is only used in
     multi_head_attention layer.
     This helper function is a modified version of https://github.com/pytorch/pytorch/b
     lob/5293dee9208cc0e1e7db2ebdcbaef64908c087c6/torch/nn/functional.py#L4762.
@@ -66,7 +69,8 @@ def _in_projection(
             ivy.linear(k, w_k, bias=b_k),
             ivy.linear(v, w_v, bias=b_v),
         )
-    
+
+
 # Linear #
 @handle_exceptions
 @handle_nestable
@@ -619,7 +623,7 @@ def scaled_dot_product_attention(
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_out_argument
-#@handle_array_like_without_promotion
+# @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
 def multi_head_attention(
@@ -650,18 +654,15 @@ def multi_head_attention(
     attention as described in the paper "Attention is all you Need" (Vaswani et al.,
     2017). If `query`, `key`, `value` are the same, then this is self-attention. Each
     timestep in `query` attends to the corresponding sequence in `key`, and returns a
-    fixed-width vector.
-    This layer first projects `query`, `key` and `value`. These are
+    fixed-width vector. This layer first projects `query`, `key` and `value`. These are
     (effectively) a list of tensors of length `num_attention_heads`, where the
-    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`,
-    `(batch_size, <key/value dimensions>, key_dim)`,
-    `(batch_size, <key/value dimensions>, value_dim)`.
-    Then, the query and key tensors are dot-producted and scaled. These are
-    softmaxed to obtain attention probabilities. The value tensors are then
-    interpolated by these probabilities, then concatenated back to a single
-    tensor.
-    Finally, the result tensor with the last dimension as value_dim can take an
-    linear projection and return.
+    corresponding shapes are `(batch_size, <query dimensions>, key_dim)`, `(batch_size,
+    <key/value dimensions>, key_dim)`, `(batch_size, <key/value dimensions>,
+    value_dim)`. Then, the query and key tensors are dot-producted and scaled. These are
+    softmaxed to obtain attention probabilities. The value tensors are then interpolated
+    by these probabilities, then concatenated back to a single tensor. Finally, the
+    result tensor with the last dimension as value_dim can take an linear projection and
+    return.
 
     Parameters
     ----------
@@ -789,12 +790,12 @@ def multi_head_attention(
         attention_out = ivy.linear(attention_out, out_proj_weights, bias=out_proj_bias)
     # if input was unbatched, unbatchify the output
     if num_dims == 2:
-        attention_out = attention_out.squeeze(0)
+        attention_out = attention_out.squeeze(axis=0)
     if return_attention_weights:
         if average_attention_weights:
             attn_weights = attn_weights.mean(axis=1)
             if num_dims == 2:
-                attn_weights = attn_weights.squeeze(0)
+                attn_weights = attn_weights.squeeze(axis=0)
         return attention_out, attn_weights
     else:
         return attention_out
