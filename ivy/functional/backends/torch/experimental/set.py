@@ -13,12 +13,12 @@ from . import backend_version
     backend_version,
 )
 def intersection(
-        x1: torch.Tensor,
-        x2: torch.Tensor,
-        /,
-        *,
-        assume_unique: bool = False,
-        return_indices: bool = False,
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    return_indices: bool = False,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     x1 = torch.reshape(x1, [-1])
     x2 = torch.reshape(x2, [-1])

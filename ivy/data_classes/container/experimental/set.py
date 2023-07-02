@@ -9,27 +9,28 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithSetExperimental(ContainerBase):
     @staticmethod
     def static_intersection(
-            x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            assume_unique: bool = False,
-            return_indices: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        assume_unique: bool = False,
+        return_indices: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.intersection. This method simply wraps the
-        function, and so the docstring for ivy.intersection also applies to this method with
-        minimal changes.
+        ivy.Container static method variant of ivy.intersection. This method simply
+        wraps the function, and so the docstring for ivy.intersection also applies to
+        this method with minimal changes.
 
         Examples
         --------
         With one :class:`ivy.Container` input:
         >>> x = ivy.array([1., 2., 6.])
-        >>> y = ivy.Container(a=ivy.array([3. ,2. ,1., .9]), b=ivy.array([1., 2., 3., 6.]))
+        >>> y = ivy.Container(a=ivy.array([3. ,2. ,1., .9]),
+        ...                   b=ivy.array([1., 2., 3., 6.]))
         >>> z = ivy.Container.static_intersection(x, y)
         >>> print(z)
         {
@@ -37,8 +38,10 @@ class _ContainerWithSetExperimental(ContainerBase):
             b: ivy.array([1., 2., 6.])
         }
         With multiple :class:`ivy.Container` inputs:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 9]), b=ivy.array([1, 2, 3, 6]))
-        >>> y = ivy.Container(a=ivy.array([4, 2, 1, 8]), b=ivy.array([3, 5, 1, 4]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 9]),
+        ...                   b=ivy.array([1, 2, 3, 6]))
+        >>> y = ivy.Container(a=ivy.array([4, 2, 1, 8]),
+        ...                   b=ivy.array([3, 5, 1, 4]))
         >>> z = ivy.Container.static_intersection(x, y)
         >>> print(z)
         {
@@ -59,26 +62,28 @@ class _ContainerWithSetExperimental(ContainerBase):
         )
 
     def intersection(
-            self: ivy.Container,
-            x2,
-            /,
-            *,
-            assume_unique: bool = False,
-            return_indices: bool = False,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
+        self: ivy.Container,
+        x2,
+        /,
+        *,
+        assume_unique: bool = False,
+        return_indices: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.intersection. This method simply wraps the
-        function, and so the docstring for ivy.intersection also applies to this method with
-        minimal changes.
+        ivy.Container instance method variant of ivy.intersection. This method simply
+        wraps the function, and so the docstring for ivy.intersection also applies to
+        this method with minimal changes.
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 5]), b=ivy.array([4, 9, 1, 3]))
-        >>> y = ivy.Container(a=ivy.array([6, 0, 1, 5]), b=ivy.array([1, 2, 6, 9]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, 5]),
+        ...                   b=ivy.array([4, 9, 1, 3]))
+        >>> y = ivy.Container(a=ivy.array([6, 0, 1, 5]),
+        ...                   b=ivy.array([1, 2, 6, 9]))
         >>> z = x.intersection(y)
         >>> print(z)
         {

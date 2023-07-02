@@ -19,17 +19,17 @@ from ivy_tests.test_ivy.helpers import handle_test
     return_indices=st.booleans(),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
-    ground_truth_backend="numpy"
+    ground_truth_backend="numpy",
 )
 def test_intersection(
-        dtype_and_x,
-        assume_unique,
-        return_indices,
-        test_flags,
-        backend_fw,
-        fn_name,
-        on_device,
-        ground_truth_backend,
+    dtype_and_x,
+    assume_unique,
+    return_indices,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(

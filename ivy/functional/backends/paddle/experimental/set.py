@@ -7,15 +7,16 @@ from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex", "int8", "uint8", "int16", "float16")}}, backend_version
+    {"2.4.2 and below": {"cpu": ("complex", "int8", "uint8", "int16", "float16")}},
+    backend_version,
 )
 def intersection(
-        x1: paddle.Tensor,
-        x2: paddle.Tensor,
-        /,
-        *,
-        assume_unique: bool = False,
-        return_indices: bool = False,
+    x1: paddle.Tensor,
+    x2: paddle.Tensor,
+    /,
+    *,
+    assume_unique: bool = False,
+    return_indices: bool = False,
 ) -> paddle.Tensor:
     x1 = paddle.reshape(x1, [-1])
     x2 = paddle.reshape(x2, [-1])
@@ -49,6 +50,10 @@ def intersection(
         if not assume_unique:
             ar1_indices = paddle.gather(ind1, ar1_indices)
             ar2_indices = paddle.gather(ind2, ar2_indices)
-        return int1d, paddle.cast(ar1_indices, paddle.int64), paddle.cast(ar2_indices, paddle.int64)
+        return (
+            int1d,
+            paddle.cast(ar1_indices, paddle.int64),
+            paddle.cast(ar2_indices, paddle.int64),
+        )
     else:
         return int1d
