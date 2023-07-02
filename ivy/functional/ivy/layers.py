@@ -8,6 +8,7 @@ import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
     handle_array_function,
+    handle_partial_mixed_function,
     inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     inputs_to_native_shapes,
@@ -69,6 +70,7 @@ def _in_projection(
 # Linear #
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -216,7 +218,7 @@ linear.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
@@ -225,6 +227,7 @@ linear.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
@@ -401,7 +404,7 @@ dropout.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
