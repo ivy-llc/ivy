@@ -9,7 +9,15 @@ Should not be used inside any of the test functions.
 from dataclasses import dataclass
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
+available_frameworks = [
+    "numpy",
+    "jax",
+    "tensorflow",
+    "torch",
+    "paddle",
+    "mxnet",
+    "mindspore",
+]
 FWS_DICT = {
     "": lambda: None,
 }
