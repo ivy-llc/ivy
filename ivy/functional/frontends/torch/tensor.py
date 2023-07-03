@@ -552,7 +552,7 @@ class Tensor:
         if args and size:
             raise TypeError("expand() got multiple values for argument 'size'")
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 size = args[0]
             else:
                 size = args
@@ -605,6 +605,9 @@ class Tensor:
     def dim(self):
         return self.ivy_array.ndim
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
     def heaviside(self, values, *, out=None):
         return torch_frontend.heaviside(self, values, out=out)
 
@@ -750,7 +753,7 @@ class Tensor:
         return torch_frontend.flatten(self, start_dim, end_dim)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
-    def cumsum(self, dim, dtype):
+    def cumsum(self, dim, *, dtype=None):
         return torch_frontend.cumsum(self, dim, dtype=dtype)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
@@ -1112,6 +1115,10 @@ class Tensor:
         return torch_frontend.less(self, other)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def __le__(self, other):
+        return torch_frontend.less_equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def __or__(self, other):
         return torch_frontend.bitwise_or(self, other)
 
@@ -1309,10 +1316,14 @@ class Tensor:
     def greater(self, other, *, out=None):
         return torch_frontend.greater(self, other, out=out)
 
+    gt = greater
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_(self, other):
         self.ivy_array = ivy.astype(self.greater(other).ivy_array, self.dtype)
         return self
+
+    gt_ = greater_
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
@@ -1320,10 +1331,44 @@ class Tensor:
     def greater_equal(self, other, *, out=None):
         return torch_frontend.greater_equal(self, other, out=out)
 
+    ge = greater_equal
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
     def greater_equal_(self, other):
         self.ivy_array = ivy.astype(self.greater_equal(other).ivy_array, self.dtype)
         return self
+
+    ge_ = greater_equal_
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def less(self, other, *, out=None):
+        return torch_frontend.less(self, other, out=out)
+
+    lt = less
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def less_(self, other):
+        self.ivy_array = ivy.astype(self.less(other).ivy_array, self.dtype)
+        return self
+
+    lt_ = less_
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("complex", "bfloat16", "bool")}, "torch"
+    )
+    def less_equal(self, other, *, out=None):
+        return torch_frontend.less_equal(self, other, out=out)
+
+    le = less_equal
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "bool")}, "torch")
+    def less_equal_(self, other):
+        self.ivy_array = ivy.astype(self.less_equal(other).ivy_array, self.dtype)
+        return self
+
+    le_ = less_equal_
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def eq_(self, other):
@@ -1375,6 +1420,10 @@ class Tensor:
             tensor1=tensor1, tensor2=tensor2, value=value
         ).ivy_array
         return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def cholesky(self, upper=False):
+        return torch_frontend.cholesky(self, upper=upper)
 
 
 class Size(tuple):
