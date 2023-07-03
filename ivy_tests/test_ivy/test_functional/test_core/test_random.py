@@ -70,7 +70,7 @@ def test_random_uniform(
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
 
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
 
@@ -133,7 +133,7 @@ def test_random_normal(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
 
@@ -167,6 +167,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_multinomial(
     *,
@@ -210,7 +211,7 @@ def test_multinomial(
 
     ret_np = helpers.flatten_and_to_np(ret=ret_np)
     ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
-    for (u, v) in zip(ret_np, ret_from_np):
+    for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
 
@@ -280,7 +281,7 @@ def test_randint(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= low) and ivy.all(u < high)
         assert ivy.all(v >= low) and ivy.all(v < high)
 
@@ -305,12 +306,14 @@ def test_seed(seed_val):
         min_dim_size=2,
     ),
     seed=helpers.ints(min_value=0, max_value=100),
+    axis=helpers.ints(min_value=0, max_value=0),
     test_gradients=st.just(False),
 )
 def test_shuffle(
     *,
     dtype_and_x,
     seed,
+    axis,
     test_flags,
     backend_fw,
     fn_name,
@@ -329,6 +332,7 @@ def test_shuffle(
             fn_name=fn_name,
             test_values=False,
             x=x[0],
+            axis=axis,
             seed=seed,
         )
 
@@ -338,5 +342,5 @@ def test_shuffle(
         assert ivy.any(ret == ret1)
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
+    for u, v in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))

@@ -1,7 +1,7 @@
 # global
 import os
 import redis
-from hypothesis import settings, HealthCheck
+from hypothesis import settings, HealthCheck, Phase
 from hypothesis.database import (
     MultiplexedDatabase,
     ReadOnlyDatabase,
@@ -66,6 +66,17 @@ def pytest_addoption(parser):
         type=str,
         help="ivy traceback",
     )
+    parser.addoption(
+        "-R",
+        "--robust",
+        action="store_true",
+        default=False,
+        help=(
+            "Disable Hypothesis Shrinking. Allow all Hypothesis HealthChecks."
+            "Disabling the HealthChecks will most likely introduce new failures, "
+            "this mode should be only used during development on the testing pipeline."
+        ),
+    )
 
 
 def pytest_configure(config):
@@ -113,4 +124,23 @@ def pytest_configure(config):
         suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
         print_blob=True,
     )
-    settings.load_profile("ivy_profile")
+
+    settings.register_profile(
+        "robust",
+        phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.target],
+    )
+
+    settings.register_profile(
+        "diff",
+        database=None,
+        derandomize=True,
+        max_examples=100,
+        deadline=5000,
+        phases=[Phase.generate],
+        suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
+    )
+
+    if getopt("robust"):
+        settings.load_profile("robust")
+    else:
+        settings.load_profile("ivy_profile")

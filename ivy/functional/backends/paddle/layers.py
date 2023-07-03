@@ -4,15 +4,15 @@ from typing import Optional, Tuple, Union, Sequence
 
 # global
 import paddle
+import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
+import ivy.functional.backends.paddle as paddle_backend
 
 # local
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.utils.exceptions import IvyNotImplementedException
 
 from . import backend_version
-from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
-from ivy.functional.backends import paddle as pd_backend
 
 
 def _is_list_or_tuple(inp):
@@ -53,19 +53,22 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
         padding[::2] = padding_top
         padding[1::2] = padding_bot
 
-    elif (
-        _is_list_or_tuple(padding)
-        and len(padding) == dims
-        and _is_list_or_tuple(padding[0])
-    ):
-        # Case 2: [(pad_left, pad_right), (pad_top, pad_bottom)...]
-        padding = [item for sublist in padding for item in sublist[::-1]][::-1]
     else:
-        raise ValueError(f"Invalid padding format: {padding}")
+        if isinstance(padding, int):
+            padding = [(padding, padding)] * dims
+        if (
+            _is_list_or_tuple(padding)
+            and len(padding) == dims
+            and _is_list_or_tuple(padding[0])
+        ):
+            # Case 2: [(pad_left, pad_right), (pad_top, pad_bottom)...]
+            padding = [item for sublist in padding for item in sublist[::-1]][::-1]
+        else:
+            raise ValueError(f"Invalid padding format: {padding}")
 
     if not all([p >= 0 for p in padding]):
         raise ValueError(
-            f"Invalid padding, all values should be larger than"
+            "Invalid padding, all values should be larger than"
             f"or equal to 0, but received: {padding}."
         )
 
@@ -78,7 +81,7 @@ def conv1d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -109,7 +112,7 @@ def conv2d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -140,7 +143,7 @@ def depthwise_conv2d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: Optional[str] = "NHWC",
@@ -150,12 +153,15 @@ def depthwise_conv2d(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv3d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: Optional[str] = "NDHWC",
@@ -200,16 +206,20 @@ def conv3d_transpose(
     raise IvyNotImplementedException()
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16",)}, backend_version)
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv_general_dilated(
     x: paddle.Tensor,
     filters: paddle.Tensor,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: Optional[int] = 2,
     data_format: Optional[str] = "channel_last",
+    filter_format: Optional[str] = "channel_last",
     feature_group_count: Optional[int] = 1,
     x_dilations: Optional[
         Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
@@ -223,6 +233,9 @@ def conv_general_dilated(
     if data_format == "channel_first":
         x = paddle.transpose(x, perm=(0, *range(2, dims + 2), 1))
 
+    if filter_format == "channel_first":
+        filters = paddle.transpose(filters, (*range(2, dims + 2), 1, 0))
+
     # adding dilation in input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
     for i in range(dims):
@@ -230,9 +243,9 @@ def conv_general_dilated(
             h = x.shape[1 + i]
             new_height = h + (h - 1) * (x_dilations[i] - 1)
             h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = pd_backend.swapaxes(x, 1 + i, -1)
+            x = paddle_backend.swapaxes(x, 1 + i, -1)
             x = paddle.matmul(x, h)
-            x = pd_backend.swapaxes(x, -1, 1 + i)
+            x = paddle_backend.swapaxes(x, -1, 1 + i)
 
     df = "NLC" if dims == 1 else _get_x_data_format(dims, data_format="channel_last")
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations, df)

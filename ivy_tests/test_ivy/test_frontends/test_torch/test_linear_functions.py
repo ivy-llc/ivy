@@ -49,7 +49,6 @@ def test_linear(
     frontend,
     test_flags,
 ):
-
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_frontend_function(
         input_dtypes=dtype,

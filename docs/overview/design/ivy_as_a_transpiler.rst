@@ -15,7 +15,7 @@ This is in keeping with the rest of the documentation.
    :width: 100%
 
 Frontend Functional APIs 🚧
-------------------------
+---------------------------
 
 While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
 But with frontend APIs, we can also achieve this!
@@ -165,7 +165,7 @@ Again, by chaining these methods together, we can now call :func:`tf.math.cumpro
    ret = tf.math.cumprod(x, -1)
 
 Role of the Graph Compiler 🚧
--------------------------
+-----------------------------
 
 The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph compiler plays a vital role.
 The graph compiler can convert any code into its constituent functions at the functional API level for any ML framework.
@@ -210,7 +210,7 @@ In this case, this means the learnable weights in the Module will be treated as 
 This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
 
 Converting Network Models 🚧
--------------------------
+----------------------------
 
 In order to convert a model from PyTorch to JAX, we first must convert the :class:`torch.nn.Module` instance to an :class:`ivy.Module` instance using the method :func:`ivy.to_ivy_module` like so:
 

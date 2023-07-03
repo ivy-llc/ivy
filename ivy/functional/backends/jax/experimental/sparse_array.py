@@ -27,7 +27,6 @@ def native_sparse_array(
     dense_shape=None,
     format="coo"
 ):
-
     ivy.utils.assertions.check_exists(
         data,
         inverse=True,

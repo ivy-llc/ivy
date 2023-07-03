@@ -56,7 +56,7 @@ def conv1d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -65,6 +65,8 @@ def conv1d(
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)]
     return jlax.conv_general_dilated(
         x, filters, strides, padding, None, dilations, (data_format, "WIO", data_format)
     )
@@ -107,7 +109,7 @@ def conv2d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -116,6 +118,11 @@ def conv2d(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 2
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -164,7 +171,7 @@ def depthwise_conv2d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
@@ -174,6 +181,8 @@ def depthwise_conv2d(
     strides = [strides] * 2 if isinstance(strides, int) else strides
     strides = [strides[1], strides[2]] if len(strides) == 4 else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 2
     filters = jnp.squeeze(filters, 3) if filters.ndim == 4 else filters
     cn = filters.shape[-1]
     filters = jnp.expand_dims(filters, -2)
@@ -193,7 +202,7 @@ def conv3d(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
@@ -202,6 +211,8 @@ def conv3d(
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * 3
     return jlax.conv_general_dilated(
         x,
         filters,
@@ -246,24 +257,26 @@ def conv3d_transpose(
     )
 
 
-def _get_filter_dataformat(dims: int = 2):
+def _get_filter_dataformat(dims: int = 2, filter_format: str = "channel_last"):
+    first = True if filter_format == "channel_first" else False
     if dims == 1:
-        return "WIO"
+        return "WIO" if not first else "OIW"
     if dims == 2:
-        return "HWIO"
+        return "HWIO" if not first else "OIHW"
     elif dims == 3:
-        return "DHWIO"
+        return "DHWIO" if not first else "OIDHW"
 
 
 def conv_general_dilated(
     x: JaxArray,
     filters: JaxArray,
     strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
-    padding: Union[str, Sequence[Tuple[int, int]]],
+    padding: Union[str, int, Sequence[Tuple[int, int]]],
     /,
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    filter_format: str = "channel_last",
     feature_group_count: int = 1,
     x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
@@ -273,30 +286,39 @@ def conv_general_dilated(
     strides = [strides] * dims if isinstance(strides, int) else strides
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    filter_df = _get_filter_dataformat(dims)
+    if isinstance(padding, int):
+        padding = [(padding, padding)] * dims
+    filter_df = _get_filter_dataformat(dims, filter_format)
     if not len(x_dilations) == x_dilations.count(1):
         new_pad = [0] * dims
-        if data_format == "channel_last":
-            x_shape = list(x.shape[1 : dims + 1])
-        else:
-            x_shape = list(x.shape[2:])
+        x_shape = (
+            list(x.shape[1 : dims + 1])
+            if data_format == "channel_last"
+            else list(x.shape[2:])
+        )
         x_shape = [
             x_shape[i] + (x_shape[i] - 1) * (x_dilations[i] - 1) for i in range(dims)
         ]
-        filter_shape = list(filters.shape[:dims])
-        filter_shape = [
-            filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
-            for i in range(dims)
+        f_shape = (
+            list(filters.shape[:dims])
+            if filter_format == "channel_last"
+            else list(filters.shape[2:])
+        )
+        f_shape = [
+            f_shape[i] + (f_shape[i] - 1) * (dilations[i] - 1) for i in range(dims)
         ]
         if isinstance(padding, str):
             for i in range(dims):
                 new_pad[i] = _handle_padding(
-                    x_shape[i], strides[i], filter_shape[i], padding
+                    x_shape[i], strides[i], f_shape[i], padding
                 )
             padding = [
                 (new_pad[i] // 2, new_pad[i] - new_pad[i] // 2) for i in range(dims)
             ]
     df = _get_x_data_format(dims, data_format)
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     res = jlax.conv_general_dilated(
         x,
         filters,

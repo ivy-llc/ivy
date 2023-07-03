@@ -109,7 +109,7 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[np.dtype] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None and not ivy.is_bool_dtype(x):
@@ -170,7 +170,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"1.25.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,

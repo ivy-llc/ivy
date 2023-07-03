@@ -12,7 +12,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 @handle_frontend_test(
     fn_tree="jax.numpy.allclose",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -369,7 +369,7 @@ def test_jax_numpy_not_equal(
 # all
 @handle_frontend_test(
     fn_tree="jax.numpy.all",
-    aliases=["jax.numpy.alltrue"],
+    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
@@ -509,9 +509,9 @@ def test_jax_numpy_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
-    aliases=["jax.numpy.sometrue"],
+    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         max_axes_size=1,
         force_int_axis=True,
@@ -773,7 +773,8 @@ def test_jax_numpy_isscalar(
 @handle_frontend_test(
     fn_tree="jax.numpy.left_shift",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
     ),
 )
 def test_jax_numpy_left_shift(
@@ -791,7 +792,8 @@ def test_jax_numpy_left_shift(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        x1=x[0],
+        x2=x[1],
     )
 
 

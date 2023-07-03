@@ -1,46 +1,87 @@
-FROM ubuntu:20.04
+# uses the base image which has cuda and cudnn installed(multiple versions) and then installs the
+# latest frameworks and the requirements
+FROM unifyai/multicuda:base
 WORKDIR /ivy
-ARG cuda=["11.2"]
+ARG fw
 
-COPY ../docker/multicuda_framework_directory.py .
-COPY ../docker/multicuda_requirements.txt .
+ARG pycon=3.10
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Moscow
-RUN \
-    apt-get -y update && \
-    apt-get install -y gnupg  \
-    curl  \
-    wget  \
-    software-properties-common  \
-    gcc  \
-    nano \
-    pip && \
-    distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
-      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey |  gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-             tee /etc/apt/sources.list.d/nvidia-container-toolkit.list  &&\
 
-    apt-get update && apt-get  install -y nvidia-container-toolkit
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda/
 
-# don't install requirements immediately
-#    pip3 install --upgrade pip && \
-#    pip3 install --no-cache-dir   -r multicuda_requirements.txt &&\
-#    pip3 uninstall -y torch &&\
-#    pip3 uninstall -y tensorflow &&\
-#    pip3 uninstall -y numpy &&\
-#    pip3 uninstall -y jax
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget && \
+    apt-get install -y jq && \
+    apt-get install git -y && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
 
-## below code is for installing cuda directly through commandline ##
-#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb &&\
-#    dpkg -i cuda-keyring_1.0-1_all.deb
-#
-#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin && \
-#    mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600 &&\
-#    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub &&\
-#    add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
-#
-#RUN apt-get update && \
-#    for i in $cuda; do apt-get install -y cuda-$i; done
 
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda create --name multienv python==$pycon -y
+
+# to fix protobuf conflicts
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install setuptools==58.5.3
+
+
+# Install Ivy Upstream
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+    cd ivy && \
+    cd ivy_tests/array_api_testing/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+# Install local optional
+COPY /docker/multicuda_framework_directory.py .
+COPY requirements/optional_gpu.txt .
+COPY requirements/requirements.txt .
+
+
+#setting torch path early on because torch-scatter needs it
+ENV PYTHONPATH "/opt/fw/torch:/opt/miniconda/envs/multienv/bin"
+
+# requirement mappings directs which dependency to be installed and where
+COPY /docker/requirement_mappings_gpu.json .
+SHELL ["/bin/bash", "-c"]
+
+
+
+RUN python3 multicuda_framework_directory.py $fw &&\
+    jq -r 'to_entries[] | select(.value != [""]) | .key as $dir | .value[] | @sh "/opt/fw/\($dir) \(.)"' requirement_mappings_gpu.json | xargs -I {} sh -c 'printf "Installing %s\n" $2 && pip install --ignore-installed --target $1 $2' sh {}
+
+
+
+RUN sed -i '/numpy/d' requirements.txt &&\
+    pip install -r  requirements.txt &&\
+    cp ./optional_gpu.txt tmp.txt  &&\
+    jq -r 'to_entries[] | [.key] + .value | select(length > 0 or (. == "")) | .[]' requirement_mappings_gpu.json | sort -u | xargs -I {} sed -i '/{}/d;/jaxlib/d' tmp.txt && pip install -r tmp.txt
+
+
+
+
+# add all the directories to environment path so that python knows where to find them
+ENV PYTHONPATH "/opt/fw/mxnet:/opt/fw/numpy:/opt/fw/jax:/opt/fw/torch:/opt/fw/tensorflow:/opt/fw/paddle:/opt/miniconda/envs/multienv/bin"
+
+
+
+
+
+COPY run_tests_CLI/test_dependencies.py .
+RUN python3 test_dependencies.py -fp requirements.txt,optional_gpu.txt && \
+    rm -rf requirements.txt && \
+    rm -rf tmp.txt && \
+    rm -rf optional_gpu.txt && \
+    rm -rf test_dependencies.py

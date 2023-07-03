@@ -4,7 +4,6 @@ import tensorflow as tf
 backend_version = {"version": tf.__version__}
 
 
-# flake8: noqa
 from .activations import *
 from .creation import *
 from .data_type import *

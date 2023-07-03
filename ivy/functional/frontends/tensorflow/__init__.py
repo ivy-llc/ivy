@@ -1,7 +1,10 @@
-# flake8: noqa
+# global
+import sys
+
 # local
-from ivy.utils.exceptions import handle_exceptions
 import ivy
+from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from numbers import Number
 from typing import Union, Tuple, Iterable
 from .dtypes import DType
@@ -51,9 +54,9 @@ half = float16
 @handle_exceptions
 def check_tensorflow_casting(x1, x2):
     """
-    Checks whether the two arguments provided in the function have the same dtype,
-    unless one of them is an array_like or scalar,
-    where it gets casted to the other input's dtype
+    Check whether the two arguments provided in the function have the same dtype, unless
+    one of them is an array_like or scalar, where it gets casted to the other input's
+    dtype.
 
     Parameters
     ----------
@@ -68,7 +71,6 @@ def check_tensorflow_casting(x1, x2):
         First tensor promoted accordingly.
     x2
         Second tensor promoted accordingly.
-
     """
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
         x1 = ivy.asarray(x1)
@@ -107,4 +109,10 @@ from . import sets
 from . import signal
 from . import sparse
 
+
 _frontend_array = constant
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

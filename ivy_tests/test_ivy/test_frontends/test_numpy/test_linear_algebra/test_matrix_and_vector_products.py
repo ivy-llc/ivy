@@ -78,12 +78,112 @@ def test_numpy_inner(
     )
 
 
+# cross
+@st.composite
+def dtype_value1_value2_axis(
+    draw,
+    available_dtypes,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+    specific_dim_size=3,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
+):
+    # Taken from functional helpers
+    # For cross product, a dim with size 3 is required
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    axis = draw(helpers.ints(min_value=0, max_value=len(shape)))
+    # make sure there is a dim with specific dim size
+    shape = list(shape)
+    shape = shape[:axis] + [specific_dim_size] + shape[axis:]
+    shape = tuple(shape)
+
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+    return [dtype], value1, value2, axis
+
+
+@handle_frontend_test(
+    fn_tree="numpy.cross",
+    dtype_x1_x2_axis=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=3,
+        max_dim_size=3,
+        min_value=-1e5,
+        max_value=1e5,
+        abs_smallest_val=0.01,
+        safety_factor_scale="log",
+    ),
+    test_with_out=st.just(True),
+)
+def test_numpy_cross(
+    *,
+    dtype_x1_x2_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtypes, x1, x2, axis = dtype_x1_x2_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        a=x1,
+        b=x2,
+        axis=axis,
+    )
+
+
 # matmul
 @handle_frontend_test(
     fn_tree="numpy.matmul",
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
-        get_dtypes_kind="numeric",
     ),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
         fn_name="matmul"

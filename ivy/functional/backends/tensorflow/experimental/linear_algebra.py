@@ -1,6 +1,6 @@
 from typing import Union, Optional, Tuple, List, Sequence
 import tensorflow as tf
-from functools import reduce
+from functools import reduce as _reduce
 
 import ivy
 
@@ -11,7 +11,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.12.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -125,7 +125,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.9.1": (
+        "2.12.0": (
             "bfloat16",
             "float16",
             "float32",
@@ -146,7 +146,7 @@ def multi_dot(
     # TODO: reimplement this function once tf adds multi_dot or inplace updates
     if len(x) < 2:
         raise ValueError("Expecting at least two tensors.")
-    dot_out = reduce(tf.matmul, x)
+    dot_out = _reduce(tf.matmul, x)
     return dot_out
 
 

@@ -1,5 +1,3 @@
-# flake8: noqa
-
 from . import convolution_functions
 from .convolution_functions import *
 from . import distance_functions
@@ -18,3 +16,5 @@ from . import sparse_functions
 from .sparse_functions import *
 from . import vision_functions
 from .vision_functions import *
+from . import norms
+from .norms import *

@@ -32,9 +32,9 @@ for backend in os.listdir(
     for sub_backend in os.listdir(sub_backends_dir):
         if sub_backend.startswith("__"):
             continue
-        _sub_backend_dict[
-            sub_backend
-        ] = f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+        _sub_backend_dict[sub_backend] = (
+            f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
+        )
         try:
             _backend_to_sub_backends_dict[backend].append(sub_backend)
         except KeyError:
@@ -57,21 +57,21 @@ def set_sub_backend(sub_backend_str: str):
 
     if ivy.current_backend_str() not in _backend_to_sub_backends_dict.keys():
         logging.warn(
-            f"backend {ivy.current_backend_str()}\
-                  does not have any supported sub_backends"
+            f"backend {ivy.current_backend_str()} does not have any"
+            " supported sub_backends"
         )
         return
 
     if sub_backend_str not in _all_sub_backends:
         raise IvyException(
-            f"sub_backend must be one from\
-                  {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"
+            "sub_backend must be one from"
+            f" {_backend_to_sub_backends_dict[ivy.current_backend_str()]}"
         )
 
     if sub_backend_str not in _backend_to_sub_backends_dict[ivy.current_backend_str()]:
         logging.warn(
-            f"{ivy.current_backend_str()} does not support\
-                  {sub_backend_str} as a sub_backend"
+            f"{ivy.current_backend_str()} does not support"
+            f" {sub_backend_str} as a sub_backend"
         )
         return
 

@@ -47,20 +47,22 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array ``x``.
+    """Calculate the minimum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the minimum value is zero, the
        minimum value is implementation-defined. Specification-compliant libraries may
-       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point
-       input array, return ``NaN``), or return the maximum possible value for the input array ``x``
-       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a
+       floating-point input array, return ``NaN``), or return the maximum possible value
+       for the input array ``x`` data type (e.g., if ``x`` is a floating-point array,
+       return ``+infinity``).
 
     **Special Cases**
 
     For floating-point operands,
 
-    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -72,10 +74,11 @@ def min(
         minimum values must be computed over multiple axes. Default: ``None``.
 
     keepdims
-        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
-        result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
-        (dimensions) must not be included in the result. Default: ``False``.
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included
+        in the result as singleton dimensions, and, accordingly, the result must be
+        compatible with the input array (see :ref:`broadcasting`). Otherwise,
+        if ``False``, the reduced axes (dimensions) must not be included in the result.
+        Default: ``False``.
     out
         optional output array, for writing the result to.
 
@@ -90,7 +93,8 @@ def min(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.min.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -149,7 +153,7 @@ def max(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the maximum value of the input array ``x``.
+    """Calculate the maximum value of the input array ``x``.
 
     .. note::
        When the number of elements over which to compute the maximum value is zero, the
@@ -193,7 +197,8 @@ def max(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.max.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.max.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -257,7 +262,7 @@ def mean(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the arithmetic mean of the input array ``x``.
+    """Calculate the arithmetic mean of the input array ``x``.
 
     **Special Cases**
 
@@ -366,7 +371,8 @@ def prod(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product of input array x elements.
+    """
+    Calculate the product of input array x elements.
 
     Parameters
     ----------
@@ -410,7 +416,8 @@ def prod(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.prod.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.prod.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -488,14 +495,16 @@ def std(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the standard deviation of the input array ``x``.
+    """Calculate the standard deviation of the input array ``x``.
 
     **Special Cases**
 
     Let ``N`` equal the number of elements over which to compute the standard deviation.
 
-    -   If ``N - correction`` is less than or equal to ``0``, the standard deviation is ``NaN``.
-    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN`` (i.e., ``NaN`` values propagate).
+    -   If ``N - correction`` is less than or equal to ``0``,
+        the standard deviation is ``NaN``.
+    -   If ``x_i`` is ``NaN``, the standard deviation is ``NaN``
+        (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
@@ -507,16 +516,17 @@ def std(
         integers, standard deviations must be computed over multiple axes.
         Default: ``None``.
     correction
-        degrees of freedom adjustment. Setting this parameter to a value other than ``0``
-        has the effect of adjusting the divisor during the calculation of the standard
-        deviation according to ``N-c`` where ``N`` corresponds to the total number of
-        elements over which the standard deviation is computed and ``c`` corresponds to
-        the provided degrees of freedom adjustment. When computing the standard deviation
-        of a population, setting this parameter to ``0`` is the standard choice (i.e.,
-        the provided array contains data constituting an entire population). When computing
-        the corrected sample standard deviation, setting this parameter to ``1`` is the
-        standard choice (i.e., the provided array contains data sampled from a larger
-        population; this is commonly referred to as Bessel's correction).
+        degrees of freedom adjustment. Setting this parameter to a value other
+        than ``0`` has the effect of adjusting the divisor during the calculation of the
+        standard deviation according to ``N-c`` where ``N`` corresponds to the total
+        number of elements over which the standard deviation is computed and ``c``
+        corresponds to the provided degrees of freedom adjustment. When computing the
+        standard deviation of a population, setting this parameter to ``0`` is the
+        standard choice (i.e., the provided array contains data constituting an
+        entire population). When computing the corrected sample standard deviation,
+        setting this parameter to ``1`` is the standard choice (i.e., the provided array
+        contains data sampled from a larger population; this is commonly referred to as
+        Bessel's correction).
         Default: ``0``.
     keepdims
         if ``True``, the reduced axes (dimensions) must be included in the result as
@@ -537,14 +547,15 @@ def std(
         .. note::
            While this specification recommends that this function only accept input
            arrays having a real-valued floating-point data type, specification-compliant
-           array libraries may choose to accept input arrays having an integer data type.
-           While mixed data type promotion is implementation-defined, if the input array
-           ``x`` has an integer data type, the returned array must have the default
-           real-valued floating-point data type.
+           array libraries may choose to accept input arrays having an integer data
+           type. While mixed data type promotion is implementation-defined, if the input
+           array ``x`` has an integer data type, the returned array must have
+           the default real-valued floating-point data type.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.std.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.std.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -618,10 +629,11 @@ def sum(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-    keepdims: bool = False,
+    keepdims: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the sum of the input array ``x``.
+    """
+    Calculate the sum of the input array x.
 
     **Special Cases**
 
@@ -641,16 +653,16 @@ def sum(
         over multiple axes. Default: ``None``.
     dtype
         Data type of the returned array. If ``None``,
-        -   If the default data type corresponding to the data type "kind" (integer or
+            If the default data type corresponding to the data type "kind" (integer or
             floating-point) of ``x`` has a smaller range of values than the data type of
             ``x`` (e.g., ``x`` has data type ``int64`` and the default data type is
             ``int32``, or ``x`` has data type ``uint64`` and the default data type is
             ``int64``), the returned array must have the same data type as ``x``.
-        -   If ``x`` has a floating-point data type, the returned array must have the
+            If ``x`` has a floating-point data type, the returned array must have the
             default floating-point data type.
-        -   If ``x`` has a signed integer data type (e.g., ``int16``), the returned
+            If ``x`` has a signed integer data type (e.g., ``int16``), the returned
             array must have the default integer data type.
-        -   If ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned
+            If ``x`` has an unsigned integer data type (e.g., ``uint16``), the returned
             array must have an unsigned integer data type having the same number of bits
             as the default integer data type (e.g., if the default integer data type is
             ``int32``, the returned array must have a ``uint32`` data type).
@@ -678,9 +690,10 @@ def sum(
         must have a data type as described by the ``dtype`` parameter above.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.sum.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sum.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -755,7 +768,7 @@ def var(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculates the variance of the input array x.
+    Calculate the variance of the input array x.
 
     **Special Cases**
 
@@ -802,7 +815,8 @@ def var(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.var.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.var.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -843,7 +857,6 @@ def var(
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
     }
-
     """
     return current_backend(x).var(
         x, axis=axis, correction=correction, keepdims=keepdims, out=out
@@ -869,7 +882,8 @@ def cumsum(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative sum of the elements along a given axis.
+    """
+    Return the cumulative sum of the elements along a given axis.
 
     Parameters
     ----------
@@ -1012,7 +1026,8 @@ def cumprod(
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the cumulative product of the elements along a given axis.
+    """
+    Return the cumulative product of the elements along a given axis.
 
     Parameters
     ----------
@@ -1025,21 +1040,6 @@ def cumprod(
     reverse
         Whether to perform the cumprod from last to first element in the selected
         axis. Default is ``False`` (from first to last element)
-    dtype
-        data type of the returned array. If None,
-        if the default data type corresponding to the data type “kind” (integer or
-        floating-point) of x has a smaller range of values than the data type of x
-        (e.g., x has data type int64 and the default data type is int32, or x has data
-        type uint64 and the default data type is int64), the returned array must have
-        the same data type as x. if x has a floating-point data type, the returned array
-        must have the default floating-point data type. if x has a signed integer data
-        type (e.g., int16), the returned array must have the default integer data type.
-        if x has an unsigned integer data type (e.g., uint16), the returned array must
-        have an unsigned integer data type having the same number of bits as the default
-        integer data type (e.g., if the default integer data type is int32, the returned
-        array must have a uint32 data type). If the data type (either specified or
-        resolved) differs from the data type of x, the input array should be cast to the
-        specified data type before computing the product. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1146,6 +1146,11 @@ def cumprod(
     )
 
 
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1157,7 +1162,8 @@ def einsum(
     *operands: Union[ivy.Array, ivy.NativeArray],
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Sums the product of the elements of the input operands along dimensions specified
+    """
+    Sum the product of the elements of the input operands along dimensions specified
     using a notation based on the Einstein summation convention.
 
     Parameters
@@ -1269,7 +1275,5 @@ def einsum(
         a: ivy.array(2),
         b: ivy.array(15)
     }
-
-
     """
     return current_backend(operands[0]).einsum(equation, *operands, out=out)

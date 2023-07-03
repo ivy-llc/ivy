@@ -40,7 +40,7 @@ def update_test_results():
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db = cluster["Ivy_tests"]
+    db = cluster["Ivy_tests_multi"]
     collection = db[test_configs[workflow][0]]
     res = make_clickable(action_url + run_id, result_config[result])
     collection.update_one(

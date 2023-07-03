@@ -57,18 +57,21 @@ will result in the creation of documentation for the project in the directory
 Options
 """""""
 
---no-cleanup                    Disable the backup/cleanup procedure
---git-add                       Stage changed files before generating the docs, this is 
-                                useful if you want know which files changed by you when 
-                                used with ``--no-cleanup``
---skip-dependencies-install     Skip installing python dependencies
+-h, --help                       Show this help
+-C, --no-cleanup                 Disable the backup/cleanup procedure
+-g, --git-add                    Stage changed files before generating the docs
+-s, --skip-dependencies-install  Skip installing dependencies using pip
+-j, --jobs N                     Build in parallel with N processes where possible 
+                                 (special value ``auto`` will set N to cpu-count)
+-D setting                       Override a setting in ``conf.py``
 
 The Docker image
 ~~~~~~~~~~~~~~~~
 
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
-on the ``/project`` directory, located in the container `as shown here <https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L20>`_:
+on the ``/project`` directory, located in the container `as shown here 
+<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L21>`_:
 
 .. code-block:: bash
 
@@ -79,6 +82,12 @@ To build the docs through docker you use this command:
 .. code-block:: bash
 
     docker run -v /path/to/project:/project unifyai/doc-builder
+
+You can as well add options described in the :ref:`The convenience script` section.
+
+.. code-block:: bash
+    
+    docker run -v /path/to/project:/project unifyai/doc-builder --no-cleanup
 
 How Ivy's docs is structured
 -----------------------------
@@ -129,9 +138,10 @@ Here is a segment of the file:
 
     .. autosummary::
         :toctree: docs/functional
-        :template: top_level_toc.rst
+        :template: top_functional_toc.rst
+        :caption: API Reference
         :recursive:
-        :include:
+        :hide-table:
 
         ivy.functional.ivy
 
@@ -199,10 +209,10 @@ Custom Extensions
 
 As of writing this documentation, Ivy's doc-builder is using 4 custom extensions:
 
-1. ``custom_autosummary``
-2. ``custom_builder``
-3. ``discussion_linker``
-4. ``skippable_function``
+#. ``custom_autosummary``
+#. ``discussion_linker``
+#. ``skippable_function``
+#. ``ivy_data``
 
 ``custom_autosummary``
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -214,8 +224,7 @@ you can add a template for these stub files using the ``:template:`` option. Whi
 inturn include the ``autosummary`` directive again, recursing on the whole module.
 
 Unfortunately, the original ``autosummary`` extension is very limited, forcing you to
-have a table of contents for each modules, and the customized stub file can't be 
-included, which we needed to discover the modules automatically.
+have a table of contents for each modules.
 
 We'll go through each option or configuration value added to the original ``autosummary``
 
@@ -226,171 +235,6 @@ As the name suggests, the original behavior of ``autosummary`` is to generate a 
 of contents for each module. And it generate stub files only if ``:toctree:`` option is
 specified. As we only need the ``toctree`` this option hides the table of contents, but
 it require the ``:toctree:`` option to be specified.
-
-``:include:``
-"""""""""""""
-
-This option is to include generated stub files in the current page, instead of linking
-it in the ``toctree``. To demonstrate why we need that look at this example:
-
-.. code-block:: rst
-
-    .. autosummary::
-        :toctree: docs/functional
-        :template: top_level_toc.rst
-        :recursive:
-        :include:
-
-        ivy.functional.ivy
-
-The ``top_level_toc.rst`` has this in it:
-
-.. code-block:: rst
-
-    {{name | underline}}
-
-    .. This is a placeholder so the include directive removes what's before it
-    .. REMOVE_BEFORE_HERE
-    .. autosummary::
-        :toctree: {{name}}
-        :template: top_level_module.rst
-        :caption: {{fullname}}
-        :substitute-caption:
-        :hide-table:
-        :fix-directory:
-    {% for submodule in modules %}
-    {{ submodule }}
-    {%- endfor %}
-
-
-So, the stub file generated from the ``autosummary`` directive should be another 
-``autosummary`` directive, which will discover the modules in the ``ivy.functional.ivy``
-module.
-
-So what we do is including that generated stub file into the ``index.rst`` file, which 
-will discover all modules under ``ivy.functional.ivy`` for us instead of writing it by
-hand.
-
-    ℹ **Note:** The ``:include:`` option is only available if the ``:toctree:`` option
-    is specified.
-
-..
-
-    ℹ **Note:** If you use ``:include:`` option, the template you use should have the
-    ``REMOVE_BEFORE_HERE`` comment, which is used to remove the content before it.
-
-    This is used because each file should have a title, which we don't include, so you
-    can see that the ``REMOVE_BEFORE_HERE`` comment is written after the title.
-
-``:fix-directory:``
-"""""""""""""""""""
-
-Because of the nature of the ``autosummary`` directive, it generates stub files relative
-to the current file. If we used include, and there is an ``autosummary`` directive in
-the stub file, this directive will become invalid, because sphinx include the stub file
-by substitution.
-
-Let's assume you have a file called ``index.rst`` which has this in it:
-
-.. code-block:: rst
-
-    .. autosummary::
-        :toctree: toctree
-        :template: top_level_toc.rst
-        :recursive:
-        :include:
-
-        module
-
-Let's assume that ``module`` have 2 submodules ``foo``, and ``bar``, then the generated
-stub file will be:
-
-.. code-block:: rst
-
-    module
-    ======
-
-    .. This is a placeholder so the include directive removes what's before it
-    .. REMOVE_BEFORE_HERE
-    .. autosummary::
-        :toctree: module
-        :template: top_level_module.rst
-        :caption: module
-        :substitute-caption:
-        :hide-table:
-        :fix-directory:
-
-        foo
-        bar
-
-and the file structure of the generated docs will be:
-
-.. code-block:: text
-
-    index.rst
-    toctree/
-        module.rst
-        module/
-            foo.rst
-            bar.rst
-
-The problem resides that now we include ``module.rst`` in ``index.rst``. So if we wanted
-to visualize what the ``index.rst`` will look like, we will have this:
-
-.. code-block:: rst
-
-    .. autosummary::
-        :toctree: module
-        :template: top_level_module.rst
-        :caption: module
-        :substitute-caption:
-        :hide-table:
-        :fix-directory:
-
-        foo
-        bar
-
-The ``:toctree:`` option is now invalid, because it's now pointing to the 
-``module`` directory, which doesn't exist in the root folder.
-
-So, the ``:fix-directory:`` option is used to fix this problem, by changing the 
-``:toctree:`` option to point to the correct directory. This is done by finding 
-the directory that has been skipped by the ``include`` directive.
-
-    ⚠️ **Warning:** Avoid giving ``:toctree:`` a name that is the same as the name of
-    the module, because of the way the ``:fix-directory:`` option works, it get confused
-    with multiple directories with the same name.
-
-    If you get ``Could not find a single candidate for <> while fixing toctree path.`` 
-    warning, this is probably its cause.
-
-``:substitute-caption:``
-""""""""""""""""""""""""
-
-This option looks into the caption of the ``autosummary`` directive, and replace the 
-values found in ``ivy_toctree_caption_map``. This useful because in the 
-``top_level_module.rst`` we put the name of the module as a caption, because we can't
-infer the caption directly within sphinx.
-
-An example of ``ivy_toctree_caption_map`` can be found in the ``partial_conf.py`` file:
-
-.. code-block:: python
-
-    ivy_toctree_caption_map = {
-        "ivy.functional.ivy": "Functions",
-        "ivy.stateful": "Framework classes",
-        "ivy.nested_array": "Nested array",
-        "ivy.utils": "Utils",
-        "ivy_tests.test_ivy.helpers": "Testing",
-    }
-
-``custom_builder``
-~~~~~~~~~~~~~~~~~~
-
-The custom builder now is a simple layer that executes while building the HTML files,
-it's currently searching for ``ivy.functional.ivy`` and replacing it with ``ivy.``.
-
-It can be expanded in the future to do more postprocessing.
 
 ``discussion_linker``
 ~~~~~~~~~~~~~~~~~~~~~
@@ -512,3 +356,18 @@ This is an example of ``skippable_method_attributes`` configuration in
 This will remove any function that has ``__qualname__`` attribute equal to 
 ``_wrap_function.<locals>.new_function``.
 
+``ivy_data``
+~~~~~~~~~~~~
+
+This is a custom documenter for ``autodoc`` that document Ivy data attributes that live
+in ``ivy.functional.ivy``, it will replace the module to ``ivy.`` instead of 
+``ivy.functional.ivy.<submodule>``.
+
+It's used instead of simply using ``ivy.<data atribute>`` because data attributes have
+no ``__doc__`` atribute, instead docs are discovered by parsing the source code itself.
+So for Sphinx to find the required docs, it need to be supplied the full module name,
+then using ``autoivydata`` directive will replace the module name to ``ivy.``.
+
+Please refer to the `auto documenter guide in sphinx documentation 
+<https://www.sphinx-doc.org/en/master/development/tutorials/autodoc_ext.html>`_ for more
+info.

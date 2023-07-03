@@ -3,9 +3,7 @@ import jax
 
 def if_else(cond, body_fn, orelse_fn, vars):
     with jax.disable_jit():
-        final_vars = jax.lax.cond(
-            cond, lambda: body_fn(*vars), lambda: orelse_fn(*vars)
-        )
+        final_vars = jax.lax.cond(cond, body_fn, orelse_fn, *vars)
     return final_vars
 
 

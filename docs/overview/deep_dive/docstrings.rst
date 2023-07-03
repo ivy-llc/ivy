@@ -14,7 +14,7 @@ In contrast, all backend implementations at :mod:`ivy/functional/backends/backen
 
 In order to explain how docstrings should be written, we will use :func:`ivy.tan` as an example.
 
-Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a template.
+Firstly, if the function exists in the `Array API Standard`_, then we start with the corresponding docstring as a template.
 These docstrings can be found under `spec/API_specification/array_api`_.
 
 Important: you should open the file in **raw** format.
@@ -22,7 +22,7 @@ If you copy directly from the file preview on GitHub before clicking **raw**, th
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -95,7 +95,7 @@ Finally, **if** the function is *nestable*, then we add a simple explanation for
 
 Following these changes, the new docstring is as follows:
 
-.. code-block:: python
+.. parsed-literal::
 
     Calculates an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
@@ -162,7 +162,7 @@ which should instead use the following text, as these do not *directly* wrap a f
 in Ivy's functional API, but rather wrap the pure operator functions themselves,
 which can be called on any types that support the corresponding special methods:
 
-.. code-block:: python
+.. parsed-literal::
 
     ivy.Container <special|reverse special> method for the <operator_name> operator,
     calling :code:`operator.<operator_name>` for each of the corresponding leaves of
@@ -201,6 +201,6 @@ If you have any questions,please feel free to reach out on `discord`_ in the `do
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
     </iframe>

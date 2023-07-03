@@ -1,4 +1,3 @@
-# flake8: noqa
 from . import matrix_and_vector_products
 from .matrix_and_vector_products import *
 from . import norms_and_other_numbers

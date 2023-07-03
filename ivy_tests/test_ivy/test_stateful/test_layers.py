@@ -119,6 +119,7 @@ def test_linear_layer(
 # Dropout #
 # --------#
 
+
 # dropout
 @handle_method(
     method_tree="Dropout.__call__",
@@ -975,7 +976,7 @@ def test_lstm_layer(
     ),
     with_v=st.booleans(),
     seq_v=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False) | st.none(),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
 )
 def test_sequential_layer(
     bs_c_target,
@@ -988,9 +989,16 @@ def test_sequential_layer(
     method_name,
     class_name,
 ):
+    dtype = dtype[0]
     # smoke test
     batch_shape, channels, target = bs_c_target
-    tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
+    tolerance_dict = {
+        "bfloat16": 1e-2,
+        "float16": 1e-2,
+        "float32": 1e-5,
+        "float64": 1e-5,
+        None: 1e-5,
+    }
     if method_flags.as_variable[0]:
         x = _variable(
             ivy.asarray(
@@ -1070,7 +1078,7 @@ def test_sequential_layer(
     # type test
     assert ivy.is_ivy_array(ret)
     # cardinality test
-    assert ret.shape == tuple(batch_shape + [channels])
+    assert ret.shape == ivy.Shape(batch_shape + [channels])
     # value test
     if not with_v:
         return
@@ -1079,4 +1087,329 @@ def test_sequential_layer(
     )
 
 
+# # Pooling #
+
+
+# MaxPool2D
+@handle_method(
+    method_tree="MaxPool2D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+)
+def test_maxpool2d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AvgPool2D
+@handle_method(
+    method_tree="AvgPool2D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
+)
+def test_avgpool2d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
 # ToDo : Add gradient testing once random number generation is unified
+
+
+@handle_method(
+    method_tree="AvgPool3D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+)
+def test_avgpool3d_layer(
+    *,
+    x_k_s_p,
+    count_include_pad,
+    ceil_mode,
+    divisor_override,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "count_include_pad": count_include_pad,
+            "ceil_mode": ceil_mode,
+            "divisor_override": divisor_override,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# MaxPool1D
+@handle_method(
+    method_tree="MaxPool1D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_maxpool1d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# MaxPool3D
+@handle_method(
+    method_tree="MaxPool3D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+)
+def test_maxpool3d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AdaptiveAveragePool2d
+@st.composite
+def array_for_adaptive(
+    draw,
+    num_dims=3,
+    max_dim_size=8,
+    min_dim_size=3,
+    num_out_size=2,
+):
+    dtypes, arrays = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    size = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=3, max_value=5),
+            size=num_out_size,
+        )
+    )
+    output_size = size[0] if num_out_size == 1 else size
+    return dtypes, arrays, output_size
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool2d.__call__",
+    dt_arr_size=array_for_adaptive(),
+)
+def test_adaptive_avg_pool2d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool1d.__call__",
+    dt_arr_size=array_for_adaptive(max_dim_size=3, min_dim_size=2, num_out_size=1),
+)
+def test_adaptive_avg_pool1d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AvgPool1D
+@handle_method(
+    method_tree="AvgPool1D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_avgpool1d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )

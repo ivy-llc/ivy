@@ -1,7 +1,5 @@
 # global
-from __future__ import annotations
-from math import sqrt, pi, cos
-from typing import Union, Tuple, Optional
+from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
 import ivy
@@ -15,118 +13,24 @@ from ivy.func_wrapper import (
     handle_out_argument,
     infer_dtype,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-) -> Tuple[ivy.Array]:
-    """Returns the indices of the upper triangular part of a row by col matrix in a
-    2-by-N shape (tuple of two N dimensional arrays), where the first row contains
-    row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The upper triangular part
-    of the matrix is defined as the elements on and above the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and above the main
-    diagonal are retained. A positive value excludes just as many diagonals above the
-    main diagonal, and similarly a negative value includes just as many diagonals
-    below the main diagonal. The main diagonal are the set of indices
-    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
-
-    Notes
-    -----
-    Primary purpose of this function is to slice an array of shape (n,m). See
-    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html
-    for examples
-
-    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices
-
-    Parameters
-    ----------
-    n_rows
-       number of rows in the 2-d matrix.
-    n_cols
-       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows
-    k
-       number of shifts from the main diagonal. k = 0 includes main diagonal,
-       k > 0 moves upwards and k < 0 moves downwards
-    device
-       device on which to place the created array. Default: ``None``.
-
-    Returns
-    -------
-    ret
-        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])
-        contains row coordinates of all indices and the second subarray (i.e ret[1])
-        contains columns indices.
-
-    Function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
-    Examples
-    --------
-    >>> x = ivy.triu_indices(4,4,0)
-    >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),
-    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))
-
-    >>> x = ivy.triu_indices(4,4,1)
-    >>> print(x)
-    (ivy.array([0, 0, 0, 1, 1, 2]),
-    ivy.array([1, 2, 3, 2, 3, 3]))
-
-    >>> x = ivy.triu_indices(4,4,-2)
-    >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),
-    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))
-
-    >>> x = ivy.triu_indices(4,2,0)
-    >>> print(x)
-    (ivy.array([0, 0, 1]),
-    ivy.array([0, 1, 1]))
-
-    >>> x = ivy.triu_indices(2,4,0)
-    >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1]),
-    ivy.array([0, 1, 2, 3, 1, 2, 3]))
-
-    >>> x = ivy.triu_indices(4,-4,0)
-    >>> print(x)
-    (ivy.array([]), ivy.array([]))
-
-    >>> x = ivy.triu_indices(4,4,100)
-    >>> print(x)
-    (ivy.array([]), ivy.array([]))
-
-    >>> x = ivy.triu_indices(2,4,-100)
-    >>> print(x)
-    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))
-
-    """
-    return current_backend().triu_indices(n_rows, n_cols, k, device=device)
-
-
-@infer_dtype
-@to_native_arrays_and_back
+@handle_nestable
 @handle_out_argument
-@handle_nestable
-@handle_exceptions
+@to_native_arrays_and_back
+@infer_dtype
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns an array that contains a vorbis power complementary window
-    of size window_length.
+    """
+    Return an array that contains a vorbis power complementary window of size
+    window_length.
 
     Parameters
     ----------
@@ -153,21 +57,21 @@ def vorbis_window(
     return ivy.current_backend().vorbis_window(window_length, dtype=dtype, out=out)
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def hann_window(
     size: int,
-    /,
     *,
     periodic: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Generate a Hann window. The Hanning window
-    is a taper formed by using a weighted cosine.
+    """
+    Generate a Hann window. The Hanning window is a taper formed by using a weighted
+    cosine.
 
     Parameters
     ----------
@@ -188,32 +92,32 @@ def hann_window(
 
     Functional Examples
     -------------------
-    >>> ivy.hann_window(4, True)
+    >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
-    >>> ivy.hann_window(7, False)
+    >>> ivy.hann_window(7, periodic = False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
-
     """
     return ivy.current_backend().hann_window(
         size, periodic=periodic, dtype=dtype, out=out
     )
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
     beta: float = 12.0,
     *,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser window with window length window_length and shape beta
+    """
+    Compute the Kaiser window with window length window_length and shape beta.
 
     Parameters
     ----------
@@ -248,29 +152,25 @@ def kaiser_window(
     )
 
 
-@infer_dtype
-@outputs_to_ivy_arrays
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def kaiser_bessel_derived_window(
     window_length: int,
-    periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Kaiser bessel derived window with
-    window length window_length and shape beta
+    """
+    Compute the Kaiser bessel derived window with window length window_length and shape
+    beta.
 
     Parameters
     ----------
     window_length
         an int defining the length of the window.
-    periodic
-        If True, returns a periodic window suitable for use in spectral analysis.
-        If False, returns a symmetric window suitable for use in filter design.
     beta
         a float used as shape parameter for the window.
     dtype
@@ -286,50 +186,40 @@ def kaiser_bessel_derived_window(
     Functional Examples
     -------------------
     >>> ivy.kaiser_bessel_derived_window(5)
-    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])
-
-    >>> ivy.kaiser_derived_window(5, False)
     ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])
 
-    >>> ivy.kaiser_derived_window(5, False, 5)
+    >>> ivy.kaiser_bessel_derived_window(5, 5)
     ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])
     """
-    window_length = window_length // 2
-    w = ivy.kaiser_window(window_length + 1, periodic, beta)
-
-    sum_i_N = sum([w[i] for i in range(0, window_length + 1)])
-
-    def sum_i_n(n):
-        return sum([w[i] for i in range(0, n + 1)])
-
-    dn_low = [sqrt(sum_i_n(i) / sum_i_N) for i in range(0, window_length)]
-
-    def sum_2N_1_n(n):
-        return sum([w[i] for i in range(0, 2 * window_length - n)])
-
-    dn_mid = [
-        sqrt(sum_2N_1_n(i) / sum_i_N) for i in range(window_length, 2 * window_length)
-    ]
-
-    return ivy.array(dn_low + dn_mid, dtype=dtype, out=out)
+    if window_length < 2:
+        result = ivy.array([], dtype=dtype)
+        if ivy.exists(out):
+            ivy.inplace_update(out, result)
+        return result
+    half_len = window_length // 2
+    kaiser_w = ivy.kaiser_window(half_len + 1, False, beta, dtype=dtype)
+    kaiser_w_csum = ivy.cumsum(kaiser_w)
+    half_w = ivy.sqrt(kaiser_w_csum[:-1] / kaiser_w_csum[-1:])
+    window = ivy.concat((half_w, half_w[::-1]), axis=0)
+    result = window.astype(dtype)
+    return result
 
 
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@infer_dtype
 def hamming_window(
     window_length: int,
-    /,
     *,
     periodic: bool = True,
     alpha: float = 0.54,
     beta: float = 0.46,
-    dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the Hamming window with window length window_length
+    """
+    Compute the Hamming window with window length window_length.
 
     Parameters
     ----------
@@ -361,45 +251,28 @@ def hamming_window(
     >>> ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)
     ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])
     """
-    if window_length == 0:
-        return ivy.array([])
-    elif window_length == 1:
-        return ivy.array([1])
+    if window_length < 2:
+        return ivy.ones([window_length], dtype=dtype, out=out)
+    if periodic:
+        count = ivy.arange(window_length) / window_length
     else:
-        if periodic is True:
-            window_length = window_length + 1
-            return ivy.array(
-                [
-                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)
-                ][:-1],
-                dtype=dtype,
-                out=out,
-            )
-        else:
-            return ivy.array(
-                [
-                    alpha - beta * cos((2 * n * pi) / (window_length - 1))
-                    for n in range(0, window_length)
-                ],
-                dtype=dtype,
-                out=out,
-            )
+        count = ivy.linspace(0, window_length, window_length)
+    result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    return result
 
 
-@infer_device
-@outputs_to_ivy_arrays
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@outputs_to_ivy_arrays
+@infer_device
 def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: int = 0,
-    /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Returns the indices of the lower triangular part of a row by col matrix in a
+    """Return the indices of the lower triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
     Indices are ordered based on rows and then columns.  The lower triangular part
@@ -482,24 +355,24 @@ def tril_indices(
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
 
 
-@infer_device
-@infer_dtype
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_ivy_arrays
+@infer_dtype
+@infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     k: int = 0,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a array filled with ones on the k diagonal and zeros elsewhere. having
-    the same ``shape`` as an input array ``x``.
+    """Return a 2D array filled with ones on the k diagonal and zeros elsewhere. having
+    the same ``shape`` as the first and last dim of input array ``x``. input array ``x``
+    should to be 2D.
 
 
     Parameters
@@ -523,15 +396,6 @@ def eye_like(
     ret
         an array having the same shape as ``x`` and filled with ``ones`` in
         diagonal ``k`` and ``zeros`` elsewhere.
-
-    Notes
-    -----
-    Generate a 2D tensor (matrix) with ones on the diagonal and zeros everywhere else.
-    Only 2D tensors are supported, i.e. input T1 must be of rank 2. The shape of the
-    output tensor is the same as the input tensor. The data type can be specified by
-    the 'dtype' argument. If 'dtype' is not specified, then the type of input tensor
-    is used. By default, the main diagonal is populated with ones, but attribute 'k'
-    can be used to populate upper or lower diagonals.
 
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -569,8 +433,13 @@ def eye_like(
     }
 
     """
-    cols = 1 if len(x.shape) == 1 else x.shape[-1]
-    rows = x.shape[0]
+    shape = ivy.shape(x, as_array=True)
+    dim = len(shape)
+    if dim <= 1:
+        cols = dim
+    else:
+        cols = int(shape[-1])
+    rows = 0 if dim < 1 else int(shape[0])
     return ivy.eye(
         rows,
         cols,
@@ -579,3 +448,178 @@ def eye_like(
         device=device,
         out=out,
     )
+
+
+def _iter_product(*args, repeat=1):
+    # itertools.product
+    pools = [tuple(pool) for pool in args] * repeat
+    result = [[]]
+    for pool in pools:
+        result = [x + [y] for x in result for y in pool]
+    for prod in result:
+        yield tuple(prod)
+
+
+@handle_exceptions
+@inputs_to_ivy_arrays
+def ndenumerate(
+    input: Iterable,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    input
+        Input array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding pairs of array coordinates and values.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index, x in ivy.ndenumerate(a):
+    >>>     print(index, x)
+    (0, 0) 1
+    (0, 1) 2
+    (1, 0) 3
+    (1, 1) 4
+    """
+
+    def _ndenumerate(input):
+        if ivy.is_ivy_array(input) and input.shape == ():
+            yield (), ivy.to_scalar(input)
+        else:
+            i = [range(k) for k in input.shape]
+            for idx in _iter_product(*i):
+                yield idx, input[idx]
+
+    input = ivy.array(input) if not ivy.is_ivy_array(input) else input
+    return _ndenumerate(input)
+
+
+@handle_exceptions
+def ndindex(
+    shape: Tuple,
+) -> Generator:
+    """
+    Multidimensional index iterator.
+
+    Parameters
+    ----------
+    shape
+        The shape of the array to iterate over.
+
+    Returns
+    -------
+    ret
+        An iterator yielding array coordinates.
+
+    Examples
+    --------
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> for index in ivy.ndindex(a):
+    >>>     print(index)
+    (0, 0)
+    (0, 1)
+    (1, 0)
+    (1, 1)
+    """
+    args = [range(k) for k in shape]
+    return _iter_product(*args)
+
+
+@handle_exceptions
+def indices(
+    dimensions: Sequence,
+    *,
+    dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
+    sparse: bool = False,
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    """
+    Return an array representing the indices of a grid.
+
+    Parameters
+    ----------
+    dimensions
+        The shape of the grid.
+    dtype
+        The data type of the result.
+    sparse
+        Return a sparse representation of the grid instead of a dense representation.
+
+    Returns
+    -------
+    ret
+        If sparse is False, returns one grid indices array of shape
+        (len(dimensions),) + tuple(dimensions).
+        If sparse is True, returns a tuple of arrays each of shape
+        (1, ..., 1, dimensions[i], 1, ..., 1) with dimensions[i] in the ith place.
+
+    Examples
+    --------
+    >>> ivy.indices((3, 2))
+    ivy.array([[[0 0]
+                [1 1]
+                [2 2]]
+               [[0 1]
+                [0 1]
+                [0 1]]])
+    >>> ivy.indices((3, 2), sparse=True)
+    (ivy.array([[0], [1], [2]]), ivy.array([[0, 1]]))
+    """
+    if sparse:
+        return tuple(
+            ivy.arange(dim)
+            .expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            )
+            .astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
+    else:
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        return ivy.stack(grid, axis=0).astype(dtype)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_min(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    r"""
+    Compute the minimum along segments of an array. Segments are defined by an integer
+    array of segment IDs.
+
+    Note
+    ----
+    If the given segment ID `i` is negative, then the corresponding
+    value is dropped, and will not be included in the result.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented min operation.
+        For each segment, it computes the min value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)

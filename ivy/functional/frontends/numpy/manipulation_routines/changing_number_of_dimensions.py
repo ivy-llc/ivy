@@ -9,7 +9,7 @@ def squeeze(
     a,
     axis=None,
 ):
-    return ivy.squeeze(a, axis)
+    return ivy.squeeze(a, axis=axis)
 
 
 # expand_dims
@@ -29,9 +29,17 @@ def atleast_1d(
     return ivy.atleast_1d(*arys)
 
 
+@to_ivy_arrays_and_back
 def atleast_2d(*arys):
     return ivy.atleast_2d(*arys)
 
 
+@to_ivy_arrays_and_back
 def atleast_3d(*arys):
     return ivy.atleast_3d(*arys)
+
+
+# broadcast_arrays
+@to_ivy_arrays_and_back
+def broadcast_arrays(*args):
+    return ivy.broadcast_arrays(*args)
