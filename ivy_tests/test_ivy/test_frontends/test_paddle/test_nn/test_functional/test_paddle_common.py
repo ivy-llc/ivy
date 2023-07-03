@@ -166,5 +166,5 @@ def test_paddle_zeropad2d(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        pad=padding,
+        padding=padding,
     )
