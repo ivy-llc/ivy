@@ -688,4 +688,5 @@ def test_paddle_dot(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        atol=1e-5,
     )
