@@ -119,25 +119,27 @@ This functionality is inspired by `NumPy's`_ :code:`__ivy_array_function__` and 
 As an example, consider the following class :code:`MyArray` with the following definition:
 
 .. code-block:: python
->>> class MyArray:
->>>	def __init__(self, data=None):
->>>		self.data = data
+
+    class MyArray:
+	    def __init__(self, data=None):
+		    self.data = data
 
 Running any of Ivy’s functions using a :code:`MyArray` object as input will throw an :code:`IvyBackendException` since Ivy’s functions do not support this class type as input. This is where :code:`__ivy_array_function__` comes into play. Let’s add the method to our :code:`MyArray` class to see how it works.
 
-There are different ways to do so. One way is to use a global dict :code:`HANDLED_FUNCTIONS`  which will map Ivy’s functions to the custom variant functions:
+There are different ways to do so. One way is to use a global dict :code:`HANDLED_FUNCTIONS` which will map Ivy’s functions to the custom variant functions:
 
 .. code-block:: python
->>> HANDLED_FUNCTIONS = {}
->>> class MyArray:
->>>	def __init__(self, data=None):
->>>		self.data = data
->>>	def __ivy_array_function__(self, func, types, args, kwargs):
->>>		if func not in HANDLED_FUNCTIONS:
->>>			return NotImplemented
->>>		if not all((t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
->>>			return NotImplemented
->>>		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
+
+    HANDLED_FUNCTIONS = {}
+    class MyArray:
+        def __init__(self, data=None):
+    		self.data = data
+    	def __ivy_array_function__(self, func, types, args, kwargs):
+    		if func not in HANDLED_FUNCTIONS:
+    			return NotImplemented
+    		if not all((t, (MyArray, ivy.Array, ivy.NativeArray)) for t in types):
+    			return NotImplemented
+    		return HANDLED_FUNCTIONS[func](*args, **kwargs)		
 
 :code:`__ivy_array_function__` accepts four parameters: :code:`func` representing a reference to the array API function being 
 overridden, :code:`types` a list of the types of objects implementing :code:`__ivy_array_function__`, :code:`args` a tuple of arguments supplied to the function, and :code:`kwargs` being a dictionary of keyword arguments passed to the function.
@@ -145,24 +147,27 @@ While this class contains an implementation for :code:`__ivy_array_function__`, 
 We will define a decorator function :code:`implements` that can be used to add functions to :code:`HANDLED_FUNCTIONS`: 
 
 .. code-block:: python
->>> def implements(ivy_function):
->>> 	def decorator(func):
->>>		HANDLED_FUNCTIONS[ivy_function] = func
->>>		return func
->>>	return decorator		
+
+    def implements(ivy_function):
+        def decorator(func):
+            HANDLED_FUNCTIONS[ivy_function] = func
+            return func
+        return decorator		
 
 Lastly, we need to apply that decorator to the override function. Let’s consider for example a function that overrides :code:`ivy.abs`:
 
 .. code-block:: python
->>> @implements(ivy.abs)
->>> def my_abs(my_array, ivy_array):
->>> 	my_array.data = abs(my_array.data)
+
+    @implements(ivy.abs)
+    def my_abs(my_array, ivy_array):
+     	my_array.data = abs(my_array.data)
 
 Now that we have added the function to :code:`HANDLED_FUNCTIONS`, we can now use :code:`ivy.abs` with :code:`MyArray` objects:
+
 .. code-block:: python
 
->>>	X = MyArray(-3)
->>>	X = ivy.abs(X)
+    X = MyArray(-3)
+    X = ivy.abs(X)
 
 Of course :code:`ivy.abs` is an example of a function that is easy to override since it only requires one operand. The same approach can be used to override functions with multiple operands, including arrays or array-like objects that define :code:`__ivy_array_function__`. 
 
