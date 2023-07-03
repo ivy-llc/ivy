@@ -37,6 +37,8 @@ ArgMax = to_ivy_arrays_and_back(
 
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
+Atan2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.atan2))
+
 
 @with_unsupported_dtypes(
     {
