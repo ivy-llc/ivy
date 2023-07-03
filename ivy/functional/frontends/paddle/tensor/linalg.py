@@ -160,3 +160,10 @@ def dot(x, y, name=None):
     x, y = promote_types_of_paddle_inputs(x, y)
     out = ivy.multiply(x, y)
     return ivy.sum(out, axis=ivy.get_num_dims(x) - 1, keepdims=False)
+
+
+# transpose
+@with_unsupported_dtypes({"2.5.0 and below": ("uint8", "int8", "int16")}, "paddle")
+@to_ivy_arrays_and_back
+def transpose(x, perm, name=None):
+    return ivy.permute_dims(x, axes=perm)
