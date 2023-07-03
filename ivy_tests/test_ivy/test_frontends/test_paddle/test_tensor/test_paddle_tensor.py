@@ -1622,7 +1622,6 @@ def test_paddle_angle(
     )
 
 
-
 # equal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1654,6 +1653,7 @@ def test_paddle_equal(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # rad2deg
 @handle_frontend_method(

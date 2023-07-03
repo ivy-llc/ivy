@@ -297,7 +297,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def divide(self, y, name=None):
         return paddle_frontend.divide(self, y)
-      
+
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
@@ -329,7 +329,6 @@ class Tensor:
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
 
-
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
@@ -338,13 +337,12 @@ class Tensor:
                 "int16",
                 "complex64",
                 "complex128",
-             )
+            )
         },
         "paddle",
-    )        
-              
+    )
     def equal(self, y, name=None):
-        return paddle_frontend.equal(self, y)          
+        return paddle_frontend.equal(self, y)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
@@ -392,19 +390,16 @@ class Tensor:
             "2.5.0 and below": (
                 "float32",
                 "float64",
-
             )
         },
         "paddle",
     )
-
     def isclose(self, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
         return paddle_frontend.isclose(
             self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
-    
+
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
-
