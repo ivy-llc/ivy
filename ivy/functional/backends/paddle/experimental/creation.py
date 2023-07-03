@@ -30,7 +30,7 @@ def _kaiser_window(M, beta):
 
 def kaiser_window(
     window_length: int,
-    periodic: bool = False,
+    periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[paddle.dtype] = None,
