@@ -133,3 +133,18 @@ def ifftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
     a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
     return a
+
+
+@with_unsupported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
+def rfft2(x, s=None, dim=(-2, -1), norm=None):
+    # x = ivy.asarray(x, dtype=ivy.float64)
+    x = ivy.astype(x, "float64")
+    # if s is None or len(s) == 0:
+    #     s = [2]  # Set a default value for s if it is None or empty
+    # else:
+    #     s = list(s)
+    if s is None:
+        s = x.shape[dim]
+    # s = x.shape if s is None else s
+    x = ivy.fft2(x, s=s, dim=dim, norm=norm)
+    return x
