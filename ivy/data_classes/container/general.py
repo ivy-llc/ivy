@@ -1018,7 +1018,6 @@ class _ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Container` input and default backend set as `numpy`:
 
         >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
         >>> print(x.assert_supports_inplace())
@@ -1026,14 +1025,6 @@ class _ContainerWithGeneral(ContainerBase):
             a: True,
             b: True
         }
-
-        With :class:`ivy.Container` input and default backend set as `jax`:
-
-        >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
-        >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types
-        with jax backend
         """
         return self._static_assert_supports_inplace(
             self,
