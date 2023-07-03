@@ -156,6 +156,7 @@ def test_paddle_zeropad2d(
     fn_tree,
     frontend,
     test_flags,
+    padding,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
@@ -165,4 +166,5 @@ def test_paddle_zeropad2d(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        pad=padding,
     )
