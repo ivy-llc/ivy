@@ -1,4 +1,13 @@
 import ivy
+import numpy
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+    from_zero_dim_arrays_to_scalar,
+    handle_numpy_out,
+    handle_numpy_casting,
+)
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
@@ -7,8 +16,6 @@ import ivy
 def percentile(
     x: Union[numpy.ndarray, ivy.Array],
     q: float or sequence of floats,
-    /,
-    *,
     axis=None,
     interpolation="linear",
     kind="increasing",
