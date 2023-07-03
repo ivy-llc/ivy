@@ -365,6 +365,23 @@ class Tensor:
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "uint8",
+                "int8",
+                "int16",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def equal_all(self, y, name=None):
+        y_ivy = _to_ivy_array(y)
+        return ivy.array_equal(self._ivy_array, y_ivy)
+
     @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
     def fmax(self, y, name=None):
         y_ivy = _to_ivy_array(y)
