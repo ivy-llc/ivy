@@ -630,7 +630,7 @@ def test_clear_cached_mem_on_dev():
 
 
 def get_cpu_percent():
-    output = subprocess.check_output(["top", "-bn1"])
+    output = str(subprocess.check_output(["top", "-bn1"]))
     cpu_percent = float(re.search(r"%Cpu\(s\):\s+([\d.]+)\s+us", output).group(1))
     return cpu_percent
 
@@ -643,7 +643,7 @@ def test_dev_util():
         # returns 0 as usage when run the second time in same line so simple
         # assert psutil.cpu_percent() == ivy.dev_util(device) isn't possible
         if "cpu" in device:
-            assert 100 > ivy.dev_util(device) > 0
+            assert 100 >= ivy.dev_util(device) >= 0
             # Comparing CPU utilization using top. Two percentiles won't be directly
             # equal but absolute difference should be below a safe threshold
             assert abs(get_cpu_percent() - ivy.dev_util(device)) < 10

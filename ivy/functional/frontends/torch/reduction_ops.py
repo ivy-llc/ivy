@@ -65,11 +65,10 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @torch_to_numpy_style_args
 @to_ivy_arrays_and_back
-def mean(input, *, dtype=None):
-    if dtype is not None:
-        input = ivy.astype(input, dtype)
-
-    return ivy.mean(input)
+def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
+    if dim is None:
+        dim = axis
+    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
 @torch_to_numpy_style_args
@@ -301,6 +300,8 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if dtype is None or not ivy.is_float_dtype(dtype):
+        dtype = "float64" if "128" in str(dtype) else "float32"
     if (
         p == "fro" and (dim is None or isinstance(dim, int) or len(dim) <= 2)
     ) or p is None:
@@ -308,7 +309,9 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
     if isinstance(p, str):
         if dim is None:
             dim = tuple(range(input.dim()))
-        return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+        return ivy.matrix_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out
+        ).astype(dtype)
     else:
         return ivy.vector_norm(
             input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out
