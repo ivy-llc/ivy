@@ -1,4 +1,5 @@
 # global
+from typing import Tuple
 import paddle
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
@@ -18,7 +19,7 @@ def intersection(
     *,
     assume_unique: bool = False,
     return_indices: bool = False,
-) -> paddle.Tensor:
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     x1 = paddle.reshape(x1, [-1])
     x2 = paddle.reshape(x2, [-1])
     if not assume_unique:

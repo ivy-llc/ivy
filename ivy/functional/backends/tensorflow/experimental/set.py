@@ -1,6 +1,6 @@
 # global
 import tensorflow as tf
-from typing import Union
+from typing import Union, Tuple
 
 # local
 import ivy.functional.backends.tensorflow as tf_backend
@@ -16,7 +16,11 @@ def intersection(
     *,
     assume_unique: bool = False,
     return_indices: bool = False,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> Tuple[
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+    Union[tf.Tensor, tf.Variable],
+]:
     x1 = tf.reshape(x1, [-1])
     x2 = tf.reshape(x2, [-1])
     if not assume_unique:
