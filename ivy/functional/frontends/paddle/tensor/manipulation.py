@@ -3,7 +3,10 @@ import ivy
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 
 
 @to_ivy_arrays_and_back
@@ -58,7 +61,7 @@ def squeeze(x, axis=None, name=None):
     return ivy.squeeze(x, axis=axis)
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {
         "2.5.0 and below": (
             "bool",
