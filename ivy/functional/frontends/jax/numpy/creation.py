@@ -23,6 +23,11 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+
+    # Moving array to the default device
+    default_device = ivy.get_default_device()
+    ret = ivy.to_device(ret, default_device)
+
     if ret.shape == () and dtype is None:
         return DeviceArray(ret, weak_type=True)
     return DeviceArray(ret)
