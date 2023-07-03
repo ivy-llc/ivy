@@ -212,3 +212,32 @@ def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
         axes=None,
         norm=norm,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.fftn",
+    dtype_and_x=helpers.dtype_and_shape(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        shape=(2, 2),
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+    s=helpers.lists(
+        x=st.lists(st.integers(min_value=2, max_value=5), min_size=2, max_size=2),
+        min_size=2,
+        max_size=2,
+    ),
+)
+def test_numpy_fftn(dtype_and_x, norm, s, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=s,
+        axes=None,
+        norm=norm,
+    )
