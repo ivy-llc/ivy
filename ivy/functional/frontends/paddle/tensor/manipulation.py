@@ -78,3 +78,12 @@ def squeeze(x, axis=None, name=None):
 @to_ivy_arrays_and_back
 def cast(x, dtype):
     return ivy.astype(x, dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def broadcast_to(x, shape, name=None):
+    return ivy.broadcast_to(x, shape)
