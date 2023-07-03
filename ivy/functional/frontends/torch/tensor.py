@@ -24,6 +24,11 @@ class Tensor:
                 array, dtype=torch_frontend.float32, device=device
             )
         self._requires_grad = requires_grad
+        self.grad_fn = None
+        if not _init_overload:
+            self._is_leaf = True
+        else:
+            self._is_leaf = False
 
     def __len__(self):
         return len(self._ivy_array)
@@ -80,6 +85,10 @@ class Tensor:
     def requires_grad(self):
         return self._requires_grad
 
+    @property
+    def is_leaf(self):
+        return self._is_leaf
+
     # Setters #
     # --------#
 
@@ -92,6 +101,10 @@ class Tensor:
     @requires_grad.setter
     def requires_grad(self, requires_grad):
         self._requires_grad = requires_grad
+
+    @is_leaf.setter
+    def is_leaf(self, is_leaf):
+        self._is_leaf = is_leaf
 
     # Instance Methods #
     # ---------------- #

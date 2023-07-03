@@ -122,9 +122,23 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 first_array._data = ret.ivy_array._data
             else:
                 first_array.ivy_array._data = ret.ivy_array._data
-            return first_array
-        else:
-            return ret
+            ret = first_array
+
+        # logic for setting is_leaf
+        if ret is not None and isinstance(ret, torch_frontend.Tensor):
+            if fn.__name__ in dir(torch_frontend.creation_ops):
+                ret.is_leaf = True
+            elif all(
+                [
+                    not isinstance(i, torch_frontend.Tensor)
+                    or (not i.requires_grad and not i.grad_fn)
+                    for i in args
+                ]
+            ):
+                ret.is_leaf = True
+            else:
+                ret.is_leaf = False
+        return ret
 
     return outputs_to_frontend_arrays_torch
 

@@ -201,6 +201,20 @@ def test_torch_tensor_property_requires_grad(
     ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
 
 
+@given(
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_property_is_leaf(
+    requires_grad,
+):
+    x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
+    y = x.pow(2)
+    ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
+    z = y.detach()
+    ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(
