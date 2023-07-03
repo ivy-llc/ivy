@@ -20,6 +20,11 @@ def _reduce_strides_dilations(dim, stride, dilations):
 
 
 @to_ivy_arrays_and_back
+def dropout(x, rate, noise_shape=None, seed=None, name=None):
+    return ivy.dropout(x, rate, noise_shape=noise_shape, seed=seed)
+
+
+@to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
     return ivy.conv2d(value, filters, 1, padding, dilations=[rate] * 2)
 
