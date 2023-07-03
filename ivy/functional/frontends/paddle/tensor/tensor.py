@@ -441,3 +441,7 @@ class Tensor:
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
+    def conj(self, name=None):
+        return ivy.conj(self._ivy_array)
