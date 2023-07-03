@@ -47,3 +47,12 @@ def tile(x, repeat_times, name=None):
 @to_ivy_arrays_and_back
 def split(x, num_or_sections, axis=0, name=None):
     return ivy.split(x, num_or_size_splits=num_or_sections, axis=axis)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("float16", "bfloat16", "int8", "int16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def squeeze(x, axis=None, name=None):
+    return ivy.squeeze(x, axis=axis)

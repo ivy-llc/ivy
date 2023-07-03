@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_partial_mixed_function,
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
     handle_array_function,
@@ -332,6 +333,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -399,6 +401,7 @@ def avg_pool2d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -1588,6 +1591,7 @@ def _upsample_bicubic2d_default(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1921,7 +1925,7 @@ interpolate.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
