@@ -5,6 +5,7 @@ import sys
 import traceback as tb
 import io
 import inspect
+import os
 
 # Helpers #
 # ------- #
@@ -25,61 +26,98 @@ def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
 
 
 def _remove_so_log(trace):
-    transpile_frame = None
     old_stack_trace = tb.extract_tb(trace)
     old_frames = inspect.getinnerframes(trace)
 
+    transpile_frame = None
+    module_frame = None
+    module_st = None
+    compiled_lineno = None
+
     new_stack_trace = []
     track = False
+
     for idx, st in enumerate(old_stack_trace):
         if ".pyx" in repr(st):
             continue
-        if "compiled_fn" in repr(st):
-            track = True
+        if "<string>" in repr(st):
+            if "compiled_fn" in repr(st) and module_frame:
+                track = True
+                compiled_lineno = st.lineno
             continue
-        if (
+
+        align_st = None
+        if "<module>" in repr(st):
+            module_frame = old_frames[idx]
+            module_st = st
+            align_st = _align_source(
+                st, transpile_frame, module_frame, module_st, compiled_lineno
+            )
+        elif (
             transpile_frame is None
-            and "ivy/compiler" in st.filename
+            and os.path.join("ivy", "compiler") in st.filename
             and st.name in ["compile", "transpile"]
         ):
             transpile_frame = old_frames[idx]
-        elif track and "func_wrapper" not in repr(st):
-            _align_source(st, old_frames[idx], transpile_frame)
+        elif track:
+            align_st = _align_source(
+                st, transpile_frame, module_frame, module_st, compiled_lineno
+            )
             track = False
         new_stack_trace.append(st)
+        if align_st:
+            new_stack_trace.append(align_st)
+
     return new_stack_trace
 
 
-# from ivy.compiler.utils.VVX import trace_obj
+def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno):
+    from ivy.compiler.utils.VVX import trace_obj
+    from ivy.compiler.utils.IIV import Graph
 
+    code_loc = None
+    line = ""
 
-def _align_source(st, frame, transpile_frame):
-    # frame.code_context
-    # frame.filename
-    # frame.lineno
-    # frame.function
-    # frame.index
+    if transpile_frame:
+        t_v = inspect.getargvalues(transpile_frame.frame)
+        obj = t_v.locals[t_v.varargs][0]
 
-    # print("current frame")
-    # print(frame)
-    # t_v = inspect.getargvalues(frame.frame)
-    # print(t_v.args)
-    # print(t_v.locals)
+        traced_data = trace_obj(obj, t_v.locals["args"], t_v.locals["kwargs"], {})
+        code_loc = traced_data[1]
+        code_line = traced_data[2]
+        func_def = traced_data[3]
 
-    print("transpile frame obj")
-    print(transpile_frame)
-    t_v = inspect.getargvalues(transpile_frame.frame)
-    # print(t_v.args)
-    print(t_v.varargs)
-    print(t_v.locals[t_v.varargs])
+    if module_frame:
+        t_v = inspect.getargvalues(module_frame.frame)
+        for k, v in t_v.locals.items():
+            if k in module_st.line and isinstance(v, Graph):
+                if compiled_lineno:
+                    line = v._Graph__fn_str.split("\n")[compiled_lineno - 1]
+                    line = line.split("=")[1].strip()
+                    line = line.split("(")[0].strip() + "("
 
-    # print("custom test:", repr(st))
-    # print("test target filename:", st.filename)
-    # print("test target lineno:", st.lineno)
-    # print("test target name:", st.name)
-    # print("test target line:", st.line)
-    # print(trace_obj)
-    return
+                # todo: try getting lines manually
+                traced_data = trace_obj(t_v.locals[v.__name__], (), {}, {})
+                code_loc = traced_data[1]
+                code_line = traced_data[2]
+                func_def = v.__name__
+
+                # func = t_v.locals[v.__name__]
+                # func_module = inspect.getmodule(func)
+                # rooted_source = get_source_code(func)
+                # try:
+                #     module_ast = ast.parse(rooted_source)
+                #     visitor = CallVistior(func_module)
+                #     visitor.visit(module_ast)
+                # print(visitor.non_lib_objs)
+                # print(visitor.lib_objs)
+                # except SyntaxError:
+                # ast cannot be parsed
+                # pass
+
+    if code_loc is None:
+        return None
+    return (code_loc, code_line, func_def, line)
 
 
 def _write_new_stack_trace(
