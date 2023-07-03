@@ -850,6 +850,34 @@ def test_jax_numpy_arcsin(
     )
 
 
+# gradient
+@handle_frontend_test(
+    fn_tree="jax.numpy.gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
+    ),
+)
+def test_jax_numpy_gradient(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # log1p
 @handle_frontend_test(
     fn_tree="jax.numpy.log1p",
@@ -2931,7 +2959,7 @@ def test_jax_numpy_signbit(
 #     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
 #     if ivy.current_backend_str() == "torch":
 #         assume(not test_flags.as_variable[0])
-#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+#     where,input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
 #         where=where,
 #         input_dtype=input_dtypes,
 #         test_flags=test_flags,
