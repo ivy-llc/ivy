@@ -552,7 +552,7 @@ class Tensor:
         if args and size:
             raise TypeError("expand() got multiple values for argument 'size'")
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 size = args[0]
             else:
                 size = args
@@ -1420,6 +1420,10 @@ class Tensor:
             tensor1=tensor1, tensor2=tensor2, value=value
         ).ivy_array
         return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def cholesky(self, upper=False):
+        return torch_frontend.cholesky(self, upper=upper)
 
 
 class Size(tuple):

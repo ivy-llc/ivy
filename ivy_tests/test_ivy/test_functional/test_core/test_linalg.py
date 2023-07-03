@@ -1163,7 +1163,7 @@ def _matrix_rank_helper(draw):
             safety_factor_scale="log",
         )
     )
-    if np.all(x[0].T == x[0]):
+    if np.all(np.swapaxes(x[0], -1, -2) == x[0]):
         hermitian = True
     else:
         hermitian = False
