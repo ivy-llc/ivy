@@ -312,7 +312,7 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def divide(self, y, name=None):
         return paddle_frontend.divide(self, y)
-      
+
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
@@ -398,7 +398,7 @@ class Tensor:
         return paddle_frontend.isclose(
             self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
         )
-    
+
     @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
