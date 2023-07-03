@@ -41,6 +41,9 @@ if "paddle" in available_frameworks:
 if "mxnet" in available_frameworks:
     FWS_DICT["mxnet"] = lambda x=None: _get_ivy_mxnet(x)
 
+if "mindspore" in available_frameworks:
+    FWS_DICT["mindspore"] = lambda x=None: _get_ivy_mindspore(x)
+
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
@@ -121,6 +124,15 @@ def _get_ivy_mxnet(version=None):
     except ImportError:
         return None
     return ivy.functional.backends.mxnet
+
+
+def _get_ivy_mindspore(version=None):
+    """Import MindSpore externally."""
+    try:
+        import mindspore
+    except ImportError:
+        return None
+    return mindspore
 
 
 # Setup
