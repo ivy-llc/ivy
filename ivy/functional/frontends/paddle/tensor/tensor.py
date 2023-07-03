@@ -294,6 +294,10 @@ class Tensor:
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def divide(self, y, name=None):
+        return paddle_frontend.divide(self, y)
+      
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
