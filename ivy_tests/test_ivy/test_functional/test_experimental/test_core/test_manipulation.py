@@ -1125,12 +1125,33 @@ def test_associative_scan(
 
 
 @st.composite
-def scale_helper(draw):
-    strategy = st.one_of(
-        st.just(0.1), st.just(0.2), st.just(0.3), st.just(0.4), st.just(0.5)
+def quantize_linear_helper(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            min_dim_size=5,
+        )
     )
-    value = draw(strategy)
-    return value
+
+    dims = len(shape)
+    stg = helpers.dtype_values_axis(
+        available_dtypes=["float32", "int32"],
+        shape=shape,
+        force_int_axis=True,
+        min_axis=1,
+        max_axis=dims - 2,
+    )
+
+    dtype, x, axis = draw(stg)
+
+    if axis == 0:
+        scale = np.random.randint(10, dtype=np.int32, size=())
+        zero_point = np.random.randint(100, dtype=np.int8, size=())
+    else:
+        scale = np.random.randint(0, 10, size=(abs(axis),))
+        zero_point = np.random.randint(0, 100, size=(abs(axis),))
+
+    return dtype, x, axis, [scale, zero_point]
 
 
 # quantize linear
@@ -1138,33 +1159,18 @@ def scale_helper(draw):
     fn_tree="quantize_linear",
     test_gradients=st.just(False),
     test_with_out=st.just(False),
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64", "int32", "int64"],
-        min_value=1,
-        max_value=10,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=5,
-    ),
-    scale=scale_helper(),
-    zero_point=helpers.ints(min_value=0, max_value=20),
-    saturate=st.booleans(),
+    dtype_x_ax=quantize_linear_helper(),
 )
 def test_quantize_linear(
     *,
-    dtype_x,
-    scale,
-    zero_point,
-    saturate,
+    dtype_x_ax,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x = dtype_x
-    if dtype in ["float32", "float64"]:
-        x[0] = np.round(x[0], decimals=1)
+    dtype, x, axis, scale_zero_pt = dtype_x_ax
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -1173,9 +1179,9 @@ def test_quantize_linear(
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        scale=scale,
-        zero_point=zero_point,
-        saturate=saturate,
+        y_scale=scale_zero_pt[0],
+        y_zero_point=scale_zero_pt[1],
+        axis=axis,
     )
 
 

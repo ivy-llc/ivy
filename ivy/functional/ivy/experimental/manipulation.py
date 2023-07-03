@@ -31,8 +31,9 @@ from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
 
 
+@handle_exceptions
 @inputs_to_ivy_arrays
-def quantize_linear(x, scale, zero_point, /, *, saturate=False):
+def quantize_linear(x, y_scale, y_zero_point, /, *, axis=None):
     """
     Quantizes the input array using the given scale and zero point.
 
@@ -40,15 +41,12 @@ def quantize_linear(x, scale, zero_point, /, *, saturate=False):
     ----------
     x
         Input array.
-    scale
+    y_scale
         The scale factor.
-    zero_point
+    y_zero_point
         The zero point offset for quantization.
     axis
         The axis along which to quantize. If not set, the array is flattened.
-    saturate
-        Whether to saturate the quantized values to the range [0, 255].
-        Defaults to False.
 
     Returns
     -------
@@ -57,25 +55,67 @@ def quantize_linear(x, scale, zero_point, /, *, saturate=False):
 
     Examples
     --------
-    >>> x = ivy.array([-1.5, 0.3, 2.7, 1.8], dtype=ivy.float32)
-    >>> scale = 0.5
-    >>> zero_point = 128
-    >>> ivy.quantize_linear(x, scale, zero_point)
-    ivy.array([127, 129, 133, 135])
+    >>> x = ivy.array([0, 2, 3, 1000, -254, -1000], dtype=ivy.float32)
+    >>> y_scale = ivy.array(2, dtype=ivy.float32)
+    >>> y_zero_point = ivy.array(128, dtype=ivy.uint8)
+    >>> ivy.quantize_linear(x, y_scale, y_zero_point)
+    ivy.array([128, 129, 130, 255,   1,   0])
 
-    >>> x = ivy.array([[1.5, 2.7], [0.8, 3.2]], dtype=ivy.float32)
-    >>> scale = 0.1
-    >>> zero_point = 128
+    >>> x = ivy.array(
+            [
+                [
+                    [[-162, 10], [-100, 232], [-20, -50]],
+                    [[-76, 0], [0, 252], [32, -44]],
+                    [[245, -485], [-960, -270], [-375, -470]],
+                ],
+            ],
+            dtype=ivy.float32,
+        )
+    >>> y_scale = ivy.array([2, 4, 5], dtype=ivy.float32)
+    >>> y_zero_point = ivy.array([84, 24, 196], dtype=ivy.uint8)
     >>> axis = 1
     >>> ivy.quantize_linear(x, scale, zero_point, axis=axis)
-    ivy.array([[143., 155.], [136., 160.]])
+    ivy.array([[[[  3,  89],
+         [ 34, 200],
+         [ 74,  59]],
+
+        [[  5,  24],
+         [ 24,  87],
+         [ 32,  13]],
+
+        [[245,  99],
+         [  4, 142],
+         [121, 102]]]])
     """
-    y = ivy.round(x / scale + zero_point).astype(ivy.uint8)
+    if x.dtype not in [ivy.float32, ivy.int32]:
+        raise ValueError("Input 'x' must be of type float or int32.")
+    if y_zero_point.dtype not in [ivy.int8, ivy.uint8]:
+        raise ValueError("'y_zero_point' must be of type int8 or uint8.")
 
-    if saturate:
-        y = ivy.clip(y, 0, 255)
+    if y_scale.shape != y_zero_point.shape:
+        raise ValueError("y_scale and y_zero_point must have the same shape.")
 
-    return y
+    if axis is not None:
+        if axis < 0:
+            axis = x.ndim + axis
+
+        if axis < 0 or axis >= x.ndim:
+            raise ValueError(
+                "Invalid axis. Accepted range is [-r, r-1] where r = rank(input)."
+            )
+
+        shape = [1] * x.ndim
+        shape[axis] = y_scale.size
+        y_scale = y_scale.reshape(shape)
+        y_zero_point = y_zero_point.reshape(shape)
+
+    y = (x / y_scale) + y_zero_point
+    y = ivy.round(y)
+
+    if y.dtype == ivy.int8:
+        return ivy.clip(y, -128, 127).astype(ivy.int8)
+
+    return ivy.clip(y, 0, 255).astype(ivy.int8)
 
 
 @handle_exceptions

@@ -2890,11 +2890,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def _static_quantize_linear(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: Union[int, float],
-        zero_point: Union[int, float],
+        y_scale: Union[int, float],
+        y_zero_point: Union[int, float],
         /,
         *,
-        saturate: Optional[bool] = None,
+        axis: Optional[int] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -2917,9 +2917,6 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The zero point offset for quantization.
         axis
             The axis along which to quantize. If not set, the array is flattened.
-        saturate
-            Whether to saturate the quantized values to the range [0, 255].
-            Defaults to False.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2935,9 +2932,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "quantize_linear",
             x,
-            scale,
-            zero_point,
-            saturate=saturate,
+            y_scale,
+            y_zero_point,
+            axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2946,11 +2943,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def quantize_linear(
         self: ivy.Container,
-        scale: Union[int, float],
-        zero_point: Union[int, float],
+        y_scale: Union[int, float],
+        y_zero_point: Union[int, float],
         /,
         *,
-        saturate: Optional[int] = None,
+        axis: Optional[int] = None,
     ):
         """
         ivy.Container instance method variant of ivy.quantize_linear.
@@ -2969,11 +2966,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             The zero point offset for quantization.
         axis
             The axis along which to quantize. If not set, the array is flattened.
-        saturate
-            Whether to saturate the quantized values to the range [0, 255].
-            Defaults to False.
         """
-        return self._static_quantize_linear(self, scale, zero_point, saturate=saturate)
+        return self._static_quantize_linear(self, y_scale, y_zero_point, axis=axis)
 
     @staticmethod
     def _static_unique_consecutive(

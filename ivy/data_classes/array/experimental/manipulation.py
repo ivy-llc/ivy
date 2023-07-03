@@ -1023,11 +1023,11 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
     def quantize_linear(
         self: ivy.Array,
-        scale: float,
-        zero_point: int,
+        y_scale: float,
+        y_zero_point: int,
         /,
         *,
-        saturate: Optional[bool] = None,
+        axis: Optional[int] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.quantize_linear. This method simply
@@ -1044,15 +1044,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The zero point.
         axis
             The axis along which to quantize.
-        saturate
-            Whether to saturate the quantized value.
 
         Returns
         -------
         ret
             The quantized array.
         """
-        return ivy.quantize_linear(self._data, scale, zero_point, saturate=saturate)
+        return ivy.quantize_linear(self._data, y_scale, y_zero_point, axis=axis)
 
     @handle_view
     def associative_scan(
