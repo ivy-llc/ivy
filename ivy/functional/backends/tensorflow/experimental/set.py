@@ -1,7 +1,9 @@
-import ivy
+# global
 import tensorflow as tf
 from typing import Union
 
+# local
+import ivy.functional.backends.tensorflow as tf_backend
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -18,13 +20,12 @@ def intersection(
     x1 = tf.reshape(x1, [-1])
     x2 = tf.reshape(x2, [-1])
     if not assume_unique:
-        ivy_tf = ivy.current_backend()
         if return_indices:
-            x1, ind1, _, _ = ivy_tf.unique_all(x1)
-            x2, ind2, _, _ = ivy_tf.unique_all(x2)
+            x1, ind1, _, _ = tf_backend.unique_all(x1)
+            x2, ind2, _, _ = tf_backend.unique_all(x2)
         else:
-            x1, _, _, _ = ivy_tf.unique_all(x1)
-            x2, _, _, _ = ivy_tf.unique_all(x2)
+            x1, _, _, _ = tf_backend.unique_all(x1)
+            x2, _, _, _ = tf_backend.unique_all(x2)
 
     aux = tf.concat([x1, x2], 0)
     if return_indices:

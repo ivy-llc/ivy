@@ -24,11 +24,7 @@ def intersection(
     *,
     assume_unique: bool = False,
     return_indices: bool = False,
-) -> Tuple[
-    Union[ivy.Array, ivy.NativeArray],
-    Union[ivy.Array, ivy.NativeArray],
-    Union[ivy.Array, ivy.NativeArray],
-]:
+) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
     """
     Find the intersection of two arrays.
 

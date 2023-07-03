@@ -12,7 +12,7 @@ def intersection(
     *,
     assume_unique: bool = False,
     return_indices: bool = False,
-) -> Tuple[JaxArray, JaxArray]:
+) -> Tuple[JaxArray, JaxArray, JaxArray]:
     return jnp.intersect1d(
         x1, x2, assume_unique=assume_unique, return_indices=return_indices
     )

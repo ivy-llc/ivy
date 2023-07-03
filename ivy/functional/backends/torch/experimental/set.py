@@ -1,7 +1,9 @@
-import ivy
+# global
 import torch
 from typing import Tuple
 
+# local
+import ivy.functional.backends.torch as torch_backend
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
@@ -23,13 +25,12 @@ def intersection(
     x1 = torch.reshape(x1, [-1])
     x2 = torch.reshape(x2, [-1])
     if not assume_unique:
-        ivy_torch = ivy.current_backend()
         if return_indices:
-            x1, ind1, _, _ = ivy_torch.unique_all(x1)
-            x2, ind2, _, _ = ivy_torch.unique_all(x2)
+            x1, ind1, _, _ = torch_backend.unique_all(x1)
+            x2, ind2, _, _ = torch_backend.unique_all(x2)
         else:
-            x1, _, _, _ = ivy.unique_all(x1)
-            x2, _, _, _ = ivy.unique_all(x2)
+            x1, _, _, _ = torch_backend.unique_all(x1)
+            x2, _, _, _ = torch_backend.unique_all(x2)
 
     aux = torch.concatenate((x1, x2))
     if return_indices:
