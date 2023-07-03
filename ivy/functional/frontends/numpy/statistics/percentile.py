@@ -6,26 +6,39 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
-    handle_numpy_casting,
+    
 )
 @handle_numpy_out
 @handle_numpy_dtype
 @to_ivy_arrays_and_back
-@handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
+
 def percentile(
-    x: Union[numpy.ndarray, ivy.Array],
-    q: float or sequence of floats,
+    a,
+    q,
     axis=None,
-    interpolation="linear",
-    kind="increasing",
-    order="k",
-    dtype=None,
-    keepdims=False,
+    interpolation='linear',
+    keepdims=False
 ):
+    a = ivy.array(a)
+    q = ivy.divide(q, 100.0)
+    q = ivy.array(q)
 
-    x = numpy.asarray(x)
+    if not ivy.all(ivy.logical_and(q >= 0, q <= 1)):
+        ivy.logging.warning("Percentiles must be in the range [0, 100]")
+        return []
 
-    return ivy.percentile(
-        x, q, axis=axis, interpolation=interpolation, kind=kind, order=order, dtype=dtype, keepdims=keepdims
-    )
+    if axis is None:
+        nanlessarray = ivy.where(ivy.isnan(a), ivy.inf, a)
+        nanlessarray = ivy.reshape(nanlessarray, (-1,))
+        resultarray = ivy.percentile(nanlessarray, q)
+        return resultarray
+    elif axis == 1:
+        nanlessarrayofarrays = ivy.where(ivy.isnan(a), ivy.inf, a)
+        resultarray = ivy.percentile(nanlessarrayofarrays, q, axis=1, keepdims=keepdims)
+        return resultarray
+    elif axis == 0:
+        nanlessarrayofarrays = ivy.where(ivy.isnan(a), ivy.inf, a)
+        nanlessarrayofarrays = ivy.swapaxes(nanlessarrayofarrays, 0, 1)
+        resultarray = ivy.percentile(nanlessarrayofarrays, q, axis=0, keepdims=keepdims)
+        return resultarray
