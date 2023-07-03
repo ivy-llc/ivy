@@ -336,6 +336,7 @@ def test_paddle_squeeze(
     )
 
 
+# expand
 @st.composite
 def _expand_helper(draw):
     dtype_and_x = draw(
@@ -376,4 +377,33 @@ def test_paddle_expand(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+# cast
+@handle_frontend_test(
+    fn_tree="paddle.cast",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_paddle_cast(
+    *,
+    dtype_and_x,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        dtype=dtype[0],
     )

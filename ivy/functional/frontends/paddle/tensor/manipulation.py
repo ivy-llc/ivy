@@ -68,3 +68,22 @@ def squeeze(x, axis=None, name=None):
 @to_ivy_arrays_and_back
 def expand(x, shape, name=None):
     return ivy.expand(x, shape)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "bool",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cast(x, dtype):
+    return ivy.astype(x, dtype)

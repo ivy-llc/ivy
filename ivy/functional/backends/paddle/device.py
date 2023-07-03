@@ -8,118 +8,71 @@ import time
 import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 from paddle.fluid.libpaddle import Place
-from paddle.fluid import core
-from paddle.framework import _get_paddle_place
 
-_paddle_dev_types = Union[
-    core.Place,
-    core.XPUPlace,
-    core.CPUPlace,
-    core.CUDAPinnedPlace,
-    core.CUDAPlace,
-    core.IPUPlace,
-    core.CustomPlace,
-]
 
 # API #
 # ----#
 
 
-def dev(
-    x: paddle.Tensor, /, *, as_native: bool = False
-) -> Union[ivy.Device, _paddle_dev_types]:
+def dev(x: paddle.Tensor, /, *, as_native: bool = False) -> Union[ivy.Device, Place]:
     dv = x.place
     if as_native:
-        return dv
+        if isinstance(dv, Place):
+            dv = "gpu" if dv.is_gpu_place() else "cpu"
+        return x.place
     return as_ivy_dev(dv)
 
 
 def to_device(
     x: paddle.Tensor,
-    device: Union[ivy.Device, _paddle_dev_types],
+    device: Place,
     /,
     *,
     stream: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if device is not None:
-        native_dev = as_native_dev(device)
-        if not dev(x, as_native=True)._equals(native_dev):  # type: ignore
-            # TODO: check memory leak because ret is copying the original tensor
-            return paddle.to_tensor(x, place=native_dev, stop_gradient=x.stop_gradient)
-    return x
+    if device is None:
+        return x
+    # TODO: check memory leak because ret is copying the original tensor
+    ret = paddle.to_tensor(
+        x, place=as_native_dev(device), stop_gradient=x.stop_gradient
+    )
+    return ret
 
 
-def as_ivy_dev(
-    device: Union[str, _paddle_dev_types],
-    /,
-) -> ivy.Device:
+def as_ivy_dev(device: Place, /):
     if isinstance(device, str):
         return ivy.Device(device)
 
-    if is_native_dev(device):
-        if not isinstance(device, Place):
-            native_dev = Place()
-            native_dev.set_place(device)
-        else:
-            native_dev = device
-        if native_dev.is_cpu_place():
-            return ivy.Device("cpu")
-        elif native_dev.is_gpu_place():
-            dev_type = "gpu"
-            dev_idx = device.gpu_device_id()
-            return ivy.Device(dev_type + ":" + str(dev_idx))
-        elif native_dev.is_gpu_pinned_place():
-            return ivy.Device("gpu:0")  # simiplification
-        else:
-            raise ivy.utils.exceptions.IvyError(
-                f"Cannot convert {device} to an ivyDevice. ",
-                "Currently only cpu, tpu and gpu are supported.",
-            )
+    if device.is_cpu_place():
+        dev_type = "cpu"
+        dev_idx = 0
+    elif device.is_gpu_place():
+        dev_type = "gpu"
+        dev_idx = device.gpu_device_id()
 
-    raise ivy.utils.exceptions.IvyError(
-        f"Cannot convert {device} to an ivy device. Expected a "
-        f"paddle.fluid.libpaddle.Place or str, got {type(device)}"
-    )
+    if dev_type == "cpu":
+        return ivy.Device(dev_type)
+
+    return ivy.Device(dev_type + (":" + (str(dev_idx) if dev_idx is not None else "0")))
 
 
 def as_native_dev(
-    device: Union[ivy.Device, str, _paddle_dev_types],
+    device: Optional[Union[ivy.Device, Place]] = None,
     /,
-) -> _paddle_dev_types:
-    if is_native_dev(device):
+) -> Optional[Place]:
+    if not isinstance(device, str):
         return device
-    if isinstance(device, str):
-        if "tpu" in device:
-            raise ivy.utils.exceptions.IvyBackendException(
-                "TPU not supported in paddle backend. Consider using ",
-                "TensorFlow or JaX.",
-            )
-        else:
-            # Internal function handles more edge cases and devices
-            return _get_paddle_place(device)
-    else:
-        raise ivy.utils.exceptions.IvyError(
-            f"{device} cannot be converted to paddle native device."
-        )
-
-
-def is_native_dev(device, /):
-    return isinstance(device, _paddle_dev_types.__args__)
+    elif "cpu" in device:
+        return paddle.fluid.libpaddle.CPUPlace()
+    elif "gpu" in device:
+        return paddle.fluid.libpaddle.CUDAPlace()
 
 
 def clear_mem_on_dev(device: Place, /):
-    try:
-        # throws and error if not compiled with cuda
-        device = as_native_dev(device)
-        if (
-            isinstance(device, Place)
-            and device.is_cuda_place()
-            or isinstance(device, (core.CUDAPlace, core.CUDAPinnedPlace))
-        ):
-            paddle.device.cuda.empty_cache()
-    except Exception:
-        pass
+    device = as_native_dev(device)
+    if isinstance(device, paddle.fluid.libpaddle.CUDAPlace):
+        paddle.device.cuda.empty_cache()
 
 
 def clear_cached_mem_on_dev(device: str, /):

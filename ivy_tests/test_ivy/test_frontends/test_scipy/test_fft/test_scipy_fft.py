@@ -106,6 +106,27 @@
 #     return dtype, x, type, n, axis, norm
 
 
+# @st.composite
+# def x_and_fft2(draw):
+#     min_fft2_points = 2
+#     dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
+#     x, dim = draw(
+#         helpers.arrays_and_axes(
+#             available_dtypes=dtype[0],
+#             min_dim_size=2,
+#             max_dim_size=100,
+#             min_num_dims=2,
+#             max_num_dims=4,
+#         ),
+#     )
+#     s = (
+#         draw(st.integers(min_fft2_points, 256)),
+#         draw(st.integers(min_fft2_points, 256)),
+#     )
+#     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+#     return dtype, x, s, dim, norm
+
+
 # ### Tests ###
 
 # # fft
@@ -219,4 +240,31 @@
 #         norm=norm,
 #         rtol_=1e-3,
 #         atol_=1e-1,
+#     )
+
+
+# # fft2
+# @handle_frontend_test(
+#     fn_tree="scipy.fft.fft2",
+#     d_x_d_s_n=x_and_fft2(),
+#     test_with_out=st.just(False),
+# )
+# def test_fft2(
+#     d_x_d_s_n,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     dtype, x, s, ax, norm = d_x_d_s_n
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#         s=s,
+#         axes=ax,
+#         norm=norm,
 #     )
