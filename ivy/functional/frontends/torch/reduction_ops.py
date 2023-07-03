@@ -280,6 +280,8 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if dtype is None or not ivy.is_float_dtype(dtype):
+        dtype = "float64" if "128" in str(dtype) else "float32"
     if (
         p == "fro" and (dim is None or isinstance(dim, int) or len(dim) <= 2)
     ) or p is None:
@@ -287,7 +289,9 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
     if isinstance(p, str):
         if dim is None:
             dim = tuple(range(input.dim()))
-        return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+        return ivy.matrix_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out
+        ).astype(dtype)
     else:
         return ivy.vector_norm(
             input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out

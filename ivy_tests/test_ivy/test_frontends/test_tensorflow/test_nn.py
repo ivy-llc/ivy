@@ -1166,6 +1166,7 @@ def test_tensorflow_moments(
         keepdims=keepdims,
     )
 
+
 # Normalize Moments
 @st.composite
 def _normalize_moments_helper(draw):
@@ -1198,9 +1199,9 @@ def _normalize_moments_helper(draw):
             max_num_dims=1,
             max_dim_size=1,
             min_dim_size=1,
-            )
+        )
     )
-    _,shift = draw(
+    _, shift = draw(
         helpers.dtype_and_values(
             available_dtypes=counts_dtype,
             shape=shape3,
@@ -1218,7 +1219,6 @@ def _normalize_moments_helper(draw):
     fn_tree="tensorflow.nn.normalize_moments",
     data=_normalize_moments_helper(),
 )
-
 def test_tensorflow_normalize_moments(
     *,
     data,
@@ -1227,7 +1227,6 @@ def test_tensorflow_normalize_moments(
     fn_tree,
     on_device,
 ):
- 
     counts_dtype, counts, mean, variance, shift = data
     helpers.test_frontend_function(
         input_dtypes=counts_dtype,
@@ -1242,7 +1241,6 @@ def test_tensorflow_normalize_moments(
         variance_ss=variance,
         shift=shift,
     )
-
 
 
 @st.composite
@@ -1643,6 +1641,59 @@ def test_tensorflow_pool(
     )
 
 
+# sufficient_statistics
+@st.composite
+def _axes_value(draw):
+    s = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=s,
+            valid_axis=True,
+            force_tuple_axis=True,
+        )
+    )
+    return dtype_and_x
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.sufficient_statistics",
+    dtypes_x_axes_shift=_axes_value(),
+    sh=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"), shape=()),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_sufficient_statistics(
+    *,
+    dtypes_x_axes_shift,
+    sh,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, a = dtypes_x_axes_shift
+    return helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axes=a,
+        shift=sh[1][0],
+        keepdims=keepdims,
+        name=None,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.log_poisson_loss",
     dtype_target_log_inputs=helpers.dtype_and_values(
@@ -1680,6 +1731,39 @@ def test_log_poisson_loss(
         log_input=log_input,
         compute_full_loss=compute_full_loss,
         atol=1e-2,
+    )
+
+
+# ctc_unique_labels
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.ctc_unique_labels",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_value=1,
+        max_value=100,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just([False]),
+)
+def test_tensorflow_ctc_unique_labels(
+    *,
+    dtype_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        labels=x[0],
     )
 
 

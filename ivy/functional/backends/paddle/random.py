@@ -8,14 +8,16 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 # Extra #
@@ -79,6 +81,17 @@ def random_normal(
     return paddle.normal(mean, std).cast(dtype)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -91,7 +104,13 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if probs is None:
+        probs = paddle.ones((batch_size, num_samples)) / population_size
+        probs = paddle.cast(probs, paddle.float32)
+    if seed:
+        paddle.seed(seed)
+    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
+    return x
 
 
 @with_unsupported_device_and_dtypes(
