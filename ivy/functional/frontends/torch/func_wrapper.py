@@ -132,28 +132,25 @@ def outputs_to_native_arrays(fn: Callable):
     return outputs_to_native_arrays_torch
 
 
-def torch_to_numpy_style_args(func):
-    """Convert argument names from PyTorch style to NumPy style."""
-    numpy_compatibility_arg_names = {
-        "dim": ["axis"],
-        "keepdim": ["keepdims"],
-        "input": ["x", "a", "x1"],
-        "other": ["x2"],
-    }
+numpy_compatible_args = {
+    "axis": "dim",
+    "keepdims": "keepdim",
+    "x": "input",
+    "a": "input",
+    "x1": "input",
+    "x2": "other",
+}
+
+
+# noqa: F811
+def numpy_to_torch_style_args(func):  # noqa
+    """Convert argument names from NumPy style to PyTorch style."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        # Translate PyTorch-style args to NumPy-style args
-        new_kwargs = {}
-        for k, v in kwargs.items():
-            ivy_names = numpy_compatibility_arg_names.get(k, [k])
-            for ivy_name in ivy_names:
-                new_kwargs[ivy_name] = v
-        # Translate argument names explicitly
-        for pytorch_name, numpy_names in numpy_compatibility_arg_names.items():
-            for numpy_name in numpy_names:
-                if numpy_name in new_kwargs:
-                    new_kwargs[pytorch_name] = new_kwargs.pop(numpy_name)
+        new_kwargs = {
+            numpy_compatible_args.get(key, key): value for key, value in kwargs.items()
+        }
         return func(*args, **new_kwargs)
 
     return wrapper

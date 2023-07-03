@@ -2,7 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
-    torch_to_numpy_style_args,
+    numpy_to_torch_style_args,
 )
 from collections import namedtuple
 import ivy.functional.frontends.torch as torch_frontend
@@ -13,31 +13,31 @@ def dist(input, other, p=2):
     return ivy.vector_norm(ivy.subtract(input, other), ord=p)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def argmax(input, dim=None, keepdim=False):
     return ivy.argmax(input, axis=dim, keepdims=keepdim)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def argmin(input, dim=None, keepdim=False):
     return ivy.argmin(input, axis=dim, keepdims=keepdim).astype(ivy.int64)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amax(input, dim=None, keepdim=False, *, out=None):
     return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def amin(input, dim=None, keepdim=False, *, out=None):
     return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def all(input, dim=None, keepdim=False, *, out=None):
     input_dtype = ivy.as_ivy_dtype(input.dtype)
@@ -47,7 +47,7 @@ def all(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def any(input, dim=None, keepdim=False, *, out=None):
     input_dtype = ivy.as_ivy_dtype(input.dtype)
@@ -57,13 +57,13 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
     if dim is None:
@@ -71,13 +71,13 @@ def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def median(input, dim=None, keepdim=False, *, out=None):
     if dim is None:
@@ -110,14 +110,14 @@ def median(input, dim=None, keepdim=False, *, out=None):
     return result
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def std(input, dim=None, unbiased=True, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
@@ -135,13 +135,13 @@ def prod(input, dim=None, keepdim=False, *, dtype=None):
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def var(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.var(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def min(*input, dim=None, keepdim=False, out=None):
     if len(input) == 1:
@@ -162,7 +162,7 @@ def min(*input, dim=None, keepdim=False, out=None):
         )
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def max(*input, dim=None, keepdim=False, out=None):
     if len(input) == 1:
@@ -188,7 +188,7 @@ def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
@@ -199,7 +199,7 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     return temp_std, temp_mean
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_var = ivy.var(
@@ -209,7 +209,7 @@ def var_mean(input, dim, unbiased, keepdim=False, *, out=None):
     return (temp_var, temp_mean)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def aminmax(input, *, dim=None, keepdim=False, out=None):
     minmax_tuple = namedtuple("minmax", ["min", "max"])
@@ -227,7 +227,7 @@ aminmax.unsupported_dtypes = {
 }
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def quantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
     return ivy.quantile(
@@ -243,13 +243,13 @@ quantile.unsupported_dtypes = {
 }
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def count_nonzero(input, dim=None):
     return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)
 
 
-@torch_to_numpy_style_args
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def logsumexp(input, dim, keepdim=False, *, out=None):
     c = ivy.max(input, axis=dim, keepdims=True)
