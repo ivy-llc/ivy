@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -147,7 +148,10 @@ def test_paddle_dropout(
         max_value=5,
         min_dim_size=2,
         shape=(4, 4),
+        data_format=st.sampled_from(["NCHW", "NHWC"]),
+        padding=st.tuples(int,int,int,int),
     ),
+
 )
 def test_paddle_zeropad2d(
     *,
@@ -157,6 +161,7 @@ def test_paddle_zeropad2d(
     frontend,
     test_flags,
     padding,
+    dataformat,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
@@ -167,4 +172,5 @@ def test_paddle_zeropad2d(
         on_device=on_device,
         x=x[0],
         padding=padding,
+        dataformat=dataformat
     )
