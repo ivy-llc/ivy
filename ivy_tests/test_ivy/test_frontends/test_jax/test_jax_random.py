@@ -8,8 +8,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# TODO: Find solution around torch and paddle not running with uints 32, 64
-# and remove xfail fixture
+# ToDo: Find solution around torch and paddle not running with uints 32, 64 and remove xfail fixture
 
 
 @st.composite
