@@ -195,8 +195,9 @@ class Tensor:
     def isfinite(self, name=None):
         return ivy.isfinite(self._ivy_array)
 
-    def all(self, axis=None, keepdim=False, name=None):
-        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim)
+    @with_supported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+    def all(self, axis=None, keepdim=False, dtype=None, name=None):
+        return ivy.all(self.ivy_array, axis=axis, keepdims=keepdim, dtype=dtype)
 
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def allclose(self, other, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
@@ -293,6 +294,10 @@ class Tensor:
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
 
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def divide(self, y, name=None):
+        return paddle_frontend.divide(self, y)
+      
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
@@ -344,3 +349,42 @@ class Tensor:
     def minimum(self, y, name=None):
         y_ivy = _to_ivy_array(y)
         return ivy.minimum(self._ivy_array, y_ivy)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def max(self, axis=None, keepdim=False, name=None):
+        return ivy.max(self._ivy_array, axis=axis, keepdims=keepdim)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def deg2rad(self, name=None):
+        return ivy.deg2rad(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("complex64", "complex128")},
+        "paddle",
+    )
+    def imag(self, name=None):
+        return paddle_frontend.imag(self)
+
+    def is_tensor(self):
+        return paddle_frontend.is_tensor(self._ivy_array)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def isclose(self, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
+        return paddle_frontend.isclose(
+            self, y, rtol=rtol, atol=atol, equal_nan=equal_nan
+        )
+    
+    @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+    def floor_divide(self, y, name=None):
+        y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
+        return ivy.floor_divide(self._ivy_array, y_ivy)
