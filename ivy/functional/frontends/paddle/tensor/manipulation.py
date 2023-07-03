@@ -56,3 +56,22 @@ def split(x, num_or_sections, axis=0, name=None):
 @to_ivy_arrays_and_back
 def squeeze(x, axis=None, name=None):
     return ivy.squeeze(x, axis=axis)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.5.0 and below": (
+            "bool",
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "uint8",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cast(x, dtype):
+    return ivy.astype(x, dtype)
