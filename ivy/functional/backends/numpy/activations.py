@@ -117,9 +117,9 @@ mish.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def hardswish(x: np.ndarray, out: Optional[np.ndarray] = None) -> np.ndarray:
-    max_x_3 = np.maximum(x + 3, 0)
-    return x * np.minimum(max_x_3, 6) / 6
+def hardswish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    max_x_3 = np.maximum(x + 3, 0, dtype=x.dtype)
+    return x * np.minimum(max_x_3, 6, out=out, dtype=x.dtype) / 6
 
 
 hardswish.support_native_out = True
