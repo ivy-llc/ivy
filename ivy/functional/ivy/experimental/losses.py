@@ -58,6 +58,7 @@ def mse_loss(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    axis: Optional[int] = None,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -70,6 +71,10 @@ def mse_loss(
         input array containing true values.
     pred : array-like
         input array containing predicted values.
+    axis : int or None, optional
+        the axis along which to compute the mean squared error. If `axis` is `None`,
+        the mean squared error will be computed over all dimensions.
+        Default is `None`.
     reduction : {'none', 'mean', 'sum'}, optional
         type of reduction to apply to the output. Default is 'mean'.
     out : array-like, optional
@@ -105,7 +110,7 @@ def mse_loss(
     ivy.array([0.01 , 0.01 ])
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    result = ivy.mean(ivy.square(true - pred), keepdims=True)
+    result = ivy.mean(ivy.square(true - pred), axis=axis, keepdims=True)
     return _reduce_loss(reduction, result, None, out)
 
 
@@ -118,6 +123,7 @@ def mae_loss(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    axis: Optional[int] = None,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -130,6 +136,10 @@ def mae_loss(
         input array containing true values.
     pred : array-like
         input array containing predicted values.
+    axis : int or None, optional
+        the axis along which to compute the mean absolute error. If `axis` is `None`,
+        the mean absolute error will be computed over all dimensions.
+        Default is `None`.
     reduction : {'none', 'mean', 'sum'}, optional
         type of reduction to apply to the output. Default is 'mean'.
     out : array-like, optional
@@ -149,21 +159,21 @@ def mae_loss(
     Examples
     --------
     >>> true = ivy.array([1, 2, 3, 4])
-    >>> pred = ivy.array([0.9, 2.1, 2.8, 4.2])
+    >>> pred = ivy.array([1.1, 2.2, 2.9, 4.1])
     >>> ivy.mae_loss(true, pred)
-    ivy.array(0.15)
+    ivy.array(0.275)
 
     >>> true = ivy.array([[1, 2], [3, 4]])
-    >>> pred = ivy.array([[0.8, 2.3], [3.2, 4.1]])
+    >>> pred = ivy.array([[0.9, 2.1], [3.1, 4.2]])
     >>> ivy.mae_loss(true, pred, reduction='sum')
-    ivy.array(0.8)
+    ivy.array(0.3)
 
     >>> true = ivy.array([1, 2, 3, 4])
-    >>> pred = ivy.array([0.9, 2.1, 2.8, 4.2])
+    >>> pred = ivy.array([1.1, 2.2, 2.9, 4.1])
     >>> out = ivy.array([0, 0])
     >>> ivy.mae_loss(true, pred, reduction='none', out=out)
-    ivy.array([0.1, 0.3])
+    ivy.array([0.1, 0.2])
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    result = ivy.mean(ivy.abs(true - pred), keepdims=True)
+    result = ivy.mean(ivy.abs(true - pred), axis=axis, keepdims=True)
     return _reduce_loss(reduction, result, None, out)
