@@ -1085,19 +1085,34 @@ def nested_map(
     [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
 
     >>> x = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
-    >>> ivy.nested_map(x, include_derived = True)
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(x, function, to_ignore = True)
     >>> print(x)
-    [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    [[2, 3, 4, 5, 6], [24, 25, 26, 27, 28]]
+
+    >>> x = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(x, function, extra_nest_types = True)
+    >>> print(x)
+    [[2, 3, 4, 5, 6], [24, 25, 26, 27, 28]]
+
+    >>> x = [[1, 2, 3, 4, 5], [23, 24, 25, 26, 27]]
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(x, function, include_derived = True)
+    >>> print(x)
+    [[2, 3, 4, 5, 6], [24, 25, 26, 27, 28]]
 
     >>> nest = ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
-    >>> ivy.nested_map(nest, max_depth > 1)
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(nest, function,  max_depth = 1)
     >>> print(nest)
-    ([11, 12, 13, 14, 15],[21, 22, 23, 24, 25])
+    ([12, 13, 14, 15, 16],[22, 23, 24, 25, 26])
 
     >>> nest = ([23, 25, 1337], [63, 98, 6])
-    >>> ivy.nested_map(nest, to_mutable = True)
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(nest, function, to_mutable = True)
     >>> print(nest)
-    [[23, 25, 1337], [63, 98, 6]]
+    [[24, 25, 1338], [64, 99, 7]]
 
     >>> nest = ([3, 5, 7], [6, 9, 10])
     >>> ivy.nested_map(nest, to_mutable = True, shallow = False)
@@ -1106,13 +1121,15 @@ def nested_map(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1., 2.]) , b=ivy.array([4., 5.]))
-    >>> function = lambda _: ivy.array([3., 4.])
+    >>> x = ivy.Container(
+        a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
+        )
+    >>> function = lambda a : a  + 1
     >>> ivy.nested_map(x, function)
     >>> print(x)
     {
-        a: ivy.array([3., 4.]),
-        b: ivy.array([3., 4.])
+        a: ivy.array([[2, 3, 4], [10, 8, 8]]),
+        b: ivy.array([[5, 6,  7], [13, 14, 15]])
     }
     """
     to_ignore = ivy.default(to_ignore, ())
