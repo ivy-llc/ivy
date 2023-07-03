@@ -3975,8 +3975,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = a0.array_equal(a1)
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
         """
         return _ContainerWithGeneral._static_array_equal(
