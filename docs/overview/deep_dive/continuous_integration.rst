@@ -397,7 +397,7 @@ You can filter tests by selecting choices from the various dropdowns. The link c
 
 **Round Up**
 
-This should have hopefully given you a good feel for how Continous Integration works in Ivy.
+This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
 or in the `continuous integration forum`_!

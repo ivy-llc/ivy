@@ -151,3 +151,10 @@ def matrix_power(x, n, name=None):
 @to_ivy_arrays_and_back
 def cond(x, p=None, name=None):
     return ivy.cond(x, p=p, out=name)
+
+
+# transpose
+@with_unsupported_dtypes({"2.5.0 and below": ("uint8", "int8", "int16")}, "paddle")
+@to_ivy_arrays_and_back
+def transpose(x, perm, name=None):
+    return ivy.permute_dims(x, axes=perm)

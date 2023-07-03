@@ -234,7 +234,7 @@ def test_jax_numpy_bincount(
 # cumprod
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
-    #aliases=["jax.numpy.cumproduct"], deprecated since 0.4.12
+    # aliases=["jax.numpy.cumproduct"], deprecated since 0.4.12
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -994,8 +994,8 @@ def test_jax_numpy_nanmedian(
     test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
-    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does not
-    #  support overwrite_input=True.
+    # TODO: overwrite as a boolean when there's a way around
+    # jax.numpy.nanquantile does not support overwrite_input=True.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
