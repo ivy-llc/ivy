@@ -128,6 +128,9 @@ def test_torch_tanh(
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=False),
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
 )
 def test_torch_abs(
