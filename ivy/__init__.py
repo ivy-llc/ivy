@@ -590,6 +590,7 @@ array_decimal_values_stack = list()
 warning_level_stack = list()
 nan_policy_stack = list()
 dynamic_backend_stack = list()
+stateful_initialization_mode_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -945,6 +946,7 @@ globals_vars = GlobalsDict(
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
         "dynamic_backend_stack": dynamic_backend_stack,
+        "stateful_initialization_mode_stack": stateful_initialization_mode_stack,
     }
 )
 
@@ -1224,6 +1226,39 @@ def cast_data_types(val=True):
     upcast_dtypes = val
     downcast_dtypes = val
     crosscast_dtypes = val
+
+
+# Stateful initialization mode
+
+ivy.stateful_initialization_mode = True
+
+
+def set_stateful_initialization_mode(val):
+    """
+    Enable random weight initialization for ivy.Module disabling this uses Shape objects
+    rather than random weights during initialization.
+
+    Parameters
+    ----------
+    vals
+        optional int, number of significant figures to be shown when printing
+    """
+    global stateful_initialization_mode_stack
+    stateful_initialization_mode_stack.append(val)
+    ivy.__setattr__("stateful_initialization_mode", val, True)
+
+
+def unset_stateful_initialization_mode():
+    """Unset the stateful_initialization_mode."""
+    global stateful_initialization_mode_stack
+    if stateful_initialization_mode_stack:
+        stateful_initialization_mode_stack.pop(-1)
+        val = (
+            stateful_initialization_mode_stack[-1]
+            if stateful_initialization_mode_stack
+            else True
+        )
+        ivy.__setattr__("stateful_initialization_mode", val, True)
 
 
 # Promotion Tables #

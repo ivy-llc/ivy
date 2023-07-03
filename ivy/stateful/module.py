@@ -119,9 +119,14 @@ class Module(ModuleConverters, ModuleHelpers):
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        if self._v_in and not with_partial_v:
+            ivy.set_stateful_initialization_mode(False)
+
         if build_mode != "on_init":
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+        if self._v_in and not with_partial_v:
+            ivy.unset_stateful_initialization_mode()
 
     # Private #
     # --------#
@@ -579,23 +584,26 @@ class Module(ModuleConverters, ModuleHelpers):
             dict(**self._find_variables(obj=self), **created),
             dynamic_backend=dynamic_backend,
         )
+        print(created, created_n_found)
         if ivy.exists(v_from_constructor):
+            pretrained_weights = ivy.shape(v_from_constructor)
             if self._with_partial_v:
                 if v_from_constructor:
                     created_n_found.cont_assert_contains_sub_structure(
                         v_from_constructor, partial=True
                     )
-                self.v = created_n_found.cont_set_at_key_chains(v_from_constructor)
             else:
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
-                ivy.Container.cont_assert_identical_structure(
-                    [created_n_found, v_from_constructor]
+                ivy.Container.cont_assert_identical(
+                    [created_n_found, pretrained_weights]
                 )
                 # propagate v_from_constructor to child variables
-                created_n_found.cont_set_at_key_chains(v_from_constructor, inplace=True)
-                self.v = created_n_found
+
+            self.v = created_n_found.cont_set_at_key_chains(
+                v_from_constructor, inplace=True
+            )
         else:
             self.v = created_n_found
         # remove duplicates
