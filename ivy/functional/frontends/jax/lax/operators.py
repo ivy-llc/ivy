@@ -61,6 +61,9 @@ def bitwise_and(x, y):
 def bitwise_not(x):
     return ivy.bitwise_invert(x)
 
+@to_ivy_arrays_and_back
+def lu(x):
+    return ivy.lu_factor(x)
 
 @to_ivy_arrays_and_back
 def bitwise_or(x, y):
