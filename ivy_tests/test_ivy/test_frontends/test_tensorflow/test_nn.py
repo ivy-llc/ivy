@@ -349,6 +349,35 @@ def _x_and_filters(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.dropout",
+    x_f_d=_x_and_keep_prob(
+        dtypes=helpers.get_dtypes("float", full=False),
+        keep_prob_min=0.5,
+        keep_prob_max=1.0,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_dropout(
+    *,
+    x_f_d,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, keep_prob = x_f_d
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x,
+        keep_prob=keep_prob,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.nn.atrous_conv2d",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
