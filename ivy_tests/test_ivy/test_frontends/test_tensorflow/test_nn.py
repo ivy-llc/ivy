@@ -1692,7 +1692,7 @@ def test_tensorflow_sufficient_statistics(
         keepdims=keepdims,
         name=None,
     )
-  
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.log_poisson_loss",
@@ -1733,6 +1733,38 @@ def test_log_poisson_loss(
         atol=1e-2,
     )
 
+
+# ctc_unique_labels
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.ctc_unique_labels",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_value=1,
+        max_value=100,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just([False]),
+)
+def test_tensorflow_ctc_unique_labels(
+    *,
+    dtype_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        labels=x[0],
+    )
 
 # weighted moments
 @handle_frontend_test(
