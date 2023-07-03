@@ -62,6 +62,15 @@ def squeeze(x, axis=None, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def expand(x, shape, name=None):
+    return ivy.expand(x, shape)
+
+
+@with_supported_dtypes(
     {
         "2.5.0 and below": (
             "bool",
