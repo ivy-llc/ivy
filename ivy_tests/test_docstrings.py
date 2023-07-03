@@ -45,14 +45,7 @@ def trim(*, docstring):
     if "\n" in docstring:
         trimmed.append("")
 
-    # Join the lines into a single string:
-    joined_lines = " ".join(trimmed)
-
-    # Remove the separator ("/") and continuation ("...") lines:
-    joined_lines = re.sub(r"/\s*\n\s*", "", joined_lines)
-    joined_lines = re.sub(r"\.\.\.\s*\n\s*", "", joined_lines)
-
-    return joined_lines
+    return "\n".join(trimmed)
 
 def check_docstring_examples_run(
     *, fn, from_container=False, from_array=False, num_sig_fig=2
@@ -136,6 +129,9 @@ def check_docstring_examples_run(
         if ">>> print(" in line:
             is_multiline_executable = False
 
+    # remove "..." for multilines
+    for i, v in enumerate(executable_lines):
+        executable_lines[i] = v.replace("...", "")
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
@@ -348,16 +344,18 @@ def test_docstrings(backend):
                     failures.append("Container." + method_name)
 
         else:
+            if k == "abs":
+                x = 1
             if (
-                v is not ivy.GlobalsDict
-                or k in to_skip
-                or helpers.gradient_incompatible_function(fn=v)
+               # v is not ivy.GlobalsDict
+                k in to_skip
                 or check_docstring_examples_run(fn=v)
+                or helpers.gradient_incompatible_function(fn=v)
+
             ):
                 continue
             success = False
             failures.append(k)
-
     if not success:
         assert (
             success
