@@ -3689,7 +3689,9 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Return the supported combination of devices and dtypes of the current backend's
-    function.
+    function. The function returns a dict containing the supported combination of
+    devices and dtypes of the primary and compositional implementations incase of
+    partial mixed functions.
 
     Parameters
     ----------
@@ -3702,7 +3704,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     Returns
     -------
     ret
-        The unsupported devices of the function
+        Tuple or dict containing the supported devices and dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
@@ -3738,7 +3740,9 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
 def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Return the unsupported combination of devices and dtypes of the current backend's
-    function.
+    function. The function returns a dict containing the unsupported combination of
+    devices and dtypes of the primary and compositional implementations incase of
+    partial mixed functions.
 
     Parameters
     ----------
@@ -3751,7 +3755,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     Returns
     -------
     ret
-        The unsupported combination of devices and dtypes of the function
+        Tuple or dict containing the unsupported devices and dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),

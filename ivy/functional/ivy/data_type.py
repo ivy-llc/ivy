@@ -1602,7 +1602,9 @@ def dtype(
 @handle_nestable
 def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple, dict]:
     """
-    Return the supported data types of the current backend's function.
+    Return the supported data types of the current backend's function. The function
+    returns a dict containing the supported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1614,7 +1616,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Union[Tuple
     Returns
     -------
     ret
-        The supported data types of the function
+        Tuple or dict containing the supported dtypes of the function
 
     Examples
     --------
@@ -1653,7 +1655,9 @@ def function_unsupported_dtypes(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
     """
-    Return the unsupported data types of the current backend's function.
+    Return the unsupported data types of the current backend's function. The function
+    returns a dict containing the unsupported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1665,7 +1669,7 @@ def function_unsupported_dtypes(
     Returns
     -------
     ret
-        The unsupported data types of the function
+        Tuple or dict containing the unsupported dtypes of the function
 
     Examples
     --------

@@ -1149,7 +1149,9 @@ def function_supported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
     """
-    Return the supported devices of the current backend's function.
+    Return the supported devices of the current backend's function. The function returns
+    a dict containing the supported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1161,7 +1163,7 @@ def function_supported_devices(
     Returns
     -------
     ret
-        Tuple containing the supported devices of the function
+        Tuple or dict containing the supported devices of the function
 
     Examples
     --------
@@ -1201,7 +1203,9 @@ def function_unsupported_devices(
     fn: Callable, recurse: bool = True
 ) -> Union[Tuple, dict]:
     """
-    Return the unsupported devices of the current backend's function.
+    Return the unsupported devices of the current backend's function. The function
+    returns a dict containing the unsupported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1213,7 +1217,7 @@ def function_unsupported_devices(
     Returns
     -------
     ret
-        Tuple containing the unsupported devices of the function
+        Tuple or dict containing the unsupported devices of the function
 
     Examples
     --------
