@@ -418,75 +418,117 @@ class Tensor:
         )
 
     def to(self, *args, **kwargs):
+        dtype = kwargs.get("dtype", None)
+        copy = kwargs.get("copy", False)
+        device = kwargs.get("device", None)
+
         if len(args) > 0:
+            # argument order: other, non_blocking=False, copy=False
             if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
-                if self.dtype == ivy.dtype(args[0]) and self.device == ivy.dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(
-                        self.ivy_array,
-                        dtype=ivy.dtype(args[0]),
-                        device=ivy.dev(args[0]),
+                if "device" in kwargs:
+                    raise ValueError(
+                        "Argument 'device' is not supported for array inputs."
                     )
-                    return cast_tensor
-            if (
+                if "dtype" in kwargs:
+                    raise ValueError(
+                        "Argument 'dtype' is not supported for array inputs."
+                    )
+                dtype = ivy.dtype(args[0])
+                device = ivy.dev(args[0], as_native=True)  # don't limit to cpu/gpu/tpu
+                if len(args) > 2:
+                    if isinstance(args[2], bool):
+                        if "copy" in kwargs:
+                            raise ValueError(
+                                "Argument 'copy' is defined both "
+                                "as positional and keyword argument."
+                            )
+                        copy = args[2]
+                    else:
+                        raise ValueError(
+                            "The postional argumnet 'copy'"
+                            f"expected a boolean type, got {type(args[2])}."
+                        )
+
+            # dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format
+            elif (
                 isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
                 or args[0] in ivy._all_ivy_dtypes_str
+                or args[0] in [float, int, bool]
             ):
-                if self.dtype == ivy.as_ivy_dtype(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, dtype=args[0])
-                    return cast_tensor
-            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if isinstance(args[0], str) and not isinstance(
-                    args[0], (ivy.Device, ivy.NativeDevice)
-                ):
-                    ivy.utils.assertions.check_elem_in_list(
-                        args[0],
-                        [
-                            "cpu",
-                            "cuda",
-                            "xpu",
-                            "mkldnn",
-                            "opengl",
-                            "opencl",
-                            "ideep",
-                            "hip",
-                            "ve",
-                            "ort",
-                            "mlc",
-                            "xla",
-                            "lazy",
-                            "vulkan",
-                            "meta",
-                            "hpu",
-                        ],
+                if "dtype" in kwargs:
+                    raise ValueError(
+                        "Argument 'dtype' is defined both as positional "
+                        "and keyword argument."
                     )
-                if self.device == ivy.as_ivy_dev(args[0]):
-                    return self
-                else:
-                    cast_tensor = self.clone()
-                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, device=args[0])
-                    return cast_tensor
-        else:
-            if (
-                "dtype" in kwargs
-                and "device" in kwargs
-                and self.dtype == kwargs["dtype"]
-                and self.device == kwargs["device"]
-            ):
-                return self
+                if "device" in kwargs:
+                    raise ValueError(
+                        "Argument 'device' cannot be defined with dtype as "
+                        "positional argument."
+                    )
+                dtype = args[0]
+                if len(args) > 2:
+                    if isinstance(args[2], bool):
+                        if "copy" in kwargs:
+                            raise ValueError(
+                                "Argument 'copy' is defined both as positional "
+                                "and keyword argument."
+                            )
+                        copy = args[2]
+                    else:
+                        raise ivy.utils.exceptions.IvyError(
+                            "The postional argumnet 'copy' expected a boolean "
+                            f"type, got {type(args[2])}."
+                        )
+
+            # device=None, dtype=None, non_blocking=False, copy=False, memory_format
+            elif isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
+                if "device" in kwargs:
+                    raise ValueError(
+                        "Argument 'device' is defined both as positional "
+                        "and keyword argument."
+                    )
+                device = args[0]
+                if len(args) > 1:
+                    if (
+                        isinstance(args[1], (ivy.Dtype, ivy.NativeDtype))
+                        or args[1] in ivy._all_ivy_dtypes_str
+                        or args[0] in [float, int, bool]
+                    ):
+                        if "dtype" in kwargs:
+                            raise ValueError(
+                                "Argument 'dtype' is defined both as positional "
+                                "and keyword argument."
+                            )
+                        dtype = args[1]
+                    if len(args) > 3:
+                        if isinstance(args[3], bool):
+                            if "copy" in kwargs:
+                                raise ValueError(
+                                    "Argument 'copy' is defined both as positional "
+                                    "and keyword argument."
+                                )
+                            copy = args[3]
+                        else:
+                            raise ivy.utils.exceptions.IvyError(
+                                "The postional argumnet 'copy' expected a boolean "
+                                + f"type, got {type(args[3])}."
+                            )
             else:
-                cast_tensor = self.clone()
-                cast_tensor.ivy_array = ivy.asarray(
-                    self.ivy_array,
-                    device=kwargs["device"] if "device" in kwargs else self.device,
-                    dtype=kwargs["dtype"] if "dtype" in kwargs else self.dtype,
+                raise ivy.utils.exceptions.IvyError(
+                    "Wrong set or order of arguments provided."
                 )
-                return cast_tensor
+
+        if copy:
+            ret = self.clone()
+        else:
+            ret = self
+
+        ret.ivy_array = ivy.asarray(
+            ret.ivy_array,
+            device=device if device is not None else self.device,
+            dtype=dtype if dtype is not None else self.dtype,
+        )
+        return ret
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arctan(self):
@@ -1420,6 +1462,10 @@ class Tensor:
             tensor1=tensor1, tensor2=tensor2, value=value
         ).ivy_array
         return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+    def cholesky(self, upper=False):
+        return torch_frontend.cholesky(self, upper=upper)
 
 
 class Size(tuple):
