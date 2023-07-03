@@ -175,3 +175,13 @@ def rayleigh(scale, size=None):
     log_u = ivy.log(u)
     x = ivy.multiply(scale, ivy.sqrt(ivy.multiply(-2, log_u)))
     return x
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def permuted(x, axes=None, out=None):#, copy=None):
+    if out != x:  #when out is not x or is None, shuffle in the result
+        result = ivy.copy_array(x, result)
+        result = ivy.matrix_transpose(result, axes)
+        return result
+    result = ivy.matrix_transpose(x, axes)
+    return ivy.permute_dims(x, axes, copy = None, out = result) #copy is kept at default
