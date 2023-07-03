@@ -149,7 +149,7 @@ def test_paddle_dropout(
         min_dim_size=2,
         shape=(4, 4),
         data_format=st.sampled_from(["NCHW", "NHWC"]),
-        padding=st.tuples(int,int,int,int),
+        padding=st.tuples(int, int, int, int),
     ),
 
 )
@@ -172,5 +172,5 @@ def test_paddle_zeropad2d(
         on_device=on_device,
         x=x[0],
         padding=padding,
-        dataformat=dataformat
+        dataformat=dataformat,
     )
