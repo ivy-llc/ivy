@@ -195,24 +195,11 @@ def test_numpy_rfftfreq(n, sample_rate, frontend, test_flags, fn_tree, on_device
 
 
 @handle_frontend_test(
-    fn_tree="numpy.fft.rfft2",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
-        max_num_dims=2,
-        min_axis=-2,
-        force_tuple_axis=True,
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    # s=st.one_of(st.lists(st.integers()), st.none()),
-    # s=st.integers(min_value=2, max_value=5),
-    s=st.one_of(st.lists(st.integers(min_value=1, max_value=10)), st.none()),
-    # axes=st.one_of(st.none(), st.lists(st.integers())),
+    fn_tree="numpy.fft.ifftn",
+    dtype_and_x=x_and_ifft(),
 )
-def test_numpy_rfft2(
-    dtype_input_axis, norm, s, axes, frontend, test_flags, fn_tree, on_device
-):
-    input_dtype, x, axis = dtype_input_axis
+def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
+    input_dtype, x, dim, norm, n = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -221,7 +208,7 @@ def test_numpy_rfft2(
         on_device=on_device,
         test_values=True,
         a=x,
-        s=s,
-        axes=axes,
+        s=None,
+        axes=None,
         norm=norm,
     )

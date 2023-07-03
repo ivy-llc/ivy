@@ -127,34 +127,9 @@ def rfftfreq(n, d=1.0):
     return results * val
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
-def rfft2(a, s=None, axes=(-2, -1), norm=None):
-    if len(axes) != 2:
-        raise ValueError("rfft2 only supports 2 axes")
-
-    if s is not None and any(dim < 0 for dim in s):
-        raise ValueError("Shape s must be non-negative")
-
-    if s is not None and len(s) != len(axes):
-        raise ValueError("Shape s and axes must have the same length")
-
-    if len(set(axes)) != len(axes):
-        raise ValueError("Repeated axes are not allowed")
-
-    if len(axes) > 3:
-        raise ValueError("rfft2 does not support more than 3 axes")
-    if s:
-        cropped_shape = tuple(min(dim, size) for dim, size in zip(a.shape, s))
-        pad_width = tuple((0, size - dim) for dim, size in zip(cropped_shape, s))
-        a = ivy.pad(a, pad_width)
-
-    s = s or tuple(a.shape[axis] for axis in axes)
-
-    a = ivy.astype(a, "float64")
-    norm = norm or "backward"
-
-    for axis in axes:
-        a = ivy.dft(a, axes=axis, inverse=False, onesided=True, dft_length=s, norm=norm)
-
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
     return a
