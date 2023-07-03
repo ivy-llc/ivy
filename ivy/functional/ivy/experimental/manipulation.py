@@ -113,9 +113,9 @@ def quantize_linear(x, y_scale, y_zero_point, /, *, axis=None):
     y = ivy.round(y)
 
     if y.dtype == ivy.int8:
-        return ivy.clip(y, -128, 127).astype(ivy.int8)
+        return ivy.clip(y, -128, 127)
 
-    return ivy.clip(y, 0, 255).astype(ivy.int8)
+    return ivy.clip(y, 0, 255)
 
 
 @handle_exceptions
