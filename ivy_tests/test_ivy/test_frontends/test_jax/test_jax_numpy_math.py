@@ -854,24 +854,22 @@ def test_jax_numpy_arcsin(
 @handle_frontend_test(
     fn_tree="jax.numpy.gradient",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_numpy_gradient(
+    *,
     dtype_and_x,
-    frontend,
     test_flags,
-    fn_tree,
     on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        frontend=frontend,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
