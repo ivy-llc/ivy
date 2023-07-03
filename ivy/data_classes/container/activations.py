@@ -1074,13 +1074,12 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = ivy.Container.static_hardswish(x)
-        >>> print(y)
-        // TOOD: change example results
+        >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+        >>> x = ivy.hardswish(x, out=x)
+        >>> x
         {
-            a: ivy.array([0.86509842, -0.30883577]),
-            b: ivy.array([0.28903052, -0.10714479])
+            a: ivy.array([-0.,  4.,  5.]),
+            b: ivy.array([0., 5.])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -1135,13 +1134,12 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-        >>> y = x.hardswish()
-        >>> print(y)
-        // TOOD: change example results
+        >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+        >>> x = ivy.hardswish(x, out=x)
+        >>> x
         {
-            a: ivy.array([0.86509842, -0.30883577]),
-            b: ivy.array([0.28903052, -0.10714479])
+            a: ivy.array([-0.,  4.,  5.]),
+            b: ivy.array([0., 5.])
         }
         """
         return self._static_hardswish(
