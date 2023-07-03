@@ -78,12 +78,20 @@ class Device(str):
     def __new__(cls, dev_str):
         if dev_str != "":
             ivy.utils.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
-            if dev_str != "cpu":
-                # ivy.assertions.check_equal(dev_str[3], ":")
+            if len(dev_str) > 3:
+                ivy.assertions.check_equal(
+                    dev_str[3],
+                    ":",
+                    False,
+                    "device string must be of the form 'device_type:device_id'",
+                )
                 ivy.utils.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
                 )
+            elif len(dev_str) == 3:
+                if dev_str != "cpu":
+                    dev_str += ":0"
         return str.__new__(cls, dev_str)
 
 
@@ -351,6 +359,27 @@ class Shape:
     def __dir__(self):
         return self._shape.__dir__()
 
+    def __pow__(self, power, modulo=None):
+        pass
+
+    def __index__(self):
+        pass
+
+    def __rdivmod__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    def __rtruediv__(self, other):
+        pass
+
+    def __rfloordiv__(self, other):
+        pass
+
+    def __ne__(self, other):
+        pass
+
     @property
     def shape(self):
         return self._shape
@@ -374,7 +403,7 @@ class Shape:
 
     @property
     def shape(self):
-        return self._shap
+        return self._shape
 
     def as_dimension(self):
         if isinstance(self._shape, Shape):
