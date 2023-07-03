@@ -184,6 +184,23 @@ def test_torch_tensor_property_ndim(
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_property_requires_grad(
+    dtype_x,
+    requires_grad,
+):
+    _, data = dtype_x
+    x = Tensor(data[0], requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
+    x.requires_grad = not requires_grad
+    ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(

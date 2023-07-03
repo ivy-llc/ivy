@@ -7,13 +7,20 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
+def _from_ivy_array_to_torch_frontend_tensor(
+    x, nested=False, include_derived=None, requires_grad=False
+):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_torch_frontend_tensor, include_derived, shallow=False
+            x,
+            functools.partial(
+                _from_ivy_array_to_torch_frontend_tensor, requires_grad=requires_grad
+            ),
+            include_derived,
+            shallow=False,
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = torch_frontend.Tensor(x, _init_overload=True)
+        a = torch_frontend.Tensor(x, _init_overload=True, requires_grad=requires_grad)
         return a
     return x
 
@@ -91,7 +98,18 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
         ret = _from_ivy_array_to_torch_frontend_tensor(
-            ret, nested=True, include_derived={tuple: True}
+            ret,
+            nested=True,
+            include_derived={tuple: True},
+            requires_grad=kwargs.get(
+                "requires_grad",
+                any(
+                    [
+                        isinstance(i, torch_frontend.Tensor) and i.requires_grad
+                        for i in args
+                    ]
+                ),
+            ),
         )
         array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
         if "inplace" in kwargs and kwargs["inplace"]:

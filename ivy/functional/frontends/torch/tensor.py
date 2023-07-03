@@ -13,7 +13,7 @@ from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 
 class Tensor:
-    def __init__(self, array, device=None, _init_overload=False):
+    def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -23,6 +23,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -75,6 +76,10 @@ class Tensor:
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
 
+    @property
+    def requires_grad(self):
+        return self._requires_grad
+
     # Setters #
     # --------#
 
@@ -83,6 +88,10 @@ class Tensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+
+    @requires_grad.setter
+    def requires_grad(self, requires_grad):
+        self._requires_grad = requires_grad
 
     # Instance Methods #
     # ---------------- #
