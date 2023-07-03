@@ -309,3 +309,11 @@ def fmax(x, y, name=None):
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
+    return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
