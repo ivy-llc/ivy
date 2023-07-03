@@ -13,7 +13,7 @@ from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
 
 
 class Tensor:
-    def __init__(self, array, device=None, _init_overload=False):
+    def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -23,6 +23,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -1424,6 +1425,10 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
+
+    def requires_grad_(self, requires_grad=True):
+        self._requires_grad = requires_grad
+        return self
 
 
 class Size(tuple):
