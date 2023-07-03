@@ -2,6 +2,7 @@
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -1271,4 +1272,36 @@ def test_paddle_erf(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.inner",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=(2, 2),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_inner(
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )

@@ -303,3 +303,11 @@ def fmax(x, y, name=None):
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "complex64", "complex128")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def inner(x, y, name=None):
+    return ivy.inner(x, y)
