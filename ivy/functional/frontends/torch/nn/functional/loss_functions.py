@@ -229,6 +229,7 @@ def cosine_embedding_loss(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.square(input - target)

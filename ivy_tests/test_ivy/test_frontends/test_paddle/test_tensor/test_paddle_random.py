@@ -162,3 +162,31 @@ def test_paddle_uniform_(
         max=max,
         seed=seed,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.standard_normal",
+    input_dtypes=st.sampled_from([["int32"], ["int64"]]),
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_paddle_standard_normal(
+    input_dtypes,
+    shape,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype[0],
+    )
