@@ -10,7 +10,6 @@ from typing import Callable
 import inspect
 import numpy as np
 
-from ivy.functional.ivy.data_type import _function_unsupported_dtypes
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
@@ -1098,20 +1097,12 @@ def casting_modes_ops(fn):
     @functools.wraps(fn)
     def method(*args, **kwargs):
         # we first check if it has unsupported/supported dtypes uniquely added to it
-        intersect = set(_function_unsupported_dtypes(fn)).difference(
+        intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
             set(ivy.invalid_dtypes)
         )
         if not intersect:
-            # doesn't have unsupported dtypes specified
-            # so check if it's one of the device_and_dtype one
-            intersect = set(
-                ivy.function_unsupported_devices_and_dtypes(fn).get(
-                    ivy.default_device().split(":")[0], {None}
-                )
-            ).difference(set(ivy.invalid_dtypes))
-            if not intersect:
-                # no unsupported dtype specified
-                return fn(*args, **kwargs)
+            # no unsupported dtype specified
+            return fn(*args, **kwargs)
 
         if "dtype" in kwargs and kwargs["dtype"] is not None:
             dtype = caster(kwargs["dtype"], intersect)
