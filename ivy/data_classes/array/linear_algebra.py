@@ -403,7 +403,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type:ignore
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
@@ -916,7 +916,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

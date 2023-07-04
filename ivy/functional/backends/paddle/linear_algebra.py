@@ -250,8 +250,8 @@ def matrix_norm(
     x: paddle.Tensor,
     /,
     *,
-    ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Tuple[int, int]] = (-2, -1),
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type: ignore
+    axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -586,8 +586,8 @@ def vector_norm(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    keepdims: Optional[bool] = False,
-    ord: Optional[Union[int, float, Literal[inf, -inf]]] = 2,
+    keepdims: bool = False,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
     dtype: Optional[paddle.dtype] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:

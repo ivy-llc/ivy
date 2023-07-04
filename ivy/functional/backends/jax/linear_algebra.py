@@ -185,7 +185,7 @@ def matrix_norm(
     x: JaxArray,
     /,
     *,
-    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type: ignore
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
@@ -416,7 +416,7 @@ def vector_norm(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
     out: Optional[JaxArray] = None,
     dtype: Optional[jnp.dtype] = None,
 ) -> JaxArray:

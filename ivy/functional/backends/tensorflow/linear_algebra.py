@@ -286,7 +286,7 @@ def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type: ignore
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
@@ -649,7 +649,7 @@ def vector_norm(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
     dtype: Optional[DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

@@ -1038,7 +1038,7 @@ def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type: ignore
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -1320,9 +1320,10 @@ def matrix_rank(
         Default: ``None``.
     
     hermitian
-        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
-        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
-        Instead, We just use the lower triangular of the matrix to compute.
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed
+        to be Hermitian, enabling a more efficient method for finding eigenvalues, but x
+        is not checked inside the function. Instead, we just use the lower triangular
+        of the matrix to compute.
         Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -2425,7 +2426,7 @@ def vector_norm(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

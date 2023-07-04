@@ -1299,7 +1299,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type:ignore
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1387,7 +1387,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",  # type:ignore
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -2812,7 +2812,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2927,7 +2927,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        ord: Union[int, float, Literal[inf, -inf]] = 2,  # type: ignore
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
