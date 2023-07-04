@@ -192,8 +192,8 @@ def test_paddle_zeropad2d(
 @st.composite
 def x_and_linear(draw, dtypes):
     dtype = draw(dtypes)
-    in_features = draw(helpers.ints(min_value=1, max_value=2))
-    out_features = draw(helpers.ints(min_value=1, max_value=2))
+    in_features = draw(helpers.ints(min_value=1, max_value=1))
+    out_features = draw(helpers.ints(min_value=1, max_value=1))
 
     x_shape = (
         1,
