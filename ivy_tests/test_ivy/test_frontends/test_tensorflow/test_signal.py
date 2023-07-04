@@ -22,8 +22,6 @@ def test_tensorflow_kaiser_window(
     fn_tree,
     on_device,
 ):
-    window_length = window_length
-    beta = beta
     helpers.test_frontend_function(
         input_dtypes=[window_length, beta],
         frontend=frontend,
