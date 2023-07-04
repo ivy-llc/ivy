@@ -1744,6 +1744,60 @@ def test_jax_lax_dot(
 
 
 @st.composite
+def _get_dtype_inputs_for_batch_matmul(draw):
+    dtype, lhs = draw(
+        helpers.dtype_and_values(
+            min_num_dims=2,
+            max_num_dims=6,
+            min_value=2,
+            max_value=5,
+        )
+    )
+    lhs_shape = lhs[0].shape
+    rhs_shape = list(lhs_shape)
+    rhs_shape[-1], rhs_shape[-2] = rhs_shape[-2], rhs_shape[-1]
+    rhs_shape = tuple(rhs_shape)
+    rhs = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=rhs_shape,
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    return dtype, lhs[0], rhs
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.batch_matmul",
+    dtypes_and_xs=_get_dtype_inputs_for_batch_matmul(),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_batch_matmul(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, lhs, rhs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
+        precision=None,
+    )
+
+
+@st.composite
 def _general_dot_helper(draw):
     input_dtype, lhs, lshape = draw(
         helpers.dtype_and_values(

@@ -7,7 +7,10 @@ def if_else(cond, body_fn, orelse_fn, vars):
     if isinstance(cond, bool):
         v = cond
         cond = lambda *_: v
-    cond = cond(*vars)
+    if callable(cond):
+        cond = cond(*vars)
+    else:
+        cond = bool(cond)
     if cond:
         return body_fn(*vars)
     else:
