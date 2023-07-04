@@ -134,3 +134,41 @@ def test_paddle_dropout(
         axis=axis,
         mode=mode,
     )
+
+
+# zeropad2d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.zeropad2d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=2,
+        max_value=5,
+        min_dim_size=2,
+        shape=(4, 4),
+        data_format=st.sampled_from(["NCHW", "NHWC"]),
+        padding=st.tuples(int, int, int, int),
+    ),
+)
+def test_paddle_zeropad2d(
+    *,
+    d_type_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    padding,
+    dataformat,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        padding=padding,
+        dataformat=dataformat,
+    )

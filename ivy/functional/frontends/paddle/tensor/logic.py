@@ -237,3 +237,23 @@ def is_tensor(x):
 @to_ivy_arrays_and_back
 def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
     return ivy.isclose(x, y, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "bool",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
+def logical_and(x, y, /, *, name=None, out=None):
+    return ivy.logical_and(x, y, out=out)

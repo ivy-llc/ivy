@@ -210,6 +210,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def erf(x, name=None):
