@@ -1685,3 +1685,4 @@ class override(contextlib.ContextDecorator):
                 if isinstance(globals_getter_func()[item], FunctionType):
                     # we need to add the decorator
                     globals_getter_func([item, "override"])
+
