@@ -2051,7 +2051,6 @@ def test_paddle_isclose(
     )
 
 
-
 #  equal_all
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2120,8 +2119,8 @@ def test_paddle_conj(
         frontend=frontend,
         on_device=on_device,
     )
-   
-  
+
+
 # floor_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
