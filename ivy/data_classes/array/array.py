@@ -1144,10 +1144,12 @@ class Array(
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
-        except:
-            array_copy = ivy.copy_array(self._data)
-            memodict[id(self)] = array_copy
-            return to_ivy(array_copy)
+        except RuntimeError:
+            from ivy.functional.ivy.gradients import _is_variable
+            # paddle and torch don't support the deepcopy protocol on non-leaf tensors
+            if _is_variable(self):
+                return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
+            return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
         if not len(self._data.shape):
