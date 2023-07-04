@@ -1298,3 +1298,36 @@ def test_paddle_erf(
         on_device=on_device,
         x=x[0],
     )
+
+
+# diff
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.diff",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=3,
+        shared_dtype=True,
+        force_int_axis=True,
+    ),
+)
+def test_paddle_diff(
+    *,
+    dtype_x_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        n=1,  # Only support n=1. Default:1
+        axis=axis,
+        prepend=x[1],
+        append=x[2],
+    )
