@@ -73,7 +73,9 @@ def get_item(
                 return jnp.array([], dtype=x.dtype)
             else:
                 return jnp.expand_dims(x, 0)
-        query, expected_shape = _mask_to_index(query, x)
+        query, _ = _mask_to_index(query, x)
+    elif isinstance(query, list):
+        query = (query, )
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
