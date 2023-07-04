@@ -12,6 +12,7 @@ from .. import backend_version
 # local
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, backend_version)
 def max_pool1d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int]],

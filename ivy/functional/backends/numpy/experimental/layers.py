@@ -45,6 +45,7 @@ def _determine_depth_max_pooling(x, kernel, strides, dims):
     return x, kernel, strides, depth_pooling
 
 
+@with_supported_dtypes({"1.25.0 and below": ("float32", "float64")}, backend_version)
 def max_pool1d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],

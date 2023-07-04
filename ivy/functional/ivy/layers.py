@@ -2014,6 +2014,9 @@ def _handle_padding(x, strides, filters, padding):
             pad = max(filters - strides, 0)
         else:
             pad = max(filters - (x % strides), 0)
+    elif isinstance(padding, int):
+        if 0 <= padding <= filters:
+            pad = padding
     else:
         pad = 0
     return pad

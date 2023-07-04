@@ -77,10 +77,11 @@ def max_pool1d(
         x, [pad_w // 2, pad_w - pad_w // 2], value=float("-inf")
     )
 
-    res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
+    res = torch.nn.functional.max_pool1d(x, kernel, strides, pad_w)
 
     if data_format == "NWC":
         res = res.permute((0, 2, 1))
+    res = res[..., :-1]
     return res
 
 
