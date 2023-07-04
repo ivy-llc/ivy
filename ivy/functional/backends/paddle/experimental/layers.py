@@ -5,7 +5,7 @@ from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.utils.assertions import check_kernel_padding_size
 from ivy.func_wrapper import (
-    with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from .. import backend_version
 
@@ -49,12 +49,14 @@ def max_pool1d(
     return res.astype(dtype)
 
 
-@with_supported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": (
-            "float32",
-            "float64",
-        )
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
     },
     backend_version,
 )
@@ -248,6 +250,17 @@ def fft(
     raise IvyNotImplementedException()
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def dropout1d(
     x: paddle.Tensor,
     prob: float,
