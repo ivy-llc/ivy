@@ -1125,7 +1125,7 @@ def test_method(
     ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor)
     # ToDo : remove this when the handle_method can properly compute unsupported dtypes
     if any(
-        dtype in ivy.function_unsupported_dtypes(ins.__getattribute__(method_name))
+        dtype in ivy.function_unsupported_devices_and_dtypes(ins.__getattribute__(method_name))[on_device]
         for dtype in method_input_dtypes
     ):
         return
@@ -1166,7 +1166,7 @@ def test_method(
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     # TODO this when the handle_method can properly compute unsupported dtypes
     if any(
-        dtype in ivy.function_unsupported_dtypes(ins_gt.__getattribute__(method_name))
+        dtype in ivy.function_unsupported_devices_and_dtypes(ins_gt.__getattribute__(method_name))[on_device]
         for dtype in method_input_dtypes
     ):
         return

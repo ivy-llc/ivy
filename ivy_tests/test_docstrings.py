@@ -252,7 +252,7 @@ def test_docstrings(backend):
         "used_mem_on_dev",
         "percent_used_mem_on_dev",
         "function_supported_dtypes",
-        "function_unsupported_dtypes",
+        "_function_unsupported_dtypes",
         "randint",
         "unique_counts",
         "unique_all",

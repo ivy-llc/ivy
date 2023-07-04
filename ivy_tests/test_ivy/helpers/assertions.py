@@ -149,7 +149,7 @@ def value_test(
             )
 
 
-def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
+def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np, device):
     """
     Check whether a function does not support the input data types or the output data
     type.
@@ -169,8 +169,8 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np):
     otherwise.
     """
     test_unsupported = False
-    unsupported_dtypes_fn = ivy.function_unsupported_dtypes(fn)
-    supported_dtypes_fn = ivy.function_supported_dtypes(fn)
+    unsupported_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)[device]
+    supported_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)[device]
     if unsupported_dtypes_fn:
         for d in input_dtypes:
             if d in unsupported_dtypes_fn:

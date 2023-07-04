@@ -338,7 +338,7 @@ For Frontend Functions:
         return ivy.astype(ivy.trace(input), target_type)
 
 
-For compositional functions, the supported and unsupported data types can then be inferred automatically using the helper functions `function_supported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370>`_ and `function_unsupported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407>`_ respectively, which traverse the abstract syntax tree of the compositional function and evaluate the relevant attributes for each primary function in the composition.
+For compositional functions, the supported and unsupported data types can then be inferred automatically using the helper functions `function_unsupported_devices_and_dtypes <https://unify.ai/docs/ivy/_modules/ivy/functional/ivy/general.html#function_unsupported_devices_and_dtypes>`_ and `function_supported_devices_and_dtypes <https://unify.ai/docs/ivy/_modules/ivy/functional/ivy/general.html#function_supported_devices_and_dtypes>`_ respectively, which traverse the abstract syntax tree of the compositional function and evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
 
 It is also possible to add supported and unsupported dtypes as a combination of both class and individual dtypes. The allowed dtype classes are: ``valid``, ``numeric``, ``float``, ``integer``, and ``unsigned``.
@@ -517,10 +517,10 @@ for most of the part as this could be seen as undesirable behavior to some of us
 
 There are currently four modes that accomplish this.
 
-1. :code:  `upcast_data_types`
-2. :code:  `downcast_data_types`
-3. :code:  `crosscast_data_types`
-4. :code:  `cast_data_types`
+1. :code:`upcast_data_types`
+2. :code:`downcast_data_types`
+3. :code:`crosscast_data_types`
+4. :code:`cast_data_types`
 
 :code:`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
 dtype group, i.e, if the unsupported dtype encountered is :code:`uint8` , then this mode will try to upcast it to the next available supported :code:`uint` dtype. If no
@@ -613,7 +613,7 @@ enable :code:`float` dtypes to be passed here too.
 
 
 
-Since all  :code: `float` dtypes are not supported by the :code:`lcm` function in :code: `torch` , it is
+Since all  :code:`float` dtypes are not supported by the :code:`lcm` function in :code: `torch` , it is
 casted to the default integer dtype , i.e :code:`int32`.
 
 While, casting modes can handle a lot of cases, it doesn't guarantee 100% support for the unsupported dtypes.

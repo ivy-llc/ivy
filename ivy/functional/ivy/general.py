@@ -39,7 +39,7 @@ from ivy.func_wrapper import (
     handle_view_indexing,
 )
 from ivy.functional.ivy.device import dev
-
+from ivy.functional.ivy.data_type import _function_supported_dtypes,_function_unsupported_dtypes
 FN_CACHE = dict()
 INF = float("inf")
 
@@ -3630,7 +3630,7 @@ def _dnd_dict_union(a, b):
 
 def _get_devices_and_dtypes(fn, complement=True):
     supported_devices = ivy.function_supported_devices(fn)
-    supported_dtypes = ivy.function_supported_dtypes(fn)
+    supported_dtypes = _function_supported_dtypes(fn)
 
     supported = {}
     # Generate a base supported set from other attributes

@@ -1619,11 +1619,11 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
-@handle_exceptions
-@handle_nestable
-def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+
+def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Return the supported data types of the current backend's function.
+    Return the absolute intersection of  supported data types of the current backend's
+    function for all the known devices.
 
     Parameters
     ----------
@@ -1639,7 +1639,7 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
 
     Examples
     --------
-    >>> print(ivy.function_supported_dtypes(ivy.acosh))
+    >>> print(ivy._function_supported_dtypes(ivy.acosh))
     ('bool', 'float64', 'int64', 'uint8', 'int8', 'float32', 'int32', 'int16', \
     'bfloat16')
     """
@@ -1653,17 +1653,17 @@ def function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     supported_dtypes = set(_get_dtypes(fn, complement=False))
     if recurse:
         supported_dtypes = _nested_get(
-            fn, supported_dtypes, set.intersection, function_supported_dtypes
+            fn, supported_dtypes, set.intersection, _function_supported_dtypes
         )
 
     return tuple(supported_dtypes)
 
 
-@handle_exceptions
-@handle_nestable
-def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+
+def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
-    Return the unsupported data types of the current backend's function.
+    Return the absolute intersection of  unsupported data types of the current backend's
+    function for all the known devices.
 
     Parameters
     ----------
@@ -1693,7 +1693,7 @@ def function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     unsupported_dtypes = set(_get_dtypes(fn, complement=True))
     if recurse:
         unsupported_dtypes = _nested_get(
-            fn, unsupported_dtypes, set.union, function_unsupported_dtypes
+            fn, unsupported_dtypes, set.union, _function_unsupported_dtypes
         )
 
     return tuple(unsupported_dtypes)
