@@ -189,7 +189,7 @@ def squeeze(input, axis=None, name=None):
 @to_ivy_arrays_and_back
 def case(pred_fn_pairs, default=None, exclusive=False, strict=False, name=None):
     if exclusive:
-        true_conditions= [cond for cond, fn in pred_fn_pairs if cond]
+        true_conditions = [cond for cond, fn in pred_fn_pairs if cond]
         if len(true_conditions) > 1:
             raise ValueError("No more than one True conditions.")
 
