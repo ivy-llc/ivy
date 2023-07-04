@@ -2120,16 +2120,28 @@ def test_paddle_conj(
         on_device=on_device,
     )
 
+
 # log2
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="log2",
+
+# floor_divide
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="floor_divide",
+ 
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
+
 def test_paddle_instance_log2(
+=======
+def test_paddle_instance_floor_divide(
+
     dtype_and_x,
     frontend_method_data,
     init_flags,

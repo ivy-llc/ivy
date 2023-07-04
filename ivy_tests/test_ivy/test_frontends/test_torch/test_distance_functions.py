@@ -1,6 +1,6 @@
 from hypothesis import strategies as st
 
-import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -81,6 +81,7 @@ def test_torch_pairwise_distance(
         p=p,
         keepdim=keepdim,
     )
+
 
 # P-norm Distance
 @handle_frontend_test(
