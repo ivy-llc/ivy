@@ -88,8 +88,6 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.5.0 and below": ("uint16", "float16", "float32", "float64")}, "paddle"
-)
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def linear(x, weight, /, *, bias=None, name=None):
     return ivy.linear(x, weight, bias=bias)
