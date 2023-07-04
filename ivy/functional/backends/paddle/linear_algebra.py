@@ -695,3 +695,7 @@ def vector_to_skew_symmetric_matrix(
     row3 = paddle.concat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return paddle.concat((row1, row2, row3), -2)
+
+def lstsq(a, b, rcond=None, out=None):
+    x, residuals, rank, singular_values = paddle.linalg.lstsq(a, b, rcond=rcond, out=out)
+    return x, residuals, rank, singular_values
