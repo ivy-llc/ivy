@@ -376,11 +376,11 @@ def _interp_args(draw, mode=None, mode_list=None):
     ]
 
     if not mode and not mode_list:
-        if curr_backend == "torch" or not mixed_fn_compos:
+        if curr_backend == "torch" and not mixed_fn_compos:
             mode = draw(st.sampled_from(torch_modes))
-        elif curr_backend == "tensorflow" or not mixed_fn_compos:
+        elif curr_backend == "tensorflow" and not mixed_fn_compos:
             mode = draw(st.sampled_from(tf_modes))
-        elif curr_backend == "jax" or not mixed_fn_compos:
+        elif curr_backend == "jax" and not mixed_fn_compos:
             mode = draw(st.sampled_from(jax_modes))
         else:
             mode = draw(
