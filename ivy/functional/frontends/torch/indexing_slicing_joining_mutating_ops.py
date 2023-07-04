@@ -354,3 +354,9 @@ def narrow(input, dim, start, length):
     slices = [slice(None)] * num_dims
     slices[dim] = slice(start, start + length)
     return input[tuple(slices)]
+
+@to_ivy_arrays_and_back
+def select_scatter(input,src,dim,index):
+    output = ivy.zeros_like(input)
+    output[dim, index] = src
+    return(output)
