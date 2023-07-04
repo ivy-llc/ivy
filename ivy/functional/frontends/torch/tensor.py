@@ -1448,6 +1448,22 @@ class Tensor:
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
 
+    def backward(self, gradient=None, retain_graph=None, create_graph=False):
+        if gradient is None and int(torch_frontend.numel(self)) > 1:
+            raise RuntimeError("grad can be implicitly created only for scalar outputs")
+        if self.grad_fn is None and self._grads is None:
+            assert self.shape == gradient.shape, "Mismatch in shape"
+            self._grads = gradient
+            return
+        _grad_list = self.grad_fn(
+            gradient if gradient is not None else torch_frontend.tensor(1.0)
+        )
+        for idx, next_function in enumerate(self.grad_fn.next_functions):
+            if next_function.__self__.grad_fn is not None:
+                next_function.__self__.backward(_grad_list[idx])
+            else:
+                next_function(_grad_list[idx])
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

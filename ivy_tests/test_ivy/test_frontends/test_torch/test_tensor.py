@@ -9926,3 +9926,64 @@ def test_torch_instance_heaviside(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+        num_arrays=3,
+        min_value=-1e3,
+        max_value=1e3,
+    ).filter(lambda x: all(dt == "float32" for dt in x[0])),
+)
+def test_torch_instance_backward(
+    dtype_x,
+):
+    if ivy.current_backend_str() == "numpy":
+        ivy.warnings.warn("Gradient calculation unavailable for numpy backend")
+        return
+    if ivy.current_backend_str() == "paddle":
+        ivy.warnings.warn("torch.Tensor.backward() unavailable for paddle backend")
+        return
+    _, values = dtype_x
+    x = Tensor(values[0], requires_grad=True)
+    y = Tensor(values[1], requires_grad=True)
+    z = Tensor(values[2], requires_grad=True)
+    a = x + y.pow(2)
+    b = z * a
+    c = b.sum()
+    c.backward()
+    x_torch = torch.tensor(values[0], requires_grad=True, dtype=torch.float32)
+    y_torch = torch.tensor(values[1], requires_grad=True, dtype=torch.float32)
+    z_torch = torch.tensor(values[2], requires_grad=True, dtype=torch.float32)
+    a_torch = x_torch + y_torch.pow(2)
+    b_torch = z_torch * a_torch
+    c_torch = b_torch.sum()
+    c_torch.backward()
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=x._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(x_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=y._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(y_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=z._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(z_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
+    )
