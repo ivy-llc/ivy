@@ -159,9 +159,9 @@ def conv_transpose(
 ):
     N = len(input)-2
     dilations = 1 if dilations is None else dilations
+    filters = filters.swapaxes(-2, -1)
     if N==1:
         strides, dilations = _reduce_strides_dilations(N, strides, dilations)
-        filters = filters.swapaxes(-2, -1)
         return ivy.conv1d_transpose(
             input,
             filters,
@@ -173,7 +173,6 @@ def conv_transpose(
         )
     elif N==2:
         strides, dilations = _reduce_strides_dilations(N, strides, dilations)
-        filters = filters.swapaxes(-2, -1)
         return ivy.conv2d_transpose(
             input,
             filters,
@@ -185,7 +184,6 @@ def conv_transpose(
         )
     elif N==3:
         strides, dilations = _reduce_strides_dilations(N, strides, dilations)
-        filters = filters.swapaxes(-2, -1)
         return ivy.conv3d_transpose(
             input,
             filters,
@@ -196,7 +194,7 @@ def conv_transpose(
             dilations=dilations,
         )
     else:
-        ivy.utils.exceptions.IvyException()
+        raise ivy.utils.exceptions.IvyException()
 
 @with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
