@@ -882,9 +882,10 @@ def Imag(
     Tout = ivy.as_ivy_dtype(Tout) if Tout is not None else ivy.float32
     return ivy.astype(ivy.imag(input), Tout)
 
+
 Imag.supported_dtypes = {
-"tensorflow": (
-    "complex64",
-    "complex128",
-),
+    "tensorflow": (
+        "complex64",
+        "complex128",
+    ),
 }

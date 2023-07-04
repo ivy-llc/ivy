@@ -3925,10 +3925,10 @@ def test_tensorflow_Zeta(
     dtype_and_xs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
-    send_Tout=st.sampled_from(["float64","float32"]),   
+    send_Tout=st.sampled_from(["float64", "float32"]),
     test_with_out=st.just(False),
 )
-def test_tensorflow_Imag( 
+def test_tensorflow_Imag(
     *,
     dtype_and_xs,
     send_Tout,
