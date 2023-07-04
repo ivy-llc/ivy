@@ -405,7 +405,6 @@ class Tensor:
     def maximum(self, other, name=None):
         return ivy.maximum(self._ivy_array, other)
 
-
     @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
     def fmax(self, y, name=None):
         y_ivy = _to_ivy_array(y)
