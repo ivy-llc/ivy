@@ -1910,7 +1910,7 @@ def dtype_array_query(
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
-    return dtype, array, index
+    return dtype+['int64'], array, index
 
 
 @st.composite
