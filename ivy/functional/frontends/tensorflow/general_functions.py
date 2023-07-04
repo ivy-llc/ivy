@@ -13,7 +13,7 @@ from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 import functools
-
+import collections
 
 @to_ivy_arrays_and_back
 def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
@@ -575,6 +575,13 @@ def unique(x, out_idx=ivy.int32, name=None):
     y = ret[0]
     idx = ivy.astype(ret[2], out_idx)
     return y, idx
+
+
+@to_ivy_arrays_and_back
+def unique_with_counts(x):
+    values, indices, inverse_indices, counts = ivy.unique_all(x)
+    unique_with_counts = collections.namedtuple("UniqueWithCounts", ["y", "idx", "count"])
+    return unique_with_counts(y=values, idx=inverse_indices, count=counts)
 
 
 @to_ivy_arrays_and_back
