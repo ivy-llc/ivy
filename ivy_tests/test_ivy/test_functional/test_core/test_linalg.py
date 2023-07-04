@@ -874,12 +874,12 @@ def test_vecdot(
         max_value=1e04,
         abs_smallest_val=1e-04,
         max_axes_size=2,
-        force_int_axis=True,
+        allow_neg_axes=True,
     ),
     kd=st.booleans(),
     ord=st.one_of(
-        helpers.ints(min_value=0, max_value=5),
-        helpers.floats(min_value=1.0, max_value=5.0),
+        helpers.ints(min_value=-5, max_value=5),
+        helpers.floats(min_value=-5, max_value=5.0),
         st.sampled_from((float("inf"), -float("inf"))),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
@@ -897,6 +897,10 @@ def test_vector_norm(
     ground_truth_backend,
 ):
     x_dtype, x, axis = dtype_values_axis
+    # to avoid tuple axis with only one axis as force_int_axis can't generate
+    # axis with two axes
+    if isinstance(axis, tuple) and len(axis) == 1:
+        axis = axis[0]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype,

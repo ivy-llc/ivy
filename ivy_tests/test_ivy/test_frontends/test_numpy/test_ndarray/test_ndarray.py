@@ -2831,8 +2831,8 @@ def test_numpy_instance_tobytes__(
         frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
-    
-    
+
+
 # tofile
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2907,7 +2907,7 @@ def test_numpy_instance_tolist__(
         test_values=False,  # Todo change this after we add __iter__ to ndarray
     )
 
-    
+
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3114,8 +3114,8 @@ def test_numpy_instance_rshift__(
         on_device=on_device,
     )
 
-   
- # __tostring__
+
+# __tostring__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",

@@ -130,6 +130,7 @@ def threshold_(input, threshold, value):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 def relu6(input, inplace=False):
     return ivy.relu6(input)
 
