@@ -81,3 +81,17 @@ def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 silu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def elu(
+    x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    # exp = np.expm1(x)
+    ret = np.where(x > 0, x, np.multiply(alpha, np.expm1(x))).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+elu.support_native_out = True

@@ -57,6 +57,11 @@ class ndarray:
     def ndim(self):
         return len(self.shape)
 
+    @property
+    def flat(self):
+        self = self.flatten()
+        return self
+
     # Setters #
     # --------#
 
@@ -315,6 +320,9 @@ class ndarray:
 
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self, order=order)
+
+    def tostring(self, order="C") -> bytes:
+        return np_frontend.tobytes(self.data, order=order)
 
     def prod(
         self,
