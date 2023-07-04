@@ -1378,3 +1378,38 @@ def test_adaptive_avg_pool1d_layer(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+# AvgPool1D
+@handle_method(
+    method_tree="AvgPool1D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_avgpool1d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )

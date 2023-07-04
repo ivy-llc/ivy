@@ -203,6 +203,38 @@ def test_jax_devicearray_conj(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
+    method_name="conjugate",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+    ),
+)
+def test_jax_devicearray_conjugate(
+    dtype_and_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
     method_name="mean",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
@@ -1489,6 +1521,9 @@ def test_jax_special_rdiv(
         available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_special_truediv(
@@ -1721,6 +1756,43 @@ def test_jax_special_getitem(
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[input_dtype[1]],
         method_all_as_kwargs_np={"idx": index},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="round",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+    decimals=st.one_of(
+        st.integers(min_value=-10, max_value=10),
+    ),
+)
+def test_jax_devicearray_round(
+    dtype_x,
+    decimals,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"decimals": decimals},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

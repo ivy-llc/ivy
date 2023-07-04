@@ -1144,8 +1144,14 @@ class Array(
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
+        except RuntimeError:
+            if ivy.current_backend_str() == "paddle":
+                return to_ivy(copy.deepcopy(self._data.numpy()))
+            return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
+        if not len(self._data.shape):
+            return 0
         try:
             return len(self._data)
         except TypeError:
@@ -1158,5 +1164,5 @@ class Array(
             if self.dtype in ["int8", "int16", "uint8", "float16"]:
                 return iter([to_ivy(i) for i in ivy.unstack(self._data)])
             elif self.ndim == 1:
-                return iter([to_ivy(i).squeeze(0) for i in self._data])
+                return iter([to_ivy(i).squeeze(axis=0) for i in self._data])
         return iter([to_ivy(i) for i in self._data])
