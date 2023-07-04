@@ -796,6 +796,9 @@ def test_copy_array(
     on_device,
 ):
     dtype, x = dtype_and_x
+    # avoid enabling gradients for non-float arrays
+    if test_flags.as_variable[0]:
+        assume("float" in dtype[0])
     # smoke test
     x = test_flags.apply_flags(x, dtype, on_device, 0)[0]
     test_flags.instance_method = (

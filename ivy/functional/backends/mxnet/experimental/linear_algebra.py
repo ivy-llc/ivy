@@ -99,18 +99,3 @@ def cond(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
-
-
-def cov(
-    x1: None,
-    x2: None = None,
-    /,
-    *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[None] = None,
-    aweights: Optional[None] = None,
-    dtype: Optional[type] = None,
-) -> None:
-    raise IvyNotImplementedException()
