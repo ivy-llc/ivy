@@ -293,6 +293,13 @@ class Tensor:
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def isnan(self, name=None):
+        return paddle_frontend.isnan(self)
+
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
@@ -312,6 +319,10 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def rsqrt(self, name=None):
         return ivy.reciprocal(ivy.sqrt(self._ivy_array))
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def reciprocal(self, name=None):
+        return paddle_frontend.reciprocal(self)
 
     @with_supported_dtypes(
         {
@@ -365,6 +376,21 @@ class Tensor:
     def angle(self, name=None):
         return ivy.angle(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {
+            "2.5.0 and below": (
+                "uint8",
+                "int8",
+                "int16",
+                "complex64",
+                "complex128",
+            )
+        },
+        "paddle",
+    )
+    def equal(self, y, name=None):
+        return paddle_frontend.equal(self, y)
+
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def rad2deg(self, name=None):
         return ivy.rad2deg(self._ivy_array)
@@ -412,6 +438,12 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
+    )
+    def rot90(self, k=1, axes=(0, 1), name=None):
+        return ivy.rot90(self._ivy_array, k=k, axes=axes)
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("complex64", "complex128")},
