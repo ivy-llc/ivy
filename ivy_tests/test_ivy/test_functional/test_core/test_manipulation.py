@@ -669,6 +669,12 @@ def test_split(
     ground_truth_backend,
 ):
     dtype, value = dtype_value
+    if (
+        not isinstance(num_or_size_splits, int)
+        and not isinstance(num_or_size_splits, list)
+        and num_or_size_splits is not None
+    ):
+        dtype = [*dtype, num_or_size_splits.dtype]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
