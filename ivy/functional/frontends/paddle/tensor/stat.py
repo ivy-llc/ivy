@@ -37,7 +37,7 @@ def numel(x, name=None):
 @to_ivy_arrays_and_back
 def median(y, axis=None, keepdim=False,out=None):
     mid = ivy.median(y, axis=axis, keepdims=keepdim,out=out)
-    mid = ivy.expand_dims(mid, axis=-1) if mid.ndim == 0 else mid
+    #mid = ivy.expand_dims(mid, axis=-1) if mid.ndim == 0 else mid
     return mid
 
 

@@ -169,13 +169,13 @@ def test_mean(
 # median
 @handle_test(
     fn_tree="functional.ivy.median",
-    dtype_and_x_axis_castable=_get_castable_dtype(),
+    dtype_and_x=_statistical_dtype_values(function="median"),
     keepdim=st.booleans(),
 )
 
 def test_median(
     *,
-    dtype_and_x_axis_castable,
+    dtype_and_x,
     keep_dims,
     test_flags,
     backend_fw,
@@ -183,7 +183,7 @@ def test_median(
     on_device,
     ground_truth_backend,
 ):
-    input_dtype, x, axis, castable_dtype = dtype_and_x_axis_castable
+    input_dtype, x, axis = dtype_and_x
     if "torch" in backend_fw.__name__:
         assume(not test_flags.as_variable[0])
         assume(not test_flags.test_gradients)
@@ -199,7 +199,7 @@ def test_median(
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=castable_dtype,
+        #dtype=castable_dtype,
     )
 
 # var
