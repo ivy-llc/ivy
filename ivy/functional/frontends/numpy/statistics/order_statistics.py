@@ -35,6 +35,12 @@ def _cpercentile(N, percent, key=lambda x: x):
     return d0 + d1
 
 
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    return ivy.subtract(x, y)
+
+
 def nanpercentile(
     a,
     /,
