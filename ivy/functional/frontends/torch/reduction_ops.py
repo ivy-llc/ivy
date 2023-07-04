@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
+import ivy.functional.frontends.torch as torch_frontend
 
 
 @to_ivy_arrays_and_back
@@ -125,7 +126,13 @@ def var(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def min(input, dim=None, keepdim=False, *, out=None):
+def min(*input, dim=None, axis=None, keepdim=False, out=None):
+    if len(input) == 1:
+        input = input[0]
+    elif len(input) == 2:
+        return torch_frontend.minimum(*input)
+    if dim is None:
+        dim = axis
     if dim is None:
         return ivy.min(input, axis=dim, keepdims=keepdim, out=out)
     elif out is not None:
@@ -141,7 +148,11 @@ def min(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def max(input, dim=None, axis=None, keepdim=False, *, out=None):
+def max(*input, dim=None, axis=None, keepdim=False, out=None):
+    if len(input) == 1:
+        input = input[0]
+    elif len(input) == 2:
+        return torch_frontend.maximum(*input)
     if dim is None:
         dim = axis
     if dim is None:
@@ -269,6 +280,8 @@ def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=No
     "torch",
 )
 def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
+    if dtype is None or not ivy.is_float_dtype(dtype):
+        dtype = "float64" if "128" in str(dtype) else "float32"
     if (
         p == "fro" and (dim is None or isinstance(dim, int) or len(dim) <= 2)
     ) or p is None:
@@ -276,7 +289,9 @@ def norm(input, p="fro", dim=None, keepdim=False, out=None, dtype=None):
     if isinstance(p, str):
         if dim is None:
             dim = tuple(range(input.dim()))
-        return ivy.matrix_norm(input, ord=p, axis=dim, keepdims=keepdim, out=out)
+        return ivy.matrix_norm(
+            input, ord=p, axis=dim, keepdims=keepdim, out=out
+        ).astype(dtype)
     else:
         return ivy.vector_norm(
             input, ord=p, axis=dim, keepdims=keepdim, dtype=dtype, out=out

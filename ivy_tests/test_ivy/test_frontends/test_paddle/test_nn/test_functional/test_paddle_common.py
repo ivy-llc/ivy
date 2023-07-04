@@ -43,6 +43,52 @@ def test_paddle_cosine_similarity(
     )
 
 
+# Dropout2d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.dropout2d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=2,
+        max_value=5,
+        min_dim_size=4,
+        shape=(
+            st.integers(min_value=2, max_value=10),
+            4,
+            st.integers(min_value=12, max_value=64),
+            st.integers(min_value=12, max_value=64),
+        ),
+    ),
+    p=st.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
+)
+def test_paddle_dropout2d(
+    *,
+    d_type_and_x,
+    p,
+    training,
+    data_format,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        p=p,
+        training=training,
+        data_format=data_format,
+    )
+
+
 # dropout
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.dropout",
@@ -87,4 +133,42 @@ def test_paddle_dropout(
         training=training,
         axis=axis,
         mode=mode,
+    )
+
+
+# zeropad2d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.zeropad2d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_value=2,
+        max_value=5,
+        min_dim_size=2,
+        shape=(4, 4),
+        data_format=st.sampled_from(["NCHW", "NHWC"]),
+        padding=st.tuples(int, int, int, int),
+    ),
+)
+def test_paddle_zeropad2d(
+    *,
+    d_type_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    padding,
+    dataformat,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        padding=padding,
+        dataformat=dataformat,
     )
