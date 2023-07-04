@@ -160,6 +160,7 @@ def laplace(mean=0.0, scale=1.0, size=None):
     )
     return ret
 
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def weibull(a, size=None):

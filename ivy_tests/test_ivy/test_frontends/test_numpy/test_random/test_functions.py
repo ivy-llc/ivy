@@ -664,7 +664,7 @@ def test_numpy_rayleigh(
         scale=scale,
         size=size,
     )
-    
+
 
 # laplace
 @helpers.handle_frontend_test(
