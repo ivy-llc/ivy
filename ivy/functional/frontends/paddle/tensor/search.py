@@ -54,4 +54,5 @@ def searchsorted(
     sorted_sequence, values, /, *, out_int32=False, right=False, name=None
 ):
     ret = ivy.int32 if out_int32 else ivy.int64
-    return ivy.searchsorted(sorted_sequence, values, side=right, ret_dtype=ret)
+    side = "right" if right else "left"
+    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=ret)
