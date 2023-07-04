@@ -151,7 +151,6 @@ def _zero2pad(draw):
     )
     ndim = len(shape)
     min_dim = min(shape)
-    # genrate a list of len() = 4
     padding = draw(
         st.lists(
             st.integers(min_value=0, max_value=min_dim),
