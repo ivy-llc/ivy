@@ -187,6 +187,20 @@ def squeeze(input, axis=None, name=None):
 
 
 @to_ivy_arrays_and_back
+def case(pred_fn_pairs, default=None, exclusive=False, strict=False, name=None):
+    if exclusive:
+        true_conditions= [cond for cond, fn in pred_fn_pairs if cond]
+        if len(true_conditions) > 1:
+            raise ValueError("No more than one True conditions.")
+
+    func = default
+    for fn_pair in pred_fn_pairs:
+        condition, fn = fn_pair
+        func = ivy.where(condition, fn, func)
+    return func()
+
+
+@to_ivy_arrays_and_back
 def concat(values, axis, name=None):
     return ivy.concat(values, axis=axis)
 

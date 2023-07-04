@@ -806,6 +806,47 @@ def test_tensorflow_concat(
     )
 
 
+# case
+@handle_frontend_test(
+    fn_tree="tensorflow.case",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    pred_cond=st.booleans(),
+    x=st.integers(min_value=1, max_value=100),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_case(
+    *,
+    dtype_and_x,
+    pred_cond,
+    x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    first_fn = lambda: x + x
+
+    second_fn = lambda: x * x
+
+    input_dtype, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred_fn_pairs=[
+            (pred_cond, first_fn),
+            (pred_cond, second_fn),
+        ],
+        default=first_fn,
+    )
+
+
 # cond
 @handle_frontend_test(
     fn_tree="tensorflow.cond",
