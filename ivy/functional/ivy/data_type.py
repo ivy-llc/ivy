@@ -190,7 +190,13 @@ def _get_dtypes(fn, complement=True):
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
     is_einops_fn = "einops" in fn.__name__
-    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
+    has_unsupported_dtypes_attr = hasattr(fn, "unsupported_dtypes")
+    if (
+        not is_backend_fn
+        and not is_frontend_fn
+        and not is_einops_fn
+        and not has_unsupported_dtypes_attr
+    ):
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
