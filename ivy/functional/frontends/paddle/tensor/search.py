@@ -53,7 +53,10 @@ def nonzero(input, /, *, as_tuple=False):
 def searchsorted(
     sorted_sequence, values, /, *, out_int32=False, right=False, name=None
 ):
-    ret = ivy.int32 if out_int32 else ivy.int64
-    side = "right" if right else "left"
+    if right:
+        side = "right"
     sorted_sequence = ivy.sort(sorted_sequence, axis=-1)
-    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=ret)
+    ret = ivy.searchsorted(sorted_sequence, values, side=side)
+    if out_int32:
+        ret = ivy.astype(ret, "int32")
+    return ret
