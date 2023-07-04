@@ -745,6 +745,7 @@ class Tensor:
         return torch_frontend.permute(self)
 
     @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 

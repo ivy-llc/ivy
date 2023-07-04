@@ -76,13 +76,13 @@ Status
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
     <a href="https://pypi.org/project/ivy-core">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/intelligent-tests.yml/badge.svg">
     </a>
     <a href="https://discord.gg/sXyFF8tDtm">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
