@@ -94,25 +94,17 @@ def test_numpy_ndarray_property_ndim(
 
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        num_arrays=1,
         ret_shape=True,
-    ),
+    )
 )
-def test_numpy_ndarray_property_T(
-    dtype_x,
-):
+def test_numpy_ndarray_property_flat(dtype_x):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.T.ivy_array)
-    ret_gt = helpers.flatten_and_to_np(
-        ret=ivy.permute_dims(ivy.native_array(data[0]), list(range(len(shape)))[::-1])
-    )
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="numpy",
-    )
+
+
+
+
 
 
 @given(

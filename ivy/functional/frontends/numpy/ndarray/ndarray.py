@@ -54,13 +54,14 @@ class ndarray:
         return self.ivy_array.dtype
 
     @property
-    def ndim(self):
-        return len(self.shape)
-
-    @property
     def flat(self):
         self = self.flatten()
         return self
+
+    @property
+    def ndim(self):
+        return len(self.shape)
+
 
     # Setters #
     # --------#
