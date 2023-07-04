@@ -595,8 +595,8 @@ def test_frontend_function(
 
     # Make copy for arguments for functions that might use
     # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
+    copy_kwargs = copy.deepcopy(kwargs_for_test)
+    copy_args = copy.deepcopy(args_for_test)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
     if frontend == "jax":
@@ -689,6 +689,7 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
@@ -697,12 +698,13 @@ def test_frontend_function(
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
             assert first_array is ret_
-            args, kwargs = copy_args, copy_kwargs
+
     # create NumPy args
 
     def arrays_to_numpy(x):
