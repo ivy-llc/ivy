@@ -1909,6 +1909,7 @@ class AvgPool1D(Module):
 class Dct(Module):
     def __init__(
         self,
+        *,
         type=2,
         n=None,
         axis=-1,
@@ -1960,9 +1961,9 @@ class Dct(Module):
         """
         return ivy.dct(
             x,
-            self.type,
-            self.n,
-            self.axis,
-            self.norm,
-            self.out,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+            out=self.out,
         )
