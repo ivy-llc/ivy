@@ -318,7 +318,7 @@ def minimum(x, y, name=None):
 def trunc(x, name=None):
     return ivy.trunc(x)
 
-  
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def digamma(x, name=None):

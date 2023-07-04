@@ -1299,7 +1299,7 @@ def test_paddle_erf(
         x=x[0],
     )
 
-    
+
 # trunc
 @handle_frontend_test(
     fn_tree="paddle.trunc",
@@ -1323,14 +1323,14 @@ def test_paddle_trunc(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-    )  
+    )
 
-    
+
 # digamma
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.digamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
 def test_paddle_digamma(
