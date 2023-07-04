@@ -270,14 +270,21 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if data_format == "NCW":
-        x = paddle.moveaxis(x, -2,-1)
-    res = paddle.nn.functional.dropout(x, p=prob,training=training)
-    if data_format == "NCW":
-        res = paddle.moveaxis(res, -2,-1)
-    return res
+    axis = data_format.index("C") - 3 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def dropout2d(
     x: paddle.Tensor,
     prob: float,
@@ -287,9 +294,21 @@ def dropout2d(
     data_format: str = "NHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = data_format.index("C") - 4 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def dropout3d(
     x: paddle.Tensor,
     prob: float,
@@ -299,7 +318,8 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = data_format.index("C") - 5 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
 def ifft(
