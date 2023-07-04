@@ -442,9 +442,7 @@ class Tensor:
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
 
-    @with_supported_dtypes(
-        {"2.5.0 and below": ("int32", "int64", "float32", "float64")}, "paddle"
-    )
+    @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
     def bincount(self, weights=None, minlength=0, name=None):
         return ivy.bincount(
             self._ivy_array, weights=weights, minlength=minlength, out=None
