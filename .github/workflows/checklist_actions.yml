@@ -41,7 +41,7 @@ jobs:
   
   frontend_pr_commented:
     name: Frontend PR comment
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

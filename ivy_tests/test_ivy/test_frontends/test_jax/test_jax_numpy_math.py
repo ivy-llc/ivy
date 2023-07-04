@@ -2578,7 +2578,7 @@ def test_jax_numpy_around(
 @handle_frontend_test(
     fn_tree="jax.numpy.round",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float64"],
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
