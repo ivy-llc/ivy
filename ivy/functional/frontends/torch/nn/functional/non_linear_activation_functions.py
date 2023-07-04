@@ -283,7 +283,7 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
 
 
 @to_ivy_arrays_and_back
-def local_response_norm(input, size, alpha, beta, k):
+def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
     dim = len(ivy.shape(input))
     if dim < 3:
         raise ValueError(
