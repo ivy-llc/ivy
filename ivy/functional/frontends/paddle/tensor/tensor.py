@@ -478,9 +478,6 @@ class Tensor:
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
 
-    @with_supported_dtypes(
-        {"2.5.0 and below": ("complex64", "complex128")},
-        "paddle",
-    )
-    def real(self, name=None):
-        return ivy.real(self._ivy_array)
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def logit(self, eps=None, name=None):
+        return ivy.logit(self._ivy_array, eps=eps)
