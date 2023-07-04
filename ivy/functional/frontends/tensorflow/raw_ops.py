@@ -289,6 +289,8 @@ def Log(*, x, name="Log"):
     return ivy.log(x)
 
 
+Lgamma = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.lgamma))
+
 Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
 
