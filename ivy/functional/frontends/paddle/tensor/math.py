@@ -319,3 +319,11 @@ with_supported_dtypes(
 @to_ivy_arrays_and_back
 def kron(x, y, name=None):
     return ivy.kron(x, y)
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trunc(x, name=None):
+    return ivy.trunc(x)
