@@ -311,7 +311,7 @@ def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 
 
-@with_unsupported_dtypes(
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
