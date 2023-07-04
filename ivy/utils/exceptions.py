@@ -13,14 +13,14 @@ from IPython import get_ipython
 def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
     if trace_mode in ["frontend", "ivy"]:
         buffer.write(
-            "<stack trace is truncated to {} specific files,".format(trace_mode),
-            "call `ivy.set_exception_trace_mode('full')` to view the full trace>",
+            ("<stack trace is truncated to {} specific files, \n"
+            "call `ivy.set_exception_trace_mode('full')` to view the full trace>").format(trace_mode)
         )
 
     if not func_wrapper_trace_mode:
         buffer.write(
-            "<func_wrapper.py stack trace is squashed,",
-            "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>",
+            ("<func_wrapper.py stack trace is squashed,\n"
+            "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>")
         )
 
 
@@ -201,7 +201,7 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
-    buffer = io.StringIO()
+    # buffer = io.StringIO()
 
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
@@ -226,40 +226,61 @@ def handle_exceptions(fn: Callable) -> Callable:
         except IvyNotImplementedException as e:
             raise e
         except IvyError as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except IvyBroadcastShapeError as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except IvyDtypePromotionError as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyDtypePromotionError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except (IndexError, IvyIndexError) as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyIndexError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except (AttributeError, IvyAttributeError) as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyAttributeError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except (ValueError, IvyValueError) as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             raise ivy.utils.exceptions.IvyValueError(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:
+            buffer = io.StringIO()
             _write_traceback_history(buffer)
+            value = buffer.getvalue()
+            buffer = io.StringIO()
             # print('Is notebook: ', is_notebook())
             raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, buffer.getvalue() + " " + str(e), include_backend=True
+                fn.__name__, value + " " + str(e), include_backend=True
             )
 
     _handle_exceptions.handle_exceptions = True
