@@ -227,63 +227,217 @@ def test_scaled_dot_product_attention(
 
 
 @st.composite
-def x_and_mha(draw, dtypes):
-    dtype = draw(dtypes)
-    num_queries = draw(helpers.ints(min_value=1, max_value=3))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=3))
+def _mha_helper(draw):
+    _qkv_same_dim = draw(st.booleans())
+    _self_attention = draw(st.booleans())
     num_heads = draw(helpers.ints(min_value=1, max_value=3))
-    num_keys = draw(helpers.ints(min_value=1, max_value=3))
+    _embed_dim = draw(helpers.ints(min_value=4, max_value=16)) * num_heads
+    _num_queries = draw(helpers.ints(min_value=2, max_value=8))
+    _num_keys = draw(helpers.ints(min_value=2, max_value=8))
+    _batch_dim = draw(st.sampled_from([(), (1,)]))
+    dtype = draw(helpers.get_dtypes("float", full=False, prune_function=False))
+    in_proj_bias = None
+    in_proj_weights = None
+    q_proj_weights = None
+    k_proj_weights = None
+    v_proj_weights = None
+    _mask_shape = (
+        _num_queries,
+        _num_queries if _self_attention and _qkv_same_dim else _num_keys,
+    )
+    if _qkv_same_dim:
+        _pre_embed_dim = draw(helpers.ints(min_value=4, max_value=16))
+        _q_shape = _batch_dim + (_num_queries, _pre_embed_dim)
+        _kv_shape = _batch_dim + (_num_keys, _pre_embed_dim)
 
-    x_mha_shape = (num_queries,) + (feat_dim * num_heads,)
-    context_shape = (num_keys,) + (2 * feat_dim * num_heads,)
-    mask_shape = (num_queries,) + (num_keys,)
-    scale = draw(helpers.floats(min_value=0.1, max_value=1))
-    x_mha = draw(
+        q = draw(
+            helpers.array_values(
+                shape=_q_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+        )
+        k = draw(
+            helpers.array_values(
+                shape=_kv_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+            if not _self_attention
+            else st.none()
+        )
+        v = draw(
+            helpers.array_values(
+                shape=_kv_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+            if not _self_attention
+            else st.none()
+        )
+        in_proj_weights = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(3 * _embed_dim, _pre_embed_dim),
+                min_value=0,
+                max_value=10,
+            )
+            if _pre_embed_dim != _embed_dim
+            else st.none()
+        )
+    else:
+        _q_dim = draw(helpers.ints(min_value=2, max_value=8))
+        _k_dim = draw(helpers.ints(min_value=2, max_value=8))
+        _v_dim = draw(helpers.ints(min_value=2, max_value=8))
+        _q_shape = _batch_dim + (_num_queries, _q_dim)
+        _k_shape = _batch_dim + (_num_keys, _k_dim)
+        _v_shape = _batch_dim + (_num_keys, _v_dim)
+        q = draw(
+            helpers.array_values(
+                shape=_q_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+        )
+        k = draw(
+            helpers.array_values(
+                shape=_k_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+        )
+        v = draw(
+            helpers.array_values(
+                shape=_v_shape,
+                dtype=dtype[0],
+                large_abs_safety_factor=7,
+                small_abs_safety_factor=7,
+                safety_factor_scale="linear",
+            )
+        )
+        q_proj_weights = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_embed_dim, _q_dim),
+                min_value=0,
+                max_value=2,
+            )
+        )
+        k_proj_weights = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_embed_dim, _k_dim),
+                min_value=0,
+                max_value=2,
+            )
+        )
+        v_proj_weights = draw(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(_embed_dim, _v_dim),
+                min_value=0,
+                max_value=2,
+            )
+        )
+
+    in_proj_bias = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(3 * _embed_dim), min_value=0, max_value=10
+        )
+        | st.none()
+    )
+    _out_dim = draw(helpers.ints(min_value=4, max_value=16))
+    out_proj_weights = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=x_mha_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+            shape=(_out_dim, _embed_dim),
+            min_value=0,
+            max_value=2,
         )
+        | st.none()
     )
-    context = draw(
+    out_proj_bias = draw(
         helpers.array_values(
-            dtype=dtype[0],
-            shape=context_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+            dtype=dtype[0], shape=(_out_dim), min_value=0, max_value=10
         )
+        | st.none()
     )
-    mask = draw(
+    attention_mask = draw(
         helpers.array_values(
-            dtype=dtype[0],
-            shape=mask_shape,
-            min_value=0.0999755859375,
-            max_value=1,
+            dtype="bool",
+            shape=_mask_shape,
         )
+        | st.none()
     )
-    return dtype, x_mha, scale, num_heads, context, mask
+    return (
+        dtype,
+        q,
+        k,
+        v,
+        num_heads,
+        attention_mask,
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        out_proj_weights,
+        in_proj_bias,
+        out_proj_bias,
+    )
 
 
 # multi_head_attention
 @handle_test(
     fn_tree="functional.ivy.multi_head_attention",
-    dtype_mha=x_and_mha(
-        dtypes=helpers.get_dtypes("float"),
-    ),
+    dtype_mha=_mha_helper(),
+    scale=st.one_of(st.floats(), st.none()),
+    dropout=st.floats(min_value=0, max_value=0.99),
+    training=st.just(False),  # st.booleans(), disabled until proper testing is used
+    is_causal=st.booleans(),
+    return_attention_weights=st.booleans(),
+    average_attention_weights=st.booleans(),
     ground_truth_backend="jax",
 )
 def test_multi_head_attention(
     *,
     dtype_mha,
+    scale,
+    dropout,
+    training,
+    is_causal,
+    return_attention_weights,
+    average_attention_weights,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
-    dtype, x_mha, scale, num_heads, context, mask = dtype_mha
-    to_q_fn = lambda x_, v: x_
+    (
+        dtype,
+        q,
+        k,
+        v,
+        num_heads,
+        attention_mask,
+        in_proj_weights,
+        q_proj_weights,
+        k_proj_weights,
+        v_proj_weights,
+        out_proj_weights,
+        in_proj_bias,
+        out_proj_bias,
+    ) = dtype_mha
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -293,17 +447,24 @@ def test_multi_head_attention(
         on_device=on_device,
         atol_=1e-02,
         rtol_=1e-02,
-        x=x_mha,
-        scale=scale,
+        query=q,
+        key=k,
+        value=v,
         num_heads=num_heads,
-        context=context,
-        mask=mask,
-        to_q_fn=to_q_fn,
-        to_kv_fn=to_q_fn,
-        to_out_fn=to_q_fn,
-        to_q_v=None,
-        to_kv_v=None,
-        to_out_v=None,
+        scale=scale,
+        attention_mask=attention_mask,
+        in_proj_weights=in_proj_weights,
+        q_proj_weights=q_proj_weights,
+        k_proj_weights=k_proj_weights,
+        v_proj_weights=v_proj_weights,
+        out_proj_weights=out_proj_weights,
+        in_proj_bias=in_proj_bias,
+        out_proj_bias=out_proj_bias,
+        is_causal=is_causal,
+        return_attention_weights=return_attention_weights,
+        average_attention_weights=average_attention_weights,
+        dropout=dropout,
+        training=training,
     )
 
 
@@ -777,9 +938,18 @@ def test_conv_general_dilated(
     on_device,
     ground_truth_backend,
 ):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
-        x_f_d_df
-    )
+    (
+        dtype,
+        x,
+        filters,
+        dilations,
+        data_format,
+        stride,
+        pad,
+        fc,
+        ff_format,
+        bias,
+    ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,

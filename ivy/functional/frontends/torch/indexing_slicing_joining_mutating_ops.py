@@ -1,6 +1,9 @@
 # local
 import ivy
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
+)
 
 
 @to_ivy_arrays_and_back
@@ -88,6 +91,7 @@ def reshape(input, shape):
     return ivy.reshape(input, shape)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def squeeze(input, dim=None):
     if isinstance(dim, int) and input.ndim > 0:
