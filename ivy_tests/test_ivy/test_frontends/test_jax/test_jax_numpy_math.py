@@ -872,7 +872,7 @@ def test_jax_numpy_gradient(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        f=x[0],
     )
 
 
