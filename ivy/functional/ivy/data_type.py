@@ -1619,7 +1619,6 @@ def dtype(
     return current_backend(x).dtype(x, as_native=as_native)
 
 
-
 def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the absolute intersection of  supported data types of the current backend's
@@ -1636,12 +1635,6 @@ def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     -------
     ret
         The supported data types of the function
-
-    Examples
-    --------
-    >>> print(ivy._function_supported_dtypes(ivy.acosh))
-    ('bool', 'float64', 'int64', 'uint8', 'int8', 'float32', 'int32', 'int16', \
-    'bfloat16')
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
@@ -1657,7 +1650,6 @@ def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
         )
 
     return tuple(supported_dtypes)
-
 
 
 def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
@@ -1676,12 +1668,6 @@ def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     -------
     ret
         The unsupported data types of the function
-
-    Examples
-    --------
-    >>> ivy.set_backend('torch')
-    >>> print(ivy.function_unsupported_dtypes(ivy.acosh))
-    ('float16','uint16','uint32','uint64')
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
