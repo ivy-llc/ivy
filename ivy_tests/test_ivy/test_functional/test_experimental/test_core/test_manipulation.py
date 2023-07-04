@@ -857,6 +857,12 @@ def test_hsplit(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
+    if (
+        not isinstance(indices_or_sections, int)
+        and not isinstance(indices_or_sections, list)
+        and indices_or_sections is not None
+    ):
+        input_dtype = [*input_dtype, indices_or_sections.dtype]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
