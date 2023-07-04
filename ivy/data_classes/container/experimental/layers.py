@@ -632,10 +632,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> y = ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME")
+        >>> print(y)
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -711,10 +712,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
+        >>> y = x.avg_pool2d(2, 1, "SAME")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
