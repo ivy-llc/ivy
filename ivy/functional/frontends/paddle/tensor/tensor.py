@@ -428,6 +428,13 @@ class Tensor:
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
 
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
+    )
+    def rot90(self, k=1, axes=(0, 1), name=None):
+        return ivy.rot90(self._ivy_array, k=k, axes=axes)
+
     @with_supported_dtypes(
         {"2.5.0 and below": ("complex64", "complex128")},
         "paddle",

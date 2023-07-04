@@ -9,6 +9,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (
+    _get_dtype_values_k_axes_for_rot90,
+)
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -1939,6 +1942,47 @@ def test_paddle_deg2rad(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+    
+    
+# rot90
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="rot90",
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=6,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+)
+def test_paddle_rot90(
+    dtype_m_k_axes,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, values, k, axes = dtype_m_k_axes
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "k": k,
+            "axes": axes,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
