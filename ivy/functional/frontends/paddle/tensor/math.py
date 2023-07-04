@@ -309,3 +309,9 @@ def fmax(x, y, name=None):
 @to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def sgn(x, name=None):
+    return ivy.sign(x)
