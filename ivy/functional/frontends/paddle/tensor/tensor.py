@@ -293,6 +293,13 @@ class Tensor:
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
 
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def isnan(self, name=None):
+        return paddle_frontend.isnan(self)
+
     @with_unsupported_dtypes(
         {
             "2.5.0 and below": (
