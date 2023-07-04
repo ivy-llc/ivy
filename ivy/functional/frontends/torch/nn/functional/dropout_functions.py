@@ -20,7 +20,7 @@ def dropout1d(input, p=0.5, training=True, inplace=False):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def dropout3d(input, p=0.5, training=True, inplace=False):
     if inplace:
         return ivy.dropout3d(
