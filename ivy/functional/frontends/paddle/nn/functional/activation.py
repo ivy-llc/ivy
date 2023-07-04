@@ -209,3 +209,14 @@ def elu(
 @to_ivy_arrays_and_back
 def mish(x, name=None):
     return ivy.mish(x)
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softplus(x,
+             /,
+             *,
+             beta=1,
+             threshold=20,
+             name=None
+             ):
+    return ivy.softplus(x, beta=beta, threshold=threshold)
