@@ -2028,8 +2028,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axes: Optional[Union[int, Tuple[int]]] = None,
         s: Optional[Sequence[int]] = None,
+        axes: Optional[Union[int, Tuple[int]]] = None,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
@@ -2058,8 +2058,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         """
         return self.static_rfftn(
             self,
-            axes=axes,
             s=s,
+            axes=axes,
             norm=norm,
             out=out,
         )

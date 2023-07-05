@@ -801,23 +801,23 @@ def embedding(
     return embeddings
 
 
-def rfftn2(
+def rfftn(
     x: JaxArray,
     *,
     s: Sequence[int] = None,
-    dim: Sequence[int] = (-2, -1),
+    axes: Sequence[int] = None,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not all(isinstance(j, int) for j in dim):
+    if not all(isinstance(j, int) for j in axes):
         raise ivy.utils.exceptions.IvyError(
-            f"Expecting {dim} to be a sequence of integers <class integer>"
+            f"Expecting {axes} to be a sequence of integers <class integer>"
         )
     if s is None:
-        s = (x.shape[dim[0]], x.shape[dim[1]])
+        s = (x.shape[axes[0]], x.shape[axes[1]])
     if all(j < -len(x.shape) for j in s):
         raise ivy.utils.exceptions.IvyError(
-            f"Invalid dim {dim}, expecting ranging"
+            f"Invalid dim {axes}, expecting ranging"
             f" from {-len(x.shape)} to {len(x.shape)-1}"
         )
     if not all(isinstance(j, int) for j in s):
@@ -830,4 +830,4 @@ def rfftn2(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return jnp.fft.rfftn(x, s, dim, norm).astype(complex)
+    return jnp.fft.rfftn(x, s, axes, norm).astype(complex)

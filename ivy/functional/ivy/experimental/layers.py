@@ -2493,13 +2493,14 @@ def rfftn(
     s: Optional[Sequence[int]] = None,
     axes: Optional[Sequence[int]] = None,
     norm: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute the N-dimensional discrete Fourier Transform for real input.
 
     Parameters
     ----------
-    a : array_like
+    x : array_like
         Input array, taken to be real.
     s : sequence of ints, optional
         Shape (length along each transformed axis) to use from the input.
@@ -2516,6 +2517,9 @@ def rfftn(
         Normalization mode. Default is "backward". Indicates which direction of
         the forward/backward pair of transforms is scaled and with what
         normalization factor.
+    out : array_like, optional
+        Optional output array to store the result of the computation. The shape
+        and dtype of this array must match the expected output.
 
     Returns
     -------
@@ -2529,7 +2533,7 @@ def rfftn(
     Raises
     ------
     ValueError
-        If s and axes have different length.
+        If s and axes have different lengths.
     IndexError
         If an element of axes is larger than the number of axes of a.
     """
@@ -2543,4 +2547,4 @@ def rfftn(
     elif len(s) != len(axes):
         raise ValueError("s and axes must have the same length.")
 
-    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm)
+    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
