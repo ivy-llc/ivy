@@ -307,16 +307,14 @@ def scatter_nd(
         ivy.utils.assertions.check_equal(
             ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
         )
-    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if not target_given:
-        reduction = "replace"
+        shape = list(shape) if ivy.exists(shape) else list(out.shape)
+        target = np.zeros(shape, dtype=updates.dtype)
     if reduction == "sum":
         np.add.at(target, indices_tuple, updates)
     elif reduction == "replace":
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
         target = np.asarray(target).copy()
         target.setflags(write=1)
         target[indices_tuple] = updates
@@ -329,8 +327,6 @@ def scatter_nd(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
 
 

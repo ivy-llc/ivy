@@ -364,12 +364,6 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if ivy.exists(out):
-        out = (
-            tf.cast(out, dtype=updates.dtype)
-            if ivy.dtype_bits(updates.dtype) > ivy.dtype_bits(out.dtype)
-            else out
-        )
     updates_dtype = updates.dtype
     if ivy.exists(out):
         dtype = ivy.promote_types(out.dtype, updates_dtype)
@@ -388,31 +382,26 @@ def scatter_nd(
     # implementation
     target = out
     target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
+    if ivy.exists(shape) and target_given:
         ivy.utils.assertions.check_equal(
             ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
         )
-    shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
+        shape = list(shape) if ivy.exists(shape) else list(out.shape)
         target = tf.zeros(shape, dtype=updates.dtype)
-        res = tf.tensor_scatter_nd_update(target, indices, updates)
+    if reduction == "sum":
+        return tf.tensor_scatter_nd_add(target, indices, updates)
+    elif reduction == "min":
+        return tf.tensor_scatter_nd_min(target, indices, updates)
+    elif reduction == "max":
+        return tf.tensor_scatter_nd_max(target, indices, updates)
+    elif reduction == "replace":
+        return tf.tensor_scatter_nd_update(target, indices, updates)
     else:
-        if reduction == "sum":
-            res = tf.tensor_scatter_nd_add(out, indices, updates)
-        elif reduction == "min":
-            res = tf.tensor_scatter_nd_min(target, indices, updates)
-        elif reduction == "max":
-            res = tf.tensor_scatter_nd_max(target, indices, updates)
-        elif reduction == "replace":
-            res = tf.tensor_scatter_nd_update(out, indices, updates)
-        else:
-            raise ivy.utils.exceptions.IvyException(
-                "reduction is {}, but it must be one of "
-                '"sum", "min", "max" or "replace"'.format(reduction)
-            )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+        raise ivy.utils.exceptions.IvyException(
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
+        )
 
 
 scatter_nd.support_native_out = True

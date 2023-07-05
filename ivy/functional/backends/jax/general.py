@@ -385,12 +385,10 @@ def scatter_nd(
         )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
-        reduction = "replace"
+        target = jnp.zeros(shape, dtype=updates.dtype)
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
-        if not target_given:
-            target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].set(updates)
     elif reduction == "min":
         target = target.at[indices_tuple].min(updates)
@@ -401,8 +399,6 @@ def scatter_nd(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    if ivy.exists(out):
-        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
 
 

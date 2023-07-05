@@ -436,11 +436,10 @@ def scatter_nd(
     updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
-    target = out
-    target_given = ivy.exists(target)
-    if ivy.exists(shape) and ivy.exists(target):
+    target_given = ivy.exists(out)
+    if ivy.exists(shape) and target_given:
         ivy.utils.assertions.check_equal(
-            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
+            ivy.Shape(out.shape), ivy.Shape(shape), as_array=False
         )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     dtype = updates.dtype
@@ -458,9 +457,8 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if target_given:
-        flat_output = torch.reshape(out._data, (flat_result_size,)).detach()
+        flat_output = torch.reshape(out, (flat_result_size,)).detach()
     else:
-        reduction = "replace"
         flat_output = torch.zeros(flat_result_size, dtype=dtype)
     flat_updates = torch.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
@@ -491,10 +489,7 @@ def scatter_nd(
             out=flat_output.clone(),
             reduce=reduction,
         )
-    res = torch.reshape(flat_scatter, list(shape))
-    if ivy.exists(out):
-        return ivy.inplace_update(out, res)
-    return res
+    return torch.reshape(flat_scatter, list(shape))
 
 
 scatter_nd.support_native_out = True
