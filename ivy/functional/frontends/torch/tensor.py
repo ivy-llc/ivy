@@ -1,4 +1,5 @@
 # global
+from typing import Iterable
 
 # local
 import ivy
@@ -397,7 +398,18 @@ class Tensor:
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self)
 
-    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
+    def new_ones(
+        self,
+        *args,
+        size=None,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
+    ):
+        if size is None:
+            size = args[0] if isinstance(args[0], (tuple, list)) else args
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -994,6 +1006,10 @@ class Tensor:
         self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def dot(self, tensor):
+        return torch_frontend.dot(self, tensor)
+
     # Special Methods #
     # -------------------#
 
@@ -1454,6 +1470,15 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
+
+    def tile(self, *reps):
+        if (
+            isinstance(reps, Iterable)
+            and len(reps) == 1
+            and isinstance(reps[0], Iterable)
+        ):
+            reps = reps[0]
+        return torch_frontend.tile(self, reps)
 
 
 class Size(tuple):
