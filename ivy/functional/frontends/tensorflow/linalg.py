@@ -31,6 +31,13 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+def eigvals(tensor, tol=None):
+    x = tensor.eig()
+    eigval = x['eigenvalues']
+    return ivy.astype(ivy.matrix_rank(eigval, atol=tol), ivy.complex64)
+
+
+@to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
