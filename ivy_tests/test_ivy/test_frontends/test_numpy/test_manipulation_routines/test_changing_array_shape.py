@@ -283,6 +283,31 @@ def test_numpy_asarray_chkfinite(
         a=a[0],
     )
 
+# asfortranarray
+@handle_frontend_test(
+    fn_tree="numpy.asfortranarray",
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_numpy_asfortranarray(
+    *,
+    dtype_and_a,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+    )
+
+
 
 # require
 @handle_frontend_test(
