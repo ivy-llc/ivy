@@ -1097,9 +1097,9 @@ def casting_modes_ops(fn):
     @functools.wraps(fn)
     def method(*args, **kwargs):
         # we first check if it has unsupported/supported dtypes uniquely added to it
-        intersect = set(ivy.function_unsupported_dtypes(fn)).difference(
-            set(ivy.invalid_dtypes)
-        )
+        intersect = set(
+            ivy.function_unsupported_devices_and_dtypes(fn)[ivy.default_device()]
+        ).difference(set(ivy.invalid_dtypes))
         if not intersect:
             # no unsupported dtype specified
             return fn(*args, **kwargs)
