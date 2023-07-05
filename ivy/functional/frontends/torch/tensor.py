@@ -9,7 +9,10 @@ from ivy.functional.frontends.numpy.creation_routines.from_existing_data import 
 )
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import _to_ivy_array
+from ivy.functional.frontends.torch.func_wrapper import (
+    _to_ivy_array,
+    numpy_to_torch_style_args,
+)
 
 
 class Tensor:
@@ -114,9 +117,11 @@ class Tensor:
     def chunk(self, chunks, dim=0):
         return torch_frontend.chunk(self, chunks, dim=dim)
 
+    @numpy_to_torch_style_args
     def any(self, dim=None, keepdim=False):
         return torch_frontend.any(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     def all(self, dim=None, keepdim=False):
         return torch_frontend.all(self, dim=dim, keepdim=keepdim)
 
@@ -161,6 +166,7 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
@@ -333,14 +339,17 @@ class Tensor:
     def relu(self):
         return torch_frontend_nn.relu(self)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def amax(self, dim=None, keepdim=False):
         return torch_frontend.amax(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, "torch")
     def aminmax(self, dim=None, keepdim=False):
         return torch_frontend.aminmax(self, dim=dim, keepdim=keepdim)
@@ -388,7 +397,18 @@ class Tensor:
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self)
 
-    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
+    def new_ones(
+        self,
+        *args,
+        size=None,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
+    ):
+        if size is None:
+            size = args[0] if isinstance(args[0], (tuple, list)) else args
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -418,117 +438,75 @@ class Tensor:
         )
 
     def to(self, *args, **kwargs):
-        dtype = kwargs.get("dtype", None)
-        copy = kwargs.get("copy", False)
-        device = kwargs.get("device", None)
-
         if len(args) > 0:
-            # argument order: other, non_blocking=False, copy=False
             if hasattr(args[0], "ivy_array") or ivy.is_array(args[0]):
-                if "device" in kwargs:
-                    raise ValueError(
-                        "Argument 'device' is not supported for array inputs."
+                if self.dtype == ivy.dtype(args[0]) and self.device == ivy.dev(args[0]):
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(
+                        self.ivy_array,
+                        dtype=ivy.dtype(args[0]),
+                        device=ivy.dev(args[0]),
                     )
-                if "dtype" in kwargs:
-                    raise ValueError(
-                        "Argument 'dtype' is not supported for array inputs."
-                    )
-                dtype = ivy.dtype(args[0])
-                device = ivy.dev(args[0], as_native=True)  # don't limit to cpu/gpu/tpu
-                if len(args) > 2:
-                    if isinstance(args[2], bool):
-                        if "copy" in kwargs:
-                            raise ValueError(
-                                "Argument 'copy' is defined both "
-                                "as positional and keyword argument."
-                            )
-                        copy = args[2]
-                    else:
-                        raise ValueError(
-                            "The postional argumnet 'copy'"
-                            f"expected a boolean type, got {type(args[2])}."
-                        )
-
-            # dtype, non_blocking=False, copy=False, memory_format=torch.preserve_format
-            elif (
+                    return cast_tensor
+            if (
                 isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
                 or args[0] in ivy._all_ivy_dtypes_str
-                or args[0] in [float, int, bool]
             ):
-                if "dtype" in kwargs:
-                    raise ValueError(
-                        "Argument 'dtype' is defined both as positional "
-                        "and keyword argument."
+                if self.dtype == ivy.as_ivy_dtype(args[0]):
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, dtype=args[0])
+                    return cast_tensor
+            if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
+                if isinstance(args[0], str) and not isinstance(
+                    args[0], (ivy.Device, ivy.NativeDevice)
+                ):
+                    ivy.utils.assertions.check_elem_in_list(
+                        args[0],
+                        [
+                            "cpu",
+                            "cuda",
+                            "xpu",
+                            "mkldnn",
+                            "opengl",
+                            "opencl",
+                            "ideep",
+                            "hip",
+                            "ve",
+                            "ort",
+                            "mlc",
+                            "xla",
+                            "lazy",
+                            "vulkan",
+                            "meta",
+                            "hpu",
+                        ],
                     )
-                if "device" in kwargs:
-                    raise ValueError(
-                        "Argument 'device' cannot be defined with dtype as "
-                        "positional argument."
-                    )
-                dtype = args[0]
-                if len(args) > 2:
-                    if isinstance(args[2], bool):
-                        if "copy" in kwargs:
-                            raise ValueError(
-                                "Argument 'copy' is defined both as positional "
-                                "and keyword argument."
-                            )
-                        copy = args[2]
-                    else:
-                        raise ivy.utils.exceptions.IvyError(
-                            "The postional argumnet 'copy' expected a boolean "
-                            f"type, got {type(args[2])}."
-                        )
-
-            # device=None, dtype=None, non_blocking=False, copy=False, memory_format
-            elif isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
-                if "device" in kwargs:
-                    raise ValueError(
-                        "Argument 'device' is defined both as positional "
-                        "and keyword argument."
-                    )
-                device = args[0]
-                if len(args) > 1:
-                    if (
-                        isinstance(args[1], (ivy.Dtype, ivy.NativeDtype))
-                        or args[1] in ivy._all_ivy_dtypes_str
-                        or args[0] in [float, int, bool]
-                    ):
-                        if "dtype" in kwargs:
-                            raise ValueError(
-                                "Argument 'dtype' is defined both as positional "
-                                "and keyword argument."
-                            )
-                        dtype = args[1]
-                    if len(args) > 3:
-                        if isinstance(args[3], bool):
-                            if "copy" in kwargs:
-                                raise ValueError(
-                                    "Argument 'copy' is defined both as positional "
-                                    "and keyword argument."
-                                )
-                            copy = args[3]
-                        else:
-                            raise ivy.utils.exceptions.IvyError(
-                                "The postional argumnet 'copy' expected a boolean "
-                                + f"type, got {type(args[3])}."
-                            )
-            else:
-                raise ivy.utils.exceptions.IvyError(
-                    "Wrong set or order of arguments provided."
-                )
-
-        if copy:
-            ret = self.clone()
+                if self.device == ivy.as_ivy_dev(args[0]):
+                    return self
+                else:
+                    cast_tensor = self.clone()
+                    cast_tensor.ivy_array = ivy.asarray(self.ivy_array, device=args[0])
+                    return cast_tensor
         else:
-            ret = self
-
-        ret.ivy_array = ivy.asarray(
-            ret.ivy_array,
-            device=device if device is not None else self.device,
-            dtype=dtype if dtype is not None else self.dtype,
-        )
-        return ret
+            if (
+                "dtype" in kwargs
+                and "device" in kwargs
+                and self.dtype == kwargs["dtype"]
+                and self.device == kwargs["device"]
+            ):
+                return self
+            else:
+                cast_tensor = self.clone()
+                cast_tensor.ivy_array = ivy.asarray(
+                    self.ivy_array,
+                    device=kwargs["device"] if "device" in kwargs else self.device,
+                    dtype=kwargs["dtype"] if "dtype" in kwargs else self.dtype,
+                )
+                return cast_tensor
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arctan(self):
@@ -615,9 +593,11 @@ class Tensor:
         self.ivy_array = self.detach().ivy_array
         return self
 
+    @numpy_to_torch_style_args
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
 
+    @numpy_to_torch_style_args
     def unsqueeze_(self, dim):
         self.ivy_array = self.unsqueeze(dim).ivy_array
         return self
@@ -700,6 +680,7 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
         return self
 
+    @numpy_to_torch_style_args
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self, dim=dim, keepdim=keepdim)
 
@@ -739,10 +720,12 @@ class Tensor:
     def argwhere(self):
         return torch_frontend.argwhere(self)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
     def argmin(self, dim=None, keepdim=False):
         return torch_frontend.argmin(self, dim=dim, keepdim=keepdim)
@@ -755,6 +738,7 @@ class Tensor:
     def ceil(self):
         return torch_frontend.ceil(self)
 
+    @numpy_to_torch_style_args
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self, dim=dim, keepdim=keepdim)
 
@@ -771,12 +755,16 @@ class Tensor:
                 return torch_frontend.permute(self, args)
         return torch_frontend.permute(self)
 
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def median(self, dim=None, keepdim=False):
         return torch_frontend.median(self, dim=dim, keepdim=keepdim)
@@ -794,10 +782,12 @@ class Tensor:
     def flatten(self, start_dim=0, end_dim=-1):
         return torch_frontend.flatten(self, start_dim, end_dim)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumsum(self, dim, *, dtype=None):
         return torch_frontend.cumsum(self, dim, dtype=dtype)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumsum_(self, dim, *, dtype=None):
         self.ivy_array = self.cumsum(dim, dtype).ivy_array
@@ -846,6 +836,7 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self, other)
 
+    @numpy_to_torch_style_args
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
@@ -960,6 +951,7 @@ class Tensor:
 
         return torch_frontend.tile(self, repeats)
 
+    @numpy_to_torch_style_args
     def unbind(self, dim=0):
         return torch_frontend.unbind(self, dim=dim)
 
@@ -1012,6 +1004,10 @@ class Tensor:
     def addr_(self, vec1, vec2, *, beta=1, alpha=1):
         self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def dot(self, tensor):
+        return torch_frontend.dot(self, tensor)
 
     # Special Methods #
     # -------------------#
@@ -1189,10 +1185,12 @@ class Tensor:
                 "only one element tensors can be converted to Python scalars"
             )
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def cumprod(self, dim, dtype):
         return torch_frontend.cumprod(self, dim, dtype=dtype)
 
+    @numpy_to_torch_style_args
     def count_nonzero(self, dim):
         return torch_frontend.count_nonzero(self, dim=dim)
 
@@ -1232,6 +1230,7 @@ class Tensor:
     def round(self, *, decimals=0):
         return torch_frontend.round(self, decimals=decimals)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def cross(self, other, dim=-1):
         return torch_frontend.cross(self, other, dim=dim)
@@ -1267,6 +1266,7 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
         return self
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def prod(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
@@ -1307,6 +1307,7 @@ class Tensor:
     def sign(self):
         return torch_frontend.sign(self._ivy_array)
 
+    @numpy_to_torch_style_args
     def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
         return torch_frontend.std(
             self, dim=dim, unbiased=unbiased, keepdim=keepdim, out=out
@@ -1331,6 +1332,7 @@ class Tensor:
     def multiply(self, other, *, out=None):
         return torch_frontend.multiply(self, other, out=out)
 
+    @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def topk(self, k, dim=None, largest=True, sorted=True):
         return torch_frontend.topk(self, k, dim=dim, largest=largest, sorted=sorted)
@@ -1419,6 +1421,7 @@ class Tensor:
         )
         return self
 
+    @numpy_to_torch_style_args
     def var(self, dim=None, *, correction=1, keepdim=False):
         return torch_frontend.var(self, dim=dim, unbiased=correction, keepdim=keepdim)
 
