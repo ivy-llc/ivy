@@ -1830,8 +1830,6 @@ def dtype_array_query(
         helpers.array_values(
             dtype=dtype[0],
             shape=shape,
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
         )
     )
     if allow_mask and draw(st.booleans()):
@@ -1912,7 +1910,7 @@ def dtype_array_query(
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
-    return dtype+['int64'], array, index
+    return dtype+['int64']*index_types.count("array"), array, index
 
 
 @st.composite
