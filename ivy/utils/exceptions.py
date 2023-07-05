@@ -138,7 +138,6 @@ def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno)
         t_v = inspect.getargvalues(module_frame.frame)
         for k, v in t_v.locals.items():
             if k in module_st.line and isinstance(v, Graph):
-                # todo: try getting lines manually
                 traced_data = trace_obj(t_v.locals[v.__name__], (), {}, {})
                 curr_obj[0] = traced_data[1]
                 curr_obj[1] = traced_data[2]
