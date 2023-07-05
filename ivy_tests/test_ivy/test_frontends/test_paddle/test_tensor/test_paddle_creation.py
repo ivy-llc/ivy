@@ -366,12 +366,23 @@ def test_paddle_empty_like(
 @handle_frontend_test(
     fn_tree="paddle.assign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    output=helpers.array_values(
+        dtype=helpers.get_dtypes("valid", full=False),
+        shape=helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
     ),
     test_with_out=st.just(True),
 )
 def test_paddle_assign(
     dtype_and_x,
+    output,
     test_flags,
     frontend,
     fn_tree,
@@ -385,4 +396,5 @@ def test_paddle_assign(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        output=output,
     )

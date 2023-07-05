@@ -84,4 +84,4 @@ def empty_like(x, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def assign(x, output=None):
-    return ivy.copy_array(ivy.to_ivy(x), out=output)
+    return ivy.copy_array(x, out=output)
