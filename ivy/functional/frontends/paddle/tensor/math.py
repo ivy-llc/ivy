@@ -322,4 +322,11 @@ def trunc(x, name=None):
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def sgn(x, name=None):
-    return ivy.sign(x)
+    if ivy.is_complex_dtype(x.dtype):
+        input_abs = ivy.abs(x)
+        if input_abs == 0:
+            return 0
+        else:
+            return ivy.divide(x, input_abs)
+    else:
+        return ivy.sign(x)

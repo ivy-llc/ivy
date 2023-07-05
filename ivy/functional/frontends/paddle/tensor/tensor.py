@@ -504,3 +504,15 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
         return ivy.sign(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sgn(self, name=None):
+        input = self._ivy_array
+        if ivy.is_complex_dtype(input.dtype):
+            input_abs = ivy.abs(input)
+            if input_abs == 0:
+                return 0
+            else:
+                return ivy.divide(input, input_abs)
+        else:
+            return ivy.sign(input)
