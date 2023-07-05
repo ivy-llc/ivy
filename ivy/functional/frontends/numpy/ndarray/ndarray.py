@@ -1,5 +1,4 @@
 # global
-from math import prod
 
 # local
 import ivy
