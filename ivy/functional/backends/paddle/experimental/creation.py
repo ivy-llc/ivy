@@ -19,9 +19,12 @@ import ivy
 def _kaiser_window(window_length, beta):
     n = paddle.arange(0, window_length)
     alpha = (window_length - 1) / 2.0
-    return paddle_backend.divide(paddle_backend.i0(
-        beta * paddle.sqrt(1 - paddle_backend.divide((n - alpha), alpha) ** 2.0)
-    ) , paddle_backend.i0(beta))
+    return paddle_backend.divide(
+        paddle_backend.i0(
+            beta * paddle.sqrt(1 - paddle_backend.divide((n - alpha), alpha) ** 2.0)
+        ),
+        paddle_backend.i0(beta),
+    )
 
 
 # Array API Standard #
