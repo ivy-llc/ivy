@@ -72,7 +72,7 @@ def scan(f, init, xs, length=None, reverse=False, unroll=1):
     carry = init
     for x in xs:
         for _ in range(unroll):
-            carry = f(carry)
+            carry = f(carry, x)
             ys.append(carry)
 
     return ivy.stack(ys)

@@ -28,13 +28,58 @@ _dtype_kind_keys = {
     "float_and_integer",
     "float_and_complex",
     "bool",
+    # None,
 }
 
 
+# def _get_fn_dtypes(framework, kind="valid"):
+#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+#         test_globals.CURRENT_DEVICE_STRIPPED
+#     ][kind]
+
+# def _get_fn_dtypes(framework, kind="valid"):
+#     if test_globals.CURRENT_RUNNING_TEST is None:
+#         return None  # or any appropriate default value
+    
+#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+#         test_globals.CURRENT_DEVICE_STRIPPED
+#     ][kind]
+
+# def _get_fn_dtypes(framework, kind="valid"):
+#     if framework is None:
+#         return None  # or any appropriate default value
+        
+#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+#         test_globals.CURRENT_DEVICE_STRIPPED
+#     ][kind]
+
+
+
 def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-        test_globals.CURRENT_DEVICE_STRIPPED
-    ][kind]
+    if framework is None:
+        return None  # or any appropriate default value
+
+    supported_device_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
+
+    if framework.backend in supported_device_dtypes and test_globals.CURRENT_DEVICE_STRIPPED in supported_device_dtypes[framework.backend]:
+        return supported_device_dtypes[framework.backend][test_globals.CURRENT_DEVICE_STRIPPED].get(kind, None)
+
+    return None  # or any appropriate default value
+
+
+# def _get_fn_dtypes(framework, kind="valid"):
+#     if framework is None:
+#         # Handle the case where framework is None
+#         return None  # or any appropriate default value
+        
+#     supported_device_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
+    
+#     if framework.backend in supported_device_dtypes and \
+#        test_globals.CURRENT_DEVICE_STRIPPED in supported_device_dtypes[framework.backend]:
+#         return supported_device_dtypes[framework.backend][test_globals.CURRENT_DEVICE_STRIPPED][kind]
+#     else:
+#         # Handle the case where framework.backend or test_globals.CURRENT_DEVICE_STRIPPED is not found
+#         return None  # or any appropriate default value
 
 
 def _get_type_dict(framework, kind):
@@ -70,8 +115,11 @@ def _get_type_dict(framework, kind):
         return tuple(
             set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
         )
+    # elif kind is None:  # Added None case
+    #     return None  # or any appropriate default value
     else:
         raise RuntimeError("{} is an unknown kind!".format(kind))
+
 
 
 def make_json_pickable(s):
@@ -79,10 +127,17 @@ def make_json_pickable(s):
     s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
     return s
 
+# frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+# if frontend_dtypes is not None:
+#     valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+# else:
+#     # Handle the case when frontend_dtypes is None
+#     # Assign a default value or handle the scenario as needed
+#     valid_dtypes = set()  # or any other default value or error handling logic
 
 @st.composite
 def get_dtypes(
-    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
+    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True,
 ):
     """
     Draws a valid dtypes for the test function. For frontend tests, it draws the data
@@ -167,6 +222,8 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
+    
+    
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
