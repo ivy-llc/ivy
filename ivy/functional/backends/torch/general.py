@@ -458,7 +458,7 @@ def scatter_nd(
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if target_given:
-        flat_output = torch.reshape(out._data, (flat_result_size,))
+        flat_output = torch.reshape(out._data, (flat_result_size,)).detach()
     else:
         reduction = "replace"
         flat_output = torch.zeros(flat_result_size, dtype=dtype)
