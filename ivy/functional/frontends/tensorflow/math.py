@@ -601,6 +601,7 @@ def atan2(y, x, name=None):
     return ivy.atan2(y, x)
 
 
+
 @to_ivy_arrays_and_back
 def log(x, name=None):
     return ivy.log(x)
@@ -701,3 +702,7 @@ def conj(x, name=None):
 @to_ivy_arrays_and_back
 def top_k(input, k=1, sorted=True, name=None):
     return ivy.top_k(input, k, sorted=sorted)
+
+@to_ivy_arrays_and_back
+def atanh(x, name=None):
+    return ivy.atanh(x)
