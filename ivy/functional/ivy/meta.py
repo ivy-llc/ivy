@@ -622,7 +622,7 @@ def reptile_step(
 
     >>> cost, gradients, firsts = ivy.reptile_step(batch,
                                                    inner_cost_fn, variables, 4, 0.025,
-    ...                                            batched=False,
+                                                   batched=False,
                                                    num_tasks=2, return_inner_v='first')
     >>> print(cost)
     ivy.array(0.9880483)

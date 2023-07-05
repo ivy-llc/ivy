@@ -1050,7 +1050,6 @@ def array_indices_put_along_axis(
 
     Parameters
     ----------
-
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
@@ -1078,9 +1077,11 @@ def array_indices_put_along_axis(
     valid_bounds
         If False, the strategy may produce out-of-bounds indices.
     values
-        Custom values array to use instead of randomly generated values. Defaults to None.
+        Custom values array to use instead of randomly generated values.
+        Defaults to None.
     values_dtypes : Union[None, List[str]]
-        A list of dtypes for the values parameter. The function will use the dtypes returned by
+        A list of dtypes for the values parameter.
+        The function will use the dtypes returned by
         'get_dtypes("valid")'.
 
     Returns
@@ -1937,22 +1938,32 @@ def einsum_helper(draw):
     # Todo: generalize to n equations and arrays
 
     # generate shapes as lists initially to allow updates in the loop ahead
-    shape_1 = draw(st.lists(st.integers(min_value=1, max_value=5),
-                            min_size=1,
-                            max_size=5))
-    shape_2 = draw(st.lists(st.integers(min_value=1, max_value=5),
-                            min_size=1,
-                            max_size=5))
+    shape_1 = draw(
+        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
+    )
+    shape_2 = draw(
+        st.lists(st.integers(min_value=1, max_value=5), min_size=1, max_size=5)
+    )
     dims_1 = len(shape_1)
     dims_2 = len(shape_2)
 
     # generate equations as lists to allow updates and use unique=True
-    eq_1 = draw(st.lists(st.sampled_from(string.ascii_lowercase),
-                            min_size=dims_1,
-                            max_size=dims_1, unique=True))
-    eq_2 = draw(st.lists(st.sampled_from(string.ascii_lowercase),
-                            min_size=dims_2,
-                            max_size=dims_2, unique=True))
+    eq_1 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_1,
+            max_size=dims_1,
+            unique=True,
+        )
+    )
+    eq_2 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_2,
+            max_size=dims_2,
+            unique=True,
+        )
+    )
 
     # randomly change some of the dimensions and equations to match
     for i in range(min(dims_1, dims_2)):
@@ -1965,28 +1976,36 @@ def einsum_helper(draw):
     shape_2 = tuple(shape_2)
 
     # join the lists to strings
-    eq_1 = ''.join(eq_1)
-    eq_2 = ''.join(eq_2)
+    eq_1 = "".join(eq_1)
+    eq_2 = "".join(eq_2)
 
     # generate arrays and dtypes
-    dtype_1, value_1 = draw(dtype_and_values(
-        available_dtypes=["float32"],
-        shape=shape_1,
+    dtype_1, value_1 = draw(
+        dtype_and_values(
+            available_dtypes=["float32"],
+            shape=shape_1,
+        )
+    )
 
-    ))
-
-    dtype_2, value_2 = draw(dtype_and_values(
-        available_dtypes=["float32"],
-        shape=shape_2,
-    ))
+    dtype_2, value_2 = draw(
+        dtype_and_values(
+            available_dtypes=["float32"],
+            shape=shape_2,
+        )
+    )
 
     output_length = min(dims_1, dims_2)
-    output_eq = draw(st.lists(st.sampled_from(eq_1+eq_2),
-                         min_size=output_length,
-                         max_size=output_length, unique=True))
-    output_eq = ''.join(output_eq)
+    output_eq = draw(
+        st.lists(
+            st.sampled_from(eq_1 + eq_2),
+            min_size=output_length,
+            max_size=output_length,
+            unique=True,
+        )
+    )
+    output_eq = "".join(output_eq)
 
     # explict einsum equation
-    eq = eq_1 + ',' + eq_2 + '->' + output_eq
+    eq = eq_1 + "," + eq_2 + "->" + output_eq
 
     return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]
