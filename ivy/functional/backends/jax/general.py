@@ -366,18 +366,13 @@ def scatter_nd(
         ),
     )
 
-    # broadcast updates and indices to correct shape
     expected_shape = (
-        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
         if ivy.exists(out)
-        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
     )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(
-            indices, updates.shape[:1] + (indices.shape[-1],)
-        )._data
+    updates = _broadcast_to(updates, expected_shape)._data
+
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
 

@@ -4,13 +4,11 @@ from numbers import Number
 from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
-import functools
-from operator import mul
+import multiprocessing as _multiprocessing
 
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-import multiprocessing as _multiprocessing
 from ivy.functional.ivy.general import _parse_ellipsis, _broadcast_to, _parse_query
 
 
@@ -472,9 +470,10 @@ def _scatter_nd_replace(data, indices, updates, reduce):
     )
 
     for i in indices:
-        target_idx = paddle.concat(
-            [target_idx, paddle_backend.get_item(idx_range, tuple(i)).flatten()], -1
+        target_idx = ivy.concat(
+            [target_idx, ivy.get_item(idx_range, tuple(i)).flatten()], axis=-1
         )
+    target_idx = target_idx._data.cast("int64")
 
     if data.dtype in [
         paddle.int8,
@@ -541,21 +540,12 @@ def scatter_nd(
         ),
     )
 
-    # broadcast updates and indices to correct shape
-    shape = list(shape) if shape is not None else None
     expected_shape = (
-        indices.shape[:-1] + list(out.shape[indices.shape[-1] :])
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
         if ivy.exists(out)
-        else indices.shape[:-1] + shape[indices.shape[-1] :]
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
     )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = paddle_backend.broadcast_to(updates, expected_shape)
-    elif sum(updates.shape) >= sum(expected_shape):
-        indices_shape = updates.shape[:1] + indices.shape[-1:]
-        if sum(indices.shape) < sum(indices_shape):
-            indices = paddle_backend.broadcast_to(indices, indices_shape)
-        else:
-            updates = paddle_backend.broadcast_to(updates, expected_shape)
+    updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
     target = out
@@ -571,31 +561,17 @@ def scatter_nd(
     else:
         if reduction == "sum":
             ret = _scatter_nd_replace(target, indices, updates, reduce="add")
-
-        elif reduction == "min":
+        elif reduction in ["min", "max"]:
             new_updates = paddle.to_tensor([], dtype=target.dtype)
             for i in indices:
-                new_updates = paddle_backend.concat(
-                    [
-                        new_updates,
-                        paddle_backend.get_item(target, tuple(i)).reshape([-1]),
-                    ],
-                    axis=-1,
+                new_updates = ivy.concat(
+                    [new_updates, ivy.get_item(target, tuple(i)).flatten()], axis=-1
                 )
-            new_updates = paddle_backend.minimum(new_updates, updates.reshape([-1]))
-            ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
-
-        elif reduction == "max":
-            new_updates = paddle.to_tensor([], dtype=target.dtype)
-            for i in indices:
-                new_updates = paddle_backend.concat(
-                    [
-                        new_updates,
-                        paddle_backend.get_item(target, tuple(i)).reshape([-1]),
-                    ],
-                    axis=-1,
-                )
-            new_updates = paddle_backend.maximum(new_updates, updates.reshape([-1]))
+            new_updates = new_updates._data.cast("int64")
+            if reduction == "min":
+                new_updates = paddle_backend.minimum(new_updates, updates.reshape([-1]))
+            else:
+                new_updates = paddle_backend.maximum(new_updates, updates.reshape([-1]))
             ret = _scatter_nd_replace(target, indices, new_updates, reduce="assign")
         elif reduction == "replace":
             ret = _scatter_nd_replace(target, indices, updates, reduce="assign")
@@ -604,6 +580,7 @@ def scatter_nd(
                 "reduction is {}, but it must be one of "
                 '"sum", "min", "max" or "replace"'.format(reduction)
             )
+    ret = ret.astype(updates.dtype)
     if ivy.exists(out):
         return inplace_update(out, ret)
     return ret

@@ -5,7 +5,6 @@ import math
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
-
 try:
     import functorch
 except ImportError:
@@ -17,7 +16,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from . import backend_version, is_variable
-from ...ivy.general import _parse_query, _numel
+from ...ivy.general import _parse_query, _numel, _broadcast_to
 
 torch_scatter = None
 
@@ -429,16 +428,12 @@ def scatter_nd(
         ),
     )
 
-    # broadcast updates and indices to correct shape
     expected_shape = (
-        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
         if ivy.exists(out)
-        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
     )
-    if sum(updates.shape) < sum(expected_shape):
-        updates = ivy.broadcast_to(updates, expected_shape)._data
-    elif sum(updates.shape) > sum(expected_shape):
-        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
+    updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
     target = out

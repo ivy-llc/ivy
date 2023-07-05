@@ -18,7 +18,7 @@ from ivy.functional.ivy.gradients import _is_variable
 from ivy.functional.ivy.general import _parse_ellipsis, _broadcast_to, _parse_query
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-
+from ...ivy.general import _broadcast_to
 
 _round = round
 
@@ -378,9 +378,8 @@ def scatter_nd(
         (ivy.as_native_dtype(dtype) if ivy.exists(out) else updates_dtype),
     )
 
-    # broadcast updates and indices to correct shape
     expected_shape = (
-        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
         if ivy.exists(out)
         else indices.shape[:-1] + shape[indices.shape[-1] :]
     )
