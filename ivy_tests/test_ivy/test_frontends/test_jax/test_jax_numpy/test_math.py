@@ -50,7 +50,7 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sign(
+def test_jax_sign(
     *,
     dtype_and_x,
     test_flags,
@@ -78,7 +78,7 @@ def test_jax_numpy_sign(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_absolute(
+def test_jax_absolute(
     *,
     dtype_and_x,
     on_device,
@@ -107,7 +107,7 @@ def test_jax_numpy_absolute(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_add(
+def test_jax_add(
     *,
     dtype_and_x,
     on_device,
@@ -144,7 +144,7 @@ def test_jax_numpy_add(
     deg=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_angle(
+def test_jax_angle(
     *,
     dtype_and_x,
     deg,
@@ -187,7 +187,7 @@ def _get_dtype_input_and_vector(draw):
         max_value=10,
     ),
 )
-def test_jax_numpy_diff(
+def test_jax_diff(
     *,
     dtype_and_x,
     test_flags,
@@ -229,7 +229,7 @@ def test_jax_numpy_diff(
         max_value=10,
     ),
 )
-def test_jax_numpy_ediff1d(
+def test_jax_ediff1d(
     *,
     dtype_and_x,
     on_device,
@@ -257,7 +257,7 @@ def test_jax_numpy_ediff1d(
     fn_tree="jax.numpy.arctan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-def test_jax_numpy_arctan(
+def test_jax_arctan(
     *,
     dtype_and_x,
     on_device,
@@ -284,7 +284,7 @@ def test_jax_numpy_arctan(
         num_arrays=2,
     ),
 )
-def test_jax_numpy_arctan2(
+def test_jax_arctan2(
     *,
     dtype_and_x,
     on_device,
@@ -318,7 +318,7 @@ def test_jax_numpy_arctan2(
     ),
     mode=st.sampled_from(["valid", "same", "full"]),
 )
-def test_jax_numpy_convolve(
+def test_jax_convolve(
     *,
     dtype_and_x,
     on_device,
@@ -348,7 +348,7 @@ def test_jax_numpy_convolve(
     fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-def test_jax_numpy_cos(
+def test_jax_cos(
     *,
     dtype_and_x,
     on_device,
@@ -373,7 +373,7 @@ def test_jax_numpy_cos(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cosh(
+def test_jax_cosh(
     *,
     dtype_and_x,
     on_device,
@@ -398,7 +398,7 @@ def test_jax_numpy_cosh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tanh(
+def test_jax_tanh(
     *,
     dtype_and_x,
     on_device,
@@ -427,7 +427,7 @@ def test_jax_numpy_tanh(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sinh(
+def test_jax_sinh(
     *,
     dtype_and_x,
     on_device,
@@ -451,7 +451,7 @@ def test_jax_numpy_sinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sin(
+def test_jax_sin(
     *,
     dtype_and_x,
     on_device,
@@ -476,7 +476,7 @@ def test_jax_numpy_sin(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_floor(
+def test_jax_floor(
     *,
     dtype_and_x,
     on_device,
@@ -503,7 +503,7 @@ def test_jax_numpy_floor(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tensordot(
+def test_jax_tensordot(
     dtype_values_and_axes,
     frontend,
     test_flags,
@@ -541,7 +541,7 @@ def test_jax_numpy_tensordot(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_divide(
+def test_jax_divide(
     *,
     dtype_values,
     frontend,
@@ -572,7 +572,7 @@ def test_jax_numpy_divide(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_exp(
+def test_jax_exp(
     dtype_and_x,
     on_device,
     fn_tree,
@@ -625,7 +625,7 @@ def _get_dtype_input_and_vectors(draw):
     dtype_x_y=_get_dtype_input_and_vectors(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_dot(
+def test_jax_dot(
     *,
     dtype_x_y,
     on_device,
@@ -660,7 +660,7 @@ def test_jax_numpy_dot(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_mod(
+def test_jax_mod(
     *,
     dtype_and_x,
     on_device,
@@ -692,7 +692,7 @@ def test_jax_numpy_mod(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_modf(
+def test_jax_modf(
     dtype_and_x,
     frontend,
     test_flags,
@@ -723,7 +723,7 @@ def test_jax_numpy_modf(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_divmod(
+def test_jax_divmod(
     *,
     dtype_and_x,
     on_device,
@@ -751,7 +751,7 @@ def test_jax_numpy_divmod(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tan(
+def test_jax_tan(
     *,
     dtype_and_x,
     on_device,
@@ -776,7 +776,7 @@ def test_jax_numpy_tan(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_arccos(
+def test_jax_arccos(
     *,
     dtype_and_x,
     on_device,
@@ -801,7 +801,7 @@ def test_jax_numpy_arccos(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_arccosh(
+def test_jax_arccosh(
     *,
     dtype_and_x,
     on_device,
@@ -829,7 +829,7 @@ def test_jax_numpy_arccosh(
         small_abs_safety_factor=4,
     ),
 )
-def test_jax_numpy_arcsin(
+def test_jax_arcsin(
     dtype_and_x,
     frontend,
     test_flags,
@@ -886,7 +886,7 @@ def test_jax_numpy_gradient(
         safety_factor_scale="log",
     ),
 )
-def test_jax_numpy_log1p(
+def test_jax_log1p(
     dtype_and_x,
     frontend,
     test_flags,
@@ -915,7 +915,7 @@ def test_jax_numpy_log1p(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_arcsinh(
+def test_jax_arcsinh(
     *,
     dtype_and_x,
     on_device,
@@ -943,7 +943,7 @@ def test_jax_numpy_arcsinh(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_power(
+def test_jax_power(
     *,
     dtype_and_x,
     on_device,
@@ -969,7 +969,7 @@ def test_jax_numpy_power(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_trunc(
+def test_jax_trunc(
     *,
     dtype_and_x,
     on_device,
@@ -994,7 +994,7 @@ def test_jax_numpy_trunc(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_ceil(
+def test_jax_ceil(
     *,
     dtype_and_x,
     on_device,
@@ -1028,7 +1028,7 @@ def test_jax_numpy_ceil(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_float_power(
+def test_jax_float_power(
     *,
     dtype_and_x,
     on_device,
@@ -1056,7 +1056,7 @@ def test_jax_numpy_float_power(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_deg2rad(
+def test_jax_deg2rad(
     *,
     dtype_and_x,
     on_device,
@@ -1083,7 +1083,7 @@ def test_jax_numpy_deg2rad(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_radians(
+def test_jax_radians(
     *,
     dtype_and_x,
     on_device,
@@ -1116,7 +1116,7 @@ def test_jax_numpy_radians(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_exp2(
+def test_jax_exp2(
     *,
     dtype_and_x,
     on_device,
@@ -1145,7 +1145,7 @@ def test_jax_numpy_exp2(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_expm1(
+def test_jax_expm1(
     *,
     dtype_and_x,
     on_device,
@@ -1179,7 +1179,7 @@ def test_jax_numpy_expm1(
     ).filter(lambda x: all([dtype != "uint64" for dtype in x[0]])),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_gcd(
+def test_jax_gcd(
     *,
     dtype_and_x,
     on_device,
@@ -1213,7 +1213,7 @@ def test_jax_numpy_gcd(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_i0(
+def test_jax_i0(
     *,
     dtype_and_x,
     on_device,
@@ -1245,7 +1245,7 @@ def test_jax_numpy_i0(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_kron(
+def test_jax_kron(
     *,
     dtype_x,
     on_device,
@@ -1282,7 +1282,7 @@ def test_jax_numpy_kron(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_lcm(
+def test_jax_lcm(
     *,
     dtype_and_x,
     on_device,
@@ -1328,7 +1328,7 @@ def test_jax_numpy_lcm(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_logaddexp2(
+def test_jax_logaddexp2(
     *,
     dtype_and_x,
     on_device,
@@ -1357,7 +1357,7 @@ def test_jax_numpy_logaddexp2(
         arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
     ),
 )
-def test_jax_numpy_matmul(
+def test_jax_matmul(
     dtypes_values_casting,
     frontend,
     test_flags,
@@ -1422,7 +1422,7 @@ def _either_x_dx(draw):
     dtype_x_axis_rand_either=_either_x_dx(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_trapz(
+def test_jax_trapz(
     *,
     dtype_x_axis_rand_either,
     on_device,
@@ -1460,7 +1460,7 @@ def test_jax_numpy_trapz(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sqrt(
+def test_jax_sqrt(
     *,
     dtype_and_x,
     on_device,
@@ -1485,7 +1485,7 @@ def test_jax_numpy_sqrt(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_square(
+def test_jax_square(
     *,
     dtype_and_x,
     on_device,
@@ -1513,7 +1513,7 @@ def test_jax_numpy_square(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_arctanh(
+def test_jax_arctanh(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1538,7 +1538,7 @@ def test_jax_numpy_arctanh(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_multiply(
+def test_jax_multiply(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1567,7 +1567,7 @@ def test_jax_numpy_multiply(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_log10(
+def test_jax_log10(
     *,
     dtype_and_x,
     on_device,
@@ -1605,7 +1605,7 @@ def test_jax_numpy_log10(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_logaddexp(
+def test_jax_logaddexp(
     *,
     dtype_and_x,
     on_device,
@@ -1635,7 +1635,7 @@ def test_jax_numpy_logaddexp(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_degrees(
+def test_jax_degrees(
     *,
     dtype_and_x,
     on_device,
@@ -1662,7 +1662,7 @@ def test_jax_numpy_degrees(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_negative(
+def test_jax_negative(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1688,7 +1688,7 @@ def test_jax_numpy_negative(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_positive(
+def test_jax_positive(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1714,7 +1714,7 @@ def test_jax_numpy_positive(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_rad2deg(
+def test_jax_rad2deg(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1743,7 +1743,7 @@ def test_jax_numpy_rad2deg(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_fmax(
+def test_jax_fmax(
     *,
     dtype_and_inputs,
     on_device,
@@ -1773,7 +1773,7 @@ def test_jax_numpy_fmax(
         max_value=np.inf,
     ),
 )
-def test_jax_numpy_fmin(
+def test_jax_fmin(
     *,
     dtype_and_inputs,
     on_device,
@@ -1800,7 +1800,7 @@ def test_jax_numpy_fmin(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_jax_numpy_fabs(
+def test_jax_fabs(
     *,
     dtype_and_x,
     on_device,
@@ -1830,7 +1830,7 @@ def test_jax_numpy_fabs(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_fmod(
+def test_jax_fmod(
     *,
     dtype_and_inputs,
     on_device,
@@ -1860,7 +1860,7 @@ def test_jax_numpy_fmod(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_maximum(
+def test_jax_maximum(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1886,7 +1886,7 @@ def test_jax_numpy_maximum(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_minimum(
+def test_jax_minimum(
     dtype_and_x,
     frontend,
     test_flags,
@@ -1918,7 +1918,7 @@ def test_jax_numpy_minimum(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_heaviside(
+def test_jax_heaviside(
     *,
     dtype_and_x,
     on_device,
@@ -1950,7 +1950,7 @@ def test_jax_numpy_heaviside(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_log(
+def test_jax_log(
     *,
     dtype_and_x,
     on_device,
@@ -1987,7 +1987,7 @@ def test_jax_numpy_log(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_copysign(
+def test_jax_copysign(
     *,
     dtype_and_x,
     on_device,
@@ -2018,7 +2018,7 @@ def test_jax_numpy_copysign(
         max_value=100,
     ),
 )
-def test_jax_numpy_sinc(
+def test_jax_sinc(
     *,
     dtype_and_x,
     on_device,
@@ -2055,7 +2055,7 @@ def test_jax_numpy_sinc(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_nextafter(
+def test_jax_nextafter(
     *,
     dtype_and_x,
     on_device,
@@ -2087,7 +2087,7 @@ def test_jax_numpy_nextafter(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_remainder(
+def test_jax_remainder(
     *,
     dtype_and_x,
     on_device,
@@ -2130,7 +2130,7 @@ def test_jax_numpy_remainder(
     axis2=st.integers(min_value=1, max_value=1),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_trace(
+def test_jax_trace(
     *,
     dtype_and_x,
     offset,
@@ -2165,7 +2165,7 @@ def test_jax_numpy_trace(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_log2(
+def test_jax_log2(
     *,
     dtype_and_x,
     on_device,
@@ -2195,7 +2195,7 @@ def test_jax_numpy_log2(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_vdot(
+def test_jax_vdot(
     *,
     dtype_and_x,
     on_device,
@@ -2224,7 +2224,7 @@ def test_jax_numpy_vdot(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cbrt(
+def test_jax_cbrt(
     *,
     dtype_and_x,
     on_device,
@@ -2263,7 +2263,7 @@ def test_jax_numpy_cbrt(
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_nan_to_num(
+def test_jax_nan_to_num(
     *,
     dtype_and_x,
     copy,
@@ -2301,7 +2301,7 @@ def test_jax_numpy_nan_to_num(
         max_dim_size=3,
     ),
 )
-def test_jax_numpy_fix(
+def test_jax_fix(
     *,
     dtype_and_x,
     on_device,
@@ -2334,7 +2334,7 @@ def test_jax_numpy_fix(
         max_num_dims=3,
     ),
 )
-def test_jax_numpy_hypot(
+def test_jax_hypot(
     *,
     dtype_and_x,
     on_device,
@@ -2369,7 +2369,7 @@ def test_jax_numpy_hypot(
         safety_factor_scale="linear",
     ),
 )
-def test_jax_numpy_floor_divide(
+def test_jax_floor_divide(
     *,
     dtype_values,
     frontend,
@@ -2401,7 +2401,7 @@ def test_jax_numpy_floor_divide(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_jax_numpy_real(
+def test_jax_real(
     *,
     dtype_and_x,
     on_device,
@@ -2432,7 +2432,7 @@ def test_jax_numpy_real(
         shared_dtype=True,
     ),
 )
-def test_jax_numpy_inner(
+def test_jax_inner(
     *,
     dtype_and_x,
     test_flags,
@@ -2465,7 +2465,7 @@ def test_jax_numpy_inner(
         shared_dtype=True,
     ),
 )
-def test_jax_numpy_outer(
+def test_jax_outer(
     *,
     dtype_and_x,
     test_flags,
@@ -2496,7 +2496,7 @@ def test_jax_numpy_outer(
         num_arrays=1,
     ),
 )
-def test_jax_numpy_reciprocal(
+def test_jax_reciprocal(
     *,
     dtype_and_x,
     test_flags,
@@ -2522,7 +2522,7 @@ def test_jax_numpy_reciprocal(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_jax_numpy_conj(
+def test_jax_conj(
     *,
     dtype_and_x,
     test_flags,
@@ -2551,7 +2551,7 @@ def test_jax_numpy_conj(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_subtract(
+def test_jax_subtract(
     *,
     dtype_and_x,
     on_device,
@@ -2579,7 +2579,7 @@ def test_jax_numpy_subtract(
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
-def test_jax_numpy_around(
+def test_jax_around(
     *,
     dtype_and_x,
     decimals,
@@ -2608,7 +2608,7 @@ def test_jax_numpy_around(
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
-def test_jax_numpy_round(
+def test_jax_round(
     *,
     dtype_and_x,
     decimals,
@@ -2638,7 +2638,7 @@ def test_jax_numpy_round(
         max_value=100,
     ),
 )
-def test_jax_numpy_frexp(
+def test_jax_frexp(
     *,
     dtype_and_x,
     test_flags,
@@ -2662,7 +2662,7 @@ def test_jax_numpy_frexp(
     fn_tree="jax.numpy.ldexp",
     dtype_and_x=ldexp_args(),
 )
-def test_jax_numpy_ldexp(
+def test_jax_ldexp(
     *,
     dtype_and_x,
     test_flags,
@@ -2694,7 +2694,7 @@ def test_jax_numpy_ldexp(
         max_value=1e04,
     ),
 )
-def test_jax_numpy_poly(
+def test_jax_poly(
     *,
     dtype_and_x,
     test_flags,
@@ -2727,7 +2727,7 @@ def test_jax_numpy_poly(
         min_dim_size=2,
     ),
 )
-def test_jax_numpy_polyadd(
+def test_jax_polyadd(
     *,
     dtype_and_x,
     test_flags,
@@ -2760,7 +2760,7 @@ def test_jax_numpy_polyadd(
     ),
     m=st.integers(min_value=0, max_value=10),
 )
-def test_jax_numpy_polyder(
+def test_jax_polyder(
     *,
     dtype_and_x,
     m,
@@ -2807,7 +2807,7 @@ def _get_array_values_m_and_k(draw):
     fn_tree="jax.numpy.polyint",
     dtype_and_x_and_k=_get_array_values_m_and_k(),
 )
-def test_jax_numpy_polyint(
+def test_jax_polyint(
     *,
     dtype_and_x_and_k,
     test_flags,
@@ -2841,7 +2841,7 @@ def test_jax_numpy_polyint(
         max_value=1e04,
     ),
 )
-def test_jax_numpy_polydiv(
+def test_jax_polydiv(
     *,
     dtype_and_x,
     test_flags,
@@ -2878,7 +2878,7 @@ def test_jax_numpy_polydiv(
         max_value=1e04,
     ),
 )
-def test_jax_numpy_polysub(
+def test_jax_polysub(
     *,
     dtype_and_x,
     test_flags,
@@ -2914,7 +2914,7 @@ def test_jax_numpy_polysub(
     ),
     trim=st.booleans(),
 )
-def test_jax_numpy_polymul(
+def test_jax_polymul(
     *,
     dtype_and_x,
     trim,
@@ -2946,7 +2946,7 @@ def test_jax_numpy_polymul(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_jax_numpy_signbit(
+def test_jax_signbit(
     *,
     dtype_and_x,
     on_device,
@@ -2973,7 +2973,7 @@ def test_jax_numpy_signbit(
 #     initial=st.one_of(st.floats(min_value=-100, max_value=100)),
 #     promote_integers=st.booleans(),
 # )
-# def test_jax_numpy_product(
+# def test_jax_product(
 #     dtype_x_axis_dtype_where,
 #     keepdims,
 #     initial,
@@ -3014,7 +3014,7 @@ def test_jax_numpy_signbit(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_jax_numpy_conjugate(
+def test_jax_conjugate(
     *,
     dtype_and_x,
     test_flags,

@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 )
 # there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
 @settings(max_examples=200)
-def test_jax_numpy_can_cast(
+def test_jax_can_cast(
     *,
     from_,
     to,
@@ -47,7 +47,7 @@ def test_jax_numpy_can_cast(
 )
 # there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
 @settings(max_examples=200)
-def test_jax_numpy_promote_types(
+def test_jax_promote_types(
     *,
     type1,
     type2,
@@ -79,7 +79,7 @@ def test_jax_numpy_promote_types(
     test_with_out=st.just(False),
 )
 @settings(max_examples=200)
-def test_jax_numpy_result_type(
+def test_jax_result_type(
     *, dtype_and_x, test_flags, on_device, fn_tree, frontend
 ):
     dtype, x = helpers.as_lists(*dtype_and_x)
