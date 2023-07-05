@@ -229,8 +229,9 @@ def cumprod(
         paddle.uint8,
         paddle.int8,
         paddle.int16,
-        paddle.float16,
     ]:
+        x = paddle.cast(x, "int32")
+    elif ivy.as_native_dtype(dtype) in [paddle.float16]:
         x = paddle.cast(x, "float32")
     else:
         x = paddle.cast(x, dtype)
