@@ -324,9 +324,8 @@ def trunc(x, name=None):
 def digamma(x, name=None):
     return ivy.digamma(x)
 
-  
+
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def sgn(x, name=None):
     return ivy.sign(x)
-

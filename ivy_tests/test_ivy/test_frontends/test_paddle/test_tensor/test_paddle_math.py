@@ -1351,7 +1351,7 @@ def test_paddle_sgn(
         x=x[0],
     )
 
-    
+
 # digamma
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.digamma",
@@ -1376,4 +1376,3 @@ def test_paddle_digamma(
         on_device=on_device,
         x=x[0],
     )
-    
