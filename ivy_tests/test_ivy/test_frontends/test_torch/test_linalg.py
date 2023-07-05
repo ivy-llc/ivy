@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 
 # helpers
 @st.composite
-def _get_dtype_and_matrix(draw, square=False, invertible=False, batch=True):
+def _get_dtype_and_matrix(draw, square=False, invertible=False, batch=False):
     if batch:
         arbitrary_dims = draw(helpers.get_shape(max_dim_size=3))
     else:
@@ -89,7 +89,7 @@ def test_torch_vector_norm(
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
     aliases=["torch.inverse"],
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
 )
 def test_torch_inv(
         *,
@@ -116,7 +116,7 @@ def test_torch_inv(
 # inv_ex
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),  # TODO: Test for singular matrices
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),  # TODO: Test for singular matrices
 )
 def test_torch_inv_ex(
         *,
@@ -143,7 +143,7 @@ def test_torch_inv_ex(
 # TODO: add testing for hermitian
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(batch=True),
 )
 def test_torch_pinv(
         *,
@@ -170,7 +170,7 @@ def test_torch_pinv(
 @handle_frontend_test(
     fn_tree="torch.linalg.det",
     aliases=["torch.det"],
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_det(
         *,
@@ -195,7 +195,7 @@ def test_torch_det(
 # qr
 @handle_frontend_test(
     fn_tree="torch.linalg.qr",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(batch=True),
 )
 def test_torch_qr(
         *,
@@ -234,7 +234,7 @@ def test_torch_qr(
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
     aliases=["torch.slogdet"],
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_slogdet(
         *,
@@ -259,7 +259,7 @@ def test_torch_slogdet(
 # eigvals
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvals",
-    dtype_x=_get_dtype_and_matrix(square=True),
+    dtype_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_eigvals(
         *,
@@ -382,7 +382,7 @@ def test_torch_eigvalsh(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cond",
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
 )
 def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
@@ -405,7 +405,7 @@ def test_torch_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags)
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
     aliases=["torch.matrix_power"],
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
     n=helpers.ints(min_value=2, max_value=5),
 )
 def test_torch_matrix_power(
@@ -470,6 +470,7 @@ def test_torch_matrix_exp(
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
 )
+# @reproduce_failure('6.79.1', b'AXicY2JkYGJkZGJkYmIAAsb2QOtfGxjAgJEBQaOy2Vef0SGoZvGXI9jEkdkKDAxIfOxqIICJCDWDg83IDmEBABAmBzQ=')
 def test_torch_matrix_norm(
         *,
         dtype_values_axis,
@@ -500,7 +501,7 @@ def test_torch_matrix_norm(
 @handle_frontend_test(
     fn_tree="torch.linalg.cross",
     dtype_input_other_dim=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=3,
@@ -536,7 +537,7 @@ def test_torch_cross(
 @handle_frontend_test(
     fn_tree="torch.linalg.vecdot",
     dtype_input_other_dim=dtype_value1_value2_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=3,
@@ -599,7 +600,7 @@ def test_matrix_rank(
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     aliases=["torch.cholesky"],
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky(
@@ -612,6 +613,7 @@ def test_torch_cholesky(
         test_flags,
 ):
     dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
     x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
 
     helpers.test_frontend_function(
@@ -629,12 +631,7 @@ def test_torch_cholesky(
 # svd
 @handle_frontend_test(
     fn_tree="torch.linalg.svd",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     full_matrices=st.booleans(),
 )
 def test_torch_svd(
@@ -680,7 +677,7 @@ def test_torch_svd(
 # eig
 @handle_frontend_test(
     fn_tree="torch.linalg.eig",
-    dtype_and_input=_get_dtype_and_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(square=True),
 )
 def test_torch_eig(
         *,
@@ -722,17 +719,18 @@ def test_torch_eig(
 # eigh
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: "float16" not in x[0]
-                  and "bfloat16" not in x[0]
-                  and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-                  and np.linalg.det(np.asarray(x[1][0])) != 0
-    ),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
+    # dtype_and_x=helpers.dtype_and_values(
+    #     available_dtypes=helpers.get_dtypes("float"),
+    #     min_value=0,
+    #     max_value=10,
+    #     shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    # ).filter(
+    #     lambda x: "float16" not in x[0]
+    #               and "bfloat16" not in x[0]
+    #               and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+    #               and np.linalg.det(np.asarray(x[1][0])) != 0
+    # ),
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigh(

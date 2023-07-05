@@ -130,6 +130,7 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def vecdot(x, y, *, dim=-1, out=None):
     return ivy.vecdot(x, y, axis=dim, out=out)
 
@@ -140,11 +141,13 @@ def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def cholesky(input, *, upper=False, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver and out
     return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
