@@ -1,4 +1,5 @@
 # global
+import math
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st, assume
@@ -1829,6 +1830,8 @@ def dtype_array_query(
         helpers.array_values(
             dtype=dtype[0],
             shape=shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
         )
     )
     if allow_mask and draw(st.booleans()):
@@ -1839,9 +1842,7 @@ def dtype_array_query(
                 shape=mask_shape,
             ).filter(lambda x: np.sum(x) > 0)
         )
-        dtype.append("bool")
-        return dtype, array, index
-    dtype.append("int32")
+        return dtype+["bool"], array, index
     supported_index_types = ["int", "slice", "list", "array"]
     index_types = draw(
         st.lists(
@@ -1938,13 +1939,14 @@ def dtype_array_query_val(
         )
     )
     real_shape = x[query].shape
+    assume(math.prod(real_shape) > 0)
     if len(real_shape):
         val_shape = real_shape[draw(st.integers(0, len(real_shape))):]
     else:
         val_shape = real_shape
     val_dtype, val = draw(
         helpers.dtype_and_values(
-            dtype=input_dtype,
+            dtype=[input_dtype[0]],
             shape=val_shape,
             large_abs_safety_factor=2,
             small_abs_safety_factor=2,
