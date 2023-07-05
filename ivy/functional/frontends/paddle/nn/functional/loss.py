@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 import ivy.functional.frontends.paddle as paddle
 from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -30,12 +30,12 @@ def _get_reduction_func(reduction):
 )
 @inputs_to_ivy_arrays
 def binary_cross_entropy_with_logits(
-    logit,
-    label,
-    weight=None,
-    reduction="mean",
-    pos_weight=None,
-    name=None,
+        logit,
+        label,
+        weight=None,
+        reduction="mean",
+        pos_weight=None,
+        name=None,
 ):
     ret = ivy.binary_cross_entropy(
         label, logit, from_logits=True, reduction="none", pos_weight=pos_weight
@@ -51,7 +51,7 @@ def binary_cross_entropy_with_logits(
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
-    input1, input2, label, margin=0.0, reduction="mean", name=None
+        input1, input2, label, margin=0.0, reduction="mean", name=None
 ):
     if len(label.shape) != 1:
         raise ValueError("1D target tensor expected, multi-target not supported")
@@ -79,6 +79,39 @@ def cosine_embedding_loss(
     out_pos = ivy.where(label == 1, pos, zeros)
     out_neg = ivy.where(label == -1, neg, zeros)
     out = out_pos + out_neg
+
+    if reduction == "none":
+        pass
+    if reduction == "mean":
+        out = ivy.mean(out)
+    elif reduction == "sum":
+        out = ivy.sum(out)
+
+    return out
+
+
+@handle_exceptions
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def margin_ranking_loss(input1, input2, label, margin=0.0, reduction="mean", name=None):
+    if len(label.shape) != 1:
+        raise ValueError("1D target tensor expected, multi-target not supported")
+
+    if input1.shape != input2.shape:
+        raise ValueError(
+            "the shape of input tensor 1 should be equal to input tensor 2, but found"
+            " inputs with different sizes"
+        )
+
+    if len(input1.shape) > 2:
+        raise ValueError(
+            "1D target tensor expects 1D or 2D input tensors, but found inputs with"
+            " different sizes"
+        )
+
+    pos = ivy.maximum(ivy.full_like(label, margin) - input1 + input2, ivy.zeros_like(label))
+    neg = ivy.maximum(ivy.zeros_like(label), input1 - input2 + margin)
+    out = pos + neg
 
     if reduction == "none":
         pass
