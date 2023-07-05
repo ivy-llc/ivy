@@ -12,7 +12,7 @@ import ivy
 class ModuleHelpers(abc.ABC):
     # Private #
     # --------#
-    def _top_v_fn(self, /, *, depth=None, flatten_key_chains=False):
+    def _top_v_fn(self, /, depth=None, flatten_key_chains=False):
         """
         Return the variables at a specific depth, with depth 1 returning the variables
         of the current layer.
@@ -42,7 +42,7 @@ class ModuleHelpers(abc.ABC):
             return ret.cont_flatten_key_chains()
         return ret
 
-    def _top_mod_fn(self, /, *, depth=None):
+    def _top_mod_fn(self, /, depth=None):
         """
         Find the top (parent) module at specific depth, starting with depth 1 to return
         the current submodule.
