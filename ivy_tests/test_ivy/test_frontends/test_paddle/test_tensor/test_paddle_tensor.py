@@ -174,7 +174,7 @@ def test_paddle_instance_getitem(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"item": index},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
