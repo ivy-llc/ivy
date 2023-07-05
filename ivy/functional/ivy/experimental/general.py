@@ -9,7 +9,6 @@ from ivy import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
-    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -91,6 +90,7 @@ reduce.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

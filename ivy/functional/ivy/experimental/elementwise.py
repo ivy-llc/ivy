@@ -865,7 +865,6 @@ def xlogy(
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def binarizer(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1120,6 +1119,7 @@ lerp.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }

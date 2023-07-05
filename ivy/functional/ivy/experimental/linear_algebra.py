@@ -26,7 +26,6 @@ def _check_valid_dimension_size(std):
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function
-@handle_device_shifting
 def eigh_tridiagonal(
     alpha: Union[ivy.Array, ivy.NativeArray],
     beta: Union[ivy.Array, ivy.NativeArray],
@@ -463,7 +462,6 @@ def adjoint(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
-@handle_device_shifting
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -509,6 +507,12 @@ def multi_dot(
                [ 80, 148]])
     """
     return current_backend(x).multi_dot(x, out=out)
+
+
+multi_dot.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions

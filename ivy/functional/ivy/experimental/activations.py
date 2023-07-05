@@ -70,7 +70,6 @@ def logit(
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def prelu(
     x: Union[ivy.NativeArray, ivy.Array],
     slope: Union[float, ivy.NativeArray, ivy.Array],

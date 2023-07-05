@@ -212,7 +212,6 @@ def kaiser_bessel_derived_window(
 @handle_exceptions
 @handle_nestable
 @infer_dtype
-@handle_device_shifting
 def hamming_window(
     window_length: int,
     *,
@@ -268,7 +267,10 @@ def hamming_window(
 
 
 hamming_window.mixed_backend_wrappers = {
-    "to_add": ("handle_out_argument",),
+    "to_add": (
+        "handle_out_argument",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -373,7 +375,6 @@ def tril_indices(
 @handle_out_argument
 @inputs_to_ivy_arrays
 @infer_dtype
-@handle_device_shifting
 @infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -596,6 +597,12 @@ def indices(
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+indices.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions

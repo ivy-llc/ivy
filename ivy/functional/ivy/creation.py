@@ -1830,7 +1830,6 @@ def copy_array(
 
 
 @handle_array_like_without_promotion
-@handle_device_shifting
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
     /,
@@ -2004,7 +2003,6 @@ def one_hot(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
-@handle_device_shifting
 @infer_device
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, float],

@@ -503,7 +503,6 @@ def avg_pool3d(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_device_shifting
 def pool(
     x: Union[ivy.Array, ivy.NativeArray],
     window_shape: Union[int, Tuple[int], Tuple[int, int]],
@@ -682,7 +681,6 @@ def dct(
 @handle_out_argument
 @to_native_arrays_and_back
 @integer_arrays_to_float
-@handle_device_shifting
 def idct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -782,6 +780,9 @@ def idct(
     }
     """
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
+
+
+idct.mixed_backend_wrappers = {"to_add": ("handle_device_shifting",), "to_skip": ()}
 
 
 @handle_exceptions
@@ -1190,7 +1191,6 @@ def embedding(
 @handle_nestable
 @handle_out_argument
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def dft(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1611,7 +1611,6 @@ def _upsample_bicubic2d_default(
 @handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def interpolate(
     x: Union[ivy.Array, ivy.NativeArray],
     size: Union[Sequence[int], int],
@@ -1889,6 +1888,12 @@ def interpolate(
     return ivy.astype(ret, ivy.dtype(x), out=out)
 
 
+interpolate.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
 def _get_size(scale_factor, size, dims, x_shape):
     if scale_factor is not None:
         if isinstance(scale_factor, (float, int)):
@@ -1993,7 +1998,6 @@ def _mask(vals, length, range_max, dim):
 
 @handle_nestable
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def adaptive_avg_pool1d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: int,
@@ -2065,6 +2069,7 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2075,7 +2080,6 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def adaptive_avg_pool2d(
     input: Union[ivy.Array, ivy.NativeArray],
     output_size: Union[Sequence[int], int],
@@ -2157,6 +2161,7 @@ adaptive_avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2382,6 +2387,7 @@ reduce_window.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -2392,7 +2398,6 @@ reduce_window.mixed_backend_wrappers = {
 @handle_out_argument
 @to_native_arrays_and_back
 # @outputs_to_ivy_arrays
-@handle_device_shifting
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2455,6 +2460,12 @@ def fft2(
               0.  +0.j        ,   0.  +0.j        ]])
     """
     return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)
+
+
+fft2.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions

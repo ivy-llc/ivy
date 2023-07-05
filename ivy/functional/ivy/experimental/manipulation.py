@@ -39,7 +39,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_view
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def flatten(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -188,6 +187,7 @@ flatten.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -969,7 +969,6 @@ def _check_arguments(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
-@handle_device_shifting
 def pad(
     input: Union[ivy.Array, ivy.NativeArray],
     pad_width: Union[Iterable[Tuple[int]], int],
@@ -1226,6 +1225,7 @@ pad.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }
@@ -1808,7 +1808,6 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -1871,6 +1870,7 @@ as_strided.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

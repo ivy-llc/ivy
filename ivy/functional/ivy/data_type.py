@@ -1038,7 +1038,6 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def default_float_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1181,7 +1180,6 @@ def infer_default_dtype(
 
 @handle_exceptions
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def default_dtype(
     *,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
@@ -1275,7 +1273,6 @@ def default_dtype(
 
 @handle_exceptions
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def default_int_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1389,7 +1386,6 @@ def default_int_dtype(
 
 @handle_exceptions
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def default_uint_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1748,7 +1744,6 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> 
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
 def is_bool_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1795,7 +1790,6 @@ def is_bool_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
 def is_int_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1906,7 +1900,6 @@ def check_float(x: Any) -> bool:
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
 def is_float_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1956,7 +1949,6 @@ def is_float_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
-@handle_device_shifting
 def is_uint_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2003,7 +1995,6 @@ def is_uint_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
-@handle_device_shifting
 def is_complex_dtype(
     dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number],
     /,
@@ -2244,7 +2235,6 @@ def set_default_complex_dtype(complex_dtype: Union[ivy.Dtype, str], /):
 
 
 @handle_exceptions
-@handle_device_shifting
 def type_promote_arrays(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2416,7 +2406,6 @@ def valid_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype, str, None], /) -> bo
 
 
 @handle_exceptions
-@handle_device_shifting
 def promote_types_of_inputs(
     x1: Union[ivy.NativeArray, Number, Iterable[Number]],
     x2: Union[ivy.NativeArray, Number, Iterable[Number]],
