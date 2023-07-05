@@ -439,7 +439,6 @@ class Tensor:
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
 
-
     @with_supported_dtypes(
         {"2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
     )
@@ -478,3 +477,20 @@ class Tensor:
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_not(self, out=None, name=None):
+        return ivy.logical_not(self.ivy_array)
