@@ -994,6 +994,10 @@ class Tensor:
         self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def dot(self, tensor):
+        return torch_frontend.dot(self, tensor)
+
     # Special Methods #
     # -------------------#
 
