@@ -580,8 +580,7 @@ def unique(x, out_idx=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def unique_with_counts(x):
     values, indices, inverse_indices, counts = ivy.unique_all(x)
-    unique_with_counts = collections.namedtuple("UniqueWithCounts", ["y", "idx", "count"])
-    return unique_with_counts(y=values, idx=inverse_indices, count=counts)
+    return values, inverse_indices, counts
 
 
 @to_ivy_arrays_and_back
