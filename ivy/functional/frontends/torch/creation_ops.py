@@ -244,8 +244,10 @@ def complex(
     imag,
     *,
     out=None,
+    device=None,
+    dtype=None,
 ):
-    return ivy.complex(real, imag, out=out)
+    return ivy.complex(real, imag, out=out, device=device, dtype=dtype)
 
 
 @to_ivy_arrays_and_back

@@ -2154,13 +2154,16 @@ def triu_indices(
     return current_backend().triu_indices(n_rows, n_cols, k, device=device)
 
 
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
 @handle_array_function
-@infer_dtype
+@handle_array_like_without_promotion
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
 @infer_device
+@infer_dtype
+@inputs_to_native_arrays
+@outputs_to_ivy_arrays
+@to_native_arrays_and_back
 def complex(
     real: Union[ivy.Array, ivy.NativeArray],
     imag: Union[ivy.Array, ivy.NativeArray],
@@ -2253,4 +2256,4 @@ def complex(
     ivy.array([(1.+3.j),
             (2.+4.j)], dtype=ivy.complex128)
     """
-    return current_backend().ones(real, imag, dtype=dtype, device=device, out=out)
+    return current_backend().complex(real, imag, dtype=dtype, device=device, out=out)

@@ -1887,3 +1887,107 @@ def unique_consecutive(
         counts=ivy.array([2, 2, 1, 2, 1]))
     """
     return ivy.current_backend(x).unique_consecutive(x, axis=axis)
+
+
+@handle_array_function
+@handle_array_like_without_promotion
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@handle_view
+@to_native_arrays_and_back
+def complex(
+    real: Union[ivy.Array, ivy.NativeArray],
+    imag: Union[ivy.Array, ivy.NativeArray],
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Return a complex tensor with a real part ``real`` and imaginary part ``imag``.
+
+    Parameters
+    ----------
+    real
+        real part of the tensor.
+    imag
+        imaginary part of the tensor.
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data type
+        must be the default floating-point data type. Default  ``None``.
+    device
+        device on which to place the created array. Default: ``None``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        a tensor containing the resulting complex tensor using the real and imag.
+
+
+    Examples
+    --------
+    With :class:`ivy.Complex` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float32)
+    >>> imag = ivy.array([3,4], dtype=ivy.float32)
+    >>> x = ivy.complex(real, imag)
+    >>> print(x)
+    ivy.array([(1.+3.j),
+            (2.+4.j)])
+
+    With :class:`ivy.Dtype` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float32)
+    >>> imag = ivy.array([3,4], dtype=ivy.float32)
+    >>> d_type = object.__new__(Dtype, "ivy.complex64")
+    >>> y = ivy.complex(real, imag, dtype=d_type)
+    >>> print(y)
+    ivy.array([(1.+3.j),
+            (2.+4.j)])
+
+    With :class:`ivy.Device` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float32)
+    >>> imag = ivy.array([3,4], dtype=ivy.float32)
+    >>> dev = object.__new__(Device, "cpu")
+    >>> y = ivy.complex(real, imag, device=dev)
+    >>> print(y)
+    ivy.array([(1.+3.j),
+            (2.+4.j)])
+
+
+    With :class:`ivy.Complex` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float64)
+    >>> imag = ivy.array([3,4], dtype=ivy.float64)
+    >>> x = ivy.complex(real, imag)
+    >>> print(x)
+    ivy.array([(1.+3.j),
+            (2.+4.j)], dtype=ivy.complex128)
+
+    With :class:`ivy.Dtype` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float64)
+    >>> imag = ivy.array([3,4], dtype=ivy.float64)
+    >>> d_type = object.__new__(Dtype, "ivy.complex128")
+    >>> y = ivy.complex(real, imag, dtype=d_type)
+    >>> print(y)
+    ivy.array([(1.+3.j),
+            (2.+4.j)], dtype=ivy.complex128)
+
+    With :class:`ivy.Device` input:
+
+    >>> real = ivy.array([1,2], dtype=ivy.float64)
+    >>> imag = ivy.array([3,4], dtype=ivy.float64)
+    >>> dev = object.__new__(Device, "cpu")
+    >>> y = ivy.complex(real, imag, device=dev)
+    >>> print(y)
+    ivy.array([(1.+3.j),
+            (2.+4.j)], dtype=ivy.complex128)
+    """
+    return ivy.current_backend().complex(
+        real, imag, dtype=dtype, device=device, out=out
+    )
