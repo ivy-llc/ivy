@@ -158,3 +158,11 @@ def cond(x, p=None, name=None):
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
+
+
+# cholesky_solve
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+def cholesky_solve(chol, rhs, name=None):
+    y = ivy.solve(chol, rhs)
+    return ivy.solve(ivy.matrix_transpose(chol), y)

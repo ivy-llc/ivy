@@ -2,6 +2,7 @@
 import ivy
 from hypothesis import strategies as st, assume
 import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -166,6 +167,49 @@ def _dtype_values_axis(draw):
 
     return dtype, x, axis, p
 
+
+@st.composite
+def _get_cholesky_matrix(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    gen = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
+    )
+    spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0])
+    spd_chol = np.linalg.cholesky(spd)
+    return input_dtype, spd_chol
+
+
+@st.composite
+def _get_second_matrix(draw):
+    # batch_shape, shared, random_size
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )
 
 # Tests #
 # ----- #
@@ -697,4 +741,35 @@ def test_paddle_transpose(
         on_device=on_device,
         x=x[0],
         perm=perm,
+    )
+
+
+# cholesky_solve
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cholesky_solve",
+    x=_get_cholesky_matrix(),
+    y=_get_second_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cholesky_solve(
+    *,
+    x,
+    y,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        chol=x1,
+        rhs=x2,
     )
