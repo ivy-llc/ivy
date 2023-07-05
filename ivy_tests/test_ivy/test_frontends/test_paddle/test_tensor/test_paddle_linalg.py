@@ -211,6 +211,7 @@ def _get_second_matrix(draw):
         )
     )
 
+
 # Tests #
 # ----- #
 
