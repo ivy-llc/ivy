@@ -87,6 +87,8 @@ def test_set_nest_at_index(nest, index, value, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
+    else:
+        assert nest != nest_copy
 
 
 # map_nest_at_index
@@ -106,6 +108,8 @@ def test_map_nest_at_index(nest, index, fn, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
+    else:
+        assert nest != nest_copy
 
 
 # multi_index_nest
@@ -147,6 +151,8 @@ def test_set_nest_at_indices(nest, indices, values, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
+    else:
+        assert nest != nest_copy
 
 
 # map_nest_at_indices
@@ -170,6 +176,8 @@ def test_map_nest_at_indices(nest, indices, fn, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
+    else:
+        assert nest != nest_copy
 
 
 # nested_argwhere
