@@ -207,7 +207,6 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
@@ -258,7 +257,15 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
     return result
+
+
+hamming_window.mixed_backend_wrappers = {
+    "to_add": ("handle_out_argument",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
