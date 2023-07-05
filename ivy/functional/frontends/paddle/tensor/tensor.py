@@ -494,3 +494,7 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return ivy.logical_not(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sign(self, name=None):
+        return ivy.sign(self._ivy_array)
