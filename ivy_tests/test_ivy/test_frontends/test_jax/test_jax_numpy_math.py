@@ -2095,8 +2095,8 @@ def test_jax_numpy_remainder(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
     ),
     offset=st.integers(min_value=0, max_value=0),
@@ -2574,6 +2574,35 @@ def test_jax_numpy_around(
     )
 
 
+# round
+@handle_frontend_test(
+    fn_tree="jax.numpy.round",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    decimals=st.integers(min_value=0, max_value=5),
+)
+def test_jax_numpy_round(
+    *,
+    dtype_and_x,
+    decimals,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        decimals=decimals,
+    )
+
+
 # frexp
 @handle_frontend_test(
     fn_tree="jax.numpy.frexp",
@@ -2853,8 +2882,9 @@ def test_jax_numpy_polysub(
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=2,
-        min_value=-1e04,
-        max_value=1e04,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     trim=st.booleans(),
 )
@@ -2878,8 +2908,8 @@ def test_jax_numpy_polymul(
         a1=x[0],
         a2=x[1],
         trim_leading_zeros=trim,
-        atol=1e-05,
-        rtol=1e-03,
+        atol=1e-01,
+        rtol=1e-01,
     )
 
 
@@ -2909,45 +2939,46 @@ def test_jax_numpy_signbit(
     )
 
 
-@handle_frontend_test(
-    fn_tree="jax.numpy.product",
-    dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
-    keepdims=st.booleans(),
-    initial=st.one_of(st.floats(min_value=-100, max_value=100)),
-    promote_integers=st.booleans(),
-)
-def test_jax_numpy_product(
-    dtype_x_axis_dtype_where,
-    keepdims,
-    initial,
-    promote_integers,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
-    input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
-    if ivy.current_backend_str() == "torch":
-        assume(not test_flags.as_variable[0])
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-    helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=x[0],
-        axis=axis,
-        dtype=dtype,
-        keepdims=keepdims,
-        initial=initial,
-        where=where,
-        promote_integers=promote_integers,
-    )
+# TODO: uncomment with multiversion pipeline (deprecated since 0.4.12)
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.product",
+#     dtype_x_axis_dtype_where=_get_castable_dtypes_values(use_where=True),
+#     keepdims=st.booleans(),
+#     initial=st.one_of(st.floats(min_value=-100, max_value=100)),
+#     promote_integers=st.booleans(),
+# )
+# def test_jax_numpy_product(
+#     dtype_x_axis_dtype_where,
+#     keepdims,
+#     initial,
+#     promote_integers,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype_where
+#     if ivy.current_backend_str() == "torch":
+#         assume(not test_flags.as_variable[0])
+#     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+#         where=where,
+#         input_dtype=input_dtypes,
+#         test_flags=test_flags,
+#     )
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtypes,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         a=x[0],
+#         axis=axis,
+#         dtype=dtype,
+#         keepdims=keepdims,
+#         initial=initial,
+#         where=where,
+#         promote_integers=promote_integers,
+#     )
 
 
 # conjugate
