@@ -454,42 +454,6 @@ def scatter_flat(
     )
 
 
-def _scatter_nd_reduce(data, indices, updates, reduce="replace"):
-    if reduce == "min":
-        updates = ivy.minimum(ivy.gather_nd(data, indices), updates)._data
-        reduce = "replace"
-    elif reduce == "max":
-        updates = ivy.maximum(ivy.gather_nd(data, indices), updates)._data
-        reduce = "replace"
-    if data.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if reduce == "replace":
-            updates = paddle.subtract(
-                updates.cast("float32"), paddle.gather_nd(data.cast("float32"), indices)
-            ).cast(data.dtype)
-        if paddle.is_complex(data):
-            result_real = paddle.scatter_nd_add(
-                data.real(), indices, updates.real().cast(data.dtype)
-            )
-            result_imag = paddle.scatter_nd_add(
-                data.imag(), indices, updates.imag().cast(data.dtype)
-            )
-            return paddle.complex(result_real, result_imag)
-        return paddle.scatter_nd_add(
-            data.cast("float32"), indices, updates.cast("float32")
-        ).cast(data.dtype)
-    if reduce == "replace":
-        updates = paddle.subtract(updates, paddle.gather_nd(data, indices))
-    return paddle.scatter_nd_add(data, indices, updates.cast(data.dtype))
-
-
 def scatter_nd(
     indices: paddle.Tensor,
     updates: paddle.Tensor,
@@ -536,7 +500,39 @@ def scatter_nd(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _scatter_nd_reduce(target, indices, updates, reduce=reduction).astype(updates.dtype)
+    if reduction == "min":
+        updates = ivy.minimum(ivy.gather_nd(target, indices), updates)._data
+        reduction = "replace"
+    elif reduction == "max":
+        updates = ivy.maximum(ivy.gather_nd(target, indices), updates)._data
+        reduction = "replace"
+    if target.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+        paddle.complex64,
+        paddle.complex128,
+        paddle.bool,
+    ]:
+        if reduction == "replace":
+            updates = paddle.subtract(
+                updates.cast("float32"), paddle.gather_nd(target.cast("float32"), indices)
+            ).cast(target.dtype)
+        if paddle.is_complex(target):
+            result_real = paddle.scatter_nd_add(
+                target.real(), indices, updates.real().cast(target.dtype)
+            )
+            result_imag = paddle.scatter_nd_add(
+                target.imag(), indices, updates.imag().cast(target.dtype)
+            )
+            return paddle.complex(result_real, result_imag)
+        return paddle.scatter_nd_add(
+            target.cast("float32"), indices, updates.cast("float32")
+        ).cast(target.dtype)
+    if reduction == "replace":
+        updates = paddle.subtract(updates, paddle.gather_nd(target, indices))
+    return paddle.scatter_nd_add(target, indices, updates.cast(target.dtype))
 
 
 def shape(
