@@ -48,9 +48,9 @@ def calculate_same_padding(kernel_size, stride, shape):
         max_side=4,
     ),
     ceil_mode=st.booleans(),
-    excusive=st.booleans(),
+    exclusive=st.booleans(),
 )
-def test_torch_avg_pool2d(
+def test_paddle_avg_pool2d(
     dtype_x_k_s,
     exclusive,
     ceil_mode,
