@@ -12,6 +12,8 @@ def reshape(x, /, newshape, order="C"):
 
 @to_ivy_arrays_and_back
 def resize(x, newshape, /, refcheck=True):
+    if isinstance(new_shape, int):
+        new_shape = (new_shape,)
     x_new = ivy.reshape(x, shape=(-1,), order="C")
     total_size = 1
     for diff_size in newshape:
