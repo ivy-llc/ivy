@@ -130,3 +130,27 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return outputs_to_native_arrays_torch
+
+
+numpy_compatible_args = {
+    "axis": "dim",
+    "keepdims": "keepdim",
+    "x": "input",
+    "a": "input",
+    "x1": "input",
+    "x2": "other",
+}
+
+
+# noqa: F811
+def numpy_to_torch_style_args(func):  # noqa
+    """Convert argument names from NumPy style to PyTorch style."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        new_kwargs = {
+            numpy_compatible_args.get(key, key): value for key, value in kwargs.items()
+        }
+        return func(*args, **new_kwargs)
+
+    return wrapper
