@@ -489,3 +489,41 @@ def test_paddle_meshgrid(
         on_device=on_device,
         **args,
     )
+
+
+# tril_indices
+@handle_frontend_test(
+    fn_tree="paddle.tril_indices",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer")
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    row=st.integers(min_value=1, max_value=5),
+    col=st.integers(min_value=1, max_value=5),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_paddle_tril_indices(
+    dtype_and_x,
+    row,
+    col,
+    offset,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
+    )
