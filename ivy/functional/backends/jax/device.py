@@ -38,7 +38,7 @@ def dev(
     as_native: bool = False,
 ) -> Union[ivy.Device, jaxlib.xla_extension.Device]:
     if isinstance(x, jax.interpreters.partial_eval.DynamicJaxprTracer):
-        logging.warn(
+        logging.warning(
             "Cannot get device from DynamicJaxprTracer, returning empty string."
         )
         if as_native:  # fallback

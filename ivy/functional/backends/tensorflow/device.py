@@ -15,6 +15,16 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
+def _shorten_device(device: str):
+    return "/" + ":".join(device[1:].split(":")[-2:])
+
+
+def _same_device(dev_a, dev_b):
+    if dev_a is None or dev_b is None:
+        return False
+    return _shorten_device(dev_a) == _shorten_device(dev_b)
+
+
 def dev(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -83,16 +93,6 @@ def is_native_dev(device: str, /):
             if dev_in_split[0] in ["CPU", "GPU", "TPU"] and dev_in_split[1].isnumeric():
                 return True
     return False
-
-
-def _shorten_device(device: str):
-    return "/" + ":".join(device[1:].split(":")[-2:])
-
-
-def _same_device(dev_a, dev_b):
-    if dev_a is None or dev_b is None:
-        return False
-    return _shorten_device(dev_a) == _shorten_device(dev_b)
 
 
 def clear_cached_mem_on_dev(device: str, /):
