@@ -6,6 +6,8 @@ import traceback as tb
 import io
 import inspect
 import os
+import ast
+import builtins
 
 # Helpers #
 # ------- #
@@ -23,6 +25,50 @@ def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
             "<func_wrapper.py stack trace is squashed,",
             "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>",
         )
+
+
+def _get_traces(curr_obj, area, local_dict, st):
+    from ivy.compiler.utils.VVX import trace_obj, get_source_code, CallVistior
+
+    traces_list = []
+    func = local_dict[curr_obj[2]]
+    func_module = inspect.getmodule(func)
+    rooted_source = get_source_code(func).strip()
+
+    try:
+        module_ast = ast.parse(rooted_source)
+        visitor = CallVistior(func_module)
+        visitor.visit(module_ast)
+    except SyntaxError:
+        pass
+
+    non_lib_objs_name_list = [f.__name__ for f in visitor.non_lib_objs]
+    rooted_src_list = rooted_source.split("\n")
+    max_idx = round(len(rooted_src_list) * area) - 1
+
+    for i in range(max_idx, 0, -1):
+        if st.name in rooted_src_list[i]:
+            curr_obj[3] = rooted_src_list[i]
+            curr_obj[1] += i
+            break
+        elif builtins.any(
+            [name in rooted_src_list[i] for name in non_lib_objs_name_list]
+        ):
+            found = False
+            for name in non_lib_objs_name_list:
+                if name in rooted_src_list[i]:
+                    traced_data = trace_obj(local_dict[name], (), {}, {})
+                    ret_obj = [traced_data[1], traced_data[2], name, ""]
+                    ret_obj = _get_traces(ret_obj, 1, local_dict, st)
+                    if ret_obj:
+                        traces_list += ret_obj
+                        found = True
+                        break
+            if found:
+                curr_obj[3] = rooted_src_list[i]
+                curr_obj[1] += i
+                break
+    return [curr_obj] + traces_list
 
 
 def _remove_so_log(trace):
@@ -60,13 +106,16 @@ def _remove_so_log(trace):
         ):
             transpile_frame = old_frames[idx]
         elif track:
-            align_st = _align_source(
+            track = False
+            ret_st = _align_source(
                 st, transpile_frame, module_frame, module_st, compiled_lineno
             )
-            track = False
+            if ret_st:
+                [new_stack_trace.append(r) for r in ret_st]
+
         new_stack_trace.append(st)
         if align_st:
-            new_stack_trace.append(align_st)
+            [new_stack_trace.append(a) for a in align_st]
 
     return new_stack_trace
 
@@ -75,49 +124,40 @@ def _align_source(st, transpile_frame, module_frame, module_st, compiled_lineno)
     from ivy.compiler.utils.VVX import trace_obj
     from ivy.compiler.utils.IIV import Graph
 
-    code_loc = None
-    line = ""
-
+    curr_obj = [None, None, "", ""]
     if transpile_frame:
         t_v = inspect.getargvalues(transpile_frame.frame)
         obj = t_v.locals[t_v.varargs][0]
 
         traced_data = trace_obj(obj, t_v.locals["args"], t_v.locals["kwargs"], {})
-        code_loc = traced_data[1]
-        code_line = traced_data[2]
-        func_def = traced_data[3]
+        curr_obj[0] = traced_data[1]
+        curr_obj[1] = traced_data[2]
+        curr_obj[2] = traced_data[3]
 
     if module_frame:
         t_v = inspect.getargvalues(module_frame.frame)
         for k, v in t_v.locals.items():
             if k in module_st.line and isinstance(v, Graph):
+                # todo: try getting lines manually
+                traced_data = trace_obj(t_v.locals[v.__name__], (), {}, {})
+                curr_obj[0] = traced_data[1]
+                curr_obj[1] = traced_data[2]
+                curr_obj[2] = v.__name__
+
                 if compiled_lineno:
                     line = v._Graph__fn_str.split("\n")[compiled_lineno - 1]
                     line = line.split("=")[1].strip()
                     line = line.split("(")[0].strip() + "("
+                    curr_obj[3] = line
+                    area = compiled_lineno / len(v._Graph__fn_str.strip().split("\n"))
 
-                # todo: try getting lines manually
-                traced_data = trace_obj(t_v.locals[v.__name__], (), {}, {})
-                code_loc = traced_data[1]
-                code_line = traced_data[2]
-                func_def = v.__name__
+                    curr_obj = _get_traces(curr_obj, area, t_v.locals, st)
 
-                # func = t_v.locals[v.__name__]
-                # func_module = inspect.getmodule(func)
-                # rooted_source = get_source_code(func)
-                # try:
-                #     module_ast = ast.parse(rooted_source)
-                #     visitor = CallVistior(func_module)
-                #     visitor.visit(module_ast)
-                # print(visitor.non_lib_objs)
-                # print(visitor.lib_objs)
-                # except SyntaxError:
-                # ast cannot be parsed
-                # pass
-
-    if code_loc is None:
+    if curr_obj[0] is None:
         return None
-    return (code_loc, code_line, func_def, line)
+    if not isinstance(curr_obj[0], list):
+        curr_obj = [curr_obj]
+    return curr_obj
 
 
 def _write_new_stack_trace(
