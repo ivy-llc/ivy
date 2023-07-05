@@ -454,3 +454,38 @@ def test_paddle_diagflat(
         x=x[0],
         offset=offset,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_meshgrid(
+    dtype_and_arrays,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, arrays = dtype_and_arrays
+    args = {}
+    i = 0
+    for x_ in arrays:
+        args["x{}".format(i)] = x_
+        i += 1
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **args,
+    )
