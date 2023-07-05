@@ -1,91 +1,107 @@
-# global
-from typing import Union, Optional, Tuple, Sequence
-
 # local
 import ivy.functional.frontends.torch as torch_frontend
 
-_TensorOrTensors = Union[torch_frontend.Tensor, Sequence[torch_frontend.Tensor]]
+
+def _add_grad(g_total, g):
+    """Return g_total + g after checking None values."""
+    if g is None:
+        return g_total
+    elif g_total is None:
+        return g
+    return g_total + g
+
+
+def _tensors_to_tuple(tensors, outputs=None):
+    if tensors is None:
+        ret = tuple()
+        for out in outputs:
+            ret += (torch_frontend.ones_like(out),)
+        return ret
+
+    if isinstance(tensors, torch_frontend.Tensor):
+        return (tensors,)
+    return tuple(tensors)
+
+
+def _grad_out_multiply(grad_out, jacobian_wrt_input):
+    """
+    return grad_out * jacobian_wrt_input after manipulating the shapes
+    """
+    output_shape = grad_out.shape
+    input_num_dims = len(jacobian_wrt_input.shape) - len(output_shape)
+    expanded_grad_out = grad_out.view(output_shape + (1,) * input_num_dims)
+    sum_dims = tuple(range(len(output_shape)))
+    new_grad_out = (expanded_grad_out * jacobian_wrt_input).sum(dim=sum_dims)
+    return new_grad_out
 
 
 def _get_grad(output, input, grad_output):
-    """Computes gradient of output w.r.t input."""
+    """Compute gradient of output w.r.t input."""
+
+    # Case #1
+    if output is input:
+        return grad_output
+
     # Get inputs of the function that returned output
     func_inputs = output.func_inputs
 
+    # Case #2
     # Reached end of graph. input & output are not connected
     if not func_inputs:
         return None
 
+    # Case #3
     grads = None
     for i, func_input in enumerate(func_inputs):
-        if input is func_input:
-            axis = list(range(len(output.shape)))
-            grad = (output.grads[i] * grad_output).sum(dim=axis)
-            if grads is not None:
-                grads += (output.grads[i] * grad_output).sum(dim=axis)
-            else:
-                grads = (output.grads[i] * grad_output).sum(dim=axis)
-            continue
-
-        grad = _get_grad(func_input, input, grad_output)
-        if grad is not None:
-            axis = list(range(len(output.shape)))
-            if grads is not None:
-                grads += (output.grads[i].sum(dim=axis)) * grad
-            else:
-                grads = (output.grads[i].sum(dim=axis)) * grad
+        new_grad_out = _grad_out_multiply(grad_output, output.grads[i])
+        grad = _get_grad(func_input, input, new_grad_out)
+        grads = _add_grad(grads, grad)
 
     return grads
 
 
+def _batched_get_grad(output, input, grad_output, batched):
+    if batched:
+        return torch_frontend.stack([_get_grad(output, input, g) for g in grad_output])
+    return _get_grad(output, input, grad_output)
+
+
 def grad(
-    outputs: _TensorOrTensors,
-    inputs: _TensorOrTensors,
-    grad_outputs: Optional[_TensorOrTensors] = None,
-    retain_graph: Optional[bool] = None,
-    create_graph: bool = False,
-    only_inputs: bool = True,
-    allow_unused: bool = False,
-    is_grads_batched: bool = False,
-) -> Tuple[torch_frontend.Tensor, ...]:
-    """Computes and returns the sum of gradients of outputs with respect to each
-    input."""
-    inputs = (inputs,) if isinstance(inputs, torch_frontend.Tensor) else inputs
-    outputs = (outputs,) if isinstance(outputs, torch_frontend.Tensor) else outputs
-    if grad_outputs is None:
-        grad_outputs = [torch_frontend.ones_like(y) for y in outputs]
-    else:
-        grad_outputs = (
-            (grad_outputs,)
-            if isinstance(grad_outputs, torch_frontend.Tensor)
-            else grad_outputs
-        )
+    outputs,
+    inputs,
+    grad_outputs=None,
+    retain_graph=None,
+    create_graph=False,
+    only_inputs=True,
+    allow_unused=False,
+    is_grads_batched=False,
+):
+    """Compute and return the sum of gradients of outputs with respect to each input."""
+    inputs = _tensors_to_tuple(inputs)
+    outputs = _tensors_to_tuple(outputs)
+    grad_outputs = _tensors_to_tuple(grad_outputs, outputs)
 
     ret = []
     for input in inputs:
-        assert input.requires_grad, "One of the input tensors does not require grad"
+        if not input.requires_grad:
+            raise RuntimeError("One of the input tensors does not require grad")
+
         grad_wrt_input = None
-
         for output, grad_output in zip(outputs, grad_outputs):
-            assert (
-                output.requires_grad
-            ), "One of the output tensors does not require grad"
-            if is_grads_batched:
-                g = torch_frontend.stack(
-                    [_get_grad(output, input, g) for g in grad_output]
+            if not output.requires_grad:
+                raise RuntimeError("One of the output tensors does not require grad")
+            if len(output.shape) != sum(output.shape) and grad_outputs is None:
+                raise RuntimeError(
+                    "grad can be implicitly created only for scalar outputs"
                 )
-            else:
-                g = _get_grad(output, input, grad_output)
 
-            if g is not None and grad_wrt_input is not None:
-                grad_wrt_input += g
-            elif grad_wrt_input is None:
-                grad_wrt_input = g
+            g = _batched_get_grad(output, input, grad_output, is_grads_batched)
+            grad_wrt_input = _add_grad(grad_wrt_input, g)
 
-        if not allow_unused:
-            assert grad_wrt_input is not None, (
-                "One of the differentiated Tensors appears                 to not have"
-                " been used in the graph.                 Set allow_unused=True if this"
+        if not allow_unused and grad_wrt_input is None:
+            raise RuntimeError(
+                "One of the differentiated Tensors appears to not have"
+                " been used in the graph. Set allow_unused=True if this"
                 " is the desired behavior."
             )
         ret += [grad_wrt_input]

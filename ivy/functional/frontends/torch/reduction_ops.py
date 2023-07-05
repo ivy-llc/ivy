@@ -1,6 +1,9 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_gradients,
+)
 from collections import namedtuple
 
 
@@ -47,11 +50,13 @@ def any(input, dim=None, keepdim=False, *, out=None):
     return ret
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.sum(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
     if dim is None:
