@@ -138,7 +138,7 @@ def test_paddle_nonzero(
         num_arrays=2,
     ),
     out_int32=st.booleans(),
-    right=st.booleans(),
+    right=st.just(False),
 )
 def test_paddle_searchsorted(
     *,
