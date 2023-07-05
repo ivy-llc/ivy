@@ -747,15 +747,11 @@ def _complex_helper(draw):
     _, values = draw(
         helpers.dtype_and_values(
             available_dtypes=input_dtype,
-            shape=helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=1,
-                min_dim_size=1,
-                max_dim_size=1,
-            ),
         )
     )
-    return input_dtype, data, values
+    complex_tensor = complex(data, values)
+
+    return input_dtype, data, complex_tensor
 
 
 @handle_frontend_test(
@@ -765,7 +761,6 @@ def _complex_helper(draw):
 def test_torch_complex(
     *,
     dtype_and_input,
-    on_device,
     fn_tree,
     frontend,
     test_flags,
@@ -776,7 +771,6 @@ def test_torch_complex(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         input=data[0],
         values=values[0],
     )
