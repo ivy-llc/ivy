@@ -478,6 +478,12 @@ class Tensor:
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def neg(self, name=None):
+        return paddle_frontend.neg(self)
+
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
