@@ -42,7 +42,7 @@ def test_shape__getitem__(
 
 
 @handle_method(
-    method_tree=".__index__",
+    method_tree="Shape.__index__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
