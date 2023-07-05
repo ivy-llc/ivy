@@ -1830,6 +1830,8 @@ def dtype_array_query(
         helpers.array_values(
             dtype=dtype[0],
             shape=shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
         )
     )
     if allow_mask and draw(st.booleans()):
