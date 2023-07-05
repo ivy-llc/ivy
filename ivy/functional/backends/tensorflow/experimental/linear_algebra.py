@@ -156,9 +156,6 @@ def dot(x1: tf.Tensor, x2: tf.Tensor, out: Optional[tf.Tensor] = None) -> tf.Ten
     return tf.experimental.numpy.dot(x1, x2)
 
 
-# dot.support_native_out = True
-
-
 def cond(
     x: Union[tf.Tensor, tf.Variable],
     /,
