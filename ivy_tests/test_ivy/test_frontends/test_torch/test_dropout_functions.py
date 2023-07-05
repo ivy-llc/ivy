@@ -100,7 +100,7 @@ def test_torch_dropout1d(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.dropout3d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float16"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=50,
         allow_inf=False,
