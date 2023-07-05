@@ -131,3 +131,13 @@ def diagflat(x, offset=0, name=None):
 @to_ivy_arrays_and_back
 def meshgrid(*args, **kwargs):
     return ivy.meshgrid(*args, indexing="ij")
+
+
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def triu_indices(row, col=None, offset=0, dtype="int64"):
+    arr = ivy.triu_indices(row, col, offset)
+    if not ivy.to_scalar(ivy.shape(arr[0], as_array=True)):
+        return arr
+    arr = ivy.astype(arr, dtype)
+    return arr
