@@ -113,16 +113,14 @@ def main():
                 lca_commit = commit._c_object
                 break
             for commit in Repository(".", order="reverse").traverse_commits():
-                tests["commit"] = commit.hash
                 diff_index = lca_commit.diff(commit._c_object, create_patch=True)
                 modified_files = commit._parse_diff(diff_index)
                 break
             for file in modified_files:
                 print(file.new_path)
             for test in added_tests:
-                test_path = test.split("::")[0]
                 for file in modified_files:
-                    if test_path in file.new_path:
+                    if file.new_path.strip() in test:
                         relevant_added_tests.append(test)
                         break
             added_tests = relevant_added_tests
