@@ -39,7 +39,10 @@ from ivy.func_wrapper import (
     handle_view_indexing,
 )
 from ivy.functional.ivy.device import dev
-from ivy.functional.ivy.data_type import _function_supported_dtypes,_function_unsupported_dtypes
+from ivy.functional.ivy.data_type import (
+    _function_supported_dtypes,
+)
+
 FN_CACHE = dict()
 INF = float("inf")
 
