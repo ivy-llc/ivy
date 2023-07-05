@@ -296,3 +296,19 @@ def frombuffer(
     requires_grad=False,
 ):
     return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+def empty_strided(*args,
+                  stride,
+                  axis = None,
+                  dtype = None,
+                  device = None,
+                  requires_grad = False,
+                  memory_format = None):
+    stride_list = list(stride)
+    size_list = list(size)
+
+    del stride_list[axis]
+    del size_list[axis]
+
+    return ivy.empty_strided(args*, stride = stride, dtype = dtype, device = device,
+                             axis = axis, requires_grad = False, memory_format = None)
