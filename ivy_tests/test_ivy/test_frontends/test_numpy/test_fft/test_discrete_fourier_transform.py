@@ -214,26 +214,57 @@ def test_numpy_ifftn(dtype_and_x, frontend, test_flags, fn_tree, on_device):
     )
 
 
+# @handle_frontend_test(
+#     fn_tree="numpy.fft.rfft2",
+#     dtype_input_axis=helpers.dtype_values_axis(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         min_num_dims=2,
+#         max_num_dims=2,
+#         force_tuple_axis=True,
+#         # shape=(2,2),
+#     ),
+#     norm=st.sampled_from(["backward", "ortho", "forward"]),
+#     s=st.lists(st.integers(min_value=2, max_value=10)),
+#     # dim=st.lists(st.integers(min_value=-2, max_value=-1)).map(
+#     #     lambda dims: tuple(dims) if dims else (-2, -1)
+#     # ),
+#     dim=st.lists(st.integers(min_value=-2, max_value=-1)),
+# )
+# def test_numpy_rfft2(
+#     dtype_input_axis, norm, s, dim, frontend, test_flags, fn_tree, on_device
+# ):
+#     input_dtype, x, _ = dtype_input_axis
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         test_values=True,
+#         x=x,
+#         s=s,
+#         dim=dim,
+#         norm=norm,
+#     )
+
+
 @handle_frontend_test(
     fn_tree="numpy.fft.rfft2",
-    dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        array_api_dtypes=True,
         min_num_dims=2,
         max_num_dims=2,
-        force_tuple_axis=True,
-        # shape=(2,2),
     ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
     s=st.lists(st.integers(min_value=2, max_value=10)),
-    # dim=st.lists(st.integers(min_value=-2, max_value=-1)).map(
-    #     lambda dims: tuple(dims) if dims else (-2, -1)
-    # ),
-    dim=st.lists(st.integers(min_value=-2, max_value=-1)),
+    # s=st.none() | st.tuples(st.integers(min_value=2), st.integers(max_value=100)),
+    dim=st.tuples(st.integers(min_value=-2), st.integers(max_value=-1)),
+    norm=st.sampled_from([None, "backward", "ortho", "forward"]),
 )
 def test_numpy_rfft2(
-    dtype_input_axis, norm, s, dim, frontend, test_flags, fn_tree, on_device
+    dtype_and_x, s, dim, norm, frontend, test_flags, fn_tree, on_device
 ):
-    input_dtype, x, _ = dtype_input_axis
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

@@ -135,16 +135,47 @@ def ifftn(a, s=None, axes=None, norm=None):
     return a
 
 
-@with_unsupported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
+# @with_unsupported_dtypes({"1.24.3 and above": ("float16",)}, "numpy")
+# def rfft2(x, s=None, dim=(-2, -1), norm=None):
+#     # x = ivy.asarray(x, dtype=ivy.float64)
+#     x = ivy.astype(x, "float64")
+#     # if s is None or len(s) == 0:
+#     #     s = [2]  # Set a default value for s if it is None or empty
+#     # else:
+#     #     s = list(s)
+#     if s is None:
+#         s = x.shape[dim]
+#     # s = x.shape if s is None else s
+#     x = ivy.fft2(x, s=s, dim=dim, norm=norm)
+#     return x
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
 def rfft2(x, s=None, dim=(-2, -1), norm=None):
-    # x = ivy.asarray(x, dtype=ivy.float64)
-    x = ivy.astype(x, "float64")
-    # if s is None or len(s) == 0:
-    #     s = [2]  # Set a default value for s if it is None or empty
-    # else:
-    #     s = list(s)
+    # x=ivy.astype(x, "float64")
+    # Perform the 2D FFT using fft2
+    fft_result = ivy.fft2(x, s=s, dim=dim)
+
+    # Calculate the shape of the FFT result
     if s is None:
-        s = x.shape[dim]
-    # s = x.shape if s is None else s
-    x = ivy.fft2(x, s=s, dim=dim, norm=norm)
-    return x
+        s = fft_result.shape
+
+    # Create a mask to select the positive frequencies in the appropriate dimensions
+    mask = ivy.ones(s, dtype=bool)
+    mask[tuple([slice(None) if i in dim else ivy.newaxis for i in range(len(s))])] = (
+        False
+    )
+
+    # Apply the mask to select the positive frequencies
+    result = fft_result * mask
+
+    # Normalize the result based on the specified norm
+    if norm == "backward":
+        result /= ivy.sqrt(ivy.prod(s))
+    elif norm == "ortho":
+        result /= ivy.sqrt(ivy.prod(s[0]))
+    elif norm == "forward":
+        result /= ivy.sqrt(ivy.prod(s[1]))
+
+    return result
