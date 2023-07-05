@@ -1,5 +1,5 @@
 # global
-# from hypothesis import strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -214,15 +214,16 @@ def test_numpy_rint(
 
 
 # around
-# around
 @handle_frontend_test(
     fn_tree="numpy.around",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(),
     ),
+    decimals=st.integers(min_value=0, max_value=5),
 )
 def test_numpy_around(
     dtype_and_x,
+    decimals,
     frontend,
     test_flags,
     fn_tree,
@@ -237,5 +238,6 @@ def test_numpy_around(
         on_device=on_device,
         test_values=False,
         a=x[0],
+        decimals=decimals,
         out=None,
     )
