@@ -513,7 +513,6 @@ def pool(
     )
 
 
-
 # sufficient_statistics
 @to_ivy_arrays_and_back
 def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
@@ -548,10 +547,21 @@ def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
         ivy.reshape(sum_of_squares, ())
     return count, sum_of_elements, sum_of_squares, shift
 
+
 # log_poisson_loss
 @to_ivy_arrays_and_back
 def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
     return ivy.log_poisson_loss(targets, log_input, compute_full_loss, name)
+
+
+# ctc_unique_labels
+@to_ivy_arrays_and_back
+def ctc_unique_labels(labels, name=None):
+    ctc_labels = ivy.unique_all(labels, by_value=False)
+    unique_pad = ivy.pad(
+        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    )
+    return unique_pad, ctc_labels[2]
 
 
 # weighted_moments

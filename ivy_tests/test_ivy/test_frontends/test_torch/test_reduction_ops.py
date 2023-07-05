@@ -864,7 +864,7 @@ def _get_axis_and_p(draw):
     else:
         min_axes_size = 1
         max_axes_size = 5
-    dtype_x_axis = draw(
+    x_dtype, values, axis = draw(
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
@@ -875,10 +875,17 @@ def _get_axis_and_p(draw):
             max_axes_size=max_axes_size,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
-            force_int_axis=True,
         )
     )
-    return p, dtype_x_axis
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
 
 
 # norm
@@ -886,33 +893,31 @@ def _get_axis_and_p(draw):
     fn_tree="torch.norm",
     p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_norm(
     *,
     p_dtype_x_axis,
     keepdim,
-    dtype,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    p, values = p_dtype_x_axis
-    input_dtype, x, axis = values
-
+    p, x_dtype, x, axis, dtype = p_dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[x_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
         atol=1e-08,
-        input=x[0],
+        input=x,
         p=p,
         dim=axis,
         keepdim=keepdim,
+        out=None,
+        dtype=dtype,
     )
 
 

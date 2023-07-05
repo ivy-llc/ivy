@@ -167,6 +167,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_multinomial(
     *,

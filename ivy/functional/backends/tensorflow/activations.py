@@ -80,33 +80,6 @@ def log_softmax(
     return tf.nn.log_softmax(x, axis)
 
 
-def deserialize(
-    name: Union[str, None], /, *, custom_objects: Optional[ivy.Dict] = None
-) -> Union[ivy.Callable, None]:
-    return tf.keras.activations.deserialize(name, custom_objects)
-
-
-def get(
-    identifier: Union[str, ivy.Callable, None],
-    /,
-    *,
-    custom_objects: Optional[ivy.Dict] = None,
-) -> Union[ivy.Callable, None]:
-    if identifier is None:
-        return tf.keras.activations.linear
-
-    if isinstance(identifier, str):
-        identifier = str(identifier)
-        return ivy.deserialize(identifier, custom_objects=custom_objects)
-
-    elif callable(identifier):
-        return identifier
-    else:
-        raise TypeError(
-            f"Could not interpret activation function identifier: {identifier}"
-        )
-
-
 @with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def mish(
     x: Tensor,
@@ -115,3 +88,8 @@ def mish(
     out: Optional[Tensor] = None,
 ) -> Tensor:
     return x * tf.math.tanh(tf.math.softplus(x))
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return x * tf.nn.relu6(x + 3) / 6

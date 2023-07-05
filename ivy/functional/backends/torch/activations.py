@@ -120,3 +120,18 @@ def log_softmax(
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def hardswish(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.nn.functional.hardswish(x)
