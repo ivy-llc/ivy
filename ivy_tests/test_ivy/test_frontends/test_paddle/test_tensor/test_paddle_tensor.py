@@ -2330,16 +2330,15 @@ def test_paddle_logical_not(
     )
 
 
-# real
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="real",
+    method_name="sign",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_real(
+def test_paddle_sign(
     dtype_and_x,
     frontend_method_data,
     init_flags,
