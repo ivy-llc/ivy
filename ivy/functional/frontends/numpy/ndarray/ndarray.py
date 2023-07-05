@@ -1,4 +1,5 @@
 # global
+from math import prod
 
 # local
 import ivy
@@ -48,6 +49,10 @@ class ndarray:
     @property
     def shape(self):
         return self.ivy_array.shape
+
+    @property
+    def size(self):
+        return self.ivy_array.size
 
     @property
     def dtype(self):
