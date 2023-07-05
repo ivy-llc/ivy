@@ -227,7 +227,7 @@ def packbits(x, axis=None, bitorder="big"):
     if bitorder == "big":
         bits = bits[::-1]
     if axis is None:
-        ivy.reshape(x, -1)
+        x = ivy.flatten(x)
         axis = 0
     x = ivy.swapaxes(x, axis, -1)
 
@@ -236,7 +236,7 @@ def packbits(x, axis=None, bitorder="big"):
         pad_config = [(0, 8 - remainder)]
         x = ivy.zero_pad(x, pad_config)
 
-    x = x.reshape(x.shape[:-1] + (x.shape[-1] // 8, 8))
-    bits = ivy.expand_dims(bits, tuple(range(x.ndim - 1)))
+    x = tuple(x.shape[:-1] + [x.shape[-1] // 8, 8])
+    bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
     packed = (x << bits).sum(-1).astype("uint8")
     return ivy.swapaxes(packed, axis, -1)
