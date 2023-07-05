@@ -218,7 +218,8 @@ def test_get_item(
     fn_tree="functional.ivy.set_item",
     ground_truth_backend="numpy",
     dtypes_x_query_val=helpers.dtype_array_query_val(
-        available_dtypes=helpers.get_dtypes("valid"),
+        # ToDo: will work for "valid" once scatter_nd supports boolean inputs arrays
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     copy=st.booleans(),
     test_with_out=st.just(False),
@@ -670,6 +671,7 @@ def test_scatter_flat(
 @handle_test(
     fn_tree="functional.ivy.scatter_nd",
     x=values_and_ndindices(
+        # ToDo: needs support for boolean arrays
         array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int32", "int64"],
         x_min_value=0,
