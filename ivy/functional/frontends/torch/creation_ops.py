@@ -300,17 +300,17 @@ def frombuffer(
 def empty_strided(*args,
                   stride,
                   axis = None,
+                  size = None,
                   dtype = None,
                   device = None,
                   requires_grad = False,
                   memory_format = None):
 
-    # stride_list = list(stride)
-    # size_list = list(size)
-    #
-    # del stride_list[axis] # removing an axis to avoid striding over
-    # del size_list[axis]
+    stride_list = list(stride)
+    size_list = list(size)
 
-    return ivy.empty_strided(*args, stride = stride, dtype = dtype, device = device,
-                             axis = axis, requires_grad = False, memory_format = None)
+    del stride_list[axis] # removing an axis to avoid striding over
+    del size_list[axis]
 
+    return ivy.empty_strided(agrs = args, stride = stride, axis = axis, size = size, dtype = dtype,
+                             device = device, requires_grad = requires_grad, memory_format = memory_format)
