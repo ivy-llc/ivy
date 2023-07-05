@@ -3917,3 +3917,38 @@ def test_tensorflow_Zeta(
         x=x[0],
         q=x[1],
     )
+
+
+# Imag
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Imag",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    send_Tout=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Imag(
+    *,
+    dtype_and_xs,
+    send_Tout,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    if input_dtype[0] == "complex128":
+        send_Tout = "float64"
+    elif input_dtype[0] == "complex64":
+        send_Tout = "float32" if send_Tout else None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        Tout=send_Tout,
+    )
