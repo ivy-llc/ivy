@@ -34,6 +34,15 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sort(x, /, *, axis=-1, descending=False, name=None):
+    return ivy.sort(x, axis=axis, descending=descending)
+
+
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
