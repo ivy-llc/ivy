@@ -1046,6 +1046,48 @@ def test_torch_normalize(
     )
 
 
+# local_response_norm
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.local_response_norm",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    size=helpers.ints(min_value=3, max_value=10),
+    alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
+    beta=helpers.floats(min_value=0.5, max_value=2.0),
+    k=helpers.ints(min_value=0, max_value=1),
+)
+def test_torch_local_response_norm(
+    *,
+    dtype_x_and_axis,
+    size,
+    alpha,
+    beta,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, axis = dtype_x_and_axis
+    _filter_dtypes(dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        size=size,
+        alpha=alpha,
+        beta=beta,
+        k=k,
+    )
+
+
 # softplus
 @handle_frontend_test(
     fn_tree="torch.nn.functional.softplus",
