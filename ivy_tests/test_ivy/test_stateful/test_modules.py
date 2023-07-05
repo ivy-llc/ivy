@@ -1026,9 +1026,6 @@ def test_module_save_and_load_as_pickled(batch_shape, input_channels, output_cha
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    if ivy.current_backend_str() == "paddle":
-        # Paddle does not support pickling
-        return
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
