@@ -140,7 +140,7 @@ Using miniconda
 
 #. Installing the development dependencies.
 
-   a. On Linux Or Windows, you will need to use the `optional.txt` requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
@@ -209,7 +209,7 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux Or Windows, you will need to use the `optional.txt` requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
