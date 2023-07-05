@@ -25,7 +25,7 @@ def _ceil(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
+    subok=True
 ):
     ret = ivy.ceil(x, out=out)
     if ivy.is_array(where):
@@ -38,7 +38,7 @@ def _ceil(
 def fix(
     x,
     /,
-    out=None,
+    out=None
 ):
     where = ivy.greater_equal(x, 0)
     return ivy.where(where, ivy.floor(x, out=out), ivy.ceil(x, out=out), out=out)
@@ -58,7 +58,7 @@ def _floor(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
+    subok=True
 ):
     ret = ivy.floor(x, out=out)
     if ivy.is_array(where):
@@ -80,7 +80,7 @@ def _trunc(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
+    subok=True
 ):
     ret = ivy.trunc(x, out=out)
     if ivy.is_array(where):
@@ -102,7 +102,7 @@ def _rint(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
+    subok=True
 ):
     ret = ivy.round(x, out=out)
     if ivy.is_array(where):
