@@ -2038,14 +2038,12 @@ def test_tensorflow_unique(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.unique_with_counts",                                               
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),  
+    fn_tree="tensorflow.unique_with_counts",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
     shape=helpers.get_shape(                                                   
         allow_none=False,                                                                  
         min_num_dims=1,                                                                   
-        max_num_dims=1,                                                                    
-        #min_dim_size=1,                                                                    
-        #max_dim_size=10,                                                                  
+        max_num_dims=1,                                                                                                                                    
     ),
     test_with_out=st.just(False),
 )
@@ -2061,7 +2059,7 @@ def test_tensorflow_unique_with_counts(
     helpers.test_frontend_function(
         input=x[0],
         input_dtypes=input_dtype,
-        fn_tree=fn_tree
+        fn_tree=fn_tree,  # added missing comma here
         frontend=frontend,
         on_device=on_device,
         test_flags=test_flags

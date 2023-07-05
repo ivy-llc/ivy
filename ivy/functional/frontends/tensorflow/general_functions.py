@@ -584,11 +584,7 @@ def unique_with_counts(x):
         "UniqueWithCounts", 
         ["y", "idx", "count"]
         )
-    return unique_with_counts(
-        y=values, 
-        idx=inverse_indices, 
-        count=counts
-    )
+    return unique_with_counts(y=values, idx=inverse_indices, count=counts)
 
 
 @to_ivy_arrays_and_back
