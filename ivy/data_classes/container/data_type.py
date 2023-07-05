@@ -525,8 +525,8 @@ class _ContainerWithDataTypes(ContainerBase):
 
         >>> print(x.can_cast('int64'))
         {
-            a: false,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self._static_can_cast(
