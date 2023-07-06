@@ -97,6 +97,10 @@ class Tensor:
         return paddle_frontend.abs(self)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def acosh(self, name=None):
+        return ivy.acosh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
