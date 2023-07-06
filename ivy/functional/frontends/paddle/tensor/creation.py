@@ -128,9 +128,9 @@ def diag(x, offset=0, padding_value=0, name=None):
     print("x.shape: ", x.shape)
     print("-----------------------------------------------")
     try:
-        x=ivy.array([[0]])
-        offset=2
-        padding_value=0
+        # x=ivy.array([[0]])
+        # offset=2
+        # padding_value=0
 
         d_x = None
         if len(x.shape) == 1:

@@ -423,7 +423,6 @@ def test_paddle_triu(
 
 
 # diag
-@reproduce_failure('6.80.0', b'AXicY2RkYAAiBhjJxAAHAACOAAc=')
 @handle_frontend_test(
     fn_tree="paddle.diag",
     dtype_and_x=helpers.dtype_and_values(
