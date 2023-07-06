@@ -6,12 +6,10 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
-    ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
-    ret = ivy.expand_dims(ret, axis=-1) if ret.ndim == 0 else ret
-    return ret
+    return ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
 
 
 @with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
