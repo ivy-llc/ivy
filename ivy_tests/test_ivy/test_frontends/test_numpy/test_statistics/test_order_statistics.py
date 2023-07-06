@@ -6,6 +6,7 @@ from hypothesis import strategies as st
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
+import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -14,7 +15,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.ptp",
     dtype_values_axis=_statistical_dtype_values(function="ptp"),
-    where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
 def test_numpy_ptp(
@@ -30,13 +30,7 @@ def test_numpy_ptp(
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         a=values,
         axis=axis,
         out=None,
