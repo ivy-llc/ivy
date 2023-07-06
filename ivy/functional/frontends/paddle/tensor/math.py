@@ -210,6 +210,12 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def erf(x, name=None):
@@ -306,8 +312,21 @@ def minimum(x, y, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "complex64", "complex128")}, "paddle"
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
-def inner(x, y, name=None):
-    return ivy.inner(x, y)
+def trunc(x, name=None):
+    return ivy.trunc(x)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def sgn(x, name=None):
+    return ivy.sign(x)
+
+# @with_supported_dtypes(
+#     {"2.5.0 and below": ("float32", "float64", "complex64", "complex128")}, "paddle"
+# )
+# @to_ivy_arrays_and_back
+# def inner(x, y, name=None):
+#     return ivy.inner(x, y)

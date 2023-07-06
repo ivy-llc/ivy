@@ -888,6 +888,32 @@ def test_paddle_exp(
     )
 
 
+# expm1
+@handle_frontend_test(
+    fn_tree="paddle.expm1",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_expm1(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # square
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.square",
@@ -1275,27 +1301,22 @@ def test_paddle_erf(
     )
 
 
+# trunc
 @handle_frontend_test(
-    fn_tree="paddle.inner",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=(2, 2),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-10,
-        max_value=10,
+    fn_tree="paddle.trunc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", "int"),
     ),
-    test_with_out=st.just(False),
 )
-def test_paddle_inner(
+def test_paddle_trunc(
     *,
-    dtype_x,
+    dtype_and_x,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
-    on_device,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1303,5 +1324,59 @@ def test_paddle_inner(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        y=x[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.sgn",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_sgn(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+# @handle_frontend_test(
+#     fn_tree="paddle.inner",
+#     dtype_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         num_arrays=2,
+#         shared_dtype=True,
+#         min_value=-10,
+#         max_value=10,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_paddle_inner(
+#     *,
+#     dtype_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     input_dtype, x = dtype_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#         y=x[1]
+#     )
