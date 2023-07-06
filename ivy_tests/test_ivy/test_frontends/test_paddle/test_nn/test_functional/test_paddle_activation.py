@@ -514,5 +514,3 @@ def test_paddle_mish(
         on_device=on_device,
         x=x[0],
     )
-
-
