@@ -9924,3 +9924,47 @@ def test_torch_instance_dot(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tile",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    reps=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False,
+    ),
+)
+def test_torch_instance_tile(
+    dtype_and_values,
+    reps,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+    if isinstance(reps, tuple):
+        method_flags.num_positional_args = len(reps)
+    else:
+        method_flags.num_positional_args = 1
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "reps": reps,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
