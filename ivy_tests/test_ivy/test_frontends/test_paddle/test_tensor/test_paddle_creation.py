@@ -1,6 +1,6 @@
 # global
 import ivy
-from hypothesis import strategies as st
+from hypothesis import strategies as st, reproduce_failure
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -422,36 +422,12 @@ def test_paddle_triu(
     )
 
 
-@st.composite
-def _custom_diag_helper(draw):
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            small_abs_safety_factor=2,
-            large_abs_safety_factor=2,
-            safety_factor_scale="log",
-            min_num_dims=1,
-            max_num_dims=2,
-            min_dim_size=1,
-            max_dim_size=50,
-        )
-    )
-    shape = x[0].shape
-    if len(shape) == 2:
-        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
-    else:
-        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
-    return dtype, x, k
-
-
 # diag
+@reproduce_failure('6.80.0', b'AXicY2RkYAAiBhjJxAAHAACOAAc=')
 @handle_frontend_test(
     fn_tree="paddle.diag",
     dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            small_abs_safety_factor=2,
-            large_abs_safety_factor=2,
-            safety_factor_scale="log",
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=1,
             max_num_dims=2,
             min_dim_size=1,

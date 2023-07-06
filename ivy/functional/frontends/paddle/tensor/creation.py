@@ -122,23 +122,36 @@ def diag(x, offset=0, padding_value=0, name=None):
     print("===============================================")
     print("Input Values: ")
     print("x: ", x)
+    print("ivy.dtype(x): ", ivy.dtype(x))
     print("offset: ", offset)
     print("padding_value: ", padding_value)
     print("x.shape: ", x.shape)
     print("-----------------------------------------------")
     try:
+        x=ivy.array([[0]])
+        offset=2
+        padding_value=0
+
+        d_x = None
         if len(x.shape) == 1:
-            print("Going to: return ivy.diagflat(x, offset=offset, padding_value=padding_value)")
-            print("diagflat value is:", ivy.diagflat(x, offset=offset, padding_value=padding_value))
+            padding_value = ivy.astype(padding_value, ivy.dtype(x))
             d_x = ivy.diagflat(x, offset=offset, padding_value=padding_value)
+            print("Done: ivy.diagflat(x, offset=offset, padding_value=padding_value)")
+            print("diagflat value is:", d_x)
             print("d_x: ", d_x)
             if len(d_x.shape) != 2:
-                d_x= ivy.reshape(d_x, (1, 1))
+                d_x = ivy.reshape(d_x, (1, 1))
                 print("reshaped d_x: ", d_x)
-            return d_x
         else:
-            print("Going to: return ivy.diag(x, k=offset)")
-            return ivy.diag(x, k=offset)
+            if offset > (x.shape[1] - 1):
+                d_x = ivy.array([], dtype=ivy.dtype(x))
+                print("Done: d_x = ivy.array([])")
+                print("d_x: ", d_x)
+            else:
+                d_x = ivy.diag(x, k=offset)
+                print("Done: ivy.diag(x, k=offset)")
+                print("d_x: ", d_x)
+        return d_x
     except Exception as e:
         print("All Mighty Error: ", e)
         return None
