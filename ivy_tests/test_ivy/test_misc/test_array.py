@@ -239,6 +239,7 @@ def test_array_property_T(
 
 @handle_method(
     method_tree="Array.__getitem__",
+    ground_truth_backend="numpy",
     dtypes_x_query=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -260,7 +261,7 @@ def test_array__getitem__(
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x},
         init_input_dtypes=[dtypes[0]],
-        method_input_dtypes=[dtypes[1]],
+        method_input_dtypes=[*dtypes[1:]],
         method_all_as_kwargs_np={"query": query},
         class_name=class_name,
         method_name=method_name,
