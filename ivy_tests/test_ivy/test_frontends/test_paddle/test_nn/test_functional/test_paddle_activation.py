@@ -516,7 +516,7 @@ def test_paddle_mish(
     )
 
 
-
+# sigmoid
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.sigmoid",
     dtype_and_input=helpers.dtype_and_values(
@@ -538,5 +538,5 @@ def test_paddle_sigmoid(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0]
+        x=x[0],
     )
