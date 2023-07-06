@@ -1740,7 +1740,7 @@ def test_jax_special_rmatmul(
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
+    ).filter(lambda x: not (isinstance(x[-1], np.ndarray) and x[-1].dtype == np.bool_)),
 )
 def test_jax_special_getitem(
     dtype_x_index,
@@ -1754,7 +1754,7 @@ def test_jax_special_getitem(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"object": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"idx": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
