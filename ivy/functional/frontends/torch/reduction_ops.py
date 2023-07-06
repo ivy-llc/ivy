@@ -65,9 +65,7 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
-    if dim is None:
-        dim = axis
+def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
