@@ -119,9 +119,9 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
     if isinstance(obj, Sequence) and len(obj) != 0:
         contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
-        obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if contain_tensor:

@@ -99,7 +99,7 @@ def asarray(
             ret.stop_gradient = obj.stop_gradient
         else:
             ret = obj
-        return paddle_backend.to_device(ret, device).astype(dtype)
+        return to_device(ret, device).astype(dtype)
 
     elif isinstance(obj, (Number, bool, complex)):
         return paddle_backend.squeeze(
