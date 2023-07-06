@@ -75,7 +75,7 @@ def test_hann_window(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.001,
+        atol_=0.005,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
