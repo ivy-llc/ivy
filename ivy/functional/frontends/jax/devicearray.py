@@ -115,6 +115,10 @@ class DeviceArray:
             axis=axis,
             order=order,
         )
+    
+    def imag(self, /):
+        return jax_frontend.numpy.imag(self._ivy_array)
+
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
