@@ -95,6 +95,35 @@ def test_jax_absolute(
         on_device=on_device,
         x=x[0],
     )
+# imag
+@handle_frontend_test(
+    fn_tree="jax.numpy.imag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_value=-20,
+        max_value=20,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_imag(
+    *,
+    dtype_and_x,
+    test_flags,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        input=x[0],
+    )
 
 
 # add
