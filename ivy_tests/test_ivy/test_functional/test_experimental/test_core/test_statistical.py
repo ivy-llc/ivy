@@ -7,6 +7,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
+    _get_castable_dtype,
 )
 
 
@@ -593,4 +594,76 @@ def test_cov(
         return_flat_np_arrays=True,
         rtol_=1e-2,
         atol_=1e-2,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.cummax",
+    dtype_x_axis_castable=_get_castable_dtype(),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+)
+def test_cummax(
+    *,
+    dtype_x_axis_castable,
+    exclusive,
+    reverse,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        dtype=castable_dtype,
+        rtol_=1e-1,
+        atol_=1e-1,
+    )
+
+    # cummin
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.cummin",
+    dtype_x_axis_castable=_get_castable_dtype(),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+)
+def test_cummin(
+    *,
+    dtype_x_axis_castable,
+    exclusive,
+    reverse,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=[input_dtype],
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+        dtype=castable_dtype,
+        rtol_=1e-1,
+        atol_=1e-1,
     )

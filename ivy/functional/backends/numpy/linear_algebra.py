@@ -378,21 +378,21 @@ def vector_norm(
 ) -> np.ndarray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
-
-    ret_scalar = False
-    if x.ndim == 0:
-        x = np.expand_dims(x, 0)
-        ret_scalar = True
-
-    if axis is None:
-        x = x.reshape([-1])
-    elif isinstance(axis, list):
+    abs_x = np.abs(x)
+    if isinstance(axis, list):
         axis = tuple(axis)
-
-    np_normalized_vector = np.linalg.norm(x, ord, axis, keepdims)
-    if ret_scalar:
-        np_normalized_vector = np.squeeze(np_normalized_vector)
-    return np_normalized_vector
+    if ord == 0:
+        return np.sum(
+            (abs_x != 0).astype(abs_x.dtype), axis=axis, keepdims=keepdims, out=out
+        )
+    elif ord == inf:
+        return np.max(abs_x, axis=axis, keepdims=keepdims, out=out)
+    elif ord == -inf:
+        return np.min(abs_x, axis=axis, keepdims=keepdims, out=out)
+    else:
+        return (
+            np.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
+        ).astype(abs_x.dtype)
 
 
 # Extra #
