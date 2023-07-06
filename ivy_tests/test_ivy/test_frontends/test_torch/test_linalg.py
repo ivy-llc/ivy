@@ -1267,32 +1267,14 @@ def generate_hermitian_matrix():
     hermitian_matrix = st.just(np.zeros((size, size), dtype=np.complex128)).filter(is_hermitian).example()
     return hermitian_matrix
     
-@handle_frontend_test(
-    fn_tree="torch.linalg.ldl_factor_ex",
-    dtype_and_input=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes("float")),
-)
-def test_torch_ldl_factor_ex(
-    *,
-    dtype_and_input,
-    frontend,
-    fn_tree,
-    on_device,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    test_flags.num_positional_args = 1
-    
-    # Generate the hermitian argument
-    hermitian = generate_hermitian_matrix()
-    
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_flags=test_flags,
-        x=x[0],
-        hermitian=hermitian,
-    )
+@given(matrix=st.arrays(shape=st.tuples(st.integers(min_value=1, max_value=5), st.integers(min_value=1, max_value=5)), dtype=complex))
+def test_ldl_factor_ex(matrix):
+    # Convert matrix to Ivy tensor
+    ivy_matrix = ivy.array(np.array(matrix))
+
+    # Perform LDL factorization
+    ld, pivots, info = ldl_factor_ex(ivy_matrix, hermitian=True, check_errors=True)
+
+    # Assert the properties of LD and pivots
+    assert check_ld_pivots(ld, pivots)
 
