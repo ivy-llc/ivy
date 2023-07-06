@@ -4,7 +4,7 @@
 # global
 
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
@@ -82,9 +82,6 @@ def test_concat(
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="value_shape"),
-        min_size=1,
-        max_size=1,
-        force_int=True,
     ),
 )
 def test_expand_dims(
@@ -98,17 +95,22 @@ def test_expand_dims(
     ground_truth_backend,
 ):
     dtype, value = dtype_value
-
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        x=value[0],
-        axis=axis,
-    )
+    try:
+        helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype,
+            test_flags=test_flags,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            x=value[0],
+            axis=axis,
+        )
+    # ToDo: fix `get_axis`; `unique=True` does not always work
+    except (ValueError, Exception) as e:
+        if "repeated axis" in str(e):
+            assume(False)
+        raise e
 
 
 # flip
