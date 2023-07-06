@@ -855,10 +855,11 @@ def test_jax_arcsin(
     fn_tree="jax.numpy.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        force_int_axis=True,
+        num_arrays = 2
         min_num_dims=1,
         valid_axis=True,
     ),
+    edge_order=st.integers(min_value=1,max_value=2)
 )
 def test_jax_gradient(
     *,
@@ -867,6 +868,7 @@ def test_jax_gradient(
     on_device,
     fn_tree,
     frontend,
+    edge_order
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
@@ -876,7 +878,9 @@ def test_jax_gradient(
         fn_tree=fn_tree,
         on_device=on_device,
         f=x[0],
-        axis=axis
+        varargs=x[1],
+        axis=axis,
+        edge_order=edge_order
     )
 
 
