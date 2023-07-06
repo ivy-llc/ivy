@@ -1079,17 +1079,9 @@ def array_indices_put_along_axis(
         If False, the strategy may produce out-of-bounds indices.
     values
         Custom values array to use instead of randomly generated values.
-<<<<<<< HEAD
-        Defaults to None.
-    values_dtypes : Union[None, List[str]]
-        A list of dtypes for the values parameter.
-        The function will use the dtypes returned by
-        'get_dtypes("valid")'.
-=======
     values_dtypes : Union[None, List[str]]
         A list of dtypes for the values parameter. The function will use the dtypes
         returned by 'get_dtypes("valid")'.
->>>>>>> master
 
     Returns
     -------

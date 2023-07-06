@@ -1288,8 +1288,6 @@ def test_paddle_erf(
     test_flags,
     fn_tree,
     on_device,
-<<<<<<< HEAD
-=======
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1341,7 +1339,6 @@ def test_paddle_sgn(
     fn_tree,
     frontend,
     test_flags,
->>>>>>> master
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
