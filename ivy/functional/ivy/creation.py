@@ -188,15 +188,18 @@ def asarray_infer_dtype(fn: Callable) -> Callable:
             dtype_list = _flatten_nest(dtype_list)
             # keep unique dtypes
             dtype_list = list(set(dtype_list))
-            # promote all dtypes to a single dtype
-            dtype = dtype_list[0]
-            # we disable precise mode to avoid wider than necessary casting
-            # that might result from the mixing of int32 and float32
-            with ivy.PreciseMode(False):
-                for dt in dtype_list[1:]:
-                    dtype = ivy.promote_types(dtype, dt)
+            if len(dtype_list) != 0:  # handle the case of empty input
+                # promote all dtypes to a single dtype
+                dtype = dtype_list[0]
+                # we disable precise mode to avoid wider than necessary casting
+                # that might result from the mixing of int32 and float32
+                with ivy.PreciseMode(False):
+                    for dt in dtype_list[1:]:
+                        dtype = ivy.promote_types(dtype, dt)
+            else:
+                dtype = ivy.default_float_dtype()
             dtype = ivy.as_native_dtype(dtype)
-        # call the function with device provided explicitly
+        # call the function with dtype provided explicitly
         return fn(*args, dtype=dtype, **kwargs)
 
     _asarray_infer_dtype.infer_dtype = True
