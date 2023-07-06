@@ -96,3 +96,32 @@ def test_paddle_argsort(
         axis=axis,
         descending=descending,
     )
+
+
+# nonzero
+@handle_frontend_test(
+    fn_tree="paddle.nonzero",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    as_tuple=st.booleans(),
+)
+def test_paddle_nonzero(
+    *,
+    dtype_and_values,
+    as_tuple,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        as_tuple=as_tuple,
+    )

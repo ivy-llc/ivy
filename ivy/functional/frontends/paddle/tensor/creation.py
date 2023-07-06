@@ -120,6 +120,19 @@ def triu(x, diagonal=0, name=None):
     {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+
+def diagflat(x, offset=0, name=None):
+    arr = ivy.diagflat(x, offset=offset)
+    return arr
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    return ivy.meshgrid(*args, indexing="ij")
+
 def diag(x, offset=0, padding_value=0, name=None):
     d_x = None
     if len(x.shape) == 1:
@@ -133,3 +146,6 @@ def diag(x, offset=0, padding_value=0, name=None):
         else:
             d_x = ivy.diag(x, k=offset)
     return d_x
+  
+  
+  
