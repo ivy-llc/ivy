@@ -37,7 +37,7 @@ This is the main purpose of the wrapping, to avoid code duplication which would 
 
 Depending on the function being wrapped, the new function might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
-Our test decorators actually transforms to :code:`@given` decorators at PyTets collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+Our test decorators actually transforms to :code:`@given` decorators at Pytest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
 
 - Decorator order
 
