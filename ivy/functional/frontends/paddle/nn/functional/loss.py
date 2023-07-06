@@ -106,17 +106,20 @@ def cosine_embedding_loss(
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def smooth_l1_loss(
-        input,
-        label,
-        reduction='mean',
-        delta=1.0,
-        name=None,
+    input,
+    label,
+    reduction="mean",
+    delta=1.0,
+    name=None,
 ):
     sum_diff = ivy.abs(input - label).astype(label.dtype)
     condition = sum_diff <= delta
-    out = ivy.where(condition, 0.5 * ivy.pow(ivy.abs(input - label), 2).astype(label.dtype),
-                    (delta * ivy.abs(ivy.abs(input - label))).astype(label.dtype)
-                    - (0.5 * ivy.pow(delta, 2)).astype(label.dtype))
+    out = ivy.where(
+        condition,
+        0.5 * ivy.pow(ivy.abs(input - label), 2).astype(label.dtype),
+        (delta * ivy.abs(ivy.abs(input - label))).astype(label.dtype)
+        - (0.5 * ivy.pow(delta, 2)).astype(label.dtype),
+    )
     if reduction == "none":
         pass
     elif reduction == "mean":

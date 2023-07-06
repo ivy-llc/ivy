@@ -156,9 +156,11 @@ def test_paddle_cosine_embedding_loss(
         reduction=reduction,
     )
 
+
+# smooth_l1_loss
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.smooth_l1_loss",
-    dtype_and_x = helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
@@ -174,13 +176,7 @@ def test_paddle_cosine_embedding_loss(
     reduction=st.sampled_from(["mean", "sum", "none"]),
 )
 def test_paddle_smooth_l1_loss(
-        dtype_and_x,
-        delta,
-        reduction,
-        on_device,
-        fn_tree,
-        frontend,
-        test_flags
+    dtype_and_x, delta, reduction, on_device, fn_tree, frontend, test_flags
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -194,5 +190,3 @@ def test_paddle_smooth_l1_loss(
         reduction=reduction,
         delta=delta,
     )
-
-
