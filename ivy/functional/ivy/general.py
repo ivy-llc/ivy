@@ -2911,13 +2911,6 @@ def _query_to_indices(query):
         for idx in query
     ]
     grid = ivy.meshgrid(*mesh, indexing="ij")
-    # unique_grid = []
-    # for i, item in enumerate(grid):
-    #     if not any(ivy.all(arr == item) for j, arr in enumerate(unique_grid) if i != j):
-    #         unique_grid.append(item)
-    # grid = unique_grid
-    # max_ndim = max(arr.ndim for arr in mesh)
-    # grid = ivy.reshape(grid, max_shape)
     to_squeeze = []
     for i, g in enumerate(grid):
         if mesh[i].shape == ():
