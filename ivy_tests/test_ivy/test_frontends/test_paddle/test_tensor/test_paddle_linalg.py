@@ -657,3 +657,76 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         atol=1e-5,
         p=p,
     )
+
+
+# dot
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.dot",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_num_dims=1,
+        max_num_dims=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_dot(
+    *,
+    dtype_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# transpose
+@st.composite
+def _transpose_helper(draw):
+    dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            ret_shape=True,
+        )
+    )
+    perm = draw(st.permutations([i for i in range(len(shape))]))
+    return dtype, x, perm
+
+
+@handle_frontend_test(
+    fn_tree="paddle.transpose",
+    dtype_and_x_perm=_transpose_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_transpose(
+    dtype_and_x_perm,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x, perm = dtype_and_x_perm
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        perm=perm,
+    )
