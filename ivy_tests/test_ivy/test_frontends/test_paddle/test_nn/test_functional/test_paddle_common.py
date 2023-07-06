@@ -186,3 +186,40 @@ def test_paddle_zeropad2d(
         padding=padding,
         data_format=dataformat,
     )
+
+
+# Dropout3d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.dropout3d",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=5,
+        max_num_dims=5,
+    ),
+    p=st.floats(min_value=0.0, max_value=1.0),
+    training=st.booleans(),
+    data_format=st.sampled_from(["NCDHW", "NDHWC"]),
+)
+def test_paddle_dropout3d(
+    *,
+    d_type_and_x,
+    p,
+    training,
+    data_format,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        p=p,
+        training=training,
+        data_format=data_format,
+    )
