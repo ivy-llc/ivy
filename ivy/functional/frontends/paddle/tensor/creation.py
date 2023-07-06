@@ -116,59 +116,20 @@ def triu(x, diagonal=0, name=None):
     return ivy.triu(x, k=diagonal)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def diag(x, offset=0, padding_value=0, name=None):
-    print("===============================================")
-    print("Input Values: ")
-    print("x: ", x)
-    print("ivy.dtype(x): ", ivy.dtype(x))
-    print("offset: ", offset)
-    print("padding_value: ", padding_value)
-    print("x.shape: ", x.shape)
-    print("-----------------------------------------------")
-    try:
-        # x=ivy.array([[0]])
-        # offset=2
-        # padding_value=0
-
-        d_x = None
-        if len(x.shape) == 1:
-            padding_value = ivy.astype(padding_value, ivy.dtype(x))
-            d_x = ivy.diagflat(x, offset=offset, padding_value=padding_value)
-            print("Done: ivy.diagflat(x, offset=offset, padding_value=padding_value)")
-            print("diagflat value is:", d_x)
-            print("d_x: ", d_x)
-            if len(d_x.shape) != 2:
-                d_x = ivy.reshape(d_x, (1, 1))
-                print("reshaped d_x: ", d_x)
+    d_x = None
+    if len(x.shape) == 1:
+        padding_value = ivy.astype(padding_value, ivy.dtype(x))
+        d_x = ivy.diagflat(x, offset=offset, padding_value=padding_value)
+        if len(d_x.shape) != 2:
+            d_x = ivy.reshape(d_x, (1, 1))
+    else:
+        if offset > (x.shape[1] - 1):
+            d_x = ivy.array([], dtype=ivy.dtype(x))
         else:
-            if offset > (x.shape[1] - 1):
-                d_x = ivy.array([], dtype=ivy.dtype(x))
-                print("Done: d_x = ivy.array([])")
-                print("d_x: ", d_x)
-            else:
-                d_x = ivy.diag(x, k=offset)
-                print("Done: ivy.diag(x, k=offset)")
-                print("d_x: ", d_x)
-        return d_x
-    except Exception as e:
-        print("All Mighty Error: ", e)
-        return None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            d_x = ivy.diag(x, k=offset)
+    return d_x
