@@ -1101,73 +1101,22 @@ def nested_map(
     >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list, dict))
     [[2, 4], (6, 8), {'a': 5, 'b': 6}]
 
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - The to_ignore parameter allows specifying types to be ignored when deciding
-          whether to go deeper into the nest or not.
-        - By default, no types are ignored, and all nested types are recursively mapped.
-        - Providing types in to_ignore prevents the function from recursively
-          mapping those types and stops the recursion at that level.
-
     >>> nest = [[1, 2], {'a': [3, 4]}, 'hello']
     >>> ivy.nested_map(lambda x: x * 2, nest, extra_nest_types=(dict,))
     [[2, 4], {'a': [6, 8]}, 'hello']
-
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - The extra_nest_types parameter allows specifying additional types to
-          recursively check when deciding whether to go deeper into the nest or not.
-        - By default, only the base types (list, tuple, and dict) are
-          recursively checked.
-        - Providing extra types allows customizing the recursive behavior for
-          specific types not handled by default.
 
     >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
     >>> ivy.nested_map(lambda x: x * 2, nest, include_derived=True)
     [[2, 4], (6, 8), {'a': 10, 'b': 12}]
 
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - If include_derived is True, the mapping is applied not only to the
-          base types (list, tuple, dict) but also to classes derived from them.
-        - By default, the mapping is limited to the base types (list, tuple, dict)
-          and does not apply to derived classes.
-
     >>> ivy.nested_map(lambda x: x * 2, [[1, 2], [3, 4], [5, 6]], max_depth=1)
     [[2, 4], [6, 8], [10, 12]]
 
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - If max_depth is None, there is no limit on the nested depth.
-        - If max_depth is set to an integer value, the mapping stops when the
-          maximum depth is reached.
-
-    >>> ivy.nested_map(lambda x: x * 2, [[1, 2], [3, 4], [5, 6]], to_mutable=True)
-    [[2, 4], [6, 8], [10, 12]]
-
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - If to_mutable is True, the nested iterable is converted to a mutable form
-          (list if to_mutable=True, tuple if to_mutable=False).
-        - By default, the nested iterable is returned as an immutable tuple.
-
-    >>> nest = [[1, 2], [3, 4], [5, 6]]
-    >>> ivy.nested_map(lambda x: x * 2, nest, shallow=True)
-    >>> nest
-    [[2, 4], [6, 8], [10, 12]]
-
-    Note:
-        - The function should be a callable that takes one argument.
-        - The iterable should be a nested iterable, such as a list of lists.
-        - If shallow is True, the input nested iterable is updated in-place with
-          the mapped values.
-        - The shallow parameter only works if the nested iterable is a mutable type
-          (e.g., list) and has no effect on immutable types (e.g., tuple).
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(nest, function, to_mutable = True)
+    >>> print(nest)
+    [[24, 25, 1338], [64, 99, 7]]
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
