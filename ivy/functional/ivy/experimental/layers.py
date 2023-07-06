@@ -333,6 +333,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -400,6 +401,7 @@ def avg_pool2d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -2251,7 +2253,9 @@ avg_pool2d.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2332,6 +2336,15 @@ def reduce_window(
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
+
+
+reduce_window.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
