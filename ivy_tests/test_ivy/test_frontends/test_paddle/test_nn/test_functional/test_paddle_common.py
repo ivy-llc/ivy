@@ -137,31 +137,45 @@ def test_paddle_dropout(
 
 
 # zeropad2d
+@st.composite
+def _zero2pad(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            ret_shape=True,
+            min_num_dims=4,
+            max_num_dims=4,
+            min_value=-100,
+            max_value=100,
+        )
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    padding = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=min_dim),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    return dtype, input, padding
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.zeropad2d",
-    d_type_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        shared_dtype=True,
-        min_value=2,
-        max_value=5,
-        min_dim_size=2,
-        shape=(4, 4),
-        data_format=st.sampled_from(["NCHW", "NHWC"]),
-        padding=st.tuples(int, int, int, int),
-    ),
+    d_type_and_x_paddings=_zero2pad(),
+    dataformat=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_zeropad2d(
     *,
-    d_type_and_x,
+    d_type_and_x_paddings,
     on_device,
     fn_tree,
     frontend,
     test_flags,
-    padding,
     dataformat,
 ):
-    dtype, x = d_type_and_x
+    dtype, x, padding = d_type_and_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -170,5 +184,5 @@ def test_paddle_zeropad2d(
         on_device=on_device,
         x=x[0],
         padding=padding,
-        dataformat=dataformat,
+        data_format=dataformat,
     )
