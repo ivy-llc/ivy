@@ -27,7 +27,7 @@ def dev(
             dv = dv.type
         if torch.cuda.is_available():
             return torch.device(dv.replace("gpu", "cuda"))
-        elif hasattr(torch.backends, 'mps'):
+        elif hasattr(torch.backends, "mps"):
             if torch.backends.mps.is_available():
                 return torch.device(dv.replace("gpu", "mps"))
     return as_ivy_dev(dv)
@@ -75,7 +75,7 @@ def as_native_dev(
 ) -> Optional[torch.device]:
     if not isinstance(device, str):
         return device
-    if device == "cuda":     
+    if device == "cuda":
         return torch.device(ivy.Device(device).replace("gpu", "cuda"))
     elif device == "mps":
         return torch.device(ivy.Device(device).replace("gpu", "mps"))
@@ -96,10 +96,9 @@ def num_gpus() -> int:
 def device_is_available() -> bool:
     gpu_available = torch.cuda.is_available()
     mps_available = False
-    if hasattr(torch.backends, 'mps'):
+    if hasattr(torch.backends, "mps"):
         mps_available = torch.backends.mps.is_available()
     return gpu_available or mps_available
-
 
 
 # noinspection PyUnresolvedReferences
