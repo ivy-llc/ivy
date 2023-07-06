@@ -169,7 +169,9 @@ def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
 
 
+
 @with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
 @to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0, name=None):
     return ivy.bincount(x, weights=weights, minlength=minlength)
+

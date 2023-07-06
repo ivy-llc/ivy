@@ -731,7 +731,6 @@ def test_paddle_transpose(
         perm=perm,
     )
 
-
 # bincount
 @handle_frontend_test(
     fn_tree="paddle.bincount",
@@ -768,3 +767,4 @@ def test_paddle_bincount(
         weights=None,
         minlength=0,
     )
+
