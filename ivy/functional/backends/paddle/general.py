@@ -389,6 +389,9 @@ def scatter_nd(
     elif reduction == "max":
         updates = ivy.maximum(ivy.gather_nd(target, indices), updates)._data
         reduction = "replace"
+    if indices.ndim <= 1:
+        indices = ivy.expand_dims(indices, axis=0)._data
+        updates = ivy.expand_dims(updates, axis=0)._data
     if target.dtype in [
         paddle.int8,
         paddle.int16,
