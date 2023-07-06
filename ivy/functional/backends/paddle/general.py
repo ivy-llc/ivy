@@ -362,9 +362,9 @@ def scatter_nd(
         indices = paddle.reshape(indices, (-1, *ind_shape[1:]))
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
 
@@ -400,7 +400,8 @@ def scatter_nd(
     ]:
         if reduction == "replace":
             updates = paddle.subtract(
-                updates.cast("float32"), paddle.gather_nd(target.cast("float32"), indices)
+                updates.cast("float32"),
+                paddle.gather_nd(target.cast("float32"), indices),
             ).cast(target.dtype)
         if paddle.is_complex(target):
             result_real = paddle.scatter_nd_add(

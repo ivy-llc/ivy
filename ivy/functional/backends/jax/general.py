@@ -75,7 +75,7 @@ def get_item(
                 return jnp.expand_dims(x, 0)
         query, _ = _mask_to_index(query, x)
     elif isinstance(query, list):
-        query = (query, )
+        query = (query,)
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
@@ -367,9 +367,9 @@ def scatter_nd(
     )
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
 

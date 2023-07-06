@@ -2774,7 +2774,12 @@ def get_item(
     if to_squeeze:
         to_squeeze = [i for i in to_squeeze if ret.shape[i] == 1]
         ret = ivy.squeeze(ret, axis=to_squeeze) if to_squeeze else ret
-    if query.shape[0] == 1 and not mask_or_slices and 0 not in to_squeeze and len(ret.shape) > 1:
+    if (
+        query.shape[0] == 1
+        and not mask_or_slices
+        and 0 not in to_squeeze
+        and len(ret.shape) > 1
+    ):
         ret = ivy.squeeze(ret, axis=0)
     if copy:
         return ivy.copy_array(ret)
@@ -2866,15 +2871,23 @@ set_item.mixed_backend_wrappers = {
 
 def _parse_query(query, x_shape, allow_neg_step=True):
     query = (query,) if not isinstance(query, (tuple, list)) else query
-    query = _parse_ellipsis(query, len(x_shape)) if any(q is Ellipsis for q in query) else query
+    query = (
+        _parse_ellipsis(query, len(x_shape))
+        if any(q is Ellipsis for q in query)
+        else query
+    )
     ind_type = type(query)
-    query = list(query) if isinstance(query, tuple) else [query] if not isinstance(query, list) else query
+    query = (
+        list(query)
+        if isinstance(query, tuple)
+        else [query] if not isinstance(query, list) else query
+    )
     for i, idx in enumerate(query):
         s = x_shape[i]
         if isinstance(idx, slice):
             step = 1 if idx.step is None else idx.step
             if idx.start is None:
-                start = 0 if step >= 0 else s-1
+                start = 0 if step >= 0 else s - 1
             else:
                 start = idx.start
             start = start + s if start < 0 else start
@@ -2883,7 +2896,11 @@ def _parse_query(query, x_shape, allow_neg_step=True):
             else:
                 stop = idx.stop
             stop = stop + s if stop < 0 and idx.stop is not None else stop
-            query[i] = slice(start, stop, step) if step >= 0 or allow_neg_step else ivy.arange(start, stop, step).to_list()
+            query[i] = (
+                slice(start, stop, step)
+                if step >= 0 or allow_neg_step
+                else ivy.arange(start, stop, step).to_list()
+            )
         elif isinstance(idx, int):
             query[i] = idx + s if idx < 0 else idx
         elif isinstance(idx, (tuple, list)):
@@ -2926,7 +2943,7 @@ def _broadcast_to(input, target_shape):
         input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
         new_dims = ()
         i_i = len(input.shape) - 1
-        for i_t in range(len(target_shape)-1, -1, -1):
+        for i_t in range(len(target_shape) - 1, -1, -1):
             if len(input.shape) + len(new_dims) >= len(target_shape):
                 break
             if i_i < 0 or target_shape[i_t] != input.shape[i_i]:

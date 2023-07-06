@@ -5,6 +5,7 @@ import math
 from numbers import Number
 from operator import mul
 from typing import Optional, Union, Sequence, Callable, List, Tuple
+
 try:
     import functorch
 except ImportError:
@@ -373,9 +374,9 @@ def scatter_nd(
     )
 
     expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1]:])
+        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
         if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1]:])
+        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
 

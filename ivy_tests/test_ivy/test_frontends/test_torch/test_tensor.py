@@ -2,7 +2,6 @@
 import pytest
 from types import SimpleNamespace
 import numpy as np
-import math
 
 from ivy_tests.test_ivy.test_frontends.test_torch.test_comparison_ops import (
     _topk_helper,

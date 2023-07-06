@@ -1372,9 +1372,9 @@ def test_tensorflow_instance_pow(
 
 def _check_query(query):
     # True if tensorflow supports this type
-    return (
-        not isinstance(query, list) and
-        not (isinstance(query, np.ndarray) and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0)))
+    return not isinstance(query, list) and not (
+        isinstance(query, np.ndarray)
+        and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0))
     )
 
 
@@ -1385,7 +1385,13 @@ def _check_query(query):
     method_name="__getitem__",
     dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
-    ).filter(lambda x: all(_check_query(i) for i in x[-1]) if isinstance(x[-1], tuple) else _check_query(x[-1]))
+    ).filter(
+        lambda x: (
+            all(_check_query(i) for i in x[-1])
+            if isinstance(x[-1], tuple)
+            else _check_query(x[-1])
+        )
+    ),
 )
 def test_tensorflow_instance_getitem(
     dtype_x_index,

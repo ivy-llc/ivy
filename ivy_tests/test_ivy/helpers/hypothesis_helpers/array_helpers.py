@@ -1842,7 +1842,7 @@ def dtype_array_query(
                 shape=mask_shape,
             ).filter(lambda x: np.sum(x) > 0)
         )
-        return dtype+["bool"], array, index
+        return dtype + ["bool"], array, index
     supported_index_types = ["int", "slice", "list", "array"]
     index_types = draw(
         st.lists(
@@ -1870,7 +1870,7 @@ def dtype_array_query(
                     max_value=s - 1,
                     min_num_dims=0,
                     max_num_dims=1,
-                    dtype=['int64'],
+                    dtype=["int64"],
                 )
             )
             new_index = new_index[0]
@@ -1890,11 +1890,7 @@ def dtype_array_query(
                 ),
                 (
                     draw(st.integers(min_value=1, max_value=s))
-                    if (
-                        0
-                        if start is None
-                        else s + start if start < 0 else start
-                    )
+                    if (0 if start is None else s + start if start < 0 else start)
                     < (s - 1 if end is None else s + end if end < 0 else end)
                     else (
                         draw(st.integers(max_value=-1, min_value=-s))
@@ -1914,7 +1910,7 @@ def dtype_array_query(
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
-    return dtype+['int64']*index_types.count("array"), array, index
+    return dtype + ["int64"] * index_types.count("array"), array, index
 
 
 @st.composite
@@ -1943,7 +1939,7 @@ def dtype_array_query_val(
     real_shape = x[query].shape
     assume(math.prod(real_shape) > 0)
     if len(real_shape):
-        val_shape = real_shape[draw(st.integers(0, len(real_shape))):]
+        val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
     else:
         val_shape = real_shape
     val_dtype, val = draw(
@@ -1954,7 +1950,9 @@ def dtype_array_query_val(
             small_abs_safety_factor=2,
         )
     )
-    val_dtype = draw(helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x))[-1]
+    val_dtype = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+    )[-1]
     val = val[0].astype(val_dtype)
     return input_dtype + [val_dtype], x, query, val
 
