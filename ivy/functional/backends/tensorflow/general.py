@@ -15,7 +15,6 @@ import tensorflow as tf
 # local
 import ivy
 from ivy.functional.ivy.gradients import _is_variable
-from ivy.functional.ivy.general import _parse_ellipsis, _broadcast_to, _parse_query
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ...ivy.general import _broadcast_to
@@ -46,87 +45,6 @@ def container_types():
 
 def current_backend_str() -> str:
     return "tensorflow"
-
-
-# tensorflow does not support uint indexing
-@with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
-def get_item(
-    x: Union[tf.Tensor, tf.Variable], /, query: tf.Tensor, *, copy: bool = None
-) -> Union[tf.Tensor, tf.Variable]:
-    if copy:
-        x = tf.identity(x)
-    if not ivy.is_array(query) and not isinstance(query, np.ndarray):
-        return x.__getitem__(query)
-    dtype = ivy.dtype(query, as_native=True)
-    if dtype is tf.bool:
-        if not len(query.shape):
-            if not query:
-                return tf.constant([], shape=(0,), dtype=x.dtype)
-            else:
-                return tf.expand_dims(x, 0)
-        return tf.boolean_mask(x, query)
-    # ToDo tf.int16 is listed as supported, but it fails
-    # temporary fix till issue is fixed by TensorFlow
-    if dtype in [tf.int8, tf.int16]:
-        query = tf.cast(query, tf.int32)
-    return tf.gather(x, query)
-
-
-def set_item(
-    x: Union[tf.Tensor, tf.Variable],
-    query: Union[tf.Tensor, tf.Variable, Tuple],
-    val: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> Union[tf.Tensor, tf.Variable]:
-    val = tf.cast(val, x.dtype)
-
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if query.shape != x.shape:
-            if len(query.shape) > len(x.shape):
-                raise ivy.exceptions.IvyException("too many indices")
-            elif not len(query.shape):
-                query = tf.broadcast_to(query, (x.shape[0],))
-        expected_shape = tf.boolean_mask(x, query).shape
-        query = tf.where(query)
-    elif query == () or (
-        query is Ellipsis
-        or (isinstance(query, (tuple, list)) and query == (Ellipsis,))
-        or (isinstance(query, slice) and query is slice(None, None, None))
-    ):
-        return val
-    else:
-        query = (query,) if not isinstance(query, (tuple, list)) else query
-        query = _parse_ellipsis(query, len(x.shape)) if Ellipsis in query else query
-        query = _parse_query(query, x.shape)
-        query = tf.stack(
-            [
-                tf.reshape(value, -1)
-                for value in tf.meshgrid(
-                    *[
-                        (
-                            tf.range(idx.start, idx.stop, idx.step)
-                            if isinstance(idx, slice)
-                            else tf.constant([idx % s])
-                        )
-                        for s, idx in zip(x.shape, query)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            axis=-1,
-        )
-        expected_shape = ivy.gather_nd(x, query).shape
-
-    val = _broadcast_to(val, expected_shape)._data
-
-    res = tf.tensor_scatter_nd_update(x, query, val)
-    if not copy:
-        return ivy.inplace_update(x, res)
-    return res
 
 
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:

@@ -16,7 +16,7 @@ import torch
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, _update_torch_views
 from . import backend_version, is_variable
-from ...ivy.general import _parse_query, _numel, _broadcast_to
+from ...ivy.general import _broadcast_to
 
 torch_scatter = None
 
@@ -64,62 +64,6 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
-
-
-def get_item(
-    x: torch.Tensor,
-    /,
-    query: torch.Tensor,
-    *,
-    copy: bool = None,
-) -> torch.Tensor:
-    if copy:
-        x = torch.clone(x)
-    if not isinstance(query, torch.Tensor):
-        query = _parse_query(query, x.shape, allow_neg_step=False)
-        ret = x[query]
-        if hasattr(query, '__iter__'):
-            empty = 0
-            for i, q in enumerate(query):
-                if (isinstance(q, slice) and q.start == q.stop) or \
-                        (isinstance(query, torch.Tensor) and not _numel(query.shape)) or \
-                        (hasattr(q, '__len__') and not len(q)):
-                    if empty > 0:
-                        if i >= len(ret.shape):
-                            ret = ret.reshape(ret.shape + (0,))
-                        else:
-                            ret = ret.reshape(ret.shape[:i + 1] + (0,) + ret.shape[i:])
-                    empty += 1
-        return ret
-    elif query.dtype == torch.bool:
-        if not len(query.shape):
-            if not query:
-                return torch.tensor([], dtype=x.dtype)
-            return torch.unsqueeze(x, 0)
-    else:
-        query = query.to(torch.int64)
-    return x[query]
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
-def set_item(
-    x: torch.Tensor,
-    query: Union[torch.Tensor, Tuple],
-    val: torch.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> torch.Tensor:
-    x = x.detach()
-    if copy:
-        x = torch.clone(x)
-    val = val.to(x.dtype)
-    if not isinstance(query, torch.Tensor):
-        query = _parse_query(query, x.shape, allow_neg_step=False)
-    elif query.dtype != torch.bool:
-        return x.__setitem__(query.to(torch.int64), val)
-    x[query] = val
-    return x
 
 
 def to_numpy(

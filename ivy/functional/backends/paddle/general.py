@@ -9,7 +9,7 @@ import multiprocessing as _multiprocessing
 # local
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
-from ivy.functional.ivy.general import _parse_ellipsis, _broadcast_to, _parse_query
+from ivy.functional.ivy.general import _broadcast_to
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -30,123 +30,6 @@ def container_types():
 
 def current_backend_str() -> str:
     return "paddle"
-
-
-def get_item(
-    x: paddle.Tensor,
-    /,
-    query: Union[paddle.Tensor, Tuple],
-    *,
-    copy: bool = None,
-) -> paddle.Tensor:
-    if copy:
-        x = paddle.clone(x)
-
-    if not isinstance(query, paddle.Tensor):
-        x_dtype = x.dtype
-        if x_dtype in [paddle.int8, paddle.int16, paddle.uint8, paddle.float16]:
-            x = x.cast("float32")
-        ret = x.__getitem__(query)
-        if hasattr(query, '__iter__'):
-            to_squeeze = [i if i < len(ret.shape) else -1 for i, q in enumerate(query) if isinstance(q, Number)]
-            if len(to_squeeze):
-                ret = ret.squeeze(axis=to_squeeze)
-            if Ellipsis in query:
-                ellipsis_index = query.index(Ellipsis)
-                if ellipsis_index >= len(ret.shape):
-                    ret = ret.unsqueeze(axis=-1)
-                else:
-                    ret = ret.unsqueeze(axis=ellipsis_index)
-        ret_numel = functools.reduce(mul, ret.shape) if len(ret.shape) > 0 else 0
-        if (
-            isinstance(query, Number)
-            or (
-                isinstance(query, tuple)
-                and all(isinstance(index, int) for index in query)
-            )
-        ) and ret_numel == 1:
-            ret = ret.squeeze(axis=-1)
-        if ret.dtype != x_dtype:
-            return ret.cast(x_dtype)
-        return ret
-
-    if query.dtype == paddle.bool:
-        if not len(query.shape):
-            if not query:
-                return paddle.to_tensor([], dtype=x.dtype)
-            else:
-                return ivy.expand_dims(x, axis=0)._data
-
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            return paddle.complex(
-                x.real().__getitem__(query), x.imag().__getitem__(query)
-            )
-        return x.cast("float32").__getitem__(query).cast(x.dtype)
-    return x.__getitem__(query)
-
-
-def set_item(
-    x: paddle.Tensor,
-    query: Union[paddle.Tensor, Tuple],
-    val: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = False,
-) -> paddle.Tensor:
-    val = paddle.to_tensor(val, dtype=x.dtype)
-
-    if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        if query.shape != x.shape:
-            if len(query.shape) > len(x.shape):
-                raise ivy.exceptions.IvyException("too many indices")
-            elif not len(query.shape):
-                query = ivy.broadcast_to(query, (x.shape[0],))._data
-        expected_shape = x[query].shape
-        query = paddle.where(query)
-    elif query == () or (
-        query is Ellipsis
-        or (isinstance(query, (tuple, list)) and query == (Ellipsis,))
-        or (isinstance(query, slice) and query is slice(None, None, None))
-    ):
-        return val
-    else:
-        query = (query,) if not isinstance(query, (tuple, list)) else query
-        query = _parse_ellipsis(query, len(x.shape)) if Ellipsis in query else query
-        query = _parse_query(query, x.shape)
-        query = paddle_backend.stack(
-            [
-                paddle.reshape(value, (-1,))
-                for value in paddle_backend.meshgrid(
-                    *[
-                        (
-                            paddle.arange(idx.start, idx.stop, idx.step)
-                            if isinstance(idx, slice)
-                            else paddle.to_tensor([idx % s])
-                        )
-                        for s, idx in zip(x.shape, query)
-                    ],
-                    indexing="ij",
-                )
-            ],
-            axis=-1,
-        )
-        expected_shape = ivy.gather_nd(x, query).shape
-
-    val = _broadcast_to(val, expected_shape)._data
-
-    ret = _scatter_nd_replace(x, query, val, reduce="assign")
-    if not copy:
-        return ivy.inplace_update(x, ret)
-    return ret
 
 
 def to_numpy(
