@@ -489,3 +489,41 @@ def test_paddle_meshgrid(
         on_device=on_device,
         **args,
     )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="paddle.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
+    k=helpers.ints(min_value=-24, max_value=24),
+    p=st.one_of(
+        helpers.ints(min_value=-50, max_value=50),
+        helpers.floats(min_value=-50, max_value=50),
+    ),
+)
+def test_paddle_diag(
+    dtype_and_x,
+    k,
+    p,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=k,
+        padding_value=p,
+    )

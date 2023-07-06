@@ -131,3 +131,22 @@ def diagflat(x, offset=0, name=None):
 @to_ivy_arrays_and_back
 def meshgrid(*args, **kwargs):
     return ivy.meshgrid(*args, indexing="ij")
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def diag(x, offset=0, padding_value=0, name=None):
+    d_x = None
+    if len(x.shape) == 1:
+        padding_value = ivy.astype(padding_value, ivy.dtype(x))
+        d_x = ivy.diagflat(x, offset=offset, padding_value=padding_value)
+        if len(d_x.shape) != 2:
+            d_x = ivy.reshape(d_x, (1, 1))
+    else:
+        if offset > (x.shape[1] - 1):
+            d_x = ivy.array([], dtype=ivy.dtype(x))
+        else:
+            d_x = ivy.diag(x, k=offset)
+    return d_x
