@@ -7,7 +7,7 @@ import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # noinspection PyProtectedMember
 from . import backend_version
@@ -446,3 +446,23 @@ def unstack(
     if keepdims:
         return [paddle_backend.expand_dims(r, axis=axis) for r in ret]
     return ret
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def put_along_axis(
+    arr: paddle.Tensor,
+    indices: paddle.Tensor,
+    values: Union[int, paddle.Tensor],
+    axis: int,
+    /,
+    *,
+    mode: str = "assign",
+) -> paddle.Tensor:
+    ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
+    return ret
+
+
+put_along_axis.partial_mixed_handler = (
+    lambda arr, indices, values, axis, mode, **kwargs: mode
+    in ["add", "assign", "mul", "multiply"]
+)

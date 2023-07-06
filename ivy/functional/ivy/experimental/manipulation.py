@@ -1773,6 +1773,16 @@ def put_along_axis(
     ivy.assign(out, arr)
 
 
+put_along_axis.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
 def _check_bounds(shape0, shape1, strides1, itemsize):
     numel0 = math.prod(shape0)
     ndim1 = len(shape1)

@@ -26,3 +26,17 @@ def is_nonzero(input):
 @to_ivy_arrays_and_back
 def is_complex(input):
     return ivy.is_complex_dtype(input)
+
+
+@to_ivy_arrays_and_back
+def scatter(input, dim, index, src, reduce=None):
+    return ivy.put_along_axis(input, index, src, dim, mode=reduce)
+
+
+@to_ivy_arrays_and_back
+def scatter_add(input, dim, index, src):
+    return ivy.put_along_axis(input, index, src, dim)
+
+
+def scatter_reduce(input, dim, index, src, reduce=None):
+    return ivy.put_along_axis(input, index, src, dim, mode=reduce)

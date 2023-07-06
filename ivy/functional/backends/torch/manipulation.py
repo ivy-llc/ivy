@@ -7,7 +7,7 @@ import torch
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
@@ -381,3 +381,29 @@ def unstack(
     if keepdims:
         return [r.unsqueeze(axis) for r in ret]
     return ret
+
+
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
+def put_along_axis(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    values: torch.Tensor,
+    axis: int,
+    /,
+    *,
+    mode: str = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if mode in ["add", "multiply"]:
+        ret = arr.scatter_(axis, indices, values, reduce=mode)
+    elif mode in ["sum", "prod", "mean", "amax", "amin"]:
+        ret = arr.scatter_reduce_(axis, indices, values, reduce=mode)
+    elif mode is None:
+        ret = arr.scatter_add_(axis, indices, values)
+    return ret
+
+
+put_along_axis.partial_mixed_handler = (
+    lambda arr, indices, values, axis, mode, **kwargs: mode
+    in ["sum", "prod", "mean", "amax", "amin"]
+)
