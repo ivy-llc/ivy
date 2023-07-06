@@ -399,6 +399,8 @@ def scatter_nd(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, _to_device(target))
     return _to_device(target)
 
 

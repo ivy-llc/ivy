@@ -486,7 +486,7 @@ def scatter_nd(
     updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
-    target = out
+    target = out._data
     target_given = ivy.exists(target)
     if not target_given:
         shape = list(shape) if ivy.exists(shape) else out.shape
@@ -526,13 +526,18 @@ def scatter_nd(
             result_imag = paddle.scatter_nd_add(
                 target.imag(), indices, updates.imag().cast(target.dtype)
             )
-            return paddle.complex(result_real, result_imag)
-        return paddle.scatter_nd_add(
-            target.cast("float32"), indices, updates.cast("float32")
-        ).cast(target.dtype)
-    if reduction == "replace":
-        updates = paddle.subtract(updates, paddle.gather_nd(target, indices))
-    return paddle.scatter_nd_add(target, indices, updates.cast(target.dtype))
+            ret = paddle.complex(result_real, result_imag)
+        else:
+            ret = paddle.scatter_nd_add(
+                target.cast("float32"), indices, updates.cast("float32")
+            ).cast(target.dtype)
+    else:
+        if reduction == "replace":
+            updates = paddle.subtract(updates, paddle.gather_nd(target, indices))
+        ret = paddle.scatter_nd_add(target, indices, updates.cast(target.dtype))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 def shape(

@@ -390,18 +390,21 @@ def scatter_nd(
         shape = list(shape) if ivy.exists(shape) else list(out.shape)
         target = tf.zeros(shape, dtype=updates.dtype)
     if reduction == "sum":
-        return tf.tensor_scatter_nd_add(target, indices, updates)
+        res = tf.tensor_scatter_nd_add(target, indices, updates)
     elif reduction == "min":
-        return tf.tensor_scatter_nd_min(target, indices, updates)
+        res = tf.tensor_scatter_nd_min(target, indices, updates)
     elif reduction == "max":
-        return tf.tensor_scatter_nd_max(target, indices, updates)
+        res = tf.tensor_scatter_nd_max(target, indices, updates)
     elif reduction == "replace":
-        return tf.tensor_scatter_nd_update(target, indices, updates)
+        res = tf.tensor_scatter_nd_update(target, indices, updates)
     else:
         raise ivy.utils.exceptions.IvyException(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 scatter_nd.support_native_out = True

@@ -489,7 +489,10 @@ def scatter_nd(
             out=flat_output.clone(),
             reduce=reduction,
         )
-    return torch.reshape(flat_scatter, list(shape))
+    res = torch.reshape(flat_scatter, list(shape))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res
 
 
 scatter_nd.support_native_out = True
