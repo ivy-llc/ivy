@@ -209,4 +209,3 @@ def elu(
 @to_ivy_arrays_and_back
 def mish(x, name=None):
     return ivy.mish(x)
-
