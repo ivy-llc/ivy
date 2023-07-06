@@ -157,7 +157,7 @@ def test_paddle_cosine_embedding_loss(
     )
 
 
-#log_loss
+# log_loss
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.log_loss",
     dtype_and_x=helpers.dtype_and_values(
