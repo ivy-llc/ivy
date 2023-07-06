@@ -266,7 +266,7 @@ class Tensor:
         "paddle",
     )
     def bitwise_not(self, out=None, name=None):
-        return ivy.bitwise_invert(self, out=out)
+        return ivy.bitwise_invert(self._ivy_array, out=out)
 
     @with_supported_dtypes(
         {
