@@ -218,8 +218,7 @@ def test_get_item(
     fn_tree="functional.ivy.set_item",
     ground_truth_backend="numpy",
     dtypes_x_query_val=helpers.dtype_array_query_val(
-        # ToDo: will work for "valid" once scatter_nd supports boolean inputs arrays
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     copy=st.booleans(),
     test_with_out=st.just(False),
