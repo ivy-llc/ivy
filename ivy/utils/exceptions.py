@@ -9,75 +9,24 @@ from IPython import get_ipython
 # Helpers #
 # ------- #
 
+def configure_stack_trace(traceback):
+    """
+    Configure the stack trace to be displayed in the console.
 
-def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer):
-    if trace_mode in ["frontend", "ivy"]:
-        buffer.write(
-            ("<stack trace is truncated to {} specific files, \n"
-            "call `ivy.set_exception_trace_mode('full')` to view the full trace>").format(trace_mode)
-        )
-
-    if not func_wrapper_trace_mode:
-        buffer.write(
-            ("<func_wrapper.py stack trace is squashed,\n"
-            "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>")
-        )
-
-
-def _write_new_stack_trace(
-    old_stack_trace, trace_mode, func_wrapper_trace_mode, buffer
-):
-    _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode, buffer)
-    new_stack_trace = []
-    for st in old_stack_trace:
-        if trace_mode == "full" and not func_wrapper_trace_mode:
-            if "func_wrapper.py" not in repr(st):
-                new_stack_trace.append(st)
+    Parameters
+    ----------
+    traceback
+        the traceback object
+    """
+    tb = traceback
+    while 1:
+        if not tb.tb_next:
+            break
+        frame = tb.tb_next.tb_frame
+        if frame.f_code.co_name in ['_handle_exceptions' ,'_handle_numpy_array_in_torch' ,'_handle_array_function', '_handle_exceptions','_handle_nestable', '_handle_out_argument', '_inputs_to_native_arrays', '_outputs_to_ivy_arrays']:
+            tb.tb_next = tb.tb_next.tb_next
         else:
-            if ivy.trace_mode_dict[trace_mode] in repr(st):
-                if not func_wrapper_trace_mode and "func_wrapper.py" in repr(st):
-                    continue
-                new_stack_trace.append(st)
-    buffer.write("".join(tb.format_list(new_stack_trace)))
-
-
-def _custom_exception_handle(type, value, tb_history):
-    trace_mode = ivy.exception_trace_mode
-    func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
-    buffer = io.StringIO()
-    if trace_mode == "none":
-        return
-    if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_tb(tb_history)))
-    else:
-        _write_new_stack_trace(
-            tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode, buffer
-        )
-        print(buffer.getvalue())
-    print(type.__name__ + ":", value)
-
-
-def _write_traceback_history(buffer):
-    trace_mode = ivy.exception_trace_mode
-    func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
-    if trace_mode == "none":
-        return
-    if trace_mode == "full" and func_wrapper_trace_mode:
-        buffer.write("".join(tb.format_tb(sys.exc_info()[2])))
-    else:
-        _write_new_stack_trace(
-            tb.extract_tb(sys.exc_info()[2]),
-            trace_mode,
-            func_wrapper_trace_mode,
-            buffer,
-        )
-    buffer.write(
-        "During the handling of the above exception, another exception occurred:\n"
-    )
-
-
-sys.excepthook = _custom_exception_handle
-
+            tb = tb.tb_next
 
 def _add_native_error(default):
     """
@@ -128,20 +77,8 @@ def _combine_messages(*messages, include_backend=True):
     # adding the native error as well if it exists and the trace mode is set to "full"
     default = _add_native_error(default)
     return delimiter.join(default)
+ 
 
-
-def is_notebook() -> bool:
-    try:
-        shell = get_ipython().__class__.__name__
-        if shell == 'ZMQInteractiveShell':
-            return True   # Jupyter notebook or qtconsole
-        elif shell == 'TerminalInteractiveShell':
-            return False  # Terminal running IPython
-        else:
-            return False  # Other type (?)
-    except NameError:
-        return False      # Probably standard Python interpreter
-    
 
 class IvyException(Exception):
     def __init__(self, *messages, include_backend=False):
@@ -224,63 +161,42 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         # Not to rethrow as IvyBackendException
         except IvyNotImplementedException as e:
+            configure_stack_trace(e.__traceback__)
             raise e
         except IvyError as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except IvyBroadcastShapeError as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except IvyDtypePromotionError as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyDtypePromotionError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (IndexError, IvyIndexError) as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyIndexError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (AttributeError, IvyAttributeError) as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyAttributeError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (ValueError, IvyValueError) as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyValueError(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:
-            buffer = io.StringIO()
-            _write_traceback_history(buffer)
-            value = buffer.getvalue()
-            buffer = io.StringIO()
-            # print('Is notebook: ', is_notebook())
+            configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, value + " " + str(e), include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
 
     _handle_exceptions.handle_exceptions = True
