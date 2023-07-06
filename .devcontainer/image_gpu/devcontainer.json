@@ -8,7 +8,7 @@
 				"ms-python.vscode-pylance"
 			],
 			"settings": {
-				"python.defaultInterpreterPath": "/opt/bin/miniconda/envs/multienv/bin/python3"
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
 			}
 		}
 	},
