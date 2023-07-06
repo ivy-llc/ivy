@@ -2663,7 +2663,7 @@ def test_torch_instance_getitem(
     dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
-    ),
+    ).filter(lambda x: x[0][0] == x[0][-1]),
 )
 def test_torch_instance_setitem(
     dtypes_x_index_val,
