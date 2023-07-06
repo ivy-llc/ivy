@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -116,11 +116,56 @@ def triu(x, diagonal=0, name=None):
     return ivy.triu(x, k=diagonal)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def diag(x, offset=0, padding_value=0, name=None):
-    d = ivy.diag(x, k=offset)
-    if len(x.shape) == 1:
-        if padding_value:
-            d_mask = ivy.eye(d.shape[0], k=offset)
-            d[d_mask] = padding_value
-    return d
+    print("===============================================")
+    print("Input Values: ")
+    print("x: ", x)
+    print("offset: ", offset)
+    print("padding_value: ", padding_value)
+    print("-----------------------------------------------")
+    try:
+        d_x = ivy.diag(x, k=offset)
+        print("Done: d_x = ivy.diag(x, k=offset)")
+        print("d_x: ", d_x)
+        if len(x.shape) == 1:
+            if padding_value:
+                print("d_x.shape: ", d_x.shape)
+                d_mask = ivy.eye(d_x.shape[0], k=offset, dtype=bool)
+                print("Done: d_mask = ivy.eye(d_x.shape[0], k=offset)")
+                print("d_mask: ", d_mask)
+                d_mask = ivy.logical_not(d_mask)
+                print("Done: d_mask = ivy.logical_not(d_mask)")
+                print("d_mask: ", d_mask)
+                print("d_mask.shape: ", d_mask.shape)
+                print("d_x.shape: ", d_x.shape)
+                print("padding_value: ", padding_value)
+                print("Done: d_x[d_mask]", d_x[d_mask])
+                if d_x.shape != d_mask.shape:
+                    print("shape is not equal!")
+                d_mask = ivy.reshape(d_mask, d_x.shape)
+                d_x[d_mask] = ivy.full(d_mask.shape, padding_value)
+                print("Done: d_x[d_mask] = padding_value")
+                print("d_x[d_mask]: ", d_x[d_mask])
+        return d_x
+    except Exception as e:
+        print("All Mighty Error: ", e)
+        return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
