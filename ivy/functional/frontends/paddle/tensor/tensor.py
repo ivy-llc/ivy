@@ -266,6 +266,13 @@ class Tensor:
         return ivy.astype(self._ivy_array, dtype=dtype)
 
     @with_supported_dtypes(
+        {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_not(self, out=None, name=None):
+        return ivy.bitwise_invert(self._ivy_array, out=out)
+
+    @with_supported_dtypes(
         {
             "2.5.0 and below": (
                 "bool",
@@ -482,6 +489,12 @@ class Tensor:
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
 
+    @with_unsupported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def neg(self, name=None):
+        return paddle_frontend.neg(self)
+
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
@@ -498,3 +511,7 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return ivy.logical_not(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sign(self, name=None):
+        return ivy.sign(self._ivy_array)
