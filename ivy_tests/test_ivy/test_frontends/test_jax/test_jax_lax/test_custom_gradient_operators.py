@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_stop_gradient(
+def test_jax_stop_gradient(
     *,
     dtype_and_x,
     test_flags,
