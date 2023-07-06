@@ -97,6 +97,10 @@ class Tensor:
         return paddle_frontend.abs(self)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def acosh(self, name=None):
+        return ivy.acosh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -260,6 +264,13 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_not(self, out=None, name=None):
+        return ivy.bitwise_invert(self._ivy_array, out=out)
 
     @with_supported_dtypes(
         {
@@ -479,9 +490,17 @@ class Tensor:
         return ivy.conj(self._ivy_array)
 
 
+
     @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
     def log2(self, name=None):
         return ivy.log2(self._ivy_array)
+
+    @with_unsupported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def neg(self, name=None):
+        return paddle_frontend.neg(self)
+
 
     @with_supported_dtypes(
         {
@@ -499,3 +518,7 @@ class Tensor:
     )
     def logical_not(self, out=None, name=None):
         return ivy.logical_not(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sign(self, name=None):
+        return ivy.sign(self._ivy_array)
