@@ -1906,7 +1906,8 @@ def dtype_array_query(
         index += [new_index]
     if draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
-        end = draw(st.integers(min_value=start, max_value=len(index) - 1))
+        start_ = len(index) if len(index_types) < len(shape) else start
+        end = draw(st.integers(min_value=start_, max_value=len(index) - 1))
         if start != end:
             index = index[:start] + [Ellipsis] + index[end:]
     index = tuple(index)
