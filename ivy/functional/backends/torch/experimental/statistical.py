@@ -6,6 +6,7 @@ import torch
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import ivy
+from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
@@ -421,3 +422,76 @@ def cov(
 
 
 cov.support_native_out = False
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("uint8", "bfloat16", "float16")},
+    backend_version,
+)
+def cummax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    if x.dtype in (torch.bool, torch.float16):
+        x = x.to(dtype=torch.float64)
+    elif x.dtype in (torch.int16, torch.int8, torch.uint8):
+        x = x.to(dtype=torch.int64)
+    elif x.dtype in (torch.complex64, torch.complex128):
+        x = x.real.to(dtype=torch.float64)
+
+    if exclusive or reverse:
+        if exclusive and reverse:
+            x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+            x1, x2 = torch.concat(
+                (torch.zeros_like(x1[..., -1:]), x1[..., :-1]), -1
+            ), torch.concat((torch.zeros_like(x2[..., -1:]), x2[..., :-1]), -1)
+            x1, x2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+            res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
+        elif exclusive:
+            x = torch.transpose(x, axis, -1)
+            x = torch.cat((torch.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x1, x2 = torch.cummax(x, -1)
+            res1, res2 = torch.transpose(x1, axis, -1), torch.transpose(x2, axis, -1)
+        else:
+            x1, x2 = torch.cummax(torch.flip(x, dims=(axis,)), axis)
+            res1, res2 = torch.flip(x1, dims=(axis,)), torch.flip(x2, dims=(axis,))
+        return res1, res2
+
+    return torch.cummax(x, axis, out=out)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": ("uint8", "float16", "bfloat16"),
+        "1.12.1 and above": ("uint8", "float16"),
+    },
+    backend_version,
+)
+def cummin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(x.dtype)
+    if not (reverse):
+        ret = torch.cummin(x, axis)[0]
+    else:
+        ret = torch.cummin(torch.flip(x, dims=(axis,)), axis)[0]
+        ret = torch.flip(ret, (axis,))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret.to(dtype))
+    return ret.to(dtype)
