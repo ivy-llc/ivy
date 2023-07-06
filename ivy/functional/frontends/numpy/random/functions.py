@@ -183,3 +183,15 @@ def gumbel(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     x = loc - scale * ivy.log(-ivy.log(u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def triangular(left, mode, right, size=None):
+    if left > mode or mode > right or left == right:
+        raise ValueError("left < mode < right is not being followed")
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype='float64')
+    condition = u <= (mode - left) / (right - left)
+    values1 = left + (right - left) * (u * (mode - left) / (right - left)) ** 0.5
+    values2 = right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
+    return ivy.where(condition, values1, values2)

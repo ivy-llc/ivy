@@ -707,3 +707,55 @@ def test_numpy_gumbel(
         scale=scale,
         size=size,
     )
+
+@handle_frontend_test(
+    fn_tree="numpy.random.triangular",
+    input_dtypes=helpers.get_dtypes("float"),
+    left=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1000,
+
+    ),
+    mode=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1000,
+    ),
+    right=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=1000,
+
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_triangular(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    left,
+    mode,
+    right,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        size=size,
+        left=left,
+        right=right,
+        mode=mode,
+    )
