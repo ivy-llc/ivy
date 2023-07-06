@@ -701,3 +701,8 @@ def conj(x, name=None):
 @to_ivy_arrays_and_back
 def top_k(input, k=1, sorted=True, name=None):
     return ivy.top_k(input, k, sorted=sorted)
+
+
+@to_ivy_arrays_and_back
+def real(input, name=None):
+    return ivy.real(input)

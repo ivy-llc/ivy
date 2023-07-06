@@ -332,12 +332,12 @@ def tile(
             shape = x.shape
             shape[-len(repeat) :] = paddle_backend.multiply(
                 shape[-len(repeat) :], repeats
-            ).to_list()
+            ).tolist()
         elif len(repeats) > x.ndim:
-            shape = repeats
+            shape = list(repeats)
             shape[-x.ndim :] = paddle_backend.multiply(
                 shape[-x.ndim :], repeats
-            ).to_list()
+            ).tolist()
         else:
             shape = paddle_backend.multiply(x.shape, repeats).tolist()
         return paddle.zeros(shape).cast(x.dtype)
