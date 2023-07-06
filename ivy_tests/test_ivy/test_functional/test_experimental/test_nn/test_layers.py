@@ -1138,7 +1138,10 @@ def x_and_rfftn(draw):
             safety_factor_scale="log",
         )
     )
-    s = tuple(draw(st.integers(min_rfftn_points, 256)) for _ in range(len(x_dim)))
+    max_rfftn_points = min(256, max(x_dim) // 2 + 1)
+    s = tuple(
+        draw(st.integers(min_rfftn_points, max_rfftn_points)) for _ in range(len(x_dim))
+    )
     axes = draw(
         st.lists(
             st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
