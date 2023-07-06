@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
-import math, ivy
+import math
+import ivy
 
 
 # local
@@ -1468,14 +1469,15 @@ def test_torch_narrow(
         length=length,
     )
 
+
 @handle_frontend_test(
     fn_tree="torch.diagonal_scatter",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(),
         min_num_dims=2,
         num_arrays=2,
-        shared_dtype=True
-    )
+        shared_dtype=True,
+    ),
 )
 def test_torch_diagonal_scatter(
     *,
@@ -1486,7 +1488,7 @@ def test_torch_diagonal_scatter(
     test_flags,
 ):
     input_dtype, value = dtype_and_values
-    src = ivy.diagonal(value[1], axis1 = 0, axis2 = 1)
+    src = ivy.diagonal(value[1], axis1=0, axis2=1)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1494,5 +1496,5 @@ def test_torch_diagonal_scatter(
         fn_tree=fn_tree,
         on_device=on_device,
         input=value[0],
-        src=src
+        src=src,
     )
