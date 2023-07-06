@@ -71,7 +71,7 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def eigh(a, /, UPLO="L", out=None):
     return ivy.eigh(a, UPLO=UPLO, out=out)
 
@@ -154,6 +154,7 @@ def svd(A, /, *, full_matrices=True, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
     return ivy.svdvals(A, out=out)
@@ -208,7 +209,7 @@ def eig(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("float", "complex")}, "torch")
 def solve(A, B, *, left=True, out=None):
     return ivy.solve(A, B, out=out)
 

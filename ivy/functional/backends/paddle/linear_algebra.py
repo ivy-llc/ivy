@@ -460,7 +460,10 @@ def slogdet(
         )
     return results(sign, logabsdet)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex",)}},
+    backend_version,
+)
 def solve(
     x1: paddle.Tensor,
     x2: paddle.Tensor,

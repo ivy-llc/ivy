@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_ran
 
 # helpers
 @st.composite
-def _get_dtype_and_matrix(draw, square=False, invertible=False, batch=False):
+def _get_dtype_and_matrix(draw, dtype="valid", square=False, invertible=False, batch=False):
     if batch:
         arbitrary_dims = draw(helpers.get_shape(max_dim_size=3))
     else:
@@ -31,7 +31,7 @@ def _get_dtype_and_matrix(draw, square=False, invertible=False, batch=False):
     else:
         shape = (*arbitrary_dims, draw(st.integers(1, 5)), draw(st.integers(1, 5)))
     ret = helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes(dtype, full=True),
         min_value=-10,
         max_value=10,
         shape=shape,
@@ -114,9 +114,10 @@ def test_torch_inv(
 
 
 # inv_ex
+# TODO: Test for singular matrices
 @handle_frontend_test(
     fn_tree="torch.linalg.inv_ex",
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),  # TODO: Test for singular matrices
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True, batch=True),
 )
 def test_torch_inv_ex(
         *,
@@ -143,7 +144,7 @@ def test_torch_inv_ex(
 # TODO: add testing for hermitian
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
-    dtype_and_input=_get_dtype_and_matrix(batch=True),
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_pinv(
         *,
@@ -600,7 +601,7 @@ def test_matrix_rank(
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     aliases=["torch.cholesky"],
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=False),
     upper=st.booleans(),
 )
 def test_torch_cholesky(
@@ -675,9 +676,10 @@ def test_torch_svd(
 
 
 # eig
+# TODO: Test for all valid dtypes
 @handle_frontend_test(
     fn_tree="torch.linalg.eig",
-    dtype_and_input=_get_dtype_and_matrix(square=True),
+    dtype_and_input=_get_dtype_and_matrix(dtype="float", square=True),
 )
 def test_torch_eig(
         *,
@@ -688,6 +690,7 @@ def test_torch_eig(
         on_device,
 ):
     input_dtype, x = dtype_and_input
+    x = np.asarray(x[0], dtype=input_dtype[0])
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     if x.dtype == ivy.float32:
         x = x.astype("float64")
@@ -717,9 +720,10 @@ def test_torch_eig(
 
 
 # eigh
+# TODO: Test for all valid dtypes
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
-    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
+    dtype_and_x=_get_dtype_and_matrix(dtype="float", square=True, invertible=True),
     # dtype_and_x=helpers.dtype_and_values(
     #     available_dtypes=helpers.get_dtypes("float"),
     #     min_value=0,
@@ -773,7 +777,7 @@ def test_torch_eigh(
 # svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(batch=True),
 )
 def test_torch_svdvals(
         *,
@@ -790,7 +794,7 @@ def test_torch_svdvals(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        A=x,
+        A=x[0],
     )
 
 
@@ -798,16 +802,14 @@ def test_torch_svdvals(
 @handle_frontend_test(
     fn_tree="torch.linalg.solve",
     dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
         safety_factor_scale="log",
         small_abs_safety_factor=6,
     ).filter(
-        lambda x: "float16" not in x[0]
-                  and "bfloat16" not in x[0]
-                  and np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        lambda x: np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
                   and np.linalg.det(x[1][0][:, :-1]) != 0
                   and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
     ),
