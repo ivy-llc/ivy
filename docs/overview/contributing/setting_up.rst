@@ -58,7 +58,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 1. Run :code:`python3 -m pip install pre-commit`
 
-2. If you are not alredy into your cloned ivy folder, enter it, for example :code:`cd ~/ivy`
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
 
 3. Run :code:`pre-commit install`
 
