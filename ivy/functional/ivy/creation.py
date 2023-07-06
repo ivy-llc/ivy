@@ -14,7 +14,6 @@ from typing import (
     Iterable,
 )
 import numpy as np
-from jax.numpy import bfloat16
 
 # local
 import ivy
@@ -120,7 +119,7 @@ def _remove_np_bfloat16(obj):
     # unlike other frameworks, torch and paddle do not support creating tensors
     # from numpy arrays that have bfloat16 dtype using any extension because
     # bfloat16 in not supported natively by numpy (as of version <=1.25)
-    if isinstance(obj, np.ndarray) and obj.dtype == bfloat16.dtype:
+    if isinstance(obj, np.ndarray) and obj.dtype.name == "bfloat16":
         return obj.tolist()
     return obj
 
@@ -177,7 +176,7 @@ def asarray_infer_dtype(fn: Callable) -> Callable:
             if isinstance(obj, ivy.NativeShape):
                 obj = list(obj)
             if hasattr(obj, "dtype"):
-                return obj.dtype
+                return obj.dtype.name if isinstance(obj, np.ndarray) else obj.dtype
             else:
                 return ivy.default_dtype(item=obj)
 
