@@ -1393,7 +1393,7 @@ def test_paddle_instance_rsqrt(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_bitwise_or(
+def test_paddle_instance_bitwise_or(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1457,7 +1457,7 @@ def test_paddle_instance_ceil(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_bitwise_and(
+def test_paddle_instance_bitwise_and(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1492,7 +1492,7 @@ def test_paddle_bitwise_and(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_greater_than(
+def test_paddle_instance_greater_than(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1523,7 +1523,7 @@ def test_paddle_greater_than(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_bitwise_not(
+def test_paddle_instance_bitwise_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1556,7 +1556,7 @@ def test_paddle_bitwise_not(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_reciprocal(
+def test_paddle_instance_reciprocal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1624,7 +1624,7 @@ def test_paddle_instance_logical_and(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_divide(
+def test_paddle_instance_divide(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1659,7 +1659,7 @@ def test_paddle_divide(
         max_value=5,
     ),
 )
-def test_paddle_cumprod(
+def test_paddle_instance_cumprod(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
@@ -1696,7 +1696,7 @@ def test_paddle_cumprod(
         max_value=5,
     ),
 )
-def test_paddle_cumsum(
+def test_paddle_instance_cumsum(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
@@ -1728,7 +1728,7 @@ def test_paddle_cumsum(
         available_dtypes=["float64", "complex64", "complex128"],
     ),
 )
-def test_paddle_angle(
+def test_paddle_instance_angle(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1763,7 +1763,7 @@ def test_paddle_angle(
         shared_dtype=True,
     ),
 )
-def test_paddle_equal(
+def test_paddle_instance_equal(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1794,7 +1794,7 @@ def test_paddle_equal(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_rad2deg(
+def test_paddle_instance_rad2deg(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1826,7 +1826,7 @@ def test_paddle_rad2deg(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_fmax(
+def test_paddle_instance_fmax(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1856,7 +1856,7 @@ def test_paddle_fmax(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_fmin(
+def test_paddle_instance_fmin(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1888,7 +1888,7 @@ def test_paddle_fmin(
         shared_dtype=True,
     ),
 )
-def test_paddle_minimum(
+def test_paddle_instance_minimum(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1919,7 +1919,7 @@ def test_paddle_minimum(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_less_than(
+def test_paddle_instance_less_than(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1955,7 +1955,7 @@ def test_paddle_less_than(
     ),
     keep_dims=st.booleans(),
 )
-def test_paddle_max(
+def test_paddle_instance_max(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
@@ -1992,7 +1992,7 @@ def test_paddle_max(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_deg2rad(
+def test_paddle_instance_deg2rad(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2029,7 +2029,7 @@ def test_paddle_deg2rad(
         max_dim_size=10,
     ),
 )
-def test_paddle_rot90(
+def test_paddle_instance_rot90(
     dtype_m_k_axes,
     frontend_method_data,
     init_flags,
@@ -2066,7 +2066,7 @@ def test_paddle_rot90(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_imag(
+def test_paddle_instance_imag(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2105,7 +2105,7 @@ def test_paddle_imag(
         safety_factor_scale="linear",
     ),
 )
-def test_paddle_floor_divide(
+def test_paddle_instance_floor_divide(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -2139,7 +2139,7 @@ def test_paddle_floor_divide(
         num_arrays=1,
     ),
 )
-def test_paddle_is_tensor(
+def test_paddle_instance_is_tensor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2172,7 +2172,7 @@ def test_paddle_is_tensor(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_isclose(
+def test_paddle_instance_isclose(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -2209,7 +2209,7 @@ def test_paddle_isclose(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_equal_all(
+def test_paddle_instance_equal_all(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -2240,7 +2240,7 @@ def test_paddle_equal_all(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_paddle_conj(
+def test_paddle_instance_conj(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2309,7 +2309,7 @@ def test_paddle_instance_floor_(
         allow_inf=False,
     ),
 )
-def test_paddle_neg(
+def test_paddle_instance_neg(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -2342,7 +2342,7 @@ def test_paddle_neg(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_isnan(
+def test_paddle_instance_isnan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2375,7 +2375,7 @@ def test_paddle_isnan(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_logical_not(
+def test_paddle_instance_logical_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2407,7 +2407,7 @@ def test_paddle_logical_not(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_sign(
+def test_paddle_instance_sign(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2440,7 +2440,7 @@ def test_paddle_sign(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_acosh(
+def test_paddle_instance_acosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
