@@ -52,7 +52,7 @@ def diagonal_scatter(input, src, offset=0, dim1=0, dim2=1):
     diagonal_indices = ivy.diagonal(
         indices.reshape(input.shape), offset=offset, axis1=dim1, axis2=dim2
     )
-    if src.shape != diagonal_indices.shape:
+    if not (src.shape == diagonal_indices.shape):
         raise ivy.utils.exceptions.IvyException(
             "src must have shape equal to specified diagonal of input. src size ="
             f" {src.shape}, diagonal size = {diagonal_indices.shape}"
