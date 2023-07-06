@@ -140,11 +140,11 @@ Using miniconda
 
 #. Installing the development dependencies.
 
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -209,11 +209,11 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -783,6 +783,7 @@ The steps are as following to setup testing on VS Code when using a new Codespac
       {
          "python.testing.pytestArgs": [
             "./ivy_tests/test_ivy/",
+            "./ivy_tests/array_api_testing/test_array_api/",
          ],
          "python.testing.unittestEnabled": false,
          "python.testing.pytestEnabled": true
