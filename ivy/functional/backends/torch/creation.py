@@ -20,6 +20,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
     asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
 )
 from . import backend_version
 
@@ -120,18 +121,16 @@ def asarray(
 ) -> torch.Tensor:
     if isinstance(obj, Sequence) and len(obj) != 0:
         contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
-
+        obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
         if contain_tensor:
             ret = _stack_tensors(obj, dtype).to(device)
             return ret.clone().detach() if copy else ret
 
-    if copy is True:
-        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
-    else:
-        ret = torch.as_tensor(obj, dtype=dtype)
-    return ret.to(device)
+    ret = torch.as_tensor(obj, dtype=dtype, device=device)
+
+    return ret.clone().detach() if copy else ret
 
 
 def empty(

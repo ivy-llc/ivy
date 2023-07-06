@@ -14,6 +14,7 @@ from typing import (
     Iterable,
 )
 import numpy as np
+from jax.numpy import bfloat16
 
 # local
 import ivy
@@ -113,6 +114,15 @@ def _flatten_nest(xs):
             yield from _flatten_nest(x)
         else:
             yield x
+
+
+def _remove_np_bfloat16(obj):
+    # unlike other frameworks, torch and paddle do not support creating tensors
+    # from numpy arrays that have bfloat16 dtype using any extension because
+    # bfloat16 in not supported natively by numpy (as of version <=1.25)
+    if isinstance(obj, np.ndarray) and obj.dtype == bfloat16.dtype:
+        return obj.tolist()
+    return obj
 
 
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:

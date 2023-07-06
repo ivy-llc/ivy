@@ -20,6 +20,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
     asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
 )
 from . import backend_version
 from paddle.fluid.libpaddle import Place
@@ -104,7 +105,7 @@ def asarray(
         return paddle_backend.squeeze(
             paddle.to_tensor(obj, dtype=dtype, place=device), axis=0
         )
-
+    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
     return paddle.to_tensor(obj, dtype=dtype, place=device)
 
 
