@@ -125,8 +125,9 @@ def main():
                         break
             added_tests = relevant_added_tests
             print(added_tests)
-        if len(added_tests) > 10:
-            added_tests = added_tests[:10]
+        else:
+            if len(added_tests) > 50:
+                added_tests = added_tests[:50]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests

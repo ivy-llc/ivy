@@ -262,6 +262,13 @@ class Tensor:
         return ivy.astype(self._ivy_array, dtype=dtype)
 
     @with_supported_dtypes(
+        {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_not(self, out=None, name=None):
+        return ivy.bitwise_invert(self._ivy_array, out=out)
+
+    @with_supported_dtypes(
         {
             "2.5.0 and below": (
                 "bool",
