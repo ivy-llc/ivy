@@ -2864,8 +2864,6 @@ set_item.mixed_backend_wrappers = {
 }
 
 
-
-
 def _parse_query(query, x_shape, allow_neg_step=True):
     query = (query,) if not isinstance(query, (tuple, list)) else query
     query = _parse_ellipsis(query, len(x_shape)) if any(q is Ellipsis for q in query) else query
