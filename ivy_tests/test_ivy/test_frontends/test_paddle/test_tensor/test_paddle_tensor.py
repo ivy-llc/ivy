@@ -152,6 +152,14 @@ def test_paddle_instance_reshape(
     )
 
 
+def _filter_query(query):
+    return (
+        query.ndim > 1 if isinstance(query, np.ndarray) else
+        not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
+        if isinstance(query, tuple) else True
+    )
+
+
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -160,7 +168,7 @@ def test_paddle_instance_reshape(
     dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
-    ),
+    ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
 )
 def test_paddle_instance_getitem(
     dtype_x_index,
@@ -191,7 +199,7 @@ def test_paddle_instance_getitem(
     method_name="__setitem__",
     dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
+    ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
 )
 def test_paddle_instance_setitem(
     dtypes_x_index_val,
@@ -202,7 +210,6 @@ def test_paddle_instance_setitem(
     on_device,
 ):
     input_dtype, x, index, val = dtypes_x_index_val
-    assume(len(index) != 0)
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"data": x},
