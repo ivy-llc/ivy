@@ -83,14 +83,10 @@ ArgMin = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
-def Asin(*, x, name="asin"):
-    return ivy.asin(x)
+Asin = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.asin))
 
 
-@to_ivy_arrays_and_back
-def Atan(*, x, name="atan"):
-    return ivy.atan(x)
+Atan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.atan))
 
 
 @to_ivy_arrays_and_back
@@ -870,3 +866,22 @@ Zeta = to_ivy_arrays_and_back(
         "tensorflow",
     )(map_raw_ops_alias(tf_frontend.math.zeta))
 )
+
+
+@to_ivy_arrays_and_back
+def Imag(
+    *,
+    input,
+    Tout=ivy.float32,
+    name="Imag",
+):
+    Tout = ivy.as_ivy_dtype(Tout) if Tout is not None else ivy.float32
+    return ivy.astype(ivy.imag(input), Tout)
+
+
+Imag.supported_dtypes = {
+    "tensorflow": (
+        "complex64",
+        "complex128",
+    ),
+}

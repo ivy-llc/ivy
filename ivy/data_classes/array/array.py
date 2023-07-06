@@ -1144,8 +1144,17 @@ class Array(
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
+        except RuntimeError:
+            from ivy.functional.ivy.gradients import _is_variable
+
+            # paddle and torch don't support the deepcopy protocol on non-leaf tensors
+            if _is_variable(self):
+                return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
+            return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
+        if not len(self._data.shape):
+            return 0
         try:
             return len(self._data)
         except TypeError:
