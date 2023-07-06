@@ -2580,7 +2580,7 @@ def inplace_variables_supported() -> bool:
 
 @handle_exceptions
 @handle_nestable
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
@@ -2986,7 +2986,6 @@ def inplace_increment(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 def scatter_flat(
