@@ -2771,7 +2771,7 @@ def get_item(
     ret = ivy.gather_nd(x, query)
     if to_squeeze:
         to_squeeze = [i for i in to_squeeze if ret.shape[i] == 1]
-        ret = ivy.squeeze(ret, axis=to_squeeze)
+        ret = ivy.squeeze(ret, axis=to_squeeze) if to_squeeze else ret
     if query.shape[0] == 1 and not mask_or_slices and 0 not in to_squeeze and len(ret.shape) > 1:
         ret = ivy.squeeze(ret, axis=0)
     if copy:
