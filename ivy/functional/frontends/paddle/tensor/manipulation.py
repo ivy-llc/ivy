@@ -96,3 +96,11 @@ def cast(x, dtype):
 @to_ivy_arrays_and_back
 def broadcast_to(x, shape, name=None):
     return ivy.broadcast_to(x, shape)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+def put_along_axis(arr, indices, values, axis, /, *, reduce="assign"):
+    return ivy.put_along_axis(arr, indices, values, axis, mode=reduce)
