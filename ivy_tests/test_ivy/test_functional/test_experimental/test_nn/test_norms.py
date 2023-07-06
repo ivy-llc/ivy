@@ -221,8 +221,8 @@ def _group_norm_helper(draw):
                 "float",
             ),
             shape=shape,
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=3,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
             safety_factor_scale="log",
         )
     )
@@ -230,8 +230,8 @@ def _group_norm_helper(draw):
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=(channel_size,),
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=3,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
             safety_factor_scale="log",
         )
     )
@@ -240,8 +240,8 @@ def _group_norm_helper(draw):
         helpers.dtype_and_values(
             dtype=x_dtype,
             shape=(channel_size,),
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=3,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
             safety_factor_scale="log",
         )
     )

@@ -394,14 +394,13 @@ def group_norm(
         x = ivy.permute_dims(x, axes=(0, xdims - 1, *range(1, xdims - 1)))
     N = x.shape[0]
     C = x.shape[1]
-    S = x.shape[2:] if xdims > 2 else ()
+    S = ivy.prod(x.shape[2:]) if xdims > 2 else 1
     assert C % num_groups == 0
-    x = ivy.reshape(x, [N, num_groups, C // num_groups, *S])
-    dims = (*range(2, ivy.get_num_dims(x)),)
-    mean = ivy.mean(x, axis=dims, keepdims=True)
-    var = ivy.var(x, axis=dims, keepdims=True)
-    x_normalized = (x - mean) / ivy.sqrt(var + eps)
-    x_normalized = ivy.reshape(x_normalized, [N, C, *S])
+    x_ = ivy.reshape(x, [N, num_groups, C // num_groups, S])
+    mean = ivy.mean(x_, axis=(2, 3), keepdims=True)
+    var = ivy.var(x_, axis=(2, 3), keepdims=True)
+    x_normalized = (x_ - mean) / ivy.sqrt(var + eps)
+    x_normalized = ivy.reshape(x_normalized, x.shape)
 
     if ivy.exists(scale):
         scale = ivy.expand_dims(scale, axis=[0, *(range(2, xdims))])
