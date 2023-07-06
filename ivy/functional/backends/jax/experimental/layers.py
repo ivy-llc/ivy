@@ -830,4 +830,4 @@ def rfftn(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    return jnp.fft.rfftn(x, s, axes, norm).astype(complex)
+    return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)

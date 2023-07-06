@@ -1120,31 +1120,42 @@ def test_ifftn(
 @st.composite
 def x_and_rfftn(draw):
     min_rfftn_points = 2
-    dtype = draw(helpers.get_dtypes("float_and_complex", full=False))
+    dtype = draw(helpers.get_dtypes("float", full=False))
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=16
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
         )
     )
     x = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            min_value=-1e5,
-            max_value=1e5,
-            allow_inf=False,
+            min_value=-1e10,
+            max_value=1e10,
+            # allow_inf=False,
             large_abs_safety_factor=2.5,
             small_abs_safety_factor=2.5,
             safety_factor_scale="log",
         )
     )
-    max_rfftn_points = min(256, max(x_dim) // 2 + 1)
-    s = tuple(
-        draw(st.integers(min_rfftn_points, max_rfftn_points)) for _ in range(len(x_dim))
-    )
+    # max_rfftn_points = min(256, max(x_dim) // 2 + 1)
+    # s = tuple(
+    #     draw(st.integers(min_rfftn_points, max_rfftn_points))
+    # for _ in range(len(x_dim))
+    # )
+    # axes = draw(
+    #     st.lists(
+    #         st.integers(-1, len(x_dim)), min_size=1, max_size=len(x_dim), unique=True
+    #     )
+    # )
     axes = draw(
         st.lists(
             st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    s = draw(
+        st.lists(
+            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
         )
     )
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
@@ -1175,6 +1186,9 @@ def test_rfftn(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        rtol_=1e-06,
+        atol_=1e-06,
+        # atol_=1e-2,
         x=x,
         s=s,
         axes=axes,

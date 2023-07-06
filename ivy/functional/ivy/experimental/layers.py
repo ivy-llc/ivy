@@ -2485,10 +2485,10 @@ def ifftn(
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
-@inputs_to_ivy_arrays
+# @inputs_to_ivy_arrays
+@to_native_arrays_and_back
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     s: Optional[Sequence[int]] = None,
     axes: Optional[Sequence[int]] = None,
@@ -2536,6 +2536,19 @@ def rfftn(
         If s and axes have different lengths.
     IndexError
         If an element of axes is larger than the number of axes of a.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x)
+    >>> print(result)
+    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
+    >>> print(result)
+    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
+     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
     """
     if norm is None:
         norm = "backward"
