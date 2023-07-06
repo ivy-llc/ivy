@@ -37,6 +37,35 @@ This is the main purpose of the wrapping, to avoid code duplication which would 
 
 Depending on the function being wrapped, the new function might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
+- Decorator order
+
+Our test decorators actually transforms to :code:`@given` decorators at PyTets collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+
+
+
+The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
+The following is the recommended order to follow :
+
+1.  :code:`@infer_device`
+2.  :code:`@infer_dtype`
+3.  :code:`@handle_array_function`
+4.  :code:`@integer_arrays_to_float`
+5.  :code:`@outputs_to_ivy_arrays`
+6.  :code:`@outputs_to_native_arrays`
+7.  :code:`@inputs_to_native_arrays`
+8.  :code:`@inputs_to_ivy_arrays`
+9.  :code:`@handle_out_argument`
+10.  :code:`@handle_view_indexing`
+11.  :code:`@handle_view`
+12.  :code:`@handle_array_like_without_promotion`
+13.  :code:`@handle_nestable`
+14.  :code:`@handle_exceptions`
+15.  :code:`@with_unsupported_dtypes`
+16.  :code:`@handle_nans`
+17.  :code:`@handle_mixed_function`
+
+This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
+
 Conversion Wrappers
 ^^^^^^^^^^^^^^^^^^^
 
