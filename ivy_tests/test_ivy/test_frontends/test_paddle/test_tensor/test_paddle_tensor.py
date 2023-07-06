@@ -1546,7 +1546,7 @@ def test_paddle_bitwise_not(
         on_device=on_device,
     )
 
- 
+
 # reciprocal
 @handle_frontend_method(
     class_tree=CLASS_TREE,

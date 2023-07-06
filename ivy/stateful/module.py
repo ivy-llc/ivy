@@ -737,11 +737,11 @@ class Module(ModuleConverters, ModuleHelpers):
         filename : str
             The name of the file to save the module object to.
         """
-        if ivy.current_backend_str() == 'paddle':
+        if ivy.current_backend_str() == "paddle":
             self._convert_tensors_to_numpy()
         with open(filename, "wb") as f:
             pickle.dump(self, f)
-        if ivy.current_backend_str() == 'paddle':
+        if ivy.current_backend_str() == "paddle":
             self._convert_numpy_to_tensors()
 
     @staticmethod
@@ -761,6 +761,6 @@ class Module(ModuleConverters, ModuleHelpers):
         """
         with open(filename, "rb") as f:
             loaded = pickle.load(f)
-        if ivy.current_backend_str() == 'paddle':
+        if ivy.current_backend_str() == "paddle":
             loaded._convert_numpy_to_tensors()
         return loaded

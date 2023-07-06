@@ -1146,6 +1146,7 @@ class Array(
             return to_ivy(copy.deepcopy(self._data))
         except RuntimeError:
             from ivy.functional.ivy.gradients import _is_variable
+
             # paddle and torch don't support the deepcopy protocol on non-leaf tensors
             if _is_variable(self):
                 return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
