@@ -739,7 +739,7 @@ def test_torch_frombuffer(
 # complex
 @st.composite
 def _complex_helper(draw):
-    input_dtype, data = draw(
+    input_dtype = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
         )
@@ -750,7 +750,7 @@ def _complex_helper(draw):
         )
     )
 
-    return input_dtype, data, values
+    return input_dtype, values
 
 
 @handle_frontend_test(
@@ -762,7 +762,6 @@ def test_torch_complex(
     dtype_and_input,
     fn_tree,
     frontend,
-    on_device,
     test_flags,
 ):
     input_dtype, data, values = dtype_and_input
@@ -773,5 +772,4 @@ def test_torch_complex(
         fn_tree=fn_tree,
         data=data[0],
         values=values[0],
-        on_device=on_device,
     )
