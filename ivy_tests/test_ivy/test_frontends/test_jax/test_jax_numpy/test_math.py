@@ -855,7 +855,7 @@ def test_jax_arcsin(
     fn_tree="jax.numpy.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays = 2
+        num_arrays = 2,
         min_num_dims=1,
         valid_axis=True,
     ),
