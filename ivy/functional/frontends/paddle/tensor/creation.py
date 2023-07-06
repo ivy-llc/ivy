@@ -124,31 +124,21 @@ def diag(x, offset=0, padding_value=0, name=None):
     print("x: ", x)
     print("offset: ", offset)
     print("padding_value: ", padding_value)
+    print("x.shape: ", x.shape)
     print("-----------------------------------------------")
     try:
-        d_x = ivy.diag(x, k=offset)
-        print("Done: d_x = ivy.diag(x, k=offset)")
-        print("d_x: ", d_x)
         if len(x.shape) == 1:
-            if padding_value:
-                print("d_x.shape: ", d_x.shape)
-                d_mask = ivy.eye(d_x.shape[0], k=offset, dtype=bool)
-                print("Done: d_mask = ivy.eye(d_x.shape[0], k=offset)")
-                print("d_mask: ", d_mask)
-                d_mask = ivy.logical_not(d_mask)
-                print("Done: d_mask = ivy.logical_not(d_mask)")
-                print("d_mask: ", d_mask)
-                print("d_mask.shape: ", d_mask.shape)
-                print("d_x.shape: ", d_x.shape)
-                print("padding_value: ", padding_value)
-                print("Done: d_x[d_mask]", d_x[d_mask])
-                if d_x.shape != d_mask.shape:
-                    print("shape is not equal!")
-                d_mask = ivy.reshape(d_mask, d_x.shape)
-                d_x[d_mask] = ivy.full(d_mask.shape, padding_value)
-                print("Done: d_x[d_mask] = padding_value")
-                print("d_x[d_mask]: ", d_x[d_mask])
-        return d_x
+            print("Going to: return ivy.diagflat(x, offset=offset, padding_value=padding_value)")
+            print("diagflat value is:", ivy.diagflat(x, offset=offset, padding_value=padding_value))
+            d_x = ivy.diagflat(x, offset=offset, padding_value=padding_value)
+            print("d_x: ", d_x)
+            if len(d_x.shape) != 2:
+                d_x= ivy.reshape(d_x, (1, 1))
+                print("reshaped d_x: ", d_x)
+            return d_x
+        else:
+            print("Going to: return ivy.diag(x, k=offset)")
+            return ivy.diag(x, k=offset)
     except Exception as e:
         print("All Mighty Error: ", e)
         return None
