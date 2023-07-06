@@ -2752,6 +2752,8 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
+    if query is Ellipsis or (isinstance(query, tuple) and query == (Ellipsis,)):
+        return x
     mask_or_slices = (
         any(isinstance(idx, slice) for idx in query)
         if isinstance(query, (tuple, list))
