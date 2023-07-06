@@ -2038,15 +2038,22 @@ def test_tensorflow_unique(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.unique_with_counts",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
-    shape=helpers.get_shape(                                                   
-        allow_none=False,                                                                  
-        min_num_dims=1,                                                                   
-        max_num_dims=1,                                                                                                                                    
-    ),
-    test_with_out=st.just(False),
-)
+    fn_tree="tensorflow.unique_with_counts",                   
+    dtype_and_x=helpers.dtype_and_values(
+                available_dtypes = helpers.get_dtypes("numeric"),
+                dtype = ["int32", "int64"],
+                num_arrays= 1,
+                shape=st.shared(helpers.get_shape(min_num_dims=1,      
+                                                max_num_dims=1, 
+                                                min_dim_size=1, 
+                                                max_dim_size=1, 
+                                                allow_none=False), 
+                                                key="shape",
+                                                ),
+                shared_dtype = False,
+                ),                   
+    test_with_out=st.just(False),  
+)                            
 def test_tensorflow_unique_with_counts(
     *,  
     dtype_and_x,
@@ -2057,12 +2064,14 @@ def test_tensorflow_unique_with_counts(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input=x[0],
-        input_dtypes=input_dtype,
-        fn_tree=fn_tree,  # added missing comma here
-        frontend=frontend,
-        on_device=on_device,
-        test_flags=test_flags
+        x=x[0],                          
+        # out_idx=out_idx,             
+        # name=name,                    
+        input_dtypes=input_dtype,     
+        fn_tree=fn_tree,              
+        frontend=frontend,            
+        on_device=on_device,          
+        test_flags=test_flags,        
     )
 
 
