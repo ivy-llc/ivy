@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_partial_mixed_function,
     integer_arrays_to_float,
     inputs_to_ivy_arrays,
     handle_array_function,
@@ -332,6 +333,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -399,6 +401,7 @@ def avg_pool2d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -1588,6 +1591,7 @@ def _upsample_bicubic2d_default(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1921,7 +1925,7 @@ interpolate.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
@@ -1994,10 +1998,10 @@ def adaptive_avg_pool1d(
         (C, L_out), where L_out = `output_size`
     """
     squeeze = False
-    if len(input.shape) == 2:
+    if input.ndim == 2:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
-    elif len(input.shape) != 3:
+    elif input.ndim != 3:
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
         )
@@ -2020,7 +2024,9 @@ def adaptive_avg_pool1d(
     vals = ivy.array(input.to_numpy()[..., idxw])
 
     if not adaptive_w:
-        return ivy.mean(vals, axis=-1)
+        ret = ivy.mean(vals, axis=-1)
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
 
     vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
 
@@ -2030,11 +2036,19 @@ def adaptive_avg_pool1d(
             ret = vals[..., i]
         else:
             ret = ret + vals[..., i]
-    pooled_output = ret / length_w
+    pooled_output = ret / length_w.astype(ret.dtype)
 
-    if squeeze:
-        return ivy.squeeze(pooled_output, axis=0)
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
+
+
+adaptive_avg_pool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
@@ -2065,10 +2079,10 @@ def adaptive_avg_pool2d(
         (C, S_0, S_1), where S = `output_size`
     """
     squeeze = False
-    if len(input.shape) == 3:
+    if input.ndim == 3:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
-    elif len(input.shape) != 4:
+    elif input.ndim != 4:
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
@@ -2100,7 +2114,9 @@ def adaptive_avg_pool2d(
     vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
 
     if not adaptive_h and not adaptive_w:
-        return ivy.mean(vals, axis=(-3, -1))
+        ret = ivy.mean(vals, axis=(-3, -1))
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
 
     vals, length_h = _mask(vals, length_h, range_max_h, dim=-2)
     vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
@@ -2111,11 +2127,19 @@ def adaptive_avg_pool2d(
             ret = vals[..., i, :, j]
         else:
             ret = ret + vals[..., i, :, j]
-    pooled_output = ret / (length_h * length_w)
+    pooled_output = ret / (length_h * length_w).astype(vals.dtype)
 
-    if squeeze:
-        return ivy.squeeze(pooled_output, axis=0)
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
+
+
+adaptive_avg_pool2d.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
@@ -2249,7 +2273,9 @@ avg_pool2d.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2330,6 +2356,15 @@ def reduce_window(
     view = ivy.reshape(view, (*view.shape[1 : 1 + len(dims)], -1))
     ret = ivy.reduce(view, init_value, computation, axes=-1)
     return ret.astype(operand.dtype)
+
+
+reduce_window.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions

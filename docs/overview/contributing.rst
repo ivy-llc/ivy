@@ -53,6 +53,6 @@ The contributor guide is split into the sections below, it's best to go from sta
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/HF-ZLF23g38" class="video" allowfullscreen="true">
     </iframe>
