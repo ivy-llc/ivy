@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
+Then add Ivy original repository as upstream, to easily sync with latest changes.
 
 .. code-block:: none
 
@@ -58,7 +58,7 @@ In order to install and properly set up pre-commit, these steps should be follow
 
 1. Run :code:`python3 -m pip install pre-commit`
 
-2. If you are not alredy into your cloned ivy folder, enter it, for example :code:`cd ~/ivy`
+2. Enter into your cloned ivy folder, for example :code:`cd ~/ivy`
 
 3. Run :code:`pre-commit install`
 
