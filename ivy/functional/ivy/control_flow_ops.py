@@ -184,6 +184,17 @@ def for_loop(
     return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
 
 
+# todo (nightcrab) find a better place for these cmp functions
+
+
+def cmp_is(left, right):
+    return left is right
+
+
+def cmp_isnot(left, right):
+    return left is not right
+
+
 def _tuple_to_dict(t):
     return {k: t[k] for k in range(len(t))}
 
