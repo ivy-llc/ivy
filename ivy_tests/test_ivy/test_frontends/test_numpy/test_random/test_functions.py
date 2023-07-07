@@ -708,6 +708,7 @@ def test_numpy_gumbel(
         size=size,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.random.triangular",
     input_dtypes=helpers.get_dtypes("float"),
@@ -717,7 +718,6 @@ def test_numpy_gumbel(
         width=32,
         min_value=0,
         max_value=1000,
-
     ),
     mode=st.floats(
         allow_nan=False,
@@ -732,7 +732,6 @@ def test_numpy_gumbel(
         width=32,
         min_value=0,
         max_value=1000,
-
     ),
     size=helpers.get_shape(allow_none=True),
 )
