@@ -39,7 +39,8 @@ Depending on the function being wrapped, the new function might handle :ref:`Arr
 
 Our test decorators actually transforms to :code:`@given` decorators at Pytest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
 
-- Decorator order
+Decorator order
+^^^^^^^^^^^^^^^
 
 The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
 The following is the recommended order to follow :
