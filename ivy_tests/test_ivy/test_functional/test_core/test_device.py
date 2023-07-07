@@ -55,15 +55,18 @@ def _ram_array_and_clear_test(metric_fn, device, size=1000000000):
     assert during > after
 
 
-def _get_possible_devices():
+def _get_possible_devices(as_ivy_device=True):
     # Return all the possible usable devices
     devices = ["cpu"]
     if ivy.gpu_is_available():
+        devices.append("gpu")
         for i in range(ivy.num_gpus()):
             devices.append("gpu:" + str(i))
 
     # Return a list of ivy devices
-    return list(map(ivy.Device, devices))
+    if as_ivy_device:
+        return list(map(ivy.Device, devices))
+    return devices
 
 
 def _empty_dir(path, recreate=False):
@@ -126,7 +129,7 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags):
     dtype = dtype[0]
     x = x[0]
 
-    for device in _get_possible_devices():
+    for device in _get_possible_devices(as_ivy_device=False):
         x = ivy.array(x, device=device)
         if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
@@ -137,7 +140,11 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags):
         # Type test
         assert isinstance(ret, str)
         # Value test
-        assert ret == device
+        # also checks if "gpu" is converted to "gpu:0"
+        if device == "gpu":
+            assert ret == "gpu:0"
+        else:
+            assert ret == device
 
 
 # as_native_dev
@@ -152,7 +159,7 @@ def test_as_native_dev(*, dtype_and_x, test_flags):
     dtype = dtype[0]
     x = x[0]
 
-    for on_device in _get_possible_devices():
+    for on_device in _get_possible_devices(as_ivy_device=False):
         x = ivy.asarray(x, device=on_device)
         if test_flags.as_variable and ivy.is_float_dtype(dtype):
             x = _variable(x)
@@ -166,10 +173,21 @@ def test_as_native_dev(*, dtype_and_x, test_flags):
             )
         elif ivy.current_backend_str() == "torch":
             assert ret.type == device.type
+            print(f"ret: {ret}, device: {device}")
+            assert (
+                ret.index == device.index
+                if device.index is not None
+                else ret.index == 0 or ret.index is None
+            )
         elif ivy.current_backend_str() == "paddle":
             assert ret._equals(device)
         else:
             assert ret == device
+
+    if ivy.current_backend_str() in ["jax", "paddle"] and ivy.gpu_is_available():
+        overflow_dev = "gpu:" + str(ivy.num_gpus())
+        native_dev = ivy.as_native_dev(overflow_dev)
+        assert ivy.as_ivy_dev(native_dev) == "gpu:" + str(ivy.num_gpus() - 1)
 
 
 # is_native_dev
