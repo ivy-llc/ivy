@@ -1856,9 +1856,9 @@ class AdaptiveAvgPool1d(Module):
 class FFT(Module):
     def __init__(
         self,
-        dim,
         /,
         *,
+        dim=0,
         norm="backward",
         n=None,
         out=None,
