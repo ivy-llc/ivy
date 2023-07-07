@@ -1404,7 +1404,6 @@ def test_fft_layer(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_num_positional_args=1,
         init_all_as_kwargs_np={
             "norm": norm,
             "n": n,
