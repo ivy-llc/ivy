@@ -101,3 +101,23 @@ def cosine_embedding_loss(
         out = ivy.sum(out)
 
     return out
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def dice_loss(input, label, reduction="mean", name=None):
+
+    if input.shape != label.shape:
+        raise ValueError("Input shapes of predict and label must be the same.")
+    
+    intersection = ivy.sum(input * label)
+    union = ivy.sum(input) + ivy.sum(label)
+    dice_loss = 1 - (2 * intersection) / (union + intersection)
+
+    if reduction == "none":
+        pass
+    if reduction == "mean":
+        dice_loss = ivy.mean(dice_loss)
+    elif reduction == "sum":
+        dice_loss = ivy.sum(dice_loss)
+    
+    return dice_loss
