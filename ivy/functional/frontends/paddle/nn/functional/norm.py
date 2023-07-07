@@ -7,7 +7,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def batch_norm(
     x,
     running_mean,
@@ -19,20 +19,19 @@ def batch_norm(
     epsilon=1e-05,
     data_format="NCHW",
 ):
-    ivy.utils.assertions.check_less(
+    ivy.utils.assertions.check_greater(
         ivy.get_num_dims(x),
         2,
         message="input dim must be larger than 1",
+        allow_equal=True,
         as_array=False,
     )
-
+    weight = ivy.reshape(weight, (1, -1, 1, 1))
     n_dims = len(x.shape)
-    input = ivy.permute_dims(x, axes=(0, *range(2, n_dims), 1))
-
     normalized, _, _ = ivy.batch_norm(
-        x=input,
-        mean=running_mean,
-        variance=running_var,
+        x,
+        running_mean,
+        running_var,
         scale=weight,
         offset=bias,
         training=training,

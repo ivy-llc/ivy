@@ -28,8 +28,8 @@ from . import backend_version
 )
 def batch_norm(
     x: paddle.Tensor,
-    mean: paddle.Tensor,
-    variance: paddle.Tensor,
+    running_mean: paddle.Tensor,
+    running_var: paddle.Tensor,
     /,
     *,
     scale: Optional[paddle.Tensor] = None,
@@ -41,11 +41,11 @@ def batch_norm(
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
-        x, mean, variance, scale, offset = [
-            t.cast("float32") for t in [x, mean, variance, scale, offset]
+        x, running_mean, running_var, scale, offset = [
+            t.cast("float32") for t in [x, running_mean, running_var, scale, offset]
         ]
-    runningmean = mean
-    runningvariance = variance
+    runningmean = running_mean
+    runningvariance = running_var
     data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]
 
     try:
@@ -68,31 +68,31 @@ def batch_norm(
                 x.dtype
             )
             dims = (0, *range(1, x.ndim - 1))
-            mean = ivy.mean(x, axis=dims)
-            variance = ivy.var(x, axis=dims)
+            running_mean = ivy.mean(x, axis=dims)
+            running_var = ivy.var(x, axis=dims)
             # runningmean = (1 - momentum) * runningmean + momentum * mean
             runningmean = ivy.add(
                 ivy.multiply(ivy.subtract(1, momentum), runningmean),
-                ivy.multiply(momentum, mean),
+                ivy.multiply(momentum, running_mean),
             )
             # runningvariance = (
             #    1 - momentum
             # ) * runningvariance + momentum * variance * n / (n - 1)
             runningvariance = ivy.add(
                 ivy.multiply(ivy.subtract(1, momentum), runningvariance),
-                ivy.divide(ivy.multiply(ivy.multiply(momentum, variance), n), n - 1),
+                ivy.divide(ivy.multiply(ivy.multiply(momentum, running_var), n), n - 1),
             )
 
     xnormalized = F.batch_norm(
         x,
-        running_mean=mean,
-        running_var=variance,
+        running_mean,
+        running_var,
+        training,
+        momentum,
+        data_format,
         weight=scale,
         bias=offset,
-        training=training,
-        momentum=momentum,
         epsilon=eps,
-        data_format=data_format,
     ).cast(x.dtype)
     return xnormalized, runningmean, runningvariance
 
