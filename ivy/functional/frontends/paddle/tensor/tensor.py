@@ -523,7 +523,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
-        return ivy.sign(self._ivy_array)
+        return ivy.sign(self._ivy_array, np_variant=False)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sgn(self, name=None):
