@@ -2781,6 +2781,47 @@ def test_numpy_instance_array_wrap__(
         on_device=on_device,
     )
 
+# ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="take",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
+    ),
+)
+def test_numpy_instance_take(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+):
+    input_dtypes, xs = dtype_and_x
+
+    # Generate random indices
+    indices = np.random.randint(0, xs[0].size, size=xs[0].ndim)
+
+    # Test the frontend method
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=[np.int64],
+        method_all_as_kwargs_np={
+            "indices": indices,
+            "axis": None,
+            "out": None,
+            "mode": "raise",
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+    )
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
