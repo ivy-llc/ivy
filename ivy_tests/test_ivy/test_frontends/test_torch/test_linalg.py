@@ -1355,3 +1355,29 @@ def test_torch_solve_ex(
         B=other,
         check_errors=check,
     )
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.lu_factor", input_dtype_and_input=_lu_factor_helper()
+)
+def test_torch_lu(*, input_dtype_and_input, on_device, fn_tree, frontend, test_flags):
+    dtype, input = input_dtype_and_input
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        A=input,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    LU, pivot = ret
+    frontend_LU, frontend_pivot = frontend_ret
+
+    assert_all_close(
+        ret_np=[LU, pivot],
+        ret_from_gt_np=[frontend_LU, frontend_pivot],
+        ground_truth_backend=frontend,
+    )
