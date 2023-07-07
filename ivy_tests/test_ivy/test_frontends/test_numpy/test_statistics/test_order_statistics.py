@@ -16,14 +16,13 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     fn_tree="numpy.ptp",
     dtype_values_axis=_statistical_dtype_values(function="ptp"),
     keep_dims=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_numpy_ptp(
     dtype_values_axis,
-    where,
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     keep_dims,
 ):
     input_dtypes, values, axis = dtype_values_axis
@@ -31,7 +30,7 @@ def test_numpy_ptp(
         axis = axis[0]
 
     helpers.test_frontend_function(
-        a=values,
+        a=values[0],
         axis=axis,
         out=None,
         keepdims=keep_dims,
