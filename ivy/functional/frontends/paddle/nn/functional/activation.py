@@ -5,6 +5,10 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.paddle.tensor.math import tanh as paddle_tanh
 
 
+def _elu_with_inplace(x, alpha=1.0, inplace=False):
+    return ivy.elu(x, alpha=alpha)
+
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def selu(
@@ -209,3 +213,16 @@ def elu(
 @to_ivy_arrays_and_back
 def mish(x, name=None):
     return ivy.mish(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def elu_(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    ret = _elu_with_inplace(x, alpha=alpha, inplace=True)
+    return ret
