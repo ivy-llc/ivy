@@ -154,9 +154,13 @@ def test_paddle_instance_reshape(
 
 def _filter_query(query):
     return (
-        query.ndim > 1 if isinstance(query, np.ndarray) else
-        not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
-        if isinstance(query, tuple) else True
+        query.ndim > 1
+        if isinstance(query, np.ndarray)
+        else (
+            not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
+            if isinstance(query, tuple)
+            else True
+        )
     )
 
 
@@ -2252,6 +2256,8 @@ def test_paddle_instance_conj(
         frontend=frontend,
         on_device=on_device,
     )
+
+
 # floor_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2285,7 +2291,6 @@ def test_paddle_instance_floor_(
     )
 
 
-
 # log2
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2317,6 +2322,7 @@ def test_paddle_instance_log2(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # neg
 @handle_frontend_method(
