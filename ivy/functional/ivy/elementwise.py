@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -6048,8 +6049,8 @@ def rad2deg(
 
 @handle_nestable
 @handle_exceptions
-@handle_nestable
-@handle_out_argument
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 @handle_array_function
 def trunc_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
@@ -6090,6 +6091,16 @@ def trunc_divide(
     ivy.array([ 0., -1., 14.])
     """
     return ivy.trunc(ivy.divide(x1, x2), out=out)
+
+
+trunc_divide.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions

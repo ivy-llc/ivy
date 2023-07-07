@@ -124,7 +124,6 @@ def triu(input, diagonal=0, *, out=None):
 
 
 @with_supported_dtypes({"2.5.0 and below": ("int8", "int16", "bfloat16")}, "paddle")
-@with_unsupported_dtypes
 @to_ivy_arrays_and_back
 def tril(input, diagonal=0, *, out=None):
     return ivy.tril(input, k=diagonal, out=out)
