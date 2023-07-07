@@ -797,6 +797,35 @@ def test_tensorflow_cholesky_solve(
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
+=======
+# bincount
+@handle_frontend_test(
+    fn_tree="paddle.bincount",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=1,
+        max_value=2,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_bincount(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -805,4 +834,7 @@ def test_tensorflow_cholesky_solve(
         atol=1e-3,
         chol=x1,
         rhs=x2,
+        x=x[0],
+        weights=None,
+        minlength=0,
     )
