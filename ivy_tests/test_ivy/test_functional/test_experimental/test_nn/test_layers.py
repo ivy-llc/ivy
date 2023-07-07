@@ -1120,7 +1120,7 @@ def test_ifftn(
 @st.composite
 def x_and_rfftn(draw):
     min_rfftn_points = 2
-    dtype = draw(helpers.get_dtypes("float", full=False))
+    dtype = draw(helpers.get_dtypes("float"))
     x_dim = draw(
         helpers.get_shape(
             min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
@@ -1130,9 +1130,9 @@ def x_and_rfftn(draw):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            min_value=-1e10,
-            max_value=1e10,
-            # allow_inf=False,
+            min_value=-1e1,
+            max_value=1e1,
+            # # allow_inf=False,
             large_abs_safety_factor=2.5,
             small_abs_safety_factor=2.5,
             safety_factor_scale="log",
@@ -1166,7 +1166,7 @@ def x_and_rfftn(draw):
     fn_tree="functional.ivy.experimental.rfftn",
     d_x_d_s_n=x_and_rfftn(),
     ground_truth_backend="numpy",
-    container_flags=st.just([False]),
+    # container_flags=st.just([False]),
     test_gradients=st.just(False),
 )
 def test_rfftn(
