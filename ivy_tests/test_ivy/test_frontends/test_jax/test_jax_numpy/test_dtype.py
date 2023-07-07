@@ -79,9 +79,7 @@ def test_jax_promote_types(
     test_with_out=st.just(False),
 )
 @settings(max_examples=200)
-def test_jax_result_type(
-    *, dtype_and_x, test_flags, on_device, fn_tree, frontend
-):
+def test_jax_result_type(*, dtype_and_x, test_flags, on_device, fn_tree, frontend):
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):

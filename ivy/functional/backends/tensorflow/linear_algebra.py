@@ -19,7 +19,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -37,7 +37,7 @@ def cholesky(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "complex",
             "float16",
         )
@@ -63,7 +63,7 @@ def cross(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "bfloat16",
         )
@@ -79,7 +79,7 @@ def det(
     return tf.linalg.det(x)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def diagonal(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -92,7 +92,7 @@ def diagonal(
     return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eig(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -110,7 +110,7 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -137,7 +137,7 @@ def eigh(
     return result_tuple(eigenvalues, eigenvectors)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -158,7 +158,7 @@ def eigvalsh(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "int8",
             "uint8",
             "int16",
@@ -182,7 +182,7 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -280,7 +280,7 @@ def matmul(
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float32", "float64", "complex")}, backend_version
+    {"2.13.0 and below": ("float32", "float64", "complex")}, backend_version
 )
 def matrix_norm(
     x: Union[tf.Tensor, tf.Variable],
@@ -324,7 +324,7 @@ def matrix_norm(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_power(
     x: Union[tf.Tensor, tf.Variable],
     n: int,
@@ -357,7 +357,7 @@ def matrix_power(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 # noinspection PyPep8Naming
@@ -395,7 +395,7 @@ def matrix_rank(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "int8",
             "int16",
@@ -422,7 +422,7 @@ def matrix_transpose(
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -435,7 +435,7 @@ def outer(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def pinv(
@@ -453,7 +453,7 @@ def pinv(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -478,7 +478,7 @@ def qr(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def slogdet(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -489,7 +489,7 @@ def slogdet(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def solve(
@@ -536,7 +536,7 @@ def solve(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def svd(
@@ -564,7 +564,7 @@ def svd(
         return results(D)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -575,7 +575,7 @@ def svdvals(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def tensordot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -595,7 +595,7 @@ def tensordot(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def trace(
@@ -614,7 +614,7 @@ def trace(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
     backend_version,
 )
 def vecdot(
@@ -635,7 +635,7 @@ def vecdot(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "bfloat16",
             "integer",
@@ -670,7 +670,7 @@ def vector_norm(
 # ----- #
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -682,7 +682,7 @@ def diag(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
+    {"2.13.0 and below": ("bfloat16", "float16", "complex", "unsigned")},
     backend_version,
 )
 def vander(
@@ -698,7 +698,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0": (
             "int8",
             "int16",
             "int32",
