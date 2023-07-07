@@ -76,14 +76,17 @@ def update_individual_test_results(
         key += "." + frontend_version
     key += "." + test
     collection.update_one(
-        {"_id": id}, {"$set": {key: result}}, upsert=True,
+        {"_id": id},
+        {"$set": {key: result}},
+        upsert=True,
     )
     return
 
 
 def remove_from_db(collection, id, submod, backend, test):
     collection.update_one(
-        {"_id": id}, {"$unset": {submod + "." + backend + ".": test}},
+        {"_id": id},
+        {"$unset": {submod + "." + backend + ".": test}},
     )
     return
 
@@ -108,7 +111,13 @@ def run_multiversion_testing():
                 ret = os.system(command)
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend};/opt/miniconda/envs/multienv/bin/python pytest --tb=short {test} --backend={backend.split("/")[0]}'
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base'
+                    " /opt/miniconda/envs/multienv/bin/python"
+                    " docker/multiversion_framework_directory.py backend"
+                    f" {backend};/opt/miniconda/envs/multienv/bin/python pytest"
+                    f" --tb=short {test} --backend={backend.split('/')[0]}"
                     # noqa
                 )
             if ret != 0:
@@ -168,12 +177,19 @@ if __name__ == "__main__":
             sys.stdout.flush()
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:base_and_requirements python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'
+                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                    f" --tb=short {test} --device=gpu:0 -B={backend}"
                     # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
+                    f" pytest --tb=short {test} --backend {backend}"
                     # noqa
                 )
             if ret != 0:
