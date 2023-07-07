@@ -1,4 +1,5 @@
 # global
+# flake8: noqa
 import numpy as np
 from hypothesis import assume, given
 from hypothesis import strategies as st
@@ -1983,8 +1984,8 @@ def test_paddle_deg2rad(
         frontend=frontend,
         on_device=on_device,
     )
-    
-    
+
+
 # rot90
 @handle_frontend_method(
     class_tree=CLASS_TREE,
