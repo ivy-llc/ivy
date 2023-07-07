@@ -51,7 +51,10 @@ class ndarray:
 
     @property
     def size(self):
-        return self.ivy_array.size
+        if self.ndim == 0:
+            return 1
+        else:
+            return self.ivy_array.size
 
     @property
     def dtype(self):
