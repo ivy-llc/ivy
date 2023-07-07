@@ -1858,12 +1858,12 @@ class FFT(Module):
         self,
         /,
         *,
-        dim=None,
+        dim=0,
         norm="backward",
         n=None,
-        out=None,
         device=None,
         dtype=None,
+        out=None,
     ):
         """
         Class for applying FFT to input.
