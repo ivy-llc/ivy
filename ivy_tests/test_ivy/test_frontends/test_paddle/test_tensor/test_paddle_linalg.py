@@ -768,3 +768,89 @@ def test_paddle_bincount(
         weights=None,
         minlength=0,
     )
+
+
+@st.composite
+def _x_without_unique_value(draw, dim):
+    x = []
+    for i in range(dim):
+        xi = draw(st.one_of(st.floats(allow_nan=False, allow_infinity=False)))
+        if len(x) > 0 and xi == x[-1]:
+            xi = draw(
+                st.one_of(
+                    st.floats(max_value=-2, allow_infinity=False, allow_nan=False),
+                    st.floats(min_value=2, allow_infinity=False, allow_nan=False),
+                )
+            )
+        x.append(xi)
+
+    return x
+
+
+@st.composite
+def _dtype_and_value_without_row_all_same_value(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["float32", "float64"],
+            shared_dtype=True,
+            abs_smallest_val=1e-5,
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=3,
+            max_dim_size=3,
+            min_value=-100,
+            max_value=100,
+            allow_nan=False,
+        ),
+    )
+    dtype, value = dtype_and_x
+    x = value[0]
+    dim_1 = x.shape[0]
+    dim_2 = x.shape[1]
+    for i in range(dim_1):
+        if len(np.unique(x[i, :])) == 1:
+            x[i] = draw(_x_without_unique_value(dim_2))
+    for i in range(dim_1):
+        if len(np.unique(x[:, i])) == 1:
+            x[:, i] = draw(_x_without_unique_value(dim_2))
+
+    return dtype, x
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.corrcoef",
+    dtype_and_x=_dtype_and_value_without_row_all_same_value(),
+    # dtype_and_x=helpers.dtype_and_values(
+    # available_dtypes=["float32", "float64"],
+    # shared_dtype=True,
+    # abs_smallest_val=1e-5,
+    # min_num_dims=2,
+    # max_num_dims=2,
+    # min_dim_size=3,
+    # max_dim_size=3,
+    # min_value=-100,
+    # max_value=100,
+    # allow_nan=False
+    # ),
+    rowvar=st.booleans(),
+)
+def test_paddle_corrcoef(
+    dtype_and_x,
+    rowvar,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        rtol=1e-03,
+        atol=1e-03,
+        on_device=on_device,
+        x=x[0],
+        rowvar=rowvar,
+    )
