@@ -195,5 +195,22 @@ def relu_(x, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def elu(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    return ivy.elu(x, alpha=alpha)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def mish(x, name=None):
     return ivy.mish(x)
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def leaky_relu(x, negative_slope=0.01, name=None):
+    return ivy.leaky_relu(x)

@@ -22,7 +22,7 @@ Function Wrapping
 .. _`integer_array_to_float`: https://github.com/unifyai/ivy/blob/5da858be094a8ddb90ffe8886393c1043f4d8ae7/ivy/func_wrapper.py#L244
 .. _`handle_cmd_line_args`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/helpers.py#L3081
 .. _`corresponding flags`: https://github.com/unifyai/ivy/blob/f1cf9cee62d162fbbd2a4afccd3a90e0cedd5d1f/ivy_tests/test_ivy/conftest.py#L174
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L923
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 .. _`stored as an attribute`: https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L701
 .. _`ivy.linear`: https://github.com/unifyai/ivy/blob/7a8fc1ea4eca6d061ae7a3efd1814518d4a6016f/ivy/functional/ivy/layers.py#L172
 .. _`handle_exceptions`: https://github.com/unifyai/ivy/blob/40c3f381043d1c470fb4f04a0a5fd380a8a95130/ivy/utils/exceptions.py#L189
@@ -36,6 +36,34 @@ The new function returned by :code:`_wrap_function` is a replacement of the orig
 This is the main purpose of the wrapping, to avoid code duplication which would exist if we added identical logic in every single function independently.
 
 Depending on the function being wrapped, the new function might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
+
+Our test decorators actually transforms to :code:`@given` decorators at Pytest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+
+Decorator order
+^^^^^^^^^^^^^^^
+
+The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
+The following is the recommended order to follow :
+
+1.  :code:`@infer_device`
+2.  :code:`@infer_dtype`
+3.  :code:`@handle_array_function`
+4.  :code:`@integer_arrays_to_float`
+5.  :code:`@outputs_to_ivy_arrays`
+6.  :code:`@outputs_to_native_arrays`
+7.  :code:`@inputs_to_native_arrays`
+8.  :code:`@inputs_to_ivy_arrays`
+9.  :code:`@handle_out_argument`
+10.  :code:`@handle_view_indexing`
+11.  :code:`@handle_view`
+12.  :code:`@handle_array_like_without_promotion`
+13.  :code:`@handle_nestable`
+14.  :code:`@handle_exceptions`
+15.  :code:`@with_unsupported_dtypes`
+16.  :code:`@handle_nans`
+17.  :code:`@handle_mixed_function`
+
+This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
 
 Conversion Wrappers
 ^^^^^^^^^^^^^^^^^^^
@@ -75,7 +103,7 @@ Nestable Support
 Partial Mixed Function Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. `handle_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function.
+#. `handle_partial_mixed_function`_: This wrapping function enables switching between compositional and primary implementations of :ref:`Mixed Functions` based on some condition on the arguments of the function.
 #.  The condition is specified through a lambda function which when evaluates to `True` the primary implementation is run and otherwise the compositional implementation is executed.
 #.  For backends that have a primary implementation of a mixed function, the reference to the compositional implementation is `stored as an attribute`_ inside the backend function during backend setting. To make use of this decorator, one must
 #.  add the :code:`partial_mixed_handler` attribute containing the lambda function to the backend implementation. Here's an `example`_ from the torch backend implementation of linear.
@@ -112,6 +140,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/-RGXxrP849k" class="video">
     </iframe>
