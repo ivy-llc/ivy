@@ -494,7 +494,7 @@ def shift_left(x, y):
 
 @to_ivy_arrays_and_back
 def sign(x):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 @to_ivy_arrays_and_back
