@@ -4,6 +4,13 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def corrcoef(x, y=None, rowvar=True, bias=None, ddof=None, *, dtype=None):
+    if bias is not None or ddof is not None:
+        raise ivy.warn("bias and ddof are not supported in ivy.")
+    return ivy.corrcoef(x, y, rowvar, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def correlate(a, v, mode=None, *, old_behavior=False):
     dtypes = [x.dtype for x in [a, v]]
     mode = mode if mode is not None else "valid"
