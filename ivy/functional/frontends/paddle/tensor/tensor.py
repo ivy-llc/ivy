@@ -495,6 +495,8 @@ class Tensor:
     def log2(self, name=None):
         return ivy.log2(self._ivy_array)
 
+
+
     @with_unsupported_dtypes(
         {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
