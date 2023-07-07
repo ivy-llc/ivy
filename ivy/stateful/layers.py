@@ -1901,7 +1901,7 @@ class FFT(Module):
         """
         return ivy.fft(
             inputs,
-            dim=self._dim,
+            self._dim,
             norm=self._norm,
             n=self._n,
             out=self._out,
