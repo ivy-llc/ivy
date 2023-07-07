@@ -1,6 +1,9 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_out,
+)
 
 
 def _quantile_is_valid(q):
@@ -37,10 +40,12 @@ def _cpercentile(N, percent, key=lambda x: x):
 
 
 @to_ivy_arrays_and_back
-def ptp(a, axis=None, out=None, keepdims=False):
+@handle_numpy_out
+def ptp(a, axis=None, out=None, dtype=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
-    return ivy.subtract(x, y)
+    ret = ivy.subtract(x, y)
+    return ret.astype(dtype, copy=False)
 
 
 def nanpercentile(
