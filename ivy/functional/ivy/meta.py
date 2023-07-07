@@ -12,6 +12,8 @@ from typing import Optional, Union, Callable, Tuple, Any
 
 # Private #
 
+@handle_exceptions
+@handle_array_function
 def _compute_cost_and_update_grads(
     cost_fn: Callable,
     order: int,
@@ -26,9 +28,9 @@ def _compute_cost_and_update_grads(
     num_tasks: int,
 ) -> ivy.Array:
     """
-    Ivy Container method variant of ivy._compute_cost_and_update_grads. This method simply wraps the
-    function, and so the docstring for ivy._compute_cost_and_update_grads also applies to this method
-    with minimal changes.
+    Ivy Container method variant of ivy._compute_cost_and_update_grads. This method 
+    simply wraps the function, and so the docstring for ivy._compute_cost_and_update_grads 
+    also applies to this method with minimal changes.
 
     Parameters
     ----------
@@ -67,8 +69,9 @@ def _compute_cost_and_update_grads(
     >>> variables = ivy.Container({'x': ivy.array([1.0, 2.0])})
     >>> outer_v = ivy.Container({'x': ivy.array([0.5, 0.5])})
     >>> batch = ivy.array([1.0, 2.0])
-    >>> _compute_cost_and_update_grads(cost_fn, 1, batch, variables, outer_v, True, True, [], True, True, 1)
-    array(4.5)
+    >>> _compute_cost_and_update_grads(cost_fn, 1, batch, variables,
+        outer_v, True, True, [], True, True, 1)
+        array(4.5)
     """
     def cost_fn_with_variables(v):
         return cost_fn(batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v)
