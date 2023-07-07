@@ -29,8 +29,9 @@ def _compute_cost_and_update_grads(
 ) -> ivy.Array:
     """
     Ivy Container method variant of ivy._compute_cost_and_update_grads. This method 
-    simply wraps the function, and so the docstring for ivy._compute_cost_and_update_grads 
-    also applies to this method with minimal changes.
+    simply wraps the function, and so the docstring for 
+    ivy._compute_cost_and_update_grads also applies to this method with minimal 
+    changes.
 
     Parameters
     ----------
@@ -74,7 +75,9 @@ def _compute_cost_and_update_grads(
         array(4.5)
     """
     def cost_fn_with_variables(v):
-        return cost_fn(batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v)
+        return cost_fn(
+            batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
+        )
     
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
@@ -82,9 +85,9 @@ def _compute_cost_and_update_grads(
                 variables.cont_at_key_chains(outer_v, ignore_none=True)
                 if keep_outer_v
                 else variables.cont_prune_key_chains(outer_v, ignore_none=True)
-                    ),
+            ),
             retain_grads=False,
-            v=variables.cont_set_at_key_chains(outer_v) if unique_outer else variables
+            v=variables.cont_set_at_key_chains(outer_v) if unique_outer else variables,
         )
         var = (
             variables.cont_at_key_chains(outer_v, ignore_none=True)
