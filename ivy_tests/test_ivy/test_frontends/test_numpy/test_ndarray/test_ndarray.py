@@ -3141,7 +3141,6 @@ def test_numpy_instance_invert__(
     frontend,
     on_device,
 ):
-    # utilize bitwise inversion of the test array using
     input_dtypes, xs = dtype_and_x
 
     helpers.test_frontend_method(
