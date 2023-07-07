@@ -1,4 +1,5 @@
 # global
+from typing import Iterable
 
 # local
 import ivy
@@ -1469,6 +1470,15 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
+
+    def tile(self, *reps):
+        if (
+            isinstance(reps, Iterable)
+            and len(reps) == 1
+            and isinstance(reps[0], Iterable)
+        ):
+            reps = reps[0]
+        return torch_frontend.tile(self, reps)
 
 
 class Size(tuple):
