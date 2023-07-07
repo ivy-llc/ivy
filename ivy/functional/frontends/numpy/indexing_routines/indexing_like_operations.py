@@ -83,7 +83,7 @@ def diagonal(a, offset, axis1, axis2):
 
 @to_ivy_arrays_and_back
 @handle_numpy_out
-def compress(condition, a, *, axis=None, out=None):
+def compress(condition, a, axis=None, out=None):
     condition_arr = ivy.asarray(condition).astype(bool)
     if condition_arr.ndim != 1:
         raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
