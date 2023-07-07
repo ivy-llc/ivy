@@ -784,7 +784,7 @@ def test_paddle_transpose(
     y=_get_second_matrix(),
     test_with_out=st.just(False),
 )
-def test_tensorflow_cholesky_solve(
+def test_paddle_cholesky_solve(
     *,
     x,
     y,
@@ -797,7 +797,17 @@ def test_tensorflow_cholesky_solve(
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
-=======
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        chol=x1,
+        rhs=x2,
+    )
+
+        
 # bincount
 @handle_frontend_test(
     fn_tree="paddle.bincount",
