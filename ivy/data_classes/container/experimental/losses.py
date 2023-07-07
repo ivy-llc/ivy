@@ -6,7 +6,7 @@ import ivy
 from ivy.data_classes.container.base import ContainerBase
 
 
-class _ContainerWithLosses(ContainerBase):
+class _ContainerWithLossesExperimental(ContainerBase):
     @staticmethod
     def _static_mse_loss(
         true: Union[ivy.Container, ivy.Array, ivy.NativeArray],
