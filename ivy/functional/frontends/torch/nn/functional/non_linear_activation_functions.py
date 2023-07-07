@@ -2,6 +2,7 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.torch as torch_frontend
 
 
 def _compute_threshold(input, threshold, value):
@@ -517,3 +518,47 @@ def multi_head_attention_forward(
         return (attn_output, attn_weights)
     else:
         return (attn_output,)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def scaled_dot_product_attention(
+    query,
+    key,
+    value,
+    attn_mask=None,
+    dropout_p=0.0,
+    is_causal=False,
+):
+    assert (not is_causal) or (
+        is_causal and attn_mask is None
+    ), "is_causal and attn_mask cannot be set at the same time"
+
+    target_len = query.shape[-2]
+    source_len = key.shape[-2]
+
+    attn_mask = (
+        torch_frontend.tril(
+            torch_frontend.ones(target_len, source_len, dtype=torch_frontend.bool),
+            diagonal=0,
+        )
+        if is_causal
+        else attn_mask
+    )
+    if attn_mask is not None:
+        attn_mask = (
+            torch_frontend.masked_fill(attn_mask, not attn_mask, -float("inf"))
+            if attn_mask.dtype == torch_frontend.bool
+            else attn_mask
+        )
+
+    attn_weight = torch_frontend.softmax(
+        (
+            torch_frontend.matmul(query, torch_frontend.transpose(key, -2, -1))
+            / torch_frontend.sqrt(query.size(-1))
+        )
+        + attn_mask,
+        dim=-1,
+    )
+    attn_weight = torch_frontend.dropout(attn_weight, dropout_p)
+    return attn_weight @ value
