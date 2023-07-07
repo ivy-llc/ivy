@@ -62,7 +62,6 @@ class ndarray:
     def ndim(self):
         return len(self.shape)
 
-
     # Setters #
     # --------#
 
@@ -500,6 +499,9 @@ class ndarray:
 
     def __imod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+
+    def __invert__(self, out=None, /):
+        return ivy.bitwise_invert(self.ivy_array, out=out)
 
     def __abs__(self):
         return np_frontend.absolute(self)
