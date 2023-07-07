@@ -93,7 +93,7 @@ def num_gpus() -> int:
     return torch.cuda.device_count()
 
 
-def device_is_available() -> bool:
+def gpu_is_available() -> bool:
     gpu_available = torch.cuda.is_available()
     mps_available = False
     if hasattr(torch.backends, "mps"):
