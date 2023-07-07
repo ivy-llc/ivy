@@ -97,6 +97,10 @@ class Tensor:
         return paddle_frontend.abs(self)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def acosh(self, name=None):
+        return ivy.acosh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -484,6 +488,11 @@ class Tensor:
     def floor_divide(self, y, name=None):
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
+
+    # cond
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def cond(self, p=None, name=None):
+        return paddle_frontend.cond(self, p=p, name=name)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
     def conj(self, name=None):

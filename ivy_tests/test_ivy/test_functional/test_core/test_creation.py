@@ -208,11 +208,30 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
+    x_list = ivy.nested_map(x, lambda x: x.tolist(), shallow=False)
+    sh = draw(helpers.get_shape(min_num_dims=1))
+    sh = ivy.Shape(sh)
+    # np_array = x[0]
+    # dim = draw(helpers.get_shape(min_num_dims=1))
+    # nested_values = draw(
+    #     helpers.create_nested_input(dim, [sh, np_array, x_list[0]])
+    # )
     dtype = draw(
         helpers.get_castable_dtype(
             draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
         )
     )[-1]
+    dtype = draw(st.sampled_from([dtype, None]))
+    x = draw(
+        st.sampled_from(
+            [
+                x,
+                x_list,
+                sh,
+                # nested_values,
+            ]
+        )
+    )
     return x_dtype, x, dtype
 
 
@@ -221,13 +240,12 @@ def _asarray_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.asarray",
     x_dtype_x_and_dtype=_asarray_helper(),
-    as_list=st.booleans(),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_asarray(
     *,
     x_dtype_x_and_dtype,
-    as_list,
     test_flags,
     backend_fw,
     fn_name,
@@ -235,42 +253,12 @@ def test_asarray(
     ground_truth_backend,
 ):
     x_dtype, x, dtype = x_dtype_x_and_dtype
-
-    if as_list:
-        if isinstance(x, list):
-            x = [
-                (
-                    list(i)
-                    if len(i.shape) > 0
-                    else [complex(i) if "complex" in x_dtype[0] else float(i)]
-                )
-                for i in x
-            ]
-        else:
-            x = list(x)
-        # ToDo: remove this once the tests are able to generate a container of lists
-        # than a list of containers
-        assume(
-            not (
-                test_flags.container[0]
-                or test_flags.instance_method
-                or test_flags.with_out
-            )
-        )
-    else:
-        if len(x) == 1:
-            x = x[0]
-        else:
-            # ToDo: remove this once the tests are able to generate a container of lists
-            # than a list of containers
-            assume(
-                not (
-                    test_flags.container[0]
-                    or test_flags.instance_method
-                    or test_flags.with_out
-                )
-            )
-
+    if isinstance(x, list) and len(x) == 1:
+        x = x[0]
+    assume(not test_flags.container[0])
+    # avoid casting complex to non-complex
+    if dtype is not None:
+        assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
     helpers.test_function(
         input_dtypes=x_dtype,
         test_flags=test_flags,
