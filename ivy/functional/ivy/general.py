@@ -2905,8 +2905,7 @@ def _parse_query(query, x_shape, allow_neg_step=True):
             query[i] = idx + s if idx < 0 else idx
         elif isinstance(idx, (tuple, list)):
             query[i] = [ii + s if ii < 0 else ii for ii in idx]
-        elif ivy.is_array(idx):
-            idx = ivy.flatten(idx)
+        elif ivy.is_array(idx) and len(idx.shape) <= 1:
             query[i] = ivy.where(idx < 0, idx + s, idx)
         else:
             raise ivy.exceptions.IvyException("unsupported query type")
