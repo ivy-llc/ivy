@@ -102,6 +102,7 @@ def cosine_embedding_loss(
 
     return out
 
+
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @inputs_to_ivy_arrays
 def dice_loss(input, label, reduction="mean", name=None):
@@ -121,3 +122,16 @@ def dice_loss(input, label, reduction="mean", name=None):
         dice_loss = ivy.sum(dice_loss)
     
     return dice_loss
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def log_loss(input, label, epsilon=0.0001, name=None):
+    out = -label * ivy.log(input + epsilon) - (
+        (1 - label) * ivy.log(1 - input + epsilon)
+    )
+    return out
+
