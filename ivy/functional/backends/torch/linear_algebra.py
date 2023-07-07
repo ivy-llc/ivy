@@ -143,20 +143,18 @@ def inv(
     adjoint: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if torch.linalg.det == 0:
-        ret = x
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
+    if adjoint:
+        if x.dim() < 2:
+            raise ValueError("Input must be at least 2D")
+        x_adj = x.transpose(-2, -1).conj()
+        ret = torch.linalg.inv(x_adj)
     else:
-        if adjoint is False:
-            ret = torch.inverse(x, out=out)
-            return ret
-        else:
-            x = torch.t(x)
-            ret = torch.inverse(x, out=out)
-            if ivy.exists(out):
-                return ivy.inplace_update(out, ret)
-            return ret
+        ret = torch.linalg.inv(x)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
 
 
 inv.support_native_out = True
