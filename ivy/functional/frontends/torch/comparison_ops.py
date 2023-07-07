@@ -208,7 +208,7 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
         bool_ar = sar[1:] != sar[:-1]
     else:
         bool_ar = sar[1:] == sar[:-1]
-    flag = ivy.concat((bool_ar, [invert]))
+    flag = ivy.concat((bool_ar, ivy.array([invert])))
     ret = ivy.empty(ivy.shape(ar), dtype=bool)
     ret[order] = flag
 
