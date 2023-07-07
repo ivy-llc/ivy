@@ -39,3 +39,35 @@ def test_numpy_fill_diagonal(
         val=val,
         wrap=wrap,
     )
+
+
+
+@handle_frontend_test(
+    fn_tree="numpy.putmask",
+    dtype_and_x=helpers.dtype_and_values(
+        num_arrays=3,
+        min_num_dims=1,
+        min_dim_size=2,
+        max_num_dims=3,
+        dtype=["float64", "bool", "float64"],
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_putmask(
+    dtype_and_x,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtypes, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        mask=x[1],
+        values=x[2],
+    )
