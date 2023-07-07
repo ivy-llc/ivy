@@ -187,11 +187,11 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
         < 10 * ivy.shape(input_elements_copy)[0] ** 0.145
     ):
         if invert:
-            mask = ivy.ones(ivy.shape(input_elements_copy)[0], dtype=bool)
+            mask = ivy.ones(ivy.shape(input_elements_copy[0]), dtype=bool)
             for a in test_elements_copy:
                 mask &= input_elements_copy != a
         else:
-            mask = ivy.zeros(ivy.shape(input_elements_copy)[0], dtype=bool)
+            mask = ivy.zeros(ivy.shape(input_elements_copy[0]), dtype=bool)
             for a in test_elements_copy:
                 mask |= input_elements_copy == a
         return ivy.reshape(mask, ivy.shape(elements))
