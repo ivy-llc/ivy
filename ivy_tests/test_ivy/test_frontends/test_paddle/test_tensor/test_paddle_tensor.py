@@ -2564,7 +2564,7 @@ def test_paddle_cond(
         max_value=10,
     ),
 )
-def test_paddle_sgn(
+def test_paddle_instance_sgn(
     dtype_and_x,
     frontend_method_data,
     init_flags,
