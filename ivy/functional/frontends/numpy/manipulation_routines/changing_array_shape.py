@@ -54,6 +54,21 @@ def asarray_chkfinite(a, dtype=None, order=None):
         raise ValueError("array must not contain infs or NaNs")
     return a
 
+@to_ivy_arrays_and_back
+def asfortranarray(a, dtype=None, *, like=None):
+    if not ivy.isinstance(a, list):
+        raise TypeError("Input must be a list")
+
+    if ivy.all(ivy.isinstance(row, list) for row in a):
+        num_rows = ivy.len(a)
+        num_cols = ivy.len(a[0])
+        for row in a:
+            if ivy.len(row) != num_cols:
+                raise ValueError("Input rows must have the same length")
+
+        return [[a[j][i] for j in ivy.range(num_rows)] for i in ivy.range(num_cols)]
+
+    return a
 
 @to_ivy_arrays_and_back
 def require(a, dtype=None, requirements=None, *, like=None):
