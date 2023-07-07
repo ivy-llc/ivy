@@ -102,21 +102,6 @@ def test_numpy_ndarray_property_ndim(
 def test_numpy_ndarray_property_flat(dtype_x):
     dtype, data, shape = dtype_x
 
-
-
-
-
-
-@given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
-        num_arrays=1,
-        ret_shape=True,
-    )
-)
-def test_numpy_ndarray_property_flat(dtype_x):
-    dtype, data, shape = dtype_x
-
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
 
