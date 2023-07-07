@@ -2799,7 +2799,6 @@ def test_numpy_instance_array_wrap__(
         on_device=on_device,
     )
 
-# ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
