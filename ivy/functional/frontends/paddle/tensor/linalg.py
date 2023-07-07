@@ -152,7 +152,7 @@ def matrix_power(x, n, name=None):
 def cond(x, p=None, name=None):
     ret = ivy.cond(x, p=p, out=name)
     if ret.shape == ():
-        ret = ret.reshape((1, ))
+        ret = ret.reshape((1,))
     return ret
 
 

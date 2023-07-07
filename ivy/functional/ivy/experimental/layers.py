@@ -1410,7 +1410,7 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
-def _nearest_exact_interpolate(x, dims, size, input_shape, exact):
+def nearest_interpolate(x, dims, size, input_shape, exact):
     off = 0.5 if exact else 0
     for d in range(dims):
         m = input_shape[d + 2]
@@ -1724,9 +1724,7 @@ def interpolate(
             operands.append(w)
         ret = ivy.einsum(equation, x, *operands)
     elif mode in ["nearest-exact", "nearest"]:
-        ret = _nearest_exact_interpolate(
-            x, dims, size, input_shape, mode == "nearest-exact"
-        )
+        ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
     elif mode == "area":
         ret = ivy.zeros((x.shape[:2] + size))
         inv_scale = ivy.divide(1.0, scale)
