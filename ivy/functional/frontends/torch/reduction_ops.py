@@ -197,7 +197,7 @@ def moveaxis(input, source, destination):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     temp_std = ivy.std(
         input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
@@ -262,8 +262,8 @@ quantile.unsupported_dtypes = {
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"2.5.0 and below": ("uint8", "int8")},
-    "paddle",
+    {"2.0.1 and below": ("uint8", "int8")},
+    "torch",
 )
 def count_nonzero(input, dim=None):
     return ivy.count_nonzero(input, axis=dim).astype(ivy.int64)

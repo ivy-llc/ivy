@@ -1531,9 +1531,7 @@ def default_complex_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input,
-                lambda x: _check_complex128(x),
-                stop_after_n_found=1,
+                input, lambda x: _check_complex128(x), stop_after_n_found=1
             ):
                 ret = ivy.complex128
             else:
