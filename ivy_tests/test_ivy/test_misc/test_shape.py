@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
 
 @handle_method(
     method_tree="Shape.__getitem__",
-    dtypes_x_query=helpers.dtype_array_index(
+    dtypes_x_query=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
