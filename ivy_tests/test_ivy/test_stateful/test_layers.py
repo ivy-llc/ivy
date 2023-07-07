@@ -1401,11 +1401,11 @@ def test_fft_layer(
 ):
     dtype, x, dim, norm, n = x_and_fft
     helpers.test_method(
+        dim=dim,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
-            "dim": dim,
             "norm": norm,
             "n": n,
             "device": on_device,
