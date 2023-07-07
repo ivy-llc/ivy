@@ -1401,10 +1401,10 @@ def test_fft_layer(
 ):
     dtype, x, dim, norm, n = x_and_fft
     helpers.test_method(
-        dim=dim,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
+        init_num_positional_args=1,
         init_all_as_kwargs_np={
             "norm": norm,
             "n": n,
@@ -1412,7 +1412,7 @@ def test_fft_layer(
             "dtype": dtype[0],
         },
         method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"inputs": x[0]},
+        method_all_as_kwargs_np={"inputs": x[0], "dim": dim},
         class_name=class_name,
         method_name=method_name,
         test_gradients=test_gradients,
