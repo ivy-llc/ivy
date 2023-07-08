@@ -227,27 +227,27 @@ class MultiHeadAttention(Module):
             Default None.
         num_heads:
             Number of parallel attention heads. Note that ``embed_dim`` will be split
-            across ``num_heads`` (i.e. each head will have dimension ``embed_dim // num_heads``).
-            Default is 8.
+            across ``num_heads`` (i.e. each head will have dimension
+            ``embed_dim // num_heads``). Default is 8.
         head_dim
             Size of each attention head for query and key.
-            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``) should be provided
-            Default is None.
+            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``)
+            should be provided. Default is None.
         dropout_rate
-            The dropout probability used on attention weights to drop some attention targets. 0 for no dropout.
-            Default is 0.
+            The dropout probability used on attention weights to drop some attention
+            targets. 0 for no dropout. Default is 0.
         use_proj_bias
             If specified, adds bias to input / output projection layers.
             Default is True.
         attention_axes
-            axes over which the attention is applied. `None` means attention over all axes, but batch, heads, and features.
-            Default is None.
+            axes over which the attention is applied. `None` means attention over all
+            axes, but batch, heads, and features. Default is None.
         scale
             The value by which to scale the query-key similarity measure.
             Default is head_dim^-0.5
         device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-            Default is cpu.
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu',
+            etc. Default is cpu.
         v
             the variables for the attention layer, as a container,
             constructed internally by default.
@@ -257,8 +257,8 @@ class MultiHeadAttention(Module):
             build(), or the first time the __call__ method is run.
             Default is on initialization.
         dtype
-            the desired data type of the internal variables to be created if not provided.
-            Default is ``None``.
+            the desired data type of the internal variables to be created if not
+            provided. Default is ``None``.
         """
         # proj
 
@@ -394,9 +394,11 @@ class MultiHeadAttention(Module):
             If True, returns attention_weights alongside the output
             as a tuple (output, attenion_weights). Defaults to `False`.
         average_attention_weights
-            If true, indicates that the returned ``attention_weights`` should be averaged across
-            heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
-            effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
+            If true, indicates that the returned ``attention_weights`` should be
+            averaged across heads. Otherwise, ``attention_weights`` are provided
+            separately per head. Note that this flag only has an effect when
+            ``return_attention_weights=True``. Default: ``True`` (i.e. average weights
+            across heads)
         training
             If True, dropout is used, otherwise dropout is not activated.
 
