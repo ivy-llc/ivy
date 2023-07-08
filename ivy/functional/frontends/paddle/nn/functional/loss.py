@@ -101,3 +101,15 @@ def cosine_embedding_loss(
         out = ivy.sum(out)
 
     return out
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def log_loss(input, label, epsilon=0.0001, name=None):
+    out = -label * ivy.log(input + epsilon) - (
+        (1 - label) * ivy.log(1 - input + epsilon)
+    )
+    return out
