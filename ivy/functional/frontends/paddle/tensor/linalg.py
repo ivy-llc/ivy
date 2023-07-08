@@ -152,7 +152,7 @@ def matrix_power(x, n, name=None):
 def cond(x, p=None, name=None):
     ret = ivy.cond(x, p=p, out=name)
     if ret.shape == ():
-        ret = ret.reshape((1, ))
+        ret = ret.reshape((1,))
     return ret
 
 
@@ -170,3 +170,9 @@ def dot(x, y, name=None):
 @to_ivy_arrays_and_back
 def transpose(x, perm, name=None):
     return ivy.permute_dims(x, axes=perm)
+
+
+@with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
+@to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0, name=None):
+    return ivy.bincount(x, weights=weights, minlength=minlength)

@@ -1329,7 +1329,14 @@ def test_paddle_trunc(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.sgn",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+        abs_smallest_val=1e-10,
+        min_value=-10,
+        max_value=10,
     ),
 )
 def test_paddle_sgn(
