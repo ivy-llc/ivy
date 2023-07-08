@@ -64,7 +64,6 @@ def rand(shape, dtype=None, name=None):
     return ivy.random_uniform(low=0.0, high=1.0, shape=shape, dtype=dtype, seed=None)
 
 
-
 def randn(shape, dtype=None, name=None):
     if dtype not in ["float32", "float64"]:
         raise ivy.exceptions.IvyError(
