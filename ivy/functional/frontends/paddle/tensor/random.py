@@ -29,8 +29,33 @@ def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
 
 
-@with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64")},
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "bfloat16",
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+    },
     "paddle",
 )
 @to_ivy_arrays_and_back
