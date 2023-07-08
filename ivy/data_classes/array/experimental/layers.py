@@ -1027,9 +1027,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def rfftn(
         self: ivy.Array,
-        *,
         s: Sequence[int] = None,
         axes: Sequence[int] = None,
+        *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

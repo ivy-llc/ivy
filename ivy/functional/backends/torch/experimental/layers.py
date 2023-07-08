@@ -912,9 +912,9 @@ def ifftn(
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def rfftn(
     x: torch.Tensor,
-    *,
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
+    *,
     norm: str = "backward",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -940,5 +940,5 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.tensor(
-        torch.fft.rfftn(x, s, axes=axes, norm=norm, out=out), dtype=torch.complex128
+        torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
     )

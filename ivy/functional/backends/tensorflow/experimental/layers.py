@@ -1194,21 +1194,21 @@ RFFTN Function implementation
 """
 
 
-def _rfftn_norm(
-    x: Union[tf.Tensor, tf.Variable],
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
-    norm: str = "backward",
-):
-    n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
-    if norm == "backward":
-        return x
-    elif norm == "ortho":
-        return x / tf.sqrt(n)
-    elif norm == "forward":
-        return x / n
-    else:
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+# def _rfftn_norm(
+#     x: Union[tf.Tensor, tf.Variable],
+#     s: Sequence[int] = None,
+#     axes: Sequence[int] = None,
+#     norm: str = "backward",
+# ):
+#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
+#     if norm == "backward":
+#         return x
+#     elif norm == "ortho":
+#         return x / tf.sqrt(n)
+#     elif norm == "forward":
+#         return x / n
+#     else:
+#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
 def rfft_input_validation(x):
@@ -1292,10 +1292,12 @@ def rfftn(
     result = _rfftn_helper(x, s, axes, norm)
 
     if out is not None:
+        # out = tf.cast(result, tf.complex128)
         out = result
         return out
     else:
         return result
+        # return tf.cast(result, tf.complex128)
 
 
 # def _rfftn_norm(
@@ -1320,9 +1322,9 @@ def rfftn(
 # )
 # def rfftn(
 #     x: Union[tf.Tensor, tf.Variable],
-#     *,
 #     s: Sequence[int] = None,
 #     axes: Sequence[int] = None,
+#     *,
 #     norm: str = "backward",
 #     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 # ) -> Union[tf.Tensor, tf.Variable]:
@@ -1368,5 +1370,5 @@ def rfftn(
 
 
 #     # Apply the same normalization as 'backward' in NumPy
-#     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out)
+#     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out).astype("complex128")
 #     return tf_rfftn

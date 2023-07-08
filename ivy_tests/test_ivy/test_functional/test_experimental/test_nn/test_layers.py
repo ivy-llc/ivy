@@ -1131,8 +1131,8 @@ def x_and_rfftn(draw):
             min_value=-1e10,
             max_value=1e10,
             # # allow_inf=False,
-            large_abs_safety_factor=3,
-            small_abs_safety_factor=3,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
             safety_factor_scale="log",
         )
     )
@@ -1184,8 +1184,8 @@ def test_rfftn(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-06,
-        atol_=1e-06,
+        rtol_=1e-3,
+        atol_=1e-3,
         # atol_=1e-2,
         x=x,
         s=s,

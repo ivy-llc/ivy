@@ -926,9 +926,9 @@ def embedding(
 
 def rfftn(
     x: np.ndarray,
-    *,
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
+    *,
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:

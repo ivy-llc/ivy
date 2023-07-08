@@ -2092,10 +2092,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def rfftn(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
         s: Optional[Sequence[int]] = None,
         axes: Optional[Union[int, Tuple[int]]] = None,
+        *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:

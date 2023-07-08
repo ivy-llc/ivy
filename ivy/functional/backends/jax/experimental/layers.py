@@ -804,9 +804,9 @@ def embedding(
 @with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
-    *,
     s: Sequence[int] = None,
     axes: Sequence[int] = None,
+    *,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
