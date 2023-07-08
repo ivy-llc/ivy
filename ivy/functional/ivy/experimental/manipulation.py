@@ -1141,6 +1141,7 @@ def pad(
             padding_value = ivy.native_array(constant_values, dtype=input.dtype)
         else:
             padding_value = constant_values
+        input = ivy.native_array(input, dtype=input.dtype)
         padded = _interior_pad(input, padding_value, pad_width)
         return padded
     pad_width = _to_pairs(pad_width, len(input.shape))
@@ -1899,6 +1900,7 @@ def concat_from_sequence(
 
 
 def _slice(operand, start_indices, limit_indices, strides=None):
+    operand = ivy.native_array(operand, dtype=operand.dtype)
     strides = [1] * len(operand.shape) if strides is None else strides
 
     full_slice = ()
@@ -1928,8 +1930,9 @@ def _interior_pad(operand, padding_value, padding_config):
             dst_indices = src_indices * (interior + 1)
             index_tuple = [slice(None)] * operand.ndim
             index_tuple[axis] = dst_indices
-            new_array[tuple(index_tuple)] = operand
-            operand = new_array
+            new_array = ivy.asarray(new_array).to_numpy()
+            new_array[tuple(index_tuple)] = ivy.asarray(operand).to_numpy()
+            operand = ivy.asarray(new_array)
 
     start_indices = [0] * operand.ndim
     limit_indices = [0] * operand.ndim
