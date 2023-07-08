@@ -1958,6 +1958,17 @@ def dtype_array_query_val(
 
 
 @st.composite
+def create_nested_input(draw, dimensions, leaf_values):
+    if len(dimensions) != 1:
+        return [
+            draw(create_nested_input(dimensions[1:], leaf_values))
+            for _ in range(dimensions[0])
+        ]
+    value = draw(st.sampled_from(leaf_values))
+    return [value for _ in range(dimensions[0])]
+
+
+@st.composite
 def cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
         available_dtypes=(ivy.float32, ivy.float64),
