@@ -162,7 +162,9 @@ def inv(
 inv.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16", "bool")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
