@@ -365,8 +365,8 @@ def test_torch_adaptive_avg_pool2d(
     fn_tree="torch.nn.functional.adaptive_avg_pool3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=4,
-        max_num_dims=5,
+        min_num_dims=3,
+        max_num_dims=4,
         min_dim_size=5,
         max_value=100,
         min_value=-100,
@@ -380,6 +380,7 @@ def test_torch_adaptive_avg_pool2d(
         helpers.ints(min_value=1, max_value=10),
     ),
     test_with_out=st.just(False),
+    number_positional_args=st.just(2),
 )
 def test_torch_adaptive_avg_pool3d(
     *,
@@ -397,7 +398,7 @@ def test_torch_adaptive_avg_pool3d(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        input=x[0][ivy.newaxis, ...],
         output_size=output_size,
         atol=1e-2,
     )

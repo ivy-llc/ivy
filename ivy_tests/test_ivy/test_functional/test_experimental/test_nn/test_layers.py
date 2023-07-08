@@ -827,7 +827,7 @@ def test_dft(
     output_size=helpers.ints(min_value=1, max_value=10),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
-    # TODO: need to debug for containers
+    number_positional_args=st.just(2),
 )
 def test_adaptive_avg_pool1d(
     *,
@@ -871,7 +871,7 @@ def test_adaptive_avg_pool1d(
     ),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
-    # TODO: need to debug for containers
+    number_positional_args=st.just(2),
 )
 def test_adaptive_avg_pool2d(
     *,
@@ -900,8 +900,8 @@ def test_adaptive_avg_pool2d(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool3d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        min_num_dims=4,
-        max_num_dims=5,
+        min_num_dims=3,
+        max_num_dims=4,
         min_dim_size=5,
         max_value=100,
         min_value=-100,
@@ -916,7 +916,7 @@ def test_adaptive_avg_pool2d(
     ),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
-    # TODO: need to debug for containers
+    number_positional_args=st.just(2),
 )
 def test_adaptive_avg_pool3d(
     *,
@@ -936,7 +936,7 @@ def test_adaptive_avg_pool3d(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        input=x[0],
+        input=x[0][ivy.newaxis, ...],
         output_size=output_size,
     )
 

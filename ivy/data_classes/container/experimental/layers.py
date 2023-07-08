@@ -1950,7 +1950,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def adaptive_avg_pool3d(
         self: ivy.Container,
-        output_size: int,
+        output_size: Union[Sequence[int], int],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
