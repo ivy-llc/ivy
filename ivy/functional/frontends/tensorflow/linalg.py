@@ -308,3 +308,8 @@ def band_part(input, num_lower, num_upper, name=None):
         (num_upper < 0) | ((n - m) <= num_upper)
     )
     return ivy.where(mask, input, ivy.zeros_like(input))
+
+
+@to_ivy_arrays_and_back
+def qr(input, full_matrices=False, name=None):
+    return ivy.qr(input)
