@@ -157,6 +157,47 @@ def test_paddle_cosine_embedding_loss(
     )
 
 
+# log_loss
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.log_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=0,
+        max_value=1,
+        exclude_min=True,
+        exclude_max=True,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
+    ),
+    epsilon=st.floats(
+        min_value=1e-7,
+        max_value=1.0,
+    ),
+)
+def test_paddle_log_loss(
+    dtype_and_x,
+    epsilon,
+    fn_tree,
+    test_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        epsilon=epsilon,
+    )
+
+
 # smooth_l1_loss
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.smooth_l1_loss",
