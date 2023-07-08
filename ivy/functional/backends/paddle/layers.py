@@ -180,7 +180,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -233,7 +233,7 @@ def conv3d_transpose(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(
