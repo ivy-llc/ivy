@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -27,6 +28,40 @@ def randint(low=0, high=None, shape=[1], dtype=None, name=None):
 @to_ivy_arrays_and_back
 def poisson(x, name=None):
     return ivy.poisson(x, shape=None, device=None, dtype=None, seed=None, out=None)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "bfloat16",
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def rand(shape, dtype=None, name=None):
+    return ivy.random_uniform(low=0.0, high=1.0, shape=shape, dtype=dtype, seed=None)
 
 
 def randn(shape, dtype=None, name=None):

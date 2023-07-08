@@ -97,6 +97,10 @@ class Tensor:
         return paddle_frontend.abs(self)
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def acosh(self, name=None):
+        return ivy.acosh(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def ceil(self):
         return paddle_frontend.ceil(self)
 
@@ -260,6 +264,13 @@ class Tensor:
     @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def astype(self, dtype):
         return ivy.astype(self._ivy_array, dtype=dtype)
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},
+        "paddle",
+    )
+    def bitwise_not(self, out=None, name=None):
+        return ivy.bitwise_invert(self._ivy_array, out=out)
 
     @with_supported_dtypes(
         {
@@ -439,7 +450,6 @@ class Tensor:
     def deg2rad(self, name=None):
         return ivy.deg2rad(self._ivy_array)
 
-
     @with_supported_dtypes(
         {"2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
     )
@@ -475,6 +485,46 @@ class Tensor:
         y_ivy = y._ivy_array if isinstance(y, Tensor) else _to_ivy_array(y)
         return ivy.floor_divide(self._ivy_array, y_ivy)
 
+    # cond
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def cond(self, p=None, name=None):
+        return paddle_frontend.cond(self, p=p, name=name)
+
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def log2(self, name=None):
+        return ivy.log2(self._ivy_array)
+
+    @with_unsupported_dtypes(
+        {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    )
+    def neg(self, name=None):
+        return paddle_frontend.neg(self)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "bool",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            )
+        },
+        "paddle",
+    )
+    def logical_not(self, out=None, name=None):
+        return ivy.logical_not(self.ivy_array)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sign(self, name=None):
+        return ivy.sign(self._ivy_array, np_variant=False)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sgn(self, name=None):
+        return ivy.sign(self._ivy_array, np_variant=True)
