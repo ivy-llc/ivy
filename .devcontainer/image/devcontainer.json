@@ -10,6 +10,7 @@
 		}
 	},
 
+	
 	"postCreateCommand": {
         "post_create": "bash .devcontainer/post_create_commands.sh", 
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
