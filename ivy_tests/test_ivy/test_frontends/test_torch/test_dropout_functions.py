@@ -106,7 +106,7 @@ def test_torch_dropout1d(
         allow_inf=False,
         min_num_dims=3,
         max_num_dims=4,
-        min_dim_size=1
+        min_dim_size=1,
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
