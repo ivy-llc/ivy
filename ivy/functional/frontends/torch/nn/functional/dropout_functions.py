@@ -31,7 +31,8 @@ def dropout2d(input, p=0.5, training=True, inplace=False):
         return input
     return ret
 
-  
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def dropout3d(input, p=0.5, training=True, inplace=False):
     if inplace:
