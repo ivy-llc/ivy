@@ -2588,3 +2588,40 @@ def test_paddle_instance_sgn(
         frontend=frontend,
         on_device=on_device,
     )
+
+
+# bincount
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="bincount",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=["int32", "int64"],
+        num_arrays=2,
+        min_value=0,
+    ),
+)
+def test_paddle_instance_bincount(
+    dtypes_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtypes_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "weights": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
