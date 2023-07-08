@@ -508,6 +508,30 @@ The slight downside of this approach is that there is less data type coverage fo
 
 
 
+When to use which decorator or attribute?
+-----------------------------------------
+
+The `with_supported_dtypes` and `with_unsupported_dtypes` decorators are used when we want to declare the supported or unsupported data types for a specific function or class. The `unsupported_dtypes` and `supported_dtypes` attributes are used when we want to declare the supported or unsupported data types for a class in general.
+
+For example, if we have a function that only supports the `int` and `float` data types, you would use the `with_supported_dtypes` decorator to declare this. However, if we have a class that only supports the `int` and `float` data types, you would use the `unsupported_dtypes` attribute to declare this.
+
+Basically the `with_supported_dtypes` decorator is equivalent to setting the `supported_dtypes` attribute to the empty set while the `with_unsupported_dtypes` decorator is equivalent to setting the `unsupported_dtypes` attribute to the set of all data types.
+
+The main difference between the `with_supported_dtypes` and `with_unsupported_dtypes` decorators is that the `with_supported_dtypes` decorator assumes that all unmentioned data types are unsupported, while the `with_unsupported_dtypes` decorator assumes that all unmentioned data types are supported.
+
+For example, if we use the `with_supported_dtypes` decorator to declare that a function only supports the int and float data types, then any other data type will be considered unsupported. However, if we use the `with_unsupported_dtypes` decorator to declare that a function only supports the int and float data types, then any other data type will be considered supported.
+
+`with_supported_dtypes` decorator should be used for functions that are known to support a specific set of data types, such as
+
+.. code-block:: python
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
+    def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
+        return torch.expm1(x, out=out)
+
+The `unsupported_dtypes` attribute should be used for classes that are known to not support a specific set of data types, such as the `ivy.Tensor` class.
+
+
 Data Type Casting Modes
 -----------------------
 
