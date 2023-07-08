@@ -107,7 +107,7 @@ def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
             min_num_dims=0,
             min_dim_size=1,
     ),
-    dtype=helpers.get_dtypes("valid"),
+    dtype=st.sampled_from(["float32", "float64"]),
 )
 def test_paddle_rand(
     *,
