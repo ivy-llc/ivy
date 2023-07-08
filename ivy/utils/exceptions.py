@@ -9,16 +9,6 @@ from IPython import get_ipython
 # Helpers #
 # ------- #
 
-stack_modes = ['full', 'ivy', 'frontend']
-wrapper_modes = ['full', 'ivy', 'frontend']
-
-full_stack_inclusion_list = []
-ivy_stack_inclusion_list = []
-frontend_stack_inclusion_list = []
-
-full_wrapper_prunning_list = []
-
-
 
 def configure_stack_trace(traceback):
     """
@@ -42,7 +32,7 @@ def configure_stack_trace(traceback):
             else:
                 tb.tb_next = tb.tb_next.tb_next
         elif trace_mode == "frontend":
-            if "ivy/functional/frontends/" in frame.f_code.co_filename:
+            if "ivy/functional/frontends/" in frame.f_code.co_filename or "ivy/functional/ivy/" in frame.f_code.co_filename:
                 tb = tb.tb_next
             else:
                 tb.tb_next = tb.tb_next.tb_next
@@ -53,6 +43,8 @@ def configure_stack_trace(traceback):
                     tb.tb_next = tb.tb_next.tb_next
                 else:
                     tb = tb.tb_next
+            else:
+                tb = tb.tb_next
         
 
 def _add_native_error(default):
@@ -221,10 +213,9 @@ def handle_exceptions(fn: Callable) -> Callable:
             )
         except (Exception, IvyBackendException) as e:
             configure_stack_trace(e.__traceback__)
-            # raise ivy.utils.exceptions.IvyBackendException(
-            #     fn.__name__, str(e), include_backend=True
-            # )
-            raise
+            raise ivy.utils.exceptions.IvyBackendException(
+                fn.__name__, str(e), include_backend=True
+            )
 
     _handle_exceptions.handle_exceptions = True
     return _handle_exceptions
