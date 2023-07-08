@@ -4,6 +4,7 @@
 import os
 import importlib
 import torch
+import torch.mps
 from typing import Optional, Union
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile
