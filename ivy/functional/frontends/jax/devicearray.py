@@ -242,3 +242,6 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
+        return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
