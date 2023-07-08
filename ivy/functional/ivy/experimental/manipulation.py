@@ -1918,7 +1918,8 @@ def _slice_along_axis(x, start=0, stop=None, stride=1, axis=0):
         slices = [slice(None)] * axis + [slice(start, stop, stride)]
     else:
         slices = [Ellipsis, slice(start, stop, stride)] + [slice(None)] * (-1 - axis)
-    return x[tuple(slices)]
+    x = ivy.asarray(x.to_numpy()[tuple(slices)])
+    return x
 
 
 def _interior_pad(operand, padding_value, padding_config):
@@ -2025,6 +2026,7 @@ def associative_scan(
         )
 
         odd_elems = _scan(reduced_elems)
+        print(f'\n odd_elems: {odd_elems}')
 
         if num_elems % 2 == 0:
             even_elems = _combine(
