@@ -414,18 +414,18 @@ class MultiHeadAttention(Module):
             num_heads=self._num_heads,
             scale=self._scale,
             attention_mask=attention_mask,
-            in_proj_weights=self.v.in_proj_weights
-            if self._qkv_same_embed_dim
-            else None,
-            q_proj_weights=self.v.q_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
-            k_proj_weights=self.v.k_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
-            v_proj_weights=self.v.v_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
+            in_proj_weights=(
+                self.v.in_proj_weights if self._qkv_same_embed_dim else None
+            ),
+            q_proj_weights=(
+                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            k_proj_weights=(
+                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            v_proj_weights=(
+                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+            ),
             out_proj_weights=self.v.out_proj_weights,
             in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
             out_proj_bias=self.v.out_proj_bias if self._use_proj_bias else None,
