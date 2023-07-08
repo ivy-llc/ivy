@@ -31,17 +31,3 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
     return ivy.nanquantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
     )
-
-
-@with_supported_dtypes(
-    {"2.5.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
-    "paddle",
-)
-@to_ivy_arrays_and_back
-def median(x, axis=None, keepdim=False, name=None):
-    x = (
-        ivy.astype(x, ivy.float64)
-        if ivy.dtype(x) == "float64"
-        else ivy.astype(x, ivy.float32)
-    )
-    return ivy.median(x, axis=axis, keepdims=keepdim)
