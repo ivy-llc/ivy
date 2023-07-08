@@ -9,6 +9,17 @@ from IPython import get_ipython
 # Helpers #
 # ------- #
 
+stack_modes = ['full', 'ivy', 'frontend']
+wrapper_modes = ['full', 'ivy', 'frontend']
+
+full_stack_inclusion_list = []
+ivy_stack_inclusion_list = []
+frontend_stack_inclusion_list = []
+
+full_wrapper_prunning_list = []
+
+
+
 def configure_stack_trace(traceback):
     """
     Configure the stack trace to be displayed in the console.
@@ -19,14 +30,30 @@ def configure_stack_trace(traceback):
         the traceback object
     """
     tb = traceback
+    trace_mode = ivy.exception_trace_mode
+    show_wrappers = ivy.show_func_wrapper_trace_mode
     while 1:
         if not tb.tb_next:
             break
         frame = tb.tb_next.tb_frame
-        if frame.f_code.co_name in ['_handle_exceptions' ,'_handle_numpy_array_in_torch' ,'_handle_array_function', '_handle_exceptions','_handle_nestable', '_handle_out_argument', '_inputs_to_native_arrays', '_outputs_to_ivy_arrays']:
-            tb.tb_next = tb.tb_next.tb_next
+        if trace_mode == "ivy":
+            if "ivy/functional/ivy/" in frame.f_code.co_filename:
+                tb = tb.tb_next
+            else:
+                tb.tb_next = tb.tb_next.tb_next
+        elif trace_mode == "frontend":
+            if "ivy/functional/frontends/" in frame.f_code.co_filename:
+                tb = tb.tb_next
+            else:
+                tb.tb_next = tb.tb_next.tb_next
+        
         else:
-            tb = tb.tb_next
+            if not show_wrappers:
+                if "ivy/func_wrapper.py" in frame.f_code.co_filename:
+                    tb.tb_next = tb.tb_next.tb_next
+                else:
+                    tb = tb.tb_next
+        
 
 def _add_native_error(default):
     """
@@ -138,7 +165,6 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
-    # buffer = io.StringIO()
 
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
@@ -195,9 +221,10 @@ def handle_exceptions(fn: Callable) -> Callable:
             )
         except (Exception, IvyBackendException) as e:
             configure_stack_trace(e.__traceback__)
-            raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, str(e), include_backend=True
-            )
+            # raise ivy.utils.exceptions.IvyBackendException(
+            #     fn.__name__, str(e), include_backend=True
+            # )
+            raise
 
     _handle_exceptions.handle_exceptions = True
     return _handle_exceptions
