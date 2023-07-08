@@ -220,3 +220,4 @@ def leaky_relu(x, negative_slope=0.01, name=None):
 @to_ivy_arrays_and_back
 def silu(x,name=None): # silu : y = x * sigmoid(x)
     return x * ivy.sigmoid(x)
+
