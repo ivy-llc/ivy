@@ -210,6 +210,7 @@ def elu(
 def mish(x, name=None):
     return ivy.mish(x)
 
+
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def leaky_relu(x, negative_slope=0.01, name=None):
