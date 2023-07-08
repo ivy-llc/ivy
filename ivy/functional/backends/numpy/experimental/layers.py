@@ -286,7 +286,11 @@ def _get_padded_values(x_shape, kernel, strides, padding, ceil_mode, dim):
             for i in range(dim)
         ]
     else:
-        pad_specific = [sum(padding[i]) for i in range(dim)]
+        pad_specific = [padding[i] for i in range(dim)]
+        padding = [
+            (pad_specific[i] // 2, pad_specific[i] - pad_specific[i] // 2)
+            for i in range(dim)
+        ]
 
     c = []
     if ceil_mode:
@@ -353,6 +357,7 @@ def avg_pool1d(
     )
 
     res = np.mean(sub_matrices, axis=2)
+    # print(res)
 
     if (not count_include_pad or ceil_mode) and any(pad_specific):
         if not count_include_pad:
