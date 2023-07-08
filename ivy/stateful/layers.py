@@ -1993,7 +1993,6 @@ class Dct(Module):
         n=None,
         axis=-1,
         norm=None,
-        out=None,
         device=None,
         dtype=None,
     ):
@@ -2007,14 +2006,12 @@ class Dct(Module):
         type
             The type of the dct. Must be 1, 2, 3 or 4.
         n
-            The lenght of the transform. If n is less than the input signal lenght,
+            The length of the transform. If n is less than the input signal lenght,
             then x is truncated, if n is larger then x is zero-padded.
         axis
             The axis to compute the DCT along.
         norm
             The type of normalization to be applied. Must be either None or "ortho".
-        out
-            optional output array, for writing the result to.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
@@ -2022,7 +2019,6 @@ class Dct(Module):
         self.n = n
         self.axis = axis
         self.norm = norm
-        self.out = out
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
@@ -2044,5 +2040,4 @@ class Dct(Module):
             n=self.n,
             axis=self.axis,
             norm=self.norm,
-            out=self.out,
         )
