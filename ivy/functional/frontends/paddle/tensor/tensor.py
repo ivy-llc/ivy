@@ -500,6 +500,10 @@ class Tensor:
     def conj(self, name=None):
         return ivy.conj(self._ivy_array)
 
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def log2(self, name=None):
+        return ivy.log2(self._ivy_array)
+
     @with_unsupported_dtypes(
         {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
@@ -525,4 +529,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
-        return ivy.sign(self._ivy_array)
+        return ivy.sign(self._ivy_array, np_variant=False)
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def sgn(self, name=None):
+        return ivy.sign(self._ivy_array, np_variant=True)
