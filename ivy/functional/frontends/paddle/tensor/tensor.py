@@ -4,7 +4,6 @@ import ivy.functional.frontends.paddle as paddle_frontend
 from ivy.func_wrapper import (
     with_supported_dtypes,
     with_unsupported_dtypes,
-    with_supported_device_and_dtypes,
 )
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
@@ -245,8 +244,8 @@ class Tensor:
     def logical_xor(self, y, out=None, name=None):
         return paddle_frontend.logical_xor(self, y, out=out)
 
-    @with_supported_device_and_dtypes(
-        {"2.5.0 and below": {"cpu": ("float32", "float64", "complex128", "complex64")}},
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "complex128", "complex64")},
         "paddle",
     )
     def eig(self):

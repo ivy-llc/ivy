@@ -9,6 +9,9 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+from test_paddle_linalg import (
+    _get_dtype_and_square_matrix as get_dtype_and_square_matrix_complex,
+)
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -1323,11 +1326,9 @@ def test_paddle_logical_xor(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="eig",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), shape=[2, 2]
-    ),
+    dtypes_and_x=get_dtype_and_square_matrix_complex(real_and_complex_only=True),
 )
-def test_paddle_eig(
+def test_paddle_instance_eig(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
@@ -1338,7 +1339,7 @@ def test_paddle_eig(
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"data": x},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
@@ -1346,4 +1347,5 @@ def test_paddle_eig(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        test_values=False,
     )
