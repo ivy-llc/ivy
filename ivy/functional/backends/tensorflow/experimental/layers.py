@@ -1189,6 +1189,11 @@ def ifftn(
         return result
 
 
+"""
+RFFTN Function implementation
+"""
+
+
 def _rfftn_norm(
     x: Union[tf.Tensor, tf.Variable],
     s: Sequence[int] = None,
@@ -1206,35 +1211,162 @@ def _rfftn_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
+def rfft_input_validation(x):
+    if not x.dtype.is_floating:
+        raise TypeError(
+            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
+                x.dtype
+            )
+        )
+    return x
+
+
+def rfft_operations(x, rank, norm_factor):
+    # if ivy.backend == 'tensorflow':
+    #     if x.dtype != tf.complex128:
+    #         x = tf.cast(x, tf.complex128)
+    if x.shape.rank == 1:
+        x = tf.signal.rfft(x)
+    elif x.shape.rank == 2:
+        x = tf.switch_case(
+            rank - 1, {0: lambda: tf.signal.rfft(x), 1: lambda: tf.signal.rfft2d(x)}
+        )
+    else:
+        x = tf.switch_case(
+            rank - 1,
+            {
+                0: lambda: tf.signal.rfft(x),
+                1: lambda: tf.signal.rfft2d(x),
+                2: lambda: tf.signal.rfft3d(x),
+            },
+        )
+    norm_factor = tf.cast(norm_factor, x.dtype)
+    x = x * norm_factor
+    return x
+
+
+def _rfftn_helper(x, shape, axes, norm):
+    # x = rfft_input_validation(tf.convert_to_tensor(x))
+    x = rfft_input_validation(x)
+    input_shape = x.shape
+    input_rank_tensor = tf.rank(x)
+
+    shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
+
+    axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
+
+    perform_padding, perform_transpose = perform_actions_initialization(
+        shape, axes, input_shape, input_rank_tensor
+    )
+
+    shape = shape_initialization(shape, axes, x)
+
+    rank = rank_initialization(axes)
+
+    norm_factor = norm_initialization(norm, shape, x)
+
+    x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
+
+    perm = get_perm(input_rank_tensor, axes)
+
+    x = transpose_x(x, perm, perform_transpose)
+
+    x = rfft_operations(x, rank, norm_factor)
+
+    x = transpose_x(x, tf.argsort(perm), perform_transpose)
+
+    x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
+
+    return x
+
+
+@with_unsupported_dtypes({"0.4.13 and below": ("float64", "complex")}, backend_version)
 def rfftn(
     x: Union[tf.Tensor, tf.Variable],
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
     *,
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
-    norm: str = "backward",
+    norm: Optional[str] = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if axes is None:
-        axes = list(range(len(s)))
-    elif s is None:
-        s = [x.shape[axis] for axis in axes]
-    elif len(s) != len(axes):
-        raise ValueError("s and axes must have the same length.")
+    result = _rfftn_helper(x, s, axes, norm)
 
-    if not all(isinstance(j, int) for j in s):
-        raise ivy.utils.exceptions.IvyError(
-            f"Expecting {s} to be a sequence of integers <class integer>"
-        )
-    if all(j <= 1 for j in s):
-        raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {s}, expecting s points larger than 1"
-        )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    if out is not None:
+        out = result
+        return out
+    else:
+        return result
 
-    operation_name = f"RFFTn with s={s}, axes={axes}, norm={norm}"
-    tf_rfftn = tf.signal.rfft2d(x, fft_length=s, fft_axes=axes, name=operation_name)
 
-    # Apply the same normalization as 'backward' in NumPy
-    tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm)
-    return tf_rfftn
+# def _rfftn_norm(
+#     x: Union[tf.Tensor, tf.Variable],
+#     s: Sequence[int] = None,
+#     axes: Sequence[int] = None,
+#     norm: str = "backward",
+# ):
+#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
+#     if norm == "backward":
+#         return x
+#     elif norm == "ortho":
+#         return x / tf.sqrt(n)
+#     elif norm == "forward":
+#         return x / n
+#     else:
+#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+# @with_unsupported_dtypes(
+#     {"0.4.13 and below": ("float32", "complex")}, backend_version
+# )
+# def rfftn(
+#     x: Union[tf.Tensor, tf.Variable],
+#     *,
+#     s: Sequence[int] = None,
+#     axes: Sequence[int] = None,
+#     norm: str = "backward",
+#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+# ) -> Union[tf.Tensor, tf.Variable]:
+#     if axes is None:
+#         axes = list(range(len(s)))
+#     elif s is None:
+#         s = [x.shape[axis] for axis in axes]
+#     elif len(s) != len(axes):
+#         raise ValueError("s and axes must have the same length.")
+
+#     if not all(isinstance(j, int) for j in s):
+#         raise ivy.utils.exceptions.IvyError(
+#             f"Expecting {s} to be a sequence of integers <class integer>"
+#         )
+#     if all(j <= 1 for j in s):
+#         raise ivy.utils.exceptions.IvyError(
+#             f"Invalid data points {s}, expecting s points larger than 1"
+#         )
+#     if norm != "backward" and norm != "ortho" and norm != "forward":
+#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+#     if len(s) != 2:
+#         raise ValueError("fft_length must have shape [2]")
+#     fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
+
+#     # Convert s to a tensor with shape [2]
+#     # fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
+#     # if tf.shape(fft_length).shape != [1] or tf.shape(fft_length).as_list()[0] != 2:
+#     #     raise ValueError("fft_length must have shape [2]")
+#     operation_name = f"RFFTn with s={s}, axes={axes}, norm={norm}"
+#     # tf_rfftn = tf.signal.rfft2d(x, fft_length=fft_length, name=operation_name)
+
+# # Reshape the input tensor to 2D
+#     x_2d = tf.reshape(x, [-1, s[0]])
+
+#     # Perform rfft2d operation on the reshaped tensor
+#     tf_rfftn_2d = tf.signal.rfft2d(x_2d, fft_length=s[1], name=operation_name)
+
+#     # Reshape the result back to the original shape
+#     output_shape = tf.concat([tf.shape(x)[:-1], [s[-1] // 2 + 1]], axis=0)
+#     tf_rfftn = tf.reshape(tf_rfftn_2d, output_shape)
+
+
+#     # Apply the same normalization as 'backward' in NumPy
+#     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out)
+#     return tf_rfftn

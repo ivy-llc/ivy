@@ -1128,11 +1128,11 @@ def x_and_rfftn(draw):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            min_value=-1e1,
-            max_value=1e1,
+            min_value=-1e10,
+            max_value=1e10,
             # # allow_inf=False,
-            large_abs_safety_factor=2.5,
-            small_abs_safety_factor=2.5,
+            large_abs_safety_factor=3,
+            small_abs_safety_factor=3,
             safety_factor_scale="log",
         )
     )

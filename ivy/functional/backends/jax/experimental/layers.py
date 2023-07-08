@@ -801,6 +801,7 @@ def embedding(
     return embeddings
 
 
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     *,
