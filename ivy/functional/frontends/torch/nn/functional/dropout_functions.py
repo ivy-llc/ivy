@@ -30,3 +30,12 @@ def dropout2d(input, p=0.5, training=True, inplace=False):
         ivy.inplace_update(input, ret)
         return input
     return ret
+
+  
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def dropout3d(input, p=0.5, training=True, inplace=False):
+    if inplace:
+        return ivy.dropout3d(
+            input, p, training=training, data_format="NDHWC", out=input
+        )
+    return ivy.dropout3d(input, p, training=training, data_format="NDHWC")
