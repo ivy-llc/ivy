@@ -98,6 +98,35 @@ def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
     )
 
 
+
+@handle_frontend_test(
+    fn_tree="paddle.rand",
+    input_dtypes=st.sampled_from(["int32", "int64"]),
+    shape=helpers.get_shape(
+        allow_none=False, min_num_dims=1, max_num_dims=1, min_dim_size=2
+    ),
+    dtype=st.sampled_from(["float32", "float64"]),
+)
+def test_paddle_rand(
+    *,
+    input_dtypes,
+    shape,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtypes],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        shape=shape,
+        dtype=dtype,
+    )
+    
+
 @handle_frontend_test(
     fn_tree="paddle.randn",
     input_dtypes=st.sampled_from(["int32", "int64"]),
