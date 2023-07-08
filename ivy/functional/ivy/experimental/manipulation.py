@@ -1641,6 +1641,7 @@ def hsplit(
 
 
 @handle_exceptions
+@inputs_to_native_shapes
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """
     Broadcasts shapes.
@@ -1708,7 +1709,7 @@ def expand(
     ret
         Output Array
     """
-    return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
+    return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
 @handle_nestable
