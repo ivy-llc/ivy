@@ -104,10 +104,8 @@ def test_paddle_poisson(dtype_and_x, frontend, test_flags, fn_tree):
     input_dtypes=st.sampled_from(["int32", "int64"]),
     shape=helpers.get_shape(
             allow_none=False,
-            min_num_dims=1,
-            max_num_dims=3,
+            min_num_dims=0,
             min_dim_size=1,
-            max_dim_size=3,
         )
     dtype=helpers.get_dtypes("valid"),
 )
