@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2040,38 +2041,43 @@ def test_tensorflow_unique(
 @handle_frontend_test(
     fn_tree="tensorflow.unique_with_counts",                   
     dtype_and_x=helpers.dtype_and_values(
-                available_dtypes = helpers.get_dtypes("numeric"),
-                dtype = ["int32", "int64"],
-                num_arrays= 1,
-                shape=st.shared(helpers.get_shape(min_num_dims=1,      
-                                                max_num_dims=1, 
-                                                min_dim_size=1, 
-                                                max_dim_size=1, 
-                                                allow_none=False), 
-                                                key="shape",
-                                                ),
-                shared_dtype = False,
-                ),                   
-    test_with_out=st.just(False),  
-)                            
+        available_dtypes=helpers.get_dtypes("numeric"),
+        dtype=[ivy.int32, ivy.int64],
+        num_arrays=1,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=1,
+                max_dim_size=20,
+            ),
+            key="shape",
+        ),
+        shared_dtype=False,
+    ),
+    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),                   
+    test_with_out=st.just(False),                              
+)
 def test_tensorflow_unique_with_counts(
-    *,  
+    *,
     dtype_and_x,
     fn_tree,
     frontend,
     on_device,
     test_flags,
+    output_dtype,
 ):
     input_dtype, x = dtype_and_x
+    x = ivy.array(x[0])
+    x = ivy.sort(x, descending=False)
     helpers.test_frontend_function(
-        x=x[0],                          
-        # out_idx=out_idx,             
-        # name=name,                    
-        input_dtypes=input_dtype,     
-        fn_tree=fn_tree,              
-        frontend=frontend,            
-        on_device=on_device,          
-        test_flags=test_flags,        
+        x=x,
+        out_idx=output_dtype,
+        input_dtypes=input_dtype,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        on_device=on_device,
+        test_flags=test_flags,
     )
 
 
