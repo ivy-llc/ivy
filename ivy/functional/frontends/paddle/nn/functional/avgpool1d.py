@@ -57,6 +57,3 @@ def Avgpool1d(
             padding,
             data_format=data_format,
         )
-
-x = Avgpool1d(np.array([[[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]]),2,1,"SAME",data_format="NWC")
-print(x)
