@@ -2542,9 +2542,9 @@ def test_jax_imag(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
-        input=x[0],
+        rtol=1e-5,
+        atol=1e-5,
+        val=x[0],
     )
 
 
