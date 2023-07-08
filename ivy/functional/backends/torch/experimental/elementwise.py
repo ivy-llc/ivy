@@ -14,6 +14,10 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
+def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+    return torch.lgamma(x, out=out)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def fmax(
     x1: torch.Tensor,

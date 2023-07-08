@@ -10,12 +10,17 @@ from ivy import (
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
+import jax.lax as jlax
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jlax.lgamma(x)
 
 
 def fmax(

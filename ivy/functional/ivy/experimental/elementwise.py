@@ -22,6 +22,40 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_out_argument
 @to_native_arrays_and_back
 @integer_arrays_to_float
+@handle_array_function
+def lgamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the natural logarithm of the absolute value of the gamma function on x.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the natural log of Gamma(x) of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
+    """
+    return ivy.current_backend(x).lgamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

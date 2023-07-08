@@ -5,6 +5,15 @@ import mxnet as mx
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def lgamma(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    return mx.log(mx.npx.gamma(x))
+
+
 def sinc(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
