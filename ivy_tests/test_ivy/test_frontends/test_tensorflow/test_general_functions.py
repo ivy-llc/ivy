@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers

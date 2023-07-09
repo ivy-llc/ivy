@@ -579,11 +579,6 @@ def unique(x, out_idx=ivy.int32, name=None):
 
 @to_ivy_arrays_and_back
 def unique_with_counts(x, out_idx=ivy.int32, name=None):
-    x = ivy.array(x)
-    
-    ivy.utils.assertions.check_equal(x.ndim, 1, message="unique_with_counts only supports 1D arrays",)
-    ivy.utils.assertions.check_elem_in_list(x.dtype, [ivy.int32, ivy.int64], message="unique_with_counts only supports int32 and int64 dtypes",)
-
     unique_elements = []
     indices = []
     counts = []
