@@ -528,3 +528,6 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sgn(self, name=None):
         return ivy.sign(self._ivy_array, np_variant=True)
+
+    def tolist(self):
+        return ivy.to_list(self._ivy_array)
