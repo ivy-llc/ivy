@@ -6,6 +6,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy.functional.frontends.jax import DeviceArray
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 
 
 CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
@@ -1793,6 +1794,68 @@ def test_jax_devicearray_round(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"decimals": decimals},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@st.composite
+def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+            shape=shape,
+            allow_nan=allow_nan,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
+    )
+    if use_where:
+        where = draw(np_frontend_helpers.where(shape=shape))
+        return [dtype1], [values], axis, dtype2, where
+    return [dtype1], [values], axis, dtype2
+
+
+# ptp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="ptp",
+    dtype_and_x_axis_dtype=_get_castable_dtypes_values(),
+    keep_dims=st.booleans(),
+)
+def test_jax_devicearray_ptp(
+    dtype_and_x_axis_dtype,
+    keep_dims,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "out": None,
+            "keepdims": keep_dims,
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

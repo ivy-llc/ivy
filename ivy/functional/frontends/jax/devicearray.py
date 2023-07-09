@@ -242,3 +242,6 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def ptp(self, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
