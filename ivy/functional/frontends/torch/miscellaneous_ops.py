@@ -2,6 +2,7 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch import promote_types_of_torch_inputs
+import numpy as np
 
 
 @to_ivy_arrays_and_back
@@ -410,3 +411,21 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def view_as_complex(input):
+    if ivy.shape(input)[-1] != 2:
+        raise ivy.exceptions.IvyError("The last dimension must have a size of 2")
+
+    real, imaginary = ivy.split(
+        ivy.stop_gradient(input, preserve_type=False),
+        num_or_size_splits=2,
+        axis=ivy.get_num_dims(input) - 1,
+    )
+    dtype = ivy.complex64 if input.dtype == ivy.float32 else ivy.complex128
+    complex_ = np.empty(ivy.shape(input)[:-1], dtype=dtype)
+    complex_.real = ivy.squeeze(real, axis=ivy.get_num_dims(real) - 1)
+    complex_.imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1)
+    return ivy.array(complex_, dtype=dtype)
