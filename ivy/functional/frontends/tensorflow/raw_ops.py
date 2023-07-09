@@ -885,3 +885,6 @@ Imag.supported_dtypes = {
         "complex128",
     ),
 }
+
+
+MakeNdArray = map_raw_ops_alias(tf_frontend.make_ndarray)
