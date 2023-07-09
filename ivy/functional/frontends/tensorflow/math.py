@@ -706,3 +706,7 @@ def top_k(input, k=1, sorted=True, name=None):
 @to_ivy_arrays_and_back
 def real(input, name=None):
     return ivy.real(input)
+
+@to_ivy_arrays_and_back
+def atanh(input, name=None):
+    return ivy.atanh(input)
