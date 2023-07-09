@@ -12,9 +12,8 @@ from ivy.data_classes.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.helpers import handle_method
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
-    valid_dct,
-)
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import(valid_dct,)
+
 
 # Helpers #
 # --------#
