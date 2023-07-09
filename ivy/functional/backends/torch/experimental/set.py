@@ -25,12 +25,8 @@ def intersection(
     x1 = torch.reshape(x1, [-1])
     x2 = torch.reshape(x2, [-1])
     if not assume_unique:
-        if return_indices:
-            x1, ind1, _, _ = torch_backend.unique_all(x1)
-            x2, ind2, _, _ = torch_backend.unique_all(x2)
-        else:
-            x1, _, _, _ = torch_backend.unique_all(x1)
-            x2, _, _, _ = torch_backend.unique_all(x2)
+        x1, ind1, _, _ = torch_backend.unique_all(x1)
+        x2, ind2, _, _ = torch_backend.unique_all(x2)
 
     aux = torch.concatenate((x1, x2))
     if return_indices:

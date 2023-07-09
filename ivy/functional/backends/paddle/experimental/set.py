@@ -23,12 +23,9 @@ def intersection(
     x1 = paddle.reshape(x1, [-1])
     x2 = paddle.reshape(x2, [-1])
     if not assume_unique:
-        if return_indices:
-            x1, ind1, _, _ = paddle_backend.unique_all(x1)
-            x2, ind2, _, _ = paddle_backend.unique_all(x2)
-        else:
-            x1, _, _, _ = paddle_backend.unique_all(x1)
-            x2, _, _, _ = paddle_backend.unique_all(x2)
+        x1, ind1, _, _ = paddle_backend.unique_all(x1)
+        x2, ind2, _, _ = paddle_backend.unique_all(x2)
+
     aux = paddle.concat([x1, x2], 0)
     if return_indices:
         values_ = paddle.moveaxis(aux, 0, 0)

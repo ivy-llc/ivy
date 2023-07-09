@@ -24,12 +24,8 @@ def intersection(
     x1 = tf.reshape(x1, [-1])
     x2 = tf.reshape(x2, [-1])
     if not assume_unique:
-        if return_indices:
-            x1, ind1, _, _ = tf_backend.unique_all(x1)
-            x2, ind2, _, _ = tf_backend.unique_all(x2)
-        else:
-            x1, _, _, _ = tf_backend.unique_all(x1)
-            x2, _, _, _ = tf_backend.unique_all(x2)
+        x1, ind1, _, _ = tf_backend.unique_all(x1)
+        x2, ind2, _, _ = tf_backend.unique_all(x2)
 
     aux = tf.concat([x1, x2], 0)
     if return_indices:
