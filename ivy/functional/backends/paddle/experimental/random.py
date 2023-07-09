@@ -9,7 +9,6 @@ from ivy.functional.ivy.random import _check_bounds_and_get_shape
 # local
 import ivy
 from paddle.device import core
-from ivy.func_wrapper import with_supported_device_and_dtypes
 # dirichlet
 
 
