@@ -409,7 +409,7 @@ def fill_diagonal(
     if len(shape) == 2:
         step = shape[1] + 1
         if not wrap:
-            end = shape[1]*shape[1]
+            end = shape[1] * shape[1]
     else:
         step = 1 + (jnp.cumprod(shape[:-1])).sum()
     a = jnp.reshape(a, (-1,))

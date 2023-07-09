@@ -2104,7 +2104,7 @@ def unique_consecutive(
 @handle_array_function
 def fill_diagonal(
     a: Union[ivy.Array, ivy.NativeArray],
-    v:  Union[int, float],
+    v: Union[int, float],
     /,
     *,
     wrap: bool = False,

@@ -390,7 +390,7 @@ def fill_diagonal(
     steps = torch.arange(0, end, step).to(a.device)
 
     for i in steps:
-        i = (ins == i)
+        i = ins == i
         w = torch.logical_or(w, i)
     a = torch.where(w, v, a)
     a = torch.reshape(a, shape)
