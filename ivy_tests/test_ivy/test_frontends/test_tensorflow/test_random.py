@@ -387,7 +387,7 @@ def _logits_num_samples_seed_dtype(draw):
 
 
 @handle_frontend_test(
-    fn_tree="ivy.random.stateless_categorical",
+    fn_tree="tensorflow.random.stateless_categorical",
     logits_num_samples_seed_dtype=_logits_num_samples_seed_dtype(),
     test_with_out=st.just(False),
 )
