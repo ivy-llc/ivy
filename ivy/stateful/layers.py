@@ -1983,3 +1983,61 @@ class AvgPool1D(Module):
             self._padding,
             data_format=self._data_format,
         )
+
+
+class Dct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the DCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.dct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+        )

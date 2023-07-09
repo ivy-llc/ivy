@@ -18,7 +18,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    to_native_shapes_and_back,
+    inputs_to_native_shapes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -401,7 +401,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@to_native_shapes_and_back
+@inputs_to_native_shapes
 @handle_array_function
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1531,9 +1531,7 @@ def default_complex_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input,
-                lambda x: _check_complex128(x),
-                stop_after_n_found=1,
+                input, lambda x: _check_complex128(x), stop_after_n_found=1
             ):
                 ret = ivy.complex128
             else:

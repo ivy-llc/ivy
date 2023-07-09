@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then add Ivy original repository as upstream, to easily sync with latest changes.
+Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
 
 .. code-block:: none
 
