@@ -2516,8 +2516,6 @@ def test_jax_conj(
 
 
 # imag
-
-
 @handle_frontend_test(
     fn_tree="jax.numpy.imag",
     dtype_and_x=helpers.dtype_and_values(
