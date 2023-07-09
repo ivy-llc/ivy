@@ -29,6 +29,11 @@ def add(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
 def angle(z, deg=False):
     return ivy.angle(z, deg=deg)
 
