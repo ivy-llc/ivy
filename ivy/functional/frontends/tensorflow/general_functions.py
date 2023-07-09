@@ -583,7 +583,7 @@ def unique_with_counts(x, out_idx=ivy.int32, name=None):
     indices = []
     counts = []
     
-    for element in x:
+    for element in list(x):
         if element not in unique_elements:
             unique_elements.append(element)
             indices.append(len(unique_elements) - 1)
@@ -593,7 +593,7 @@ def unique_with_counts(x, out_idx=ivy.int32, name=None):
             counts[index] += 1
             indices.append(index)
     
-    return ivy.array(unique_elements), ivy.array(indices, dtype=out_idx), ivy.array(counts, dtype=out_idx)
+    return (EagerTensor(ivy.array(unique_elements)), EagerTensor(ivy.array(indices, dtype=out_idx)), EagerTensor(ivy.array(counts, dtype=out_idx)))
 
 
 @to_ivy_arrays_and_back
