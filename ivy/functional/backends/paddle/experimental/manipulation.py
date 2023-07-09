@@ -608,7 +608,6 @@ def fill_diag(
     wrap: bool = False,
 ) -> paddle.Tensor:
     shape = a.shape
-    #max_end = paddle.prod(paddle.to_tensor(shape))
     end = None
     if len(shape) == 2:
         step = shape[1] + 1
@@ -616,7 +615,6 @@ def fill_diag(
             end = shape[1]*shape[1]
     else:
         step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
-    #end = min(max_end, end)
     a = paddle.reshape(a, (-1, ))
     a[: end: step] = v
     a = paddle.reshape(a, shape)
