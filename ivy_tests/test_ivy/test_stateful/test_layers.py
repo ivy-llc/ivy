@@ -339,11 +339,20 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
         x_dim.append(draw(st.integers(min_x, 20)))
     if dim == 2:
-        data_format = draw(st.sampled_from(["NCHW"]))
+        filter_shape = draw(
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+            )
+        )
     elif dim == 1:
-        data_format = draw(st.sampled_from(["NWC", "NCW"]))
+        filter_shape = draw(st.integers(min_value=1, max_value=5))
     else:
-        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
+        filter_shape = draw(
+            helpers.get_shape(
+                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
+            )
+        )
+    data_format = draw(st.sampled_from(["NHWC", "NWC", "NDHWC"]))  # Assign a value to data_format
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = [batch_size] + x_dim + [input_channels]
     else:
