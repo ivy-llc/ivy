@@ -2648,24 +2648,17 @@ def test_tensorflow_real(
 @handle_frontend_test(
     fn_tree="tensorflow.math.atanh",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float64",
-            "complex64",
-            "complex128",
-            "bfloat16",
-            "half",
-            "float32",
-        ]
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_atanh(
     *,
     dtype_and_x,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
-    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
