@@ -44,3 +44,11 @@ def fftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def fft2(x, s=None, axes=(- 2, - 1), norm='backward', name=None):
+    ret = ivy.fft2(ivy.astype(x, "complex128"), axes, norm=norm, n=s)
+    return ivy.astype(ret, x.dtype)
