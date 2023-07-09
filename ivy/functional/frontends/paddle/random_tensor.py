@@ -2,7 +2,7 @@ import paddle
 import paddle.nn.functional as F
 
 # Generate a random tensor
-tensor = paddle.randn([3, 4, 4])  # Shape: [channels, height, width]
+tsr = paddle.randn([3, 4, 4])  # Shape: [channels, height, width]
 
 # Normalize the tensor
 normalized_tensor = F.normalize(tensor, mean=paddle.to_tensor([0.5, 0.5, 0.5]), std=paddle.to_tensor([0.5, 0.5, 0.5]))
