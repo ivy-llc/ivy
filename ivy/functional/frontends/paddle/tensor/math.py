@@ -327,5 +327,5 @@ def sgn(x, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def logcumsum(x, axis=None, dtype=None, name=None):
-    return ivy.logcumsum(x, axis=axis, dtype=dtype)
+def logcumsumexp(x, axis=None, dtype=None, name=None):
+    return ivy.logcumsumexp(x, axis=axis, dtype=dtype)

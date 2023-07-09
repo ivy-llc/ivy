@@ -1138,3 +1138,11 @@ def frexp(
     (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
     """
     return ivy.current_backend(x).frexp(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def logcumsumexp():
+    pass
