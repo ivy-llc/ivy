@@ -2953,7 +2953,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ivy.Container static method variant of ivy.fill_diagonal.
 
         This method simply wraps the function, and so the docstring for
-        ivy.fill_diagonal also applies to this method with minimal changes.
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
         """
         return ContainerBase.cont_multi_map_in_function(
             "fill_diagonal",
