@@ -2647,7 +2647,16 @@ def test_tensorflow_real(
 # atanh
 @handle_frontend_test(
     fn_tree="tensorflow.math.atanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float64",
+            "complex64",
+            "complex128",
+            "bfloat16",
+            "half",
+            "float32",
+        ]
+    ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_atanh(
