@@ -3,12 +3,13 @@ from typing import Optional, Union, Sequence
 import paddle
 
 from ivy import with_unsupported_device_and_dtypes
-from ivy.functional.backends.paddle import backend_version
+from ivy.functional.backends.paddle import backend_version, random
 from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 import ivy
 from paddle.device import core
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 # dirichlet
 
@@ -74,7 +75,18 @@ def gamma(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
+
+    if seed:
+        paddle.seed(seed)
+
+    return paddle.to_tensor(
+        random.gamma(
+            alpha, beta, shape=shape, dtype=dtype, device=device, seed=seed, out=out
+        ),
+        dtype=dtype,
+    )
 
 
 def poisson(
