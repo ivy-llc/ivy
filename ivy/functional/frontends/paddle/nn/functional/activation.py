@@ -219,5 +219,5 @@ def leaky_relu(x, negative_slope=0.01, name=None):
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def silu(x,name=None):
-    return x * ivy.sigmoid(x)
+    return ivy.multiply(x , ivy.sigmoid(x))
 
