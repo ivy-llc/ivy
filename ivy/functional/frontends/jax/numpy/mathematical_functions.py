@@ -29,6 +29,11 @@ def add(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
 def angle(z, deg=False):
     return ivy.angle(z, deg=deg)
 
@@ -542,6 +547,11 @@ def around(a, decimals=0, out=None):
 
 
 @to_ivy_arrays_and_back
+def round(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
+
+
+@to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
 
@@ -700,11 +710,6 @@ def product(
         else:
             a[0] *= initial
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
-@to_ivy_arrays_and_back
-def round(x, decimals=0, /):
-    return ivy.round(x, decimals=decimals)
 
 
 @to_ivy_arrays_and_back

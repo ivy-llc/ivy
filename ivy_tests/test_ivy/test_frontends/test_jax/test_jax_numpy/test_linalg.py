@@ -35,7 +35,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     compute_uv=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_svd(
+def test_jax_svd(
     *,
     dtype_and_x,
     full_matrices,
@@ -92,7 +92,7 @@ def test_jax_numpy_svd(
     dtype_and_x=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_det(
+def test_jax_det(
     *,
     dtype_and_x,
     on_device,
@@ -129,7 +129,7 @@ def test_jax_numpy_det(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_eig(
+def test_jax_eig(
     *,
     dtype_and_x,
     on_device,
@@ -184,7 +184,7 @@ def test_jax_numpy_eig(
     symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_eigh(
+def test_jax_eigh(
     *,
     dtype_and_x,
     UPLO,
@@ -239,7 +239,7 @@ def test_jax_numpy_eigh(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_inv(
+def test_jax_inv(
     *,
     dtype_and_x,
     on_device,
@@ -277,7 +277,7 @@ def test_jax_numpy_inv(
     UPLO=st.sampled_from(("L", "U")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_eigvalsh(
+def test_jax_eigvalsh(
     *,
     dtype_and_x,
     UPLO,
@@ -318,7 +318,7 @@ def test_jax_numpy_eigvalsh(
     mode=st.sampled_from(("reduced", "complete")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_qr(
+def test_jax_qr(
     *,
     dtype_and_x,
     mode,
@@ -367,7 +367,7 @@ def test_jax_numpy_qr(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_eigvals(
+def test_jax_eigvals(
     *,
     dtype_and_x,
     on_device,
@@ -407,7 +407,7 @@ def test_jax_numpy_eigvals(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cholesky(
+def test_jax_cholesky(
     *,
     dtype_and_x,
     on_device,
@@ -473,7 +473,7 @@ def test_jax_slogdet(
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_matrix_rank(
+def test_jax_matrix_rank(
     *,
     dtype_x_hermitian_atol_rtol,
     on_device,
@@ -501,7 +501,7 @@ def test_jax_numpy_matrix_rank(
     y=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_solve(
+def test_jax_solve(
     *,
     x,
     y,
@@ -574,7 +574,7 @@ def norm_helper(draw):
     ord=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_norm(
+def test_jax_norm(
     dtype_values_axis,
     keepdims,
     ord,
@@ -620,7 +620,7 @@ def test_jax_numpy_norm(
     n=helpers.ints(min_value=1, max_value=8),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_matrix_power(
+def test_jax_matrix_power(
     *,
     dtype_and_x,
     n,
@@ -686,7 +686,7 @@ def _get_solve_matrices(draw):
     a_and_b=_get_solve_matrices(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tensorsolve(
+def test_jax_tensorsolve(
     *,
     a_and_b,
     on_device,
@@ -724,7 +724,7 @@ def test_jax_numpy_tensorsolve(
     test_with_out=st.just(False),
     rcond=st.floats(1e-5, 1e-3),
 )
-def test_jax_numpy_pinv(
+def test_jax_pinv(
     dtype_and_x,
     frontend,
     fn_tree,
@@ -792,7 +792,7 @@ def _get_inv_square_matrices(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.tensorinv", params=_get_inv_square_matrices()
 )
-def test_jax_numpy_tensorinv(
+def test_jax_tensorinv(
     *,
     params,
     on_device,
@@ -819,7 +819,7 @@ def test_jax_numpy_tensorinv(
     dtype_x_p=helpers.cond_data_gen_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cond(
+def test_jax_cond(
     *,
     dtype_x_p,
     test_flags,
