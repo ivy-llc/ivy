@@ -1,6 +1,9 @@
 from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+
+import torch
+
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
@@ -592,3 +595,30 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+)
+def fill_diag(
+    a: paddle.Tensor,
+    v: paddle.Tensor,
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    #max_end = paddle.prod(paddle.to_tensor(shape))
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1]*shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    #end = min(max_end, end)
+    a = paddle.reshape(a, (-1, ))
+    a[: end: step] = v
+    a = paddle.reshape(a, shape)
+    return a
+
