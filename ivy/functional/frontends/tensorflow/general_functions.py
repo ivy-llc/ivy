@@ -579,17 +579,21 @@ def unique(x, out_idx=ivy.int32, name=None):
 
 @to_ivy_arrays_and_back
 def unique_with_counts(x, out_idx=ivy.int32, name=None):
-    x = ivy.sort(ivy.array(x), descending=False)
-    ivy.utils.assertions.check_equal(
-        x.ndim, 1, message="This function only supports 1D arrays",
-    )
-    ivy.utils.assertions.check_elem_in_list(
-        x.dtype, [ivy.int32, ivy.int64], message="This function only supports int32 and int64 dtypes",
-    )
-    values, _, inverse_indices, counts = ivy.unique_all(x)
-    inverse_indices, counts = ivy.array(inverse_indices, dtype=out_idx), ivy.array(counts, dtype=out_idx)
-    out = (EagerTensor(values), EagerTensor(inverse_indices), EagerTensor(counts))
-    return out
+    unique_elements = []
+    indices = []
+    counts = []
+    
+    for element in x:
+        if element not in unique_elements:
+            unique_elements.append(element)
+            indices.append(len(unique_elements) - 1)
+            counts.append(1)
+        else:
+            index = unique_elements.index(element)
+            counts[index] += 1
+            indices.append(index)
+    
+    return ivy.array(unique_elements), ivy.array(indices, dtype=out_idx), ivy.array(counts, dtype=out_idx)
 
 
 @to_ivy_arrays_and_back

@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2039,7 +2038,7 @@ def test_tensorflow_unique(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.unique_with_counts",                   
+    fn_tree="tensorflow.unique_with_counts",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         dtype=[ivy.int32, ivy.int64],
@@ -2055,8 +2054,8 @@ def test_tensorflow_unique(
         ),
         shared_dtype=False,
     ),
-    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),                   
-    test_with_out=st.just(False),                              
+    output_dtype=st.sampled_from([ivy.int32, ivy.int64]),
+    test_with_out=st.just(False),
 )
 def test_tensorflow_unique_with_counts(
     *,
@@ -2068,8 +2067,7 @@ def test_tensorflow_unique_with_counts(
     output_dtype,
 ):
     input_dtype, x = dtype_and_x
-    x = ivy.array(x[0])
-    x = ivy.sort(x, descending=False)
+    x = x[0]
     helpers.test_frontend_function(
         x=x,
         out_idx=output_dtype,
