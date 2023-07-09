@@ -1386,5 +1386,5 @@ def test_paddle_inner(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        y=x[1]
+        y=x[1],
     )

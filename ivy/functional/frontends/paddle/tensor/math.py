@@ -324,6 +324,7 @@ def trunc(x, name=None):
 def sgn(x, name=None):
     return ivy.sign(x, np_variant=True)
 
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("float32", "float64", "complex64", "complex128")}, "paddle"
 )
