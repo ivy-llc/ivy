@@ -140,7 +140,7 @@ def conv2d_transpose(
 
 # noinspection PyUnresolvedReferences
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}},
+    {"2.5 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def depthwise_conv2d(
