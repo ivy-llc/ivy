@@ -222,70 +222,57 @@ def iscomplexobj(x):
 
 @to_ivy_arrays_and_back
 def setxor1d(ar1, ar2, assume_unique=False):
-    # ar1 = ivy.astype(ivy.array(-1), "bfloat16")
-    # ar2 = ivy.astype(ivy.array(257), "int16")
-
-    # ar1=ivy.array(False)
-    # ar2=ivy.array(False)
-
-    # ar1=ivy.array([0, 0])
-    # ar2=ivy.array([1 ,1])
-    # assume_unique=True
-
-    # ar1=ivy.array(0)
-    # ar2=ivy.array(1)
-    o_ar1 = ar1
-    o_ar2 = ar2
-    common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
-    if ivy.dtype(ar1) == "bfloat16" or ivy.dtype(ar2) == "bfloat16":
-        common_dtype = "bfloat16"
-    ar1 = ivy.astype(ar1, common_dtype)
-    ar2 = ivy.astype(ar2, common_dtype)
-    print("common_dtype: ", common_dtype)
-    print("===============================================")
-    print(f"    ar1: {ar1} | dtype(ar1): {ivy.dtype(ar1)}")
-    print(f"    ar2: {ar2} | dtype(ar2): {ivy.dtype(ar2)}")
-    print("    assume_unique: ", assume_unique)
-    print("Step1 Completed")
     try:
-        ar1 = ivy.unique_values(ar1)
-        ar2 = ivy.unique_values(ar2)
-        ar = ivy.unique_values(ivy.concat((ar1, ar2)))
-        print("    Done: ar = ivy.unique_values(ivy.concat((ar1, ar2)))")
-        print(f"    ar: {ar}  | ar1: {ar1}  | ar2: {ar2} ")
-        # if assume_unique and (len(ar) == (len(ar1) + len(ar2))):
-        if assume_unique:
-            print("Inside If")
-            if len(ar) == (len(ar1) + len(ar2)):
-                print("Inside If If")
-                sorted_sy_d = ivy.sort(ar)
-                ret = ivy.astype(sorted_sy_d, ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))
-            else:
-                print("Inside If Else")
-                ret =  ivy.empty((0,), dtype=common_dtype)
+        print("===============================================")
+        print("\n")
+        print(f"ar1: {ar1} | dtype(ar1): {ivy.dtype(ar1)}")
+        print(f"ar2: {ar2} | dtype(ar2): {ivy.dtype(ar2)}")
+        print(f"assume_unique: {assume_unique}")
+
+        common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
+        ar1 = ivy.asarray(ar1, dtype=common_dtype)
+        ar2 = ivy.asarray(ar2, dtype=common_dtype)
+        print("after common dtype")
+        print(f"ar1: {ar1}")
+        print(f"ar2: {ar1}")
+
+        if not assume_unique:
+            ar1 = ivy.unique_values(ar1)
+            ar2 = ivy.unique_values(ar2)
+        print(f"ar1: {ar1} shape: {ivy.shape(ar1)} dtpye: {ivy.dtype(ar1)}")
+        print(f"ar2: {ar1} shape: {ivy.shape(ar2)} dtpye: {ivy.dtype(ar2)}")
+
+        ar1 = ivy.reshape(ar1, (-1,))
+        ar2 = ivy.reshape(ar2, (-1,))
+        print("after reshaping to -1")
+        print(f"ar1: {ar1}")
+        print(f"ar2: {ar1}")
+
+        print("after unique values selecting")
+        print(f"ar1: {ar1}")
+        print(f"ar2: {ar1}")
+
+        aux = ivy.concat([ar1, ar2], axis=0)
+        print(f"aux: {aux}")
+
+        if aux.size == 0:
+            print("aux is empty!")
+            return aux
+
+        aux = ivy.sort(aux)
+        flag = ivy.concat((ivy.array([True]), ivy.not_equal(aux[1:], aux[:-1]), ivy.array([True])), axis=0)
+        print(f"flag: {flag}")
+        mask = flag[1:] & flag[:-1]
+        if ivy.all(ivy.logical_not(mask)):
+            ret = ivy.asarray([], dtype=common_dtype)
         else:
-            print("Inside Else")
-            _ar1 = ivy.to_list(ar1)
-            _ar2 = ivy.to_list(ar2)
-            _ar = ivy.to_list(ar)
-            print("    Done: _ar = ivy.to_list(ar)")
-            print(f"    _ar: {_ar}  | _ar1: {_ar1}  | _ar2: {_ar2} ")
-            # finding symmetric difference
-            sy_d = [
-                i
-                for i in _ar
-                if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)
-            ]
-            print("""    Done: sy_d = [
-                i
-                for i in _ar
-                if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)
-            ]""")
-            print("    sy_d: ", sy_d)
-            sorted_sy_d = ivy.sort(sy_d)
-            print("    Done: ret = ivy.sort(sy_d)")
-            print("    sorted_sy_d: ", sorted_sy_d)
-            ret = ivy.astype(sorted_sy_d, ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))
+            ret = aux[mask]
+        print(f"aux[flag]: {ret}")
         return ret
     except Exception as e:
         print("All Mighty Error: ", e)
+
+
+
+
+
