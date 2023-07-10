@@ -1173,8 +1173,8 @@ def test_unique_consecutive(
 @handle_test(
     fn_tree="functional.ivy.experimental.complex",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float, complex"),
-        shared_dtype=True,
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=False,
     ),
     test_gradients=st.just(False),
 )

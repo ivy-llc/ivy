@@ -2193,19 +2193,23 @@ def complex(
     --------
     With :class:`ivy.Complex` input:
 
-    >>> real = ivy.array([1,2])
-    >>> imag = ivy.array([3,4] dtype=ivy.float32)
-    >>> x = ivy.complex(real, imag)
+    >>> real = ivy.array([1,2], dtype=torch.float32)
+    >>> imag = ivy.array([3,4], dtype=torch.float32)
+    >>> x = torch.complex(real, imag)
     >>> print(x)
+    >>> print(x.dtype)
     ivy.array([(1.+3.j),(2.+4.j)])
+    torch.complex64
 
     With :class:`ivy.Complex` input:
 
-    >>> real = ivy.array([1,2], dtype=ivy.float64)
-    >>> imag = ivy.array([3,4], dtype=ivy.float64)
-    >>> x = ivy.complex(real, imag)
+    >>> real = ivy.array([1,2], dtype=torch.float64)
+    >>> imag = ivy.array([3,4], dtype=torch.float64)
+    >>> x = torch.complex(real, imag)
     >>> print(x)
+    >>> print(x.dtype)
     ivy.array([(1.+3.j),
-            (2.+4.j)], dtype=ivy.complex128)
+            (2.+4.j)])
+    torch.complex128
     """
     return current_backend().complex(real, imag, out=out)

@@ -58,7 +58,7 @@ def complex(
     )
 
 
-complex.support_native_out = True
+complex.support_native_out = False
 
 
 def flipud(

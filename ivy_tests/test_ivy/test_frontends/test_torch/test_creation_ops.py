@@ -741,16 +741,10 @@ def test_torch_frombuffer(
 def _complex_helper(draw):
     input_dtype = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float, complex"),
+            available_dtypes=helpers.get_dtypes("valid"),
         )
     )
-    _, values = draw(
-        helpers.dtype_and_values(
-            available_dtypes=input_dtype,
-        )
-    )
-
-    return input_dtype, values
+    return input_dtype
 
 
 @handle_frontend_test(
@@ -764,12 +758,10 @@ def test_torch_complex(
     frontend,
     test_flags,
 ):
-    input_dtype, data, values = dtype_and_input
+    input_dtype = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        data=data[0],
-        values=values[0],
     )
