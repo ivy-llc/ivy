@@ -1,44 +1,30 @@
-from hypothesis import given
-import hypothesis.strategies as st
+import numpy as np
+from ivy import np as ivy_np
+from ivy.core.container import Container
 
-# Import the function to test
-from ivy_tests.test_ivy.helpers import handle_test, get_dtypes
-from ivy_tests.test_ivy import test_layer_norm
+def numpy_layer_norm(x, normalized_idxs, scale, offset, eps):
+    # Convert inputs to Ivy containers
+    x_ivy = Container(x)
+    normalized_idxs_ivy = Container(normalized_idxs)
+    scale_ivy = Container(scale)
+    offset_ivy = Container(offset)
 
+    # Call the Ivy function
+    y_ivy = ivy_np.layer_norm(x_ivy, normalized_idxs_ivy, scale_ivy, offset_ivy, eps)
 
-# Define the strategy for generating the input values
-@st.composite
-def input_strategy(draw):
-    available_dtypes = get_dtypes("float")
-    values_tuple = draw(_generate_data_layer_norm(
-        available_dtypes=available_dtypes,
-    ))
-    new_std = draw(st.floats(min_value=0.01, max_value=0.1))
-    eps = draw(st.floats(min_value=0.01, max_value=0.1))
-    test_flags = draw(st.lists(st.booleans()))
-    backend_fw = draw(st.sampled_from(["numpy", "jax", "tensorflow"]))
-    fn_name = "functional.ivy.layer_norm"
-    on_device = draw(st.sampled_from(["cpu", "gpu"]))
-    ground_truth_backend = draw(st.sampled_from(["numpy", "jax", "tensorflow"]))
+    # Convert the result back to NumPy array
+    y = ivy_np.to_numpy(y_ivy)
 
-    return {
-        "values_tuple": values_tuple,
-        "new_std": new_std,
-        "eps": eps,
-        "test_flags": test_flags,
-        "backend_fw": backend_fw,
-        "fn_name": fn_name,
-        "on_device": on_device,
-        "ground_truth_backend": ground_truth_backend
-    }
+    return y
 
-
-# Define the test function
 @given(input_strategy())
 def test_code(input_data):
-    test_layer_norm(**input_data)
+    # Call the NumPy frontend function
+    numpy_result = numpy_layer_norm(**input_data)
 
+    # Call the Ivy test function
+    ivy_result = test_layer_norm(**input_data)
 
-# Run the test
-test_code()
+    # Compare the results
+    assert np.allclose(numpy_result, ivy_result)
 
