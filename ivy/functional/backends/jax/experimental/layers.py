@@ -695,6 +695,7 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=No
     not in [
         "area",
         "nearest",
+        "nd",
         "tf_area",
         "mitchellcubic",
         "gaussian",
