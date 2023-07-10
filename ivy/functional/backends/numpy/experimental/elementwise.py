@@ -290,6 +290,9 @@ def frexp(
 
 
 def modf(
-    x: np.ndarray,/,*,out: Optional[np.ndarray] = None,
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.modf(x, out=out)

@@ -701,11 +701,11 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
 )
 def test_modf(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -716,4 +716,3 @@ def test_modf(
         on_device=on_device,
         x=x[0],
     )
-    

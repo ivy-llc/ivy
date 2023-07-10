@@ -948,4 +948,3 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
         """
         return ivy.modf(self._data, out=out)
-    
