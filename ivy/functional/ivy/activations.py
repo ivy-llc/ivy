@@ -418,9 +418,8 @@ def sigmoid(
     x
         input array.
     out
-        optional output array. If output array is provided then result
-        of sigmoid will be stored in output array instead of creating new
-        array for storing the result, shape of x and out must be same.
+        optional output array, for writing the result to. It must have a shape that the
+        input broadcast to.
         default: None
 
     Returns
@@ -444,19 +443,34 @@ def sigmoid(
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-    >>> x = ivy.array([[-1.3, 3.8, 2.1],
-    ...                [1.7, 4.2, -6.6]])
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.])))
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891],
-               [0.846,0.985,0.001]])
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
 
-    >>> x = ivy.array([[-1.3, 3.8, 2.1],
-    ...                [1.7, 4.2, -6.6]])
-    >>> ivy.sigmoid(x,out=x)
-    >>> print(x)
-    ivy.array([[0.214, 0.978, 0.891],
-               [0.846,0.985,0.001]])
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.]))))
+    >>> y = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([0.]),
+                                          d=ivy.array([0.]))))
+    >>> ivy.sigmoid(x,out=y)
+    >>> print(y)
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
     """
     return current_backend(x).sigmoid(x, out=out)
 
