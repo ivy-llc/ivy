@@ -61,7 +61,8 @@ def test_array_function():
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or
+    module
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_array_property_data(
@@ -81,7 +82,7 @@ def test_array_property_data(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_array_property_dtype(
@@ -94,7 +95,7 @@ def test_array_property_dtype(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_array_property_device(
@@ -107,7 +108,7 @@ def test_array_property_device(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -123,7 +124,7 @@ def test_array_property_ndim(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -139,7 +140,7 @@ def test_array_property_shape(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -159,7 +160,7 @@ def test_array_property_size(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -176,7 +177,7 @@ def test_array_property_itemsize(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -191,7 +192,7 @@ def test_array_property_strides(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
@@ -214,7 +215,7 @@ def test_array_property_mT(
 
 
 @handle_test(
-    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    fn_tree="functional.ivy.native_array",  # Replace with actual function or module
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
