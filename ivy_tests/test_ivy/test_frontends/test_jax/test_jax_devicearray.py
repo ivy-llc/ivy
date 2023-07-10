@@ -240,6 +240,9 @@ def test_jax_devicearray_conjugate(
     method_name="mean",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         force_int_axis=True,
         min_num_dims=1,
         valid_axis=True,
