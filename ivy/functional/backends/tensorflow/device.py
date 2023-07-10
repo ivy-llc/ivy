@@ -102,14 +102,6 @@ def tpu_is_available() -> bool:
 def handle_soft_device_variable(*args, fn, **kwargs):
     default_device = ivy.default_device(as_native=True)
     with tf.device(default_device):
-        args, kwargs = ivy.nested_map(
-            [args, kwargs],
-            lambda x: (
-                tf.identity(x)
-                if (ivy.is_native_array(x) and x.device != default_device)
-                else x
-            ),
-        )
         return fn(*args, **kwargs)
 
 
