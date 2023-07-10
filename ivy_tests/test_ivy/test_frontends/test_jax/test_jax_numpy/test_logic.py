@@ -975,9 +975,7 @@ def test_jax_iscomplexobj(
 @handle_frontend_test(
     fn_tree="jax.numpy.setxor1d",
     dtypes_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
     assume_unique=st.booleans(),
     test_with_out=st.just(False),
