@@ -247,37 +247,38 @@ def fft(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if not isinstance(dim, int):
-        raise ivy.utils.exceptions.IvyError(
+        raise ivy.utils.exceptions.IvyValueError(
             f"Expecting <class 'int'> instead of {type(dim)}"
         )
 
     if n is None:
         n = x.shape[dim]
 
-    if n < -len(x.shape):
-        raise ivy.utils.exceptions.IvyError(
-            f"Invalid dim {dim}, expecting ranging"
-            f" from {-len(x.shape)} to {len(x.shape)-1}  "
+    if n < -len(x.shape) or n >= len(x.shape):
+        raise ivy.utils.exceptions.IvyValueError(
+            f"Invalid dim {dim}, expecting a value ranging from {-len(x.shape)} to {len(x.shape)-1}"
         )
 
     if not isinstance(n, int):
-        raise ivy.utils.exceptions.IvyError(
-            f"Expecting <class 'int'> instead of {type(n)}"
+        raise TypeError(
+            f"Expecting int type for 'n', instead of {type(n)}"
         )
 
     if n <= 1:
-        raise ivy.utils.exceptions.IvyError(
-            f"Invalid data points {n}, expecting more than 1"
+        raise ivy.utils.exceptions.IvyValueError(
+            f"Invalid number of data points {n}, expecting more than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+        
+    valid_norm_modes = ["backward", "ortho", "forward"]
+    if norm not in valid_norm_modes:
+        raise ivy.utils.exceptions.IvyValueError(f"Unrecognized normalization mode {norm}, expecting one of {valid_norm_modes}")
 
     if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
         out_dtype = paddle.complex128
     else:
         out_dtype = paddle.complex64
 
-    return paddle.fft.fft(x, n, dim, norm=norm).to(dtype=out_dtype)
+    return paddle.fft.fft(x, n, dim, norm=norm).astype(out_dtype)
 
 
 def dropout1d(
