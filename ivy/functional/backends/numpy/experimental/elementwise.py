@@ -287,3 +287,12 @@ def frexp(
         return np.frexp(x, out=(None, None))
     else:
         return np.frexp(x, out=out)
+
+
+def modf(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.modf(x, out=out)
