@@ -115,10 +115,7 @@ def log_loss(input, label, epsilon=0.0001, name=None):
     return out
 
 
-@with_supported_dtypes(
-    {"2.4.2 and below": ("float32",)},
-    "paddle",
-)
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @inputs_to_ivy_arrays
 def square_error_cost(
     pred,
@@ -126,7 +123,7 @@ def square_error_cost(
     reduction="mean",
     name=None,
 ):
-    ret = ivy.square_error(pred, target)
+    ret = ivy.square(pred - target)
     reduction = _get_reduction_func(reduction)
     ret = reduction(ret).astype(pred.dtype)
     return paddle.to_tensor(ret.reshape([-1]))
