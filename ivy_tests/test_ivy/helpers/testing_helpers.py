@@ -511,6 +511,7 @@ def _import_method(method_tree: str):
 
 def handle_method(
     *,
+    init_tree: str = "",
     method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
@@ -553,9 +554,7 @@ def handle_method(
         )
 
         if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(
-                fn_name=class_name + ".__init__"
-            )
+            init_num_positional_args = num_positional_args(fn_name=init_tree)
 
         possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,

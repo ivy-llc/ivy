@@ -1210,7 +1210,10 @@ def test_method(
         ins = ivy_backend.__dict__[class_name](*args_constructor, **kwargs_constructor)
         # TODO remove when the handle_method can properly compute unsupported dtypes
         if any(
-            dtype in ivy.function_unsupported_dtypes(ins.__getattribute__(method_name))
+            dtype
+            in ivy_backend.function_unsupported_dtypes(
+                ins.__getattribute__(method_name)
+            )
             for dtype in method_input_dtypes
         ):
             return
