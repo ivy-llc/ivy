@@ -6,7 +6,7 @@ onnx_classes_to_ivy_classes = {}
 
 
 def convtensor(argument):
-    """Convert NativeClass in argument to ivy frontend counterpart for tensorflow."""
+    """Convert NativeClass in argument to ivy frontend counterpart for onnx."""
     if isinstance(argument, NativeClass):
         return onnx_classes_to_ivy_classes.get(argument._native_class)
     return argument
