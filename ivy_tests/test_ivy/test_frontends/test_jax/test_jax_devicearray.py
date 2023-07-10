@@ -6,7 +6,9 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy.functional.frontends.jax import DeviceArray
-
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _get_castable_dtype,
+)
 
 CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
 
@@ -320,17 +322,7 @@ def test_jax_devicearray_cumprod(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="cumsum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
+    dtype_and_x=_get_castable_dtype()
 )
 def test_jax_devicearray_cumsum(
     dtype_and_x,
@@ -340,15 +332,16 @@ def test_jax_devicearray_cumsum(
     init_flags,
     method_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, dtype = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
+        init_input_dtypes=[input_dtype],
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[input_dtype],
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": dtype,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
