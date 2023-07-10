@@ -1308,6 +1308,11 @@ class Tensor:
     def sign(self):
         return torch_frontend.sign(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
+    def sign_(self):
+        self.ivy_array = self.sign().ivy_array
+        return self
+
     @numpy_to_torch_style_args
     def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
         return torch_frontend.std(
