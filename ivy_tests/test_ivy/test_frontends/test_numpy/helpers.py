@@ -6,6 +6,8 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.numpy as np_frontend
+from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+import ivy_tests.test_ivy.helpers.globals as test_globals
 
 
 @st.composite
@@ -91,77 +93,105 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
         return
     ret, frontend_ret = values
     # set backend to frontend to flatten the frontend array
-    ivy.set_backend(kwargs["frontend"])
-    try:
+    with update_backend("numpy") as ivy_backend:
         # get flattened arrays from returned value
-        if ivy.isscalar(frontend_ret):
+        if ivy_backend.isscalar(frontend_ret):
             frontend_ret_np_flat = [np.asarray(frontend_ret)]
         else:
             if not isinstance(frontend_ret, tuple):
                 frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
-    except Exception as e:
-        ivy.previous_backend()
-        raise e
-    # set backend back to original
-    ivy.previous_backend()
+            frontend_ret_idxs = ivy_backend.nested_argwhere(
+                frontend_ret, ivy_backend.is_native_array
+            )
+            frontend_ret_flat = ivy_backend.multi_index_nest(
+                frontend_ret, frontend_ret_idxs
+            )
+            frontend_ret_np_flat = [ivy_backend.to_numpy(x) for x in frontend_ret_flat]
 
-    # get flattened arrays from returned value
-    ret_np_flat = _flatten_frontend_return(ret=ret)
+    with update_backend(kwargs["backend_to_test"]) as ivy_backend:
+        # get flattened arrays from returned value
+        ret_np_flat = _flatten_frontend_return(
+            ret=ret, backend=kwargs["backend_to_test"]
+        )
 
-    # handling where size
-    where = np.asarray(where)
-    if where.ndim == 0:
-        where = np.array([where])
-    elif where.ndim > 1:
-        where = where.flatten()
-    # handling ret size
+        # handling where size
+        where = np.asarray(where)
+        if where.ndim == 0:
+            where = np.array([where])
+        elif where.ndim > 1:
+            where = where.flatten()
+        # handling ret size
 
-    first_el = ret_np_flat[0]
-    # change where to match the shape of the first element of ret_np_flat
-    if first_el.size == 1:
-        where = where[:1]
-    else:
-        where = np.repeat(where, first_el.size)
-        where = where[: first_el.size]
-        where = where.reshape(first_el.shape)
+        first_el = ret_np_flat[0]
+        # change where to match the shape of the first element of ret_np_flat
+        if first_el.size == 1:
+            where = where[:1]
+        else:
+            where = np.repeat(where, first_el.size)
+            where = where[: first_el.size]
+            where = where.reshape(first_el.shape)
 
-    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
-    frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
-    ]
-    if "rtol" in kwargs.keys():
-        rtol = kwargs["rtol"]
-    else:
-        rtol = 1e-4
-    if "atol" in kwargs.keys():
-        atol = kwargs["atol"]
-    else:
-        atol = 1e-6
-    helpers.value_test(
-        ret_np_flat=ret_flat,
-        ret_np_from_gt_flat=frontend_ret_flat,
-        rtol=rtol,
-        atol=atol,
-    )
+        ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
+        frontend_ret_flat = [
+            np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
+        ]
+        if "rtol" in kwargs.keys():
+            rtol = kwargs["rtol"]
+        else:
+            rtol = 1e-4
+        if "atol" in kwargs.keys():
+            atol = kwargs["atol"]
+        else:
+            atol = 1e-6
+
+        helpers.value_test(
+            ret_np_flat=ret_flat,
+            ret_np_from_gt_flat=frontend_ret_flat,
+            rtol=rtol,
+            atol=atol,
+            backend=kwargs["backend_to_test"],
+            ground_truth_backend=kwargs["frontend"],
+        )
 
 
-def _flatten_frontend_return(*, ret):
+def _flatten_fw_return(ret, backend):
+    with update_backend(backend) as ivy_backend:
+        if not isinstance(ret, tuple):
+            ret = (ret,)
+        ret_idxs = ivy_backend.nested_argwhere(
+            ret, lambda x: ivy_backend.is_ivy_array(x) or ivy_backend.is_native_array(x)
+        )
+        if len(ret_idxs) == 0:
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+            ret_flat = [
+                ivy_backend.asarray(
+                    x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype))
+                )
+                for x in ret_flat
+            ]
+        else:
+            ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
+
+        # convert the return to NumPy
+        ret_np_flat = [ivy_backend.to_numpy(x) for x in ret_flat]
+        return ret_np_flat
+
+
+def _flatten_frontend_return(*, ret, backend):
     """Flattening the returned frontend value to a list of numpy arrays."""
-    current_backend = ivy.current_backend_str()
-    if not isinstance(ret, tuple):
-        if not ivy.is_ivy_array(ret):
-            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
+    with update_backend(backend) as ivy_backend:
+        if not isinstance(ret, tuple):
+            if not ivy_backend.is_ivy_array(ret):
+                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
+            else:
+                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
         else:
-            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
-    else:
-        if any([not ivy.is_ivy_array(x) for x in ret]):
-            ret_np_flat = helpers.flatten_frontend_to_np(ret=ret)
-        else:
-            ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=current_backend)
-    return ret_np_flat
+            if any([not ivy_backend.is_ivy_array(x) for x in ret]):
+                ret_np_flat = helpers.flatten_frontend_to_np(backend=backend, ret=ret)
+            else:
+                ret_np_flat = _flatten_fw_return(ret=ret, backend=backend)
+        return ret_np_flat
 
 
 # noinspection PyShadowingNames
@@ -195,20 +225,21 @@ def _get_safe_casting_dtype(draw, *, dtypes):
     for dtype in dtypes[1:]:
         if np_frontend.can_cast(target_dtype, dtype, casting="safe"):
             target_dtype = dtype
-    if ivy.is_float_dtype(target_dtype):
-        dtype = draw(st.sampled_from(["float64", None]))
-    elif ivy.is_uint_dtype(target_dtype):
-        dtype = draw(st.sampled_from(["uint64", None]))
-    elif ivy.is_int_dtype(target_dtype):
-        dtype = draw(st.sampled_from(["int64", None]))
-    elif ivy.is_complex_dtype(target_dtype):
-        dtype = draw(st.sampled_from(["complex128", None]))
-    else:
-        dtype = draw(st.sampled_from(["bool", None]))
-    # filter uint64 as not supported by torch backend
-    if dtype == "uint64":
-        dtype = None
-    return dtype
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_float_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["float64", None]))
+        elif ivy_backend.is_uint_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["uint64", None]))
+        elif ivy_backend.is_int_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["int64", None]))
+        elif ivy_backend.is_complex_dtype(target_dtype):
+            dtype = draw(st.sampled_from(["complex128", None]))
+        else:
+            dtype = draw(st.sampled_from(["bool", None]))
+        # filter uint64 as not supported by torch backend
+        if dtype == "uint64":
+            dtype = None
+        return dtype
 
 
 @st.composite
