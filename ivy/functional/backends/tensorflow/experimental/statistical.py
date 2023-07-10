@@ -193,14 +193,9 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
         ret = tf.cast(ret, dtype=dtype)
         return ret
 
-    if isinstance(axis, tuple):
-        if len(axis) == 1:
-            axis = axis[0]
-
-    if isinstance(axis, int):
-        axis = [axis]
-    if isinstance(axis, tuple):
-        axis = list(axis)
+    axis = list(axis)
+    if len(axis) == 1:
+        axis = axis[0]
 
     for i in axis:
         keepdim_shape = tf.tensor_scatter_nd_update(keepdim_shape, [[i]], [1])
