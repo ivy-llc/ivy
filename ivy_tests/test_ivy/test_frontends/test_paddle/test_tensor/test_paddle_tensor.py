@@ -2595,7 +2595,7 @@ def test_paddle_instance_sgn(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_tolist(
+def test_paddle_instance_tolist(
     dtype_and_x,
     frontend_method_data,
     init_flags,
