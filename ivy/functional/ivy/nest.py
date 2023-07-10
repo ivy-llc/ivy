@@ -1099,18 +1099,11 @@ def nested_map(
 
     >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
     >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list, dict))
-    [[2, 4], (6, 8), {'a': 5, 'b': 6}]
+    []
 
-    >>> nest = [[1, 2], {'a': [3, 4]}, 'hello']
-    >>> ivy.nested_map(lambda x: x * 2, nest, extra_nest_types=(dict,))
-    [[2, 4], {'a': [6, 8]}, 'hello']
-
-    >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
-    >>> ivy.nested_map(lambda x: x * 2, nest, include_derived=True)
-    [[2, 4], (6, 8), {'a': 10, 'b': 12}]
-
-    >>> ivy.nested_map(lambda x: x * 2, [[1, 2], [3, 4], [5, 6]], max_depth=1)
-    [[2, 4], [6, 8], [10, 12]]
+    >>> nest = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+    >>> nested_map(lambda x: x * 2, nest, max_depth=2)
+    [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
 
     >>> nest = ([23, 25, 1337], [63, 98, 6])
     >>> function = lamba a :  a + 1
