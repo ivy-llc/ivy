@@ -768,15 +768,12 @@ def test_frontend_function(
         frontend_fw = importlib.import_module(module_name)
         frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-        if ivy.isscalar(frontend_ret):
-            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+            frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
         else:
-            # tuplify the frontend return
-            if not isinstance(frontend_ret, tuple):
-                frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+            frontend_ret_np_flat = flatten_frontend_to_np(
+                ret=ret, frontend_array_fn=create_frontend_array
+            )
         # unset frontend framework from backend
         ivy.previous_backend()
     except Exception as e:
@@ -1492,6 +1489,10 @@ def test_frontend_method(
         shallow=False,
     )
 
+    create_frontend_array = importlib.import_module(
+        f"ivy.functional.frontends.{frontend}"
+    )._frontend_array
+
     # change ivy dtypes to native dtypes
     if "dtype" in kwargs_method_frontend:
         kwargs_method_frontend["dtype"] = ivy.as_native_dtype(
@@ -1514,15 +1515,10 @@ def test_frontend_method(
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
-    elif ivy.isscalar(frontend_ret):
-        frontend_ret_np_flat = [np.asarray(frontend_ret)]
     else:
-        # tuplify the frontend return
-        if not isinstance(frontend_ret, tuple):
-            frontend_ret = (frontend_ret,)
-        frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
-        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
-        frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+        frontend_ret_np_flat = flatten_frontend_to_np(
+            ret=ret, frontend_array_fn=create_frontend_array
+        )
     ivy.previous_backend()
 
     # assuming value test will be handled manually in the test function
