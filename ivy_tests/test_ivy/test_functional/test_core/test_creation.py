@@ -25,7 +25,6 @@ def test_native_array(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
@@ -37,7 +36,6 @@ def test_native_array(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -75,7 +73,6 @@ def test_linspace(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
@@ -93,7 +90,6 @@ def test_linspace(
         endpoint=endpoint,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -133,7 +129,6 @@ def test_logspace(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
@@ -152,7 +147,6 @@ def test_logspace(
         endpoint=endpoint,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -177,7 +171,6 @@ def test_arange(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
     on_device,
 ):
     helpers.test_function(
@@ -191,7 +184,6 @@ def test_arange(
         step=step,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -250,7 +242,6 @@ def test_asarray(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     x_dtype, x, dtype = x_dtype_x_and_dtype
     if isinstance(x, list) and len(x) == 1:
@@ -268,7 +259,6 @@ def test_asarray(
         object_in=x,
         dtype=dtype,
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -286,16 +276,7 @@ def test_asarray(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_empty(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_empty(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -306,7 +287,6 @@ def test_empty(
         dtype=dtype[0],
         device=on_device,
         test_values=False,
-        ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
     helpers.assert_same_type_and_shape(ret)
@@ -320,15 +300,7 @@ def test_empty(
     ),
     test_gradients=st.just(False),
 )
-def test_empty_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_empty_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     ret = helpers.test_function(
         input_dtypes=dtype,
@@ -340,7 +312,6 @@ def test_empty_like(
         dtype=dtype[0],
         device=on_device,
         test_values=False,
-        ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
     helpers.assert_same_type_and_shape(ret)
@@ -360,17 +331,7 @@ def test_empty_like(
     test_gradients=st.just(False),
 )
 def test_eye(
-    *,
-    n_rows,
-    n_cols,
-    k,
-    batch_shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, n_rows, n_cols, k, batch_shape, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     helpers.test_function(
         input_dtypes=dtype,
@@ -384,7 +345,6 @@ def test_eye(
         batch_shape=batch_shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -400,15 +360,7 @@ def test_eye(
     ),
     test_gradients=st.just(False),
 )
-def test_from_dlpack(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
@@ -417,7 +369,6 @@ def test_from_dlpack(
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -446,17 +397,7 @@ def _fill_value(draw):
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_full(
-    *,
-    shape,
-    fill_value,
-    dtypes,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
@@ -467,7 +408,6 @@ def test_full(
         fill_value=fill_value,
         dtype=dtypes[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -491,14 +431,7 @@ def _dtype_and_values(draw):
     fill_value=_fill_value(),
 )
 def test_full_like(
-    *,
-    dtype_and_x,
-    fill_value,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, fill_value, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -511,7 +444,6 @@ def test_full_like(
         fill_value=fill_value,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -530,15 +462,7 @@ def test_full_like(
     test_with_out=st.just(False),
 )
 def test_meshgrid(
-    *,
-    dtype_and_arrays,
-    test_flags,
-    sparse,
-    indexing,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_arrays, test_flags, sparse, indexing, backend_fw, fn_name, on_device
 ):
     dtype, arrays = dtype_and_arrays
     kw = {}
@@ -556,7 +480,6 @@ def test_meshgrid(
         **kw,
         sparse=sparse,
         indexing=indexing,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -574,16 +497,7 @@ def test_meshgrid(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_ones(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_ones(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -593,7 +507,6 @@ def test_ones(
         shape=shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -604,15 +517,7 @@ def test_ones(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_ones_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -623,7 +528,6 @@ def test_ones_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -639,16 +543,7 @@ def test_ones_like(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
 )
-def test_tril(
-    *,
-    dtype_and_x,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_tril(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
@@ -659,7 +554,6 @@ def test_tril(
         fn_name=fn_name,
         x=x[0],
         k=k,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -675,16 +569,7 @@ def test_tril(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
 )
-def test_triu(
-    *,
-    dtype_and_x,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_triu(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
 
     helpers.test_function(
@@ -695,7 +580,6 @@ def test_triu(
         fn_name=fn_name,
         x=x[0],
         k=k,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -713,16 +597,7 @@ def test_triu(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_zeros(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -732,7 +607,6 @@ def test_zeros(
         shape=shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -747,15 +621,7 @@ def test_zeros(
         max_dim_size=5,
     ),
 )
-def test_zeros_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -766,7 +632,6 @@ def test_zeros_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -854,13 +719,7 @@ def _on_off_dtype(draw):
     test_gradients=st.just(False),
 )
 def test_one_hot(
-    dtype_indices_depth_axis,
-    on_off_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_indices_depth_axis, on_off_dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, indices, depth, axis = dtype_indices_depth_axis
     on_value, off_value, dtype = on_off_dtype
@@ -876,7 +735,6 @@ def test_one_hot(
         off_value=off_value,
         axis=axis,
         dtype=dtype,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -908,12 +766,7 @@ def _get_dtype_buffer_count_offset(draw):
     test_gradients=st.just(False),
 )
 def test_frombuffer(
-    dtype_buffer_count_offset,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_buffer_count_offset, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
     helpers.test_function(
@@ -926,7 +779,6 @@ def test_frombuffer(
         dtype=input_dtype[0],
         count=count,
         offset=offset,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -941,20 +793,10 @@ def test_frombuffer(
     test_instance_method=st.just(False),
 )
 def test_triu_indices(
-    *,
-    n_rows,
-    n_cols,
-    k,
-    input_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, n_rows, n_cols, k, input_dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype = input_dtype
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
