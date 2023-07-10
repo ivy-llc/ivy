@@ -101,16 +101,14 @@ def inv(
     adjoint: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if np.any(np.linalg.det(x.astype("float64")) == 0):
-        return x
-    else:
-        if adjoint is False:
-            ret = np.linalg.inv(x)
-            return ret
-        else:
-            x = np.transpose(x)
-            ret = np.linalg.inv(x)
-            return ret
+    if adjoint:
+        if x.ndim < 2:
+            raise ValueError("Input must be at least 2D")
+        permutation = list(range(x.ndim))
+        permutation[-2], permutation[-1] = permutation[-1], permutation[-2]
+        x_adj = np.transpose(x, permutation).conj()
+        return np.linalg.inv(x_adj)
+    return np.linalg.inv(x)
 
 
 @with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
