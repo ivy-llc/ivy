@@ -3078,16 +3078,36 @@ def test_numpy_instance_ptp(
 # item
 @st.composite
 def _item_helper(draw):
-    input_dtype, x, index = draw(
-        helpers.dtype_array_query(
+    dtype = draw(
+        helpers.array_dtypes(
+            num_arrays=1,
             available_dtypes=helpers.get_dtypes("numeric"),
-            min_num_dims=1,
-            int_index_only=True,
         )
     )
-    index_samples = [index, draw(helpers.ints(min_value=0, max_value=x.size - 1))]
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=10,
+        )
+    )
+    array = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+        )
+    )
 
-    if x.size == 1:
+    index = ()
+    for s in shape:
+        index += (draw(st.integers(min_value=-s + 1, max_value=s - 1)),)
+
+    index_samples = [index, draw(helpers.ints(min_value=0, max_value=array.size - 1))]
+
+    if array.size == 1:
         index_samples.append(None)
 
     sampled_index = draw(st.sampled_from(index_samples))
@@ -3099,7 +3119,7 @@ def _item_helper(draw):
         method_all_as_kwargs_np = {"args": sampled_index}
         num_positional_args = 1
 
-    return input_dtype, x, method_all_as_kwargs_np, num_positional_args
+    return dtype, array, method_all_as_kwargs_np, num_positional_args
 
 
 @handle_frontend_method(
