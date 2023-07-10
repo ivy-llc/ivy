@@ -35,8 +35,8 @@ def elu(
     alpha=1.0,
     name=None,
 ):
-    alpha_plus_one = alpha + 1
-    arr = ivy.where(x > 0, x, alpha_plus_one * (ivy.expm1(x)-1))
+    
+    arr = ivy.where(x > 0, x, (alpha + 1.0) * (ivy.expm1(x)-1.0))
     return ivy.astype(arr, x.dtype)
 
 
