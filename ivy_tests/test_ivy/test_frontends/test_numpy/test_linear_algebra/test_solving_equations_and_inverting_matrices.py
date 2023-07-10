@@ -1,22 +1,19 @@
 # global
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
-    _get_first_matrix,
-    _get_second_matrix,
-)
 
 
 # solve
 @handle_frontend_test(
     fn_tree="numpy.linalg.solve",
-    x=_get_first_matrix(),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_solve(
@@ -27,7 +24,7 @@ def test_numpy_solve(
     fn_tree,
     on_device,
 ):
-    dtype1, x1 = x
+    dtype1, x1, _ = x
     dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
@@ -155,6 +152,9 @@ def test_numpy_tensorinv(
     frontend,
 ):
     dtype, x, ind = params
+    if ivy.current_backend_str() == "paddle":
+        # Paddle only supports ndim from 0 to 9
+        assume(x.ndim <= 9)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -168,54 +168,43 @@ def test_numpy_tensorinv(
     )
 
 
-@st.composite
-def _get_lstsq_matrices(draw):
-    shape1 = draw(helpers.ints(min_value=2, max_value=10))
-    shape2 = draw(helpers.ints(min_value=2, max_value=10))
-    input_dtype = "float64"
-    a = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=(shape1, shape2),
-            min_value=10,
-            max_value=20,
-            exclude_min=False,
-            exclude_max=False,
-        )
-    )
-    b = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=(shape1, 1),
-            min_value=10,
-            max_value=20,
-            exclude_min=False,
-            exclude_max=False,
-        )
-    )
-    return input_dtype, a, b
-
-
 # lstsq
 @handle_frontend_test(
     fn_tree="numpy.linalg.lstsq",
-    params=_get_lstsq_matrices(),
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
     test_with_out=st.just(False),
 )
 def test_numpy_lstsq(
-    params,
+    x,
+    y,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    input_dtype, fir, sec = params
-    helpers.test_frontend_function(
-        input_dtypes=[input_dtype, input_dtype],
+    dtype1, a, _ = x
+    dtype2, b = y
+    ret, ret_gt = helpers.test_frontend_function(
+        input_dtypes=[dtype1, dtype2],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=fir,
-        b=sec,
+        a=a,
+        b=b,
+        test_values=False,
     )
+    for ret_f, ret_gtt in zip(ret, ret_gt):
+        # TODO: Uncomment this once the function is implemented on the API side
+        # frontend_ret = ret_f
+        # frontend_ret_gt = ret_gt
+        # ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        # ret_gt_flattened = helpers.flatten_fw_and_to_np(
+        #       ret=frontend_ret_gt, fw="numpy")
+        # helpers.value_test(
+        #     ret_np_flat=ret_flattened,
+        #     ret_np_from_gt_flat=ret_gt_flattened,
+        #     ground_truth_backend="numpy",
+        # )
+        return

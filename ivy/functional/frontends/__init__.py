@@ -1,20 +1,14 @@
-versions = {
-    "torch": "1.11.0",
-    "tensorflow": "2.9.0",
-    "numpy": "1.23.2",
-    "jax": "0.3.16",
-    "scipy": "1.10.1",
-    "paddle": "2.4.2",
-}
-
 import importlib
 
-from . import numpy
-from . import jax
-from . import paddle
-from . import scipy
-from . import tensorflow
-from . import torch
+
+versions = {
+    "torch": "2.0.1",
+    "tensorflow": "2.13.0",
+    "numpy": "1.25.1",
+    "jax": "0.4.13",
+    "scipy": "1.10.1",
+    "paddle": "2.5.0",
+}
 
 
 def fn_name_from_version_specific_fn_name(name, version):
@@ -95,11 +89,3 @@ def set_frontend_to_specific_version(frontend):
             orig_name = fn_name_from_version_specific_fn_name(i, f_version)
             if orig_name:
                 frontend.__dict__[orig_name] = frontend.__dict__[i]
-
-
-set_frontend_to_specific_version(torch)
-set_frontend_to_specific_version(tensorflow)
-set_frontend_to_specific_version(jax)
-set_frontend_to_specific_version(numpy)
-set_frontend_to_specific_version(scipy)
-set_frontend_to_specific_version(paddle)

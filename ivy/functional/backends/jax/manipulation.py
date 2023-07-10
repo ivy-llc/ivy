@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
+import numpy as np
 
 # local
 import ivy
@@ -35,7 +36,10 @@ def concat(
                 xs[i] = jnp.ravel(xs[i])
         if is_tuple:
             xs = tuple(xs)
-    return jnp.concatenate(xs, axis)
+    try:
+        return jnp.concatenate(xs, axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
@@ -49,8 +53,8 @@ def expand_dims(
     try:
         ret = jnp.expand_dims(x, axis)
         return ret
-    except IndexError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
@@ -113,8 +117,8 @@ def roll(
 def squeeze(
     x: JaxArray,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -136,7 +140,10 @@ def stack(
     axis: int = 0,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.stack(arrays, axis=axis)
+    try:
+        return jnp.stack(arrays, axis=axis)
+    except ValueError as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 # Extra #
@@ -148,7 +155,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[Union[int, Sequence[int], JaxArray]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[JaxArray]:
@@ -160,6 +167,8 @@ def split(
                 )
             )
         return [x]
+    if isinstance(num_or_size_splits, jnp.ndarray):
+        num_or_size_splits = num_or_size_splits.tolist()
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
     elif isinstance(num_or_size_splits, int) and with_remainder:
@@ -171,7 +180,7 @@ def split(
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = jnp.cumsum(jnp.array(num_or_size_splits[:-1]))
+        num_or_size_splits = np.cumsum(np.array(num_or_size_splits[:-1]))
     return jnp.split(x, num_or_size_splits, axis)
 
 
@@ -235,7 +244,7 @@ def clip(
     return jnp.where(x < x_min, x_min, x)
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("uint64",)}, backend_version)
 def constant_pad(
     x: JaxArray,
     /,

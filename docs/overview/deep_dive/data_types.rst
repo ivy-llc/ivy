@@ -318,7 +318,7 @@ For Backend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
     def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
         x = _cast_for_unary_op(x)
         return torch.expm1(x, out=out)
@@ -330,7 +330,7 @@ For Frontend Functions:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def trace(input):
         if "int" in input.dtype:
             input = input.astype("int64")
@@ -347,7 +347,7 @@ For example, using the decorator:
 
 .. code-block:: python
 
-    @with_unsupported_dtypes{{"1.11.0 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
+    @with_unsupported_dtypes{{"2.0.1 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
 
 would consider all the unsigned integer dtypes (``uint8``, ``uint16``, ``uint32``, ``uint64``), ``bfloat16`` and ``float16`` as unsupported for the function.
 
@@ -388,6 +388,51 @@ An example of the latter is :func:`ivy.abs` with a tensorflow backend:
         else:
             return tf.abs(x)
 
+
+
+
+The :code: `[un]supported_dtypes_and_devices` decorators can be used for more specific cases where a certain
+set of dtypes is not supported by a certain device.
+
+.. code-block:: python
+    @with_unsupported_device_and_dtypes({"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    def gcd(
+        x1: Union[paddle.Tensor, int, list, tuple],
+        x2: Union[paddle.Tensor, float, list, tuple],
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
+    ) -> paddle.Tensor:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+        return paddle.gcd(x1, x2)
+
+
+
+These decorators can also be used as context managers and be applied to a block of code at once or even a module, so that the decorator is applied to all the functions within that context.
+For example :
+.. code-block:: python
+
+    # we define this function each time we use this context manager
+    # so that context managers can access the globals in the
+    # module they are being used
+    def globals_getter_func(x=None):
+    if not x:
+        return globals()
+    else:
+        globals()[x[0]] = x[1]
+
+    with with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version):
+
+        def f1(*args,**kwargs):
+            pass
+
+        def f2(*args,**kwargs):
+            pass
+
+        from . import activations
+        from . import operations
+
+
 In some cases, the lack of support for a particular data type by the backend function might be more difficult to handle correctly.
 For example, in many cases casting to another data type will result in a loss of precision, input range, or both.
 In such cases, the best solution is to simply add the data type to the :attr:`@with_unsupported_dtypes` decorator, rather than trying to implement a long and complex patch to achieve the desired behaviour.
@@ -409,7 +454,7 @@ In some cases, the lack of support might just be a bug which will likely be reso
 In these cases, as well as adding to the :attr:`unsupported_dtypes` attribute, we should also add a :code:`#ToDo` comment in the implementation, explaining that the support of the data type will be added as soon as the bug is fixed, with a link to an associated open issue in the framework repos included in the comment.
 
 For example, the following code throws an error when ``dtype`` is ``torch.int32`` but not when it is ``torch.int64``.
-This is tested with torch version ``1.12.1``, which is the latest stable release at the time of writing.
+This is tested with torch version ``1.12.1``.
 This is a `known bug <https://github.com/pytorch/pytorch/issues/84530>`_:
 
 .. code-block:: python
@@ -425,7 +470,7 @@ We also add the following comment above the :attr:`unsupported_dtypes` attribute
 
     # ToDo: re-add int32 support once
     # (https://github.com/pytorch/pytorch/issues/84530) is fixed
-    @with_unsupported_dtypes({"1.11.0 and below": ("int32",)}, backend_version)
+    @with_unsupported_dtypes({"2.0.1 and below": ("int32",)}, backend_version)
 
 Similarly, the following code throws an error for torch version ``1.11.0``
 but not ``1.12.1``.
@@ -441,7 +486,7 @@ In such cases, we can explicitly flag which versions support which data types li
 .. code-block:: python
 
     @with_unsupported_dtypes(
-        {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
+        {"2.0.1 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()}, backend_version
     )
     def cumsum(
         x: torch.Tensor,
@@ -467,31 +512,120 @@ Data Type Casting Modes
 -----------------------
 
 As discussed earlier, many backend functions have a set of unsupported dtypes which are otherwise supported by the
-backend itself. This raises a question that whether we should support these dtypes by casting them to some other but close dtype.
-This is where we have various dtype casting modes so as to give the users an option to automatically cast unsupported dtype operations to a supported and a nearly same dtype.
+backend itself. This raises a question that whether we should support these dtypes by casting them to some other but close dtype. We avoid manually casting unsupported dtypes
+for most of the part as this could be seen as undesirable behavior to some of users. This is where we have various dtype casting modes so as to give the users an option to automatically cast unsupported dtype operations to a supported and a nearly same dtype.
 
 There are currently four modes that accomplish this.
 
-1. `upcast_data_types`
-2. `downcast_data_types`
-3. `crosscast_data_types`
-4. `cast_data_types`
+1. :code:  `upcast_data_types`
+2. :code:  `downcast_data_types`
+3. :code:  `crosscast_data_types`
+4. :code:  `cast_data_types`
 
-`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
-dtype group, i.e, if the unsupported dtype encountered is `uint8` , then this mode will try to upcast it to the next available supported `uint` dtype. If no
-higher `uint` dtype is avaiable, then there won't be any upcasting performed. You can set this mode by calling `ivy.upcast_data_types()` with an optional `val` keyword argument that defaults to `True`.
+:code:`upcast_data_types` mode casts the unsupported dtype encountered to the next highest supported dtype in the same
+dtype group, i.e, if the unsupported dtype encountered is :code:`uint8` , then this mode will try to upcast it to the next available supported :code:`uint` dtype. If no
+higher `uint` dtype is avaiable, then there won't be any upcasting performed. You can set this mode by calling :code:`ivy.upcast_data_types()` with an optional :code:`val` keyword argument that defaults to :code:`True`.
 
-Similarly, `downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed is no lower dtype is found in the same group.
-It can also be set by calling `ivy.downcast_data_types()` with the optional `val` keyword that defaults to boolean value `True`.
+Similarly, :code:`downcast_data_dtypes` tries to downcast to the next lower supported dtype in the same dtype group. No casting is performed is no lower dtype is found in the same group.
+It can also be set by calling :code:`ivy.downcast_data_types()` with the optional :code:`val` keyword that defaults to boolean value :code:`True`.
 
-`crosscast_data_types` is for cases when a function doesn't support `int` dtypes, but supports `float` and vice-versa. In such cases,
-we cast to the default supported `float` dtype if it's the unsupported integer case or we cast to the default supported `int` dtype if it's the unsupported `float` case.
+:code:`crosscast_data_types` is for cases when a function doesn't support :code:`int` dtypes, but supports :code:`float` and vice-versa. In such cases,
+we cast to the default supported :code:`float` dtype if it's the unsupported integer case or we cast to the default supported :code:`int` dtype if it's the unsupported :code:`float` case.
 
-The `cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
+The :code:`cast_data_types` mode is the combination of all the three modes that we discussed till now. It works it way from crosscasting to upcasting and finally to downcasting to provide support
 for any unsupported dtype that is encountered by the functions.
+
+This is the unsupported dtypes for :code: `exmp1`. It doesn't support :code: `float16`. We will see how we can
+still pass :code:`float16` arrays and watch it pass for different modes.
+
+Example of Upcasting mode :
+
+.. code-block:: python
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, backend_version)
+    @handle_numpy_arrays_in_specific_backend
+    def expm1(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
+        return torch.expm1(x, out=out)
+
+The function :code:`expm1` has :code:`float16` as one of the unsupported dtypes, for the version :code:`2.0.1` which
+is being used for execution at the time of writing this. We will see how cating modes handles this.
+
+.. code-block:: python
+
+    import ivy
+    ivy.set_backend('torch')
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.upcast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
+
+
+
+
+Example of Downcasting mode :
+
+.. code-block:: python
+
+    import ivy
+    ivy.set_backend('torch')
+    try:
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.upcast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
+
+
+Example of Mixed casting mode :
+
+.. code-block:: python
+
+    import ivy
+    ivy.set_backend('torch')
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
+    ivy.cast_data_types()
+    ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
+
+
+
+Example of Cross casting mode :
+
+.. code-block:: python
+    @with_unsupported_dtypes({"2.0.1 and below": ("float",)}, backend_version)
+    @handle_numpy_arrays_in_specific_backend
+    def lcm(
+        x1: torch.Tensor,
+        x2: torch.Tensor,
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+        return torch.lcm(x1, x2, out=out)
+
+This function doesn't support any of the :code:`float` dtypes, so we will see how cross casting mode can
+enable :code:`float` dtypes to be passed here too.
+
+.. code-block:: python
+
+    import ivy
+    ivy.set_backend('torch')
+    ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16')) # raises exception
+    ivy.crosscast_data_types()
+    ret = ivy.lcm(ivy.array([1], dtype='float16'),ivy.array([1], dtype='float16')) # doesn't raise exception
+
+
+
+Since all  :code: `float` dtypes are not supported by the :code:`lcm` function in :code: `torch` , it is
+casted to the default integer dtype , i.e :code:`int32`.
+
+While, casting modes can handle a lot of cases, it doesn't guarantee 100% support for the unsupported dtypes.
+In cases where there is no other supported dtype available to cast to, casting mode won't work and the function
+would throw the usual error. Since casting modes simply tries to cast an array or dtype to a different one that the
+given function supports, it is not supposed to provide optimal performance or precision, and hence should be avoided
+if these are the prime concerns of the user.
+
 
 Together with these modes we provide some level of flexibility to users when they encounter functions that don't support a dtype which is otherwise supported by the backend. However, it should
 be well understood that this may lead to loss of precision and/or increase in memory consumption.
+
 
 
 Superset Data Type Support
@@ -515,6 +649,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
     </iframe>

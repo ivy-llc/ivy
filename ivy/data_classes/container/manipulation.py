@@ -104,6 +104,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         x
             input container.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             position where a new axis (dimension) of size one will be added. If an
             element of the container has the rank of ``N``, then the ``axis`` needs
@@ -196,6 +203,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         self
             input container.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             position where a new axis (dimension) of size one will be added. If an
             element of the container has the rank of ``N``, the ``axis`` needs to
@@ -242,7 +256,9 @@ class _ContainerWithManipulation(ContainerBase):
         /,
         *,
         copy: Optional[bool] = None,
-        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        num_or_size_splits: Optional[
+            Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         axis: int = 0,
         with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -261,8 +277,16 @@ class _ContainerWithManipulation(ContainerBase):
             array to be divided into sub-arrays.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
-            integer. The size of each split element if a sequence of integers. Default
-            is to divide into as many 1-dimensional arrays as the axis dimension.
+            integer. The size of each split element if a sequence of integers
+            or 1-D array. Default is to divide into as many 1-dimensional arrays
+            as the axis dimension.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             The axis along which to split, default is ``0``.
         with_remainder
@@ -315,7 +339,9 @@ class _ContainerWithManipulation(ContainerBase):
         /,
         *,
         copy: Optional[bool] = None,
-        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        num_or_size_splits: Optional[
+            Union[int, Sequence[int], ivy.Array, ivy.NativeArray]
+        ] = None,
         axis: int = 0,
         with_remainder: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -332,10 +358,18 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         self
             array to be divided into sub-arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         num_or_size_splits
             Number of equal arrays to divide the array into along the given axis if an
-            integer. The size of each split element if a sequence of integers. Default
-            is to divide into as many 1-dimensional arrays as the axis dimension.
+            integer. The size of each split element if a sequence of integers
+            or 1-D array. Default is to divide into as many 1-dimensional arrays
+            as the axis dimension.
         axis
             The axis along which to split, default is ``0``.
         with_remainder
@@ -407,6 +441,13 @@ class _ContainerWithManipulation(ContainerBase):
         axes
             tuple containing a permutation of (0, 1, ..., N-1) where N is the number
             of axes (dimensions) of x.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -462,6 +503,13 @@ class _ContainerWithManipulation(ContainerBase):
         axes
             tuple containing a permutation of (0, 1, ..., N-1) where N is the number
             of axes (dimensions) of x.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -514,6 +562,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         x
             input container.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             axis (or axes) along which to flip. If axis is None,
             all input array axes are flipped. If axis is negative,
@@ -594,6 +649,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         self
             input container.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             axis (or axes) along which to flip. If axis is None,
             all input array axes are flipped. If axis is negative,
@@ -699,6 +761,13 @@ class _ContainerWithManipulation(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -809,6 +878,13 @@ class _ContainerWithManipulation(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         order
             Read the elements of the input container using this index order,
             and place the elements into the reshaped array using this index order.
@@ -1060,6 +1136,13 @@ class _ContainerWithManipulation(ContainerBase):
             input container.
         axis
             axis (or axes) to squeeze.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1115,8 +1198,8 @@ class _ContainerWithManipulation(ContainerBase):
     def squeeze(
         self: ivy.Container,
         /,
-        axis: Union[int, Sequence[int]],
         *,
+        axis: Optional[Union[int, Sequence[int]]],
         copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1135,6 +1218,13 @@ class _ContainerWithManipulation(ContainerBase):
             input container.
         axis
             axis (or axes) to squeeze.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1844,6 +1934,13 @@ class _ContainerWithManipulation(ContainerBase):
             First axis to be swapped.
         axis1
             Second axis to be swapped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -1906,6 +2003,13 @@ class _ContainerWithManipulation(ContainerBase):
             First axis to be swapped.
         axis1
             Second axis to be swapped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1965,6 +2069,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         x
             Input array or container to unstack.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             Axis for which to unpack the array.
         keepdims
@@ -2056,6 +2167,13 @@ class _ContainerWithManipulation(ContainerBase):
         ----------
         self
             Input container to unstack at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         axis
             Axis for which to unpack the array.
         keepdims

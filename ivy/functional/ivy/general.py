@@ -42,8 +42,8 @@ from ivy.functional.ivy.device import dev
 
 FN_CACHE = dict()
 INF = float("inf")
-TMP_DIR = "/tmp"
 
+precise_mode_stack = list()
 queue_timeout_stack = list()
 array_mode_stack = list()
 shape_array_mode_stack = list()
@@ -55,10 +55,104 @@ trace_mode_dict["ivy"] = "ivy/"
 trace_mode_dict["full"] = ""
 trace_mode_dict["none"] = ""
 show_func_wrapper_trace_mode_stack = list()
+min_denominator_stack = list()
+min_base_stack = list()
+tmp_dir_stack = list()
 
 
 # Extra #
 # ------#
+
+
+class PreciseMode:
+    """Precise Mode Context Manager."""
+
+    # noinspection PyShadowingNames
+    def __init__(self, precise_mode):
+        self._precise_mode = precise_mode
+
+    def __enter__(self):
+        set_precise_mode(self._precise_mode)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_precise_mode()
+        if self and (exc_type is not None):
+            print(exc_tb)
+            raise exc_val
+        return self
+
+
+ivy.precise_mode = True
+
+
+@handle_exceptions
+def set_precise_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to use a promotion table that avoids any precision loss or a
+    compute effecient table that avoids most wider-than-necessary promotions.
+
+    Parameter
+    ---------
+    mode
+        boolean whether to use high precision promtion table
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.precise_mode
+    False
+
+    >>> ivy.set_precise_mode(True)
+    >>> ivy.precise_mode
+    True
+    """
+    global precise_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    precise_mode_stack.append(mode)
+    ivy.__setattr__("precise_mode", mode, True)
+    _update_promotion_table(precise=mode)
+
+
+@handle_exceptions
+def unset_precise_mode() -> None:
+    """
+    Reset the mode of whether to use a promotion table that avoids any precision loss or
+    a compute effecient table that avoids most wider-than-necessary promotions.
+
+    Examples
+    --------
+    >>> ivy.set_precise_mode(False)
+    >>> ivy.precise_mode
+    False
+
+    >>> ivy.unset_precise_mode()
+    >>> ivy.precise_mode
+    True
+    """
+    global precise_mode_stack
+    if precise_mode_stack:
+        precise_mode_stack.pop(-1)
+        mode = precise_mode_stack[-1] if precise_mode_stack else True
+        ivy.__setattr__("precise_mode", mode, True)
+        _update_promotion_table(precise=mode)
+
+
+def _update_promotion_table(precise):
+    """Update the current datatype promotion table."""
+    if precise:
+        ivy.promotion_table = {
+            **ivy.array_api_promotion_table,
+            **ivy.common_extra_promotion_table,
+            **ivy.precise_extra_promotion_table,
+        }
+
+    else:
+        ivy.promotion_table = {
+            **ivy.array_api_promotion_table,
+            **ivy.common_extra_promotion_table,
+            **ivy.extra_promotion_table,
+        }
 
 
 class ArrayMode:
@@ -319,11 +413,17 @@ def is_ivy_container(x: Any, /) -> bool:
     return isinstance(x, ivy.Container)
 
 
+ivy.array_mode = True
+
+
 @handle_exceptions
 def set_array_mode(mode: bool) -> None:
     """
     Set the mode of whether to convert inputs to ivy.NativeArray, then convert outputs
     back to ivy.Array.
+
+    It Stops the conversion of ivy.NativeArray to ivy.Array in the
+    case when it is set to False.
 
     Parameter
     ---------
@@ -333,16 +433,17 @@ def set_array_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     False
 
     >>> ivy.set_array_mode(True)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     True
     """
     global array_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     array_mode_stack.append(mode)
+    ivy.__setattr__("array_mode", mode, True)
 
 
 @handle_exceptions
@@ -354,36 +455,21 @@ def unset_array_mode() -> None:
     Examples
     --------
     >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     False
 
     >>> ivy.unset_shape_array_mode()
-    >>> ivy.get_array_mode()
+    >>> ivy.array_mode
     True
     """
     global array_mode_stack
     if array_mode_stack:
         array_mode_stack.pop(-1)
+        mode = array_mode_stack[-1] if array_mode_stack else True
+        ivy.__setattr__("array_mode", mode, True)
 
 
-@handle_exceptions
-def get_array_mode() -> bool:
-    """
-    Get the current state of array_mode.
-
-    Examples
-    --------
-    >>> ivy.get_array_mode()
-    True
-
-    >>> ivy.set_array_mode(False)
-    >>> ivy.get_array_mode()
-    False
-    """
-    global array_mode_stack
-    if not array_mode_stack:
-        return True
-    return array_mode_stack[-1]
+ivy.nestable_mode = True
 
 
 @handle_exceptions
@@ -399,16 +485,17 @@ def set_nestable_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_nestable_mode(False)
-    >>> ivy.get_nestable_mode()
+    >>> ivy.nestable_mode
     False
 
     >>> ivy.set_nestable_mode(True)
-    >>> ivy.get_nestable_mode()
+    >>> ivy.nestable_mode
     True
     """
     global nestable_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     nestable_mode_stack.append(mode)
+    ivy.__setattr__("nestable_mode", mode, True)
 
 
 @handle_exceptions
@@ -420,37 +507,21 @@ def unset_nestable_mode() -> None:
     Examples
     --------
     >>> ivy.set_nestable_mode(False)
-    >>> ivy.get_nestable_mode()
+    >>> ivy.nestable_mode
     False
 
     >>> ivy.unset_nestable_mode()
-    >>> ivy.get_nestable_mode()
+    >>> ivy.nestable_mode
     True
     """
     global nestable_mode_stack
     if nestable_mode_stack:
         nestable_mode_stack.pop(-1)
+        mode = nestable_mode_stack[-1] if nestable_mode_stack else True
+        ivy.__setattr__("nestable_mode", mode, True)
 
 
-@handle_exceptions
-def get_nestable_mode() -> bool:
-    """
-    Get the current mode of whether to check if function inputs are ivy.Container.
-    Default is ``True``.
-
-    Examples
-    --------
-    >>> ivy.get_exception_trace_mode()
-    True
-
-    >>> ivy.set_nestable_mode(False)
-    >>> ivy.get_exception_trace_mode()
-    False
-    """
-    global nestable_mode_stack
-    if not nestable_mode_stack:
-        return True
-    return nestable_mode_stack[-1]
+ivy.exception_trace_mode = "full"
 
 
 @handle_exceptions
@@ -467,11 +538,11 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
     Examples
     --------
     >>> ivy.set_exception_trace_mode("ivy")
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.exception_trace_mode
     'ivy'
 
     >>> ivy.set_exception_trace_mode("full")
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.exception_trace_mode
     'full'
     """
     global exception_trace_mode_stack
@@ -480,6 +551,7 @@ def set_exception_trace_mode(mode: Literal["ivy", "full", "frontend"]) -> None:
         mode, trace_modes, False, "trace mode must be one of {}".format(trace_modes)
     )
     exception_trace_mode_stack.append(mode)
+    ivy.__setattr__("exception_trace_mode", mode, True)
 
 
 @handle_exceptions
@@ -490,33 +562,21 @@ def unset_exception_trace_mode() -> None:
     Examples
     --------
     >>> ivy.set_exception_trace_mode("ivy")
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.exception_trace_mode
     'ivy'
 
     >>> ivy.unset_exception_trace_mode()
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.exception_trace_mode
     'full'
     """
     global exception_trace_mode_stack
     if exception_trace_mode_stack:
         exception_trace_mode_stack.pop(-1)
+        mode = exception_trace_mode_stack[-1] if exception_trace_mode_stack else "full"
+        ivy.__setattr__("exception_trace_mode", mode, True)
 
 
-@handle_exceptions
-def get_exception_trace_mode() -> str:
-    """
-    Get the current state of exception_trace_mode.
-
-    Examples
-    --------
-    >>> ivy.set_exception_trace_mode("full")
-    >>> ivy.get_exception_trace_mode()
-    'full'
-    """
-    global exception_trace_mode_stack
-    if not exception_trace_mode_stack:
-        return "full"
-    return exception_trace_mode_stack[-1]
+ivy.show_func_wrapper_trace_mode = True
 
 
 @handle_exceptions
@@ -532,16 +592,17 @@ def set_show_func_wrapper_trace_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_show_func_wrapper_trace_mode(False)
-    >>> ivy.get_show_func_wrapper_trace_mode()
+    >>> ivy.show_func_wrapper_trace_mode
     False
 
     >>> ivy.set_show_func_wrapper_trace_mode(True)
-    >>> ivy.get_show_func_wrapper_trace_mode()
+    >>> ivy.show_func_wrapper_trace_mode
     True
     """
     global show_func_wrapper_trace_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     show_func_wrapper_trace_mode_stack.append(mode)
+    ivy.__setattr__("show_func_wrapper_trace_mode", mode, True)
 
 
 @handle_exceptions
@@ -553,37 +614,22 @@ def unset_show_func_wrapper_trace_mode() -> None:
     Examples
     --------
     >>> ivy.set_show_func_wrapper_trace_mode(False)
-    >>> ivy.get_show_func_wrapper_trace_mode()
+    >>> ivy.show_func_wrapper_trace_mode
     False
 
     >>> ivy.unset_show_func_wrapper_trace_mode()
-    >>> ivy.get_show_func_wrapper_trace_mode()
+    >>> ivy.show_func_wrapper_trace_mode
     True
     """
     global show_func_wrapper_trace_mode_stack
     if show_func_wrapper_trace_mode_stack:
         show_func_wrapper_trace_mode_stack.pop(-1)
-
-
-@handle_exceptions
-def get_show_func_wrapper_trace_mode() -> bool:
-    """
-    Get the current state of whether to show the full stack trace with function wrapping
-    traces. Default is True (function wrapping traces are shown)
-
-    Examples
-    --------
-    >>> ivy.get_show_func_wrapper_trace_mode()
-    True
-
-    >>> ivy.set_show_func_wrapper_trace_mode(False)
-    >>> ivy.get_show_func_wrapper_trace_mode()
-    False
-    """
-    global show_func_wrapper_trace_mode_stack
-    if not show_func_wrapper_trace_mode_stack:
-        return True
-    return show_func_wrapper_trace_mode_stack[-1]
+        mode = (
+            show_func_wrapper_trace_mode_stack[-1]
+            if show_func_wrapper_trace_mode_stack
+            else True
+        )
+        ivy.__setattr__("show_func_wrapper_trace_mode", mode, True)
 
 
 @handle_exceptions
@@ -1559,6 +1605,7 @@ def to_native_shape(
     ivy.utils.assertions.check_all(
         [isinstance(v, int) for v in shape if not is_array(v)],
         "shape must take integers only",
+        as_array=False,
     )
     ivy.utils.assertions.check_true(
         not is_array(shape) or ivy.is_int_dtype(shape), "shape must take integers only"
@@ -2050,23 +2097,7 @@ def einops_repeat(
     return ret
 
 
-@handle_exceptions
-def get_min_denominator() -> float:
-    """
-    Get the global minimum denominator used by ivy for numerically stable division.
-
-    Returns
-    -------
-    ret
-        The value of the global minimum denominator.
-
-    Examples
-    --------
-    >>> x = ivy.get_min_denominator()
-    >>> print(x)
-    1e-12
-    """
-    return ivy._MIN_DENOMINATOR
+ivy.min_denominator = 1e-12
 
 
 @handle_exceptions
@@ -2082,36 +2113,46 @@ def set_min_denominator(val: float) -> None:
 
     Examples
     --------
-    >>> x = ivy.get_min_denominator()
+    >>> x = ivy.min_denominator
     >>> print(x)
     1e-12
 
     >>> ivy.set_min_denominator(1e-13)
-    >>> y = ivy.get_min_denominator()
+    >>> y = ivy.min_denominator
     >>> print(y)
     1e-13
     """
-    ivy._MIN_DENOMINATOR = val
+    global min_denominator_stack
+    ivy.utils.assertions.check_isinstance(val, (int, float))
+    min_denominator_stack.append(val)
+    ivy.__setattr__("min_denominator", val, True)
 
 
 @handle_exceptions
-def get_min_base() -> float:
+def unset_min_denominator() -> None:
     """
-    Get the global minimum base used by ivy for numerically stable power raising.
-
-    Returns
-    -------
-    ret
-        Global minimum base number
+    Reset the global minimum denominator used by ivy for numerically stable division to
+    the previous value.
 
     Examples
     --------
-    >>> x = ivy.get_min_base()
-    >>> print(x)
-    1e-05
+    >>> ivy.set_min_denominator(1e-10)
+    >>> y = ivy.min_denominator
+    >>> print(y)
+    1e-10
+
+    >>> ivy.unset_min_denominator()
+    >>> ivy.min_denominator
+    1e-12
     """
-    # noinspection PyProtectedMember
-    return ivy._MIN_BASE
+    global min_denominator_stack
+    if min_denominator_stack:
+        min_denominator_stack.pop(-1)
+        val = min_denominator_stack[-1] if min_denominator_stack else 1e-12
+        ivy.__setattr__("min_denominator", val, True)
+
+
+ivy.min_base = 1e-05
 
 
 @handle_exceptions
@@ -2127,16 +2168,43 @@ def set_min_base(val: float) -> None:
 
     Examples
     --------
-    >>> x = ivy.get_min_base()
+    >>> x = ivy.min_base
     >>> print(x)
     1e-05
 
     >>> ivy.set_min_base(1e-04)
-    >>> y = ivy.get_min_base()
+    >>> y = ivy.min_base
     >>> print(y)
     1e-04
     """
-    ivy._MIN_BASE = val
+    global min_base_stack
+    ivy.utils.assertions.check_isinstance(val, (int, float))
+    min_base_stack.append(val)
+    ivy.__setattr__("min_base", val, True)
+
+
+@handle_exceptions
+def unset_min_base() -> None:
+    """
+    Reset the global minimum base used by ivy for numerically stable power raising to
+    the previous value.
+
+    Examples
+    --------
+    >>> ivy.set_min_base(1e-07)
+    >>> y = ivy.min_base
+    >>> print(y)
+    1e-07
+
+    >>> ivy.unset_min_base()
+    >>> ivy.min_base
+    1e-05
+    """
+    global min_base_stack
+    if min_base_stack:
+        min_base_stack.pop(-1)
+        val = min_base_stack[-1] if min_base_stack else 1e-05
+        ivy.__setattr__("min_base", val, True)
 
 
 @handle_exceptions
@@ -2237,7 +2305,7 @@ def stable_divide(
         b: ivy.array([0.857, 10.])
     }
     """
-    return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
+    return numerator / (denominator + default(min_denominator, ivy.min_denominator))
 
 
 @handle_exceptions
@@ -2252,8 +2320,8 @@ def stable_pow(
     min_base: float = None,
 ) -> Any:
     """
-    Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for
-    numerical stability.
+    Raise the base by the power, with ivy.min_base added to the base when exponent > 1
+    for numerical stability.
 
     Parameters
     ----------
@@ -2262,7 +2330,7 @@ def stable_pow(
     exponent
         The exponent number.
     min_base
-        The minimum base to use, use global ivy._MIN_BASE by default.
+        The minimum base to use, use global ivy.min_base by default.
 
     Returns
     -------
@@ -2271,10 +2339,10 @@ def stable_pow(
     """
     return_dtype = ivy.promote_types(
         ivy.default_dtype(item=base),
-        ivy.default_dtype(item=default(min_base, ivy._MIN_BASE)),
+        ivy.default_dtype(item=default(min_base, ivy.min_base)),
     )
     return_dtype = ivy.promote_types(return_dtype, ivy.default_dtype(item=exponent))
-    ret = (base + default(min_base, ivy._MIN_BASE)) ** ivy.array(exponent)
+    ret = (base + default(min_base, ivy.min_base)) ** ivy.array(exponent)
     return ret.astype(return_dtype)
 
 
@@ -2354,6 +2422,9 @@ def print_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
+ivy.queue_timeout = 15.0
+
+
 @handle_exceptions
 @handle_array_function
 def set_queue_timeout(timeout: float):
@@ -2372,43 +2443,19 @@ def set_queue_timeout(timeout: float):
     Examples
     --------
     >>> x = ivy.set_queue_timeout(10)
-    >>> x = ivy.get_queue_timeout()
+    >>> x = ivy.queue_timeout
     >>> print(x)
     10.0
 
     >>> ivy.set_queue_timeout(30)
-    >>> y = ivy.get_queue_timeout()
+    >>> y = ivy.queue_timeout
     >>> print(y)
     30
     """
     global queue_timeout_stack
     ivy.utils.assertions.check_isinstance(timeout, (int, float))
     queue_timeout_stack.append(timeout)
-
-
-@handle_exceptions
-def get_queue_timeout() -> float:
-    """
-    Get the global queue timeout value (in seconds).
-
-    The default value without this function being called is 15 seconds.
-
-    Returns
-    -------
-    ret
-       The global queue timeout value (in seconds).
-
-    Examples
-    --------
-    >>> ivy.set_queue_timeout(10.0)
-    >>> y = ivy.get_queue_timeout()
-    >>> print(y)
-    10.0
-    """
-    global queue_timeout_stack
-    if not queue_timeout_stack:
-        return 15.0
-    return queue_timeout_stack[-1]
+    ivy.__setattr__("queue_timeout", timeout, True)
 
 
 @handle_exceptions
@@ -2419,30 +2466,22 @@ def unset_queue_timeout() -> None:
     Examples
     --------
     >>> ivy.set_queue_timeout(10.0)
-    >>> y = ivy.get_queue_timeout()
+    >>> y = ivy.queue_timeout
     >>> print(y)
     10.0
 
-    >>> ivy.unset_shape_array_mode()
-    >>> ivy.get_queue_timeout()
+    >>> ivy.unset_queue_timeout()
+    >>> ivy.queue_timeout
     15.0
     """
     global queue_timeout_stack
     if queue_timeout_stack:
         queue_timeout_stack.pop(-1)
+        timeout = queue_timeout_stack[-1] if queue_timeout_stack else 15.0
+        ivy.__setattr__("queue_timeout", timeout, True)
 
 
-@handle_exceptions
-def get_tmp_dir():
-    """
-    Get the path for directory that saves temporary files.
-
-    Returns
-    -------
-    ret
-        The path of directory that saves temporary files.
-    """
-    return TMP_DIR
+ivy.tmp_dir = "/tmp"
 
 
 @handle_exceptions
@@ -2457,17 +2496,42 @@ def set_tmp_dir(tmp_dr: str) -> None:
 
     Examples
     --------
-    >>> x = ivy.get_tmp_dir()
+    >>> x = ivy.tmp_dir
     >>> print(x)
     /tmp
 
     >>> ivy.set_tmp_dir("/my_tmp")
-    >>> y = ivy.get_tmp_dir()
+    >>> y = ivy.tmp_dir
     >>> print(y)
     /my_tmp
     """
-    global TMP_DIR
-    TMP_DIR = tmp_dr
+    global tmp_dir_stack
+    ivy.utils.assertions.check_isinstance(tmp_dr, str)
+    tmp_dir_stack.append(tmp_dr)
+    ivy.__setattr__("tmp_dir", tmp_dr, True)
+
+
+@handle_exceptions
+def unset_tmp_dir() -> None:
+    """
+    Reset the directory for saving temporary files to the previous value.
+
+    Examples
+    --------
+    >>> ivy.set_tmp_dir("/my_dir")
+    >>> y = ivy.tmp_dir
+    >>> print(y)
+    /my_dir
+
+    >>> ivy.unset_tmp_dir()
+    >>> ivy.tmp_dir
+    /tmp
+    """
+    global tmp_dir_stack
+    if tmp_dir_stack:
+        tmp_dir_stack.pop(-1)
+        tmp_dr = tmp_dir_stack[-1] if tmp_dir_stack else "/tmp"
+        ivy.__setattr__("tmp_dir", tmp_dr, True)
 
 
 @handle_exceptions
@@ -2516,7 +2580,7 @@ def inplace_variables_supported() -> bool:
 
 @handle_exceptions
 @handle_nestable
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
@@ -2644,7 +2708,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 @handle_nestable
 @handle_view_indexing
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2662,6 +2726,13 @@ def get_item(
         array, the array from which to gather values.
     query
         array, index array, integer indices or boolean mask.
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     Returns
     -------
@@ -2681,7 +2752,206 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    return current_backend(x).get_item(x, query, copy=copy)
+    if query is Ellipsis or (isinstance(query, tuple) and query == (Ellipsis,)):
+        return x
+    mask_or_slices = (
+        any(isinstance(idx, slice) for idx in query)
+        if isinstance(query, (tuple, list))
+        else isinstance(query, slice)
+    )
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        mask_or_slices = True
+        if not len(query.shape):
+            if not query:
+                return ivy.array([], shape=(0,), dtype=x.dtype)
+            return ivy.expand_dims(x, axis=0)
+        query = ivy.nonzero(query, as_tuple=False)
+        to_squeeze = []
+    else:
+        query = _parse_query(query, x.shape)
+        query, to_squeeze = _query_to_indices(query)
+    ret = ivy.gather_nd(x, query)
+    if to_squeeze:
+        to_squeeze = [i for i in to_squeeze if ret.shape[i] == 1]
+        ret = ivy.squeeze(ret, axis=to_squeeze) if to_squeeze else ret
+    if (
+        query.shape[0] == 1
+        and not mask_or_slices
+        and 0 not in to_squeeze
+        and len(ret.shape) > 1
+    ):
+        ret = ivy.squeeze(ret, axis=0)
+    if copy:
+        return ivy.copy_array(ret)
+    return ret
+
+
+get_item.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_nestable
+@handle_view_indexing
+@inputs_to_ivy_arrays
+@handle_array_function
+def set_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> ivy.Array:
+    """
+    Replace slices of x (defined by query) with val, identical to x[query] = val.
+
+    Parameters
+    ----------
+    x
+        the array to be updated.
+    query
+        either an index array, or a tuple of integers or slices.
+    val
+        the array containing the values to be infused into x
+    copy
+        boolean indicating whether to copy x.
+        If True, the function will update and return a copy of x.
+        If False, the function will update x inplace.
+
+    Returns
+    -------
+    ret
+        the array with updated values at the specified indices.
+
+    Functional Examples
+    -------------------
+
+    >>> x = ivy.array([0, -1, 20])
+    >>> query = ivy.array([0, 1])
+    >>> val = ivy.array([10, 10])
+    >>> ivy.set_item(x, query, val)
+    >>> print(x)
+    ivy.array([10, 10, 20])
+
+    >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
+    >>> query = (1, 0:1)
+    >>> val = ivy.array([10, 10])
+    >>> y = ivy.set_item(x, query, val, copy=True)
+    >>> print(y)
+    ivy.array([[0, -1, 20], [10, 10, -8]])
+    """
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            query = ivy.tile(query, (x.shape[0],))
+        expected_shape = ivy.get_item(x, query).shape
+        query = ivy.nonzero(query, as_tuple=False)
+    else:
+        query = _parse_query(query, x.shape)
+        query, to_squeeze = _query_to_indices(query)
+        expected_shape = ivy.gather_nd(x, query).shape
+    val = _broadcast_to(val, expected_shape).astype(x.dtype)
+    if copy:
+        x = ivy.copy_array(x)
+    return ivy.scatter_nd(query, val, reduction="replace", out=x)
+
+
+set_item.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+def _parse_query(query, x_shape, allow_neg_step=True):
+    query = (query,) if not isinstance(query, (tuple, list)) else query
+    query = (
+        _parse_ellipsis(query, len(x_shape))
+        if any(q is Ellipsis for q in query)
+        else query
+    )
+    ind_type = type(query)
+    query = (
+        list(query)
+        if isinstance(query, tuple)
+        else [query] if not isinstance(query, list) else query
+    )
+    for i, idx in enumerate(query):
+        s = x_shape[i]
+        if isinstance(idx, slice):
+            step = 1 if idx.step is None else idx.step
+            if idx.start is None:
+                start = 0 if step >= 0 else s - 1
+            else:
+                start = idx.start
+            start = start + s if start < 0 else start
+            if idx.stop is None:
+                stop = s if step >= 0 else -1
+            else:
+                stop = idx.stop
+            stop = stop + s if stop < 0 and idx.stop is not None else stop
+            query[i] = (
+                slice(start, stop, step)
+                if step >= 0 or allow_neg_step
+                else ivy.arange(start, stop, step).to_list()
+            )
+        elif isinstance(idx, int):
+            query[i] = idx + s if idx < 0 else idx
+        elif isinstance(idx, (tuple, list)):
+            query[i] = [ii + s if ii < 0 else ii for ii in idx]
+        elif ivy.is_array(idx) and len(idx.shape) <= 1:
+            query[i] = ivy.where(idx < 0, idx + s, idx)
+        else:
+            raise ivy.exceptions.IvyException("unsupported query type")
+    if ind_type not in (tuple, list):
+        return query[0]
+    return tuple(query)
+
+
+def _numel(shape):
+    return math.prod(shape) if shape != () else 1
+
+
+def _query_to_indices(query):
+    mesh = [
+        (
+            ivy.arange(idx.start, idx.stop, idx.step, dtype=ivy.int64)
+            if isinstance(idx, slice)
+            else ivy.array(idx, dtype=ivy.int64)
+        )
+        for idx in query
+    ]
+    grid = ivy.meshgrid(*mesh, indexing="ij")
+    to_squeeze = []
+    for i, g in enumerate(grid):
+        if mesh[i].shape == ():
+            to_squeeze += [i]
+    return ivy.stack(grid, axis=-1), to_squeeze
+
+
+def _broadcast_to(input, target_shape):
+    input = ivy.squeeze(input)
+    if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
+        return ivy.reshape(input, target_shape)
+    else:
+        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        new_dims = ()
+        i_i = len(input.shape) - 1
+        for i_t in range(len(target_shape) - 1, -1, -1):
+            if len(input.shape) + len(new_dims) >= len(target_shape):
+                break
+            if i_i < 0 or target_shape[i_t] != input.shape[i_i]:
+                new_dims += (i_t,)
+            else:
+                i_i -= 1
+        input = ivy.expand_dims(input, axis=new_dims)
+        return ivy.broadcast_to(input, target_shape)
 
 
 @handle_exceptions
@@ -2915,7 +3185,6 @@ def inplace_increment(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 def scatter_flat(
@@ -3333,6 +3602,9 @@ def shape(
     return current_backend(x).shape(x, as_array=as_array)
 
 
+ivy.shape_array_mode = False
+
+
 @handle_exceptions
 def set_shape_array_mode(mode: bool) -> None:
     """
@@ -3346,16 +3618,17 @@ def set_shape_array_mode(mode: bool) -> None:
     Examples
     --------
     >>> ivy.set_shape_array_mode(False)
-    >>> ivy.shape_array_mode()
+    >>> ivy.shape_array_mode
     False
 
     >>> ivy.set_shape_array_mode(True)
-    >>> ivy.shape_array_mode()
+    >>> ivy.shape_array_mode
     True
     """
     global shape_array_mode_stack
     ivy.utils.assertions.check_isinstance(mode, bool)
     shape_array_mode_stack.append(mode)
+    ivy.__setattr__("shape_array_mode", mode, True)
 
 
 @handle_exceptions
@@ -3366,36 +3639,18 @@ def unset_shape_array_mode() -> None:
     Examples
     --------
     >>> ivy.set_shape_array_mode(True)
-    >>> ivy.shape_array_mode()
+    >>> ivy.shape_array_mode
     True
 
     >>> ivy.unset_shape_array_mode()
-    >>> ivy.shape_array_mode()
+    >>> ivy.shape_array_mode
     False
     """
     global shape_array_mode_stack
     if shape_array_mode_stack:
         shape_array_mode_stack.pop(-1)
-
-
-@handle_exceptions
-def shape_array_mode() -> bool:
-    """
-    Get the current state of shape_array_mode.
-
-    Examples
-    --------
-    >>> ivy.shape_array_mode()
-    False
-
-    >>> ivy.set_shape_array_mode(True)
-    >>> ivy.shape_array_mode()
-    True
-    """
-    global shape_array_mode_stack
-    if not shape_array_mode_stack:
-        return False
-    return shape_array_mode_stack[-1]
+        mode = shape_array_mode_stack[-1] if shape_array_mode_stack else False
+        ivy.__setattr__("shape_array_mode", mode, True)
 
 
 @handle_nestable
@@ -3476,6 +3731,7 @@ def arg_info(fn: Callable, *, name: Optional[str] = None, idx: Optional[int] = N
         type="any",
         limit=[1],
         message="exactly one of the keyword arguments name or idx must be provided",
+        as_array=False,
     )
     params = inspect.signature(fn).parameters
     if ivy.exists(name):
@@ -3746,7 +4002,8 @@ def vmap(
 
 
     This docstring is a summarised version of the `docstring
-    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_ for vmap from JAX documentation. # noqa
+    <https://jax.readthedocs.io/en/latest/_autosummary/jax.vmap.html#jax-vmap>`_
+    for vmap from JAX documentation.
 
     Examples
     --------
@@ -3807,7 +4064,7 @@ def isin(
     >>> ivy.isin(x, y, invert=True)
     ivy.array([False, False, False,  True])
     """
-    return ivy.current_backend().isin(
+    return ivy.current_backend(elements, test_elements).isin(
         elements, test_elements, assume_unique=assume_unique, invert=invert
     )
 
@@ -3842,7 +4099,7 @@ def itemsize(
     >>> ivy.itemsize(x)
     16
     """
-    return ivy.current_backend().itemsize(x)
+    return ivy.current_backend(x).itemsize(x)
 
 
 @handle_exceptions
@@ -3871,4 +4128,20 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend().strides(x)
+    return ivy.current_backend(x).strides(x)
+
+
+def is_ivy_nested_array(x: Any, /) -> bool:
+    """
+    Determine whether the input x is an Ivy Nested Array.
+
+    Parameters
+    ----------
+    x
+        The input to check
+    Returns
+    -------
+    ret
+        Boolean, whether or not x is an ivy nested array.
+    """
+    return isinstance(x, ivy.NestedArray)

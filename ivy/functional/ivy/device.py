@@ -862,7 +862,7 @@ def to_device(
     >>> print(x.device)
     cpu
     """
-    return ivy.current_backend(x).to_device(x, device)
+    return ivy.current_backend(x).to_device(x, device, stream=stream, out=out)
 
 
 # Function Splitting #
@@ -949,7 +949,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor

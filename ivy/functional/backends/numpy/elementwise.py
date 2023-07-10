@@ -18,7 +18,10 @@ def abs(
     where: Union[bool, np.ndarray] = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return ivy.where(where, np.absolute(x, out=out), x)
+    ret = ivy.where(where, np.absolute(x, out=out), x)
+    if ivy.is_complex_dtype(x.dtype):
+        return ivy.real(ret)
+    return ret
 
 
 abs.support_native_out = True
@@ -84,7 +87,7 @@ atan.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def atan2(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -104,7 +107,7 @@ atanh.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_and(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -120,7 +123,7 @@ bitwise_and.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_invert(
     x: Union[int, bool, np.ndarray], /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -131,7 +134,7 @@ bitwise_invert.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_left_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -147,7 +150,7 @@ bitwise_left_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_or(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -163,7 +166,7 @@ bitwise_or.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_right_shift(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -179,7 +182,7 @@ bitwise_right_shift.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def bitwise_xor(
     x1: Union[int, bool, np.ndarray],
     x2: Union[int, bool, np.ndarray],
@@ -194,7 +197,7 @@ def bitwise_xor(
 bitwise_xor.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def ceil(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
@@ -217,7 +220,7 @@ def cos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 cos.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, backend_version)
 @_scalar_output_to_0d_array
 def cosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.cosh(x, out=out)
@@ -269,6 +272,18 @@ def exp(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 exp.support_native_out = True
 
 
+def exp2(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
 @_scalar_output_to_0d_array
 def expm1(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.expm1(x, out=out)
@@ -278,7 +293,7 @@ expm1.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def floor(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
@@ -293,7 +308,7 @@ floor.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def floor_divide(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -303,6 +318,30 @@ def floor_divide(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.floor(np.divide(x1, x2)).astype(x1.dtype)
+
+
+@_scalar_output_to_0d_array
+def fmin(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.fmin(
+        x1,
+        x2,
+        out=None,
+        where=True,
+        casting="same_kind",
+        order="K",
+        dtype=None,
+        subok=True,
+    )
+
+
+fmin.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -358,7 +397,7 @@ def isinf(
         return np.isneginf(x)
     elif detect_positive:
         return np.isposinf(x)
-    return np.full_like(x, False, dtype=np.bool)
+    return np.full_like(x, False, dtype=bool)
 
 
 @_scalar_output_to_0d_array
@@ -367,6 +406,25 @@ def isnan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 isnan.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def lcm(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.lcm(
+        x1,
+        x2,
+        out=out,
+    )
+
+
+lcm.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -432,7 +490,7 @@ log2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def logaddexp(
     x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -441,6 +499,23 @@ def logaddexp(
 
 
 logaddexp.support_native_out = True
+
+
+def logaddexp2(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    if not ivy.is_float_dtype(x1):
+        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
+        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
+    return np.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -547,7 +622,7 @@ pow.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def remainder(
     x1: Union[float, np.ndarray],
     x2: Union[float, np.ndarray],
@@ -585,8 +660,20 @@ def round(
 round.support_native_out = True
 
 
+def _abs_variant_sign(x):
+    return np.divide(x, np.abs(x), where=x != 0)
+
+
 @_scalar_output_to_0d_array
-def sign(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def sign(
+    x: np.ndarray,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if "complex" in str(x.dtype):
+        return np.sign(x, out=out) if np_variant else _abs_variant_sign(x)
     return np.sign(x, out=out)
 
 
@@ -643,6 +730,22 @@ def subtract(
 
 
 subtract.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def trapz(
+    y: np.ndarray,
+    /,
+    *,
+    x: Optional[np.ndarray] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.trapz(y, x=x, dx=dx, axis=axis)
+
+
+trapz.support_native_out = False
 
 
 @_scalar_output_to_0d_array
@@ -759,7 +862,7 @@ reciprocal.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def deg2rad(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.deg2rad(x, out=out)
 
@@ -768,7 +871,7 @@ deg2rad.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.rad2deg(x, out=out)
 
@@ -785,7 +888,7 @@ isreal.support_native_out = False
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -802,3 +905,62 @@ def fmod(
 
 
 fmod.support_native_out = True
+
+
+def angle(
+    z: np.ndarray,
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.angle(z, deg=deg)
+
+
+angle.support_native_out = False
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    x1, x2 = promote_types_of_inputs(x1, x2)
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def imag(
+    val: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.imag(val)
+
+
+imag.support_native_out = False
+
+
+def nan_to_num(
+    x: np.ndarray,
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+nan_to_num.support_native_out = False
+
+
+def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.real(x)

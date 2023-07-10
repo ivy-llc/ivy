@@ -80,17 +80,10 @@ def astype_helper(draw):
     test_gradients=st.just(False),
 )
 def test_astype(
-    *,
-    dtype_and_x_and_cast_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x_and_cast_dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x, cast_dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -124,14 +117,7 @@ def broadcastable_arrays(draw, dtypes):
     test_gradients=st.just(False),
 )
 def test_broadcast_arrays(
-    *,
-    arrays,
-    input_dtypes,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, arrays, input_dtypes, test_flags, backend_fw, fn_name, on_device
 ):
     if backend_fw.current_backend_str() == "torch":
         for input_dtype in input_dtypes:
@@ -147,7 +133,6 @@ def test_broadcast_arrays(
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -164,26 +149,10 @@ def test_broadcast_arrays(
     test_gradients=st.just(False),
 )
 def test_broadcast_to(
-    *,
-    array_and_shape,
-    input_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, array_and_shape, input_dtype, test_flags, backend_fw, fn_name, on_device
 ):
-    if backend_fw.current_backend_str() == "torch":
-        if input_dtype == "bfloat16" or (
-            "uint" in input_dtype and "uint8" not in input_dtype
-        ):
-            # Torch has no inference strategy for bfloat16
-            # Torch has no support for uint above uint8
-            return
-
     array, to_shape = array_and_shape
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -204,19 +173,9 @@ def test_broadcast_to(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_can_cast(
-    *,
-    dtype_and_x,
-    to_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_can_cast(*, dtype_and_x, to_dtype, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -258,22 +217,13 @@ def _array_or_type(draw, float_or_int):
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_finfo(
-    *,
-    type,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_finfo(*, type, test_flags, backend_fw, fn_name, on_device):
     if isinstance(type, str):
         input_dtype = [type]
     else:
         input_dtype, x = type
         type = x[0]
     ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -302,22 +252,13 @@ def test_finfo(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_iinfo(
-    *,
-    type,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_iinfo(*, type, test_flags, backend_fw, fn_name, on_device):
     if isinstance(type, str):
         input_dtype = [type]
     else:
         input_dtype, x = type
         type = x[0]
     ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -346,22 +287,13 @@ def test_iinfo(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_result_type(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_result_type(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
         kw["x{}".format(i)] = x_
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -373,6 +305,20 @@ def test_result_type(
 
 # Extra Ivy Function Tests #
 # ------------------------ #
+
+
+# is_hashable_dtype
+@handle_test(
+    fn_tree="functional.ivy.is_hashable_dtype",
+    input_dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_is_hashable_dtype(
+    *,
+    input_dtype,
+):
+    input_dtype = input_dtype[0]
+    res = ivy.is_hashable_dtype(input_dtype)
+    assert res
 
 
 # as_ivy_dtype
@@ -478,15 +424,7 @@ def test_default_dtype(
     test_gradients=st.just(False),
 )
 def test_dtype(
-    *,
-    array,
-    input_dtype,
-    as_native,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, array, input_dtype, as_native, test_flags, backend_fw, fn_name, on_device
 ):
     if backend_fw.current_backend_str() == "torch":
         if input_dtype == "bfloat16" or (
@@ -497,7 +435,6 @@ def test_dtype(
             return
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -519,17 +456,8 @@ def test_dtype(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_dtype_bits(
-    *,
-    input_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_dtype_bits(*, input_dtype, test_flags, backend_fw, fn_name, on_device):
     ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -553,18 +481,9 @@ def test_dtype_bits(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_is_bool_dtype(
-    *,
-    dtype_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_is_bool_dtype(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -583,18 +502,9 @@ def test_is_bool_dtype(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_is_float_dtype(
-    *,
-    dtype_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_is_float_dtype(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -613,18 +523,9 @@ def test_is_float_dtype(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_is_int_dtype(
-    *,
-    dtype_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_is_int_dtype(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -643,18 +544,9 @@ def test_is_int_dtype(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_is_uint_dtype(
-    *,
-    dtype_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_is_uint_dtype(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -673,18 +565,9 @@ def test_is_uint_dtype(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_is_complex_dtype(
-    *,
-    dtype_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_is_complex_dtype(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -704,18 +587,8 @@ def test_is_complex_dtype(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_promote_types(
-    *,
-    type1,
-    type2,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_promote_types(*, type1, type2, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[],
         test_flags=test_flags,
         fw=backend_fw,
@@ -741,17 +614,10 @@ def test_promote_types(
     test_gradients=st.just(False),
 )
 def test_type_promote_arrays(
-    *,
-    dtype_and_values,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_values, test_flags, backend_fw, fn_name, on_device
 ):
     types, arrays = dtype_and_values
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
         test_flags=test_flags,
         fw=backend_fw,
@@ -949,7 +815,7 @@ def test_function_unsupported_dtypes(*, func):
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }
@@ -992,7 +858,7 @@ def test_function_dtype_versioning(
             {
                 "torch": {
                     "cumsum": {
-                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "2.0.1": {"bfloat16", "uint8", "float16"},
                         "1.12.1": set(),
                     }
                 }

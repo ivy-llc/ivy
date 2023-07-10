@@ -1,11 +1,13 @@
 # global
 
 torch_scatter = None
+
 from typing import Union, Optional, Sequence
+
+import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
-import paddle
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -182,7 +184,7 @@ def sum(
     if x.dtype in [paddle.int8, paddle.uint8]:
         ret = paddle.sum(x.cast("float32"), axis=axis, dtype=dtype, keepdim=keepdims)
     else:
-        ret = paddle.sum(x, axis=axis, dtype=dtype, keepdim=keepdims)
+        ret = paddle.sum(x.cast(dtype), axis=axis, dtype=dtype, keepdim=keepdims)
     # The following code is to simulate other frameworks
     # output shapes behaviour since min output dim is 1 in paddle
     if isinstance(axis, Sequence):
@@ -209,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int16")}},
     backend_version,
 )
 def cumprod(
@@ -223,10 +225,14 @@ def cumprod(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
-    if dtype in [paddle.uint8, paddle.int8, paddle.int16]:
-        x = paddle.cast(x, "int32")
-    else:
-        x = paddle.cast(x, dtype)
+    x = paddle.cast(x, dtype)
+    if ivy.as_native_dtype(dtype) in [
+        paddle.uint8,
+        paddle.int8,
+        paddle.int16,
+        paddle.float16,
+    ]:
+        x = paddle.cast(x, "float32")
     if not (exclusive or reverse):
         return paddle.cumprod(x, dim=axis).cast(dtype)
     elif exclusive and reverse:
@@ -262,63 +268,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
-    backend_version,
-)
-def cummax(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    dtype = dtype if dtype is not None else x.dtype
-    if reverse:
-        x = paddle.flip(x, axis=[axis])
-    x_unstacked = paddle.unbind(x, axis=axis)
-    cummax_x_unstacked = []
-    cummax_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummax_x_sub = paddle.maximum(cummax_x_unstacked[i], x_sub)
-        cummax_x_unstacked.append(cummax_x_sub)
-    cummax_x = paddle.stack(cummax_x_unstacked, axis=axis)
-    if reverse:
-        cummax_x = paddle.flip(cummax_x, axis=[axis])
-    return cummax_x.cast(dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint8", "int8", "int16")}},
-    backend_version,
-)
-def cummin(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[paddle.dtype] = None,
-    out: Optional[paddle.Tensor] = None,
-) -> paddle.Tensor:
-    dtype = dtype if dtype is not None else x.dtype
-    if reverse:
-        x = paddle.flip(x, axis=[axis])
-    x_unstacked = paddle.unbind(x, axis=axis)
-    cummin_x_unstacked = []
-    cummin_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummin_x_sub = paddle.minimum(cummin_x_unstacked[i], x_sub)
-        cummin_x_unstacked.append(cummin_x_sub)
-    cummin_x = paddle.stack(cummin_x_unstacked, axis=axis)
-    if reverse:
-        cummin_x = paddle.flip(cummin_x, axis=[axis])
-    return cummin_x.cast(dtype)
-
-
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def cumsum(
@@ -331,6 +281,7 @@ def cumsum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     dtype = dtype if dtype is not None else x.dtype
+    x = paddle.cast(x, dtype)
     if ivy.as_native_dtype(dtype) in [
         paddle.uint8,
         paddle.int8,
@@ -338,8 +289,6 @@ def cumsum(
         paddle.bool,
     ]:
         x = paddle.cast(x, "float32")
-    else:
-        x = paddle.cast(x, dtype)
     if not (exclusive or reverse):
         return paddle.cumsum(x, axis=axis).cast(dtype)
     elif exclusive and reverse:

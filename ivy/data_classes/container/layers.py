@@ -506,6 +506,128 @@ class _ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
+    def _static_dropout2d(
+        x: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.dropout2d. This method simply wraps
+        the function, and so the docstring for ivy.dropout2d also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            The input container to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NHWC" or "NCHW". Default is ``"NHWC"``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result container of the output after dropout is performed.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "dropout2d",
+            x,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dropout2d(
+        self: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.dropout2d. This method simply wraps
+        the function, and so the docstring for ivy.dropout2d also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input container to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NHWC" or "NCHW". Default is ``"NHWC"``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result container of the output after dropout is performed.
+        """
+        return self._static_dropout2d(
+            self,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def _static_dropout3d(
         x: ivy.Container,
         prob: float,
@@ -848,19 +970,26 @@ class _ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def _static_multi_head_attention(
-        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: float,
-        num_heads: int,
+        query: Union[ivy.Array, ivy.NativeArray],
+        key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         /,
         *,
-        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_q_fn: Optional[Callable] = None,
-        to_kv_fn: Optional[Callable] = None,
-        to_out_fn: Optional[Callable] = None,
-        to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        num_heads: Optional[int] = 8,
+        scale: Optional[float] = None,
+        attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        q_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        k_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        v_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        is_causal: Optional[bool] = False,
+        return_attention_weights: Optional[bool] = False,
+        average_attention_weights: Optional[bool] = True,
+        dropout: Optional[float] = 0.0,
+        training: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -869,17 +998,24 @@ class _ContainerWithLayers(ContainerBase):
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return ContainerBase.cont_multi_map_in_function(
             "multi_head_attention",
-            x,
-            scale,
-            num_heads,
-            context=context,
-            mask=mask,
-            to_q_fn=to_q_fn,
-            to_kv_fn=to_kv_fn,
-            to_out_fn=to_out_fn,
-            to_q_v=to_q_v,
-            to_kv_v=to_kv_v,
-            to_out_v=to_out_v,
+            query,
+            key,
+            value,
+            num_heads=num_heads,
+            scale=scale,
+            attention_mask=attention_mask,
+            in_proj_weights=in_proj_weights,
+            q_proj_weights=q_proj_weights,
+            k_proj_weights=k_proj_weights,
+            v_proj_weights=v_proj_weights,
+            out_proj_weights=out_proj_weights,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=is_causal,
+            return_attention_weights=return_attention_weights,
+            average_attention_weights=average_attention_weights,
+            dropout=dropout,
+            training=training,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -889,18 +1025,25 @@ class _ContainerWithLayers(ContainerBase):
 
     def multi_head_attention(
         self: ivy.Container,
-        scale: float,
-        num_heads: int,
+        key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         /,
         *,
-        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_q_fn: Optional[Callable] = None,
-        to_kv_fn: Optional[Callable] = None,
-        to_out_fn: Optional[Callable] = None,
-        to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        num_heads: Optional[int] = 8,
+        scale: Optional[float] = None,
+        attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        q_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        k_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        v_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        is_causal: Optional[bool] = False,
+        return_attention_weights: Optional[bool] = False,
+        average_attention_weights: Optional[bool] = True,
+        dropout: Optional[float] = 0.0,
+        training: Optional[bool] = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -909,16 +1052,23 @@ class _ContainerWithLayers(ContainerBase):
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         return self._static_multi_head_attention(
             self,
-            scale,
-            num_heads,
-            context=context,
-            mask=mask,
-            to_q_fn=to_q_fn,
-            to_kv_fn=to_kv_fn,
-            to_out_fn=to_out_fn,
-            to_q_v=to_q_v,
-            to_kv_v=to_kv_v,
-            to_out_v=to_out_v,
+            key,
+            value,
+            num_heads=num_heads,
+            scale=scale,
+            attention_mask=attention_mask,
+            in_proj_weights=in_proj_weights,
+            q_proj_weights=q_proj_weights,
+            k_proj_weights=k_proj_weights,
+            v_proj_weights=v_proj_weights,
+            out_proj_weights=out_proj_weights,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=is_causal,
+            return_attention_weights=return_attention_weights,
+            average_attention_weights=average_attention_weights,
+            dropout=dropout,
+            training=training,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2193,6 +2343,122 @@ class _ContainerWithLayers(ContainerBase):
             recurrent_kernel,
             bias=bias,
             recurrent_bias=recurrent_bias,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def _static_reduce_window(
+        operand: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_function(
+            "reduce_window",
+            operand,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def reduce_window(
+        self: ivy.Container,
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.reduce_window. This method simply
+        wraps the function, and so the docstring for ivy.reduce_window also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            A container representing the base areas on which the window is going to
+            slide over.
+        init_value
+            The starting value for the reduction.
+        computation
+            The reduction function to apply to elements in each window.
+        window_dimensions
+            A sequence containing the window dimensions.
+        window_strides
+            A sequence containing the window strides.
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        base_dilation
+            A sequence containing the base dilation values.
+        window_dilation
+            A sequence containing the window dilation values.
+
+        Returns
+        -------
+        ret
+            The result of the pooling-like operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(
+        ...     a=ivy.array([[1, 2, 3, 4],
+        ...                  [5, 6, 7, 8],
+        ...                  [9, 10, 11, 12]]),
+        ...     b=ivy.array([[13, 14, 15, 16],
+        ...                  [17, 18, 19, 20],
+        ...                  [21, 22, 23, 24]])
+        ... )
+        >>> x.reduce_window(0, ivy.sum, (2, 2))
+        {
+            a: ivy.array([[21 25 29]
+                          [33 37 41]
+                          [45 49 53]]),
+            b: ivy.array([[63 67 71]
+                          [75 79 83]
+                          [87 91 95]])
+        }
+        """
+        return self._static_reduce_window(
+            self,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

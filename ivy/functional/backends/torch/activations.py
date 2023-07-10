@@ -17,12 +17,12 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.relu(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def leaky_relu(
     x: torch.Tensor,
     /,
@@ -33,7 +33,7 @@ def leaky_relu(
     return torch.nn.functional.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def gelu(
     x: torch.Tensor,
     /,
@@ -48,7 +48,7 @@ def gelu(
     return torch.nn.functional.gelu(x)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if not ivy.is_array(x):
         x = torch.tensor(x)
@@ -58,7 +58,7 @@ def sigmoid(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.
 sigmoid.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
 def softmax(
     x: torch.Tensor,
     /,
@@ -72,7 +72,7 @@ def softmax(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
+    {"2.0.1 and below": ("complex", "float16", "bfloat16")}, backend_version
 )
 def softplus(
     x: torch.Tensor,
@@ -89,7 +89,13 @@ def softplus(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
 )
 def log_softmax(
     x: torch.Tensor,
@@ -104,7 +110,28 @@ def log_softmax(
 
 
 @with_unsupported_dtypes(
-    {"1.11.0 and below": ("complex", "float16", "bfloat16")}, backend_version
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
 )
 def mish(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.nn.functional.mish(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "complex",
+            "float16",
+        )
+    },
+    backend_version,
+)
+def hardswish(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    return torch.nn.functional.hardswish(x)

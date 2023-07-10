@@ -54,7 +54,7 @@ def allclose(input, other, rtol=1e-05, atol=1e-08, equal_nan=False):
 @to_ivy_arrays_and_back
 def equal(input, other):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
-    return ivy.equal(input, other)
+    return ivy.all_equal(input, other)
 
 
 @to_ivy_arrays_and_back
@@ -166,7 +166,7 @@ def less(input, other, *, out=None):
 lt = less
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def not_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -176,7 +176,7 @@ def not_equal(input, other, *, out=None):
 ne = not_equal
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
     input_elements_copy = ivy.reshape(ivy.to_ivy(elements), (-1,))
@@ -187,11 +187,11 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
         < 10 * ivy.shape(input_elements_copy)[0] ** 0.145
     ):
         if invert:
-            mask = ivy.ones(ivy.shape(input_elements_copy)[0], dtype=bool)
+            mask = ivy.ones(ivy.shape(input_elements_copy[0]), dtype=bool)
             for a in test_elements_copy:
                 mask &= input_elements_copy != a
         else:
-            mask = ivy.zeros(ivy.shape(input_elements_copy)[0], dtype=bool)
+            mask = ivy.zeros(ivy.shape(input_elements_copy[0]), dtype=bool)
             for a in test_elements_copy:
                 mask |= input_elements_copy == a
         return ivy.reshape(mask, ivy.shape(elements))
@@ -208,7 +208,7 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
         bool_ar = sar[1:] != sar[:-1]
     else:
         bool_ar = sar[1:] == sar[:-1]
-    flag = ivy.concat((bool_ar, [invert]))
+    flag = ivy.concat((bool_ar, ivy.array([invert])))
     ret = ivy.empty(ivy.shape(ar), dtype=bool)
     ret[order] = flag
 
@@ -259,7 +259,7 @@ def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)
@@ -282,7 +282,7 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:

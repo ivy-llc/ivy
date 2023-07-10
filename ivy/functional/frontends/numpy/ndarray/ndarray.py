@@ -57,6 +57,11 @@ class ndarray:
     def ndim(self):
         return len(self.shape)
 
+    @property
+    def flat(self):
+        self = self.flatten()
+        return self
+
     # Setters #
     # --------#
 
@@ -316,6 +321,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self, order=order)
 
+    def tostring(self, order="C") -> bytes:
+        return np_frontend.tobytes(self.data, order=order)
+
     def prod(
         self,
         *,
@@ -335,6 +343,14 @@ class ndarray:
             where=where,
             out=out,
         )
+
+    def tofile(self, fid, /, sep="", format_="%s"):
+        if self.ndim == 0:
+            string = str(self)
+        else:
+            string = sep.join([str(item) for item in self.tolist()])
+        with open(fid, "w") as f:
+            f.write(string)
 
     def tolist(self) -> list:
         return self._ivy_array.to_list()
@@ -386,8 +402,8 @@ class ndarray:
     ):
         return np_frontend.copy(self)
 
-    def __deepcopy__(self, memo):
-        return self.__class__(np_frontend.copy(self))
+    def __deepcopy__(self, memo, /):
+        return self.ivy_array.__deepcopy__(memo)
 
     def __neg__(
         self,
@@ -422,7 +438,7 @@ class ndarray:
         return len(self.ivy_array)
 
     def __eq__(self, value, /):
-        return ivy.array(np_frontend.equal(self, value), dtype=ivy.bool)
+        return np_frontend.equal(self, value)
 
     def __ge__(self, value, /):
         return np_frontend.greater_equal(self, value)
@@ -492,6 +508,12 @@ class ndarray:
             return self
         return np_frontend.array(self, dtype=dtype)
 
+    def __array_wrap__(self, array, context=None, /):
+        if context is None:
+            return np_frontend.array(array)
+        else:
+            return np_frontend.asarray(self)
+
     def __getitem__(self, key, /):
         ivy_args = ivy.nested_map([self, key], _to_ivy_array)
         ret = ivy.get_item(*ivy_args)
@@ -504,7 +526,7 @@ class ndarray:
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ndarray not supported")
-        for i in range(self.ndim):
+        for i in range(self.shape[0]):
             yield self[i]
 
     def __mod__(self, value, /):
@@ -526,3 +548,6 @@ class ndarray:
             for index in args:
                 out = out[index]
             return out.ivy_array.to_scalar()
+
+    def __rshift__(self, value, /):
+        return ivy.bitwise_right_shift(self.ivy_array, value)

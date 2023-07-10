@@ -13,7 +13,7 @@ from . import backend_version
 # ------------------ #
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def argmax(
     x: torch.Tensor,
     /,
@@ -41,14 +41,14 @@ def argmax(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def argmin(
     x: torch.Tensor,
     /,
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    output_dtype: Optional[torch.dtype] = None,
+    dtype: Optional[torch.dtype] = None,
     select_last_index: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -63,9 +63,9 @@ def argmin(
             ret = x.shape[axis] - ret - 1
     else:
         ret = torch.argmin(x, dim=axis, keepdim=keepdims)
-    if output_dtype:
-        output_dtype = ivy.as_native_dtype(output_dtype)
-        return ret.to(dtype=output_dtype)
+    if dtype:
+        dtype = ivy.as_native_dtype(dtype)
+        return ret.to(dtype=dtype)
     return ret
 
 
@@ -104,6 +104,8 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if condition.dtype is not torch.bool:
+        condition = condition == 1.0
     return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 

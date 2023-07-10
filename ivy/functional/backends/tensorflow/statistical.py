@@ -1,5 +1,4 @@
 # global
-_round = round
 import tensorflow as tf
 from typing import Union, Optional, Sequence
 
@@ -9,12 +8,11 @@ from ivy.functional.ivy.statistical import _get_promoted_type_of_operands
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
-
 # Array API Standard #
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -27,7 +25,7 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -132,23 +130,18 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
         return ret
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
+        return (
+            tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+            * size
+            / (size - correction)
         )
 
 
@@ -156,7 +149,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -176,68 +169,6 @@ def cumprod(
         dtype = ivy.as_native_dtype(dtype)
     x = tf.cast(x, dtype)
     return tf.math.cumprod(x, axis, exclusive, reverse)
-
-
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "bfloat16", "complex128", "complex64")},
-    backend_version,
-)
-def cummax(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if reverse:
-        x = tf.reverse(x, axis=[axis])
-    x_unstacked = tf.unstack(x, axis=axis)
-    cummax_x_unstacked = []
-    cummax_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummax_x_sub = tf.maximum(cummax_x_unstacked[i], x_sub)
-        cummax_x_unstacked.append(cummax_x_sub)
-    cummax_x = tf.stack(cummax_x_unstacked, axis=axis)
-    if reverse:
-        cummax_x = tf.reverse(cummax_x, axis=[axis])
-    if dtype is None:
-        return cummax_x
-    else:
-        return tf.cast(cummax_x, dtype)
-
-
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("float16", "bfloat16", "complex128", "complex64")},
-    backend_version,
-)
-def cummin(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if reverse:
-        x = tf.reverse(x, axis=[axis])
-    x_unstacked = tf.unstack(x, axis=axis)
-    cummin_x_unstacked = []
-    cummin_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummin_x_sub = tf.minimum(cummin_x_unstacked[i], x_sub)
-        cummin_x_unstacked.append(cummin_x_sub)
-    cummin_x = tf.stack(cummin_x_unstacked, axis=axis)
-    if reverse:
-        cummin_x = tf.reverse(cummin_x, axis=[axis])
-    if dtype is None:
-        return cummin_x
-    else:
-        return tf.cast(cummin_x, dtype)
 
 
 def cumsum(
@@ -262,11 +193,14 @@ def cumsum(
     return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("unsigned", "int8", "int16")},
+    backend_version,
+)
 def einsum(
     equation: str,
     *operands: Union[tf.Tensor, tf.Variable],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (tf.cast(operand, tf.float32) for operand in operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
