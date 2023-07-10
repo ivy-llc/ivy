@@ -7,8 +7,6 @@ import importlib
 import inspect
 from collections import OrderedDict
 
-from ivy.utils.exceptions import IvyException
-
 
 try:
     import tensorflow as tf
@@ -665,14 +663,19 @@ def test_frontend_function(
                     ret = ivy_backend.nested_map(
                         ret,
                         lambda _x: (
-                            arrays_to_frontend(create_frontend_array)(_x)
+                            arrays_to_frontend(
+                                backend=backend_to_test,
+                                frontend_array_fn=create_frontend_array,
+                            )(_x)
                             if not _is_frontend_array(_x)
                             else _x
                         ),
                         include_derived=True,
                     )
                 elif not _is_frontend_array(ret):
-                    ret = arrays_to_frontend(create_frontend_array)(ret)
+                    ret = arrays_to_frontend(
+                        backend=backend_to_test, frontend_array_fn=create_frontend_array
+                    )(ret)
             else:
                 if is_ret_tuple:
                     ret = ivy_backend.nested_map(
@@ -775,6 +778,11 @@ def test_frontend_function(
         else:
             ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
 
+        if not test_values:
+            ret = ivy_backend.nested_map(
+                ret, _frontend_array_to_ivy, include_derived={tuple: True}
+            )
+
     with update_backend(frontend) as ivy_frontend:
         # create frontend framework args
         args_frontend = ivy_frontend.nested_map(
@@ -848,7 +856,7 @@ def test_frontend_function(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return (
-            ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True}),
+            ret,
             frontend_ret,
         )
 
@@ -1858,7 +1866,7 @@ def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
 
         # handle scalars
         if len(ret_idxs) == 0:
-            ret_idxs = ivy_backend.nested_argwhere(ret, ivy.isscalar)
+            ret_idxs = ivy_backend.nested_argwhere(ret, ivy_backend.isscalar)
             ret_flat = ivy_backend.multi_index_nest(ret, ret_idxs)
             ret_flat = [
                 frontend_array_fn(x, dtype=ivy_backend.Dtype(str(np.asarray(x).dtype)))
@@ -2014,7 +2022,7 @@ def arrays_to_frontend(backend: str, frontend_array_fn=None):
                         ret = frontend_array_fn(
                             x, dtype=ivy_backend.Dtype(str(x.dtype))
                         )
-                    except IvyException:
+                    except ivy_backend.utils.exceptions.IvyException:
                         ret = frontend_array_fn(x, dtype=ivy_backend.array(x).dtype)
                 else:
                     ret = frontend_array_fn(x)
