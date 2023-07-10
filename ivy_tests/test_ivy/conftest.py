@@ -101,7 +101,7 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
                 backend_fw.backend,
                 (
                     request.function.gt_backend
-                    if hasattr(request.function, "gt_backend")
+                    if hasattr(request.function, "ground_truth_backend")
                     else None
                 ),
                 on_device,

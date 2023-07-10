@@ -377,7 +377,7 @@ def handle_test(
                 supported_device_dtypes=supported_device_dtypes,
             )
         wrapped_test._ivy_test = True
-        wrapped_test.gt_backend = ground_truth_backend
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
