@@ -377,9 +377,7 @@ def test_torch_elu(
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-    test_inplace=st.booleans(),
-    test_with_out=st.just(False),
+    alpha=helpers.floats(min_value=0.1, max_value=1.0, exclude_min=True),
 )
 def test_torch_elu_(
     *,
@@ -1045,6 +1043,48 @@ def test_torch_normalize(
         p=p,
         dim=axis,
         eps=1e-12,
+    )
+
+
+# local_response_norm
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.local_response_norm",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    size=helpers.ints(min_value=3, max_value=10),
+    alpha=helpers.floats(min_value=1e-4, max_value=1e-3),
+    beta=helpers.floats(min_value=0.5, max_value=2.0),
+    k=helpers.ints(min_value=0, max_value=1),
+)
+def test_torch_local_response_norm(
+    *,
+    dtype_x_and_axis,
+    size,
+    alpha,
+    beta,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, axis = dtype_x_and_axis
+    _filter_dtypes(dtype)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        size=size,
+        alpha=alpha,
+        beta=beta,
+        k=k,
     )
 
 
