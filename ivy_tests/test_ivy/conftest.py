@@ -99,7 +99,11 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
         try:
             test_globals.setup_api_test(
                 backend_fw.backend,
-                request.function.ground_truth_backend,
+                (
+                    request.function.ground_truth_backend
+                    if hasattr(request.function, "ground_truth_backend")
+                    else None
+                ),
                 on_device,
                 (
                     request.function.test_data
