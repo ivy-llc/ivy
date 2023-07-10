@@ -16,6 +16,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 from ivy.data_classes.array import Array
 
+CLASS_TREE = "ivy.array"
+
 
 # getitem and setitem helper
 @st.composite
@@ -251,6 +253,7 @@ def test_array_property_T(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__getitem__",
     dtypes_x_query=helpers.dtype_array_index(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -284,6 +287,7 @@ def test_array__getitem__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__setitem__",
     query_dtype_and_x=_getitem_setitem(),
     val=st.floats(min_value=-6, max_value=6),
@@ -323,6 +327,7 @@ def test_array__setitem__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__pos__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -355,6 +360,7 @@ def test_array__pos__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -387,6 +393,7 @@ def test_array__neg__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__pow__",
     dtype_and_x=pow_helper(),
 )
@@ -432,6 +439,7 @@ def test_array__pow__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rpow__",
     dtype_and_x=pow_helper(),
 )
@@ -477,6 +485,7 @@ def test_array__rpow__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ipow__",
     dtype_and_x=pow_helper(),
     method_container_flags=st.just([False]),
@@ -523,6 +532,7 @@ def test_array__ipow__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -560,6 +570,7 @@ def test_array__add__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -597,6 +608,7 @@ def test_array__radd__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__iadd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -635,6 +647,7 @@ def test_array__iadd__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -672,6 +685,7 @@ def test_array__sub__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rsub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -709,6 +723,7 @@ def test_array__rsub__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__isub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -747,6 +762,7 @@ def test_array__isub__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -784,6 +800,7 @@ def test_array__mul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -821,6 +838,7 @@ def test_array__rmul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__imul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -859,6 +877,7 @@ def test_array__imul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__mod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -897,6 +916,7 @@ def test_array__mod__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rmod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -935,6 +955,7 @@ def test_array__rmod__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__imod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -974,6 +995,7 @@ def test_array__imod__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__divmod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1012,6 +1034,7 @@ def test_array__divmod__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rdivmod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1050,6 +1073,7 @@ def test_array__rdivmod__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1087,6 +1111,7 @@ def test_array__truediv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rtruediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1124,6 +1149,7 @@ def test_array__rtruediv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__itruediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1162,6 +1188,7 @@ def test_array__itruediv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1200,6 +1227,7 @@ def test_array__floordiv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rfloordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1238,6 +1266,7 @@ def test_array__rfloordiv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ifloordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1277,6 +1306,7 @@ def test_array__ifloordiv__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
@@ -1310,6 +1340,7 @@ def test_array__matmul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rmatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
@@ -1343,6 +1374,7 @@ def test_array__rmatmul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__imatmul__",
     x1=_get_first_matrix_and_dtype(),
     x2=_get_second_matrix_and_dtype(),
@@ -1377,6 +1409,7 @@ def test_array__imatmul__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__abs__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1409,6 +1442,7 @@ def test_array__abs__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__float__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1442,6 +1476,7 @@ def test_array__float__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__int__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1478,6 +1513,7 @@ def test_array__int__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1513,6 +1549,7 @@ def test_array__bool__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1547,6 +1584,7 @@ def test_array__lt__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1581,6 +1619,7 @@ def test_array__le__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1615,6 +1654,7 @@ def test_array__eq__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1649,6 +1689,7 @@ def test_array__ne__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1683,6 +1724,7 @@ def test_array__gt__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -1717,6 +1759,7 @@ def test_array__ge__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1751,6 +1794,7 @@ def test_array__and__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1785,6 +1829,7 @@ def test_array__rand__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__iand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1820,6 +1865,7 @@ def test_array__iand__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1854,6 +1900,7 @@ def test_array__or__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1888,6 +1935,7 @@ def test_array__ror__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ior__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1923,6 +1971,7 @@ def test_array__ior__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1955,6 +2004,7 @@ def test_array__invert__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -1989,6 +2039,7 @@ def test_array__xor__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -2023,6 +2074,7 @@ def test_array__rxor__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ixor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
@@ -2058,6 +2110,7 @@ def test_array__ixor__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__lshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2093,6 +2146,7 @@ def test_array__lshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rlshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2128,6 +2182,7 @@ def test_array__rlshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__ilshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2164,6 +2219,7 @@ def test_array__ilshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2200,6 +2256,7 @@ def test_array__rshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__rrshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2235,6 +2292,7 @@ def test_array__rrshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__irshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2271,6 +2329,7 @@ def test_array__irshift__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__deepcopy__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
@@ -2303,6 +2362,7 @@ def test_array__deepcopy__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__len__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
@@ -2335,6 +2395,7 @@ def test_array__len__(
 
 
 @handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__iter__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
