@@ -309,6 +309,10 @@ def test_function(
         target_fn, *args, test_compile=test_flags.test_compile, **kwargs
     )
 
+    assert ivy.nested_map(ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True), (
+        "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+    )
+
     # Assert indices of return if the indices of the out array provided
     if test_flags.with_out and not test_flags.test_compile:
         test_ret = (
@@ -600,10 +604,14 @@ def test_frontend_function(
             "jax_enable_x64", True
         )
 
-    _as_ivy_arrays = not test_flags.generate_frontend_arrays
-    ret = get_frontend_ret(
-        frontend_fn, *args_for_test, as_ivy_arrays=_as_ivy_arrays, **kwargs_for_test
+    ret = frontend_fn(*args_for_test, **kwargs_for_test)
+
+    assert ivy.nested_map(ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True), (
+        "Frontend function returned non-frontend arrays: {}".format(ret)
     )
+
+    if not test_flags.generate_frontend_arrays:
+        ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
 
     if test_flags.with_out:
         if not inspect.isclass(ret):
@@ -685,20 +693,18 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
-            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
-            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+            ret_ = frontend_fn(*copy_args, **copy_kwargs)
             assert first_array is ret_
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
-            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
-            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
+            ret_ = frontend_fn(*args, **kwargs)
             assert first_array is ret_
 
     # create NumPy args
@@ -1143,6 +1149,10 @@ def test_method(
         **kwargs_method,
     )
 
+    assert ivy.nested_map(ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True), (
+        "Ivy method returned non-ivy arrays: {}".format(ret)
+    )
+
     # Compute the return with a Ground Truth backend
 
     ivy.set_backend(ground_truth_backend)
@@ -1461,6 +1471,10 @@ def test_frontend_method(
         **kwargs_method,
     )
 
+    assert ivy.nested_map(ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True), (
+        "Frontend method returned non-frontend arrays: {}".format(ret)
+    )
+
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend.split("/")[0])
     args_constructor_frontend = ivy.nested_map(
@@ -1761,18 +1775,6 @@ def get_ret_and_flattened_np_array(fn, *args, test_compile: bool = False, **kwar
 
     ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
     return ret, flatten_and_to_np(ret=ret)
-
-
-def get_frontend_ret(
-    frontend_fn,
-    *args,
-    as_ivy_arrays=True,
-    **kwargs,
-):
-    ret = frontend_fn(*args, **kwargs)
-    if as_ivy_arrays:
-        ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
-    return ret
 
 
 def args_to_container(array_args):
