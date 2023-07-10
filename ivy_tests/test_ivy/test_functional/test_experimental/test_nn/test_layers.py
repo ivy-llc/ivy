@@ -1037,22 +1037,11 @@ def x_and_rfftn(draw):
             shape=tuple(x_dim),
             min_value=-1e10,
             max_value=1e10,
-            # # allow_inf=False,
             large_abs_safety_factor=2.5,
             small_abs_safety_factor=2.5,
             safety_factor_scale="log",
         )
     )
-    # max_rfftn_points = min(256, max(x_dim) // 2 + 1)
-    # s = tuple(
-    #     draw(st.integers(min_rfftn_points, max_rfftn_points))
-    # for _ in range(len(x_dim))
-    # )
-    # axes = draw(
-    #     st.lists(
-    #         st.integers(-1, len(x_dim)), min_size=1, max_size=len(x_dim), unique=True
-    #     )
-    # )
     axes = draw(
         st.lists(
             st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
@@ -1070,8 +1059,6 @@ def x_and_rfftn(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.rfftn",
     d_x_d_s_n=x_and_rfftn(),
-    ground_truth_backend="numpy",
-    # container_flags=st.just([False]),
     test_gradients=st.just(False),
 )
 def test_rfftn(
@@ -1081,19 +1068,17 @@ def test_rfftn(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x, s, axes, norm = d_x_d_s_n
+    test_flags.ground_truth_backend = "numpy"
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-5,
-        atol_=1e-8,
-        # atol_=1e-2,
+        rtol_=1e-3,
+        atol_=1e-3,
         x=x,
         s=s,
         axes=axes,

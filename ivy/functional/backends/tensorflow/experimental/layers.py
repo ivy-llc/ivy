@@ -1197,23 +1197,6 @@ RFFTN Function implementation
 """
 
 
-# def _rfftn_norm(
-#     x: Union[tf.Tensor, tf.Variable],
-#     s: Sequence[int] = None,
-#     axes: Sequence[int] = None,
-#     norm: str = "backward",
-# ):
-#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
-#     if norm == "backward":
-#         return x
-#     elif norm == "ortho":
-#         return x / tf.sqrt(n)
-#     elif norm == "forward":
-#         return x / n
-#     else:
-#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-
-
 def rfft_input_validation(x):
     if not x.dtype.is_floating:
         raise TypeError(
@@ -1221,14 +1204,10 @@ def rfft_input_validation(x):
                 x.dtype
             )
         )
-    # return x
     return x
 
 
 def rfft_operations(x, rank, norm_factor):
-    # if ivy.backend == 'tensorflow':
-    #     if x.dtype != tf.complex128:
-    #         x = tf.cast(x, tf.complex128)
     if x.shape.rank == 1:
         x = tf.signal.rfft(x)
     elif x.shape.rank == 2:
@@ -1285,8 +1264,6 @@ def _rfftn_helper(x, shape, axes, norm):
     return x
 
 
-# @with_unsupported_dtypes({"0.4.13 and below":
-#  ("float64", "complex")}, backend_version)
 @with_supported_device_and_dtypes(
     {
         "2.5.0 and above": {
