@@ -196,3 +196,54 @@ def test_paddle_log_loss(
         label=x[1],
         epsilon=epsilon,
     )
+
+
+# square_error_cost
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.square_error_cost",
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        shape=(5,),
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_paddle_square_error_cost(
+    dtype_and_pred,
+    dtype_and_target,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype_pred, pred = dtype_and_pred
+    dtype_target, target = dtype_and_target
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype_pred + dtype_target,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred=pred[0],
+        target=target[0],
+        reduction=reduction,
+    )
