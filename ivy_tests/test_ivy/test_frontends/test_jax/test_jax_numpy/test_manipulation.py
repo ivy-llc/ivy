@@ -1450,6 +1450,36 @@ def test_jax_row_stack(
         tup=xs,
     )
 
+# column_stack
+@handle_frontend_test(
+    fn_tree="jax.numpy.column_stack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    factor=helpers.ints(min_value=2, max_value=6),
+)
+def test_jax_column_stack(
+    dtype_and_x,
+    factor,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    ys = [x[0]]
+    for i in range(factor):
+        ys += [x[0]]
+    helpers.test_frontend_function(
+        input_dtypes=[dtype[0]] * (factor + 1),
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tup=ys,
+    )
+
 
 # pad
 @st.composite
