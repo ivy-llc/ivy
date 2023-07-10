@@ -309,7 +309,9 @@ def l1_loss(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "int8", "int16", "int32")}, "torch")
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "int8", "int16", "int32")}, "torch"
+)
 def nll_loss(
     input,
     target,
