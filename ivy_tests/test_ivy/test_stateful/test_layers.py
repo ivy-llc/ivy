@@ -12,7 +12,9 @@ from ivy.data_classes.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.helpers import handle_method
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    valid_dct,
+)
 
 # Helpers #
 # --------#
@@ -1415,6 +1417,43 @@ def test_avgpool1d_layer(
     )
 
 
+@handle_method(
+    method_tree="Dct.__call__",
+    dtype_x_and_args=valid_dct(),
+)
+def test_dct(
+    *,
+    dtype_x_and_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dtype": dtype[0],
+            "type": type,
+            "n": n,
+            "axis": axis,
+            "norm": norm,
+            "device": on_device,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
 @st.composite
 def _interp_args(draw, mode=None, mode_list=None):
     if not mode and not mode_list:
@@ -1528,7 +1567,7 @@ def test_interpolate_layer(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_x_mode
-    helpers.test_method(
+     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
