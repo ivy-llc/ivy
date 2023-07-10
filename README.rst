@@ -76,13 +76,13 @@ Status
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
     <a href="https://pypi.org/project/ivy-core">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/intelligent-tests.yml/badge.svg">
     </a>
     <a href="https://discord.gg/sXyFF8tDtm">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
@@ -265,8 +265,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
             super().__init__()
 
         def _build(self, *args, **kwargs):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -285,7 +285,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
-    def loss_fn(pred, target):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
     for epoch in range(40):
@@ -293,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y), xs_grad_idxs=[[0]])
 
         # update parameters
         model.v = optimizer.step(model.v, grads)

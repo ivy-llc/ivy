@@ -80,6 +80,8 @@ def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fal
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
         size = args[0] if isinstance(args[0], (tuple, list)) else args
+    if isinstance(size, ivy.functional.frontends.torch.Size):
+        size = tuple(size)
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 

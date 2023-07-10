@@ -166,3 +166,20 @@ def weibull(a, size=None):
 def standard_cauchy(size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     return ivy.tan(ivy.pi * (u - 0.5))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def rayleigh(scale, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    log_u = ivy.log(u)
+    x = ivy.multiply(scale, ivy.sqrt(ivy.multiply(-2, log_u)))
+    return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def gumbel(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    x = loc - scale * ivy.log(-ivy.log(u))
+    return x
