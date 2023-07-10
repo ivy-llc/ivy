@@ -502,7 +502,7 @@ def test_paddle_put_along_axis(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis, indices = (dtype_x_ax_idx,)
+    input_dtype, x, axis, indices = dtype_x_ax_idx
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
