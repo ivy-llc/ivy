@@ -8,7 +8,6 @@ versions = {
     "jax": "0.4.13",
     "scipy": "1.10.1",
     "paddle": "2.5.0",
-    "mindspore": "2.0.0",
 }
 
 
