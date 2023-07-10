@@ -67,5 +67,5 @@ def partition(a, kth, axis=-1, kind="introselect", order=None):
 def argpartition(a, kth, axis=-1, kind="introselect", order=None):
     indices = ivy.argsort(a, axis=axis, kind=kind, order=order)
     results = [indices[..., :k] if k < a.shape[axis] else indices for k in kth]
-    a = tuple(results) if isinstance(kth, tuple) else results[0]
+    a = tuple(results) if ivy.isinstance(kth, tuple) else results[0]
     return a
