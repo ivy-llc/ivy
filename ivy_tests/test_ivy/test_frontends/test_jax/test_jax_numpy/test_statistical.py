@@ -260,29 +260,6 @@ def test_jax_cumprod(
     )
 
 
-@st.composite
-def _get_castable_dtype(draw, min_value=None, max_value=None):
-    available_dtypes = helpers.get_dtypes("numeric")
-    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
-    dtype, values = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            num_arrays=1,
-            large_abs_safety_factor=6,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
-            shape=shape,
-            min_value=min_value,
-            max_value=max_value,
-        )
-    )
-    axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, values, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
-    )
-    return dtype1, [values], axis, dtype2
-
-
 # cumsum
 @handle_frontend_test(
     fn_tree="jax.numpy.cumsum",
