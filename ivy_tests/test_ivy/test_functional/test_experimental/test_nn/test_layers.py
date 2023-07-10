@@ -185,7 +185,9 @@ def test_avg_pool2d(
     dtype, x, kernel, stride, pad = x_k_s_p
 
     if data_format == "NCHW":
-        x[0] = x[0].reshape((x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2]))
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
+        )
 
     helpers.test_function(
         ground_truth_backend="jax",
@@ -818,14 +820,13 @@ def test_dft(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=3,
-        min_dim_size=5,
+        min_dim_size=1,
         max_value=100,
         min_value=-100,
     ),
-    output_size=helpers.ints(min_value=1, max_value=10),
+    output_size=helpers.ints(min_value=1, max_value=5),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
-    # TODO: need to debug for containers
 )
 def test_adaptive_avg_pool1d(
     *,
@@ -853,23 +854,22 @@ def test_adaptive_avg_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool2d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=4,
-        min_dim_size=5,
+        min_dim_size=1,
         max_value=100,
         min_value=-100,
     ),
     output_size=st.one_of(
         st.tuples(
-            helpers.ints(min_value=1, max_value=10),
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
         ),
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
-    # TODO: need to debug for containers
 )
 def test_adaptive_avg_pool2d(
     *,

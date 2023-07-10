@@ -98,6 +98,12 @@ def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def matrix_exp(A):
+    return ivy.matrix_exp(A)
+
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
@@ -122,8 +128,8 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
+def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back

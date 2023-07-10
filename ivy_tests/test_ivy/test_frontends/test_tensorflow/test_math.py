@@ -2786,3 +2786,30 @@ def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_devi
         k=k,
         sorted=sorted,
     )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="tensorflow.math.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_real(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
