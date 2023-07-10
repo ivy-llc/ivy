@@ -1450,6 +1450,7 @@ def test_jax_row_stack(
         tup=xs,
     )
 
+
 # column_stack
 @handle_frontend_test(
     fn_tree="jax.numpy.column_stack",

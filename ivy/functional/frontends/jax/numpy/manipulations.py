@@ -269,6 +269,7 @@ def row_stack(tup):
         return ivy.concat(xs, axis=0)
     return ivy.concat(tup, axis=0)
 
+
 @to_ivy_arrays_and_back
 def column_stack(tup):
     if len(ivy.shape(tup[0])) == 1:
@@ -277,6 +278,7 @@ def column_stack(tup):
             ys += [ivy.reshape(t, (ivy.shape(t)[0], 1))]
         return ivy.concat(ys, axis=1)
     return ivy.concat(tup, axis=1)
+
 
 @to_ivy_arrays_and_back
 def pad(array, pad_width, mode="constant", **kwargs):
