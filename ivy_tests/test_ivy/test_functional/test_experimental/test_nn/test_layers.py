@@ -1082,7 +1082,7 @@ def x_and_ifftn(draw):
         )
     )
 
-    return dtype, x, axes, norm, s
+    return dtype, x, s, axes, norm
 
 
 @handle_test(
@@ -1121,7 +1121,7 @@ def x_and_rfftn(draw):
     dtype = draw(helpers.get_dtypes("float"))
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=4
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=3
         )
     )
     x = draw(
@@ -1184,8 +1184,8 @@ def test_rfftn(
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=1e-5,
+        atol_=1e-8,
         # atol_=1e-2,
         x=x,
         s=s,

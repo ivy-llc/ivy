@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -1217,6 +1221,7 @@ def rfft_input_validation(x):
                 x.dtype
             )
         )
+    # return x
     return x
 
 
@@ -1239,7 +1244,8 @@ def rfft_operations(x, rank, norm_factor):
                 2: lambda: tf.signal.rfft3d(x),
             },
         )
-    norm_factor = tf.cast(norm_factor, x.dtype)
+    # norm_factor = tf.cast(norm_factor, tf.complex64)
+    norm_factor = tf.cast(norm_factor, tf.complex128)
     x = x * norm_factor
     return x
 
@@ -1279,7 +1285,19 @@ def _rfftn_helper(x, shape, axes, norm):
     return x
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float64", "complex")}, backend_version)
+# @with_unsupported_dtypes({"0.4.13 and below":
+#  ("float64", "complex")}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def rfftn(
     x: Union[tf.Tensor, tf.Variable],
     s: Optional[Union[int, Tuple[int]]] = None,

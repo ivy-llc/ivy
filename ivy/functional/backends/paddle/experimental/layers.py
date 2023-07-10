@@ -7,7 +7,6 @@ from ivy.utils.assertions import check_kernel_padding_size
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
-from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 # local
@@ -368,7 +367,21 @@ def ifftn(
     return paddle.fft.ifftn(x, s, axes, norm)
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float32", "complex")}, backend_version)
+# @with_unsupported_dtypes(
+# {"0.4.13 and below": ("float32",
+# "complex")}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "float32",
+                "float64",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
 def rfftn(
     x: paddle.Tensor,
     s: Optional[Union[int, Tuple[int]]] = None,
