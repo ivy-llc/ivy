@@ -258,3 +258,41 @@ def size(a, axis=None):
         sh = ivy.shape(a)
         return sh[axis]
     return a.size
+
+
+@to_ivy_arrays_and_back
+def array_str(a, max_line_width=None, precision=None, suppress_small=False):
+    try:
+        print("===============================================")
+        print("a: ", a)
+        print("max_line_width: ", max_line_width)
+        print("precision: ", precision)
+        print("suppress_small: ", suppress_small)
+        print("-----------------------------------------------")
+        # handles if precision is none or if invalid
+        precision = ivy.array_significant_figures(precision)
+
+        def round_suppress(ele, precision_):
+            count_after_decimal = str(ele)[::-1].find(".")
+            if suppress_small and (count_after_decimal > precision_):
+                # supress to zero
+                return 0
+            else:
+                return round(ele, precision_)
+
+        a = list(map(round_suppress, a, precision))
+        a = str(a)
+        if max_line_width is None:
+            # TODO: max_line_width handler func
+            max_line_width = 75
+
+        def chop_string(string, chunk_size):
+            chopped_string = ""
+            for i in range(0, len(string), chunk_size):
+                chopped_string += string[i : i + chunk_size] + "\n"
+            return chopped_string
+
+        a = chop_string(a, max_line_width)
+        return a
+    except Exception as e:
+        print("All Mighty Error: ", e)
