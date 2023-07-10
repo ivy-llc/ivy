@@ -4,16 +4,18 @@ from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
-def _broadcast_pooling_helper(x, pool_dims, name):
+def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
+    dims = {"1d": 1, "2d": 2, "3d": 3}
     if isinstance(x, int):
-        return tuple([x for _ in range(pool_dims)])
+        return tuple([x for _ in range(dims[pool_dims])])
     if len(x) == 1:
-        return tuple([x[0] for _ in range(pool_dims)])
-    elif len(x) == pool_dims:
+        return tuple([x[0] for _ in range(dims[pool_dims])])
+    elif len(x) == dims[pool_dims]:
         return tuple(x)
-    elif len(x) != pool_dims:
+    elif len(x) != dims[pool_dims]:
         raise ValueError(
-            f"`{name}` must either be a single int, or a tuple of {pool_dims} ints. "
+            f"`{name}` must either be a single int, "
+            f"or a tuple of {dims[pool_dims]} ints. "
         )
 
 
@@ -46,9 +48,10 @@ def avg_pool2d(
 
     # Figure out padding string
     if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        pass
+        padding = "SAME"
     else:
-        pass
+        padding = "VALID"
+
     count_include_pad = False if exclusive else True
     return ivy.avg_pool2d(
         x,
