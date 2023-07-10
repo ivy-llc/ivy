@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -138,7 +139,7 @@ def test_paddle_nonzero(
         num_arrays=2,
     ),
     out_int32=st.booleans(),
-    right=st.just(False),
+    right=st.booleans(),
 )
 def test_paddle_searchsorted(
     *,
@@ -151,6 +152,7 @@ def test_paddle_searchsorted(
     test_flags,
 ):
     dtype, input = dtype_and_values
+    input[0] = np.sort(input[0])
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

@@ -57,7 +57,6 @@ def searchsorted(
         side = "right"
     else:
         side = "left"
-    sorted_sequence = ivy.sort(sorted_sequence, axis=-1)
     ret = ivy.searchsorted(sorted_sequence, values, side=side)
     if out_int32:
         ret = ivy.astype(ret, "int32")
