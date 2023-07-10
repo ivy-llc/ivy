@@ -709,5 +709,5 @@ def real(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def atanh(input, name="atanh"):
-    return ivy.atanh(input)
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
