@@ -7,6 +7,7 @@ if [ "$1" = "$zero_commit" ]; then
     exit 0
 fi
 
+# Choose the author
 required_author="vedpatwardhan"
 
 for commit in $(git rev-list $1..$2)
