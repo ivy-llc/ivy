@@ -144,9 +144,9 @@ def test_numpy_put_along_axis(
 @handle_frontend_test(
     fn_tree="numpy.compress",
     dtype_arr_ax=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=5,
         min_dim_size=10,
         max_dim_size=100,
         valid_axis=True,
@@ -158,7 +158,6 @@ def test_numpy_put_along_axis(
             min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
         ),
     ),
-    test_with_out=st.just(True),
 )
 def test_numpy_compress(
     dtype_arr_ax,
