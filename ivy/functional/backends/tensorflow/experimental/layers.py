@@ -816,8 +816,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
-    and mode not in ["nearest", "area", "bicubic"]
-    and recompute_scale_factor
+    and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
 

@@ -690,17 +690,17 @@ def interpolate(
 
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    not align_corners
+    (align_corners is None or not align_corners)
     and mode
     not in [
         "area",
         "nearest",
+        "nd",
         "tf_area",
         "mitchellcubic",
         "gaussian",
         "bicubic",
     ]
-    and recompute_scale_factor
 )
 
 
