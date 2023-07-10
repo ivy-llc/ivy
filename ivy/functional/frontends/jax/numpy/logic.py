@@ -225,6 +225,17 @@ def setxor1d(ar1, ar2, assume_unique=False):
     # ar1 = ivy.astype(ivy.array(-1), "bfloat16")
     # ar2 = ivy.astype(ivy.array(257), "int16")
 
+    # ar1=ivy.array(False)
+    # ar2=ivy.array(False)
+
+    # ar1=ivy.array([0, 0])
+    # ar2=ivy.array([1 ,1])
+    # assume_unique=True
+
+    # ar1=ivy.array(0)
+    # ar2=ivy.array(1)
+    o_ar1 = ar1
+    o_ar2 = ar2
     common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
     if ivy.dtype(ar1) == "bfloat16" or ivy.dtype(ar2) == "bfloat16":
         common_dtype = "bfloat16"
@@ -242,21 +253,18 @@ def setxor1d(ar1, ar2, assume_unique=False):
         ar = ivy.unique_values(ivy.concat((ar1, ar2)))
         print("    Done: ar = ivy.unique_values(ivy.concat((ar1, ar2)))")
         print(f"    ar: {ar}  | ar1: {ar1}  | ar2: {ar2} ")
-        if assume_unique and (len(ar) == (2 * (len(ar1) + len(ar2)))):
+        # if assume_unique and (len(ar) == (len(ar1) + len(ar2))):
+        if assume_unique:
             print("Inside If")
-            sorted_sy_d = ivy.sort(ar)
-            ret = sorted_sy_d
-            # ret = ivy.astype(
-            #     ivy.sort(ar),
-            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-            # )
-            # print("""    Done: ret = ivy.astype(
-            #     ivy.sort(ar),
-            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-            # )""")
-            # print("    ret: ", ret)
+            if len(ar) == (len(ar1) + len(ar2)):
+                print("Inside If If")
+                sorted_sy_d = ivy.sort(ar)
+                ret = ivy.astype(sorted_sy_d, ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))
+            else:
+                print("Inside If Else")
+                ret =  ivy.empty((0,), dtype=common_dtype)
         else:
-            print("Inside else")
+            print("Inside Else")
             _ar1 = ivy.to_list(ar1)
             _ar2 = ivy.to_list(ar2)
             _ar = ivy.to_list(ar)
@@ -275,20 +283,9 @@ def setxor1d(ar1, ar2, assume_unique=False):
             ]""")
             print("    sy_d: ", sy_d)
             sorted_sy_d = ivy.sort(sy_d)
-            print("    Done: sorted_sy_d = ivy.sort(sy_d)")
+            print("    Done: ret = ivy.sort(sy_d)")
             print("    sorted_sy_d: ", sorted_sy_d)
-            # ret = ivy.astype(
-            #     sorted_sy_d,
-            #     ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
-            # )
-            # if ivy.dtype(ar1) == "bfloat16" or ivy.dtype(ar2) == "bfloat16":
-            #     ret = ivy.astype(ret, "bfloat16")
-            # print("""    Done: ret = ivy.astype(
-            #     sorted_sy_d,
-            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-            # )""")
-            # print("    ret: ", ret)
-            ret = sorted_sy_d
+            ret = ivy.astype(sorted_sy_d, ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))
         return ret
     except Exception as e:
         print("All Mighty Error: ", e)
