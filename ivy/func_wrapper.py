@@ -218,22 +218,37 @@ def try_array_function_override(func, overloaded_args, types, args, kwargs):
 
 
 def _get_first_array(*args, **kwargs):
-    # ToDo: make this more efficient, with function ivy.nested_nth_index_where
+    """
+    Retrieve the first array from the arguments or keyword arguments.
+
+    Parameters
+    ----------
+    args
+        The arguments to be passed to the functions.
+
+    kwargs
+        The keyword arguments to be passed to the function.
+
+    Returns
+    -------
+        The return of the function, with native arrays passed in the arguments.
+    """
     array_fn = ivy.is_array if "array_fn" not in kwargs else kwargs["array_fn"]
-    arr = None
+
+    # Search for arrays in args
     if args:
-        arr_idxs = ivy.nested_argwhere(args, array_fn, stop_after_n_found=1)
+        arr_idxs = ivy.nested_nth_index_where(array_fn, args, n=1)
         if arr_idxs:
-            arr = ivy.index_nest(args, arr_idxs[0])
-        else:
-            arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
-            if arr_idxs:
-                arr = ivy.index_nest(kwargs, arr_idxs[0])
-    elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, array_fn, stop_after_n_found=1)
-        if arr_idxs:
-            arr = ivy.index_nest(kwargs, arr_idxs[0])
-    return arr
+            arr = ivy.nested_index(args, arr_idxs[0])
+            return arr
+
+    # Search for arrays in kwargs
+    arr_idxs = ivy.nested_nth_index_where(array_fn, kwargs, n=1)
+    if arr_idxs:
+        arr = ivy.nested_index(kwargs, arr_idxs[0])
+        return arr
+
+    return None
 
 
 def _build_view(original, view, fn, args, kwargs, index=None):
