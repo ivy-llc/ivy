@@ -81,7 +81,8 @@ def max_pool1d(
 
     if data_format == "NWC":
         res = res.permute((0, 2, 1))
-    res = res[..., :-1]
+    if res.shape[-1] > 3:
+        res = res[..., :-1]
     return res
 
 

@@ -2015,7 +2015,7 @@ def _handle_padding(x, strides, filters, padding):
         else:
             pad = max(filters - (x % strides), 0)
     elif isinstance(padding, int):
-        if 0 <= padding <= filters:
+        if 0 <= padding <= filters // 2:
             pad = padding
     else:
         pad = 0

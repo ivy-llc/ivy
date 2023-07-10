@@ -1783,7 +1783,7 @@ def arrays_for_pooling(
                 )
             )
             if explicit_int:
-                padding = draw(st.integers(min_value=0, max_value=max_pad))
+                padding.append(draw(st.integers(min_value=0, max_value=max_pad)))
         if explicit_or_str_padding:
             padding = draw(
                 st.one_of(st.just(padding), st.sampled_from(["VALID", "SAME"]))
