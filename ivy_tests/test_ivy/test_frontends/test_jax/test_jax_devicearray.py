@@ -812,7 +812,11 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__pow__",
-    dtype_x_pow=_get_dtype_x_and_int(),
+    dtype_x_pow= helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
 )
 def test_jax_devicearray__pow_(
     dtype_x_pow,
@@ -822,7 +826,7 @@ def test_jax_devicearray__pow_(
     method_flags,
     on_device,
 ):
-    input_dtype, x, pow = dtype_x_pow
+    input_dtype, x = dtype_x_pow
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -830,7 +834,7 @@ def test_jax_devicearray__pow_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": pow[0],
+            "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
