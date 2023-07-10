@@ -697,6 +697,8 @@ def test_take_along_axis(
 
 
 # hsplit
+# TODO: there is a failure with paddle (dtype('int32')) caused by the `_get_splits`
+#  method which returns a numpy array with a numpy dtype
 @handle_test(
     fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
@@ -711,6 +713,12 @@ def test_hsplit(
     dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
+    if (
+        not isinstance(indices_or_sections, int)
+        and not isinstance(indices_or_sections, list)
+        and indices_or_sections is not None
+    ):
+        input_dtype = [*input_dtype, indices_or_sections.dtype]
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

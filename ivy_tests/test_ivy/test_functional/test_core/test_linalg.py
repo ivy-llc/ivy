@@ -571,66 +571,10 @@ def test_slogdet(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# solve
-@st.composite
-def _get_first_matrix(draw, adjoint=True):
-    # batch_shape, random_size, shared
-
-    # float16 causes a crash when filtering out matrices
-    # for which `np.linalg.cond` is large.
-    input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-            lambda x: "float16" not in x
-        ),
-        key="shared_dtype",
-    )
-    input_dtype = draw(input_dtype_strategy)
-
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    matrix = draw(
-        helpers.array_values(
-            dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
-            max_value=5,
-        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
-    )
-    if adjoint:
-        adjoint = draw(st.booleans())
-        if adjoint:
-            matrix = np.transpose(np.conjugate(matrix))
-    return input_dtype, matrix, adjoint
-
-
-@st.composite
-def _get_second_matrix(draw):
-    # batch_shape, shared, random_size
-    # float16 causes a crash when filtering out matrices
-    # for which `np.linalg.cond` is large.
-    input_dtype_strategy = st.shared(
-        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
-            lambda x: "float16" not in x
-        ),
-        key="shared_dtype",
-    )
-    input_dtype = draw(input_dtype_strategy)
-
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
-    )
-    return input_dtype, draw(
-        helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
-        )
-    )
-
-
 @handle_test(
     fn_tree="functional.ivy.solve",
-    x=_get_first_matrix(adjoint=True),
-    y=_get_second_matrix(),
+    x=helpers.get_first_solve_matrix(adjoint=True),
+    y=helpers.get_second_solve_matrix(),
 )
 def test_solve(*, x, y, test_flags, backend_fw, fn_name, on_device):
     input_dtype1, x1, adjoint = x
@@ -781,12 +725,12 @@ def test_vecdot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_device)
         max_value=1e04,
         abs_smallest_val=1e-04,
         max_axes_size=2,
-        force_int_axis=True,
+        allow_neg_axes=True,
     ),
     kd=st.booleans(),
     ord=st.one_of(
-        helpers.ints(min_value=0, max_value=5),
-        helpers.floats(min_value=1.0, max_value=5.0),
+        helpers.ints(min_value=-5, max_value=5),
+        helpers.floats(min_value=-5, max_value=5.0),
         st.sampled_from((float("inf"), -float("inf"))),
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
@@ -795,6 +739,10 @@ def test_vector_norm(
     *, dtype_values_axis, kd, ord, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     x_dtype, x, axis = dtype_values_axis
+    # to avoid tuple axis with only one axis as force_int_axis can't generate
+    # axis with two axes
+    if isinstance(axis, tuple) and len(axis) == 1:
+        axis = axis[0]
     helpers.test_function(
         input_dtypes=x_dtype,
         test_flags=test_flags,
@@ -1020,7 +968,7 @@ def _matrix_rank_helper(draw):
             safety_factor_scale="log",
         )
     )
-    if np.all(x[0].T == x[0]):
+    if np.all(np.swapaxes(x[0], -1, -2) == x[0]):
         hermitian = True
     else:
         hermitian = False

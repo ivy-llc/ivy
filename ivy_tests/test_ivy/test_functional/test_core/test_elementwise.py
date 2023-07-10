@@ -961,7 +961,9 @@ def test_logaddexp2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # logical_and
 @handle_test(
     fn_tree="functional.ivy.logical_and",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_logical_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -981,7 +983,7 @@ def test_logical_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 # logical_not
 @handle_test(
     fn_tree="functional.ivy.logical_not",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     test_gradients=st.just(False),
 )
 def test_logical_not(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -999,7 +1001,9 @@ def test_logical_not(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 # logical_or
 @handle_test(
     fn_tree="functional.ivy.logical_or",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_logical_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -1019,7 +1023,9 @@ def test_logical_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # logical_xor
 @handle_test(
     fn_tree="functional.ivy.logical_xor",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",), num_arrays=2),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+    ),
     test_gradients=st.just(False),
 )
 def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
