@@ -3153,7 +3153,7 @@ def test_numpy_instance_tostring__(
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(kind="integer"),
-        num_arrays=2,
+        num_arrays=1,
     ),
 )
 def test_numpy_instance_invert__(
