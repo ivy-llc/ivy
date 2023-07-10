@@ -1567,7 +1567,7 @@ def test_interpolate_layer(
         scale_factor,
         recompute_scale_factor,
     ) = dtype_x_mode
-     helpers.test_method(
+    helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
