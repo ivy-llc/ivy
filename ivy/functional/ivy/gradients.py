@@ -51,7 +51,9 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         x, fn=inner_fn, include_derived=True, shallow=False
     )
     if xs_grad_idxs is not None:
-        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+        xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
+        ivy.nested_map(xs_required, map_fn, include_derived=True)
+        ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
         return xs
     return ivy.nested_map(xs, map_fn, include_derived=True, shallow=False)
 
@@ -63,6 +65,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     if xs_grad_idxs is not None:
         xs_required = ivy.multi_index_nest(xs, xs_grad_idxs)
         ivy.nested_map(xs_required, ivy.to_native, include_derived=True)
+        ivy.set_nest_at_indices(xs, xs_grad_idxs, xs_required)
     else:
         xs = ivy.nested_map(xs, ivy.to_native, include_derived=True, shallow=False)
 
@@ -104,13 +107,21 @@ def _get_required_float_variables(xs, xs_grad_idxs):
     Also, returns a list of duplicate index chains for the nested
     structure.
     """
+    if (ivy.is_ivy_container(xs) or ivy.is_array(xs)) and xs_grad_idxs == [[0]]:
+        xs_grad_idxs = None
     duplicate_index_chains = _get_duplicate_index_chains(xs)
     xs = _to_ivy(xs)
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     xs = _set_duplicates(xs, duplicate_index_chains)
     xs_required = _get_required_native_variables(xs, xs_grad_idxs)
     required_duplicate_index_chains = _get_duplicate_index_chains(xs_required)
-    return xs, xs_required, required_duplicate_index_chains, duplicate_index_chains
+    return (
+        xs,
+        xs_grad_idxs,
+        xs_required,
+        required_duplicate_index_chains,
+        duplicate_index_chains,
+    )
 
 
 def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
@@ -387,7 +398,7 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
     ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
@@ -406,7 +417,9 @@ def execute_with_gradients(
         Whether to retain the gradients of the returned values. (Default value = False)
     xs_grad_idxs
         Indices of the input arrays to compute gradients with respect to. If None,
-        gradients are returned with respect to all input arrays. (Default value = None)
+        gradients are returned with respect to all input arrays. If ``xs`` is an
+        ``ivy.Array`` or ``ivy.Container``, the default value is ``None``, otherwise the
+        default value is ``[[0]]``.
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)

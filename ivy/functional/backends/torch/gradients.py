@@ -98,14 +98,13 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
     ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
 ):
     # Conversion of required arrays to float variables and duplicate index chains
-    xs, xs1, required_duplicate_index_chains, _ = _get_required_float_variables(
-        xs, xs_grad_idxs
+    xs, xs_grad_idxs, xs1, required_duplicate_index_chains, _ = (
+        _get_required_float_variables(xs, xs_grad_idxs)
     )
-
     func_ret = func(xs)
     xs = xs1
 
