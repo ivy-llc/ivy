@@ -957,34 +957,6 @@ def test_tensorflow_inv(
     )
 
 
-#sqrtm
-# sqrtm
-@handle_frontend_test(
-    fn_tree="tensorflow.linalg.sqrtm",
-    dtype_and_input=_get_dtype_and_matrix_and_num(),
-    test_with_out=st.just(False),
-)
-def test_tensorflow_sqrtm(
-        *,
-        dtype_and_input,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
-):
-    input_dtype, x, num_lower, num_upper = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        num_lower=num_lower,
-        num_upper=num_upper,
-    )
-
-
 # sqrtm
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.sqrtm",
