@@ -1167,3 +1167,35 @@ def test_unique_consecutive(
         x=x[0],
         axis=axis,
     )
+
+
+# complex
+@handle_test(
+    fn_tree="functional.ivy.experimental.complex",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("complex"),
+        shared_dtype=True,
+    ),
+    test_gradients=st.just(False),
+)
+def test_complex(
+    *,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+    real,
+    imag,
+    out,
+):
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        real=real,
+        imag=imag,
+        out=out,
+    )
