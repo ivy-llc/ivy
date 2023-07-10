@@ -324,3 +324,8 @@ def band_part(input, num_lower, num_upper, name=None):
 )
 def inv(input, adjoint=False, name=None):
     return ivy.inv(input, adjoint=adjoint)
+
+
+@to_ivy_arrays_and_back
+def sqrtm(input, name=None):
+    return ivy.sqrtm(input)
