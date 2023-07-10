@@ -289,7 +289,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
-    for epoch in range(50):
+    for epoch in range(40):
         # forward pass
         pred = model(x)
 
