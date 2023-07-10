@@ -638,7 +638,7 @@ def test_frontend_function(
 
         if test_flags.generate_frontend_arrays:
             args_for_test, kwargs_for_test = args_to_frontend(
-                backend=backend_to_test,
+                backend_to_test,
                 *args,
                 frontend_array_fn=create_frontend_array,
                 **kwargs,
