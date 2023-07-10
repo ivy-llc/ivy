@@ -577,22 +577,16 @@ def test_frontend_function(
             test_flags.native_arrays[0] for _ in range(num_arrays)
         ]
 
-    # update var flags to be compatible with float dtype and with_out args
-    # TODO enable back
-    # test_flags.as_variable = [
-    #     v if ivy.is_float_dtype(d) and not test_flags.with_out else False
-    #     for v, d in zip(test_flags.as_variable, input_dtypes)
-    # ]
-
-    # frontend function
-    # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-
-    # Frontend with backend start
-
     gt_args_np = copy.deepcopy(args_np)
     gt_kwargs_np = copy.deepcopy(kwargs_np)
 
     with update_backend(backend_to_test) as ivy_backend:
+        # update var flags to be compatible with float dtype and with_out args
+        test_flags.as_variable = [
+            v if ivy_backend.is_float_dtype(d) and not test_flags.with_out else False
+            for v, d in zip(test_flags.as_variable, input_dtypes)
+        ]
+
         local_importer = ivy_backend.utils.dynamic_import
 
         # strip the decorator to get an Ivy array
@@ -740,31 +734,46 @@ def test_frontend_function(
                 assert ivy_backend.is_array(ret)
                 array_fn = ivy_backend.is_array
 
-        if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
-            # the function provides optional inplace update
-            # set inplace update to be True and check
-            # if returned reference is inputted reference
-            # and if inputted reference's content is correctly updated
-            copy_kwargs["inplace"] = True
-            copy_kwargs["as_ivy_arrays"] = False
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *copy_args, array_fn=array_fn, **copy_kwargs
+            if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
+                # the function provides optional inplace update
+                # set inplace update to be True and check
+                # if returned reference is inputted reference
+                # and if inputted reference's content is correctly updated
+                copy_kwargs["inplace"] = True
+                copy_kwargs["as_ivy_arrays"] = False
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *copy_args, array_fn=array_fn, **copy_kwargs
+                )
+                ret_ = get_frontend_ret(
+                    frontend_fn=frontend_fn,
+                    backend=backend_to_test,
+                    *copy_args,
+                    **copy_kwargs,
+                )
+                assert first_array is ret_
+            else:
+                # the function provides inplace update by default
+                # check if returned reference is inputted reference
+                copy_kwargs["as_ivy_arrays"] = False
+                first_array = ivy_backend.func_wrapper._get_first_array(
+                    *args, array_fn=array_fn, **kwargs
+                )
+                ret_ = get_frontend_ret(
+                    frontend_fn=frontend_fn, backend=backend_to_test, *args, **kwargs
+                )
+                assert (
+                    first_array is ret_
+                ), f"Inplace operation failed {first_array} != {ret_}"
+
+        # create NumPy args
+        if test_flags.generate_frontend_arrays:
+            ret_np_flat = flatten_frontend_to_np(
+                ret=ret,
+                frontend_array_fn=create_frontend_array,
+                backend=backend_to_test,
             )
-            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
-            assert first_array is ret_
         else:
-            # the function provides inplace update by default
-            # check if returned reference is inputted reference
-            copy_kwargs["as_ivy_arrays"] = False
-            first_array = ivy_backend.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
-            assert first_array is ret_
-
-    # create NumPy args
-
-        ret_np_flat = flatten_and_to_np(backend=backend_to_test, ret=ret)
+            ret_np_flat = flatten_and_to_np(ret=ret, backend=backend_to_test)
 
     with update_backend(frontend) as ivy_frontend:
         # create frontend framework args
@@ -835,14 +844,6 @@ def test_frontend_function(
                 frontend_ret, frontend_ret_idxs
             )
             frontend_ret_np_flat = [ivy_frontend.to_numpy(x) for x in frontend_ret_flat]
-
-    # TODO enable back
-    # if test_flags.generate_frontend_arrays:
-    #     ret_np_flat = flatten_frontend_to_np(
-    #         ret=ret, frontend_array_fn=create_frontend_array
-    #     )
-    # else:
-    #     ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
