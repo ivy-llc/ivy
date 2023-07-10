@@ -186,7 +186,7 @@ onnx_promotion_table = {
 
 
 @handle_exceptions
-def promote_types_torch(
+def promote_types_onnx(
     type1: Union[ivy.Dtype, ivy.NativeDtype],
     type2: Union[ivy.Dtype, ivy.NativeDtype],
     /,
@@ -214,7 +214,7 @@ def promote_types_torch(
 
 
 @handle_exceptions
-def promote_types_of_torch_inputs(
+def promote_types_of_onnx_inputs(
     x1: Union[ivy.Array, Number, Iterable[Number]],
     x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
@@ -229,21 +229,22 @@ def promote_types_of_torch_inputs(
     used as inputs only for those functions that expect an array-like or
     tensor-like objects, otherwise it might give unexpected results.
     """
-    # Ignore type of 0-dim arrays to mimic torch
-    x1 = ivy.asarray(x1)
-    x2 = ivy.asarray(x2)
     type1 = ivy.default_dtype(item=x1).strip("u123456789")
     type2 = ivy.default_dtype(item=x2).strip("u123456789")
-    if not x1.shape == () and x2.shape == () and type1 == type2:
+    if hasattr(x1, "dtype") and not hasattr(x2, "dtype") and type1 == type2:
+        x1 = ivy.asarray(x1)
         x2 = ivy.asarray(
             x2, dtype=x1.dtype, device=ivy.default_device(item=x1, as_native=False)
         )
-    elif x1.shape == () and not x2.shape == () and type1 == type2:
+    elif not hasattr(x1, "dtype") and hasattr(x2, "dtype") and type1 == type2:
         x1 = ivy.asarray(
             x1, dtype=x2.dtype, device=ivy.default_device(item=x2, as_native=False)
         )
-    elif x1.dtype != x2.dtype:
-        promoted = promote_types_torch(x1.dtype, x2.dtype)
+        x2 = ivy.asarray(x2)
+    else:
+        x1 = ivy.asarray(x1)
+        x2 = ivy.asarray(x2)
+        promoted = promote_types_onnx(x1.dtype, x2.dtype)
         x1 = ivy.asarray(x1, dtype=promoted)
         x2 = ivy.asarray(x2, dtype=promoted)
     return x1, x2
