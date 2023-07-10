@@ -265,8 +265,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
             super().__init__()
 
         def _build(self, *args, **kwargs):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
