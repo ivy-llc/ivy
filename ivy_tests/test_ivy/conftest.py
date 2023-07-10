@@ -92,26 +92,27 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    if not hasattr(request.function, "_ivy_test"):
-        return
-    try:
-        test_globals.setup_api_test(
-            backend_fw,
-            request.function.ground_truth_backend,
-            on_device,
-            (
-                request.function.test_data
-                if hasattr(request.function, "test_data")
-                else None
-            ),
-        )
+    if hasattr(request.function, "_ivy_test"):
+        try:
+            test_globals.setup_api_test(
+                backend_fw,
+                request.function.ground_truth_backend,
+                on_device,
+                (
+                    request.function.test_data
+                    if hasattr(request.function, "test_data")
+                    else None
+                ),
+            )
 
-    except Exception as e:
+        except Exception as e:
+            test_globals.teardown_api_test()
+            raise RuntimeError(f"Setting up test for {request.function} failed.") from e
+
+        yield
         test_globals.teardown_api_test()
-        raise RuntimeError(f"Setting up test for {request.function} failed.") from e
-
-    yield
-    test_globals.teardown_api_test()
+    else:
+        yield
 
 
 def pytest_generate_tests(metafunc):
