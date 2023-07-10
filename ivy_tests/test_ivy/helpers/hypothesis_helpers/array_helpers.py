@@ -1811,6 +1811,7 @@ def dtype_array_query(
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
+    int_index_only=False,
 ):
     dtype = draw(
         helpers.array_dtypes(
@@ -1843,7 +1844,12 @@ def dtype_array_query(
             ).filter(lambda x: np.sum(x) > 0)
         )
         return dtype + ["bool"], array, index
-    supported_index_types = ["int", "slice", "list", "array"]
+
+    if int_index_only:
+        supported_index_types = ["int"]
+    else:
+        supported_index_types = ["int", "slice", "list", "array"]
+
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),

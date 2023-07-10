@@ -3079,10 +3079,10 @@ def test_numpy_instance_ptp(
 @st.composite
 def _item_helper(draw):
     input_dtype, x, index = draw(
-        helpers.dtype_array_index(
+        helpers.dtype_array_query(
             available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=1,
-            allow_slices=False,
+            int_index_only=True,
         )
     )
     index_samples = [index, draw(helpers.ints(min_value=0, max_value=x.size - 1))]
@@ -3125,7 +3125,7 @@ def test_numpy_instance_item(
         on_device=on_device,
     )
 
-    
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
