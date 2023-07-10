@@ -9,6 +9,7 @@ from ivy import (
     with_supported_device_and_dtypes,
 )
 from .. import backend_version
+import numpy as np
 
 
 def histogram(
@@ -160,6 +161,125 @@ def corrcoef(
     return cor
 
 
+def set_value(ret):
+    if isinstance(ret, list):
+        return set_value(ret[0])
+    elif isinstance(ret, np.ndarray):
+        return set_value(ret[0])
+    else:
+        return ret
+
+
+def _nanmedian_helper(input, axis=None, keepdims=False):
+    dtype = input.dtype
+    temp = tf.cast(input, tf.float64)
+    num_dim = tf.rank(temp)
+    keepdim_shape = tf.shape(temp)
+    q = 50.0
+
+    if axis is None:
+        if tf.reduce_all(tf.math.is_nan(temp)).numpy():
+            temp = tf.reshape(temp, shape=(1, -1))
+        else:
+            temp = temp[~tf.math.is_nan(temp)]
+
+        ret = tfp.stats.percentile(
+            temp,
+            q,
+            axis=axis,
+            interpolation="midpoint",
+            keepdims=keepdims,
+        )
+        ret = tf.cast(ret, dtype=dtype)
+        return ret
+
+    if isinstance(axis, tuple):
+        if len(axis) == 1:
+            axis = axis[0]
+
+    if isinstance(axis, int):
+        axis = [axis]
+    if isinstance(axis, tuple):
+        axis = list(axis)
+
+    for i in axis:
+        keepdim_shape = tf.tensor_scatter_nd_update(keepdim_shape, [[i]], [1])
+    axis = [num_dim + x if x < 0 else x for x in axis]
+    axis.sort()
+    dimension = tf.size(temp.shape)
+    while tf.size(axis) > 0:
+        axis1 = axis[0]
+        for axis2 in range(axis1 + 1, dimension):
+            temp = tf.transpose(
+                temp,
+                perm=tf.tensor_scatter_nd_update(
+                    tf.range(tf.rank(temp)), [[axis1], [axis2]], [axis2, axis1]
+                ),
+            )
+            axis1 = axis2
+        axis = [x - 1 for x in axis]
+        axis.pop(0)
+        dimension = dimension - 1
+    temp = tf.reshape(
+        temp, shape=tf.concat([tf.shape(temp)[: (dimension - len(axis))], [-1]], axis=0)
+    )
+    temp = tf.cast(temp, dtype)
+
+    tensor = tf.reshape(temp, shape=(1, -1))
+    shape = temp.shape
+    dim = temp.ndim
+    slice_size = shape[len(shape) - 1]
+    num_jumps = 1
+    result = []
+
+    if slice_size == 1:
+        if dim == 2 and input.shape[0] == 1:
+            return tensor
+        if dim > 2 and input.shape[0] == 1:
+            return tf.reshape(tensor, shape=input.shape)
+
+        tensor = tf.reshape(tensor, shape=shape[:-1])
+        return tensor
+
+    i = dim
+    while i > 1:
+        num_jumps *= shape[len(shape) - i]
+        i -= 1
+
+    for i in range(num_jumps):
+        start = i * slice_size
+        end = (i + 1) * slice_size
+        arr = tensor[:, start:end]
+        if tf.reduce_all(tf.math.is_nan(arr)).numpy():
+            arr = tf.reshape(arr, shape=(1, -1))
+        else:
+            arr = arr[~tf.math.is_nan(arr)]
+
+        ret = tfp.stats.percentile(
+            arr, q, axis=None, interpolation="midpoint", keepdims=keepdims
+        ).numpy()
+        if keepdims:
+            ret = set_value(ret)
+
+        result.append(ret)
+
+    result = tf.reshape(result, shape=shape[:-1]).numpy()
+
+    if keepdims:
+        keepdim_shape = tuple(keepdim_shape)
+        result = tf.reshape(result, shape=keepdim_shape)
+        result = tf.cast(result, dtype)
+
+    if input.dtype in [tf.int64, tf.float64]:
+        result = tf.experimental.numpy.asarray(result, dtype=tf.float64)
+    elif input.dtype in [tf.float16, tf.bfloat16]:
+        result = tf.experimental.numpy.asarray(result, dtype=input.dtype)
+    else:
+        result = tf.experimental.numpy.asarray(result, dtype=tf.float32)
+
+    return result
+
+
 def nanmedian(
     input: Union[tf.Tensor, tf.Variable],
     /,
@@ -171,20 +291,13 @@ def nanmedian(
 ) -> Union[tf.Tensor, tf.Variable]:
     if overwrite_input:
         copied_input = tf.identity(input)
-        return tfp.stats.percentile(
-            copied_input,
-            50.0,
-            axis=axis,
-            interpolation="midpoint",
-            keepdims=keepdims,
-        )
-    return tfp.stats.percentile(
-        input,
-        50.0,
-        axis=axis,
-        interpolation="midpoint",
-        keepdims=keepdims,
-    )
+        axis = tuple(axis) if isinstance(axis, list) else axis
+        return _nanmedian_helper(copied_input, axis, keepdims)
+
+    else:
+        axis = tuple(axis) if isinstance(axis, list) else axis
+        result = _nanmedian_helper(input, axis, keepdims)
+        return result
 
 
 @with_supported_device_and_dtypes(
