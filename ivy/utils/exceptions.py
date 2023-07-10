@@ -143,7 +143,7 @@ def _get_traces(curr_obj, area, local_dict, target_name):
             for name in non_lib_objs_name_list:
                 if name in rooted_src_list[i]:
                     traced_data = trace_obj(local_dict[name], (), {}, {})
-                    ret_obj = [traced_data[1], traced_data[2], name, traced_data[3]]
+                    ret_obj = [traced_data[1], traced_data[2], name, curr_obj[3]]
                     ret_obj = _get_traces(ret_obj, 1, local_dict, target_name)
                     if ret_obj:
                         traces_list += ret_obj
@@ -177,7 +177,9 @@ def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.exception_trace_mode
     func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
     buffer = io.StringIO()
-    tb_history = _remove_so_log(tb_history)
+    # comment out temporarily until compiler so is updated
+    # tb_history = _remove_so_log(tb_history)
+    tb_history = tb.extract_tb(tb_history)
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
@@ -191,7 +193,9 @@ def _custom_exception_handle(type, value, tb_history):
 def _write_traceback_history(buffer):
     trace_mode = ivy.exception_trace_mode
     func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
-    tb_stack = _remove_so_log(sys.exc_info()[2])
+    # comment out temporarily until compiler so is updated
+    # tb_stack = _remove_so_log(sys.exc_info()[2])
+    tb_stack = tb.extract_tb(sys.exc_info()[2])
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
