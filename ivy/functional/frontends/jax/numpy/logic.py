@@ -222,51 +222,73 @@ def iscomplexobj(x):
 
 @to_ivy_arrays_and_back
 def setxor1d(ar1, ar2, assume_unique=False):
+    # ar1 = ivy.astype(ivy.array(-1), "bfloat16")
+    # ar2 = ivy.astype(ivy.array(257), "int16")
+
+    common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
+    if ivy.dtype(ar1) == "bfloat16" or ivy.dtype(ar2) == "bfloat16":
+        common_dtype = "bfloat16"
+    ar1 = ivy.astype(ar1, common_dtype)
+    ar2 = ivy.astype(ar2, common_dtype)
+    print("common_dtype: ", common_dtype)
     print("===============================================")
     print(f"    ar1: {ar1} | dtype(ar1): {ivy.dtype(ar1)}")
-    print(f"    ar1: {ar2} | dtype(ar1): {ivy.dtype(ar2)}")
+    print(f"    ar2: {ar2} | dtype(ar2): {ivy.dtype(ar2)}")
     print("    assume_unique: ", assume_unique)
     print("Step1 Completed")
-
-    ar1 = ivy.unique_values(ar1)
-    ar2 = ivy.unique_values(ar2)
-    ar = ivy.unique_values(ivy.concat((ar1, ar2)))
-    print("    Done: ar = ivy.unique_values(ivy.concat((ar1, ar2)))")
-    print("    ar: ", ar)
-    if assume_unique and (len(ar) == (2 * (len(ar1) + len(ar2)))):
-        print("Inside If")
-        ret = ivy.astype(
-            ivy.sort(ar),
-            ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-        )
-        print("""    Done: ret = ivy.astype(
-            ivy.sort(ar),
-            ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-        )""")
-        print("    ret: ", ret)
-    else:
-        print("Inside else")
-        _ar1 = ivy.to_list(ar1)
-        _ar2 = ivy.to_list(ar2)
-        _ar = ivy.to_list(ar)
-        print("    Done: _ar = ivy.to_list(ar)")
-        print("    _ar: ", _ar)
-        # finding symmetric difference
-        sy_d = [
-            i
-            for i in _ar
-            if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)
-        ]
-        sorted_sy_d = ivy.sort(sy_d)
-        print("    Done: sorted_sy_d = ivy.sort(sy_d)")
-        print("    sorted_sy_d: ", sorted_sy_d)
-        ret = ivy.astype(
-            sorted_sy_d,
-            ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-        )
-        print("""    Done: ret = ivy.astype(
-            sorted_sy_d,
-            ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
-        )""")
-        print("    ret: ", ret)
-    return ret
+    try:
+        ar1 = ivy.unique_values(ar1)
+        ar2 = ivy.unique_values(ar2)
+        ar = ivy.unique_values(ivy.concat((ar1, ar2)))
+        print("    Done: ar = ivy.unique_values(ivy.concat((ar1, ar2)))")
+        print(f"    ar: {ar}  | ar1: {ar1}  | ar2: {ar2} ")
+        if assume_unique and (len(ar) == (2 * (len(ar1) + len(ar2)))):
+            print("Inside If")
+            sorted_sy_d = ivy.sort(ar)
+            ret = sorted_sy_d
+            # ret = ivy.astype(
+            #     ivy.sort(ar),
+            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
+            # )
+            # print("""    Done: ret = ivy.astype(
+            #     ivy.sort(ar),
+            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
+            # )""")
+            # print("    ret: ", ret)
+        else:
+            print("Inside else")
+            _ar1 = ivy.to_list(ar1)
+            _ar2 = ivy.to_list(ar2)
+            _ar = ivy.to_list(ar)
+            print("    Done: _ar = ivy.to_list(ar)")
+            print(f"    _ar: {_ar}  | _ar1: {_ar1}  | _ar2: {_ar2} ")
+            # finding symmetric difference
+            sy_d = [
+                i
+                for i in _ar
+                if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)
+            ]
+            print("""    Done: sy_d = [
+                i
+                for i in _ar
+                if (i in _ar1 and i not in _ar2) or (i in _ar2 and i not in _ar1)
+            ]""")
+            print("    sy_d: ", sy_d)
+            sorted_sy_d = ivy.sort(sy_d)
+            print("    Done: sorted_sy_d = ivy.sort(sy_d)")
+            print("    sorted_sy_d: ", sorted_sy_d)
+            # ret = ivy.astype(
+            #     sorted_sy_d,
+            #     ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
+            # )
+            # if ivy.dtype(ar1) == "bfloat16" or ivy.dtype(ar2) == "bfloat16":
+            #     ret = ivy.astype(ret, "bfloat16")
+            # print("""    Done: ret = ivy.astype(
+            #     sorted_sy_d,
+            #     ivy.as_native_dtype(str(ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2)))),
+            # )""")
+            # print("    ret: ", ret)
+            ret = sorted_sy_d
+        return ret
+    except Exception as e:
+        print("All Mighty Error: ", e)
