@@ -285,7 +285,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
-    def loss_fn(pred, target):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
     for epoch in range(40):
@@ -293,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y), xs_grad_idxs=[[0]])
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
