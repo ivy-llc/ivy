@@ -2595,7 +2595,9 @@ def test_paddle_instance_sgn(
     method_name="bmm",
     dtypes_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        shape=(3, 3, 3),
+        shape=st.tuples(st.integers(3, 3), st.integers(3, 3), st.integers(3, 3)).filter(
+            lambda x: x[0] == x[1]
+        ),
         num_arrays=2,
         shared_dtype=True,
         min_value=-10,
