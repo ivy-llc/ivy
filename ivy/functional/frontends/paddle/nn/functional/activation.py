@@ -26,6 +26,20 @@ def selu(
     return ivy.astype(arr, x.dtype)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def elu(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    alpha_plus_one = alpha + 1
+    arr = ivy.where(x > 0, x, alpha_plus_one * (ivy.expm1(x)-1))
+    return ivy.astype(arr, x.dtype)
+
+
 tanh = paddle_tanh
 
 
