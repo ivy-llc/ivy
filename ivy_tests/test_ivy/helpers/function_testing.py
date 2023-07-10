@@ -1305,7 +1305,6 @@ def test_method(
             ret_from_gt_device = None
 
         # gradient test
-        # TODO enable gradient testing
         if (
             test_gradients
             and not backend_to_test == "numpy"
