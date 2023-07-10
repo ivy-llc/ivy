@@ -191,7 +191,7 @@ def _custom_exception_handle(type, value, tb_history):
 def _write_traceback_history(buffer):
     trace_mode = ivy.exception_trace_mode
     func_wrapper_trace_mode = ivy.show_func_wrapper_trace_mode
-    tb_stack = _remove_so_log(tb.extract_tb(sys.exc_info()[2]))
+    tb_stack = _remove_so_log(sys.exc_info()[2])
     if trace_mode == "none":
         return
     if trace_mode == "full" and func_wrapper_trace_mode:
