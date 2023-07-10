@@ -1693,6 +1693,7 @@ def expand(
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 def put_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],

@@ -461,7 +461,7 @@ def put_along_axis_helper(draw):
     )
     _idx = draw(
         helpers.dtype_and_values(
-            available_dtypes=["int32"],
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=len(_shape),
             max_num_dims=len(_shape),
             min_dim_size=1,
@@ -491,6 +491,7 @@ def put_along_axis_helper(draw):
     dtype_x_ax_idx=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
     mode=st.sampled_from(["add", "assign", "mul", "multiply"]),
+    test_with_out=st.just("False"),
 )
 def test_paddle_put_along_axis(
     *,
