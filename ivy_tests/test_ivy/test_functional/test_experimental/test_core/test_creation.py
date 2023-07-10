@@ -21,18 +21,10 @@ from ivy_tests.test_ivy.helpers import handle_test
     test_instance_method=st.just(False),
 )
 def test_vorbis_window(
-    *,
-    dtype_and_x,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
@@ -60,19 +52,10 @@ def test_vorbis_window(
     test_instance_method=st.just(False),
 )
 def test_hann_window(
-    *,
-    dtype_and_x,
-    periodic,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, periodic, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=0.005,
@@ -101,20 +84,10 @@ def test_hann_window(
     test_instance_method=st.just(False),
 )
 def test_kaiser_window(
-    *,
-    dtype_and_x,
-    periodic,
-    beta,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, periodic, beta, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -142,19 +115,10 @@ def test_kaiser_window(
     test_instance_method=st.just(False),
 )
 def test_kaiser_bessel_derived_window(
-    *,
-    dtype_and_x,
-    beta,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, beta, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -197,12 +161,10 @@ def test_hamming_window(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype1, x = dtype_and_x
     input_dtype2, f = dtype_and_f
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
         fw=backend_fw,
@@ -230,20 +192,10 @@ def test_hamming_window(
     test_gradients=st.just(False),
     test_instance_method=st.just(False),
 )
-def test_tril_indices(
-    *,
-    dtype_and_n,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_n
     helpers.test_function(
         input_dtypes=input_dtype,
-        ground_truth_backend=ground_truth_backend,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
@@ -268,16 +220,7 @@ def test_tril_indices(
     test_gradients=st.just(False),
     number_positional_args=st.just(1),
 )
-def test_eye_like(
-    *,
-    dtype_and_x,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_eye_like(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
@@ -289,7 +232,6 @@ def test_eye_like(
         k=k,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -336,21 +278,10 @@ def test_ndindex(dtype_x_shape):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_indices(
-    *,
-    shape,
-    dtype,
-    sparse,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[],
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
