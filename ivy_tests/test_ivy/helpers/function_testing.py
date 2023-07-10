@@ -309,9 +309,9 @@ def test_function(
         target_fn, *args, test_compile=test_flags.test_compile, **kwargs
     )
 
-    assert ivy.nested_map(ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True), (
-        "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
-    )
+    assert ivy.nested_map(
+        ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+    ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
     # Assert indices of return if the indices of the out array provided
     if test_flags.with_out and not test_flags.test_compile:
@@ -606,9 +606,9 @@ def test_frontend_function(
 
     ret = frontend_fn(*args_for_test, **kwargs_for_test)
 
-    assert ivy.nested_map(ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True), (
-        "Frontend function returned non-frontend arrays: {}".format(ret)
-    )
+    assert ivy.nested_map(
+        ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True
+    ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
     if not test_flags.generate_frontend_arrays:
         ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
@@ -1149,9 +1149,9 @@ def test_method(
         **kwargs_method,
     )
 
-    assert ivy.nested_map(ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True), (
-        "Ivy method returned non-ivy arrays: {}".format(ret)
-    )
+    assert ivy.nested_map(
+        ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+    ), "Ivy method returned non-ivy arrays: {}".format(ret)
 
     # Compute the return with a Ground Truth backend
 
@@ -1471,9 +1471,9 @@ def test_frontend_method(
         **kwargs_method,
     )
 
-    assert ivy.nested_map(ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True), (
-        "Frontend method returned non-frontend arrays: {}".format(ret)
-    )
+    assert ivy.nested_map(
+        ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True
+    ), "Frontend method returned non-frontend arrays: {}".format(ret)
 
     # Compute the return with the native frontend framework
     ivy.set_backend(frontend.split("/")[0])
