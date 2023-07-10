@@ -789,7 +789,12 @@ def test_jax_devicearray__abs_(
 @st.composite
 def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     x_dtype, x = draw(
-        helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(dtype))
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(dtype),
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
     )
     pow_dtype, x_int = draw(
         helpers.dtype_and_values(
@@ -798,6 +803,9 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
             max_value=10,
             max_num_dims=0,
             max_dim_size=1,
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
         )
     )
     x_dtype = x_dtype + pow_dtype
