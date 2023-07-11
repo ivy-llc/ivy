@@ -162,12 +162,11 @@ def corrcoef(
 
 
 def set_value(ret):
-    if isinstance(ret, list):
-        return set_value(ret[0])
-    elif isinstance(ret, np.ndarray):
-        return set_value(ret[0])
-    else:
-        return ret
+    if isinstance(ret, list) or isinstance(ret, np.ndarray):
+        if ret.ndim == 2:
+            return ret[0][0]
+        else:
+            return ret[0]
 
 
 def _nanmedian_helper(input, axis=None, keepdims=False):
