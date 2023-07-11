@@ -232,10 +232,12 @@ class InitMethodTestFlags(TestFlags):
         num_positional_args,
         as_variable,
         native_arrays,
+        generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
         ret = []
@@ -253,6 +255,7 @@ class InitMethodTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"generate_frontend_arrays={self.generate_frontend_arrays}. "
         )
 
     def __repr__(self):
@@ -266,6 +269,7 @@ def init_method_flags(
     num_positional_args,
     as_variable,
     native_arrays,
+    generate_frontend_arrays,
 ):
     return draw(
         st.builds(
@@ -273,6 +277,7 @@ def init_method_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )
 
@@ -284,11 +289,13 @@ class MethodTestFlags(TestFlags):
         as_variable,
         native_arrays,
         container_flags,
+        generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
         self.container = container_flags
+        self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
         ret = []
@@ -309,6 +316,7 @@ class MethodTestFlags(TestFlags):
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
             f"container_flags={self.container}. "
+            f"generate_frontend_arrays={self.generate_frontend_arrays}. "
         )
 
     def __repr__(self):
@@ -323,6 +331,7 @@ def method_flags(
     as_variable,
     native_arrays,
     container_flags,
+    generate_frontend_arrays,
 ):
     return draw(
         st.builds(
@@ -331,6 +340,7 @@ def method_flags(
             as_variable=as_variable,
             native_arrays=native_arrays,
             container_flags=container_flags,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )
 
@@ -341,10 +351,12 @@ class FrontendMethodTestFlags(TestFlags):
         num_positional_args,
         as_variable,
         native_arrays,
+        generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.generate_frontend_arrays = (generate_frontend_arrays,)
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
         ret = []
@@ -362,6 +374,7 @@ class FrontendMethodTestFlags(TestFlags):
             f"num_positional_args={self.num_positional_args}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"generate_frontend_arrays={self.generate_frontend_arrays}. "
         )
 
     def __repr__(self):
@@ -375,6 +388,7 @@ def frontend_method_flags(
     num_positional_args,
     as_variable,
     native_arrays,
+    generate_frontend_arrays,
 ):
     return draw(
         st.builds(
@@ -382,5 +396,6 @@ def frontend_method_flags(
             num_positional_args=num_positional_args,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            generate_frontend_arrays=generate_frontend_arrays,
         )
     )

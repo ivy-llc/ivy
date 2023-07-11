@@ -682,12 +682,14 @@ def handle_frontend_method(
                 num_positional_args=init_num_positional_args,
                 as_variable=init_as_variable_flags,
                 native_arrays=init_native_arrays,
+                generate_frontend_arrays=generate_frontend_arrays,
             )
 
             method_flags = pf.frontend_method_flags(
                 num_positional_args=method_num_positional_args,
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
+                generate_frontend_arrays=generate_frontend_arrays,
             )
             try:
                 ivy_init_modules = importlib.import_module(ivy_init_module)
