@@ -168,10 +168,13 @@ def deg2rad(x, name=None):
     return ivy.deg2rad(x)
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def gcd(x, y, name=None):
     return ivy.gcd(x, y)
+
+
+# @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
@@ -222,7 +225,19 @@ def erf(x, name=None):
     return ivy.erf(x)
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def cumprod(x, dim=None, dtype=None, name=None):
     return ivy.cumprod(x, axis=dim, dtype=dtype)

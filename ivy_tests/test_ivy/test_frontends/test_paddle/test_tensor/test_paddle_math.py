@@ -1001,7 +1001,7 @@ def test_paddle_lcm(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         force_int_axis=True,
         min_num_dims=1,
@@ -1033,11 +1033,11 @@ def test_paddle_cumprod(
 @handle_frontend_test(
     fn_tree="paddle.gcd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
-        max_num_dims=3,
+        max_num_dims=5,
         min_dim_size=1,
         max_dim_size=3,
         num_arrays=2,
