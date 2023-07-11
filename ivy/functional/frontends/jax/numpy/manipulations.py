@@ -170,17 +170,14 @@ def tril(m, k=0):
 
 
 @to_ivy_arrays_and_back
-def block(arr, block_size):
-    if isinstance(arr, ivy.Array):
-        arr_blocks = ivy.reshape(
-            arr, ivy.concat([ivy.shape(arr)[:-1], [-1, block_size]], 0)
-        )
-        return arr_blocks
+def block(arr):
+    # TODO: reimplement block
+    raise ivy.utils.exceptions.IvyNotImplementedError()
 
 
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
-    return ivy.squeeze(a, axis)
+    return ivy.squeeze(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -319,7 +316,7 @@ def blackman(M):
     if M < 1:
         return ivy.array([])
     if M == 1:
-        return ivy.ones(1)
+        return ivy.ones((1,))
     n = ivy.arange(0, M)
     alpha = 0.16
     a0 = (1 - alpha) / 2

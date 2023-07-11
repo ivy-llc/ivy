@@ -5,7 +5,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def l1_normalize(
     x: torch.Tensor,
     /,
@@ -42,10 +41,10 @@ def batch_norm(
     *,
     scale: Optional[torch.Tensor] = None,
     offset: Optional[torch.Tensor] = None,
-    training: bool = False,
-    eps: float = 1e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     xdims = x.ndim
@@ -90,10 +89,10 @@ def instance_norm(
     *,
     scale: Optional[torch.Tensor] = None,
     offset: Optional[torch.Tensor] = None,
-    training: bool = False,
-    eps: float = 0e-5,
-    momentum: float = 1e-1,
-    data_format: str = "NSC",
+    training: Optional[bool] = False,
+    eps: Optional[float] = 0e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
     out: Optional[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     mean.requires_grad = False
@@ -131,6 +130,31 @@ instance_norm.partial_mixed_handler = (
         and (offset is None or offset.ndim == 1)
     )
 )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def group_norm(
+    x: torch.Tensor,
+    num_groups: int = 1,
+    /,
+    *,
+    offset: Optional[torch.Tensor] = None,
+    scale: Optional[torch.Tensor] = None,
+    eps: Optional[float] = 1e-5,
+    data_format: Optional[str] = "NSC",
+    out: Optional[torch.Tensor] = None,
+):
+    xdims = x.ndim
+    if data_format == "NSC":
+        x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+    xnormalized = torch.nn.functional.group_norm(
+        x, num_groups, weight=scale, bias=offset, eps=eps
+    )
+
+    if data_format == "NSC":
+        xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+
+    return xnormalized
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)

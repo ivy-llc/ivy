@@ -125,7 +125,6 @@ def test_function(
     test_values: bool = True,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str,
     on_device: str,
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
@@ -158,8 +157,6 @@ def test_function(
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
-    ground_truth_backend
-        Ground Truth Backend to compare the result-values.
     on_device
         The device on which to create arrays
     return_flat_np_arrays
@@ -338,8 +335,10 @@ def test_function(
         assert not ivy.nested_any(
             ivy.nested_multi_map(lambda x, _: x[0] is x[1], [test_ret, out]),
             lambda x: not x,
-        ), f"the array: {test_ret} in out argument is not the same"
-        f" as the returned: {out}"
+        ), (
+            f"the array: {test_ret} in out argument is not the same as the returned:"
+            f" {out}"
+        )
         if not max(test_flags.container) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert not ivy.nested_any(
@@ -347,11 +346,12 @@ def test_function(
                     lambda x, _: x[0].data is x[1].data, [test_ret, out]
                 ),
                 lambda x: not x,
-            ), f"the array: {test_ret} in out argument is not the same"
-            f" as the returned: {out}"
+            ), (
+                f"the array: {test_ret} in out argument is not the same as the"
+                f" returned: {out}"
+            )
     # compute the return with a Ground Truth backend
-
-    ivy.set_backend(ground_truth_backend)
+    ivy.set_backend(test_flags.ground_truth_backend)
     ivy.set_default_device(on_device)
     try:
         args, kwargs = create_args_kwargs(
@@ -423,22 +423,22 @@ def test_function(
                 atol_=atol_,
                 xs_grad_idxs=xs_grad_idxs,
                 ret_grad_idxs=ret_grad_idxs,
-                ground_truth_backend=ground_truth_backend,
+                ground_truth_backend=test_flags.ground_truth_backend,
                 on_device=on_device,
             )
 
     if gt_returned_array:
         ret_device = ivy.dev(ret_from_target)
 
-        assert (
-            ret_device == ret_from_gt_device
-        ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-        f"{ret_from_gt_device} but target backend ({ivy.backend}) returned array on "
-        f"device {ret_device}"
-        assert (
-            ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth "
-        f"produced array on {ret_device}"
+        assert ret_device == ret_from_gt_device, (
+            f"ground truth backend ({test_flags.ground_truth_backend}) returned"
+            f" array on device {ret_from_gt_device} but target backend ({ivy.backend})"
+            f" returned array on device {ret_device}"
+        )
+        assert ret_device == on_device, (
+            f"device is set to {on_device}, but ground truth "
+            f"produced array on {ret_device}"
+        )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -457,7 +457,7 @@ def test_function(
         ret_np_from_gt_flat=ret_np_from_gt_flat,
         rtol=rtol_,
         atol=atol_,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
@@ -591,8 +591,8 @@ def test_frontend_function(
 
     # Make copy for arguments for functions that might use
     # inplace update by default
-    copy_kwargs = copy.deepcopy(kwargs)
-    copy_args = copy.deepcopy(args)
+    copy_kwargs = copy.deepcopy(kwargs_for_test)
+    copy_args = copy.deepcopy(args_for_test)
     # strip the decorator to get an Ivy array
     # ToDo, fix testing for jax frontend for x32
     if frontend == "jax":
@@ -685,6 +685,7 @@ def test_frontend_function(
             # if returned reference is inputted reference
             # and if inputted reference's content is correctly updated
             copy_kwargs["inplace"] = True
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
@@ -693,12 +694,13 @@ def test_frontend_function(
         else:
             # the function provides inplace update by default
             # check if returned reference is inputted reference
+            copy_kwargs["as_ivy_arrays"] = False
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
             assert first_array is ret_
-            args, kwargs = copy_args, copy_kwargs
+
     # create NumPy args
 
     def arrays_to_numpy(x):
@@ -1328,6 +1330,10 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    if frontend == "jax":
+        importlib.import_module("ivy.functional.frontends.jax").config.update(
+            "jax_enable_x64", True
+        )
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
@@ -1639,6 +1645,8 @@ def wrap_frontend_function_args(argument):
         and x.__module__.startswith("ivy.functional.frontends"),
     ):
         return output_to_native_arrays(frontend_outputs_to_ivy_arrays(argument))
+    if ivy.nested_any(argument, lambda x: isinstance(x, ivy.Shape)):
+        return argument.shape
     return argument
 
 

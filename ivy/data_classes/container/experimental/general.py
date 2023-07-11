@@ -11,7 +11,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
     def _static_reduce(
         operand: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         init_value: Union[int, float],
-        func: Callable,
+        computation: Callable,
         /,
         *,
         axes: Union[int, Sequence[int]] = 0,
@@ -32,7 +32,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
             The array to act on.
         init_value
             The value with which to start the reduction.
-        func
+        computation
             The reduction function.
         axes
             The dimensions along which the reduction is performed.
@@ -73,7 +73,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
             "reduce",
             operand,
             init_value,
-            func,
+            computation,
             axes=axes,
             keepdims=keepdims,
             key_chains=key_chains,
@@ -85,7 +85,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
     def reduce(
         self: ivy.Container,
         init_value: Union[int, float],
-        func: Callable,
+        computation: Callable,
         /,
         *,
         axes: Union[int, Sequence[int]] = 0,
@@ -106,7 +106,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
             The array to act on.
         init_value
             The value with which to start the reduction.
-        func
+        computation
             The reduction function.
         axes
             The dimensions along which the reduction is performed.
@@ -146,7 +146,7 @@ class _ContainerWithGeneralExperimental(ContainerBase):
         return self._static_reduce(
             self,
             init_value,
-            func,
+            computation,
             axes=axes,
             keepdims=keepdims,
             key_chains=key_chains,

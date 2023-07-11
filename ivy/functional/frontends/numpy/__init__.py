@@ -1,5 +1,10 @@
+# global
+import sys
+
+# local
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
 from typing import Union, Iterable, Tuple
 from numbers import Number
 from .data_type_routines import dtype
@@ -7,6 +12,7 @@ from . import ndarray
 from .ndarray import *
 from . import scalars
 from .scalars import *
+
 
 # Constructing dtypes are required as ivy.<dtype>
 # will change dynamically on the backend and may not be available
@@ -523,6 +529,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.miscellaneous import 
     _sqrt,
     _square,
     _lcm,
+    _gcd,
+    _clip,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations import (  # noqa
@@ -539,8 +547,8 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _power,
     _reciprocal,
     _subtract,
-    _true_divide,
     _divmod,
+    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
@@ -557,7 +565,6 @@ from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functio
 
 from ivy.functional.frontends.numpy.mathematical_functions.handling_complex_numbers import (  # noqa
     _conj,
-    _conjugate,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.hyperbolic_functions import (
@@ -612,7 +619,10 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
     _logical_xor,
 )
 
-from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _matmul
+from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
+    _matmul,
+    dot,
+)
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
@@ -623,6 +633,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
     _nextafter,
+    _spacing,
 )
 
 _frontend_array = array
@@ -703,5 +714,14 @@ frexp = ufunc("_frexp")
 conj = ufunc("_conj")
 rint = ufunc("_rint")
 nextafter = ufunc("_nextafter")
-conjugate = ufunc("_conjugate")
+conjugate = ufunc("_conj")
 lcm = ufunc("_lcm")
+gcd = ufunc("_gcd")
+spacing = ufunc("_spacing")
+clip = ufunc("_clip")
+remainder = ufunc("_remainder")
+
+# setting to specific version #
+# --------------------------- #
+
+set_frontend_to_specific_version(sys.modules[__name__])

@@ -132,11 +132,11 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout)
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -1052,7 +1052,7 @@ class ContainerBase(dict, abc.ABC):
         containers
             containers to check.
         """
-        ivy.utils.assertions.check_greater(len(containers), 1)
+        ivy.utils.assertions.check_greater(len(containers), 1, as_array=False)
         configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1092,6 +1092,17 @@ class ContainerBase(dict, abc.ABC):
             ):
                 return False
         return True
+
+    @staticmethod
+    def cont_load(filepath, format="h5py"):
+        if format == "json":
+            return ivy.Container.cont_from_disk_as_json(filepath)
+        elif format == "pickle":
+            return ivy.Container.cont_from_disk_as_pickled(filepath)
+        elif format == "h5py":
+            return ivy.Container.cont_from_disk_as_hdf5(filepath)
+        else:
+            raise ivy.utils.exceptions.IvyException("Unsupported format")
 
     @staticmethod
     def cont_from_disk_as_hdf5(
@@ -1947,6 +1958,16 @@ class ContainerBase(dict, abc.ABC):
             ),
             alphabetical_keys=False,
         )
+
+    def cont_save(self, filepath, format="h5py"):
+        if format == "json":
+            self.cont_to_disk_as_json(filepath)
+        elif format == "pickle":
+            self.cont_to_disk_as_pickled(filepath)
+        elif format == "h5py":
+            self.cont_to_disk_as_hdf5(filepath)
+        else:
+            raise ValueError("Unsupported format")
 
     def cont_to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
@@ -2961,6 +2982,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
@@ -3002,6 +3024,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():

@@ -9,8 +9,13 @@ from typing import Optional, Union
 # global
 import paddle
 import paddle.nn.functional as F
+
+# local
 import ivy.functional.backends.paddle as paddle_backend
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from . import backend_version
+
 
 unsupported_dtypes = [
     paddle.int8,
@@ -83,6 +88,9 @@ def sigmoid(
     return F.sigmoid(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def softmax(
     x: paddle.Tensor,
     /,
@@ -127,6 +135,9 @@ def softplus(
     return res.astype(x.dtype)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+)
 def log_softmax(
     x: paddle.Tensor,
     /,
@@ -156,3 +167,12 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
         return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}}, backend_version
+)
+def hardswish(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return F.hardswish(x)
