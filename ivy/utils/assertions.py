@@ -1,6 +1,4 @@
 import numpy as np
-import torch
-import paddle
 import ivy
 
 
@@ -196,7 +194,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
     if (
         not (
             (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
+            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
         )
         and not (
             ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
@@ -221,24 +219,32 @@ def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
     valid_dtypes = [
         ivy.int32,
         ivy.int64,
-        torch.int32,
-        torch.int64,
-        paddle.int32,
-        paddle.int64,
     ]
+
+    if ivy.backend == "torch":
+        import torch
+
+        valid_dtypes = [
+            torch.int32,
+            torch.int64,
+        ]
+        if isinstance(num_segments, torch.Tensor):
+            num_segments = num_segments.item()
+    elif ivy.backend == "paddle":
+        import paddle
+
+        valid_dtypes = [
+            paddle.int32,
+            paddle.int64,
+        ]
+        if isinstance(num_segments, paddle.Tensor):
+            num_segments = num_segments.item()
 
     if segment_ids.dtype not in valid_dtypes:
         raise ValueError("segment_ids must have an integer dtype")
 
     if data.shape[0] != segment_ids.shape[0]:
         raise ValueError("The length of segment_ids should be equal to data.shape[0].")
-
-    if ivy.backend == "torch":
-        if isinstance(num_segments, torch.Tensor):
-            num_segments = num_segments.item()
-    elif ivy.backend == "paddle":
-        if isinstance(num_segments, paddle.Tensor):
-            num_segments = num_segments.item()
 
     if ivy.max(segment_ids) >= num_segments:
         error_message = (
