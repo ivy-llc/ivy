@@ -43,7 +43,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
     dtype_value1_value2_axis,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
-    _get_dtype_and_square_matrix,
     _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
@@ -9803,7 +9802,7 @@ def test_torch_instance_addcdiv_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="cholesky",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_instance_cholesky(

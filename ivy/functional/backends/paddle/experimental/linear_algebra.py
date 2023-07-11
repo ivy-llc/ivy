@@ -55,6 +55,10 @@ def kron(
     return paddle.kron(a, b)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex",)}},
+    backend_version,
+)
 def matrix_exp(
     x: paddle.Tensor,
     /,
@@ -62,7 +66,8 @@ def matrix_exp(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # TODO: this is elementwise exp, should be changed to matrix exp ASAP
-    return paddle.exp(x)
+    # return paddle.exp(x)
+    raise IvyNotImplementedException()
 
 
 def eig(

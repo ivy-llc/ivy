@@ -246,6 +246,10 @@ def matmul(
     return ret
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex",)}},
+    backend_version,
+)
 def matrix_norm(
     x: paddle.Tensor,
     /,
@@ -431,6 +435,10 @@ def tensorsolve(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex",)}},
+    backend_version,
+)
 def qr(
     x: paddle.Tensor,
     /,
@@ -651,7 +659,7 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "complex")}},
     backend_version,
 )
 def vander(
