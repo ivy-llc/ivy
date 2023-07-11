@@ -291,6 +291,7 @@ def Log(*, x, name="Log"):
 
 Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
+LogSoftmax = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log_softmax))
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
