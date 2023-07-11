@@ -358,6 +358,19 @@ class ndarray:
     def view(self):
         return np_frontend.reshape(self, tuple(self.shape))
 
+    def sum(
+        self, *, axis=None, dtype=None, out=None, keepdims=False, initial=0, where=True
+    ):
+        return np_frontend.sum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+        )
+
     def __add__(self, value, /):
         return np_frontend.add(self, value)
 
