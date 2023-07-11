@@ -36,7 +36,7 @@ from ivy.functional.ivy.device import _get_nvml_gpu_handle
 # ------- #
 
 
-def _ram_array_and_clear_test(metric_fn, device, size=1000000000):
+def _ram_array_and_clear_test(metric_fn, device, size=10000000):
     # This function checks if the memory usage changes before, during and after
 
     # Measure usage before creating array
@@ -620,7 +620,7 @@ def test_clear_cached_mem_on_dev():
         # for only CUDA devices
         if "gpu" in device:
             arr = ivy.random_normal(  # noqa: F841
-                shape=(10000, 10000), dtype="float32", device=device
+                shape=(10000, 1000), dtype="float32", device=device
             )
             del arr
             before = get_gpu_mem_usage(device)

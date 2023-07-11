@@ -29,6 +29,11 @@ def add(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
 def angle(z, deg=False):
     return ivy.angle(z, deg=deg)
 
@@ -120,6 +125,7 @@ def floor(x, /):
     return ivy.floor(x)
 
 
+@with_unsupported_dtypes({"0.4.13 and below": ("complex",)}, "jax")
 @to_ivy_arrays_and_back
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)

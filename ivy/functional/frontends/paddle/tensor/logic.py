@@ -257,3 +257,11 @@ def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 @handle_out_argument
 def logical_and(x, y, /, *, name=None, out=None):
     return ivy.logical_and(x, y, out=out)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def is_empty(x, name=None):
+    return ivy.is_empty(x)
