@@ -822,7 +822,7 @@ def test_pinv(*, h_dtype_x, rtol, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        x=x[0],
+        x=x,
         rtol=rtol,
         hermitian=h,
     )
