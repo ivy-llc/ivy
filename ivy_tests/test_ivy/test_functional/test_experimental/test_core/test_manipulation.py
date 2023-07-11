@@ -970,3 +970,42 @@ def test_unique_consecutive(
         x=x[0],
         axis=axis,
     )
+
+
+# fill_diag
+@handle_test(
+    fn_tree="fill_diagonal",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=4,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    v=st.sampled_from([1, 2, 3, 10]),
+    wrap=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_fill_diagonal(
+    *,
+    dt_a,
+    v,
+    wrap,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
+        v=v,
+        wrap=wrap,
+    )
