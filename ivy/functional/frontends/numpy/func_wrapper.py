@@ -422,7 +422,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     else:
         contains_order = False
     _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
-    return outputs_to_frontend_arrays
+    return _outputs_to_frontend_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
