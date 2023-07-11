@@ -516,6 +516,9 @@ def asin(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
 
+    For complex floating-point operands, special cases must be handled
+    as if the operation is implemented as ``-1j * asinh(x * 1j)``.
+
     Parameters
     ----------
     x
