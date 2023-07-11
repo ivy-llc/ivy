@@ -1015,7 +1015,7 @@ class Tensor:
 
     def __bool__(self):
         if len(self.shape) == sum(self.shape):
-            return self.ivy_array.to_scalar().__bool__()
+            return torch_frontend.tensor(self.ivy_array.to_scalar().__bool__())
         raise ValueError(
             "The truth value of an array with more than one element is ambiguous. "
             "Use a.any() or a.all()"
@@ -1307,6 +1307,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
     def sign(self):
         return torch_frontend.sign(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
+    def sign_(self):
+        self.ivy_array = self.sign().ivy_array
+        return self
 
     @numpy_to_torch_style_args
     def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
