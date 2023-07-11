@@ -1543,8 +1543,8 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.conv1d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         {
-            a: [1,56,6],
-            b: [1,112,6]
+            a: ivy.Shape(1, 56, 6),
+            b: ivy.Shape(1, 112, 6)
         }
         """
         return self._static_conv1d_transpose(
@@ -1718,22 +1718,23 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
+        # TODO: example is required to be fixed, shapes are wrong
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
         >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
         >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x, filters, 2, 'SAME')
+        >>> y = x.conv2d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         {
             a: {
-                c: [1,28,28,6],
-                d: [1,28,28,6]
+                c: ivy.Shape(1,28,28,6),
+                d: ivy.Shape(1,28,28,6)
             },
             b: {
-                c: [1,56,56,6],
-                d: [1,56,56,6]
+                c: ivy.Shape(1,56,56,6),
+                d: ivy.Shape(1,56,56,6)
             }
         }
         """

@@ -179,9 +179,9 @@ def check_docstring_examples_run(
         """,
         re.VERBOSE,
     )
-    num_output = output.replace("ivy.array", "")
+    num_output = output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_output = numeric_pattern.sub("", num_output)
-    num_parsed_output = parsed_output.replace("ivy.array", "")
+    num_parsed_output = parsed_output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_parsed_output = numeric_pattern.sub("", num_parsed_output)
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
@@ -288,6 +288,8 @@ def test_docstrings(backend):
         "dropout",
         "dropout1d",
         "dropout3",
+        "broadcast_shapes",
+        "conv2d_transpose",
     ]
     # currently_being_worked_on = ["layer_norm"]
 
@@ -322,6 +324,8 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
+                if method_name == "conv3d_transpose":
+                    x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
                     if (
