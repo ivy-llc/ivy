@@ -403,7 +403,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+        ord: Union[int, float, Literal["inf", "-inf", "fro", "nuc"]] = "fro",
         axis: Tuple[int, int] = (-2, -1),
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
