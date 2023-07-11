@@ -162,14 +162,7 @@ def test_paddle_cosine_embedding_loss(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
-        min_value=0,
-        max_value=1,
-        exclude_min=True,
-        exclude_max=True,
         shared_dtype=True,
-        min_num_dims=2,
-        max_num_dims=2,
-        max_dim_size=1,
     ),
     margin=st.floats(
         min_value=-1.0,

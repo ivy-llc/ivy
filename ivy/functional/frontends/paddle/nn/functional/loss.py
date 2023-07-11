@@ -108,7 +108,7 @@ def cosine_embedding_loss(
     "paddle",
 )
 @to_ivy_arrays_and_back
-def hinge_embedding_loss(input, label, margin=1.0, reduction="mean", name=None):
+def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
     if reduction not in ["sum", "mean", "none"]:
         raise ValueError(
             "'reduction' in 'hinge_embedding_loss' should be 'sum', 'mean' or 'none', "
