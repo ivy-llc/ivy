@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.utils.assertions import check_kernel_padding_size
-from ivy.utils.exceptions import *
+from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
@@ -247,10 +247,8 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-if not isinstance(dim, int):
-        raise IvyValueError(
-            f"Expecting <class 'int'> instead of {type(dim)}"
-        )
+    if not isinstance(dim, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(dim)}")
 
     if n is None:
         n = x.shape[dim]
@@ -261,18 +259,17 @@ if not isinstance(dim, int):
         )
 
     if not isinstance(n, int):
-        raise TypeError(
-            f"Expecting int type for 'n', instead of {type(n)}"
-        )
+        raise TypeError(f"Expecting int type for 'n', instead of {type(n)}")
 
     if n <= 1:
-        raise IvyValueError(
-            f"Invalid number of data points {n}, expecting more than 1"
-        )
+        raise IvyValueError(f"Invalid number of data points {n}, expecting more than 1")
 
     valid_norm_modes = ["backward", "ortho", "forward"]
     if norm not in valid_norm_modes:
-        raise IvyValueError(f"Unrecognized normalization mode {norm}, expecting one of {valid_norm_modes}")
+        raise IvyValueError(
+            f"Unrecognized normalization mode {norm}, expecting one of"
+            f" {valid_norm_modes}"
+        )
 
     if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
         x = x.cast(paddle.complex128)
