@@ -7,7 +7,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_partial_mixed_function,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
@@ -21,7 +20,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1138,3 +1136,39 @@ def frexp(
     (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
     """
     return ivy.current_backend(x).frexp(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def modf(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Decompose the elements of x into fractional and integral parts.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A tuple of two arrays, the fractional and integral parts.
+
+    Examples
+    --------
+    >>> x = ivy.array([1.5, 2.7, 3.9])
+    >>> ivy.modf(x)
+    (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+    """
+    return ivy.current_backend(x).modf(x, out=out)
