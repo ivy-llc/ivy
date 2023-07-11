@@ -357,7 +357,6 @@ def avg_pool1d(
     )
 
     res = np.mean(sub_matrices, axis=2)
-    # print(res)
 
     if (not count_include_pad or ceil_mode) and any(pad_specific):
         if not count_include_pad:
