@@ -625,35 +625,31 @@ def test_tensorflow_Atan(  # NOQA
 # Atan2
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Atan2",
-    dtype_and_y=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays = 2
     ),
     test_with_out=st.just(False),
 )
 def test_tensorflow_Atan2(  # NOQA
     *,
-    dtype_and_y,
     dtype_and_x,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    dtype_y, y = dtype_and_y
-    dtype_x, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
 
     # Assuming x and y have the same shape
     helpers.test_frontend_function(
-        input_dtypes=(dtype_y, dtype_x),
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        y=y[0],
-        x=x[0],
+        y=xs[0],
+        x=xs[1],
     )
 
 
