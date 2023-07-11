@@ -835,11 +835,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             ret = fn(*args, out=native_out, **kwargs)
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
-                    out[i].data = ivy.to_native(ret[i])
+                    ivy.inplace_update(out[i], ret[0])
                     if ivy.backend == "torch":
                         _update_torch_views(out[i])
             else:
-                out.data = ivy.to_native(ret)
+                ivy.inplace_update(out, ret)
                 if ivy.backend == "torch":
                     _update_torch_views(out)
             return out
