@@ -602,6 +602,24 @@ def asinh(
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
 
+    For complex floating-point operands, let ``a = real(x_i)`` and ``b = imag(x_i)``,
+    and
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is a positive (i.e., greater than ``0``) finite number and ``b`` is
+        ``+infinity``, the result is ``+infinity + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than ``0``)
+        finite number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``, the result is
+        ``+infinity + πj/4``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``, the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is nonzero finite number, the result is
+        ``NaN + NaNj``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+    the result is ``±infinity ± NaNj``, (sign of real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, ``NaN + NaNj``.
+
     Parameters
     ----------
     x
