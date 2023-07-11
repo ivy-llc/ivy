@@ -47,6 +47,19 @@ def binary_cross_entropy_with_logits(
     return paddle.to_tensor(ret.reshape([-1]))
 
 
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def mse_loss(input, label, reduction="mean", name=None):
+    reduction = _get_reduction_func(reduction)
+    ret = ivy.square(input - label)
+    ret = reduction(ret)
+
+    if ret.shape == ():
+        ret = ret.expand_dims()
+
+    return paddle.to_tensor(ret)
+
+
 @handle_exceptions
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
@@ -87,4 +100,16 @@ def cosine_embedding_loss(
     elif reduction == "sum":
         out = ivy.sum(out)
 
+    return out
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def log_loss(input, label, epsilon=0.0001, name=None):
+    out = -label * ivy.log(input + epsilon) - (
+        (1 - label) * ivy.log(1 - input + epsilon)
+    )
     return out

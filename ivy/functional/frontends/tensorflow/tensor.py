@@ -106,7 +106,7 @@ class EagerTensor:
         return tf_frontend.raw_ops.FloorDiv(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.12.0 and below": ("complex",)},
+        {"2.13.0 and below": ("complex",)},
         "tensorflow",
     )
     def __ge__(self, y, name="ge"):
@@ -118,7 +118,7 @@ class EagerTensor:
         return EagerTensor(ret)
 
     @with_unsupported_dtypes(
-        {"2.12.0 and below": ("complex",)},
+        {"2.13.0 and below": ("complex",)},
         "tensorflow",
     )
     def __gt__(self, y, name="gt"):
@@ -128,14 +128,14 @@ class EagerTensor:
         return tf_frontend.raw_ops.Invert(x=self, name=name)
 
     @with_unsupported_dtypes(
-        {"2.12.0 and below": ("complex",)},
+        {"2.13.0 and below": ("complex",)},
         "tensorflow",
     )
     def __le__(self, y, name="le"):
         return tf_frontend.raw_ops.LessEqual(x=self, y=y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.12.0 and below": ("complex",)},
+        {"2.13.0 and below": ("complex",)},
         "tensorflow",
     )
     def __lt__(self, y, name="lt"):
@@ -148,7 +148,7 @@ class EagerTensor:
         return tf_frontend.math.multiply(self, y, name=name)
 
     @with_unsupported_dtypes(
-        {"2.12.0 and below": ("complex",)},
+        {"2.13.0 and below": ("complex",)},
         "tensorflow",
     )
     def __mod__(self, y, name="mod"):

@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     pred_cond=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cond(
+def test_jax_cond(
     *,
     dtype_and_x,
     pred_cond,
@@ -130,7 +130,7 @@ def test_jax_switch(
     upper=st.integers(min_value=-10, max_value=10),
     test_with_out=st.just(False),
 )
-def test_jax_lax_fori_loop(
+def test_jax_fori_loop(
     *,
     dtype_and_x,
     lower,
@@ -167,7 +167,7 @@ def test_jax_lax_fori_loop(
         min_dim_size=1,
     ),
 )
-def test_jax_lax_while_loop(
+def test_jax_while_loop(
     *,
     dtype_and_x,
     test_flags,

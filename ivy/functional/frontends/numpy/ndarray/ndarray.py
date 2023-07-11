@@ -57,6 +57,11 @@ class ndarray:
     def ndim(self):
         return len(self.shape)
 
+    @property
+    def flat(self):
+        self = self.flatten()
+        return self
+
     # Setters #
     # --------#
 
@@ -316,6 +321,9 @@ class ndarray:
     def tobytes(self, order="C") -> bytes:
         return np_frontend.tobytes(self, order=order)
 
+    def tostring(self, order="C") -> bytes:
+        return np_frontend.tobytes(self.data, order=order)
+
     def prod(
         self,
         *,
@@ -447,17 +455,17 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.int64)[0]
+        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.int64))
 
     def __float__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.float64)[0]
+        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.float64))
 
     def __complex__(
         self,
     ):
-        return ivy.array(ivy.reshape(self.ivy_array, (-1,)), dtype=ivy.complex128)[0]
+        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.complex128))
 
     def __contains__(self, key, /):
         return key in ivy.reshape(self.ivy_array, -1)
@@ -491,6 +499,9 @@ class ndarray:
 
     def __imod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
+
+    def __invert__(self, /):
+        return ivy.bitwise_invert(self.ivy_array)
 
     def __abs__(self):
         return np_frontend.absolute(self)

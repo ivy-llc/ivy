@@ -18,6 +18,7 @@ import math
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
+    handle_partial_mixed_function,
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
@@ -32,6 +33,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
 @handle_view
 @inputs_to_ivy_arrays
@@ -185,7 +187,7 @@ flatten.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
@@ -1619,6 +1621,7 @@ def hsplit(
 
 
 @handle_exceptions
+@inputs_to_native_shapes
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     """
     Broadcasts shapes.
@@ -1685,7 +1688,7 @@ def expand(
     ret
         Output Array
     """
-    return ivy.current_backend(x).expand(x, shape, out=out, copy=None)
+    return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
 @handle_nestable
@@ -2092,3 +2095,34 @@ def unique_consecutive(
         counts=ivy.array([2, 2, 1, 2, 1]))
     """
     return ivy.current_backend(x).unique_consecutive(x, axis=axis)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+def fill_diagonal(
+    a: Union[ivy.Array, ivy.NativeArray],
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Fill the main diagonal of the given array of any dimensionality..
+
+    Parameters
+    ----------
+    a
+        Array at least 2D.
+    v
+        The value to write on the diagonal.
+    wrap
+        The diagonal ‘wrapped’ after N columns for tall matrices.
+    Returns
+    -------
+    ret
+        Array with the diagonal filled.
+    """
+    return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)

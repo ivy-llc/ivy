@@ -52,6 +52,10 @@
 			"installDockerBuildx": true,
 			"version": "20.10",
 			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
 		}
     }
 }
