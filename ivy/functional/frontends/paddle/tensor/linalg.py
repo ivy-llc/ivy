@@ -181,4 +181,4 @@ def bincount(x, weights=None, minlength=0, name=None):
 # @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def corrcoef(x, rowvar=True, name=None):
-    return ivy.corrcoef(x, y=None, rowvar=rowvar)
+    return ivy.corrcoef(x, rowvar=rowvar)

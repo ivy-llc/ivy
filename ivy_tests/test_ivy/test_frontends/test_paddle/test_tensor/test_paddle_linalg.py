@@ -787,39 +787,38 @@ def _x_without_unique_value(draw, dim):
     return x
 
 
-@st.composite
-def _dtype_and_value_without_row_all_same_value(draw):
-    dtype_and_x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            shared_dtype=True,
-            abs_smallest_val=1e-5,
-            min_num_dims=2,
-            max_num_dims=2,
-            min_dim_size=3,
-            max_dim_size=3,
-            min_value=-100,
-            max_value=100,
-            allow_nan=False,
-        ),
-    )
-    dtype, value = dtype_and_x
-    x = value[0]
-    dim_1 = x.shape[0]
-    dim_2 = x.shape[1]
-    for i in range(dim_1):
-        if len(np.unique(x[i, :])) == 1:
-            x[i] = draw(_x_without_unique_value(dim_2))
-    for i in range(dim_1):
-        if len(np.unique(x[:, i])) == 1:
-            x[:, i] = draw(_x_without_unique_value(dim_2))
+# @st.composite
+# def _dtype_and_value_without_row_all_same_value(draw):
+#     dtype_and_x = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=["float32", "float64"],
+#             shared_dtype=True,
+#             abs_smallest_val=1e-5,
+#             min_num_dims=2,
+#             max_num_dims=2,
+#             min_dim_size=3,
+#             max_dim_size=3,
+#             min_value=-100,
+#             max_value=100,
+#             allow_nan=False,
+#         ),
+#     )
+#     dtype, value = dtype_and_x
+#     x = value[0]
+#     dim_1 = x.shape[0]
+#     dim_2 = x.shape[1]
+#     for i in range(dim_1):
+#         if len(np.unique(x[i, :])) == 1:
+#             x[i] = draw(_x_without_unique_value(dim_2))
+#     for i in range(dim_1):
+#         if len(np.unique(x[:, i])) == 1:
+#             x[:, i] = draw(_x_without_unique_value(dim_2))
 
-    return dtype, x
+#     return dtype, x
 
 
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.corrcoef",
-    # dtype_and_x=_dtype_and_value_without_row_all_same_value(),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["float32", "float64"],
         shared_dtype=True,
