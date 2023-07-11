@@ -325,7 +325,7 @@ def test_jax_devicearray_cumprod(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="cumsum",
-    dtype_and_x=_get_castable_dtype()
+    dtype_and_x=_get_castable_dtype(),
 )
 def test_jax_devicearray_cumsum(
     dtype_and_x,
@@ -812,7 +812,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__pow__",
-    dtype_x_pow= helpers.dtype_and_values(
+    dtype_x_pow=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
@@ -1801,6 +1801,45 @@ def test_jax_devicearray_round(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"decimals": decimals},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# take
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="take",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_jax_devicearray_take(
+    dtype_indices_axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={"indices": indices, "axis": axis},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

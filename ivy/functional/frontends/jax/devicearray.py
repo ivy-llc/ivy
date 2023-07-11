@@ -242,3 +242,15 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def take(
+        self,
+        indices,
+        axis=None,
+        out=None,
+        mode=None,
+        unique_indices=False,
+        indices_are_sorted=False,
+        fill_value=None,
+    ):
+        return jax_frontend.numpy.take(self, indices, axis=axis, out=out)
