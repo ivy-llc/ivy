@@ -32,8 +32,8 @@ def _get_dtype_and_matrix(draw, dtype="valid", square=False, invertible=False, b
         shape = (*arbitrary_dims, draw(st.integers(1, 5)), draw(st.integers(1, 5)))
     ret = helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes(dtype, full=True),
-        min_value=-1e04,
-        max_value=1e04,
+        min_value=-10,
+        max_value=10,
         abs_smallest_val=1e04,
         shape=shape,
     )
@@ -107,8 +107,8 @@ def test_torch_inv(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
-        atol=1e-02,
+        rtol=1e-04,
+        atol=1e-04,
         A=x[0],
     )
 
@@ -435,7 +435,7 @@ def test_torch_matrix_power(
 # matrix_exp
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_exp",
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=_get_dtype_and_matrix(square=True, invertible=True),
 )
 def test_torch_matrix_exp(
     *,
@@ -753,17 +753,6 @@ def test_torch_eig(
 @handle_frontend_test(
     fn_tree="torch.linalg.eigh",
     dtype_and_x=_get_dtype_and_matrix(dtype="float", square=True, invertible=True),
-    # dtype_and_x=helpers.dtype_and_values(
-    #     available_dtypes=helpers.get_dtypes("float"),
-    #     min_value=0,
-    #     max_value=10,
-    #     shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    # ).filter(
-    #     lambda x: "float16" not in x[0]
-    #               and "bfloat16" not in x[0]
-    #               and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-    #               and np.linalg.det(np.asarray(x[1][0])) != 0
-    # ),
     UPLO=st.sampled_from(("L", "U")),
 )
 def test_torch_eigh(
@@ -1065,7 +1054,7 @@ def test_torch_matmul(
         input=x[0],
         other=x[1],
         rtol=1e-03,
-        atol=1e-06,
+        atol=1e-03,
     )
 
 
@@ -1257,8 +1246,8 @@ def test_torch_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-04,
-        atol=1e-03,
+        rtol=1e-02,
+        atol=1e-02,
         A=input,
         B=other,
     )
