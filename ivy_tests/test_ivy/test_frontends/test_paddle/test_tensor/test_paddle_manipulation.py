@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -449,4 +450,25 @@ def test_paddle_broadcast_to(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(fn_tree="paddle.roll")
+def test_paddle_roll(
+    *,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x = np.random.rand(2, 3, 4, 5)
+    shift = (1, 2, 3, 4)
+    helpers.test_frontend_function(
+        input_dtypes=["float32"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        shift=shift,
     )
