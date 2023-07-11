@@ -9,7 +9,6 @@ from ivy import (
     with_supported_device_and_dtypes,
 )
 from .. import backend_version
-import numpy as np
 
 
 def histogram(
@@ -169,7 +168,7 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
     q = 50.0
 
     if axis is None:
-        if tf.reduce_all(tf.math.is_nan(temp)).numpy():
+        if tf.reduce_all(tf.math.is_nan(temp)):
             temp = tf.reshape(temp, shape=(1, -1))
         else:
             temp = temp[~tf.math.is_nan(temp)]
@@ -181,7 +180,12 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
             interpolation="midpoint",
             keepdims=keepdims,
         )
-        ret = tf.cast(ret, dtype=dtype)
+        if dtype in [tf.int32, tf.int64, tf.float64]:
+            ret = tf.cast(ret, dtype=tf.float64)
+        elif dtype in [tf.float16, tf.bfloat16]:
+            ret = tf.cast(ret, dtype=tf.float16)
+        else:
+            ret = tf.cast(ret, dtype=tf.float32)
         return ret
 
     axis = [axis] if isinstance(axis, int) else list(axis)
@@ -207,7 +211,6 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
     temp = tf.reshape(
         temp, shape=tf.concat([tf.shape(temp)[: (dimension - len(axis))], [-1]], axis=0)
     )
-    temp = tf.cast(temp, dtype)
 
     tensor = tf.reshape(temp, shape=(1, -1))
     shape = temp.shape
@@ -234,32 +237,31 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
         start = i * slice_size
         end = (i + 1) * slice_size
         arr = tensor[:, start:end]
-        if tf.reduce_all(tf.math.is_nan(arr)).numpy():
+        if tf.reduce_all(tf.math.is_nan(arr)):
             arr = tf.reshape(arr, shape=(1, -1))
         else:
             arr = arr[~tf.math.is_nan(arr)]
 
         ret = tfp.stats.percentile(
             arr, q, axis=None, interpolation="midpoint", keepdims=keepdims
-        ).numpy()
+        )
         if keepdims:
-            ret = tf.squeeze(ret).numpy()
+            ret = tf.squeeze(ret)
 
         result.append(ret)
 
-    result = tf.reshape(result, shape=shape[:-1]).numpy()
+    result = tf.reshape(result, shape=shape[:-1])
 
     if keepdims:
         keepdim_shape = tuple(keepdim_shape)
         result = tf.reshape(result, shape=keepdim_shape)
-        result = tf.cast(result, dtype)
 
-    if input.dtype in [tf.int64, tf.float64]:
-        result = tf.experimental.numpy.asarray(result, dtype=tf.float64)
-    elif input.dtype in [tf.float16, tf.bfloat16]:
-        result = tf.experimental.numpy.asarray(result, dtype=input.dtype)
+    if dtype in [tf.int32, tf.int64, tf.float64]:
+        result = tf.cast(result, dtype=tf.float64)
+    elif dtype in [tf.float16, tf.bfloat16]:
+        result = tf.cast(result, dtype=tf.float16)
     else:
-        result = tf.experimental.numpy.asarray(result, dtype=tf.float32)
+        result = tf.cast(result, dtype=tf.float32)
 
     return result
 
