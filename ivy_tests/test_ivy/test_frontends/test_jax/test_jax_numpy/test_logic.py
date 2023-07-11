@@ -19,7 +19,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
     equal_nan=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_allclose(
+def test_jax_allclose(
     *,
     dtype_and_input,
     equal_nan,
@@ -53,7 +53,7 @@ def test_jax_numpy_allclose(
     equal_nan=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_array_equal(
+def test_jax_array_equal(
     *,
     dtype_and_x,
     equal_nan,
@@ -84,7 +84,7 @@ def test_jax_numpy_array_equal(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_array_equiv(
+def test_jax_array_equiv(
     *,
     dtype_and_x,
     on_device,
@@ -119,7 +119,7 @@ def test_jax_numpy_array_equiv(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_isneginf(
+def test_jax_isneginf(
     *,
     dtype_and_x,
     on_device,
@@ -152,7 +152,7 @@ def test_jax_numpy_isneginf(
         allow_inf=True,
     ),
 )
-def test_jax_numpy_isposinf(
+def test_jax_isposinf(
     *,
     dtype_and_x,
     on_device,
@@ -181,7 +181,7 @@ def test_jax_numpy_isposinf(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_less(
+def test_jax_less(
     dtype_and_x,
     frontend,
     test_flags,
@@ -208,7 +208,7 @@ def test_jax_numpy_less(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_less_equal(
+def test_jax_less_equal(
     dtype_and_x,
     frontend,
     test_flags,
@@ -235,7 +235,7 @@ def test_jax_numpy_less_equal(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_greater(
+def test_jax_greater(
     dtype_and_x,
     frontend,
     test_flags,
@@ -262,7 +262,7 @@ def test_jax_numpy_greater(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_greater_equal(
+def test_jax_greater_equal(
     dtype_and_x,
     frontend,
     test_flags,
@@ -293,7 +293,7 @@ def test_jax_numpy_greater_equal(
         allow_inf=True,
     ),
 )
-def test_jax_numpy_isnan(
+def test_jax_isnan(
     *,
     dtype_and_x,
     on_device,
@@ -322,7 +322,7 @@ def test_jax_numpy_isnan(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_equal(
+def test_jax_equal(
     dtype_and_x,
     frontend,
     test_flags,
@@ -349,7 +349,7 @@ def test_jax_numpy_equal(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_not_equal(
+def test_jax_not_equal(
     dtype_and_x,
     frontend,
     test_flags,
@@ -369,13 +369,13 @@ def test_jax_numpy_not_equal(
 # all
 @handle_frontend_test(
     fn_tree="jax.numpy.all",
-    aliases=["jax.numpy.alltrue"],
+    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_all(
+def test_jax_all(
     *,
     dtype_and_x,
     on_device,
@@ -403,7 +403,7 @@ def test_jax_numpy_all(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bitwise_and(
+def test_jax_bitwise_and(
     *,
     dtype_and_x,
     on_device,
@@ -429,7 +429,7 @@ def test_jax_numpy_bitwise_and(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bitwise_not(
+def test_jax_bitwise_not(
     *,
     dtype_and_x,
     on_device,
@@ -457,7 +457,7 @@ def test_jax_numpy_bitwise_not(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bitwise_or(
+def test_jax_bitwise_or(
     *,
     dtype_and_x,
     on_device,
@@ -486,7 +486,7 @@ def test_jax_numpy_bitwise_or(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bitwise_xor(
+def test_jax_bitwise_xor(
     *,
     dtype_and_x,
     on_device,
@@ -509,7 +509,7 @@ def test_jax_numpy_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
-    aliases=["jax.numpy.sometrue"],
+    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
@@ -520,7 +520,7 @@ def test_jax_numpy_bitwise_xor(
     where=np_helpers.where(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_any(
+def test_jax_any(
     *,
     dtype_x_axis,
     keepdims,
@@ -560,7 +560,7 @@ def test_jax_numpy_any(
         num_arrays=2,
     ),
 )
-def test_jax_numpy_logical_and(
+def test_jax_logical_and(
     dtypes_values,
     on_device,
     fn_tree,
@@ -586,7 +586,7 @@ def test_jax_numpy_logical_and(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
-def test_jax_numpy_invert(
+def test_jax_invert(
     dtypes_values,
     on_device,
     fn_tree,
@@ -612,7 +612,7 @@ def test_jax_numpy_invert(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_isfinite(
+def test_jax_isfinite(
     *,
     dtype_and_x,
     on_device,
@@ -639,7 +639,7 @@ def test_jax_numpy_isfinite(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_isinf(
+def test_jax_isinf(
     *,
     dtype_and_x,
     on_device,
@@ -668,7 +668,7 @@ def test_jax_numpy_isinf(
     equal_nan=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_isclose(
+def test_jax_isclose(
     *,
     dtype_and_input,
     equal_nan,
@@ -698,7 +698,7 @@ def test_jax_numpy_isclose(
         num_arrays=1,
     ),
 )
-def test_jax_numpy_logical_not(
+def test_jax_logical_not(
     dtypes_values,
     on_device,
     fn_tree,
@@ -724,7 +724,7 @@ def test_jax_numpy_logical_not(
         num_arrays=2,
     ),
 )
-def test_jax_numpy_logical_or(
+def test_jax_logical_or(
     dtypes_values,
     on_device,
     fn_tree,
@@ -750,7 +750,7 @@ def test_jax_numpy_logical_or(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
 )
-def test_jax_numpy_isscalar(
+def test_jax_isscalar(
     *,
     dtype_and_x,
     on_device,
@@ -777,7 +777,7 @@ def test_jax_numpy_isscalar(
         num_arrays=2,
     ),
 )
-def test_jax_numpy_left_shift(
+def test_jax_left_shift(
     *,
     dtype_and_x,
     on_device,
@@ -811,7 +811,7 @@ def test_jax_numpy_left_shift(
         allow_inf=True,
     ),
 )
-def test_jax_numpy_isreal(
+def test_jax_isreal(
     *,
     dtype_and_x,
     on_device,
@@ -838,7 +838,7 @@ def test_jax_numpy_isreal(
         num_arrays=2,
     ),
 )
-def test_jax_numpy_logical_xor(
+def test_jax_logical_xor(
     dtypes_values,
     on_device,
     fn_tree,
@@ -866,7 +866,7 @@ def test_jax_numpy_logical_xor(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_right_shift(
+def test_jax_right_shift(
     *,
     dtype_and_x,
     frontend,
@@ -897,7 +897,7 @@ def test_jax_numpy_right_shift(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_iscomplex(
+def test_jax_iscomplex(
     dtype_and_x,
     frontend,
     on_device,
@@ -923,7 +923,7 @@ def test_jax_numpy_iscomplex(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_isrealobj(
+def test_jax_isrealobj(
     dtype_and_x,
     frontend,
     on_device,
@@ -950,7 +950,7 @@ def test_jax_numpy_isrealobj(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_iscomplexobj(
+def test_jax_iscomplexobj(
     dtype_and_x,
     frontend,
     on_device,

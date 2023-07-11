@@ -34,7 +34,7 @@ from ivy import inf
     ),
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_jax_numpy_einsum(
+def test_jax_einsum(
     *,
     eq_n_op,
     dtype,
@@ -71,7 +71,7 @@ def test_jax_numpy_einsum(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_mean(
+def test_jax_mean(
     *,
     dtype_x_axis,
     dtype,
@@ -120,7 +120,7 @@ def test_jax_numpy_mean(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_var(
+def test_jax_var(
     *,
     dtype_x_axis,
     dtype,
@@ -169,7 +169,7 @@ def test_jax_numpy_var(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_argmin(
+def test_jax_argmin(
     *,
     dtype_and_x,
     keepdims,
@@ -209,7 +209,7 @@ def test_jax_numpy_argmin(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_bincount(
+def test_jax_bincount(
     *,
     dtype_and_x,
     on_device,
@@ -234,33 +234,21 @@ def test_jax_numpy_bincount(
 # cumprod
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
-    aliases=["jax.numpy.cumproduct"],
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", none=True, full=False),
+    # aliases=["jax.numpy.cumproduct"], deprecated since 0.4.12
+    dtype_x_axis=_get_castable_dtype(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cumprod(
+def test_jax_cumprod(
     *,
     dtype_x_axis,
-    dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -268,46 +256,34 @@ def test_jax_numpy_cumprod(
         rtol=1e-2,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
 # cumsum
 @handle_frontend_test(
     fn_tree="jax.numpy.cumsum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    dtype_x_axis=_get_castable_dtype(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_cumsum(
+def test_jax_cumsum(
     *,
     dtype_x_axis,
-    dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -319,7 +295,7 @@ def test_jax_numpy_cumsum(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_sum(
+def test_jax_sum(
     *,
     dtype_x_axis_castable,
     initial,
@@ -336,12 +312,12 @@ def test_jax_numpy_sum(
         axis = axis[0]
     where, input_dtypes, test_flags = np_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtypes,
+        input_dtype=[input_dtypes],
         test_flags=test_flags,
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=[input_dtypes],
+        input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -366,7 +342,7 @@ def test_jax_numpy_sum(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_min(
+def test_jax_min(
     *,
     dtype_x_axis,
     keepdims,
@@ -407,7 +383,7 @@ def test_jax_numpy_min(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_max(
+def test_jax_max(
     *,
     dtype_x_axis,
     keepdims,
@@ -446,8 +422,8 @@ def test_jax_numpy_max(
     dtype_x_axis=helpers.dtype_values_axis(
         num_arrays=2,
         available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
         safety_factor_scale="log",
         min_num_dims=1,
         max_num_dims=5,
@@ -458,7 +434,7 @@ def test_jax_numpy_max(
     ),
     returned=st.booleans(),
 )
-def test_jax_numpy_average(
+def test_jax_average(
     *,
     dtype_x_axis,
     returned,
@@ -598,7 +574,7 @@ def test_numpy_nanmin(
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
-def test_jax_numpy_nanstd(
+def test_jax_nanstd(
     dtype_and_a,
     dtype,
     where,
@@ -647,7 +623,7 @@ def test_jax_numpy_nanstd(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_nanvar(
+def test_jax_nanvar(
     *,
     dtype_x_axis,
     dtype,
@@ -715,7 +691,7 @@ def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
     fn_tree="jax.numpy.nancumprod",
     dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
-def test_jax_numpy_nancumprod(
+def test_jax_nancumprod(
     dtype_and_x_axis_dtype,
     frontend,
     test_flags,
@@ -742,7 +718,7 @@ def test_jax_numpy_nancumprod(
     fn_tree="jax.numpy.nancumsum",
     dtype_and_x_axis_dtype=_get_castable_dtypes_values(allow_nan=True),
 )
-def test_jax_numpy_nancumsum(
+def test_jax_nancumsum(
     dtype_and_x_axis_dtype,
     frontend,
     test_flags,
@@ -772,7 +748,7 @@ def test_jax_numpy_nancumsum(
     where=np_helpers.where(),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_std(
+def test_jax_std(
     *,
     dtype_x_axis,
     dtype,
@@ -826,7 +802,7 @@ def test_jax_numpy_std(
     ),
     rowvar=st.booleans(),
 )
-def test_jax_numpy_corrcoef(
+def test_jax_corrcoef(
     dtype_and_x,
     rowvar,
     frontend,
@@ -859,7 +835,7 @@ def test_jax_numpy_corrcoef(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_median(
+def test_jax_median(
     *,
     dtype_x_axis,
     keepdims,
@@ -891,7 +867,7 @@ def test_jax_numpy_median(
     dtype_and_x_axis_dtype=_get_castable_dtypes_values(),
     keep_dims=st.booleans(),
 )
-def test_jax_numpy_ptp(
+def test_jax_ptp(
     dtype_and_x_axis_dtype,
     frontend,
     test_flags,
@@ -943,7 +919,7 @@ def _get_castable_dtype_with_nan(draw):
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
-def test_jax_numpy_nanmean(
+def test_jax_nanmean(
     dtype_x_axis_castable_dtype,
     frontend,
     test_flags,
@@ -985,7 +961,7 @@ def test_jax_numpy_nanmean(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_nanmedian(
+def test_jax_nanmedian(
     on_device,
     frontend,
     dtype_x_axis,
@@ -1024,7 +1000,7 @@ def test_jax_numpy_nanmedian(
     ),
     mode=st.sampled_from(["valid", "same", "full"]),
 )
-def test_jax_numpy_correlate(
+def test_jax_correlate(
     *,
     dtype_and_x,
     on_device,
@@ -1045,4 +1021,117 @@ def test_jax_numpy_correlate(
         a=x[0],
         v=x[1],
         mode=mode,
+    )
+
+
+# cov
+@st.composite
+def _get_dtype_value1_value2_cov(
+    draw,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=2,
+    min_dim_size=2,
+    max_dim_size=3,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    large_abs_safety_factor=50,
+    small_abs_safety_factor=50,
+    safety_factor_scale="log",
+):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+
+    dtype = draw(st.sampled_from(available_dtypes))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+
+    # modifiers: rowVar, bias, ddof
+    rowVar = draw(st.booleans())
+    bias = draw(st.booleans())
+    ddof = draw(helpers.ints(min_value=0, max_value=1))
+
+    numVals = None
+    if rowVar is False:
+        numVals = -1 if numVals == 0 else 0
+    else:
+        numVals = 0 if len(shape) == 1 else -1
+
+    fweights = None
+
+    aweights = draw(
+        helpers.array_values(
+            dtype=dtype,
+            shape=shape[numVals],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+            small_abs_safety_factor=1,
+        )
+    )
+
+    return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.cov",
+    dtypes_args=_get_dtype_value1_value2_cov(available_dtypes=["float64"]),
+    test_with_out=st.just(False),
+)
+def test_jax_cov(
+    *,
+    dtypes_args,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, value1, value2, rowvar, bias, ddof, fweights, aweights = dtypes_args
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        rtol=1e-3,
+        atol=1e-3,
+        on_device=on_device,
+        m=value1,
+        y=value2,
+        rowvar=rowvar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
     )

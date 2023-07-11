@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
+    handle_partial_mixed_function,
     inputs_to_ivy_arrays,
     handle_array_function,
 )
@@ -332,6 +332,7 @@ def avg_pool2d(
     data_format: str = "NHWC",
     count_include_pad: bool = False,
     ceil_mode: bool = False,
+    divisor_override: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -399,6 +400,7 @@ def avg_pool2d(
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
+        divisor_override=divisor_override,
         out=out,
     )
 
@@ -490,11 +492,86 @@ def avg_pool3d(
     )
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def pool(
+    x: Union[ivy.Array, ivy.NativeArray],
+    window_shape: Union[int, Tuple[int], Tuple[int, int]],
+    pool_type: str,
+    /,
+    *,
+    strides: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    padding: str = "VALID",
+    data_format: Optional[str] = None,
+    dilations: Optional[Union[int, Tuple[int], Tuple[int, int]]] = None,
+    ceil_mode: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Perform an N-D pooling operation.
+
+    Parameters
+    ----------
+    x
+        Input array to pool over.
+    window_shape
+        Shape of the pooling window.
+    pool_type
+        Type of pooling operation, either 'MAX' or 'AVG'.
+    strides
+        Strides of the pooling operation.
+    padding
+        Padding type, either 'VALID' or 'SAME'.
+    data_format
+        Data format of the input and output data, either 'NCHW' or 'NHWC'.
+    dilations
+        Dilation rate of the pooling operation.
+    ceil_mode
+        Whether to use ceil or floor for creating the output shape.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Examples
+    --------
+    >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
+    >>> print(ivy.pool(x, (2, 2), 'MAX', (1, 1), 'SAME'))
+    ivy.array([[[[ 1.,  2.],
+                [ 3.,  4.],
+                [ 4.,  5.]]],
+            [[[ 7.,  8.],
+                [ 9., 10.],
+                [10., 11.]]]])
+    >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
+    >>> print(ivy.pool(x, 3, 'AVG', 1, 'VALID'))
+    ivy.array([[[[ 8.,  9.]],
+            [[14., 15.]]],
+            [[[32., 33.]],
+            [[38., 39.]]]])
+    """
+    return ivy.current_backend(x).pool(
+        x,
+        window_shape,
+        pool_type,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilations,
+        ceil_mode=ceil_mode,
+        out=out,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -593,7 +670,6 @@ def dct(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 def idct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1331,7 +1407,7 @@ def _tf_area_interpolate(x, size, dims):
     return ret
 
 
-def _nearest_exact_interpolate(x, dims, size, input_shape, exact):
+def nearest_interpolate(x, dims, size, input_shape, exact):
     off = 0.5 if exact else 0
     for d in range(dims):
         m = input_shape[d + 2]
@@ -1510,8 +1586,114 @@ def _upsample_bicubic2d_default(
     return result
 
 
+def area_interpolate(x, dims, size, scale):
+    ret = ivy.zeros((x.shape[:2] + size))
+    inv_scale = ivy.divide(1.0, scale)
+    for i, ba in enumerate(x):
+        for j, ch in enumerate(ba):
+            if dims == 3:
+                for d_dim in range(size[0]):
+                    for h_dim in range(size[1]):
+                        for w_dim in range(size[2]):
+                            d_index = (
+                                int(d_dim * inv_scale[0]),
+                                math.ceil((d_dim + 1) * inv_scale[0]),
+                            )
+                            h_index = (
+                                int(h_dim * inv_scale[1]),
+                                math.ceil((h_dim + 1) * inv_scale[1]),
+                            )
+                            w_index = (
+                                int(w_dim * scale[2]),
+                                math.ceil((w_dim + 1) * inv_scale[2]),
+                            )
+                            scale_z = d_index[1] - d_index[0]
+                            scale_y = h_index[1] - h_index[0]
+                            scale_x = w_index[1] - w_index[0]
+                            area = scale_z * scale_y * scale_x
+                            ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(
+                                ch[
+                                    d_index[0] : d_index[1],
+                                    h_index[0] : h_index[1],
+                                    w_index[0] : w_index[1],
+                                ]
+                            ) * (1 / area)
+            elif dims == 2:
+                for h_dim in range(size[0]):
+                    for w_dim in range(size[1]):
+                        h_index = (
+                            int(h_dim * inv_scale[0]),
+                            math.ceil((h_dim + 1) * inv_scale[0]),
+                        )
+                        w_index = (
+                            int(w_dim * inv_scale[1]),
+                            math.ceil((w_dim + 1) * inv_scale[1]),
+                        )
+                        scale_y = h_index[1] - h_index[0]
+                        scale_x = w_index[1] - w_index[0]
+                        area = scale_y * scale_x
+                        ret[i, j, h_dim, w_dim] = ivy.sum(
+                            ch[h_index[0] : h_index[1], w_index[0] : w_index[1]]
+                        ) * (1 / area)
+            else:
+                for w_dim in range(size[0]):
+                    w_index = (
+                        int(w_dim * inv_scale[0]),
+                        math.ceil((w_dim + 1) * inv_scale[0]),
+                    )
+                    scale_x = w_index[1] - w_index[0]
+                    ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
+                        1 / scale_x
+                    )
+    return ret
+
+
+def _interpolate_with_kernel(
+    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
+):
+    spatial_dims = [2 + i for i in range(dims)]
+    kernel_func = _triangle_kernel
+    equation = generate_einsum_equation(dims)
+    if mode == "bicubic":
+        return _upsample_bicubic2d_default(x, size, align_corners)
+    if mode == "bicubic_tensorflow":
+        kernel_func = lambda inputs: _cubic_kernel(inputs)
+    elif mode == "lanczos3":
+        kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
+    elif mode == "lanczos5":
+        kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+
+    output_shape = tuple(input_shape[:2]) + size
+    operands = []
+    for i, d in enumerate(spatial_dims):
+        m = input_shape[d]
+        n = output_shape[d]
+        dim_scale_factor = _dim_scale_factor(
+            m,
+            n,
+            align_corners,
+            scale_factor[i] if scale_factor is not None else None,
+        )
+        w = _compute_weight_mat(
+            m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
+        ).astype(x.dtype)
+        operands.append(w)
+    return ivy.einsum(equation, x, *operands)
+
+
+def generate_einsum_equation(dim):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    input_indices = alphabet[: dim + 2]
+    output_indices = [alphabet[2 + i] + alphabet[2 + dim + i] for i in range(dim)]
+    contraction_indices = ",".join([input_indices, *output_indices])
+    output = input_indices[:2] + "".join([output[-1] for output in output_indices])
+    einsum_string = contraction_indices + "->" + output
+    return einsum_string
+
+
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def interpolate(
@@ -1523,6 +1705,7 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
@@ -1556,6 +1739,7 @@ def interpolate(
         - linear
         - bilinear
         - trilinear
+        - nd
         - nearest
         - nearest-exact
         - area
@@ -1601,111 +1785,32 @@ def interpolate(
             if isinstance(scale_factor, (list, tuple)) and len(scale_factor) != dims
             else [scale_factor] * dims
         )
-    spatial_dims = [2 + i for i in range(dims)]
-    scale = [ivy.divide(size[i], input_shape[spatial_dims[i]]) for i in range(dims)]
+    scale = [ivy.divide(size[i], input_shape[i + 2]) for i in range(dims)]
     if mode in [
         "linear",
         "bilinear",
+        "trilinear",
+        "nd",
         "bicubic",
         "bicubic_tensorflow",
-        "trilinear",
         "lanczos3",
         "lanczos5",
     ]:
-        kernel_func = _triangle_kernel
-        if mode == "linear" or dims == 1:
-            equation = "ijk,km->ijm"
-        elif mode == "bilinear" or dims == 2:
-            equation = "ijkl,km,ln->ijmn"
-        elif mode == "trilinear" or dims == 3:
-            equation = "ijklm,kn,lo,mp->ijnop"
-        if mode == "bicubic":
-            return _upsample_bicubic2d_default(x, size, align_corners)
-        if mode == "bicubic_tensorflow":
-            kernel_func = lambda inputs: _cubic_kernel(inputs)
-        if mode == "lanczos3":
-            kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
-        elif mode == "lanczos5":
-            kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
-        output_shape = tuple(input_shape[:2]) + size
-        operands = []
-        for i, d in enumerate(spatial_dims):
-            m = input_shape[d]
-            n = output_shape[d]
-            dim_scale_factor = _dim_scale_factor(
-                m,
-                n,
-                align_corners,
-                scale_factor[i] if scale_factor is not None else None,
-            )
-            w = _compute_weight_mat(
-                m, n, scale[i], align_corners, kernel_func, antialias, dim_scale_factor
-            ).astype(x.dtype)
-            operands.append(w)
-        ret = ivy.einsum(equation, x, *operands)
-    elif mode in ["nearest-exact", "nearest"]:
-        ret = _nearest_exact_interpolate(
-            x, dims, size, input_shape, mode == "nearest-exact"
+        ret = _interpolate_with_kernel(
+            x,
+            dims,
+            size,
+            scale,
+            input_shape,
+            align_corners,
+            antialias,
+            scale_factor,
+            mode,
         )
+    elif mode in ["nearest-exact", "nearest"]:
+        ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
     elif mode == "area":
-        ret = ivy.zeros((x.shape[:2] + size))
-        inv_scale = ivy.divide(1.0, scale)
-        for i, ba in enumerate(x):
-            for j, ch in enumerate(ba):
-                if dims == 3:
-                    for d_dim in range(size[0]):
-                        for h_dim in range(size[1]):
-                            for w_dim in range(size[2]):
-                                d_index = (
-                                    int(d_dim * inv_scale[0]),
-                                    math.ceil((d_dim + 1) * inv_scale[0]),
-                                )
-                                h_index = (
-                                    int(h_dim * inv_scale[1]),
-                                    math.ceil((h_dim + 1) * inv_scale[1]),
-                                )
-                                w_index = (
-                                    int(w_dim * scale[2]),
-                                    math.ceil((w_dim + 1) * inv_scale[2]),
-                                )
-                                scale_z = d_index[1] - d_index[0]
-                                scale_y = h_index[1] - h_index[0]
-                                scale_x = w_index[1] - w_index[0]
-                                area = scale_z * scale_y * scale_x
-                                ret[i, j, d_dim, h_dim, w_dim] = ivy.sum(
-                                    ch[
-                                        d_index[0] : d_index[1],
-                                        h_index[0] : h_index[1],
-                                        w_index[0] : w_index[1],
-                                    ]
-                                ) * (1 / area)
-                elif dims == 2:
-                    for h_dim in range(size[0]):
-                        for w_dim in range(size[1]):
-                            h_index = (
-                                int(h_dim * inv_scale[0]),
-                                math.ceil((h_dim + 1) * inv_scale[0]),
-                            )
-                            w_index = (
-                                int(w_dim * inv_scale[1]),
-                                math.ceil((w_dim + 1) * inv_scale[1]),
-                            )
-                            scale_y = h_index[1] - h_index[0]
-                            scale_x = w_index[1] - w_index[0]
-                            area = scale_y * scale_x
-                            ret[i, j, h_dim, w_dim] = ivy.sum(
-                                ch[h_index[0] : h_index[1], w_index[0] : w_index[1]]
-                            ) * (1 / area)
-                else:
-                    for w_dim in range(size[0]):
-                        w_index = (
-                            int(w_dim * inv_scale[0]),
-                            math.ceil((w_dim + 1) * inv_scale[0]),
-                        )
-                        scale_x = w_index[1] - w_index[0]
-                        ret[i, j, w_dim] = ivy.sum(ch[w_index[0] : w_index[1]]) * (
-                            1 / scale_x
-                        )
+        ret = area_interpolate(x, dims, size, scale)
     elif mode == "mitchellcubic":
         batch, channels, in_height, in_width = x.shape
         out_height, out_width = size
@@ -1845,7 +1950,7 @@ interpolate.mixed_backend_wrappers = {
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
-    "to_skip": ("inputs_to_ivy_arrays",),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
 
 
@@ -1918,10 +2023,10 @@ def adaptive_avg_pool1d(
         (C, L_out), where L_out = `output_size`
     """
     squeeze = False
-    if len(input.shape) == 2:
+    if input.ndim == 2:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
-    elif len(input.shape) != 3:
+    elif input.ndim != 3:
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 2D and 3D inputs are supported.",
         )
@@ -1944,7 +2049,9 @@ def adaptive_avg_pool1d(
     vals = ivy.array(input.to_numpy()[..., idxw])
 
     if not adaptive_w:
-        return ivy.mean(vals, axis=-1)
+        ret = ivy.mean(vals, axis=-1)
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
 
     vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
 
@@ -1954,11 +2061,19 @@ def adaptive_avg_pool1d(
             ret = vals[..., i]
         else:
             ret = ret + vals[..., i]
-    pooled_output = ret / length_w
+    pooled_output = ret / length_w.astype(ret.dtype)
 
-    if squeeze:
-        return ivy.squeeze(pooled_output, axis=0)
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
+
+
+adaptive_avg_pool1d.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_exceptions
@@ -1989,10 +2104,10 @@ def adaptive_avg_pool2d(
         (C, S_0, S_1), where S = `output_size`
     """
     squeeze = False
-    if len(input.shape) == 3:
+    if input.ndim == 3:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
-    elif len(input.shape) != 4:
+    elif input.ndim != 4:
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
         )
@@ -2024,7 +2139,9 @@ def adaptive_avg_pool2d(
     vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw])
 
     if not adaptive_h and not adaptive_w:
-        return ivy.mean(vals, axis=(-3, -1))
+        ret = ivy.mean(vals, axis=(-3, -1))
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
 
     vals, length_h = _mask(vals, length_h, range_max_h, dim=-2)
     vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
@@ -2035,11 +2152,19 @@ def adaptive_avg_pool2d(
             ret = vals[..., i, :, j]
         else:
             ret = ret + vals[..., i, :, j]
-    pooled_output = ret / (length_h * length_w)
+    pooled_output = ret / (length_h * length_w).astype(vals.dtype)
 
-    if squeeze:
-        return ivy.squeeze(pooled_output, axis=0)
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
     return pooled_output
+
+
+adaptive_avg_pool2d.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 def _conv_view(lhs, rhs_shape, window_strides, pads, pad_value):
@@ -2173,7 +2298,9 @@ avg_pool2d.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def reduce_window(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -2256,6 +2383,15 @@ def reduce_window(
     return ret.astype(operand.dtype)
 
 
+reduce_window.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2323,3 +2459,80 @@ def fft2(
               0.  +0.j        ,   0.  +0.j        ]])
     """
     return ivy.current_backend(x).fft2(x, s=s, dim=dim, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def ifftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the N-dimensional inverse discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input array of complex numbers.
+    s
+        Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+        `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+        the input is cropped. If larger, input is padded with zeros. If `s` is not
+        given, shape of input along axes specified by axes is used.
+    axes
+        Axes over which to compute the IFFT. If not given, last `len(s)` axes are
+        used, or all axes if `s` is also not specified. Repeated indices in axes
+        means inverse transform over that axis is performed multiple times.
+    norm
+        Indicates direction of the forward/backward pair of transforms is scaled
+        and with what normalization factor. "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
+        indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    out
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes, or by a combination of s or x, as explained in the parameters
+        section above.
+
+    Raises
+    ------
+    ValueError
+        If `s` and `axes` have different length.
+    IndexError
+        If an element of axes is larger than the number of axes of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+                        0.98193269+0.49560517j],
+                        [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+                        0.2343787 +0.83528011j],
+                        [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+                        0.44719226+0.72654048j]])
+    >>> y = ivy.ifftn(x)
+    >>> print(y)
+    ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+            -0.015561  -0.04216015j],
+            [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+            -0.08371392+0.17252843j],
+            [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+            0.05344324+0.07972424j]])
+
+    >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
+    >>> print(b)
+    ivy.array([[ 0.8344667 +0.98222595j],
+            [-0.48472244+0.30233797j]])
+    """
+    return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)

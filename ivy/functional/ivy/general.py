@@ -2580,7 +2580,7 @@ def inplace_variables_supported() -> bool:
 
 @handle_exceptions
 @handle_nestable
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     """
@@ -2708,7 +2708,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 @handle_nestable
 @handle_view_indexing
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_array_function
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2752,7 +2752,208 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    return current_backend(x).get_item(x, query, copy=copy)
+    if query is Ellipsis or (
+        isinstance(query, tuple) and len(query) == 1 and query[0] is Ellipsis
+    ):
+        return x
+    mask_or_slices = (
+        any(isinstance(idx, slice) for idx in query)
+        if isinstance(query, (tuple, list))
+        else isinstance(query, slice)
+    )
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        mask_or_slices = True
+        if not len(query.shape):
+            if not query:
+                return ivy.array([], shape=(0,), dtype=x.dtype)
+            return ivy.expand_dims(x, axis=0)
+        query = ivy.nonzero(query, as_tuple=False)
+        to_squeeze = []
+    else:
+        query = _parse_query(query, x.shape)
+        query, to_squeeze = _query_to_indices(query)
+    ret = ivy.gather_nd(x, query)
+    if to_squeeze:
+        to_squeeze = [i for i in to_squeeze if ret.shape[i] == 1]
+        ret = ivy.squeeze(ret, axis=to_squeeze) if to_squeeze else ret
+    if (
+        query.shape[0] == 1
+        and not mask_or_slices
+        and 0 not in to_squeeze
+        and len(ret.shape) > 1
+    ):
+        ret = ivy.squeeze(ret, axis=0)
+    if copy:
+        return ivy.copy_array(ret)
+    return ret
+
+
+get_item.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+@handle_nestable
+@handle_view_indexing
+@inputs_to_ivy_arrays
+@handle_array_function
+def set_item(
+    x: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> ivy.Array:
+    """
+    Replace slices of x (defined by query) with val, identical to x[query] = val.
+
+    Parameters
+    ----------
+    x
+        the array to be updated.
+    query
+        either an index array, or a tuple of integers or slices.
+    val
+        the array containing the values to be infused into x
+    copy
+        boolean indicating whether to copy x.
+        If True, the function will update and return a copy of x.
+        If False, the function will update x inplace.
+
+    Returns
+    -------
+    ret
+        the array with updated values at the specified indices.
+
+    Functional Examples
+    -------------------
+
+    >>> x = ivy.array([0, -1, 20])
+    >>> query = ivy.array([0, 1])
+    >>> val = ivy.array([10, 10])
+    >>> ivy.set_item(x, query, val)
+    >>> print(x)
+    ivy.array([10, 10, 20])
+
+    >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
+    >>> query = (1, 0:1)
+    >>> val = ivy.array([10, 10])
+    >>> y = ivy.set_item(x, query, val, copy=True)
+    >>> print(y)
+    ivy.array([[0, -1, 20], [10, 10, -8]])
+    """
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            query = ivy.tile(query, (x.shape[0],))
+        expected_shape = ivy.get_item(x, query).shape
+        query = ivy.nonzero(query, as_tuple=False)
+    else:
+        query = _parse_query(query, x.shape)
+        query, to_squeeze = _query_to_indices(query)
+        expected_shape = ivy.gather_nd(x, query).shape
+    val = _broadcast_to(val, expected_shape).astype(x.dtype)
+    if copy:
+        x = ivy.copy_array(x)
+    return ivy.scatter_nd(query, val, reduction="replace", out=x)
+
+
+set_item.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
+def _parse_query(query, x_shape, allow_neg_step=True):
+    query = (query,) if not isinstance(query, (tuple, list)) else query
+    query = (
+        _parse_ellipsis(query, len(x_shape))
+        if any(q is Ellipsis for q in query)
+        else query
+    )
+    ind_type = type(query)
+    query = (
+        list(query)
+        if isinstance(query, tuple)
+        else [query] if not isinstance(query, list) else query
+    )
+    for i, idx in enumerate(query):
+        s = x_shape[i]
+        if isinstance(idx, slice):
+            step = 1 if idx.step is None else idx.step
+            if idx.start is None:
+                start = 0 if step >= 0 else s - 1
+            else:
+                start = idx.start
+            start = start + s if start < 0 else start
+            if idx.stop is None:
+                stop = s if step >= 0 else -1
+            else:
+                stop = idx.stop
+            stop = stop + s if stop < 0 and idx.stop is not None else stop
+            query[i] = (
+                slice(start, stop, step)
+                if step >= 0 or allow_neg_step
+                else ivy.arange(start, stop, step).to_list()
+            )
+        elif isinstance(idx, int):
+            query[i] = idx + s if idx < 0 else idx
+        elif isinstance(idx, (tuple, list)):
+            query[i] = [ii + s if ii < 0 else ii for ii in idx]
+        elif ivy.is_array(idx) and len(idx.shape) <= 1:
+            query[i] = ivy.where(idx < 0, idx + s, idx)
+        else:
+            raise ivy.exceptions.IvyException("unsupported query type")
+    if ind_type not in (tuple, list):
+        return query[0]
+    return tuple(query)
+
+
+def _numel(shape):
+    return math.prod(shape) if shape != () else 1
+
+
+def _query_to_indices(query):
+    mesh = [
+        (
+            ivy.arange(idx.start, idx.stop, idx.step, dtype=ivy.int64)
+            if isinstance(idx, slice)
+            else ivy.array(idx, dtype=ivy.int64)
+        )
+        for idx in query
+    ]
+    grid = ivy.meshgrid(*mesh, indexing="ij")
+    to_squeeze = []
+    for i, g in enumerate(grid):
+        if mesh[i].shape == ():
+            to_squeeze += [i]
+    return ivy.stack(grid, axis=-1), to_squeeze
+
+
+def _broadcast_to(input, target_shape):
+    input = ivy.squeeze(input)
+    if _numel(tuple(input.shape)) == _numel(tuple(target_shape)):
+        return ivy.reshape(input, target_shape)
+    else:
+        input = ivy.expand_dims(input, axis=0) if not len(input.shape) else input
+        new_dims = ()
+        i_i = len(input.shape) - 1
+        for i_t in range(len(target_shape) - 1, -1, -1):
+            if len(input.shape) + len(new_dims) >= len(target_shape):
+                break
+            if i_i < 0 or target_shape[i_t] != input.shape[i_i]:
+                new_dims += (i_t,)
+            else:
+                i_i -= 1
+        input = ivy.expand_dims(input, axis=new_dims)
+        return ivy.broadcast_to(input, target_shape)
 
 
 @handle_exceptions
@@ -2986,7 +3187,6 @@ def inplace_increment(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 def scatter_flat(

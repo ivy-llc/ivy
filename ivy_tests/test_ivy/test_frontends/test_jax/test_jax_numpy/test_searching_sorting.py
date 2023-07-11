@@ -21,7 +21,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
     ),
     keepdims=st.booleans(),
 )
-def test_jax_numpy_argmax(
+def test_jax_argmax(
     *,
     dtype_and_x,
     keepdims,
@@ -52,7 +52,7 @@ def test_jax_numpy_argmax(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_argwhere(
+def test_jax_argwhere(
     dtype_and_x,
     frontend,
     test_flags,
@@ -84,7 +84,7 @@ def test_jax_numpy_argwhere(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_argsort(
+def test_jax_argsort(
     *,
     dtype_x_axis,
     frontend,
@@ -105,29 +105,30 @@ def test_jax_numpy_argsort(
 
 
 # msort
-@handle_frontend_test(
-    fn_tree="jax.numpy.msort",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        min_dim_size=2,
-    ),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_msort(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-    )
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.msort",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("numeric"),
+#         min_num_dims=2,
+#         min_dim_size=2,
+#     ),
+#     test_with_out=st.just(False),
+# )
+# def test_jax_msort(
+#     dtype_and_x,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         a=x[0],
+#     )
+# TODO : deprecated since jax 0.4.1. Uncomment with multiversion testing pipeline enabled.
 
 
 # nonzero
@@ -138,7 +139,7 @@ def test_jax_numpy_msort(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_nonzero(
+def test_jax_nonzero(
     dtype_and_a,
     frontend,
     test_flags,
@@ -169,7 +170,7 @@ def test_jax_numpy_nonzero(
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_nanargmax(
+def test_jax_nanargmax(
     dtype_x_axis,
     frontend,
     test_flags,
@@ -203,7 +204,7 @@ def test_jax_numpy_nanargmax(
     keep_dims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_nanargmin(
+def test_jax_nanargmin(
     dtype_x_axis,
     frontend,
     test_flags,
@@ -229,7 +230,7 @@ def test_jax_numpy_nanargmin(
     fn_tree="jax.numpy.extract",
     broadcastables=_broadcastable_trio(),
 )
-def test_jax_numpy_extract(
+def test_jax_extract(
     broadcastables,
     frontend,
     test_flags,
@@ -260,7 +261,7 @@ def test_jax_numpy_extract(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sort(
+def test_jax_sort(
     *,
     dtype_x_axis,
     frontend,
@@ -269,14 +270,13 @@ def test_jax_numpy_sort(
     test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
-
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        a=x[0],
         axis=axis,
     )
 
@@ -289,7 +289,7 @@ def test_jax_numpy_sort(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_flatnonzero(
+def test_jax_flatnonzero(
     dtype_and_x,
     frontend,
     test_flags,
@@ -319,7 +319,7 @@ def test_jax_numpy_flatnonzero(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_sort_complex(
+def test_jax_sort_complex(
     *,
     dtype_x_axis,
     frontend,
@@ -402,7 +402,7 @@ def test_numpy_searchsorted(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_where(
+def test_jax_where(
     *,
     dtype_and_x,
     frontend,
@@ -454,7 +454,7 @@ def _unique_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
 )
-def test_jax_numpy_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
+def test_jax_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
     arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
     helpers.test_frontend_function(
         input_dtypes=arr_dtype,

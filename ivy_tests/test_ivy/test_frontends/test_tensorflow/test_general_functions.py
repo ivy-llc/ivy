@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -264,6 +265,58 @@ def test_tensorflow_eye(
         num_columns=n_cols,
         batch_shape=batch_shape,
         dtype=dtype[0],
+    )
+
+
+# foldl
+@handle_frontend_test(
+    fn_tree="tensorflow.foldl",
+    fn=st.sampled_from(
+        [
+            lambda a, b: a + b,
+            lambda a, b: a - b,
+            lambda a, b: a * b,
+        ],
+    ),
+    initializer=st.one_of(st.none(), st.floats(min_value=-1000, max_value=1000)),
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=False),
+        min_value=-1000,
+        max_value=1000,
+        max_dim_size=10,
+        max_num_dims=4,
+        min_dim_size=1,
+        min_num_dims=1,
+    ),
+    parallel_iterations=st.just(10),
+    swap_memory=st.booleans(),
+    name=st.none(),
+)
+def test_tensorflow_foldl(
+    *,
+    fn,
+    initializer,
+    dtype_and_values,
+    frontend,
+    fn_tree,
+    test_flags,
+    parallel_iterations,
+    swap_memory,
+    name,
+):
+    dtype, elems = dtype_and_values
+    elems = np.atleast_1d(elems)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        fn=fn,
+        elems=elems,
+        initializer=initializer,
+        parallel_iterations=parallel_iterations,
+        swap_memory=swap_memory,
+        name=name,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
     )
 
 
@@ -1986,6 +2039,36 @@ def test_tensorflow_unique(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.unique_with_counts",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=1,)),
+        dtype=["int32", "int64"],
+    ),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_unique_with_counts(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    output_dtype,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        x=x[0],
+        input_dtypes=input_dtype,
+        out_idx=output_dtype,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.while_loop",
     dtype_and_x=helpers.dtype_and_values(
         num_arrays=1,
@@ -2098,4 +2181,25 @@ def test_tensorflow_truncatemod(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.unravel_index",
+    indices=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=0, max_value=49
+    ),
+    dims=helpers.array_values(
+        dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=50
+    ),
+)
+def test_unravel_index(*, indices, dims, frontend, test_flags, fn_tree, on_device):
+    helpers.test_frontend_function(
+        input_dtypes=["int32"],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        indices=indices[0],
+        dims=dims[0],
     )
