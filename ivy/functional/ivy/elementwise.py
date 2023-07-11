@@ -396,6 +396,33 @@ def add(
     .. note::
        Floating-point addition is a commutative operation, but not always associative.
 
+    For complex floating-point operands, addition is defined according
+    to the following table.
+    For real components ``a`` and ``c``, and imaginary components ``b`` and ``d``,
+
+    +-------------------+-------------------+-------------------+-------------------+
+    |                   |         c         |       dj          |         c+dj      |
+    +===================+===================+===================+===================+
+    |         a         |       a + c       |      a + dj       |  (a+c) + dj       |
+    +-------------------+-------------------+-------------------+-------------------+
+    |         bj        |    c + bj         |     (b+d)j        |   c + (b+d)j      |
+    +-------------------+-------------------+-------------------+-------------------+
+    |         a+bj      | (a+c) + bj        |   a + (b+d)j      | (a+c) + (b+d)j    |
+    +-------------------+-------------------+-------------------+-------------------+
+
+    For complex floating-point operands, the real valued floating-point
+    special cases must independently apply to the real and
+    imaginary component operation invloving real numbers as
+    described in the above table. For example, let ``a = real(x1_i)``,
+    ``c = real(x2_i)``, ``d = imag(x2_i)``,
+    and
+    - if ``a`` is ``-0``, the real component of the result is ``-0``.
+    - Similarly, if ``b`` is ``+0`` and ``d`` is ``-0``,
+    the imaginary component of the result is ``+0``.
+
+    Hence, if ``z1 = a + bj = -0 + 0j`` and ``z2 = c + dj = -0 - 0j``,
+    then the result of  ``z1 + z2`` is ``-0 + 0j``.
+
     Parameters
     ----------
     x1
