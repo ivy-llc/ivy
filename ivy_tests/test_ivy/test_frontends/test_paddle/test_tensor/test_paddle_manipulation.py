@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -449,4 +450,37 @@ def test_paddle_broadcast_to(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.scatter_nd",
+    dtype_x_and_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=6,
+    ),
+)
+def test_paddle_scatter_nd(
+    *,
+    dtype_x_and_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_x_and_shape
+    shape = x[0].shape
+    indices = np.random.randint(0, shape[0], size=(shape[0], 1))
+    updates = np.random.randint(0, 10, size=(shape[0], 1))
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        indices=indices,
+        updates=updates,
     )
