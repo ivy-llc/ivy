@@ -11,7 +11,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 @handle_frontend_test(
     fn_tree="numpy.corrcoef",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
         abs_smallest_val=1e-5,
@@ -23,6 +23,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
         max_value=100,
     ),
     rowvar=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_numpy_corrcoef(
     dtype_and_x,
@@ -31,6 +32,7 @@ def test_numpy_corrcoef(
     test_flags,
     fn_tree,
     on_device,
+    dtype,
 ):
     input_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
@@ -42,6 +44,7 @@ def test_numpy_corrcoef(
         x=x[0],
         y=x[1],
         rowvar=rowvar,
+        dtype=dtype[0],
     )
 
 

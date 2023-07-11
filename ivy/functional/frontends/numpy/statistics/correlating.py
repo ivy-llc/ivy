@@ -1,13 +1,20 @@
 # global
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
-def corrcoef(x, y=None, rowvar=True, bias=None, ddof=None, *, dtype=None):
-    if bias is not None or ddof is not None:
-        raise ivy.warn("bias and ddof are not supported in ivy.")
-    return ivy.corrcoef(x, y, rowvar, dtype=dtype)
+def corrcoef(x, y=None, /, *, rowvar=True, bias=None, ddof=None, dtype="float64"):
+    if (bias is not None) or (ddof is not None):
+        ivy.warn("bias and ddof are deprecated and have no effect")
+    if y is not None:
+        y = y.astype(dtype)
+
+    return ivy.corrcoef(x.astype(dtype), y=y, rowvar=rowvar)
 
 
 @to_ivy_arrays_and_back
