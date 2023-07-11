@@ -626,6 +626,7 @@ def handle_frontend_method(
     method_num_positional_args=None,
     method_native_arrays=BuiltNativeArrayStrategy,
     method_as_variable_flags=BuiltAsVariableStrategy,
+    generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
     """
