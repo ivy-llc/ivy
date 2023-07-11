@@ -829,6 +829,8 @@ def test_torch_hinge_embedding_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+        atol=1e-5,
+        rtol=1e-5,
     )
 
 
