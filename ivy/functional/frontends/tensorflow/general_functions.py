@@ -611,3 +611,8 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+
+@to_ivy_arrays_and_back
+def stop_gradient(input, name=None):
+    return ivy.stop_gradient(input)
