@@ -369,9 +369,10 @@ def scatter_nd(
     updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
-    target = out._data
-    target_given = ivy.exists(target)
-    if not target_given:
+    target_given = ivy.exists(out)
+    if target_given:
+        target = out._data
+    else:
         shape = list(shape) if ivy.exists(shape) else out.shape
         target = paddle.zeros(shape=shape).astype(updates.dtype)
     if ivy.exists(shape) and target_given:
