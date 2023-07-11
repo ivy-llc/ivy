@@ -1809,7 +1809,6 @@ def test_jax_devicearray_round(
     )
 
 
-# take
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
@@ -1834,11 +1833,11 @@ def test_jax_devicearray_take(
 ):
     input_dtypes, x, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=[input_dtypes[0]],
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=[input_dtypes[1]],
         method_all_as_kwargs_np={"indices": indices, "axis": axis},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
