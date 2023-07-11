@@ -7,6 +7,7 @@ import ivy
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 
@@ -190,3 +191,13 @@ def cond(
             tf.linalg.inv(x), ord=p, axis=[-2, -1]
         )
     return k
+
+
+def lu_factor(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    pivot: Optional[bool] = True,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[tf.Tensor]:
+    raise IvyNotImplementedException()
