@@ -987,12 +987,6 @@ def test_jax_size(
 # array_str
 @handle_frontend_test(
     fn_tree="jax.numpy.array_str",
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -1014,12 +1008,12 @@ def test_jax_numpy_array_str(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        max_line_width=max_line_width,
-        precision=precision,
-        suppress_small=suppress_small,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        max_line_width=max_line_width,
+        precision=precision,
+        suppress_small=suppress_small,
     )
