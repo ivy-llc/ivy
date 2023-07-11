@@ -193,9 +193,7 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
         ret = tf.cast(ret, dtype=dtype)
         return ret
 
-    axis = list(axis)
-    if len(axis) == 1:
-        axis = axis[0]
+    axis = [axis] if isinstance(axis, int) else list(axis)
 
     for i in axis:
         keepdim_shape = tf.tensor_scatter_nd_update(keepdim_shape, [[i]], [1])
@@ -286,11 +284,9 @@ def nanmedian(
 ) -> Union[tf.Tensor, tf.Variable]:
     if overwrite_input:
         copied_input = tf.identity(input)
-        axis = tuple(axis) if isinstance(axis, list) else axis
         return _nanmedian_helper(copied_input, axis, keepdims)
 
     else:
-        axis = tuple(axis) if isinstance(axis, list) else axis
         result = _nanmedian_helper(input, axis, keepdims)
         return result
 
