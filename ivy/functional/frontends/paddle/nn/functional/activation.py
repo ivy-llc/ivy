@@ -221,3 +221,12 @@ def softplus(x, beta=1, threshold=20, name=None):
 @to_ivy_arrays_and_back
 def leaky_relu(x, negative_slope=0.01, name=None):
     return ivy.leaky_relu(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softmax(x, axis=-1, dtype=None, name=None):
+    x = ivy.astype(x, dtype) if dtype else x
+    ans = ivy.softmax(x, axis=axis)
+    ans = ivy.astype(ans, dtype) if dtype else ans
+    return ans
