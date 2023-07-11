@@ -505,3 +505,14 @@ def fill_diagonal(
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
+
+
+def trim_zeros(
+    filt: Union[Sequence, np.ndarray],
+    /,
+    *,
+    trim: str = "fb",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    filt = np.asarray(filt)
+    return np.trim_zeros(filt=filt, trim=trim)

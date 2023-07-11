@@ -1080,3 +1080,54 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+    def trim_zeros(
+        self: ivy.Array,
+        /,
+        *,
+        trim: str = "fb",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        out
+            Optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+        >>> x = ivy.array([0, 1, 0])
+        >>> y = ivy.trim_zeros(x)
+        >>> print(y)
+        ivy.array([1])
+
+        >>> x = ivy.array([0, 1, 2, 0])
+        >>> y = ivy.trim_zeros(x, trim="f")
+        >>> print(y)
+        ivy.array([1, 2, 0])
+
+        >>> x = ivy.array([0, 0, 0, 1, 2, 0, 0])
+        >>> y = ivy.trim_zeros(x, trim="b")
+        >>> print(y)
+        ivy.array([0, 0, 0, 1, 2])
+        """
+        return ivy.trim_zeros(self._data, trim=trim, out=out)

@@ -628,3 +628,23 @@ def fill_diagonal(
     a = paddle.where(w, v, a)
     a = paddle.reshape(a, shape)
     return a
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def trim_zeros(
+    filt: Union[Sequence, paddle.Tensor],
+    /,
+    *,
+    trim: str = "fb",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    filt = paddle.to_tensor(filt)
+    nz = filt == 0
+    if paddle.all(nz):
+        return paddle.full((0,), 0, dtype=filt.dtype)
+    nz = nz.astype("int32")
+    start = paddle.argmin(nz) if "f" in trim.lower() else 0
+    end = paddle.argmin(nz[::-1]) if "b" in trim.lower() else 0
+    return filt[start : len(filt) - end]

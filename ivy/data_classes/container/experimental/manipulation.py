@@ -2982,3 +2982,154 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             v,
             wrap=wrap,
         )
+
+    @staticmethod
+    def static_trim_zeros(
+        filt: Union[Sequence, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        trim: str = "fb",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        filt
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input.
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4.,0]))
+        >>> y = ivy.trim_zeros(x)
+        >>> print(y)
+        {
+            a:ivy.array([-1., 2.]),
+            b:ivy.array([3., 4.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "trim_zeros",
+            filt,
+            trim=trim,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def trim_zeros(
+        self: ivy.Container,
+        /,
+        *,
+        trim: str = "fb",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.trim_zeros.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.trim_zeros also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+
+        trim
+            A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+            Default is ‘fb’, trim zeros from both front and back of the array.
+
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of trimming the input.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4.,0]))
+        >>> y = x.argmin()
+        >>> print(y)
+        {
+            a:ivy.array([-1., 2.]),
+            b:ivy.array([3., 4.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0. -1., 2., 0., 0.]),\
+        ...                   b=ivy.array([0., 0., 3., 5., 0.])
+        >>> y = x.argmin(trim="f")
+        >>> print(y)
+        {
+            a: ivy.array([-1., 2., 0., 0.]),
+            b: ivy.array([3., 5., 0.])
+        }
+        """
+        return self.static_trim_zeros(
+            self,
+            trim=trim,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

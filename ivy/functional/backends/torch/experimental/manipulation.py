@@ -395,3 +395,20 @@ def fill_diagonal(
     a = torch.where(w, v, a)
     a = torch.reshape(a, shape)
     return a
+
+
+def trim_zeros(
+    filt: Union[Sequence, torch.Tensor],
+    /,
+    *,
+    trim: str = "fb",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    filt = torch.asarray(filt)
+    nz = filt == 0
+    if torch.all(nz):
+        return torch.full((0,), 0, dtype=filt.dtype)
+    nz = nz.type("torch.ShortTensor")
+    start = torch.argmin(nz) if "f" in trim.lower() else 0
+    end = torch.argmin(torch.flip(nz, (0,))) if "b" in trim.lower() else 0
+    return filt[start : len(filt) - end]

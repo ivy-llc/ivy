@@ -367,3 +367,20 @@ def fill_diagonal(
     a = tf.tensor_scatter_nd_update(a, indices, ups)
     a = tf.reshape(a, shape)
     return a
+
+
+@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
+def trim_zeros(
+    filt: Union[Sequence, tf.Tensor],
+    /,
+    *,
+    trim: str = "fb",
+    out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    filt = tf.experimental.numpy.asarray(filt)
+    nz = filt == 0
+    if tf.reduce_all(nz):
+        return tf.experimental.numpy.full((0,), 0, dtype=filt.dtype)
+    start = tf.math.argmin(nz) if "f" in trim.lower() else 0
+    end = tf.math.argmin(nz[::-1]) if "b" in trim.lower() else 0
+    return filt[start : len(filt) - end]

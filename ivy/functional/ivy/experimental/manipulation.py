@@ -2116,13 +2116,80 @@ def fill_diagonal(
     ----------
     a
         Array at least 2D.
+
     v
         The value to write on the diagonal.
+
     wrap
         The diagonal ‘wrapped’ after N columns for tall matrices.
+
     Returns
     -------
     ret
         Array with the diagonal filled.
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def trim_zeros(
+    filt: Union[Sequence, ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    trim: str = "fb",
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Trim the leading and/or trailing zeros from a 1-D array or sequence.
+
+    Parameters
+    ----------
+    filt
+        input array.
+
+    trim
+        A string with ‘f’ representing trim from front and ‘b’ to trim from back.
+        Default is ‘fb’, trim zeros from both front and back of the array.
+
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of trimming the input.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([0, 1, 0])
+    >>> y = ivy.trim_zeros(x)
+    >>> print(y)
+    ivy.array([1])
+
+    >>> x = ivy.array([0, 1, 2, 0])
+    >>> y = ivy.trim_zeros(x, trim="f")
+    >>> print(y)
+    ivy.array([1, 2, 0])
+
+    >>> x = ivy.array([0, 0, 0, 1, 2, 0, 0])
+    >>> y = ivy.trim_zeros(x, trim="b")
+    >>> print(y)
+    ivy.array([0, 0, 0, 1, 2])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([0, 3., 4., 5.,0]))
+    >>> y = ivy.trim_zeros(x)
+    >>> print(y)
+    {
+        a:ivy.array([-1., 2.]),
+        b:ivy.array([3., 4., 5.])
+    }
+    """
+    return ivy.current_backend(filt).trim_zeros(filt, trim=trim, out=out)
