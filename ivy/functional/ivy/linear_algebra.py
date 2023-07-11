@@ -1320,8 +1320,8 @@ def matrix_rank(
         Default: ``None``.
     
     hermitian
-        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
-        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian, # noqa: E501
+        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. # noqa: E501
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
@@ -1580,6 +1580,7 @@ def pinv(
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
@@ -1601,6 +1602,9 @@ def pinv(
         ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with
         the floating-point data type determined by :ref:`type-promotion` (as applied to
         ``x``). Default: ``None``.
+    hermitian
+        If ``True``, the input array is assumed to be Hermitian, enabling a more
+        efficient method for finding singular values. Defaults to ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1638,7 +1642,7 @@ def pinv(
     ivy.array([[-2., 1.],[1.5, -0.5]])
 
     """
-    return current_backend(x).pinv(x, rtol=rtol, out=out)
+    return current_backend(x).pinv(x, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @handle_exceptions

@@ -11,7 +11,11 @@ from ivy import inf
 from ivy.utils.exceptions import IvyNotImplementedException
 import ivy.functional.backends.paddle as paddle_backend
 from . import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 from .elementwise import _elementwise_helper
 
 # Array API Standard #
@@ -403,15 +407,22 @@ def outer(
     return paddle.outer(x1, x2).cast(ret_dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    backend_version,
+)
 def pinv(
     x: paddle.Tensor,
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if rtol is None:
         return paddle.linalg.pinv(x)
+    elif hermitian:
+        return paddle.linalg.pinv(x, hermitian=hermitian)
     return paddle.linalg.pinv(x, rcond=rtol)
 
 

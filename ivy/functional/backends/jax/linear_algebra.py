@@ -274,10 +274,13 @@ def pinv(
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if rtol is None:
         ret = jnp.linalg.pinv(x)
+    elif hermitian:
+        ret = jnp.linalg.pinv(x, hermitian=hermitian)
     else:
         ret = jnp.linalg.pinv(x, rtol)
     return ret

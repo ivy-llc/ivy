@@ -223,10 +223,13 @@ def pinv(
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if rtol is None:
         return np.linalg.pinv(x)
+    elif hermitian:
+        return np.linalg.pinv(x, hermitian=hermitian)
     else:
         return np.linalg.pinv(x, rtol)
 

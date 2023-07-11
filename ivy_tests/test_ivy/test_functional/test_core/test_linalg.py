@@ -769,23 +769,51 @@ def test_vector_norm(
     helpers.assert_all_close(arr_normed_min_inf, gt_arr_normed_min_inf)
 
 
+@st.composite
+def pinv_helper(draw):
+    hermitian = draw(st.booleans())
+
+    if hermitian:
+        dtype = draw(helpers.get_dtypes("valid"))
+        dim = draw(st.integers(min_value=2, max_value=5))
+        h = np.random.rand(dim, dim)
+        z = h + 1j * h
+        x = (z + z.conj().T) / 2
+    else:
+        dtype, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                min_num_dims=2,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=5,
+                large_abs_safety_factor=32,
+                small_abs_safety_factor=32,
+                safety_factor_scale="log",
+            )
+        )
+
+    return hermitian, dtype, x
+
+
 # pinv
 @handle_test(
     fn_tree="functional.ivy.pinv",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        large_abs_safety_factor=32,
-        small_abs_safety_factor=32,
-        safety_factor_scale="log",
-    ),
+    # dtype_x=helpers.dtype_and_values(
+    #     available_dtypes=helpers.get_dtypes("float"),
+    #     min_num_dims=2,
+    #     max_num_dims=5,
+    #     min_dim_size=1,
+    #     max_dim_size=5,
+    #     large_abs_safety_factor=32,
+    #     small_abs_safety_factor=32,
+    #     safety_factor_scale="log",
+    # ),
+    h_dtype_x=pinv_helper(),
     rtol=st.floats(1e-5, 1e-3),
 )
-def test_pinv(*, dtype_x, rtol, test_flags, backend_fw, fn_name, on_device):
-    dtype, x = dtype_x
+def test_pinv(*, h_dtype_x, rtol, test_flags, backend_fw, fn_name, on_device):
+    h, dtype, x = h_dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -796,6 +824,7 @@ def test_pinv(*, dtype_x, rtol, test_flags, backend_fw, fn_name, on_device):
         atol_=1e-2,
         x=x[0],
         rtol=rtol,
+        hermitian=h,
     )
 
 

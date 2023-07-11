@@ -435,19 +435,31 @@ def outer(
     return tf.experimental.numpy.outer(x1, x2)
 
 
-@with_unsupported_dtypes(
-    {"2.13.0 and below": ("bfloat16", "float16", "complex")},
-    backend_version,
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex")}, backend_version
 )
 def pinv(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if rtol is None:
         ret = tf.linalg.pinv(x)
+    if hermitian:
+        s, u = tf.linalg.eigh(x)
+        s_abs = tf.abs(s)
+        max_singular_val = tf.math.reduce_max(s_abs, axis=[-1], keepdims=True)
+        rcond = tf.constant(1e-15, dtype=s.dtype)
+        rcond = tf.cast(rcond, dtype="float32")
+        cutoff = rcond * max_singular_val
+        y = float("inf")
+        singular = tf.where(s_abs > cutoff, 1 / s, 1 / y)
+        out_1 = u * singular
+        u_conj = tf.math.conj(u)
+        ret = tf.linalg.matmul(out_1, u_conj, transpose_a=False, transpose_b=True)
     else:
         x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.pinv(x, rtol)
