@@ -1230,8 +1230,8 @@ def rfft_operations(x, rank, norm_factor):
 
 
 def _rfftn_helper(x, shape, axes, norm):
-    # x = rfft_input_validation(tf.convert_to_tensor(x))
-    x = rfft_input_validation(x)
+    x = rfft_input_validation(tf.convert_to_tensor(x))
+    # x = rfft_input_validation(x)
     input_shape = x.shape
     input_rank_tensor = tf.rank(x)
 
@@ -1268,8 +1268,9 @@ def _rfftn_helper(x, shape, axes, norm):
     {
         "2.5.0 and above": {
             "cpu": (
-                "float32",
+                "floar32",
                 "float64",
+                "complex128",
             )
         }
     },
@@ -1280,18 +1281,18 @@ def rfftn(
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
     *,
-    norm: Optional[str] = "backward",
+    norm: Optional[str] = [("forward", "ortho", "backward")],
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     result = _rfftn_helper(x, s, axes, norm)
 
     if out is not None:
-        # out = tf.cast(result, tf.complex128)
-        out = result
+        out = tf.cast(result, tf.complex128)
+        # out = result
         return out
     else:
-        return result
-        # return tf.cast(result, tf.complex128)
+        # return result
+        return tf.cast(result, tf.complex128)
 
 
 # def _rfftn_norm(

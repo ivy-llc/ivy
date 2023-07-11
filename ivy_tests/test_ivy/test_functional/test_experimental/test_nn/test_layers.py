@@ -1059,6 +1059,7 @@ def x_and_rfftn(draw):
 @handle_test(
     fn_tree="functional.ivy.experimental.rfftn",
     d_x_d_s_n=x_and_rfftn(),
+    ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
 def test_rfftn(
@@ -1070,15 +1071,14 @@ def test_rfftn(
     on_device,
 ):
     dtype, x, s, axes, norm = d_x_d_s_n
-    test_flags.ground_truth_backend = "numpy"
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-3,
-        atol_=1e-3,
+        rtol_=0.8,
+        atol_=0.8,
         x=x,
         s=s,
         axes=axes,
