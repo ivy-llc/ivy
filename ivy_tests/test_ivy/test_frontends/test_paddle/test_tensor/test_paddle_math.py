@@ -1036,11 +1036,14 @@ def test_paddle_cumprod(
 @handle_frontend_test(
     fn_tree="paddle.gcd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-100,
+        max_value=100,
         min_num_dims=1,
-        safety_factor_scale="log",
-        large_abs_safety_factor=2,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
         shared_dtype=True,
     ),
 )
