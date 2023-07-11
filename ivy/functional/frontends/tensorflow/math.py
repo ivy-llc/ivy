@@ -711,3 +711,8 @@ def real(input, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+@to_ivy_arrays_and_back
+
+def complex_abs(x, name="complex_abs"):        
+    z = ivy.convert_to_tensor(x)
+    return ivy.sqrt(ivy.sqrt(ivy.real(z)) + ivy.sqrt(ivy.imag(z)))
