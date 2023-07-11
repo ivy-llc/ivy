@@ -338,3 +338,9 @@ def maximum(x, y, name=None):
 @to_ivy_arrays_and_back
 def frac(x, name=None):
     return x - ivy.sign(x) * ivy.floor(ivy.abs(x))
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def asinh(x, name=None):
+    return ivy.asinh(x)
