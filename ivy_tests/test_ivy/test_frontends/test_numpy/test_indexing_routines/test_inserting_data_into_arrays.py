@@ -41,7 +41,6 @@ def test_numpy_fill_diagonal(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="numpy.putmask",
     dtype_and_x=helpers.dtype_and_values(
