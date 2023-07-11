@@ -229,21 +229,22 @@ def test_paddle_square_error_cost(
     dtype_and_pred,
     dtype_and_target,
     reduction,
-    on_device,
     fn_tree,
-    frontend,
     test_flags,
+    frontend,
+    on_device,
 ):
-    dtype_pred, pred = dtype_and_pred
-    dtype_target, target = dtype_and_target
-
+    input_dtype, pred = dtype_and_pred
+    target_dtype, target = dtype_and_target
     helpers.test_frontend_function(
-        input_dtypes=dtype_pred + dtype_target,
+        input_dtypes=[input_dtype, target_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        pred=pred[0],
-        target=target[0],
+        pred=pred,
+        target=target,
         reduction=reduction,
     )
+
+
