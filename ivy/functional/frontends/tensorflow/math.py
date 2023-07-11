@@ -63,6 +63,17 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("int8", "int16", "int32", "int64")}, 
+    "tensorflow"
+)
+@to_ivy_arrays_and_back
+def bincount(
+    x, weights=None, minLength=0, name="bincount"
+):
+    return ivy.bincount(x, weights=weights, minLength=minLength)
+
+
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
