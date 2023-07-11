@@ -810,7 +810,7 @@ def test_jax_bool_(
     endpoint=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_geomspace(
+def test_jax_geomspace(
     dtype_start_stop,
     num,
     endpoint,
