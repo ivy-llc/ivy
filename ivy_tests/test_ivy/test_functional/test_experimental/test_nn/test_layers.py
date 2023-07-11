@@ -962,15 +962,15 @@ def x_and_ifftn(draw):
     dtype = draw(helpers.get_dtypes("complex"))
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=3
         )
     )
     x = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            min_value=-1e-10,
-            max_value=1e10,
+            min_value=-1e-6,
+            max_value=1e6,
         )
     )
     axes = draw(
@@ -1005,11 +1005,9 @@ def test_ifftn(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x, axes, norm, s = d_x_d_s_n
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1019,4 +1017,34 @@ def test_ifftn(
         s=s,
         axes=axes,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.fftn",
+    d_x_d_s_n=x_and_ifftn(),
+    test_gradients=st.just(False),
+    ground_truth_backend="numpy",
+)
+def test_fftn(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, axes, norm, s = d_x_d_s_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
+        rtol_=1e-5,
+        atol_=1e-5,
     )

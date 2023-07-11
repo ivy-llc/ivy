@@ -1024,3 +1024,82 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def fftn(
+        self: ivy.Array,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the N-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+            Input array of complex numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+            `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+            the input is cropped. If larger, input is padded with zeros. If `s` is not
+            given, shape of input along axes specified by axes is used.
+        axes
+            axes over which to compute the FFT. If not given, last `len(s)` axes are
+            used, or all axes if `s` is also not specified. Repeated indices in axes
+            means inverse transform over that axis is performed multiple times.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The truncated or zero-padded input, transformed along the axes indicated
+            by axes, or by a combination of s or x, as explained in the parameters
+            section above.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1.23+4.56j, 2.34+5.67j, 3.45+6.78j],
+            [4.56+7.89j, 5.67+8.90j, 6.78+9.01j],
+            [7.89+1.23j, 8.90+2.34j, 9.01+3.45j]])
+        >>> y = ivy.fftn(x, s=[11], norm="forward", axes=[0])
+        >>> print(y)
+        ivy.array([[ 1.2436364 +1.2436364j ,  1.5372727 +1.5372727j ,
+                1.7490909 +1.7490909j ],
+            [ 1.2480222 +0.18783021j,  1.6133949 +0.2698245j ,
+                1.9005448 +0.35741338j],
+            [ 0.5512736 -0.27987638j,  0.7937565 -0.3680877j ,
+                1.0153944 -0.42845353j],
+            [ 0.04307317-0.00306876j,  0.10397673-0.08606213j,
+                0.16239887-0.1804624j ],
+            [ 0.16966861+0.3255977j ,  0.16093875+0.3666394j ,
+                0.10201884+0.38027525j],
+            [ 0.45909855+0.09139072j,  0.511741  +0.21030232j,
+                0.47250286+0.36348364j],
+            [ 0.17584734-0.4506012j ,  0.2858646 -0.37411213j,
+                0.35010296-0.17488492j],
+            [-0.6931284 -0.46776104j, -0.64087737-0.45596248j,
+                -0.5151484 -0.30959913j],
+            [-1.313865  +0.41342503j, -1.3778698 +0.47845933j,
+                -1.2823855 +0.57818836j],
+            [-0.9226479 +1.5584483j , -0.9997305 +1.7926004j ,
+                -0.94880927+1.9309299j ],
+            [ 0.26902157+1.940979j  ,  0.35153264+2.299126j  ,
+                0.44428948+2.5140188j ]])
+
+        >>> b = ivy.fftn(x, s=[1,2], norm="backward", axes=[0, 1])
+        >>> print(b)
+        ivy.array([[ 3.57     +10.23j     , -1.1099999 -1.1100001j]])
+        """
+        return ivy.fftn(self._data, s=s, axes=axes, norm=norm, out=out)

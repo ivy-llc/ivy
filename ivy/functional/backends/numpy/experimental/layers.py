@@ -922,3 +922,14 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def fftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.fftn(x, s, axes, norm).astype(x.dtype)

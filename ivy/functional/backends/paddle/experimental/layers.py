@@ -365,3 +365,14 @@ def ifftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.ifftn(x, s, axes, norm)
+
+
+def fftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.fftn(x, s, axes, norm)

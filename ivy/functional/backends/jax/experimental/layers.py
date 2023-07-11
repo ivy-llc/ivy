@@ -799,3 +799,14 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def fftn(
+    x: JaxArray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fft.fftn(x, s, axes, norm)
