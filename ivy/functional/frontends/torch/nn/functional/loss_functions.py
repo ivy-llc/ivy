@@ -368,7 +368,7 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
     reduction = _get_reduction_func(reduction)
     ret = reduction(loss)
 
-    return ret
+    return ret.astype(input.dtype)
 
 
 @to_ivy_arrays_and_back

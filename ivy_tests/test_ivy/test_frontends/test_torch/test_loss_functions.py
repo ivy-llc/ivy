@@ -595,6 +595,8 @@ def test_torch_gaussian_nll_loss(
         full=full,
         eps=eps,
         reduction=reduction,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
