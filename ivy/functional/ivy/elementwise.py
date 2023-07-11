@@ -146,10 +146,37 @@ def acos(
 
     For floating-point operands,
 
-    - If x_i is NaN, the result is NaN.
-    - If x_i is greater than 1, the result is NaN.
-    - If x_i is less than -1, the result is NaN.
-    - If x_i is 1, the result is +0.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is greater than ``1``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+
+    For complex floating-point operands, let a = real(x_i) and b = imag(x_i),
+    and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+    the result is ``π/2 - 0j``.
+    - if ``a`` is either ``+0`` or ``-0`` and ``b`` is ``NaN``,
+    the result is ``π/2 + NaN j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+    the result is ``π/2 - infinity j``.
+    - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a positive
+    (i.e., greater than 0) finite number, the result is ``π - infinity j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+    (i.e., greater than 0) finite number, the result is ``+0 - infinity j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+    the result is ``3π/4 - infinity j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+    the result is ``π/4 - infinity j``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is ``NaN``,
+    the result is ``NaN ± infinity j`` (sign of the imaginary component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+    the result is ``NaN + NaN j``.
+    - if ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+    the result is ``NaN - infinity j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Parameters
     ----------
