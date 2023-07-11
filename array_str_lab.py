@@ -11,10 +11,10 @@ ivy.set_backend("numpy")
 def array_str(a, max_line_width=None, precision=None, suppress_small=None):
     try:
         print("===============================================")
-        print("a: ", a)
-        print("max_line_width: ", max_line_width)
-        print("precision: ", precision)
-        print("suppress_small: ", suppress_small)
+        print("a= ", a)
+        print("max_line_width= ", max_line_width)
+        print("precision= ", precision)
+        print("suppress_small= ", suppress_small)
         print("-----------------------------------------------")
         # handles if precision is none or if invalid
         ivy.set_array_significant_figures(precision)

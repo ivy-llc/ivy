@@ -1,5 +1,5 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -259,58 +259,61 @@ def size(a, axis=None):
         return sh[axis]
     return a.size
 
-
+@with_supported_dtypes(
+    {
+        "0.4.13 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
 @to_ivy_arrays_and_back
 def array_str(a, max_line_width=None, precision=None, suppress_small=None):
+    a = ivy.array([257], dtype="uint16")
+    max_line_width = 2
+    precision = 1
+    suppress_small = False
+
     try:
         print("===============================================")
-        print("a: ", a)
-        print("max_line_width: ", max_line_width)
-        print("precision: ", precision)
-        print("suppress_small: ", suppress_small)
+        print("a= ", a)
+        print("max_line_width= ", max_line_width)
+        print("precision= ", precision)
+        print("suppress_small= ", suppress_small)
+        print("ivy.dtype(a)= ", ivy.dtype(a))
         print("-----------------------------------------------")
-        # handles if precision is none or if invalid
-        ivy.set_array_significant_figures(precision)
-        print(f"Done: 1")
 
         a = ivy.reshape(a, (-1,))
+        print(f"reshaped a: {a}")
+        if precision is not None and ivy.dtype(a)!="bool":
+            # handles if precision is none or if invalid
+            ivy.set_array_significant_figures(precision)
+            arr_str = str(ivy.round(a, decimals=ivy.array_significant_figures_stack[-1]))
 
-        def round_suppress(ele, precision_):
-            count_after_decimal = str(ele)[::-1].find(".")
-            if suppress_small and (count_after_decimal > precision_):
-                # supress to zero
-                print(f"Done: 2")
-                return 0
-            else:
-                print(f"Done: 2")
-                return round(ele, precision_)
+        arr_str = str(a)
+        arr_str = arr_str.replace('inf', 'infj').replace('nan', 'nanj')
 
-        print(f"Optional: 2 | a.shape: {a.shape}")
-        # if len(a.shape) != 0:
-        if a.size != 0:
-            # ivy.map(fn=round_suppress, constant=ivy.array_significant_figures_stack[-1], unique = ivy.flatten(a))
-            a = list(
-                map(
-                    round_suppress,
-                    ivy.to_list(a),
-                    [ivy.array_significant_figures_stack[-1]],
-                )
-            )
-        a = str(a)
-        if max_line_width is None:
-            # TODO: max_line_width handler func
-            max_line_width = 75
-        print(f"Done: 3")
+        if suppress_small is not None:
+            arr_str_lines = arr_str.splitlines()
+            for i, line in enumerate(arr_str_lines):
+                if suppress_small and line.startswith(' ' * 5 + '.'):
+                    arr_str_lines[i] = ' ' * 5 + '0'
+            arr_str = '\n'.join(arr_str_lines)
 
-        def chop_string(string, chunk_size):
-            chopped_string = ""
-            for i in range(0, len(string), chunk_size):
-                chopped_string += string[i : i + chunk_size] + "\n"
-            print(f"Done: 4")
-            return chopped_string
+        def break_lines(text, max_line_width):
+            broken_lines = []
+            line_start = 0
+            line_end = max_line_width
+            while line_start < len(text):
+                broken_lines.append(text[line_start:line_end])
+                line_start = line_end
+                line_end += max_line_width
+            return '\n'.join(broken_lines)
 
-        a = chop_string(a, max_line_width)
-        print(f"Done: 5")
-        return a
+        if max_line_width is not None:
+            arr_str = break_lines(arr_str, max_line_width)
+
+        return arr_str
     except Exception as e:
         print("All Mighty Error: ", e)

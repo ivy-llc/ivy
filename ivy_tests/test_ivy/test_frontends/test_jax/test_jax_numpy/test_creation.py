@@ -989,6 +989,15 @@ def test_jax_size(
     fn_tree="jax.numpy.array_str",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        shape=helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,)
     ),
     max_line_width=st.integers(min_value=1, max_value=100),
     precision=st.integers(min_value=1, max_value=50),
