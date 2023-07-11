@@ -463,11 +463,8 @@ def test_torch_randperm(
 # set_rng_state
 @handle_frontend_test(
     fn_tree="set_rng_state",
-    state=st.shared(
-        helpers.get_state(
-            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=1
-        ),
-        key="state",
+    state=helpers.get_state(
+        min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=1
     ),
 )
 def test_torch_set_rng_state(
@@ -477,17 +474,14 @@ def test_torch_set_rng_state(
     test_flags,
     fn_tree,
 ):
-    def call():
-        helpers.test_frontend_function(
-            input_dtypes=[None],
-            as_variable_flags=[False],
-            with_out=False,
-            num_positional_args=1,
-            native_array_flags=[False],
-            frontend=frontend,
-            fn_tree=fn_tree,
-            test_values=False,
-            state=state,
-        )
-
-    call()
+    helpers.test_frontend_function(
+        input_dtypes=[None],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=[False],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=False,
+        state=state,
+    )
