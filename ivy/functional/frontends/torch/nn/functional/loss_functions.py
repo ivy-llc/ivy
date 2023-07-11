@@ -449,6 +449,7 @@ def poisson_nll_loss(
     reduce=None,
     reduction="mean",
 ):
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     if log_input:
         loss = ivy.exp(input) - target * input
     else:
@@ -460,7 +461,7 @@ def poisson_nll_loss(
         loss += ivy.where(target > 1, approximation, 0)
 
     reduction = _get_reduction(reduction, size_average, reduce)
-    return reduction(loss)
+    return reduction(loss).astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
