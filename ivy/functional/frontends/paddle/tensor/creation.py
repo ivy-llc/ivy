@@ -131,3 +131,25 @@ def diagflat(x, offset=0, name=None):
 @to_ivy_arrays_and_back
 def meshgrid(*args, **kwargs):
     return ivy.meshgrid(*args, indexing="ij")
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def linspace(start, stop, num, dtype=None, name=None):
+    if dtype is None:
+        ret = ivy.linspace(start, stop, num=num, dtype="float32")
+        return ivy.reshape(ret, (-1,))
+    ret = ivy.linspace(start, stop, num=num, dtype="float64")
+    ret = ivy.reshape(ret, (-1,))
+    if ivy.is_int_dtype(dtype):
+        args = ivy.to_list(ret)
+        ret = ivy.map(
+            fn=lambda x: ivy.floor(x) if x > 0 else ivy.ceil(x),
+            constant=None,
+            unique={"x": args},
+            mean=False,
+        )
+        ret = ivy.array(ret)
+    return ret.astype(dtype)

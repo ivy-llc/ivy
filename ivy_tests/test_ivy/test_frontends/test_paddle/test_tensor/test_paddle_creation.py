@@ -489,3 +489,44 @@ def test_paddle_meshgrid(
         on_device=on_device,
         **args,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.linspace",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+    num=st.integers(min_value=1, max_value=10),
+    dtype=st.one_of(
+        st.just([None]),
+        helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_paddle_linspace(
+    dtype_and_values,
+    num,
+    dtype,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=x[0],
+        stop=x[1],
+        num=num,
+        dtype=dtype[0],
+    )
