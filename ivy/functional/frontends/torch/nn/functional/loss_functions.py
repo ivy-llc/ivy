@@ -340,7 +340,10 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bool", "integer")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
+    target, var = torch_frontend.promote_types_of_torch_inputs(target, var)
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
             var = torch_frontend.unsqueeze(var, dim=2)
@@ -365,7 +368,7 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
     reduction = _get_reduction_func(reduction)
     ret = reduction(loss)
 
-    return ret
+    return ret.astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
