@@ -813,36 +813,6 @@ def interpolate(
         ret = tf.squeeze(ret, axis=-2)
     return ret
 
-
-def stft(
-    signal: Union[tf.Tensor, int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
-    /,
-    *,
-    axis: Optional[int] = None,
-    onesided:Optional[bool] = True,
-    fs: Optional[float] = 1.0,
-    window: Optional[Union[tf.Tensor, list, str, Tuple[int]]] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
-    nperseg: Optional[int] = 256,
-    noverlap: Optional[int] = None,
-    center: Optional[bool] = True,
-    pad_mode: Optional[str] = "reflect",
-    normalized: Optional[bool] = False,
-    detrend: Optional[Union[str, callable, bool]] = False,
-    return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
-    out: Optional[tf.Tensor] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.stft(
-        signal,
-        n_fft,
-        frame_step,
-        window,
-        frame_length,
-        pad_mode,
-    )
     
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
@@ -1216,3 +1186,34 @@ def ifftn(
         return out
     else:
         return result
+
+
+def stft(
+    signal: Union[tf.Tensor, int, Tuple[int]],
+    n_fft: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],
+    /,
+    *,
+    axis: Optional[int] = None,
+    onesided:Optional[bool] = True,
+    fs: Optional[float] = 1.0,
+    window: Optional[Union[tf.Tensor, list, str, Tuple[int]]] = None,
+    frame_length: Optional[Union[int, Tuple[int]]] = None,
+    nperseg: Optional[int] = 256,
+    noverlap: Optional[int] = None,
+    center: Optional[bool] = True,
+    pad_mode: Optional[str] = "reflect",
+    normalized: Optional[bool] = False,
+    detrend: Optional[Union[str, callable, bool]] = False,
+    return_complex: Optional[bool] = True,
+    boundary: Optional[str] = None,
+    out: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.stft(
+        signal,
+        n_fft,
+        frame_step,
+        window,
+        frame_length,
+        pad_mode,
+    )

@@ -689,64 +689,6 @@ def interpolate(
     )
 
 
-def stft(
-    x: JaxArray,
-    input: JaxArray,
-    signal: Union[JaxArray, jint, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
-    /,
-    *,
-    axis: int = 1,
-    onesided:Optional[bool] = False,
-    fs: Optional[float] = 1.0,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    dft_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[JaxArray, str, int, Tuple[int]] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
-    nperseg: Optional[int] = 256,
-    noverlap: Optional[int] = None,
-    center: Optional[bool] = True,
-    pad_mode: Optional[str] = "reflect",
-    normalized: Optional[bool] = False,
-    nfft: Optional[int] = None,
-    detrend: Optional[str] = None,
-    return_onesided: Optional[bool] = True,
-    return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
-    padded: Optional[bool] = True,
-    name: Optional[str] = None,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jlax.scipy.signal.stft(
-        x,
-        input,
-        signal,
-        frame_step,
-        n_fft,
-        axis,
-        onesided,
-        fs,
-        hop_length,
-        win_length,
-        dft_length,
-        window,
-        frame_length,
-        nperseg,
-        noverlap,
-        center,
-        pad_mode,
-        normalized,
-        nfft,
-        detrend,
-        return_onesided,
-        return_complex,
-        boundary,
-        padded,
-        name,
-        out,
-    )
 interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (align_corners is None or not align_corners)
     and mode
@@ -857,3 +799,53 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+def stft(
+    signal: Union[JaxArray, int, Tuple[int]],
+    n_fft: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],   
+    /,
+    *,  
+    axis: Optional[int] = None,
+    fs: Optional[float] = 1.0,
+    window: Union[None, str, Tuple[int], JaxArray] = None,
+    frame_length: Optional[Union[int, Tuple[int]]] = None,
+    nperseg: Optional[int] = 256,
+    noverlap: Optional[int] = None,
+    boundary: Optional[str] = 'zeros',
+    center: Optional[bool] = True,
+    onesided:Optional[bool] = True,
+    pad_mode: Optional[str] = "reflect",
+    normalized: Optional[bool] = False,
+    detrend: Optional[Union[str, callable, bool]] = False,
+    return_complex: Optional[bool] = True,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if frame_step is None:
+        frame_step = n_fft//4
+
+    if isinstance(frame_step, int):
+        frame_step = (frame_step,)  
+
+    if not isinstance(frame_step, tuple):
+        raise TypeError("frame_step must be an int or tuple[int].")
+
+    if isinstance(n_fft, int):
+        n_fft = (n_fft,) 
+
+    if not isinstance(n_fft, tuple):
+        raise TypeError("n_fft must be an int or tuple[int].")
+
+    return jax.scipy.signal.stft(
+        signal,
+        fs,
+        window,
+        nperseg,
+        noverlap,
+        n_fft,
+        detrend,
+        onesided,
+        boundary,
+        pad_mode,
+        axis,
+    )

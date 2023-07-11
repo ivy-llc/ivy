@@ -862,66 +862,6 @@ def adaptive_avg_pool1d(input, output_size):
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool2d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool2d(input, output_size)
-
-
-def stft(
-    x: torch.Tensor,
-    input: torch.Tensor,
-    signal: Union[torch.Tensor, int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
-    n_fft: Union[int, Tuple[int]],
-    /,
-    *,
-    axis: int = 1,
-    onesided:Optional[bool] = False,
-    fs: Optional[float] = 1.0,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    dft_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[torch.Tensor, str, int, Tuple[int]] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
-    nperseg: Optional[int] = 256,
-    noverlap: Optional[int] = None,
-    center: Optional[bool] = True,
-    pad_mode: Optional[str] = "reflect",
-    normalized: Optional[bool] = False,
-    nfft: Optional[int] = None,
-    detrend: Optional[str] = None,
-    return_onesided: Optional[bool] = True,
-    return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
-    padded: Optional[bool] = True,
-    name: Optional[str] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    return torch.stft(
-        x,
-        input,
-        signal,
-        axis,
-        frame_step,
-        n_fft,
-        onesided,
-        fs,
-        hop_length,
-        win_length,
-        dft_length,
-        window,
-        frame_length,
-        nperseg,
-        noverlap,
-        center,
-        pad_mode,
-        normalized,
-        nfft,
-        detrend,
-        return_onesided,
-        return_complex,
-        boundary,
-        padded,
-        name,
-        out,
-    )
     
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def fft2(
@@ -967,3 +907,37 @@ def ifftn(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
+
+
+def stft(
+    signal: Union[torch.Tensor, int, Tuple[int]],
+    n_fft: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],
+    /,
+    *,
+    axis: Optional[int] = None,
+    onesided:Optional[bool] = True,
+    fs: Optional[float] = 1.0,
+    window: Optional[Union[torch.Tensor, list, str, Tuple[int]]] = None,
+    frame_length: Optional[Union[int, Tuple[int]]] = None,
+    nperseg: Optional[int] = 256,
+    noverlap: Optional[int] = None,
+    center: Optional[bool] = False,
+    pad_mode: Optional[str] = None,
+    normalized: Optional[bool] = False,
+    detrend: Optional[Union[str, callable, bool]] = False,
+    return_complex: Optional[bool] = True,
+    boundary: Optional[str] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.stft(
+        signal,
+        n_fft,
+        frame_step,
+        frame_length,
+        window,
+        center,
+        pad_mode,
+        normalized,
+        onesided,
+    )

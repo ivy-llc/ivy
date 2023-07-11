@@ -832,36 +832,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             output_size,
         )
 
-
-def stft(
-        self,
-        x: ivy.Array,
-        input: ivy.Array,
-        signal: Union[ivy.Array, ivy.NativeArray],
-        frame_step: Union[int, Tuple[int]],
-        n_fft: Union[int, Tuple[int]],
-        /,
-        *,
-        axis: int = 1,
-        onesided:Optional[bool] = False,
-        fs: Optional[float] = 1.0,
-        hop_length: Optional[Union[int, Tuple[int]]] = None,
-        win_length: Optional[Union[int, Tuple[int]]] = None,
-        dft_length: Optional[Union[int, Tuple[int]]] = None,
-        window: Optional[Union[ivy.Array, str, int, Tuple[int]]] = None,
-        frame_length: Optional[Union[int, Tuple[int]]] = None,
-        nperseg: Optional[int] = 256,
-        noverlap: Optional[int] = None,
-        center: Optional[bool] = True,
-        pad_mode: Optional[str] = "reflect",
-        normalized: Optional[bool] = False,
-        nfft: Optional[int] = None,
-        detrend: Optional[str] = None,
-        return_onesided: Optional[bool] = True,
-        return_complex: Optional[bool] = True,
-        boundary: Optional[str] = None,
-        padded: Optional[bool] = True,
-        name: Optional[str] = None,
     def reduce_window(
         self: ivy.Array,
         init_value: Union[int, float],
@@ -936,110 +906,6 @@ def stft(
 
         Parameters
         ----------
-        self
-            Input volume *[...,d_in,...]*,
-            where d_in indicates the dimension that needs FFT.
-        x   
-            Time series of measurement values.
-        input 
-            The input tensor.   
-        signal
-            Input tensor representing a real or complex valued signal. 
-            For real input, the following shape is expected: [batch_
-            size][signal_length][1]. For complex input, the following 
-            shape is expected: [batch_size][signal_length][2], where 
-            [batch_size][signal_length][0] represents the real component 
-            and [batch_size][signal_length][1] represents the imaginary 
-            component of the signal.        
-        frame_step
-            An integer scalar Tensor. The number of samples to step. 
-        n_fft
-           Size of Fourier transform.          
-        axis
-            The axis on which to perform the DFT. By default this
-            value is  set to 1, which corresponds to the first dimension
-            after the batch index.
-        onesided
-            If onesided is True, only values for w in [0, 1, 2, …, floor(n_fft/2) + 1]
-            are returned because the real-to-complex Fourier transform satisfies the
-            conjugate symmetry, i.e., X[m, w] = X[m,w]=X[m,n_fft-w]*. Note if the
-            input or window tensors are complex, then onesided output is not possible.
-            Enabling onesided with real inputs performs a Real-valued fast Fourier
-            transform (RFFT). When invoked with real or complex valued input, the
-            default value is False. Values can be True or False.
-        fs
-            Sampling frequency of the x time series. Defaults to 1.0.
-        hop_length
-            Number of steps to advance between adjacent windows and 0 < hop_lenght.
-            Default: None`(treated as equal to `n_fft//4).
-        win_length
-            The size of window frame and STFT filter. Default: None 
-            (treated as equal to n_fft)    
-        dft_length
-            The length of the signal.If greater than the axis dimension,
-            the signal will be zero-padded up to dft_length. If less than
-            the axis dimension, only the first dft_length values will be
-            used as the signal. It’s an optional value.
-        window
-            Desired window to use. If window is a string or tuple, 
-            it is passed to get_window to generate the window values, 
-            which are DFT-even by default. See get_window for a list of 
-            windows and required parameters. If window is array_like it 
-            will be used directly as the window and its length must be 
-            nperseg. Defaults to a Hann window.
-        frame_length
-            An integer scalar Tensor. The window length in samples.   
-        nperseg
-            Length of each segment. Defaults to 256.
-        noverlap
-            Number of points to overlap between segments. If None, 
-            noverlap = nperseg // 2. Defaults to None.
-        center  
-            Whether to pad x to make that the t * hop_length at the 
-            center of t-th frame. Default: True.          
-        pad_mode 
-            Choose padding pattern when center is True. See paddle.
-            nn.functional.pad for all padding options. Default: “reflect”.
-        normalized 
-            Control whether to scale the output by 1/sqrt(n_fft). 
-            Default: False
-        nfft 
-            Length of the FFT used, if a zero padded FFT is desired. 
-            If None, the FFT length is nperseg. Defaults to None.
-        detrend 
-            Specifies how to detrend each segment. If detrend is a string, 
-            it is passed as the type argument to the detrend function. If 
-            it is a function, it takes a segment and returns a detrended 
-            segment. If detrend is False, no detrending is done. Defaults 
-            to False.
-        return_onesided
-            If True, return a one-sided spectrum for real data. If False 
-            return a two-sided spectrum. Defaults to True, but for complex 
-            data, a two-sided spectrum is always returned. 
-        return_complex
-            Whether to return a complex tensor, or a real tensor with an extra 
-            last dimension for the real and imaginary components.            
-        boundary
-            Specifies whether the input signal is extended at both ends, and 
-            how to generate the new values, in order to center the first 
-            windowed segment on the first input point. This has the benefit of 
-            enabling reconstruction of the first input point when the employed 
-            window function starts at zero. Valid options are ['even', 'odd', 
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding 
-            extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0] 
-            for nperseg=3.   
-        padded 
-            Specifies whether the input signal is zero-padded at the end to make the 
-            signal fit exactly into an integer number of window segments, so that all 
-            of the signal is included in the output. Defaults to True. Padding occurs 
-            after boundary extension, if boundary is not None, and padded is True, 
-            as is the default. 
-        name
-            An optional name for the operation.        
-        Compute the 2-dimensional discrete Fourier Transform.
-
-        Parameters
-        ----------
         x
             Input volume *[...,d_in,...]*,
             where d_in indicates the dimension that needs FFT2.
@@ -1068,51 +934,7 @@ def stft(
             Optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
 
-        Returns
-        -------
-        ret
-            The Fourier Transform of the input vector.If onesided is False,
-            the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
-            …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
-            is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]
-            …[signal_dimN][2]. If axis=1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1] [floor(signal_dim2/2)+1]
-            …[signal_dimN][2]. If axis=N-1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1][signal_dim2]…
-            [floor(signal_dimN/2)+1][2]. The signal_dim at the specified axis
-            is equal to the dft_length.
-        """
-        return ivy.stft(
-            self._data,
-            x,
-            input,
-            frame_step,
-            signal=signal,
-            n_fft=n_fft,
-            axis=axis,
-            onesided=onesided,
-            fs=fs,
-            hop_length=hop_length,
-            win_length=win_length,
-            dft_length=dft_length,
-            window=window,
-            frame_length=frame_length,
-            nperseg=nperseg,
-            noverlap=noverlap,
-            center=center,
-            pad_mode=pad_mode,
-            normalized=normalized,
-            nfft=nfft,
-            detrend=detrend,
-            return_onesided=return_onesided,
-            return_complex=return_complex,
-            boundary=boundary,
-            padded=padded,
-            name=name,
-            norm=norm,
-            out=out,
-        )
-            The result of the FFT2 operation.
+        The result of the FFT2 operation.
 
         Examples
         --------
@@ -1201,3 +1023,140 @@ def stft(
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def stft(
+        self,
+        signal: Union[ivy.Array, ivy.NativeArray],
+        n_fft: Union[int, Tuple[int]],
+        frame_step: Union[int, Tuple[int]],
+        /,
+        *,
+        axis: Optional[int] = None,
+        onesided:Optional[bool] = True,
+        fs: Optional[float] = 1.0,
+        window: Optional[Union[ivy.Array, list, str, Tuple[int]]] = None,
+        frame_length: Optional[Union[int, Tuple[int]]] = None,
+        nperseg: Optional[int] = 256,
+        noverlap: Optional[int] = None,
+        center: Optional[bool] = False,
+        pad_mode: Optional[str] = "reflect",
+        normalized: Optional[bool] = False,
+        detrend: Optional[Union[str, callable, bool]] = False,
+        return_complex: Optional[bool] = True,
+        boundary: Optional[str] = 'zeros',
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the discrete Fourier transform of input.
+
+        Parameters
+        ----------
+        self
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT.   
+        signal
+            Input tensor representing a real or complex valued signal. 
+            For real input, the following shape is expected: [batch_
+            size][signal_length][1]. For complex input, the following 
+            shape is expected: [batch_size][signal_length][2], where 
+            [batch_size][signal_length][0] represents the real component 
+            and [batch_size][signal_length][1] represents the imaginary 
+            component of the signal.        
+        n_fft
+           Size of Fourier transform.   
+        frame_step
+           An integer scalar Tensor. The window length in samples.          
+        axis
+            The axis on which to perform the DFT. By default this
+            value is  set to 1, which corresponds to the first dimension
+            after the batch index.
+        onesided
+            If onesided is True, only values for w in [0, 1, 2, floor
+            (n_fft/2) + 1] are returned because the real-to-complex Fourier 
+            transform satisfies the conjugate symmetry, i.e., X[m, w] = 
+            X[m,w]=X[m,n_fft-w]*. Note if the input or window tensors are 
+            complex, then onesided output is not possible.Enabling onesided 
+            with real inputs performs a Real-valued fast Fourier transform 
+            (RFFT). When invoked with real or complex valued input, the
+            default value is False. Values can be True or False.
+        fs
+            Sampling frequency of the x time series. Defaults to 1.0.
+        window
+            Desired window to use. If window is a string or tuple, 
+            it is passed to get_window to generate the window values, 
+            which are DFT-even by default. See get_window for a list of 
+            windows and required parameters. If window is array_like it 
+            will be used directly as the window and its length must be 
+            nperseg. Defaults to a Hann window.
+        frame_length
+            An integer scalar Tensor. The window length in samples.   
+        nperseg
+            Length of each segment. Defaults to 256.
+        noverlap
+            Number of points to overlap between segments. If None, 
+            noverlap = nperseg // 2. Defaults to None.
+        center  
+            Whether to pad x to make that the t * hop_length at the 
+            center of t-th frame. Default: True.          
+        pad_mode 
+            Choose padding pattern when center is True. See paddle.
+            nn.functional.pad for all padding options. Default: “reflect”.
+        normalized 
+            Control whether to scale the output by 1/sqrt(n_fft). 
+            Default: False
+        detrend 
+            Specifies how to detrend each segment. If detrend is a string, 
+            it is passed as the type argument to the detrend function. If 
+            it is a function, it takes a segment and returns a detrended 
+            segment. If detrend is False, no detrending is done. Defaults 
+            to False.
+        return_complex
+            Whether to return a complex tensor, or a real tensor with an extra 
+            last dimension for the real and imaginary components.            
+        boundary
+            Specifies whether the input signal is extended at both ends, and 
+            how to generate the new values, in order to center the first 
+            windowed segment on the first input point. This has the benefit of 
+            enabling reconstruction of the first input point when the employed 
+            window function starts at zero. Valid options are ['even', 'odd', 
+            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding 
+            extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0] 
+            for nperseg=3.   
+        out
+            Optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The Fourier Transform of the input vector.If onesided is False,
+            the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
+            …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
+            is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]
+            …[signal_dimN][2]. If axis=1 and onesided is True, the following
+            shape is expected: [batch_idx][signal_dim1] [floor(signal_dim2/2)+1]
+            …[signal_dimN][2]. If axis=N-1 and onesided is True, the following
+            shape is expected: [batch_idx][signal_dim1][signal_dim2]…
+            [floor(signal_dimN/2)+1][2]. The signal_dim at the specified axis
+            is equal to the dft_length.
+        """
+        return ivy.stft(
+            self._data,
+            signal,
+            n_fft,
+            frame_step,
+            axis=axis,
+            onesided=onesided,
+            fs=fs,
+            window=window,
+            frame_length=frame_length,
+            nperseg=nperseg,
+            noverlap=noverlap,
+            center=center,
+            pad_mode=pad_mode,
+            normalized=normalized,
+            detrend=detrend,
+            return_complex=return_complex,
+            boundary=boundary,
+            out=out,
+        )    

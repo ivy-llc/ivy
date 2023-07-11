@@ -861,63 +861,60 @@ def ifft(
 
 
 def stft(
-    x: np.ndarray,
-    input: np.ndarray,
     signal: Union[np.ndarray, int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],
     /,
     *,
-    axis: int = 1,
-    onesided:Optional[bool] = False,
+    axis: Optional[int] = None,
+    onesided:Optional[bool] = True,
     fs: Optional[float] = 1.0,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    dft_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[np.ndarray, str, int, Tuple[int]] = None,
+    window: Optional[Union[np.ndarray, list, str, Tuple[int]]] = None,
     frame_length: Optional[Union[int, Tuple[int]]] = None,
     nperseg: Optional[int] = 256,
     noverlap: Optional[int] = None,
     center: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
-    nfft: Optional[int] = None,
-    detrend: Optional[str] = None,
-    return_onesided: Optional[bool] = True,
+    detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
     boundary: Optional[str] = None,
-    padded: Optional[bool] = True,
-    name: Optional[str] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.stft(
-        x,
-        input,
-        signal,
-        axis,
-        frame_step,
-        n_fft,
-        onesided,
-        fs,
-        hop_length,
-        win_length,
-        dft_length,
-        window,
-        frame_length,
-        nperseg,
-        noverlap,
-        center,
-        pad_mode,
-        normalized,
-        nfft,
-        detrend,
-        return_onesided,
-        return_complex,
-        boundary,
-        padded,
-        name,
-        out,
-    )
+    if isinstance(signal, int):
+        raise ValueError("Signal must be an array-like object, not an integer.")
+
+    if isinstance(signal, tuple):
+        signal = np.array(signal)
+
+    if axis is None:
+        signal = np.atleast_1d(signal)
+    else:
+        signal = np.expand_dims(signal, axis=axis)
+
+    signal_length = signal.shape[-1]
+
+    if isinstance(n_fft, int):
+        n_fft = (n_fft,)
+    if any(length > signal_length for length in n_fft):
+        raise ValueError("Window size (n_fft) cannot be larger than the input length signal.")
+
+    frames = np.lib.stride_tricks.sliding_window_view(signal, window_shape=n_fft, axis=-1, writeable=False)
+
+    if window is not None:
+        if isinstance(window, str):
+            window = np.hanning(n_fft[-1]) 
+        frames *= window
+
+    if onesided:
+        stft_result = np.fft.rfft(frames, n=n_fft[-1], axis=-1)
+    else:
+        stft_result = np.fft.fft(frames, n=n_fft[-1], axis=-1)
+
+    if return_complex:
+        return stft_result
+    else:
+        return np.abs(stft_result)
         
     
 def fft2(
