@@ -613,5 +613,6 @@ def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
 
 
+@to_ivy_arrays_and_back
 def make_ndarray(tensor):
     return ivy.to_numpy(tensor)
