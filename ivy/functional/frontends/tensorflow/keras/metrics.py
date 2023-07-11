@@ -51,19 +51,28 @@ def _sparse_top_k_categorical_matches(y_true, y_pred, k=5):
     def _in_top_k(targets, predictions, topk):
         # Sanity check
         ivy.utils.assertions.check_equal(
-            targets.ndim, 1, message="targets must be 1-dimensional"
+            targets.ndim,
+            1,
+            message="targets must be 1-dimensional",
+            as_array=False,
         )
         ivy.utils.assertions.check_equal(
-            predictions.ndim, 2, message="predictions must be 2-dimensional"
+            predictions.ndim,
+            2,
+            message="predictions must be 2-dimensional",
+            as_array=False,
         )
         targets_batch = ivy.shape(targets)[0]
         pred_batch = ivy.shape(predictions)[0]
         ivy.utils.assertions.check_equal(
             targets_batch,
             pred_batch,
-            message="first dim of predictions: {} must match targets length: {}".format(
-                pred_batch, targets_batch
+            message=(
+                "first dim of predictions: {} must match targets length: {}".format(
+                    pred_batch, targets_batch
+                )
             ),
+            as_array=False,
         )
 
         # return array of top k values from the input
@@ -299,10 +308,7 @@ def cosine_similarity(y_true, y_pred):
 
     if len(y_pred.shape) == len(y_pred.shape) and len(y_true.shape) == 2:
         numerator = ivy.sum(y_true * y_pred, axis=1)
-        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
     else:
         numerator = ivy.vecdot(y_true, y_pred)
-        denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
-
-    cosine = numerator / denominator
-    return cosine
+    denominator = ivy.matrix_norm(y_true) * ivy.matrix_norm(y_pred)
+    return numerator / denominator

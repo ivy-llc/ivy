@@ -58,7 +58,6 @@ def main():
     mongo_key = sys.argv[3]
     workflow_id = sys.argv[4]
     if len(sys.argv) > 5:
-        print(f"Job URL available -: {sys.argv}")
         run_id = sys.argv[5]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
@@ -83,9 +82,13 @@ def main():
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
+            backend = backend.strip("\n")
             coll, submod, test_fn = get_submodule(test)
-            print(coll, submod, test_fn)
-            command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k \\"{k_flag[backend]}\\" --tb=short -vv'  # noqa
+            command = f'docker run --rm --env IVY_BACKEND={backend} --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest timeout 30m python3 -m pytest {test} -k "{k_flag[backend]}" --tb=short -vv'  # noqa
+            print(f"\n{'*' * 100}")
+            print(f"{line[:-1]}")
+            print(f"{'*' * 100}\n")
+            sys.stdout.flush()
             ret = os.system(command)
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

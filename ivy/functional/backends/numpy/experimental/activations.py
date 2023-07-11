@@ -36,7 +36,6 @@ def thresholded_relu(
     threshold: Union[int, float] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    x, threshold = ivy.promote_types_of_inputs(x, threshold)
     return np.where(x > threshold, x, 0).astype(x.dtype)
 
 
@@ -51,9 +50,9 @@ def relu6(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 relu6.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bool",)}, backend_version)
 @_scalar_output_to_0d_array
-def logsigmoid(input: np.ndarray) -> np.ndarray:
+def logsigmoid(input: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return -(np.log1p(np.exp(-(input))))
 
 
@@ -68,3 +67,31 @@ def selu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 selu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def silu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    ret = np.asarray(x * (1 / (1 + np.exp(-x))))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    if not ivy.is_array(x):
+        return ret
+    else:
+        return np.asarray(x * (1 / (1 + np.exp(-x)))).astype(x.dtype)
+
+
+silu.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def elu(
+    x: np.ndarray, /, *, alpha: float = 1.0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    # exp = np.expm1(x)
+    ret = np.where(x > 0, x, np.multiply(alpha, np.expm1(x))).astype(x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret).astype(x.dtype)
+    return ret
+
+
+elu.support_native_out = True

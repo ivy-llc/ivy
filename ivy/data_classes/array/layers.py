@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Tuple, Union, List, Callable, Sequence
+from typing import Optional, Tuple, Union, List, Sequence, Dict
 
 # local
 import ivy
@@ -171,7 +171,7 @@ class _ArrayWithLayers(abc.ABC):
         training
             Turn on dropout if training, turn off otherwise. Default is ``True``.
         data_format
-            "NWC" or "NCW". Default is ``"NCW"``.
+            "NWC" or "NCW". Default is ``"NWC"``.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -189,6 +189,54 @@ class _ArrayWithLayers(abc.ABC):
         ivy.array([[[2., 0, 2.]]])
         """
         return ivy.dropout1d(
+            self._data,
+            prob,
+            training=training,
+            data_format=data_format,
+            out=out,
+        )
+
+    def dropout2d(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dropout2d. This method simply wraps the
+        function, and so the docstring for ivy.droput1d also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input array x to perform dropout on.
+        prob
+            The probability of zeroing out each array element, float between 0 and 1.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
+        data_format
+            "NHWC" or "NCHW". Default is ``"NHWC"``.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Result array of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 1, 1], [2, 2, 2]])
+        >>> y = x.dropout2d(0.5)
+        >>> print(y)
+        ivy.array([[2., 0., 2.], [0., 0., 4.]])
+        """
+        return ivy.dropout2d(
             self._data,
             prob,
             training=training,
@@ -317,33 +365,51 @@ class _ArrayWithLayers(abc.ABC):
         )
 
     def multi_head_attention(
-        self: ivy.Array,
-        scale: float,
-        num_heads: int,
+        self: Union[ivy.Array, ivy.NativeArray],
+        key: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        value: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         /,
         *,
-        context: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_q_fn: Optional[Callable] = None,
-        to_kv_fn: Optional[Callable] = None,
-        to_out_fn: Optional[Callable] = None,
-        to_q_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_kv_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        to_out_v: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        out: Optional[ivy.Array] = None,
+        num_heads: Optional[int] = 8,
+        scale: Optional[float] = None,
+        attention_mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        q_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        k_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        v_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        in_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out_proj_bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        is_causal: Optional[bool] = False,
+        return_attention_weights: Optional[bool] = False,
+        average_attention_weights: Optional[bool] = True,
+        dropout: Optional[float] = 0.0,
+        training: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Array:
         return ivy.multi_head_attention(
             self._data,
-            scale,
-            num_heads,
-            context=context,
-            mask=mask,
-            to_q_fn=to_q_fn,
-            to_kv_fn=to_kv_fn,
-            to_out_fn=to_out_fn,
-            to_q_v=to_q_v,
-            to_kv_v=to_kv_v,
-            to_out_v=to_out_v,
+            key,
+            value,
+            num_heads=num_heads,
+            scale=scale,
+            attention_mask=attention_mask,
+            in_proj_weights=in_proj_weights,
+            q_proj_weights=q_proj_weights,
+            k_proj_weights=k_proj_weights,
+            v_proj_weights=v_proj_weights,
+            out_proj_weights=out_proj_weights,
+            in_proj_bias=in_proj_bias,
+            out_proj_bias=out_proj_bias,
+            is_causal=is_causal,
+            return_attention_weights=return_attention_weights,
+            average_attention_weights=average_attention_weights,
+            dropout=dropout,
+            training=training,
             out=out,
         )
 

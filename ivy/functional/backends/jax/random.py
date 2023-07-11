@@ -50,7 +50,7 @@ def random_uniform(
     seed: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -76,7 +76,7 @@ def random_normal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -93,7 +93,7 @@ def random_normal(
     )
 
 
-@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -155,7 +155,7 @@ def randint(
         dtype = ivy.default_int_dtype()
     dtype = ivy.as_native_dtype(dtype)
     _randint_check_dtype_and_bound(low, high, dtype)
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
 
     if seed:
         rng_input = jax.random.PRNGKey(seed)
@@ -168,15 +168,25 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _setRNG(jax.random.PRNGKey(seed_value))
+    return
 
 
 def shuffle(
-    x: JaxArray, /, *, seed: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray,
+    axis: Optional[int] = 0,
+    /,
+    *,
+    seed: Optional[int] = None,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if x.shape == ():
+        return x
     if seed:
         rng_input = jax.random.PRNGKey(seed)
     else:
         RNG_, rng_input = jax.random.split(_getRNG())
         _setRNG(RNG_)
 
-    return jax.random.shuffle(rng_input, x)
+    # jax.random.shuffle is deprecated; identical behaviour reproduced with
+    # jax.random.permutation
+    return jax.random.permutation(key=rng_input, x=x, axis=axis, independent=True)

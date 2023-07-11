@@ -1,14 +1,19 @@
+# global
 import mxnet as mx
 import numpy as np
 from numbers import Number
-from typing import Union, List, Optional, Sequence
+from typing import Union, List, Optional, Sequence, Tuple
+
+# lcoal
 import ivy
+from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 
 
@@ -22,12 +27,13 @@ def arange(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.arange Not Implemented")
+    raise IvyNotImplementedException()
 
 
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
 def asarray(
     obj: Union[
         (
@@ -54,6 +60,9 @@ def asarray(
     return ret
 
 
+array = asarray
+
+
 def empty(
     *size: Union[(int, Sequence[int])],
     shape: Optional[ivy.NativeShape] = None,
@@ -61,7 +70,7 @@ def empty(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.empty Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def empty_like(
@@ -72,7 +81,7 @@ def empty_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.empty_like Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def eye(
@@ -86,7 +95,7 @@ def eye(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.eye Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def from_dlpack(
@@ -95,7 +104,7 @@ def from_dlpack(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.from_dlpack Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def full(
@@ -106,7 +115,7 @@ def full(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.full Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def full_like(
@@ -118,7 +127,7 @@ def full_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.full_like Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def linspace(
@@ -133,7 +142,7 @@ def linspace(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ):
-    raise NotImplementedError("mxnet.linspace Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def meshgrid(
@@ -142,17 +151,17 @@ def meshgrid(
     indexing: str = "xy",
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> List[Union[(None, mx.ndarray.NDArray)]]:
-    raise NotImplementedError("mxnet.meshgrid Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def ones(
-    *size: Union[(int, Sequence[int])],
     shape: Optional[ivy.NativeShape] = None,
+    *,
     dtype: None,
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.ones Not Implemented")
+    return mx.nd.ones(shape, dtype=dtype, ctx=device)
 
 
 def ones_like(
@@ -163,7 +172,7 @@ def ones_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.ones_like Not Implemented")
+    return mx.nd.ones_like(x, dtype=dtype, ctx=device)
 
 
 def tril(
@@ -173,7 +182,7 @@ def tril(
     k: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.tril Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def triu(
@@ -183,7 +192,7 @@ def triu(
     k: int = 0,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.triu Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def zeros(
@@ -193,7 +202,7 @@ def zeros(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.zeros Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def zeros_like(
@@ -204,10 +213,11 @@ def zeros_like(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.zeros_like Not Implemented")
-
-
-array = asarray
+    if x.shape == ():
+        ret = mx.nd.array(0, dtype=dtype)
+    else:
+        ret = mx.ndarray.zeros_like(x, dtype=dtype)
+    return ivy.to_device(ret, device)
 
 
 def copy_array(
@@ -216,7 +226,9 @@ def copy_array(
     to_ivy_array: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.copy_array Not Implemented")
+    if to_ivy_array:
+        return ivy.to_ivy(x.copy())
+    return x.copy()
 
 
 def one_hot(
@@ -231,4 +243,19 @@ def one_hot(
     device: str,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise NotImplementedError("mxnet.one_hot Not Implemented")
+    raise IvyNotImplementedException()
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[None] = float,
+    count: Optional[int] = (-1),
+    offset: Optional[int] = 0,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
+
+
+def triu_indices(
+    n_rows: int, n_cols: Optional[int] = None, k: int = 0, /, *, device: str
+) -> Tuple[Union[(None, mx.ndarray.NDArray)]]:
+    raise IvyNotImplementedException()

@@ -13,7 +13,7 @@ Ivy Tests
 .. _`methods`: https://hypothesis.readthedocs.io/en/latest/data.html
 .. _`finfo`: https://github.com/unifyai/ivy/blob/d8f1ffe8ebf38fa75161c1a9459170e95f3c82b6/ivy/functional/ivy/data_type.py#L276
 .. _`data generation`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337
-.. _`here`: https://lets-unify.ai/docs/ivy/deep_dive/function_types.html#function-types
+.. _`Function Types`: https://unify.ai/docs/ivy/deep_dive/function_types.html#function-types
 .. _`test_default_int_dtype`: https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835
 .. _`sampled_from`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sampled_from
 .. _`lists`: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists
@@ -54,9 +54,10 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://lets-unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://lets-unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
-
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`Setting Up Testing in PyCharm`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-testing-in-pycharm
+.. _`Setting up for Free`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up-for-free
+.. _`Hypothesis docs`: https://hypothesis.readthedocs.io/en/latest/data.html#core-strategies
 
 On top of the Array API `test suite`_, which is included as a submodule mapped to the folder :code:`test_array_api`, there is also a collection of Ivy tests, located in subfolder `test_ivy`_.
 
@@ -118,7 +119,7 @@ Take `finfo`_ , for example.
 It can take either arrays or dtypes as input, hence the `data generation`_ reflects this using the bespoke search strategy :code:`_array_or_type`.
 However, such rigorous testing is not necessary for standalone functions (those that are entirely self-contained in the Ivy codebase without external references).
 These kinds of functions may only require standard Pytest testing using :code:`parametrize`, e.g. `test_default_int_dtype`_.
-For further clarity on the various function types in ivy, see `here`_.
+For further clarity on the various `Function Types`_ in ivy.
 
 The way data is generated is described by the :code:`hypothesis.strategies` module which contains a variety of `methods`_ that have been used widely in each of Ivy's functional and stateful submodule tests.
 An initialized strategy is an object that is used by Hypothesis to generate data for the test.
@@ -160,7 +161,7 @@ To briefly describe -:
 Writing your own strategy
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 We will not be covering all of the strategies that Hypothesis provide, but to give you a glance of what they're capable of, we will briefly
-explain some of the stratigies and write a new strategy to be used later for testing. Read more about strategies on Hypothesis docs. #TODO add link
+explain some of the stratigies and write a new strategy to be used later for testing. Read more about strategies on `Hypothesis docs`_.
 
 1. `integers`_ - generates integers values within a given range.
 
@@ -215,7 +216,7 @@ Ivy Test Decorators
 
 - Why do we need handle test decorators?
 
-In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keywoard only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
+In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keyword only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
 
 - What do the handle test decorators do?
 
@@ -559,7 +560,7 @@ This function should be used in places where the result doesn’t depend on the 
 
 **Note** - Under the hood, **array_values** strategy is called if the data type is *integer*, and **none_or_list_of_floats** is called when the data type is *float*.
 
-15. `get_probs`_ -  This is similar to the **get_mean_std** strategy, and is used to generate a tuple containing two values.
+15. `get_probs`_ -  This is used to generate a tuple containing two values.
     The first one being the *unnormalized probabilities* for all elements in a population, the second one being the *population size*.
     For example-:
 
@@ -764,7 +765,9 @@ The CI Pipeline runs the entire collection of Ivy Tests for the module that is b
 You will need to make sure the Ivy Test is passing for each Ivy function you introduce/modify.
 If a test fails on the CI, you can see details about the failure under `Details -> Run Ivy <module> Tests` as shown in `CI Pipeline`_.
 
-You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+You can also run the tests locally before making a PR. The instructions differ according to the IDE you are using. For
+PyCharm and Visual Studio Code you can refer to the `Setting Up Testing in PyCharm`_ section and `Setting up for Free`_
+section respectively.
 
 Re-Running Failed Ivy Tests
 ---------------------------
@@ -816,6 +819,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/2AwWuHIe2h8" class="video">
     </iframe>

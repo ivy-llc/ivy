@@ -123,7 +123,13 @@ class Linear(Module):
 
 
 class Dropout(Module):
-    def __init__(self, prob, scale=True, dtype=None):
+    def __init__(
+        self,
+        prob,
+        scale: bool = True,
+        dtype=None,
+        training: bool = True,
+    ):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input
         tensor with probability p using samples from a Bernoull distribution.
@@ -134,15 +140,15 @@ class Dropout(Module):
             The probability of zeroing out each array element.
         scale
             Whether to scale the output by 1/(1-prob), default is ``True``.
-        device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
         dtype
             the desired data type of the internal variables to be created.
             Default is ``None``.
+        training
+            Turn on dropout if training, turn off otherwise. Default is ``True``.
         """
         self._prob = prob
         self._scale = scale
+        self.training = training
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
@@ -178,7 +184,9 @@ class Dropout(Module):
             The outputs following the linear operation and bias addition
             *[batch_shape, out]*
         """
-        return ivy.dropout(inputs, self._prob, scale=self._scale, dtype=dtype)
+        return ivy.dropout(
+            inputs, self._prob, scale=self._scale, training=self.training, dtype=dtype
+        )
 
 
 # Attention #
@@ -188,17 +196,17 @@ class Dropout(Module):
 class MultiHeadAttention(Module):
     def __init__(
         self,
-        query_dim,
+        embed_dim=None,
         /,
         *,
+        key_dim=None,
+        value_dim=None,
         num_heads=8,
-        head_dim=64,
+        head_dim=None,
         dropout_rate=0.0,
-        context_dim=None,
+        use_proj_bias=True,
+        attention_axes=None,
         scale=None,
-        with_to_q_fn=True,
-        with_to_kv_fn=True,
-        with_to_out_fn=True,
         device=None,
         v=None,
         build_mode="on_init",
@@ -209,34 +217,37 @@ class MultiHeadAttention(Module):
 
         Parameters
         ----------
-        query_dim
-            The dimension of the attention queries.
-        num_heads
-            Number of attention heads. Default is 8.
+        embed_dim
+            The expected feature size in the input and output.
+        key_dim
+            The input feature size for key. If None, assumed equal to `embed_dim`.
+            Default None.
+        value_dim
+            The input feature size for value. If None, assumed equal to `embed_dim`.
+            Default None.
+        num_heads:
+            Number of parallel attention heads. Note that ``embed_dim`` will be split
+            across ``num_heads`` (i.e. each head will have dimension ``embed_dim // num_heads``).
+            Default is 8.
         head_dim
-            The dimension of each of the heads. Default is 64.
+            Size of each attention head for query and key.
+            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``) should be provided
+            Default is None.
         dropout_rate
-            The rate of dropout. Default is ``0``.
-        context_dim
-            The dimension of the context array.
-            Default is ``None``, in which case the query dim is used.
+            The dropout probability used on attention weights to drop some attention targets. 0 for no dropout.
+            Default is 0.
+        use_proj_bias
+            If specified, adds bias to input / output projection layers.
+            Default is True.
+        attention_axes
+            axes over which the attention is applied. `None` means attention over all axes, but batch, heads, and features.
+            Default is None.
         scale
             The value by which to scale the query-key similarity measure.
             Default is head_dim^-0.5
-        with_to_q_fn
-            Whether to include fully connected mapping from input x to queries.
-            Default is ``True``.
-        with_to_kv_fn
-            Whether to include fully connected mapping from input context to keys
-            and values.
-            Default is ``True``.
-        with_to_out_fn
-            Whether to include fully connected mapping from output scaled dot-product
-            attention to final output.
-            Default is ``True``.
         device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
-            etc. Default is cpu.
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+            Default is cpu.
         v
             the variables for the attention layer, as a container,
             constructed internally by default.
@@ -246,55 +257,36 @@ class MultiHeadAttention(Module):
             build(), or the first time the __call__ method is run.
             Default is on initialization.
         dtype
-            the desired data type of the internal variables to be created if not
-             provided. Default is ``None``.
+            the desired data type of the internal variables to be created if not provided.
+            Default is ``None``.
         """
-        v_exists = ivy.exists(v)
-        self._query_dim = query_dim
-        self._inner_dim = head_dim * num_heads
+        # proj
+
+        if num_heads and head_dim:
+            self._inner_dim = num_heads * head_dim
+        else:
+            self._inner_dim = embed_dim
+
+        self._embed_dim = embed_dim if embed_dim else num_heads * head_dim
+        self._key_dim = key_dim if key_dim else self._embed_dim
+        self._value_dim = value_dim if value_dim else self._embed_dim
+        self._num_heads = num_heads if num_heads else embed_dim // head_dim
+        self._head_dim = head_dim if head_dim else embed_dim // num_heads
         self._dropout_rate = dropout_rate
-        self._context_dim = ivy.default(context_dim, query_dim)
-        self._scale = ivy.default(scale, head_dim**-0.5)
-        self._num_heads = num_heads
-        self._with_to_q_fn = with_to_q_fn
-        self._with_to_kv_fn = with_to_kv_fn
-        self._with_to_out_fn = with_to_out_fn
+        self._use_proj_bias = use_proj_bias
+        self._attention_axes = attention_axes
+        self._scale = ivy.default(scale, self._head_dim**-0.5)
+        self._qkv_same_embed_dim = (
+            self._key_dim == self._embed_dim and self._value_dim == self._embed_dim
+        )
         ivy.Module.__init__(
             self,
             device=device,
-            v=v if v_exists else None,
+            v=v,
             build_mode=build_mode,
             with_partial_v=True,
             dtype=dtype,
         )
-
-    def _build(self, *args, **kwargs):
-        if self._with_to_q_fn:
-            self._to_q = ivy.Linear(
-                self._query_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-            )
-        if self._with_to_kv_fn:
-            self._to_k = ivy.Linear(
-                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-            )
-            self._to_v = ivy.Linear(
-                self._context_dim, self._inner_dim, device=self._dev, dtype=self._dtype
-            )
-            self._to_kv = lambda context, v=None: (
-                self._to_k(context, v=v.k if v else None),
-                self._to_v(context, v=v.v if v else None),
-            )
-        if self._with_to_out_fn:
-            self._to_out = ivy.Sequential(
-                ivy.Linear(
-                    self._inner_dim,
-                    self._query_dim,
-                    device=self._dev,
-                    dtype=self._dtype,
-                ),
-                ivy.Dropout(self._dropout_rate),
-                device=self._dev,
-            )
 
     def _create_variables(self, device, dtype=None):
         """
@@ -307,46 +299,141 @@ class MultiHeadAttention(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        if self._with_to_kv_fn:
-            return {"to_kv": {"k": self._to_k.v, "v": self._to_v.v}}
+        v = dict(
+            out_proj_weights=GlorotUniform().create_variables(
+                (self._embed_dim, self._inner_dim),
+                device,
+                self._embed_dim,
+                self._inner_dim,
+                dtype=dtype,
+            ),
+        )
+        if self._qkv_same_embed_dim:
+            v = dict(
+                **v,
+                in_proj_weights=GlorotUniform().create_variables(
+                    (self._inner_dim * 3, self._embed_dim),
+                    device,
+                    self._inner_dim * 3,
+                    self._embed_dim,
+                    dtype=dtype,
+                ),
+            )
         else:
-            return {}
+            v = dict(
+                **v,
+                q_proj_weights=GlorotUniform().create_variables(
+                    (self._inner_dim, self._embed_dim),
+                    device,
+                    self._inner_dim,
+                    self._embed_dim,
+                    dtype=dtype,
+                ),
+                k_proj_weights=GlorotUniform().create_variables(
+                    (self._inner_dim, self._key_dim),
+                    device,
+                    self._inner_dim,
+                    self._key_dim,
+                    dtype=dtype,
+                ),
+                v_proj_weights=GlorotUniform().create_variables(
+                    (self._inner_dim, self._value_dim),
+                    device,
+                    self._inner_dim,
+                    self._value_dim,
+                    dtype=dtype,
+                ),
+            )
+        if self._use_proj_bias:
+            v = dict(
+                **v,
+                in_proj_bias=Zeros().create_variables(
+                    self._inner_dim * 3,
+                    device,
+                    dtype=dtype,
+                ),
+                out_proj_bias=Zeros().create_variables(
+                    self._embed_dim,
+                    device,
+                    dtype=dtype,
+                ),
+            )
 
-    def _forward(self, inputs, context=None, mask=None):
+        return v
+
+    def _forward(
+        self,
+        query,
+        key=None,
+        value=None,
+        /,
+        *,
+        attention_mask=None,
+        is_causal=False,
+        return_attention_weights=False,
+        average_attention_weights=True,
+        training=False,
+    ):
         """
         Perform forward pass of the MultiHeadAttention layer.
 
         Parameters
         ----------
-        inputs
-            The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
-        context
-            The array to determine the keys and values from. Default is ``None``.
-            *[batch_shape,num_values,cont_feats]*.
-        mask
-            (Default value = None)
+        query
+            query embeddings *[batch_shape,num_queries,query_dim]*.
+        key
+            key embeddings *[batch_shape,num_queries,key_dim]*.
+        value
+            value embeddings *[batch_shape,num_queries,value_dim]*.
+        attention_mask
+            The mask to apply to the query-key values. Default is ``None``.
+            *[batch_shape,num_queries,num_keys]*.
+        is_causal
+            If True, Uses a causal attention mask and ignores provided attention_mask.
+        return_attention_weights
+            If True, returns attention_weights alongside the output
+            as a tuple (output, attenion_weights). Defaults to `False`.
+        average_attention_weights
+            If true, indicates that the returned ``attention_weights`` should be averaged across
+            heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
+            effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
+        training
+            If True, dropout is used, otherwise dropout is not activated.
 
         Returns
         -------
         ret
-            The output following application of scaled dot-product attention.
-            *[batch_shape,num_queries,out_feats]*
-            The mask to apply to the query-key values.
-            Default is ``None``.
-            *[batch_shape,num_queries,num_values]*
+            The output following application of multi-head attention.
+            *[batch_shape,num_queries,out_feat_dim]* if input is batched
+            otherwise *[num_queries, out_feat_dim]
         """
         return ivy.multi_head_attention(
-            inputs,
-            self._scale,
-            self._num_heads,
-            context=context,
-            mask=mask,
-            to_q_fn=self._to_q if self._with_to_q_fn else None,
-            to_kv_fn=self._to_kv if self._with_to_kv_fn else None,
-            to_out_fn=self._to_out if self._with_to_out_fn else None,
-            to_q_v=self.v.to_q if self._with_to_q_fn else None,
-            to_kv_v=self.v.to_kv if self._with_to_kv_fn else None,
-            to_out_v=self.v.to_out if self._with_to_out_fn else None,
+            query,
+            key,
+            value,
+            num_heads=self._num_heads,
+            scale=self._scale,
+            attention_mask=attention_mask,
+            in_proj_weights=(
+                self.v.in_proj_weights if self._qkv_same_embed_dim else None
+            ),
+            q_proj_weights=(
+                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            k_proj_weights=(
+                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            v_proj_weights=(
+                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            out_proj_weights=self.v.out_proj_weights,
+            in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
+            out_proj_bias=self.v.out_proj_bias if self._use_proj_bias else None,
+            is_causal=is_causal,
+            return_attention_weights=return_attention_weights,
+            average_attention_weights=average_attention_weights,
+            dropout=self._dropout_rate,
+            training=training,
         )
 
 
@@ -366,6 +453,7 @@ class Conv1D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NWC",
         dilations=1,
         device=None,
@@ -392,6 +480,8 @@ class Conv1D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NWC" or "NCW". Defaults to "NWC".
         dilations
@@ -400,7 +490,7 @@ class Conv1D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -417,6 +507,7 @@ class Conv1D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -434,22 +525,27 @@ class Conv1D(Module):
             the desired data type of the internal variables to be created.
              Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -465,17 +561,14 @@ class Conv1D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv1d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv1DTranspose(Module):
@@ -490,6 +583,7 @@ class Conv1DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NWC",
         dilations=1,
@@ -517,6 +611,8 @@ class Conv1DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -527,7 +623,7 @@ class Conv1DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -544,6 +640,7 @@ class Conv1DTranspose(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -562,22 +659,27 @@ class Conv1DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -593,18 +695,15 @@ class Conv1DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
-        return (
-            ivy.conv1d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv1d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2D(Module):
@@ -619,6 +718,7 @@ class Conv2D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NHWC",
         dilations=1,
         device=None,
@@ -645,6 +745,8 @@ class Conv2D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NHWC" or "NCHW". Defaults to "NHWC".
         dilations
@@ -653,7 +755,7 @@ class Conv2D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -672,6 +774,7 @@ class Conv2D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -689,22 +792,27 @@ class Conv2D(Module):
             the desired data type of the internal variables to be created.
             Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -720,17 +828,14 @@ class Conv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv2DTranspose(Module):
@@ -745,6 +850,7 @@ class Conv2DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NHWC",
         dilations=1,
@@ -772,6 +878,8 @@ class Conv2DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -782,7 +890,7 @@ class Conv2DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -800,6 +908,7 @@ class Conv2DTranspose(Module):
             else (1, output_channels, 1, 1)
         )
         self._w_init = weight_initializer
+        self._with_bias = with_bias
         self._b_init = bias_initializer
         self._output_shape = output_shape
         self._data_format = data_format
@@ -819,22 +928,27 @@ class Conv2DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -850,18 +964,15 @@ class Conv2DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv2d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv2d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class DepthwiseConv2D(Module):
@@ -875,6 +986,7 @@ class DepthwiseConv2D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NHWC",
         dilations=1,
         device=None,
@@ -899,6 +1011,8 @@ class DepthwiseConv2D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NHWC" or "NCHW". Defaults to "NHWC".
         dilations
@@ -907,7 +1021,7 @@ class DepthwiseConv2D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -925,6 +1039,7 @@ class DepthwiseConv2D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -942,22 +1057,27 @@ class DepthwiseConv2D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._num_channels,
                 self._num_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._num_channels,
-                self._num_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._num_channels,
+                    self._num_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -973,17 +1093,14 @@ class DepthwiseConv2D(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return (
-            ivy.depthwise_conv2d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.depthwise_conv2d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3D(Module):
@@ -998,6 +1115,7 @@ class Conv3D(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         data_format="NDHWC",
         dilations=1,
         device=None,
@@ -1024,6 +1142,8 @@ class Conv3D(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         dilations
@@ -1032,7 +1152,7 @@ class Conv3D(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -1051,6 +1171,7 @@ class Conv3D(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, device=device, v=v, dtype=dtype)
@@ -1068,22 +1189,27 @@ class Conv3D(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -1100,17 +1226,14 @@ class Conv3D(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv3d(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 class Conv3DTranspose(Module):
@@ -1125,6 +1248,7 @@ class Conv3DTranspose(Module):
         *,
         weight_initializer=GlorotUniform(),
         bias_initializer=Zeros(),
+        with_bias=True,
         output_shape=None,
         data_format="NDHWC",
         dilations=1,
@@ -1152,6 +1276,8 @@ class Conv3DTranspose(Module):
             Initializer for the weights. Default is GlorotUniform.
         bias_initializer
             Initializer for the bias. Default is Zeros.
+        with_bias
+            Whether or not to include a bias term, default is ``True``.
         output_shape
             Shape of the output (Default value = None)
         data_format
@@ -1162,7 +1288,7 @@ class Conv3DTranspose(Module):
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
         v
-            the variables for each of the linear layer, as a container,
+            the variables for each of the conv layer, as a container,
             constructed internally by default.
         dtype
             the desired data type of the internal variables to be created if not
@@ -1181,6 +1307,7 @@ class Conv3DTranspose(Module):
         )
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -1200,22 +1327,27 @@ class Conv3DTranspose(Module):
             the desired data type of the internal variables to be created if not
              provided. Default is ``None``.
         """
-        return {
+        v = {
             "w": self._w_init.create_variables(
                 self._w_shape,
                 device,
                 self._output_channels,
                 self._input_channels,
                 dtype=dtype,
-            ),
-            "b": self._b_init.create_variables(
-                self._b_shape,
-                device,
-                self._output_channels,
-                self._input_channels,
-                dtype=dtype,
-            ),
+            )
         }
+        if self._with_bias:
+            v = dict(
+                **v,
+                b=self._b_init.create_variables(
+                    self._b_shape,
+                    device,
+                    self._output_channels,
+                    self._input_channels,
+                    dtype=dtype,
+                ),
+            )
+        return v
 
     def _forward(self, inputs):
         """
@@ -1232,18 +1364,15 @@ class Conv3DTranspose(Module):
             The outputs following the conv1d layer
             *[batch_size,new_d,new_h,new_w,d_out]*
         """
-        return (
-            ivy.conv3d_transpose(
-                inputs,
-                self.v.w,
-                self._strides,
-                self._padding,
-                output_shape=self._output_shape,
-                data_format=self._data_format,
-                dilations=self._dilations,
-            )
-            + self.v.b
-        )
+        return ivy.conv3d_transpose(
+            inputs,
+            self.v.w,
+            self._strides,
+            self._padding,
+            output_shape=self._output_shape,
+            data_format=self._data_format,
+            dilations=self._dilations,
+        ) + (self.v.b if self._with_bias else 0)
 
 
 # LSTM #
@@ -1350,9 +1479,11 @@ class LSTM(Module):
                     {
                         "w": self._w_init.create_variables(
                             (
-                                self._input_channels
-                                if i == 0
-                                else self._output_channels,
+                                (
+                                    self._input_channels
+                                    if i == 0
+                                    else self._output_channels
+                                ),
                                 4 * self._output_channels,
                             ),
                             device,
@@ -1441,6 +1572,7 @@ class MaxPool2D(Module):
         padding,
         /,
         *,
+        data_format="NHWC",
         device=None,
         v=None,
         dtype=None,
@@ -1462,6 +1594,7 @@ class MaxPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1477,7 +1610,13 @@ class MaxPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.max_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.max_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
 
 
 class AvgPool2D(Module):
@@ -1488,6 +1627,7 @@ class AvgPool2D(Module):
         padding,
         /,
         *,
+        data_format="NHWC",
         device=None,
         v=None,
         dtype=None,
@@ -1509,6 +1649,7 @@ class AvgPool2D(Module):
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
+        self._data_format = data_format
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1524,4 +1665,379 @@ class AvgPool2D(Module):
         -------
         The output of the layer.
         """
-        return ivy.avg_pool2d(inputs, self._kernel_size, self._stride, self._padding)
+        return ivy.avg_pool2d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+
+class MaxPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+        device=None,
+        v=None,
+        dtype=None,
+    ):
+        """
+        Class for applying Max Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+
+class MaxPool3D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NDHWC",
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying 3D Max Pooling over 5D inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window.
+        padding
+            Implicit zero padding to be added on both sides.
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.max_pool3d(
+            x,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+
+class AvgPool3D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        strides,
+        padding,
+        /,
+        *,
+        data_format="NDHWC",
+        count_include_pad=False,
+        ceil_mode=False,
+        divisor_override=None,
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take a max over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        data_format
+            NDHWC" or "NCDHW". Defaults to "NDHWC".
+        count_include_pad
+            Whether to include padding in the averaging calculation.
+        ceil_mode
+            Whether to use ceil or floor for creating the output shape.
+        divisor_override
+            If specified, it will be used as divisor,
+            otherwise kernel_size will be used. # noqa: E501
+        """
+        self._kernel_size = kernel_size
+        self._stride = strides
+        self._padding = padding
+        self._data_format = data_format
+        self._count_include_pad = count_include_pad
+        self._ceil_mode = ceil_mode
+        self._divisor_override = divisor_override
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.avg_pool3d(
+            x,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+            count_include_pad=self._count_include_pad,
+            ceil_mode=self._ceil_mode,
+            divisor_override=self._divisor_override,
+        )
+
+
+class AdaptiveAvgPool2d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying a 2D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            the target output size of the image.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        # TODO: test again once adaptive_avg_pool2d is
+        #  implemented for the missing backends.
+        return ivy.adaptive_avg_pool2d(
+            x,
+            self._output_size,
+        )
+
+
+class AdaptiveAvgPool1d(Module):
+    def __init__(
+        self,
+        output_size,
+        device=None,
+        dtype=None,
+    ):
+        # TODO: add data_format param
+        """
+        Class for applying a 1D adaptive average pooling over mini-batch of inputs.
+
+        Parameters
+        ----------
+        output_size
+            An integer or tuple/list of a single integer
+            specifying new size of output channels.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self._output_size = output_size
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        # TODO: test again once adaptive_avg_pool2d is
+        #  implemented for the missing backends.
+        return ivy.adaptive_avg_pool1d(
+            x,
+            self._output_size,
+        )
+
+
+class AvgPool1D(Module):
+    def __init__(
+        self,
+        kernel_size,
+        stride,
+        padding,
+        /,
+        *,
+        data_format="NWC",
+    ):
+        """
+        Class for applying Average Pooling over a mini-batch of inputs.
+
+        Parameters
+        ----------
+        kernel_size
+            The size of the window to take an average over.
+        stride
+            The stride of the window. Default value: 1
+        padding
+            Implicit zero padding to be added on both sides.
+        data_format
+            "NCW" or "NWC". Defaults to "NWC".
+        """
+        self._kernel_size = kernel_size
+        self._stride = stride
+        self._padding = padding
+        self._data_format = data_format
+        Module.__init__(self)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input to the layer.
+
+        Returns
+        -------
+        The output of the layer.
+        """
+        return ivy.avg_pool1d(
+            inputs,
+            self._kernel_size,
+            self._stride,
+            self._padding,
+            data_format=self._data_format,
+        )
+
+
+class Dct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the DCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.dct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+        )

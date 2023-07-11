@@ -1,11 +1,15 @@
 # global
 import sys
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
 
 
 # helpers
@@ -407,7 +411,7 @@ def test_torch_bmm(
 @handle_frontend_test(
     fn_tree="torch.cholesky",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -542,31 +546,29 @@ def test_torch_matmul(
 
 # matrix_rank
 @handle_frontend_test(
-    fn_tree="torch.matrix_rank",
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    rtol=st.floats(1e-05, 1e-03),
-    sym=st.booleans(),
+    fn_tree="torch.linalg.matrix_rank",
+    # aliases=["torch.matrix_rank",], deprecated since 1.9. uncomment with multi-version testing pipeline
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_torch_matrix_rank(
-    dtype_and_x,
-    rtol,
-    sym,
+    dtype_x_hermitian_atol_rtol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x = dtype_and_x
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
+    assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        input=x,
-        tol=rtol,
-        symmetric=sym,
+        A=x,
+        atol=atol,
+        rtol=rtol,
+        hermitian=hermitian,
     )
 
 
@@ -650,7 +652,7 @@ def test_torch_outer(
 @handle_frontend_test(
     fn_tree="torch.pinverse",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
@@ -683,7 +685,7 @@ def test_torch_pinverse(
 @handle_frontend_test(
     fn_tree="torch.qr",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
@@ -718,7 +720,7 @@ def test_torch_qr(
 @handle_frontend_test(
     fn_tree="torch.svd",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_num_dims=3,
         max_num_dims=5,
         min_dim_size=2,
@@ -786,6 +788,7 @@ def test_torch_dot(
     test_flags,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
+    test_flags.num_positional_args = len(dtype_and_vecs) - 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,

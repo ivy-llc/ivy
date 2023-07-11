@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import numpy as np
 import tensorflow as tf
 
 # local
@@ -47,7 +48,10 @@ def concat(
         axis = 0
         if is_tuple:
             xs = tuple(xs)
-    return tf.concat(xs, axis)
+    try:
+        return tf.concat(xs, axis)
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def expand_dims(
@@ -62,8 +66,8 @@ def expand_dims(
         out_shape = _calculate_out_shape(axis, x.shape)
         ret = tf.reshape(x, shape=out_shape)
         return ret
-    except tf.errors.InvalidArgumentError as error:
-        raise ivy.utils.exceptions.IvyException(repr(error))
+    except (tf.errors.InvalidArgumentError, np.AxisError) as error:
+        raise ivy.utils.exceptions.IvyIndexError(error)
 
 
 def flip(
@@ -152,8 +156,8 @@ def roll(
 def squeeze(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -189,7 +193,7 @@ def squeeze(
     return ret
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def stack(
     arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
     /,
@@ -197,7 +201,10 @@ def stack(
     axis: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.stack(arrays, axis)
+    try:
+        return tf.experimental.numpy.stack(arrays, axis)
+    except ValueError as e:
+        raise ivy.utils.exceptions.IvyIndexError(e)
 
 
 # Extra #
@@ -209,7 +216,9 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    num_or_size_splits: Optional[
+        Union[int, Sequence[int], Union[tf.Tensor, tf.Variable]]
+    ] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -224,6 +233,9 @@ def split(
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
         num_or_size_splits = int(dim_size)
+    if isinstance(num_or_size_splits, (tf.Tensor, tf.Variable)):
+        num_or_size_splits = tf.cast(num_or_size_splits, tf.int32)
+        num_or_size_splits = num_or_size_splits.numpy().tolist()
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -236,7 +248,7 @@ def split(
     return tf.split(x, num_or_size_splits, axis)
 
 
-@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -250,7 +262,7 @@ def repeat(
 
 @with_unsupported_dtypes(
     {
-        "2.9.1 and below": (
+        "2.13.0 and below": (
             "uint8",
             "uint16",
             "uint32",
@@ -321,7 +333,7 @@ def swapaxes(
     return tf.transpose(x, config)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def clip(
     x: Union[tf.Tensor, tf.Variable],
     x_min: Union[Number, tf.Tensor, tf.Variable],

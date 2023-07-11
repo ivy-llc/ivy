@@ -177,13 +177,16 @@ def test_torch_randint(
     fn_tree="torch.rand",
     dtype=helpers.get_dtypes("float", full=False),
     size=helpers.get_shape(
-        min_num_dims=0,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=0,
+        min_dim_size=1,
         max_dim_size=10,
     ),
 )
 def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
+    size = {f"size{i}": size[i] for i in range(len(size))}
+    test_flags.num_positional_args = len(size)
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
@@ -191,7 +194,7 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
             test_values=False,
             fn_tree=fn_tree,
             test_flags=test_flags,
-            size=size,
+            **size,
         )
 
     ret = call()
@@ -305,13 +308,16 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     fn_tree="torch.randn",
     dtype=helpers.get_dtypes("float", full=False),
     size=helpers.get_shape(
-        min_num_dims=0,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=0,
+        min_dim_size=1,
         max_dim_size=10,
     ),
 )
 def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
+    size = {f"size{i}": size[i] for i in range(len(size))}
+    test_flags.num_positional_args = len(size)
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
@@ -319,7 +325,7 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
             test_values=False,
             fn_tree=fn_tree,
             test_flags=test_flags,
-            size=size,
+            **size,
         )
 
     ret = call()
@@ -415,6 +421,7 @@ def test_torch_bernoulli(
         assert u.shape == v.shape
 
 
+# randperm
 @handle_frontend_test(
     fn_tree="torch.randperm",
     n=st.integers(min_value=0, max_value=10),

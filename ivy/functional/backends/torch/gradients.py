@@ -181,9 +181,10 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
     callback_fn = lambda x_in: ivy.to_ivy(
-        torch.autograd.functional.jacobian(grad_fn, ivy.to_native(x_in))
+        torch.func.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
+        nested=True,
     )
     return callback_fn
 
@@ -213,7 +214,7 @@ def grad(f, argnums=0):
                     [arr.requires_grad_() for arr in x]
             else:
                 raise TypeError(
-                    f"argnums should be passed as int or a list/tuple of ints."
+                    "argnums should be passed as int or a list/tuple of ints."
                     f" Found {type(argnums)}"
                 )
             if n == 0:

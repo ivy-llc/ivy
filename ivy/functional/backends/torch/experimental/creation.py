@@ -1,14 +1,14 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import torch
 
 
 # local
 import ivy
-import copy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 from .. import backend_version
 
@@ -19,22 +19,10 @@ from .. import backend_version
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: torch.device,
-) -> Tuple[torch.Tensor]:
-    n_cols = n_rows if n_cols is None else n_cols
-    return tuple(
-        torch.triu_indices(
-            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
-        )
-    )
-
-
+@with_unsupported_device_and_dtypes(
+    {"2.0.1 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -99,7 +87,7 @@ def vorbis_window(
 vorbis_window.support_native_out = False
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def hann_window(
     size: int,
     /,
@@ -138,13 +126,27 @@ def tril_indices(
     )
 
 
-def frombuffer(
-    buffer: bytes,
-    dtype: Optional[torch.dtype] = float,
-    count: Optional[int] = -1,
-    offset: Optional[int] = 0,
+def unsorted_segment_min(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
 ) -> torch.Tensor:
-    buffer_copy = copy.deepcopy(buffer)
-    dtype = ivy.as_native_dtype(dtype)
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
+        init_val = torch.finfo(data.dtype).max
+    elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
+        init_val = torch.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
 
-    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+    res = torch.full(
+        (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
+    )
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.min(data[mask_index], 0)[0]
+
+    return res

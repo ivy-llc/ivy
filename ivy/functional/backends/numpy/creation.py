@@ -1,6 +1,6 @@
 # global
 from numbers import Number
-from typing import Union, Optional, List, Sequence
+from typing import Union, Optional, List, Sequence, Tuple
 
 import numpy as np
 
@@ -10,9 +10,11 @@ from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_infer_dtype,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
 )
 from .data_type import as_native_dtype
 
@@ -45,8 +47,12 @@ def arange(
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
-    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    obj: Union[
+        np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -54,34 +60,17 @@ def asarray(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(obj, np.ndarray):
-        if dtype is not None:
-            obj = ivy.astype(obj, dtype, copy=False).to_native()
-        ret = np.copy(obj) if copy else obj
-        return _to_device(ret, device=device)
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
-        dtype = ivy.default_dtype(item=obj, as_native=True)
-    else:
-        dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
-    if copy is True:
-        return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
-    else:
-        return _to_device(np.asarray(obj, dtype=dtype), device=device)
+    ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
+    return np.copy(ret) if copy else ret
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(np.empty(shape, dtype), device=device)
 
 
@@ -182,18 +171,12 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(np.ones(shape, dtype), device=device)
 
 
@@ -216,18 +199,12 @@ def triu(
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: np.dtype,
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return _to_device(np.zeros(shape, dtype), device=device)
 
 
@@ -289,3 +266,27 @@ def one_hot(
         res = np.moveaxis(res, -1, axis)
 
     return res
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[np.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> np.ndarray:
+    if isinstance(dtype, list):
+        dtype = np.dtype(dtype[0])
+    return np.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: str,
+) -> Tuple[np.ndarray]:
+    return tuple(
+        _to_device(np.asarray(np.triu_indices(n=n_rows, k=k, m=n_cols)), device=device)
+    )

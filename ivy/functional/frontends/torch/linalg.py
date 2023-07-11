@@ -24,8 +24,8 @@ def divide(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv(input, *, out=None):
-    return ivy.inv(input, out=out)
+def inv(A, *, out=None):
+    return ivy.inv(A, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -45,8 +45,8 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
-def det(input, *, out=None):
-    return ivy.det(input, out=out)
+def det(A, *, out=None):
+    return ivy.det(A, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -61,39 +61,51 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def eigh(a, /, UPLO="L", out=None):
     return ivy.eigh(a, UPLO=UPLO, out=out)
 
 
 @to_ivy_arrays_and_back
-def qr(input, mode="reduced", *, out=None):
+def qr(A, mode="reduced", *, out=None):
     if mode == "reduced":
-        ret = ivy.qr(input, mode="reduced")
+        ret = ivy.qr(A, mode="reduced")
     elif mode == "r":
-        Q, R = ivy.qr(input, mode="r")
+        Q, R = ivy.qr(A, mode="r")
         Q = []
         ret = Q, R
     elif mode == "complete":
-        ret = ivy.qr(input, mode="complete")
+        ret = ivy.qr(A, mode="complete")
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
 @to_ivy_arrays_and_back
-def slogdet(input, *, out=None):
+def slogdet(A, *, out=None):
     # TODO: add handling for out
-    return ivy.slogdet(input)
+    return ivy.slogdet(A)
+
+
+@with_unsupported_dtypes({"2.0.0 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def cond(input, p=None, *, out=None):
+    return ivy.cond(input, p=p, out=out)
 
 
 @to_ivy_arrays_and_back
-def matrix_power(input, n, *, out=None):
-    return ivy.matrix_power(input, n, out=out)
+def matrix_power(A, n, *, out=None):
+    return ivy.matrix_power(A, n, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def matrix_exp(A):
+    return ivy.matrix_exp(A)
 
 
 @with_supported_dtypes(
-    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
+    {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
 @to_ivy_arrays_and_back
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
@@ -105,20 +117,19 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def cross(input, other, *, dim=None, out=None):
     return torch_frontend.miscellaneous_ops.cross(input, other, dim=dim, out=out)
 
 
 @to_ivy_arrays_and_back
-def vecdot(x1, x2, *, dim=-1, out=None):
-    return ivy.vecdot(x1, x2, axis=dim, out=out)
+def vecdot(x, y, *, dim=-1, out=None):
+    return ivy.vecdot(x, y, axis=dim, out=out)
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    # TODO: add handling for hermitian once complex numbers are supported
-    return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -139,22 +150,22 @@ def svdvals(A, *, driver=None, out=None):
 
 
 @to_ivy_arrays_and_back
-def inv_ex(input, *, check_errors=False, out=None):
+def inv_ex(A, *, check_errors=False, out=None):
     try:
-        inputInv = ivy.inv(input, out=out)
-        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        inputInv = ivy.inv(A, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
         return inputInv, info
     except RuntimeError as e:
         if check_errors:
             raise RuntimeError(e)
         else:
-            inputInv = input * math.nan
-            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            inputInv = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
             return inputInv, info
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def tensorinv(input, ind=2, *, out=None):
     not_invertible = "Reshaped tensor is not invertible"
     prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
@@ -178,25 +189,26 @@ def tensorinv(input, ind=2, *, out=None):
     return ivy.reshape(inverse_tensor, shape=inverse_shape_tuple, out=out)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def eig(input, *, out=None):
     return ivy.eig(input, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
-def solve(input, other, *, out=None):
-    return ivy.solve(input, other, out=out)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+def solve(A, B, *, left=True, out=None):
+    return ivy.solve(A, B, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
@@ -207,7 +219,7 @@ def matmul(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def vander(x, N=None):
     if len(x.shape) < 1:
         raise RuntimeError("Input dim must be greater than or equal to 1.")
@@ -239,6 +251,32 @@ def vander(x, N=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+def characteristic_equation_solver(matrix):
+    eigenvalues = ivy.eigenvalues(matrix)
+    coefficients = ivy.array(
+        [1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype
+    )
+    return ivy.roots(coefficients)
+
+
+@to_ivy_arrays_and_back
+def solve_ex(A, B, *, left=True, check_errors=False, out=None):
+    try:
+        result = ivy.solve(A, B, out=out)
+        info = ivy.zeros(A.shape[:-2], dtype=ivy.int32)
+        return result, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            result = A * math.nan
+            info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+
+            return result, info

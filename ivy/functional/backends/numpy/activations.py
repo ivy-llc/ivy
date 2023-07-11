@@ -6,9 +6,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
-from . import backend_version
 
 
 @_scalar_output_to_0d_array
@@ -25,7 +23,6 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("complex",)}, backend_version)
 @_scalar_output_to_0d_array
 def gelu(
     x: np.ndarray, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
@@ -46,6 +43,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 def softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
+    axis = -1 if axis is None else axis
     exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
     return np.divide(exp_x, np.sum(exp_x, axis=axis, keepdims=True), out=out)
 
@@ -116,3 +114,12 @@ def mish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 
 
 mish.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def hardswish(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    max_x_3 = np.maximum(x + 3, 0, dtype=x.dtype)
+    return (x * np.minimum(max_x_3, 6, out=out, dtype=x.dtype) / 6).astype(x.dtype)
+
+
+hardswish.support_native_out = True

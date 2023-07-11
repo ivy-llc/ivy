@@ -1,8 +1,7 @@
 # global
-
+import copy
 from numbers import Number
-from typing import Union, List, Optional, Sequence
-
+from typing import Union, List, Optional, Sequence, Tuple
 import numpy as np
 import torch
 from torch import Tensor
@@ -12,14 +11,16 @@ import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_unsupported_device_and_dtypes,
-    _get_first_array,
 )
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_infer_dtype,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
+    asarray_inputs_to_native_shapes,
+    _remove_np_bfloat16,
 )
 from . import backend_version
 
@@ -46,8 +47,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-# noinspection PyUnboundLocalVariable,PyShadowingNames
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def arange(
     start: float,
     /,
@@ -95,14 +95,17 @@ def _stack_tensors(x, dtype):
     return x
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
+@asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         torch.Tensor,
         np.ndarray,
+        torch.Size,
         bool,
         int,
         float,
@@ -116,75 +119,27 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if isinstance(obj, torch.Tensor) and dtype is None:
-        if copy is True:
-            return obj.clone().detach().to(device)
-        else:
-            return obj.to(device) if obj.device != device else obj
-    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
-        contain_tensor = False
-        if isinstance(obj[0], (list, tuple)):
-            first_tensor = _get_first_array(obj)
-            if ivy.exists(first_tensor):
-                contain_tensor = True
-                dtype = first_tensor.dtype
-        if dtype is None:
-            dtype = ivy.default_dtype(item=obj, as_native=True)
-
+    obj = ivy.nested_map(obj, _remove_np_bfloat16, shallow=False)
+    if isinstance(obj, Sequence) and len(obj) != 0:
+        contain_tensor = ivy.nested_any(obj, lambda x: isinstance(x, torch.Tensor))
         # if `obj` is a list of specifically tensors or
         # a multidimensional list which contains a tensor
-        if isinstance(obj[0], torch.Tensor) or contain_tensor:
-            if copy is True:
-                return (
-                    torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
-                    .clone()
-                    .detach()
-                    .to(device)
-                )
-            else:
-                return _stack_tensors(obj, dtype).to(device)
+        if contain_tensor:
+            ret = _stack_tensors(obj, dtype).to(device)
+            return ret.clone().detach() if copy else ret
 
-        # if obj is a list of other objects, expected to be a numerical type.
-        else:
-            if copy is True:
-                return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
-            else:
-                return torch.as_tensor(obj, dtype=dtype).to(device)
+    ret = torch.as_tensor(obj, dtype=dtype, device=device)
 
-    elif isinstance(obj, np.ndarray) and dtype is None:
-        dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-    else:
-        dtype = ivy.as_native_dtype((ivy.default_dtype(dtype=dtype, item=obj)))
-
-    if dtype == torch.bfloat16 and isinstance(obj, np.ndarray):
-        if copy is True:
-            return (
-                torch.as_tensor(obj.tolist(), dtype=dtype).clone().detach().to(device)
-            )
-        else:
-            return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
-
-    if copy is True:
-        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
-        return ret.to(device) if ret.device != device else ret
-    else:
-        ret = torch.as_tensor(obj, dtype=dtype)
-        return ret.to(device) if ret.device != device else ret
+    return ret.clone().detach() if copy else ret
 
 
 def empty(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("empty() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.empty(
         shape,
         dtype=dtype,
@@ -207,7 +162,7 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -316,7 +271,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.0.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -416,7 +371,6 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
                 linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
-        torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
@@ -441,7 +395,10 @@ def linspace_helper(start, stop, num, axis=None, *, dtype=None, device):
         return linspace_method(start, stop, num, dtype=dtype, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
-        res = torch.transpose(res, axis, -1)
+        ndim = res.ndim
+        perm = list(range(0, ndim - 1))
+        perm.insert(axis % (ndim + 1), ndim - 1)
+        res = res.permute(perm)
     return res.to(device)
 
 
@@ -468,18 +425,12 @@ def meshgrid(
 
 
 def ones(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("ones() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.ones(shape, dtype=dtype, device=device, out=out)
 
 
@@ -544,18 +495,12 @@ triu.support_native_out = True
 
 
 def zeros(
-    *size: Union[int, Sequence[int]],
-    shape: Optional[ivy.NativeShape] = None,
+    shape: Union[ivy.NativeShape, Sequence[int]],
+    *,
     dtype: torch.dtype,
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> Tensor:
-    if len(size) != 0:
-        size = size[0] if isinstance(size[0], (tuple, list)) else size
-    if len(size) != 0 and shape:
-        raise TypeError("zeros() got multiple values for argument 'shape'")
-    if shape is None:
-        shape = size
     return torch.zeros(shape, dtype=dtype, device=device, out=out)
 
 
@@ -629,3 +574,31 @@ def one_hot(
         res = torch.moveaxis(res, -1, axis)
 
     return res.to(device, dtype)
+
+
+def frombuffer(
+    buffer: bytes,
+    dtype: Optional[torch.dtype] = float,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+) -> torch.Tensor:
+    buffer_copy = copy.deepcopy(buffer)
+    dtype = ivy.as_native_dtype(dtype)
+
+    return torch.frombuffer(buffer_copy, dtype=dtype, count=count, offset=offset)
+
+
+def triu_indices(
+    n_rows: int,
+    n_cols: Optional[int] = None,
+    k: int = 0,
+    /,
+    *,
+    device: torch.device,
+) -> Tuple[torch.Tensor]:
+    n_cols = n_rows if n_cols is None else n_cols
+    return tuple(
+        torch.triu_indices(
+            row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
+        )
+    )

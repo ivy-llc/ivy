@@ -35,10 +35,12 @@ def _assert_array(args, dtype, scalar_check=False, casting="safe"):
             if assert_fn:
                 ivy.utils.assertions.check_all_or_any_fn(
                     *args,
-                    fn=lambda x: assert_fn(x)
-                    if ivy.shape(x) == ()
-                    else np_frontend.can_cast(
-                        x, ivy.as_ivy_dtype(dtype), casting=casting
+                    fn=lambda x: (
+                        assert_fn(x)
+                        if ivy.shape(x) == ()
+                        else np_frontend.can_cast(
+                            x, ivy.as_ivy_dtype(dtype), casting=casting
+                        )
                     ),
                     type="all",
                     message="type of input is incompatible with dtype: {}".format(
@@ -71,8 +73,8 @@ def _assert_no_array(args, dtype, scalar_check=False, none=False):
         fn_func = ivy.as_ivy_dtype(dtype) if ivy.exists(dtype) else ivy.dtype(first_arg)
         assert_fn = lambda x: ivy.dtype(x) == fn_func
         if scalar_check:
-            assert_fn = (
-                lambda x: ivy.dtype(x) == fn_func
+            assert_fn = lambda x: (
+                ivy.dtype(x) == fn_func
                 if ivy.shape(x) != ()
                 else _casting_no_special_case(ivy.dtype(x), fn_func, none)
             )
@@ -117,6 +119,7 @@ def _assert_no_scalar(args, dtype, none=False):
                 type(args[0]),
                 check_dtype,
                 message="type of input is incompatible with dtype {}".format(dtype),
+                as_array=False,
             )
             if ivy.as_ivy_dtype(dtype) not in ["float64", "int8", "int64", "uint8"]:
                 if type(args[0]) == int:
@@ -126,7 +129,9 @@ def _assert_no_scalar(args, dtype, none=False):
                         inverse=True,
                     )
                 elif type(args[0]) == float:
-                    ivy.utils.assertions.check_equal(dtype, "float32", inverse=True)
+                    ivy.utils.assertions.check_equal(
+                        dtype, "float32", inverse=True, as_array=False
+                    )
 
 
 def handle_numpy_dtype(fn: Callable) -> Callable:
@@ -246,6 +251,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
                 ivy.as_ivy_dtype(dtype),
                 "bool",
                 message="output is compatible with bool only",
+                as_array=False,
             )
 
         return fn(*args, **kwargs)
@@ -353,9 +359,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _inputs_to_ivy_arrays_np
 
 
-def outputs_to_numpy_arrays(fn: Callable) -> Callable:
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
+    def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
         """
         Convert `ivy.Array` into `ndarray` instances.
 
@@ -371,9 +377,15 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
-            ivy.set_default_int_dtype(
-                "int64"
-            ) if platform.system() != "Windows" else ivy.set_default_int_dtype("int32")
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
+            (
+                ivy.set_default_int_dtype("int64")
+                if platform.system() != "Windows"
+                else ivy.set_default_int_dtype("int32")
+            )
             ivy.set_default_float_dtype("float64")
             set_default_dtype = True
         if contains_order:
@@ -394,7 +406,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
                 if set_default_dtype:
                     ivy.unset_default_int_dtype()
                     ivy.unset_default_float_dtype()
-        if not ivy.get_array_mode():
+        if not ivy.array_mode:
             return ret
         # convert all returned arrays to `ndarray` instances
         if order == "F":
@@ -409,8 +421,8 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_numpy_arrays.outputs_to_numpy_arrays = True
-    return _outputs_to_numpy_arrays
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -421,7 +433,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     instances and return arrays are all converted to `ndarray`
     instances.
     """
-    return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
@@ -481,34 +493,42 @@ def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     return _from_zero_dim_arrays_to_scalar
 
 
+def _count_operands(subscript):
+    if "->" in subscript:
+        input_subscript, output_index = subscript.split("->")
+    else:
+        input_subscript = subscript
+    return len(input_subscript.split(","))
+
+
 def handle_numpy_out(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _handle_numpy_out(*args, out=None, **kwargs):
-        if len(args) > (out_pos + 1):
-            out = args[out_pos]
+    def _handle_numpy_out(*args, **kwargs):
+        if "out" not in kwargs:
+            keys = list(inspect.signature(fn).parameters.keys())
+            if fn.__name__ == "einsum":
+                out_pos = 1 + _count_operands(args[0])
+            else:
+                out_pos = keys.index("out")
             kwargs = {
                 **dict(
                     zip(
-                        list(inspect.signature(fn).parameters.keys())[
-                            out_pos + 1 : len(args)
-                        ],
-                        args[out_pos + 1 :],
+                        keys[keys.index("out") :],
+                        args[out_pos:],
                     )
                 ),
                 **kwargs,
             }
             args = args[:out_pos]
-        elif len(args) == (out_pos + 1):
-            out = args[out_pos]
-            args = args[:-1]
-        if ivy.exists(out):
-            if not ivy.nested_any(out, lambda x: isinstance(x, np_frontend.ndarray)):
+        if "out" in kwargs:
+            out = kwargs["out"]
+            if ivy.exists(out) and not ivy.nested_any(
+                out, lambda x: isinstance(x, np_frontend.ndarray)
+            ):
                 raise ivy.utils.exceptions.IvyException(
                     "Out argument must be an ivy.frontends.numpy.ndarray object"
                 )
-            return fn(*args, out=out, **kwargs)
         return fn(*args, **kwargs)
 
-    out_pos = list(inspect.signature(fn).parameters).index("out")
     _handle_numpy_out.handle_numpy_out = True
     return _handle_numpy_out

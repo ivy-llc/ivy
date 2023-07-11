@@ -20,9 +20,9 @@ try:
         pass
 except ImportError:
     warnings.warn(
-        "pynvml installation was not found in the environment,\
-         functionalities of the Ivy's device module will be limited.\
-         Please install pynvml if you wish to use GPUs with Ivy."
+        "pynvml installation was not found in the environment, functionalities"
+        " of the Ivy's device module will be limited. Please install pynvml if"
+        " you wish to use GPUs with Ivy."
     )
     # nvidia-ml-py (pynvml) is not installed in CPU Dockerfile.
 
@@ -226,8 +226,8 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def print_all_ivy_arrays_on_dev(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -270,9 +270,9 @@ def print_all_ivy_arrays_on_dev(
 # Retrieval
 
 
-@to_native_arrays_and_back
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
 def dev(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_native: bool = False
 ) -> Union[ivy.Device, ivy.NativeDevice]:
@@ -458,7 +458,7 @@ def used_mem_on_dev(
         The device string to convert to native device handle.
     process_specific
         Whether to check the memory used by this python process alone. Default is
-        False. Currently, it is only supported for cpu.
+        False.
 
     Returns
     -------
@@ -819,11 +819,11 @@ def unset_default_device() -> None:
 # Device Allocation #
 
 
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -862,7 +862,7 @@ def to_device(
     >>> print(x.device)
     cpu
     """
-    return ivy.current_backend(x).to_device(x, device)
+    return ivy.current_backend(x).to_device(x, device, stream=stream, out=out)
 
 
 # Function Splitting #
@@ -949,7 +949,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1036,12 +1036,17 @@ def split_func_call(
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [
-        ivy.split(
-            inp, num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
-        )
-        if ivy.is_array(inp)
-        else inp.split(
-            num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+        (
+            ivy.split(
+                inp,
+                num_or_size_splits=chunk_sizes,
+                axis=input_axes[i],
+                with_remainder=True,
+            )
+            if ivy.is_array(inp)
+            else inp.split(
+                num_or_size_splits=chunk_sizes, axis=input_axes[i], with_remainder=True
+            )
         )
         for i, inp in enumerate(inputs)
     ]
@@ -1138,8 +1143,8 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
     return tuple(supported)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the supported devices of the current backend's function.
@@ -1164,8 +1169,10 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     supported_devices = set(_get_devices(fn, complement=False))
 
@@ -1177,8 +1184,8 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     return tuple(supported_devices)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     Return the unsupported devices of the current backend's function.
@@ -1203,8 +1210,10 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
-        "supported_devices and unsupported_devices attributes cannot both \
-        exist in a particular backend",
+        (
+            "supported_devices and unsupported_devices attributes cannot both "
+            "exist in a particular backend"
+        ),
     )
     unsupported_devices = set(_get_devices(fn, complement=True))
 

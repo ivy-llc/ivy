@@ -1,6 +1,8 @@
 from typing import Union, Optional, Tuple
 import mxnet as mx
 
+from ivy.utils.exceptions import IvyNotImplementedException
+
 
 def l2_normalize(
     x: Union[(None, mx.ndarray.NDArray)],
@@ -9,7 +11,7 @@ def l2_normalize(
     axis: Optional[int] = None,
     out: Optional[None] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.l2_normalize Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def batch_norm(
@@ -31,7 +33,7 @@ def batch_norm(
         Union[(None, mx.ndarray.NDArray)],
     )
 ]:
-    raise NotImplementedError("mxnet.batch_norm Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def instance_norm(
@@ -53,7 +55,7 @@ def instance_norm(
         Union[(None, mx.ndarray.NDArray)],
     )
 ]:
-    raise NotImplementedError("mxnet.instance_norm Not Implemented")
+    raise IvyNotImplementedException()
 
 
 def lp_normalize(
@@ -64,4 +66,4 @@ def lp_normalize(
     axis: Optional[int] = None,
     out: Optional[None] = None,
 ) -> None:
-    raise NotImplementedError("mxnet.lp_normalize Not Implemented")
+    raise IvyNotImplementedException()

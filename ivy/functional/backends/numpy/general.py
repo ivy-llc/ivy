@@ -4,7 +4,7 @@
 from typing import Optional, Union, Sequence, Callable, Tuple
 import numpy as np
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 from numbers import Number
 
@@ -29,10 +29,31 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+def get_item(
+    x: np.ndarray,
+    /,
+    query: np.ndarray,
+    *,
+    copy: bool = None,
+) -> np.ndarray:
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
+
+
+@_scalar_output_to_0d_array
+def set_item(
+    x: np.ndarray,
+    query: Union[np.ndarray, Tuple],
+    val: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> np.ndarray:
+    if copy:
+        x = np.copy(x)
+    x.__setitem__(query, val)
+    return x
 
 
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
@@ -92,7 +113,7 @@ def gather_nd_helper(params, indices):
     else:
         num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
+        _reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = np.array(result_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
@@ -203,6 +224,8 @@ def inplace_update(
             np.copyto(x_native, val_native)
         else:
             x_native = val_native
+        if ivy.is_native_array(x):
+            return x_native
         if ivy.is_ivy_array(x):
             x.data = x_native
         else:
@@ -240,11 +263,11 @@ def scatter_flat(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(size) and ivy.exists(target):
-        ivy.utils.assertions.check_equal(len(target.shape), 1)
-        ivy.utils.assertions.check_equal(target.shape[0], size)
+        ivy.utils.assertions.check_equal(len(target.shape), 1, as_array=False)
+        ivy.utils.assertions.check_equal(target.shape[0], size, as_array=False)
+    if not target_given:
+        reduction = "replace"
     if reduction == "sum":
-        if not target_given:
-            target = np.zeros([size], dtype=updates.dtype)
         np.add.at(target, indices, updates)
     elif reduction == "replace":
         if not target_given:
@@ -253,28 +276,17 @@ def scatter_flat(
         target.setflags(write=1)
         target[indices] = updates
     elif reduction == "min":
-        if not target_given:
-            target = np.ones([size], dtype=updates.dtype) * 1e12
         np.minimum.at(target, indices, updates)
-        if not target_given:
-            target = np.asarray(
-                np.where(target == 1e12, 0.0, target), dtype=updates.dtype
-            )
     elif reduction == "max":
-        if not target_given:
-            target = np.ones([size], dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices, updates)
-        if not target_given:
-            target = np.asarray(
-                np.where(target == -1e12, 0.0, target), dtype=updates.dtype
-            )
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _to_device(target)
+    if target_given:
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_flat.support_native_out = True
@@ -292,57 +304,28 @@ def scatter_nd(
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and target_given:
-        ivy.utils.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
-    shape = list(shape) if ivy.exists(shape) else list(out.shape)
-    if indices is not Ellipsis and (
-        isinstance(indices, (tuple, list)) and not (Ellipsis in indices)
-    ):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = np.array(indices)
-        if len(indices.shape) < 2:
-            indices = np.expand_dims(indices, -1)
-        expected_shape = (
-            indices.shape[:-1] + out.shape[indices.shape[-1] :]
-            if ivy.exists(out)
-            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        ivy.utils.assertions.check_equal(
+            ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
         )
-        if sum(updates.shape) < sum(expected_shape):
-            updates = ivy.broadcast_to(updates, expected_shape)._data
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(
-                indices, updates.shape[:1] + (indices.shape[-1],)
-            )._data
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
+    if not target_given:
+        shape = list(shape) if ivy.exists(shape) else list(out.shape)
+        target = np.zeros(shape, dtype=updates.dtype)
     if reduction == "sum":
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
         np.add.at(target, indices_tuple, updates)
     elif reduction == "replace":
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
         target = np.asarray(target).copy()
         target.setflags(write=1)
         target[indices_tuple] = updates
     elif reduction == "min":
-        if not target_given:
-            target = np.ones(shape) * 1e12
         np.minimum.at(target, indices_tuple, updates)
-        if not target_given:
-            target = np.where(target == 1e12, 0, target)
-            target = np.asarray(target, dtype=updates.dtype)
     elif reduction == "max":
-        if not target_given:
-            target = np.ones(shape, dtype=updates.dtype) * -1e12
         np.maximum.at(target, indices_tuple, updates)
-        if not target_given:
-            target = np.where(target == -1e12, 0.0, target)
-            target = np.asarray(target, dtype=updates.dtype)
     else:
         raise ivy.utils.exceptions.IvyException(
-            'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
-                reduction
-            )
+            "reduction is {}, but it must be one of "
+            '"sum", "min", "max" or "replace"'.format(reduction)
         )
     if ivy.exists(out):
         return ivy.inplace_update(out, _to_device(target))
@@ -383,6 +366,7 @@ def vmap(
                 message="""in_axes should have a length equivalent to the number
                 of positional arguments to the function being vectorized or it
                 should be an integer""",
+                as_array=False,
             )
 
         # checking uniqueness of axis_size
@@ -406,6 +390,7 @@ def vmap(
             ivy.utils.assertions.check_any(
                 [ivy.exists(ax) for ax in in_axes],
                 message="At least one of the axes should be specified (not None)",
+                as_array=False,
             )
         else:
             ivy.utils.assertions.check_exists(
@@ -448,7 +433,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

@@ -1,10 +1,12 @@
 """Base class for deriving trainable modules."""
 
 # global
+import functools
 import os
 import abc
 import copy
-from typing import Optional, List, Tuple, Dict
+import pickle
+from typing import Optional, Tuple, Dict
 
 # local
 import ivy
@@ -109,11 +111,9 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy")
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
@@ -128,7 +128,15 @@ class Module(ModuleConverters, ModuleHelpers):
     # Private #
     # --------#
 
-    def _fn_with_var_arg(self, fn, v_fn, /):
+    def _fn_with_var_arg_wrapper(
+        self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
+    ):
+        if "v" in kw.keys():
+            del kw["v"]
+        v = v_fn(self.v, keychain_mappings, orig_key_chain)
+        return fn(*a, **kw, v=v)
+
+    def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
         """
         Extract variables from `v_fn` and use it as inputs for `fn`.
 
@@ -136,12 +144,13 @@ class Module(ModuleConverters, ModuleHelpers):
         variables as inputs to the call function fn of the module.
         """
 
-        def _fn_with_var_arg_wrapper(*a, **kw):
-            if "v" in kw.keys():
-                del kw["v"]
-            v = v_fn(self.v)
-            return fn(*a, **kw, v=v)
-
+        _fn_with_var_arg_wrapper = functools.partial(
+            self._fn_with_var_arg_wrapper,
+            fn=fn,
+            v_fn=v_fn,
+            keychain_mappings=keychain_mappings,
+            orig_key_chain=orig_key_chain,
+        )
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
@@ -170,10 +179,8 @@ class Module(ModuleConverters, ModuleHelpers):
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
-                depth=depth, flatten_key_chains=flatten_key_chains
-            )
-            obj.top_mod = lambda depth=None: self._top_mod_fn(depth=depth)
+            obj.top_v = self._top_v_fn
+            obj.top_mod = self._top_mod_fn
             self._sub_mods.add(obj)
             return obj.v
         elif isinstance(obj, (list, tuple)):
@@ -261,8 +268,7 @@ class Module(ModuleConverters, ModuleHelpers):
             orig_key_chain = key[1:] if key[0] == "_" else key
 
             obj.__call__ = self._fn_with_var_arg(
-                obj.__call__,
-                lambda v_: self._extract_v(v_, keychain_mappings, orig_key_chain),
+                obj.__call__, self._extract_v, keychain_mappings, orig_key_chain
             )
             return
         elif isinstance(obj, (list, tuple)):
@@ -329,9 +335,9 @@ class Module(ModuleConverters, ModuleHelpers):
 
         created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
         vs_ids.cont_map(
-            lambda x, kc: unique_callback(x, kc)
-            if x not in ids
-            else found_dup_callback(x, kc)
+            lambda x, kc: (
+                unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc)
+            )
         )
         for dup_kc in duplicate_keychains:
             vs = vs.cont_prune_key_chain(dup_kc)
@@ -493,11 +499,9 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy")
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,
@@ -659,50 +663,30 @@ class Module(ModuleConverters, ModuleHelpers):
 
     def show_graph(
         self,
-        *args,
-        v=None,
-        stateful: Optional[List] = None,
-        arg_stateful_idxs: Optional[List] = None,
-        kwarg_stateful_idxs: Optional[List] = None,
         randomness_factor: float = 0.1,
         save_to_disk: bool = False,
+        notebook: bool = False,
         with_edge_labels: bool = True,
         with_arg_labels: bool = True,
         with_output_labels: bool = True,
         output_connected_only: bool = True,
-        include_generators: bool = True,
-        array_caching: bool = True,
         highlight_subgraph: Optional[int] = None,
         fname: Optional[str] = None,
-        return_graph: bool = False,
-        **kwargs,
     ):
-        self(*args, v=v, **kwargs)  # for on call build modes
-        if not self._built:
-            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
-        kwargs["v"] = ivy.default(v, self.v)
-        graph = ivy.show_graph(
-            self._call,
-            *args,
-            **kwargs,
-            stateful=stateful,
-            arg_stateful_idxs=arg_stateful_idxs,
-            kwarg_stateful_idxs=kwarg_stateful_idxs,
-            randomness_factor=randomness_factor,
+        if not ivy.exists(self._module_graph):
+            raise ValueError("You must compile the module to display the graph.")
+
+        return self._module_graph.show(
             save_to_disk=save_to_disk,
+            notebook=notebook,
             with_edge_labels=with_edge_labels,
             with_arg_labels=with_arg_labels,
             with_output_labels=with_output_labels,
             output_connected_only=output_connected_only,
-            include_generators=include_generators,
-            array_caching=array_caching,
+            randomness_factor=randomness_factor,
             highlight_subgraph=highlight_subgraph,
             fname=fname,
-            return_graph=return_graph,
         )
-
-        if return_graph:
-            return graph
 
     def compile(
         self,
@@ -743,3 +727,40 @@ class Module(ModuleConverters, ModuleHelpers):
         )
 
         self._lazy_compiled = False
+
+    def save(self, filename):
+        """
+        Save the module object to disk using pickle.
+
+        Parameters
+        ----------
+        filename : str
+            The name of the file to save the module object to.
+        """
+        if ivy.current_backend_str() == "paddle":
+            self._convert_tensors_to_numpy()
+        with open(filename, "wb") as f:
+            pickle.dump(self, f)
+        if ivy.current_backend_str() == "paddle":
+            self._convert_numpy_to_tensors()
+
+    @staticmethod
+    def load(filename):
+        """
+        Load a module object from disk using pickle.
+
+        Parameters
+        ----------
+        filename : str
+            The name of the file to load the module object from.
+
+        Returns
+        -------
+        Module
+            The loaded module object.
+        """
+        with open(filename, "rb") as f:
+            loaded = pickle.load(f)
+        if ivy.current_backend_str() == "paddle":
+            loaded._convert_numpy_to_tensors()
+        return loaded

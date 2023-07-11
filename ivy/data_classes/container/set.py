@@ -13,6 +13,7 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -30,6 +31,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -75,6 +79,7 @@ class _ContainerWithSet(ContainerBase):
             "unique_all",
             x,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -86,6 +91,7 @@ class _ContainerWithSet(ContainerBase):
         /,
         *,
         axis: Optional[int] = None,
+        by_value: bool = True,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -103,6 +109,9 @@ class _ContainerWithSet(ContainerBase):
         axis
             the axis to apply unique on. If None, the unique elements of the flattened
             ``x`` are returned.
+        by_value
+            If False, the unique elements will be sorted in the same order that they
+            occur in ''x''. Otherwise, they will be sorted by value.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -147,6 +156,7 @@ class _ContainerWithSet(ContainerBase):
         return self._static_unique_all(
             self,
             axis=axis,
+            by_value=by_value,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -351,6 +361,7 @@ class _ContainerWithSet(ContainerBase):
         Example
         -------
         1. Get the unique values of a container.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values()
         >>> print(y)
@@ -359,7 +370,9 @@ class _ContainerWithSet(ContainerBase):
             'b': [2, 3],
             'c': [4]
         }
+
         2. Get the unique values of a container along a specific key chain.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = x.unique_values(key_chains=["a", "b"])
         >>> print(y)
@@ -367,7 +380,9 @@ class _ContainerWithSet(ContainerBase):
             'a': [1, 2, 3],
             'b': [2, 3]
         }
+
         3. Get the unique values of a container and store them in a new container.
+
         >>> x = ivy.Container(a=[1, 2, 3], b=[2, 2, 3], c=[4, 4, 4])
         >>> y = ivy.Container()
         >>> y = x.unique_values(out=y)

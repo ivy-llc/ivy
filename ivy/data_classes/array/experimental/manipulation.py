@@ -43,6 +43,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -119,6 +126,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             The array to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -261,8 +275,9 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         k: int,
         /,
         *,
-        axis: Optional[int] = None,
+        axis: int = -1,
         largest: bool = True,
+        sorted: bool = True,
         out: Optional[tuple] = None,
     ) -> Tuple[ivy.Array, ivy.NativeArray]:
         """
@@ -280,6 +295,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The axis along which we must return the top elements default value is 1.
         largest
             If largest is set to False we return k smallest elements of the array.
+        sorted
+            If sorted is set to True we return the elements in sorted order.
         out:
             Optional output tuple, for writing the result to. Must have two arrays,
             with a shape that the returned tuple broadcast to.
@@ -298,7 +315,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> print(y)
         top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
         """
-        return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
+        return ivy.top_k(self, k, axis=axis, largest=largest, sorted=sorted, out=out)
 
     @handle_view
     def fliplr(
@@ -317,6 +334,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             The array to be flipped. Must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -386,6 +410,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             input array to flatten.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -470,7 +501,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             [ 2, 12,  8, 14]]]))
         """
         return ivy.flatten(
-            self._data, copy=copy, start_dim=start_dim, end_dim=end_dim, out=out
+            self._data,
+            copy=copy,
+            start_dim=start_dim,
+            end_dim=end_dim,
+            order=order,
+            out=out,
         )
 
     def pad(
@@ -481,6 +517,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         mode: Union[
             Literal[
                 "constant",
+                "dilated",
                 "edge",
                 "linear_ramp",
                 "maximum",
@@ -522,7 +559,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def vsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
         copy: Optional[bool] = None,
@@ -536,11 +573,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             Input array.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -563,7 +607,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
     @handle_view
     def dsplit(
         self: ivy.Array,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array],
         /,
         *,
         copy: Optional[bool] = None,
@@ -580,8 +624,15 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -619,6 +670,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -684,6 +742,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -717,6 +782,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             Input array. Cannot be a scalar input.
         arys
             An arbitrary number of input arrays.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -801,8 +873,15 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -848,6 +927,13 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         shape
             A 1-D Array indicates the shape you want to expand to,
             following the broadcast rule
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -964,3 +1050,18 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             The result of the scan.
         """
         return ivy.associative_scan(self._data, fn, reverse=reverse, axis=axis)
+
+    def unique_consecutive(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+    ) -> Tuple[ivy.Array, ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.unique_consecutive.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unique_consecutive also applies to this method with minimal
+        changes.
+        """
+        return ivy.unique_consecutive(self._data, axis=axis)

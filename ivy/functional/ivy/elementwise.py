@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     integer_arrays_to_float,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -19,18 +20,19 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
+    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> ivy.Array:  # noqa
     """Calculate the absolute value for each element ``x_i`` of the input array ``x``
     (i.e., the element-wise result has the same magnitude as the respective element in
     ``x`` but has positive sign).
@@ -41,19 +43,36 @@ def abs(
 
     **Special Cases**
 
-    For this particular case,
+    For real-valued floating-point operands,
 
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If ``x_i`` is ``-0``, the result is ``+0``.
     - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
 
+    For complex floating-point operands,
+    let ``a = real(x_i)`` and ``b = imag(x_i)``. and
+
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
+    (including ``NaN``), the result is ``+infinity``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``,
+    the result is ``+infinity``.
+    - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
+    - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN``.
+    - If ``a`` is ``Na``N and ``b`` is ``NaN``, the result is ``NaN``.
+
     Parameters
     ----------
     x
-        input array. Should have a numeric data type.
+        input array. Should have a numeric data type
+    where
+        optional boolean mask
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+
 
     Returns
     -------
@@ -64,7 +83,8 @@ def abs(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.abs.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.abs.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -93,7 +113,7 @@ def abs(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),b=ivy.array([4.5, -5.3, -0, -2.3]))
+    >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]), b=ivy.array([4.5, -5.3, -0, -2.3])) # noqa
     >>> y = ivy.abs(x)
     >>> print(y)
     {
@@ -102,15 +122,16 @@ def abs(
     }
 
     """
-    return ivy.current_backend(x).abs(x, out=out)
+
+    return ivy.current_backend(x).abs(x, out=out, where=where)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -148,7 +169,8 @@ def acos(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acos.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.acos.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -184,13 +206,13 @@ def acos(
     return ivy.current_backend(x).acos(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -229,7 +251,8 @@ def acosh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.acosh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.acosh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -266,11 +289,11 @@ def acosh(
     return ivy.current_backend(x).acosh(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def add(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -343,7 +366,8 @@ def add(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.add.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.add.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -386,12 +410,12 @@ def add(
     return ivy.current_backend(x1, x2).add(x1, x2, alpha=alpha, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -430,7 +454,8 @@ def asin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.asin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -469,13 +494,13 @@ def asin(
     return ivy.current_backend(x).asin(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -515,7 +540,8 @@ def asinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.asinh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.asinh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -558,12 +584,12 @@ def asinh(
     return ivy.current_backend(x).asinh(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -604,7 +630,8 @@ def atan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.atan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -640,12 +667,12 @@ def atan(
     return ivy.current_backend(x).atan(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -732,7 +759,8 @@ def atan2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atan2.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.atan2.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -813,13 +841,13 @@ def atan2(
     return ivy.current_backend(x1).atan2(x1, x2, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -847,7 +875,8 @@ def atanh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.atanh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.atanh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -884,11 +913,11 @@ def atanh(
     return ivy.current_backend(x).atanh(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_and(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -920,7 +949,8 @@ def bitwise_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_and.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.bitwise_and.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -975,12 +1005,12 @@ def bitwise_and(
     return ivy.current_backend(x1, x2).bitwise_and(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_invert(
     x: Union[int, bool, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -1006,7 +1036,8 @@ def bitwise_invert(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_invert.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.bitwise_invert.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1049,11 +1080,11 @@ def bitwise_invert(
     return ivy.current_backend(x).bitwise_invert(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_left_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1086,7 +1117,8 @@ def bitwise_left_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_left_shift.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.bitwise_left_shift.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1097,11 +1129,11 @@ def bitwise_left_shift(
     return ivy.current_backend(x1, x2).bitwise_left_shift(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_or(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1184,11 +1216,11 @@ def bitwise_or(
     return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_right_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1225,7 +1257,8 @@ def bitwise_right_shift(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_right_shift.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.bitwise_right_shift.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1297,11 +1330,11 @@ def bitwise_right_shift(
     return ivy.current_backend(x1, x2).bitwise_right_shift(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def bitwise_xor(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1338,7 +1371,8 @@ def bitwise_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.bitwise_xor.html>`_
     in the standard.
 
     Both the description and the type hints above assume an array input for simplicity,
@@ -1400,12 +1434,12 @@ def bitwise_xor(
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1445,7 +1479,8 @@ def ceil(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.ceil.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.ceil.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1487,13 +1522,13 @@ def ceil(
     return ivy.current_backend(x).ceil(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1533,7 +1568,8 @@ def cos(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cos.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.cos.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1568,13 +1604,13 @@ def cos(
     return ivy.current_backend(x).cos(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1614,7 +1650,8 @@ def cosh(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.cosh.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.cosh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1654,11 +1691,11 @@ def cosh(
     return ivy.current_backend(x).cosh(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -1691,7 +1728,8 @@ def divide(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.divide.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.divide.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1740,11 +1778,11 @@ def divide(
     return ivy.current_backend(x1, x2).divide(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1777,7 +1815,8 @@ def equal(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.equal.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1827,13 +1866,13 @@ def equal(
     return ivy.current_backend(x1, x2).equal(x1, x2, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def exp(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1873,7 +1912,8 @@ def exp(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.exp.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.exp.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1925,13 +1965,171 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def imag(
+    val: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the Imaginary part of a complex numbers(x+yj).
+
+    Parameters
+    ----------
+    val
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array with the imaginary part of complex numbers.
+
+    Examples
+    --------
+    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
+    >>> b
+    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
+    >>> ivy.imag(b)
+    ivy.array([2., 4., 6.])
+    """
+    return ivy.current_backend(val).imag(val, out=out)
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def angle(
+    z: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    deg: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate Element-wise the angle for an array of complex numbers(x+yj).
+
+    Parameters
+    ----------
+    z
+        Array-like input.
+    deg
+        optional bool.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns an array of angles for each complex number in the input.
+        If deg is False(default), angle is calculated in radian and if
+        deg is True, then angle is calculated in degrees.
+
+    Examples
+    --------
+    >>> ivy.set_backend('tensorflow')
+    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
+    >>> z
+    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
+    >>> ivy.angle(z)
+    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
+    >>> ivy.set_backend('numpy')
+    >>> ivy.angle(z,deg=True)
+    ivy.array([135., 135., -45.])
+    """
+    return ivy.current_backend(z).angle(z, deg=deg, out=out)
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the greatest common divisor of |x1| and |x2|.
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise gcd of |x1| and |x2|.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([1.,    1.,   3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([1.,   2.,  1.])
+    """
+    return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
+
+
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def exp2(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate 2**p for all p in the input array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.exp2(x)
+    ivy.array([2.,    4.,   8.])
+    >>> x = [5, 6, 7]
+    >>> ivy.exp2(x)
+    ivy.array([32.,   64.,  128.])
+    """
+    return ivy.current_backend(x).exp2(x, out=out)
+
+
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1976,7 +2174,8 @@ def expm1(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.expm1.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.expm1.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2009,12 +2208,12 @@ def expm1(
     return ivy.current_backend(x).expm1(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2054,7 +2253,8 @@ def floor(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.floor.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2098,11 +2298,11 @@ def floor(
     return ivy.current_backend(x).floor(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def floor_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2135,7 +2335,8 @@ def floor_divide(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.floor_divide.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.floor_divide.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2186,11 +2387,55 @@ def floor_divide(
     return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def fmin(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Compute the element-wise minimums of two arrays. Differs from ivy.minimum in the
+    case where one of the elements is NaN. ivy.minimum returns the NaN element while
+    ivy.fmin returns the non-NaN element.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with element-wise minimums.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([2, 3, 4])
+    >>> x2 = ivy.array([1, 5, 2])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([1, 3, 2])
+
+    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
+    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
+    >>> ivy.fmin(x1, x2)
+    ivy.array([ 0.,  0., nan])
+    """
+    return ivy.current_backend(x1, x2).fmin(x1, x2, out=out)
+
+
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def greater(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2221,7 +2466,8 @@ def greater(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.greater.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2282,11 +2528,11 @@ def greater(
     return ivy.current_backend(x1, x2).greater(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def greater_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2318,7 +2564,8 @@ def greater_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.greater_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.greater_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2360,7 +2607,7 @@ def greater_equal(
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]), b=ivy.array([[5.], [6.], [7.]])) # noqa
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
     {
@@ -2382,11 +2629,11 @@ def greater_equal(
     return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2418,7 +2665,8 @@ def less_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.less_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.less_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2464,11 +2712,11 @@ def less_equal(
     return ivy.current_backend(x1, x2).less_equal(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def multiply(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2495,7 +2743,8 @@ def multiply(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.multiply.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.multiply.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2559,13 +2808,13 @@ def multiply(
     return ivy.current_backend(x1, x2).multiply(x1, x2, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2594,7 +2843,8 @@ def isfinite(
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the `docstring
-    <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isfinite.html>`
+    <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.isfinite.html>`
     _ in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2637,13 +2887,13 @@ def isfinite(
     return ivy.current_backend(x).isfinite(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2678,7 +2928,8 @@ def isinf(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isinf.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.isinf.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2744,13 +2995,13 @@ def isinf(
     )
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2778,7 +3029,8 @@ def isnan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.isnan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.isnan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2838,11 +3090,11 @@ def isnan(
     return ivy.current_backend(x).isnan(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def less(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2924,13 +3176,13 @@ def less(
     return ivy.current_backend(x1).less(x1, x2, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2998,13 +3250,13 @@ def log(
     return ivy.current_backend(x).log(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3043,7 +3295,8 @@ def log10(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log10.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.log10.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3082,13 +3335,13 @@ def log10(
     return ivy.current_backend(x).log10(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3099,9 +3352,11 @@ def log1p(
     Calculate an implementation-dependent approximation to log(1+x), where log
     refers to the natural (base e) logarithm.
     .. note::
-       The purpose of this function is to calculate ``log(1+x)`` more accurately when `x` is close to zero.
-       Accordingly, conforming implementations should avoid implementing this function as simply ``log(1+x)``.
-       See FDLIBM, or some other IEEE 754-2019 compliant mathematical library, for a potential reference implementation.
+       The purpose of this function is to calculate ``log(1+x)`` more accurately
+       when `x` is close to zero. Accordingly, conforming implementations should avoid
+       implementing this function as simply ``log(1+x)``.
+       See FDLIBM, or some other IEEE 754-2019 compliant mathematical library,
+       for a potential reference implementation.
 
     **Special cases**
 
@@ -3132,7 +3387,8 @@ def log1p(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log1p.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.log1p.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3173,13 +3429,13 @@ def log1p(
     return ivy.current_backend(x).log1p(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3219,7 +3475,8 @@ def log2(
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
     This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.log2.html>`_  # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.log2.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3230,11 +3487,11 @@ def log2(
     return ivy.current_backend(x).log2(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3276,7 +3533,8 @@ def logaddexp(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logaddexp.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.logaddexp.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3330,14 +3588,51 @@ def logaddexp(
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def logaddexp2(
+    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Calculate log2(2**x1 + 2**x2).
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise logaddexp2 of x1 and x2.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.logaddexp2(x1, x2)
+    ivy.array([4.169925, 5.169925, 6.169925])
+    """
+    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
+
+
 # ToDo: compare the examples against special case for zeros.
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def logical_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3369,7 +3664,8 @@ def logical_and(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_and.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.logical_and.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3431,12 +3727,12 @@ def logical_and(
     return ivy.current_backend(x1, x2).logical_and(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3478,7 +3774,8 @@ def logical_not(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_not.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.logical_not.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3525,11 +3822,11 @@ def logical_not(
     return ivy.current_backend(x).logical_not(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3567,7 +3864,8 @@ def logical_or(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_or.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.logical_or.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3613,11 +3911,11 @@ def logical_or(
     return ivy.current_backend(x1, x2).logical_or(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3643,7 +3941,8 @@ def logical_xor(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.logical_xor.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.logical_xor.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3709,12 +4008,71 @@ def logical_xor(
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def nan_to_num(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: bool = True,
+    nan: Union[float, int] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Replace NaN with zero and infinity with large finite numbers (default behaviour) or
+    with the numbers defined by the user using the nan, posinf and/or neginf keywords.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    copy
+        Whether to create a copy of x (True) or to replace values in-place (False).
+        The in-place operation only occurs if casting to an array does not require
+        a copy. Default is True.
+    nan
+        Value to be used to fill NaN values. If no value is passed then NaN values
+        will be replaced with 0.0.
+    posinf
+        Value to be used to fill positive infinity values. If no value is passed
+        then positive infinity values will be replaced with a very large number.
+    neginf
+        Value to be used to fill negative infinity values.
+        If no value is passed then negative infinity values
+        will be replaced with a very small (or negative) number.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with the non-finite values replaced.
+        If copy is False, this may be x itself.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, nan])
+    >>> ivy.nan_to_num(x)
+    ivy.array([1.,    1.,   3.,   0.0])
+    >>> x = ivy.array([1, 2, 3, inf])
+    >>> ivy.nan_to_num(x, posinf=5e+100)
+    ivy.array([1.,   2.,   3.,   5e+100])
+    """
+    return ivy.current_backend(x).nan_to_num(
+        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
+    )
+
+
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def negative(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -3739,7 +4097,8 @@ def negative(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.negative.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.negative.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3783,11 +4142,11 @@ def negative(
     return ivy.current_backend(x).negative(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def not_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -3818,7 +4177,8 @@ def not_equal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.not_equal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.not_equal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -3940,12 +4300,12 @@ def not_equal(
     return ivy.current_backend(x1, x2).not_equal(x1, x2, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def positive(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -3970,7 +4330,8 @@ def positive(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.positive.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.positive.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4015,11 +4376,11 @@ def positive(
     return ivy.current_backend(x).positive(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def pow(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4106,7 +4467,8 @@ def pow(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.pow.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.pow.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4150,11 +4512,76 @@ def pow(
 pow.unsupported_gradients = {"torch": ["float16"]}
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def real(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Test each element ``x_i`` of the input array ``x`` to
+    take only real part from it.
+    Returns a float array, where it only contains .
+    If element has complex type with zero complex part, the return value
+    will be that element, else it only returns real part.
+
+    Parameters
+    ----------
+    x
+        input array.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing test results. An element ``out_i`` is
+        ``real number`` if ``x_i`` contain real number part only
+        and if it is ``real number with complex part also`` then it
+        returns the real number part.
+        The returned array should have a data type of ``float``.
+
+    The descriptions above assume an array input for simplicity, but
+    the method also accepts :class:`ivy.Container` instances
+    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
+    instances, as shown in the type hints and also the examples below.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([[[1.1], [2.], [-6.3]]])
+
+    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
+    >>> z = ivy.real(x)
+    >>> print(z)
+    ivy.array([4.2, 0., 7.])
+
+    With :class:`ivy.Container` input:
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
+                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> z = ivy.real(x)
+    >>> print(z)
+    {
+        a: ivy.array([-6.7, 0.314, 1.23]),
+        b: ivy.array([0., 5.32, 3.001])
+    }
+    """
+    return ivy.current_backend(x).real(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4237,7 +4664,8 @@ def remainder(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.remainder.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.remainder.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4276,12 +4704,12 @@ def remainder(
     return ivy.current_backend(x1, x2).remainder(x1, x2, modulus=modulus, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4328,7 +4756,8 @@ def round(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.round.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.round.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4375,16 +4804,17 @@ def round(
     return ivy.current_backend(x).round(x, decimals=decimals, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return an indication of the sign of a number for each element ``x_i`` of the
@@ -4395,11 +4825,18 @@ def sign(
     - If ``x_i`` is less than ``0``, the result is ``-1``.
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
+    - For complex numbers ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``
 
     Parameters
     ----------
     x
         input array. Should have a numeric data type.
+    np_variant
+        Handles complex numbers like numpy does If ``True``,
+        ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``.
+        otherwise, For complex numbers, ``y = sign(x) = x / |x| if x != 0,
+        otherwise y = 0.``
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4413,7 +4850,8 @@ def sign(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sign.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sign.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4449,16 +4887,16 @@ def sign(
         c: ivy.array([-1., -1., -1., 1.])
     }
     """
-    return ivy.current_backend(x).sign(x, out=out)
+    return ivy.current_backend(x).sign(x, np_variant=np_variant, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4496,7 +4934,8 @@ def sin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4538,13 +4977,13 @@ def sin(
     return ivy.current_backend(x).sin(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4583,7 +5022,8 @@ def sinh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sinh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sinh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4617,13 +5057,13 @@ def sinh(
     return ivy.current_backend(x).sinh(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4662,7 +5102,8 @@ def sqrt(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.sqrt.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.sqrt.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4689,7 +5130,7 @@ def sqrt(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]]))
+    >>> x = ivy.Container(a=ivy.array([44., 56., 169.]), b=ivy.array([[49.,1.], [0,20.]])) # noqa
     >>> y = ivy.sqrt(x)
     >>> print(y)
     {
@@ -4701,12 +5142,12 @@ def sqrt(
     return ivy.current_backend(x).sqrt(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4731,7 +5172,8 @@ def square(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.square.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.square.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4771,11 +5213,11 @@ def square(
     return ivy.current_backend(x).square(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def subtract(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4808,7 +5250,8 @@ def subtract(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.subtract.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.subtract.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4833,12 +5276,12 @@ def subtract(
     return ivy.current_backend(x1).subtract(x1, x2, alpha=alpha, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4877,7 +5320,8 @@ def tan(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tan.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.tan.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -4919,13 +5363,13 @@ def tan(
     return ivy.current_backend(x).tan(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4933,7 +5377,9 @@ def tanh(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation to the hyperbolic tangent, having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each element ``x_i`` of the input array ``x``.
+    Calculate an implementation-dependent approximation to the hyperbolic tangent,
+    having domain ``[-infinity, +infinity]`` and codomain ``[-1, +1]``, for each
+    element ``x_i`` of the input array ``x``.
 
     **Special cases**
 
@@ -4948,7 +5394,8 @@ def tanh(
     Parameters
     ----------
     x
-        input array whose elements each represent a hyperbolic angle. Should have a real-valued floating-point data
+        input array whose elements each represent a hyperbolic angle. Should have a
+        real-valued floating-point data
         type.
     out
         optional output, for writing the result to. It must have a shape that the inputs
@@ -4957,13 +5404,15 @@ def tanh(
     Returns
     -------
     ret
-        an array containing the hyperbolic tangent of each element in ``x``. The returned array must have a real-valued
-        floating-point data type determined by :ref:`type-promotion`.
+        an array containing the hyperbolic tangent of each element in ``x``.
+        The returned array must have a real-valued floating-point data type
+        determined by :ref:`type-promotion`.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.tanh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.tanh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5006,12 +5455,69 @@ def tanh(
     return ivy.current_backend(x).tanh(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def trapz(
+    y: ivy.Array,
+    /,
+    *,
+    x: Optional[ivy.Array] = None,
+    dx: float = 1.0,
+    axis: int = -1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Integrate along the given axis using the composite trapezoidal rule.
+
+    If x is provided, the integration happens in sequence along its elements
+    - they are not sorted..
+
+    Parameters
+    ----------
+    y
+        The array that should be integrated.
+    x
+        The sample points corresponding to the input array values.
+        If x is None, the sample points are assumed to be evenly spaced
+        dx apart. The default is None.
+    dx
+        The spacing between sample points when x is None. The default is 1.
+    axis
+        The axis along which to integrate.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Definite integral of n-dimensional array as approximated along
+        a single axis by the trapezoidal rule. If the input array is a
+        1-dimensional array, then the result is a float. If n is greater
+        than 1, then the result is an n-1 dimensional array.
+
+    Examples
+    --------
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3])
+    4.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], x=[4, 6, 8])
+    8.0
+    >>> y = ivy.array([1, 2, 3])
+    >>> ivy.trapz([1,2,3], dx=2)
+    8.0
+    """
+    return ivy.current_backend(y).trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5051,7 +5557,8 @@ def trunc(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.trunc.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.trunc.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -5096,12 +5603,12 @@ def trunc(
 # ------#
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5132,11 +5639,11 @@ def erf(
     return ivy.current_backend(x).erf(x, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -5220,11 +5727,11 @@ def maximum(
     return ivy.current_backend(x1).maximum(x1, x2, use_where=use_where, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -5309,12 +5816,12 @@ def minimum(
     return ivy.current_backend(x1).minimum(x1, x2, use_where=use_where, out=out)
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def reciprocal(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -5346,12 +5853,12 @@ def reciprocal(
     return ivy.current_backend(x).reciprocal(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def deg2rad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5425,12 +5932,12 @@ def deg2rad(
     return ivy.current_backend(x).deg2rad(x, out=out)
 
 
-@handle_array_function
-@integer_arrays_to_float
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_array_function
 def rad2deg(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5503,10 +6010,11 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@handle_array_function
-@handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
 def trunc_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -5548,15 +6056,22 @@ def trunc_divide(
     return ivy.trunc(ivy.divide(x1, x2), out=out)
 
 
-trunc_divide.mixed_function = True
+trunc_divide.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def isreal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5615,9 +6130,9 @@ def isreal(
     return ivy.current_backend(x).isreal(x, out=out)
 
 
-@to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 def fmod(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -5654,4 +6169,43 @@ def fmod(
     >>> ivy.fmod(x1, x2)
     ivy.array([ nan,  nan,  nan])
     """
-    return ivy.current_backend().fmod(x1, x2, out=out)
+    return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def lcm(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the element-wise least common multiple (LCM) of x1 and x2.
+
+    Parameters
+    ----------
+    x1
+        first input array, must be integers
+    x2
+        second input array, must be integers
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        an array that includes the element-wise least common multiples of x1 and x2
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x1=ivy.array([2, 3, 4])
+    >>> x2=ivy.array([5, 7, 15])
+    >>> x1.lcm(x1, x2)
+    ivy.array([10, 21, 60])
+    """
+    return ivy.current_backend(x1, x2).lcm(x1, x2, out=out)

@@ -1,4 +1,3 @@
-# Testing Function
 # global
 import numpy as np
 from hypothesis import strategies as st
@@ -10,12 +9,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="numpy.indices",
-    dimensions=helpers.get_shape(),
+    dimensions=helpers.get_shape(min_num_dims=1),
     dtype=helpers.get_dtypes(kind="float", full=False),
-    sparse=helpers.get_dtypes(kind="bool"),
+    sparse=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_indices(
+def test_numpy_indices(
     *,
     dimensions,
     dtype,

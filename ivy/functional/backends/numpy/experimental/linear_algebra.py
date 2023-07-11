@@ -20,6 +20,7 @@ def diagflat(
     num_cols: int = -1,
     out: Optional[np.ndarray] = None,
 ):
+    out_dtype = x.dtype if out is None else out.dtype
     if len(x.shape) > 1:
         x = np.ravel(x)
 
@@ -67,14 +68,14 @@ def diagflat(
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     output_array += np.pad(
-        diagonal_to_add,
+        diagonal_to_add.astype(output_array.dtype),
         [
             (0, max([output_array.shape[0] - diagonal_to_add.shape[0], 0])),
             (0, max([output_array.shape[1] - diagonal_to_add.shape[1], 0])),
         ],
         mode="constant",
     )
-    ret = output_array.astype(x.dtype)
+    ret = output_array.astype(out_dtype)
 
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
@@ -96,7 +97,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.11.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.25.1 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -172,33 +173,3 @@ def cond(
 
 
 cond.support_native_out = False
-
-
-def cov(
-    x1: np.ndarray,
-    x2: np.ndarray = None,
-    /,
-    *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[np.ndarray] = None,
-    aweights: Optional[np.ndarray] = None,
-    dtype: Optional[np.dtype] = None,
-) -> np.ndarray:
-    if fweights is not None:
-        fweights = fweights.astype(np.int64)
-
-    return np.cov(
-        m=x1,
-        y=x2,
-        rowvar=rowVar,
-        bias=bias,
-        ddof=ddof,
-        fweights=fweights,
-        aweights=aweights,
-        dtype=dtype,
-    )
-
-
-cov.support_native_out = False

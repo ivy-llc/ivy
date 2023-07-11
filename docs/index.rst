@@ -1,3 +1,5 @@
+.. title:: Home
+
 .. include:: ../README.rst
 
 .. toctree::
@@ -5,13 +7,14 @@
   :maxdepth: -1
   :caption: Overview
 
+  overview/get_started.rst
   overview/background.rst
   overview/design.rst
   overview/related_work.rst
   overview/extensions.rst
   overview/contributing.rst
   overview/deep_dive.rst
-  Examples <https://lets-unify.ai/demos/>
+  Examples <https://unify.ai/demos/>
   overview/faq.rst
   overview/glossary.rst
 
@@ -21,6 +24,7 @@
   :maxdepth: -1
   :caption: Compiling and Transpiling
 
+  compiler/setting_up.rst
   compiler/compiler.rst
   compiler/transpiler.rst
 
@@ -51,6 +55,5 @@
   :hide-table:
 
   ivy.stateful
-  ivy.nested_array
   ivy.utils
   ivy_tests.test_ivy.helpers

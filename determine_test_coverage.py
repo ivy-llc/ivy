@@ -5,46 +5,22 @@ import pickle  # noqa
 from tqdm import tqdm
 import bz2
 import _pickle as cPickle
+from run_tests_CLI.get_all_tests import get_all_tests
+
 
 # Shared Map
 tests = {}
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
-os.system("git config --global --add safe.directory /ivy")
-N = 40
-run_iter = int(sys.argv[1])
+N = 128
+run_iter = int(sys.argv[1]) - 1
 
-os.system(
-    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
-)
-test_names_without_backend = []
-test_names = []
-with open("test_names") as f:
-    for line in f:
-        if "ERROR" in line:
-            break
-        if not line.startswith("ivy_tests"):
-            continue
-        test_name = line[:-1]
-        pos = test_name.find("[")
-        if pos != -1:
-            test_name = test_name[:pos]
-        test_names_without_backend.append(test_name)
-
-for test_name in test_names_without_backend:
-    for backend in BACKENDS:
-        test_backend = test_name + "," + backend
-        test_names.append(test_backend)
-
-test_names = list(set(test_names))
-test_names.sort()
+test_names = get_all_tests()
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
 tests["tests_mapping"] = {}
 for i in range(len(test_names)):
     tests["tests_mapping"][test_names[i]] = i
-
 
 if __name__ == "__main__":
     directories = (
@@ -86,7 +62,6 @@ if __name__ == "__main__":
                                 )
                             i += 1
         os.system("find . -name \\*cover -type f -delete")
-
 
 commit_hash = ""
 for commit in Repository(".", order="reverse").traverse_commits():

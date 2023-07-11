@@ -1,9 +1,9 @@
 import sys
-import logging
 import numpy as np
 import mxnet as mx
 import ivy
 from ivy.func_wrapper import _dtype_from_version
+from ivy.utils.exceptions import IvyNotImplementedException
 
 backend_version = {"version": mx.__version__}
 if not ivy.is_local():
@@ -20,28 +20,25 @@ NativeShape = tuple
 NativeSparseArray = mx.ndarray.sparse.BaseSparseNDArray
 
 
-valid_devices = (["cpu", "gpu"],)
-invalid_devices = (["tpu"],)
+valid_devices = ("cpu", "gpu")
+invalid_devices = ("tpu",)
 
 # native data types
 native_int8 = np.dtype("int8")
-native_int16 = np.dtype("int16")
 native_int32 = np.dtype("int32")
 native_int64 = np.dtype("int64")
 native_uint8 = np.dtype("uint8")
 native_float16 = np.dtype("float16")
 native_float32 = np.dtype("float32")
 native_float64 = np.dtype("float64")
-native_complex64 = np.dtype("complex64")
-native_complex128 = np.dtype("complex128")
 native_double = native_float64
 native_bool = np.dtype("bool")
 
 
-valid_dtypes_dict = {
+# update these to add new dtypes
+valid_dtypes = {
     "1.9.1 and below": (
         ivy.int8,
-        ivy.int16,
         ivy.int32,
         ivy.int64,
         ivy.uint8,
@@ -49,62 +46,62 @@ valid_dtypes_dict = {
         ivy.float16,
         ivy.float32,
         ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
         ivy.bool,
     )
 }
-valid_dtypes = _dtype_from_version(valid_dtypes_dict, backend_version)
-valid_numeric_dtypes_dict = {
+valid_numeric_dtypes = {
     "1.9.1 and below": (
         ivy.int8,
-        ivy.int16,
         ivy.int32,
         ivy.int64,
         ivy.uint8,
-        ivy.bfloat16,
         ivy.float16,
         ivy.float32,
         ivy.float64,
-        ivy.complex64,
-        ivy.complex128,
     )
 }
-valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes_dict, backend_version)
-valid_int_dtypes_dict = {
-    "1.9.1 and below": (ivy.int8, ivy.int16, ivy.int32, ivy.int64, ivy.uint8)
+valid_int_dtypes = {"1.9.1 and below": (ivy.int8, ivy.int32, ivy.int64, ivy.uint8)}
+valid_float_dtypes = {"1.9.1 and below": (ivy.float16, ivy.float32, ivy.float64)}
+valid_uint_dtypes = {"1.9.1 and below": (ivy.uint8,)}
+valid_complex_dtypes = {"1.9.1 and below": ()}
+
+# leave these untouched
+valid_dtypes = _dtype_from_version(valid_dtypes, backend_version)
+valid_numeric_dtypes = _dtype_from_version(valid_numeric_dtypes, backend_version)
+valid_int_dtypes = _dtype_from_version(valid_int_dtypes, backend_version)
+valid_float_dtypes = _dtype_from_version(valid_float_dtypes, backend_version)
+valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes, backend_version)
+valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes, backend_version)
+
+
+# update these to add new dtypes
+invalid_dtypes = {"1.9.1 and below": (ivy.int16, ivy.uint32, ivy.uint64, ivy.uint16)}
+invalid_numeric_dtypes = {
+    "1.9.1 and below": (ivy.int16, ivy.uint32, ivy.uint64, ivy.uint16)
 }
-valid_int_dtypes = _dtype_from_version(valid_int_dtypes_dict, backend_version)
-valid_float_dtypes_dict = {
-    "1.9.1 and below": (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
+invalid_int_dtypes = {
+    "1.9.1 and below": (ivy.int16, ivy.uint16, ivy.uint32, ivy.uint64)
 }
-valid_float_dtypes = _dtype_from_version(valid_float_dtypes_dict, backend_version)
-valid_uint_dtypes_dict = {"1.9.1 and below": (ivy.uint8,)}
-valid_uint_dtypes = _dtype_from_version(valid_uint_dtypes_dict, backend_version)
-valid_complex_dtypes_dict = {"1.9.1 and below": (ivy.complex64, ivy.complex128)}
-valid_complex_dtypes = _dtype_from_version(valid_complex_dtypes_dict, backend_version)
-invalid_dtypes_dict = {"1.9.1 and below": (ivy.uint32, ivy.uint64, ivy.uint16)}
-invalid_dtypes = _dtype_from_version(invalid_dtypes_dict, backend_version)
-invalid_numeric_dtypes_dict = {"1.9.1 and below": (ivy.uint32, ivy.uint64, ivy.uint16)}
-invalid_numeric_dtypes = _dtype_from_version(
-    invalid_numeric_dtypes_dict, backend_version
-)
-invalid_int_dtypes_dict = {"1.9.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes_dict, backend_version)
-invalid_float_dtypes_dict = {"1.9.1 and below": ()}
-invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes_dict, backend_version)
-invalid_uint_dtypes_dict = {"1.9.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes_dict, backend_version)
-invalid_complex_dtypes_dict = {"1.9.1 and below": ()}
-invalid_complex_dtypes = _dtype_from_version(
-    invalid_complex_dtypes_dict, backend_version
-)
+invalid_float_dtypes = {"1.9.1 and below": (ivy.bfloat16,)}
+invalid_uint_dtypes = {"1.9.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"1.9.1 and below": (ivy.complex64, ivy.complex128)}
+
+
+# leave these untouched
+invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
+invalid_numeric_dtypes = _dtype_from_version(invalid_numeric_dtypes, backend_version)
+invalid_int_dtypes = _dtype_from_version(invalid_int_dtypes, backend_version)
+invalid_float_dtypes = _dtype_from_version(invalid_float_dtypes, backend_version)
+invalid_uint_dtypes = _dtype_from_version(invalid_uint_dtypes, backend_version)
+invalid_complex_dtypes = _dtype_from_version(invalid_complex_dtypes, backend_version)
+
+
 native_inplace_support = True
 supports_gradients = True
 
 
 def closest_valid_dtype(type=None, /, as_native=False):
-    raise NotImplementedError("mxnet.closest_valid_dtype Not Implemented")
+    raise IvyNotImplementedException()
 
 
 backend = "mxnet"

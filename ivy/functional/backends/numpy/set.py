@@ -4,12 +4,16 @@ from typing import Tuple, Optional
 from collections import namedtuple
 from packaging import version
 
+# local
+import ivy
+
 
 def unique_all(
     x: np.ndarray,
     /,
     *,
     axis: Optional[int] = None,
+    by_value: bool = True,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     Results = namedtuple(
         "Results",
@@ -34,6 +38,16 @@ def unique_all(
         )
         nan_idx = np.where(np.isnan(x.flatten()))[0]
         indices = np.concatenate((indices[:-1], nan_idx), axis=0)
+
+    if not by_value:
+        sort_idx = np.argsort(indices)
+        values = np.take(values, sort_idx, axis=axis)
+        counts = np.take(counts, sort_idx)
+        indices = np.take(indices, sort_idx)
+        inv_sort_idx = ivy.current_backend().invert_permutation(sort_idx)
+        inverse_indices = np.vectorize(lambda y: np.take(inv_sort_idx, y))(
+            inverse_indices
+        )
 
     return Results(
         values.astype(x.dtype),

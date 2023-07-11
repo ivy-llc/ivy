@@ -15,7 +15,7 @@ from ivy.func_wrapper import (
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "1.11.0 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -46,8 +46,7 @@ def argwhere(a, /, *, size=None, fill_value=None):
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
         logging.warning(
-            "'kind' argument to argsort is ignored; only 'stable' sorts "
-            "are supported."
+            "'kind' argument to argsort is ignored; only 'stable' sorts are supported."
         )
     if order is not None:
         raise ivy.utils.exceptions.IvyError(
@@ -112,19 +111,12 @@ def extract(condition, arr):
 
 
 @to_ivy_arrays_and_back
-def sort(x, axis=-1, descending=False, stable=True, out=None):
-    if axis == -1 and not descending and stable:
-        x = ivy.sort(x)
-    if axis == 1 and descending and not stable:
-        x = ivy.sort(x, axis=1, descending=True, stable=False)
-    if descending and not stable:
-        y = ivy.zeros(5)
-        x = ivy.sort(x, descending=True, stable=False, out=y)
-    if out == x:
-        x = ivy.sort(x, out=x)
-    return x
+def sort(a, axis=-1, kind="quicksort", order=None):
+    # todo: handle case where order is not None
+    return ivy.sort(a, axis=axis)
 
 
+@to_ivy_arrays_and_back
 def flatnonzero(a):
     return ivy.nonzero(ivy.reshape(a, (-1,)))
 

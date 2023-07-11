@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple, Union, List, Dict
+from typing import Optional, Union, List, Dict
 
 # local
 import ivy
@@ -7,60 +7,6 @@ from ivy.data_classes.container.base import ContainerBase
 
 
 class _ContainerWithCreationExperimental(ContainerBase):
-    @staticmethod
-    def static_triu_indices(
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return ContainerBase.cont_multi_map_in_function(
-            "triu_indices",
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
-    def triu_indices(
-        self: ivy.Container,
-        n_rows: int,
-        n_cols: Optional[int] = None,
-        k: int = 0,
-        /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        *,
-        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
-        out: Optional[Tuple[ivy.Array]] = None,
-    ) -> ivy.Container:
-        return self.static_triu_indices(
-            self,
-            n_rows,
-            n_cols,
-            k,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-            device=device,
-            out=out,
-        )
-
     @staticmethod
     def static_hann_window(
         window_length: Union[int, ivy.Container],
@@ -818,161 +764,101 @@ class _ContainerWithCreationExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_frombuffer(
-        buffer: ivy.Container,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
-        count: Optional[int] = -1,
-        offset: Optional[int] = 0,
+    def static_unsorted_segment_min(
+        data: ivy.Container,
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         r"""
-        ivy.Container static method variant of ivy.frombuffer. This method simply wraps
-        the function, and so the docstring for ivy.frombuffer also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
+
+        Note
+        ----
+        If the given segment ID `i` is negative, then the corresponding
+        value is dropped, and will not be included in the result.
 
         Parameters
         ----------
-        buffer
-            An object that exposes the buffer interface.
-        dtype
-            Data-type of the returned array; default: float.
-        count
-            Number of items to read. -1 means all data in the buffer.
-        offset
-            Start reading the buffer from this offset (in bytes); default: 0.
+        data
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `data`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `data`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is ``True``.
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
         prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
 
         Returns
         -------
-        out
-            1-dimensional array.
-
-        Examples
-        --------
-        With :class:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(
-        ...     a = b'\x00\x00\x00\x00\x00\x00\xf0?',
-        ...     b = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
-        ... )
-        >>> y = ivy.Container.static_frombuffer(x)
-        >>> print(y)
-        {
-            a: ivy.array([1.]),
-            b: ivy.array([1., 2.])
-        }
-
-        >>> x = ivy.Container(
-        ...     a = b'\x01\x02\x03\x04',
-        ...     b = b'\x05\x04\x03\x03\x02'
-        ... )
-        >>> y = ivy.Container.static_frombuffer(x, dtype=ivy.int8, count=3, offset=1)
-        >>> print(y)
-        {
-            a: ivy.array([2, 3, 4]),
-            b: ivy.array([4, 3, 3])
-        }
+        ret
+            A container, representing the result of a segmented min operation.
+            For each segment, it computes the min value in `data` where `segment_ids`
+            equals to segment ID.
         """
         return ContainerBase.cont_multi_map_in_function(
-            "frombuffer",
-            buffer,
-            dtype=dtype,
-            count=count,
-            offset=offset,
+            "unsorted_segment_min",
+            data,
+            segment_ids,
+            num_segments,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
 
-    def frombuffer(
+    def unsorted_segment_min(
         self: ivy.Container,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = float,
-        count: Optional[int] = -1,
-        offset: Optional[int] = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-    ) -> ivy.Container:
+        segment_ids: ivy.Container,
+        num_segments: Union[int, ivy.Container],
+    ):
         r"""
-        ivy.Container instance method variant of ivy.frombuffer. This method simply
-        wraps the function, and so the docstring for ivy.frombuffer also applies to this
-        method with minimal changes.
+        ivy.Container instance method variant of ivy.unsorted_segment_min. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_min
+        also applies to this method with minimal changes.
+
+        Note
+        ----
+        If the given segment ID `i` is negative, then the corresponding
+        value is dropped, and will not be included in the result.
 
         Parameters
         ----------
         self
-            An object that exposes the buffer interface.
-        dtype
-            Data-type of the returned array; default: float.
-        count
-            Number of items to read. -1 means all data in the buffer.
-        offset
-            Start reading the buffer from this offset (in bytes); default: 0.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
+            input array or container from which to gather the input.
+        segment_ids
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
 
         Returns
         -------
-        out
-            1-dimensional array.
-
-        Examples
-        --------
-        With :class:`ivy.Container` inputs:
-
-        >>> x = ivy.Container(
-        ...     a = b'\x00\x00\x00\x00\x00\x00\xf0?',
-        ...     b = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
-        ... )
-        >>> y = ivy.Container.static_frombuffer(x)
-        >>> print(y)
-        {
-            a: ivy.array([1.]),
-            b: ivy.array([1., 2.])
-        }
-
-        >>> x = ivy.Container(
-        ...     a = b'\x01\x02\x03\x04',
-        ...     b = b'\x05\x04\x03\x03\x02'
-        ... )
-        >>> y = ivy.frombuffer(x, dtype=ivy.int8, count=3, offset=1)
-        >>> print(y)
-        {
-            a: ivy.array([2, 3, 4]),
-            b: ivy.array([4, 3, 3])
-        }
+        ret
+            A container, representing the result of a segmented min operation.
+            For each segment, it computes the min value in `self` where `segment_ids`
+            equals to segment ID.
         """
-        return self.static_frombuffer(
+        return self.static_unsorted_segment_min(
             self,
-            dtype=dtype,
-            count=count,
-            offset=offset,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
+            segment_ids,
+            num_segments,
         )
