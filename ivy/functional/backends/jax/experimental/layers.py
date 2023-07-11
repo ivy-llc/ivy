@@ -635,60 +635,52 @@ def interpolate(
 
 
 def stft(
-    x: JaxArray,
-    input: JaxArray,
-    signal: Union[JaxArray, jint, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
+    signal: Union[JaxArray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
+    frame_step: Union[int, Tuple[int]],   
     /,
-    *,
-    axis: int = 1,
-    onesided:Optional[bool] = False,
+    *,  
+    axis: Optional[int] = None,
     fs: Optional[float] = 1.0,
-    hop_length: Optional[Union[int, Tuple[int]]] = None,
-    win_length: Optional[Union[int, Tuple[int]]] = None,
-    dft_length: Optional[Union[int, Tuple[int]]] = None,
-    window: Optional[JaxArray, str, int, Tuple[int]] = None,
+    window: Union[None, str, Tuple[int], JaxArray] = None,
     frame_length: Optional[Union[int, Tuple[int]]] = None,
     nperseg: Optional[int] = 256,
     noverlap: Optional[int] = None,
+    boundary: Optional[str] = None,
     center: Optional[bool] = True,
+    onesided:Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
     normalized: Optional[bool] = False,
-    nfft: Optional[int] = None,
-    detrend: Optional[str] = None,
-    return_onesided: Optional[bool] = True,
+    detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
-    padded: Optional[bool] = True,
-    name: Optional[str] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jlax.scipy.signal.stft(
-        x,
-        input,
+    if frame_step is None:
+        frame_step = n_fft//4
+
+    if isinstance(frame_step, int):
+        frame_step = (frame_step,)  
+
+    if not isinstance(frame_step, tuple):
+        raise TypeError("frame_step must be an int or tuple[int].")
+
+    if isinstance(n_fft, int):
+        n_fft = (n_fft,) 
+
+    if not isinstance(n_fft, tuple):
+        raise TypeError("n_fft must be an int or tuple[int].")
+    
+    return jax.scipy.signal.stft(
         signal,
-        frame_step,
-        n_fft,
-        axis,
-        onesided,
         fs,
-        hop_length,
-        win_length,
-        dft_length,
         window,
-        frame_length,
         nperseg,
         noverlap,
-        center,
-        pad_mode,
-        normalized,
-        nfft,
+        n_fft,
         detrend,
-        return_onesided,
-        return_complex,
+        onesided,
         boundary,
-        padded,
-        name,
-        out,
+        pad_mode,
+        axis,
     )
+    
