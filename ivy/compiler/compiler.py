@@ -159,7 +159,6 @@ def transpile(
     )
 
 
-# TODO: include docstring
 def unify(
     *objs: Callable,
     source: Optional[str] = None,
@@ -168,6 +167,40 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
+    """
+    Compiles and unifies multiple callable objects into a single callable. This is
+    primarily used to create a single function that encapsulates the behavior of
+    multiple functions.
+
+    Parameters
+    ----------
+    *objs : Callable
+        The callable objects (e.g., functions) to unify.
+
+    source : str, optional
+        The source code string to be included in the unified function. This can be
+        useful if the unified function needs to include some custom logic not
+        encapsulated by the input callable objects.
+
+    args : tuple, optional
+        A tuple of arguments to be passed to the unified function.
+
+    kwargs : dict, optional
+        A dictionary of keyword arguments to be passed to the unified function.
+
+    with_numpy : bool, optional
+        Whether the numpy module is to be included in the unified function's namespace.
+        By default, numpy is not included. This argument is useful when the input
+        callable objects make use of numpy functions.
+
+    **transpile_kwargs
+        Arbitrary keyword arguments to be passed to the underlying transpiler.
+
+    Returns
+    -------
+    Callable
+        The unified callable object.
+    """
     from ._compiler import unify as _unify
 
     return _unify(
