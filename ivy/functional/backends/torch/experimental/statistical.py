@@ -258,9 +258,7 @@ def _nanmedian(input, axis, keepdims):
     keepdim_shape = list(temp.size())
     q = 0.5
 
-    axis = list(axis)
-    if len(axis) == 1:
-        axis = axis[0]
+    axis = [axis] if isinstance(axis, int) else list(axis)
         
     if isinstance(q, torch.Tensor):
         qt = q.to(torch.float64)
