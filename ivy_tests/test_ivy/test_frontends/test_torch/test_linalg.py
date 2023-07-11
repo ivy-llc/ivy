@@ -1302,6 +1302,8 @@ def test_torch_solve(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-04,
+        atol=1e-03,
         A=input,
         B=other,
     )

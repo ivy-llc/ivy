@@ -145,7 +145,7 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes({"2.0.1 and below": ("integer", "float", "complex32", "complex64")}, "torch")
 def vecdot(x, y, *, dim=-1, out=None):
     if "complex" in ivy.as_ivy_dtype(x.dtype):
         x = ivy.conj(x)
@@ -153,6 +153,7 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
     return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
