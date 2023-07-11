@@ -7,7 +7,7 @@ import numpy as np
 import sys
 import inspect
 import os
-import ivy.utils.backend.handler
+
 
 from ivy._version import __version__ as __version__
 
