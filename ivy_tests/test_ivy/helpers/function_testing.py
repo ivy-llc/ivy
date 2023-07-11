@@ -1330,6 +1330,10 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    if frontend == "jax":
+        importlib.import_module("ivy.functional.frontends.jax").config.update(
+            "jax_enable_x64", True
+        )
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
