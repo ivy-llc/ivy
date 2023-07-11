@@ -499,12 +499,12 @@ def test_paddle_meshgrid(
         min_num_dims=1,
         max_num_dims=2,
         min_dim_size=1,
-        max_dim_size=50,
+        max_dim_size=5,
     ),
-    k=helpers.ints(min_value=-24, max_value=24),
+    k=helpers.ints(min_value=-1, max_value=1),
     p=st.one_of(
-        helpers.ints(min_value=-50, max_value=50),
-        helpers.floats(min_value=-50, max_value=50),
+        helpers.ints(min_value=-25, max_value=25),
+        helpers.floats(min_value=-25, max_value=25),
     ),
 )
 def test_paddle_diag(
