@@ -2682,6 +2682,7 @@ def test_paddle_instance_sgn(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",

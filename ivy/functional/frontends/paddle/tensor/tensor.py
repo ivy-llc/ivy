@@ -487,7 +487,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def deg2rad(self, name=None):
-        return paddle_frontend.Tensor(ivy.deg2rad(self._ivy_array)
+        return paddle_frontend.Tensor(ivy.deg2rad(self._ivy_array))
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("float32", "float64", "int32", "int64", "bool")}, "paddle"
