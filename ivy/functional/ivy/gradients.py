@@ -192,6 +192,10 @@ def _set_duplicates(xs, duplicate_index_chains):
 
 def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True):
     """Get the relevant outputs from the function return value."""
+    if (ivy.is_ivy_container(func_ret) or ivy.is_array(func_ret)) and ret_grad_idxs == [
+        [0]
+    ]:
+        ret_grad_idxs = None
     ret_idxs, ret_values = _get_native_variables_and_indices(
         func_ret, idxs=ret_grad_idxs, create_var=create_var, reshape=reshape
     )
@@ -201,7 +205,7 @@ def _get_y_and_ret_idxs(func_ret, ret_grad_idxs, create_var=False, reshape=True)
         y = ret_values[0]
     else:
         y = ret_values
-    return y, ret_idxs
+    return ret_grad_idxs, y, ret_idxs
 
 
 def _get_native_y(y):
@@ -399,7 +403,7 @@ def execute_with_gradients(
     *,
     retain_grads: bool = False,
     xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Call function func with input of xs variables, and return the function result
@@ -422,7 +426,9 @@ def execute_with_gradients(
         default value is ``[[0]]``.
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
-        gradients are returned for all returned arrays. (Default value = None)
+        gradients are returned for all returned arrays. If the returned object from the
+        ``func`` is an ``ivy.Array`` or ``ivy.Container``, the default value is ``None``
+        otherwise the default value is ``[[0]]``.
 
     Returns
     -------

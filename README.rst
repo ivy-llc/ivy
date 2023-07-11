@@ -294,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y), xs_grad_idxs=[[0]])
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -1597,8 +1597,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])

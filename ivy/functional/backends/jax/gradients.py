@@ -75,7 +75,7 @@ def execute_with_gradients(
     *,
     retain_grads: bool = False,
     xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ):
     # Conversion of required arrays to float variables and duplicate index chains
     (
@@ -89,7 +89,7 @@ def execute_with_gradients(
     func_ret = func(xs)
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs)
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -116,7 +116,6 @@ def execute_with_gradients(
                 ret_grad_idxs=ret_grad_idxs,
             )
         )
-        print("xs_required", xs_required)
         grads_ = grad_fn(xs_required)
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
