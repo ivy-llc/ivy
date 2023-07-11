@@ -161,14 +161,6 @@ def corrcoef(
     return cor
 
 
-def set_value(ret):
-    if isinstance(ret, list) or isinstance(ret, np.ndarray):
-        if ret.ndim == 2:
-            return ret[0][0]
-        else:
-            return ret[0]
-
-
 def _nanmedian_helper(input, axis=None, keepdims=False):
     dtype = input.dtype
     temp = tf.cast(input, tf.float64)
@@ -251,7 +243,7 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
             arr, q, axis=None, interpolation="midpoint", keepdims=keepdims
         ).numpy()
         if keepdims:
-            ret = set_value(ret)
+            ret = tf.squeeze(ret).numpy()
 
         result.append(ret)
 
