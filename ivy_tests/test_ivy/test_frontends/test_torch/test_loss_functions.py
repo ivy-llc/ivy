@@ -743,19 +743,13 @@ def test_torch_margin_ranking_loss(
     fn_tree="torch.nn.functional.poisson_nll_loss",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
-    ),
-    dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     log_input=st.booleans(),
     full=st.booleans(),
@@ -766,7 +760,6 @@ def test_torch_margin_ranking_loss(
 def test_torch_poisson_nll_loss(
     *,
     dtype_and_input,
-    dtype_and_target,
     log_input,
     full,
     size_average,
@@ -778,15 +771,14 @@ def test_torch_poisson_nll_loss(
     test_flags,
 ):
     inputs_dtype, input = dtype_and_input
-    target_dtype, target = dtype_and_target
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype + target_dtype,
+        input_dtypes=inputs_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        target=target[0],
+        target=input[1],
         log_input=log_input,
         full=full,
         size_average=size_average,
