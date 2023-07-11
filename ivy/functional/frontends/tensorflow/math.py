@@ -64,7 +64,7 @@ def asinh(x, name="asinh"):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("int8", "int16", "int32", "int64")}, 
+    {"2.13.0 and below": ("int64",)}, 
     "tensorflow"
 )
 @to_ivy_arrays_and_back

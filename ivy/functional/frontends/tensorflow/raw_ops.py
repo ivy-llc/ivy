@@ -118,7 +118,7 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
 
 
 Bincount = to_ivy_arrays_and_back(with_supported_dtypes(
-        {"2.13.0 and below": ("int8", "int16", "int32", "int64")},
+        {"2.13.0 and below": ("int64",)},
         "tensorflow",
     )(
         map_raw_ops_alias(
