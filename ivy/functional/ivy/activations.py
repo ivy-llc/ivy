@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -21,7 +20,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -274,7 +272,6 @@ def relu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
@@ -478,3 +475,50 @@ def mish(
     }
     """
     return current_backend(x).mish(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def hardswish(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the hardswish activation function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the hardswish activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 0., 4.])
+    >>> y = ivy.hardswish(x)
+    >>> y
+    ivy.array([0., 0., 4.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+    >>> x = ivy.hardswish(x, out=x)
+    >>> x
+    {
+        a: ivy.array([-0.,  4.,  5.]),
+        b: ivy.array([0., 5.])
+    }
+    """
+    return current_backend(x).hardswish(x, out=out)
