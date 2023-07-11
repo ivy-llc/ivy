@@ -37,6 +37,33 @@ This is the main purpose of the wrapping, to avoid code duplication which would 
 
 Depending on the function being wrapped, the new function might handle :ref:`Arrays`, :ref:`Inplace Updates`, :ref:`Data Types` and/or :ref:`Devices`.
 
+Our test decorators actually transforms to :code:`@given` decorators at Pytest collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+
+Decorator order
+^^^^^^^^^^^^^^^
+
+The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
+The following is the recommended order to follow :
+
+1.  :code:`@infer_device`
+2.  :code:`@infer_dtype`
+3.  :code:`@handle_array_function`
+4.  :code:`@outputs_to_ivy_arrays`
+5.  :code:`@outputs_to_native_arrays`
+6.  :code:`@inputs_to_native_arrays`
+7.  :code:`@inputs_to_ivy_arrays`
+8.  :code:`@handle_out_argument`
+9.  :code:`@handle_view_indexing`
+10.  :code:`@handle_view`
+11.  :code:`@handle_array_like_without_promotion`
+12.  :code:`@handle_nestable`
+13.  :code:`@handle_exceptions`
+14.  :code:`@with_unsupported_dtypes`
+15.  :code:`@handle_nans`
+16.  :code:`@handle_mixed_function`
+
+This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
+
 Conversion Wrappers
 ^^^^^^^^^^^^^^^^^^^
 
@@ -45,8 +72,6 @@ Conversion Wrappers
 #.  `outputs_to_ivy_arrays`_ : This wrapping function converts all :class:`ivy.NativeArray` instances in the outputs to their :class:`ivy.Array` counterparts, based on the :ref:`Backend Setting` before calling the function.
 #.  `to_native_arrays_and_back`_ : This wrapping function converts all :class:`ivy.Array` instances in the arguments to their :class:`ivy.NativeArray` counterparts, calls the function with those arguments and then converts the :class:`ivy.NativeArray` instances in the output back to :class:`ivy.Array`.
     This wrapping function is heavily used because it enables achieving the objective of ensuring that every ivy function could accept an :class:`ivy.Array` and return an :class:`ivy.Array`, making it independent of the :ref:`Backend Setting`.
-#.  `integer_array_to_float`_: This wrapping function enables conversion of integer array inputs in the positional and keyword arguments to a function to the default float dtype.
-    This is currently used to support integer array arguments to functions for which one or more backend frameworks only non-integer numeric dtypes.
 
 Inference Wrappers
 ^^^^^^^^^^^^^^^^^^
