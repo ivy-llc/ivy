@@ -505,4 +505,3 @@ def fill_diagonal(
 ) -> np.ndarray:
     np.fill_diagonal(a, v, wrap=wrap)
     return a
-

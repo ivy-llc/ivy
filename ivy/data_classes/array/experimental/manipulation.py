@@ -1077,8 +1077,6 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.fill_diag.
 
         This method simply wraps the function, and so the docstring for
-        ivy.fill_diag also applies to this method with minimal
-        changes.
+        ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
-

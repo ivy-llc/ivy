@@ -2974,7 +2974,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.fill_diagonal.
 
         This method simply wraps the function, and so the docstring for
-        ivy.fill_diagonal also applies to this method with minimal changes.
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
         """
         return self._static_fill_diagonal(
             self,
