@@ -1340,6 +1340,10 @@ def test_frontend_method(
         kwargs=init_all_as_kwargs_np,
     )
 
+    create_frontend_array = importlib.import_module(
+        f"ivy.functional.frontends.{frontend}"
+    )._frontend_array
+
     # extract all arrays from the arguments and keyword arguments
     con_arg_np_vals, con_args_idxs, con_c_arg_vals = _get_nested_np_arrays(
         args_np_constructor
@@ -1429,28 +1433,58 @@ def test_frontend_method(
     )
     # End Method #
 
-    args_constructor_ivy, kwargs_constructor_ivy = ivy.args_to_ivy(
-        *args_constructor, **kwargs_constructor
-    )
-    args_method_ivy, kwargs_method_ivy = ivy.args_to_ivy(*args_method, **kwargs_method)
+    if init_flags.generate_frontend_arrays:
+        args_constructor_ivy, kwargs_constructor_ivy = args_to_frontend(
+            *args_constructor,
+            frontend_array_fn=create_frontend_array,
+            **kwargs_constructor,
+        )
+    else:
+        args_constructor_ivy, kwargs_constructor_ivy = ivy.args_to_ivy(
+            *args_constructor, **kwargs_constructor
+        )
+    if method_flags.generate_frontend_arrays:
+        args_method_ivy, kwargs_method_ivy = args_to_frontend(
+            *args_method, frontend_array_fn=create_frontend_array, **kwargs_method
+        )
+    else:
+        args_method_ivy, kwargs_method_ivy = ivy.args_to_ivy(
+            *args_method, **kwargs_method
+        )
+
+    # create NumPy args
+
+    def arrays_to_numpy_init(x):
+        if init_flags.generate_frontend_arrays:
+            return ivy.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+        return ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+
     args_constructor_np = ivy.nested_map(
         args_constructor_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        arrays_to_numpy_init,
         shallow=False,
     )
     kwargs_constructor_np = ivy.nested_map(
         kwargs_constructor_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        arrays_to_numpy_init,
         shallow=False,
     )
+
+    # create NumPy args
+
+    def arrays_to_numpy_method(x):
+        if method_flags.generate_frontend_arrays:
+            return ivy.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+        return ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x
+
     args_method_np = ivy.nested_map(
         args_method_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        arrays_to_numpy_method,
         shallow=False,
     )
     kwargs_method_np = ivy.nested_map(
         kwargs_method_ivy,
-        lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        arrays_to_numpy_method,
         shallow=False,
     )
 
