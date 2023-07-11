@@ -1766,7 +1766,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool1d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1805,7 +1804,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool1d(
         self: ivy.Container,
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1840,7 +1838,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int],
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1879,7 +1876,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
