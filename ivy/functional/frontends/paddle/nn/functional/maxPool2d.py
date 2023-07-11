@@ -82,7 +82,7 @@ def Maxpool2d(
             kernel_size,
             stride,
             padding,
-            data_format="NCHW",
+            data_format=data_format,
             dilation=dilation,
             ceil_mode=ceil_mode,
             out=out,
