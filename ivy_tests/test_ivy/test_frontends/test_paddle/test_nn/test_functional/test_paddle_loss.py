@@ -246,5 +246,3 @@ def test_paddle_square_error_cost(
         target=target,
         reduction=reduction,
     )
-
-
