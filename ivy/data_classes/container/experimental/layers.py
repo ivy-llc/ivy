@@ -1032,19 +1032,157 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_fft(
+    def static_idct(
         x: ivy.Container,
-        dim: int,
         /,
         *,
-        norm: str = "backward",
-        n: Optional[Union[int, Tuple[int]]] = None,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
-    ):
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container with the input signals.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+        ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+        >>> ivy.Container.static_idct(x, type=2, norm='ortho')
+        {
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                          13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.93732834, -8.79711437, 3.75048852, -2.94867325, 1.74089146,
+                          -1.25980937, 0.64958102, -0.2442648])
+        }
+
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([  8, 16,  24,  32,   40,   48,   56,   64]),
+        ...                   b=ivy.array([11., 54, 23., 13., 255., 255., 132., 182.]))
+        >>> n = ivy.Container(a=9, b=5)
+        >>> type = ivy.Container(a=2, b=4)
+        >>> norm = ivy.Container(a="ortho", b=None)
+        >>> ivy.Container.static_idct(x, type=type, n=n, norm=norm)
+        {
+            a: ivy.array([86.29723358, -66.6950531, 9.93914509, 2.88008738,
+                          -16.18951225, 18.06697273, -17.57439804, 11.68861485,
+                          -4.41308832]),
+            b: ivy.array([242.0700836, -253.2449036, 285.6711426, -514.501709,
+                          467.4924011])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "idct",
+            x,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def idct(
+        self: ivy.Container,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container with the input signals.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger then x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+        ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+        >>> x.idct(type=2, norm='ortho')
+        {
+            a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                  13.92713165, -10.078475, 5.19664812, -1.95411837]),
+            b: ivy.array([9.94, -8.79711437, 3.76, -2.94867325, 1.74089146,
+                  -1.25980937, 0.64958102, -0.2442648])
+        }
+        """
+        return self.static_idct(
+            self,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
+    @staticmethod
+    def _static_fft(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        dim: int,
+        /,
+        *,
+        norm: str = "backward",
+        n: Optional[Union[int, Tuple[int]]] = None,
+        out: Optional[ivy.Container] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1097,11 +1235,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
             dim,
             norm=norm,
             n=n,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def fft(
@@ -1112,7 +1250,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         norm: str = "backward",
         n: Optional[Union[int, Tuple[int]]] = None,
         out: Optional[ivy.Array] = None,
-    ):
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.fft. This method simply wraps the
         function, and so the docstring for ivy.fft also applies to this method with
@@ -1159,12 +1301,16 @@ class _ContainerWithLayersExperimental(ContainerBase):
                        1.14423775e-17+1.22464680e-16j, 0.00000000e+00+1.22464680e-16j])
         }
         """
-        return self.static_fft(
+        return self._static_fft(
             self,
             dim,
             norm=norm,
             n=n,
             out=out,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -1618,7 +1764,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool1d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1657,7 +1802,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool1d(
         self: ivy.Container,
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1692,7 +1836,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int],
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1731,7 +1874,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: int,
-        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1762,136 +1904,118 @@ class _ContainerWithLayersExperimental(ContainerBase):
             map_sequences=map_sequences,
         )
 
-
-@staticmethod
-def stft(
-        signal: Union[ivy.Array, ivy.NativeArray],
-        n_fft: Optional[Union[int, Tuple[int]]],
-        frame_step: Union[int, Tuple[int]] ,
-        /,
+    @staticmethod
+    def static_ifftn(
+        x: ivy.Container,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
         *,
-        axis: Optional[int] = None,
-        onesided:Optional[bool] = True,
-        fs: Optional[float] = 1.0,
-        window: Optional[Union[ivy.Array, list, str, Tuple[int]]] = None,
-        frame_length: Optional[Union[int, Tuple[int]]] = None,
-        nperseg: Optional[int] = 256,
-        noverlap: Optional[int] = None,
-        center: Optional[bool] = False,
-        pad_mode: Optional[str] = "reflect",
-        normalized: Optional[bool] = False,
-        detrend: Optional[Union[str, callable, bool]] = False,
-        return_complex: Optional[bool] = True,
-        boundary: Optional[str] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
+        norm: str = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
         """
-        Compute the discrete Fourier transform of input.
+        ivy.Container static method variant of ivy.ifftn.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.ifftn  also applies to this method with minimal changes.
 
         Parameters
         ----------
-        signal
-            Input tensor representing a real or complex valued signal. 
-            For real input, the following shape is expected: [batch_
-            size][signal_length][1]. For complex input, the following 
-            shape is expected: [batch_size][signal_length][2], where 
-            [batch_size][signal_length][0] represents the real component 
-            and [batch_size][signal_length][1] represents the imaginary 
-            component of the signal.        
-        n_fft
-           Size of Fourier transform.
-        frame_step
-           An integer scalar Tensor. The window length in samples.             
-        axis
-            The axis on which to perform the DFT. By default this
-            value is  set to 1, which corresponds to the first dimension
-            after the batch index.
-        onesided
-            If onesided is True, only values for w in [0, 1, 2, …, floor
-            (n_fft/2) + 1] are returned because the real-to-complex Fourier 
-            transform satisfies the conjugate symmetry, i.e., X[m, w] = 
-            X[m,w]=X[m,n_fft-w]*. Note if the input or window tensors are 
-            complex, then onesided output is not possible.Enabling onesided 
-            with real inputs performs a Real-valued fast Fourier transform 
-            (RFFT). When invoked with real or complex valued input, the
-            default value is False. Values can be True or False.
-        fs
-            Sampling frequency of the x time series. Defaults to 1.0.
-        window
-            Desired window to use. If window is a string or tuple, 
-            it is passed to get_window to generate the window values, 
-            which are DFT-even by default. See get_window for a list of 
-            windows and required parameters. If window is array_like it 
-            will be used directly as the window and its length must be 
-            nperseg. Defaults to a Hann window.
-        frame_length
-            An integer scalar Tensor. The window length in samples.   
-        nperseg
-            Length of each segment. Defaults to 256.
-        noverlap
-            Number of points to overlap between segments. If None, 
-            noverlap = nperseg // 2. Defaults to None.
-        center  
-            Whether to pad x to make that the t * hop_length at the 
-            center of t-th frame. Default: True.          
-        pad_mode 
-            Choose padding pattern when center is True. See paddle.
-            nn.functional.pad for all padding options. Default: “reflect”.
-        normalized 
-            Control whether to scale the output by 1/sqrt(n_fft). 
-            Default: False
-        detrend 
-            Specifies how to detrend each segment. If detrend is a string, 
-            it is passed as the type argument to the detrend function. If 
-            it is a function, it takes a segment and returns a detrended 
-            segment. If detrend is False, no detrending is done. Defaults 
-            to False.
-        return_complex
-            Whether to return a complex tensor, or a real tensor with an extra 
-            last dimension for the real and imaginary components.            
-        boundary
-            Specifies whether the input signal is extended at both ends, and 
-            how to generate the new values, in order to center the first 
-            windowed segment on the first input point. This has the benefit of 
-            enabling reconstruction of the first input point when the employed 
-            window function starts at zero. Valid options are ['even', 'odd', 
-            'constant','zeros', None]. Defaults to ‘zeros’, for zero padding 
-            extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0] 
-            for nperseg=3.     
+        x
+            Input array of complex numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+            `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+            the input is cropped. If larger, input is padded with zeros. If `s` is not
+            given, shape of input along axes specified by axes is used.
+        axes
+            axes over which to compute the IFFT. If not given, last `len(s)` axes are
+            used, or all axes if `s` is also not specified. Repeated indices in axes
+            means inverse transform over that axis is performed multiple times.
+        norm
+            Optional argument, "backward", "ortho" or "forward".
+            Defaults to be "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
         out
-            Optional output array, for writing the result to. It must
-            have a shape that the inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
         ret
-            The Fourier Transform of the input vector.If onesided is False,
-            the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
-            …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
-            is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]
-            …[signal_dimN][2]. If axis=1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1] [floor(signal_dim2/2)+1]
-            …[signal_dimN][2]. If axis=N-1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1][signal_dim2]…
-            [floor(signal_dimN/2)+1][2]. The signal_dim at the specified axis
-            is equal to the dft_length.
+            The truncated or zero-padded input, transformed along the axes indicated
+            by axes, or by a combination of s or x, as explained in the parameters
+            section above.
         """
-        return self.static_stft(
-            signal,
-            n_fft,
-            frame_step,
-            axis=axis,
-            onesided=onesided,
-            fs=fs,
-            window=window,
-            frame_length=frame_length,
-            nperseg=nperseg,
-            noverlap=noverlap,
-            center=center,
-            pad_mode=pad_mode,
-            normalized=normalized,
-            detrend=detrend,
-            return_complex=return_complex,
-            boundary=boundary,
+        return ContainerBase.cont_multi_map_in_function(
+            "ifftn",
+            x,
+            s=s,
+            axes=axes,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def ifftn(
+        self: ivy.Container,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.ifftn.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.ifftn also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array of complex numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+            `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+            the input is cropped. If larger, input is padded with zeros. If `s` is not
+            given, shape of input along axes specified by axes is used.
+        axes
+            axes over which to compute the IFFT. If not given, last `len(s)` axes are
+            used, or all axes if `s` is also not specified. Repeated indices in axes
+            means inverse transform over that axis is performed multiple times.
+        norm
+            Optional argument, "backward", "ortho" or "forward".
+            Defaults to be "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Container containing the transformed inputs
+        """
+        return self.static_ifftn(
+            self,
+            s=s,
+            axes=axes,
+            norm=norm,
             out=out,
         )

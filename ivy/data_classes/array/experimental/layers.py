@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -453,6 +453,56 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    def idct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+        >>> x.idct(type=2, norm="ortho")
+        ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
+            13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
+        """
+        return ivy.idct(
+            self._data,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
     def fft(
         self: ivy.Array,
         dim: int,
@@ -785,24 +835,100 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
 def stft(
         self,
+        x: ivy.Array,
+        input: ivy.Array,
         signal: Union[ivy.Array, ivy.NativeArray],
-        n_fft: Union[int, Tuple[int]],
         frame_step: Union[int, Tuple[int]],
+        n_fft: Union[int, Tuple[int]],
         /,
         *,
-        axis: Optional[int] = None,
-        onesided:Optional[bool] = True,
+        axis: int = 1,
+        onesided:Optional[bool] = False,
         fs: Optional[float] = 1.0,
-        window: Optional[Union[ivy.Array, list, str, Tuple[int]]] = None,
+        hop_length: Optional[Union[int, Tuple[int]]] = None,
+        win_length: Optional[Union[int, Tuple[int]]] = None,
+        dft_length: Optional[Union[int, Tuple[int]]] = None,
+        window: Optional[Union[ivy.Array, str, int, Tuple[int]]] = None,
         frame_length: Optional[Union[int, Tuple[int]]] = None,
         nperseg: Optional[int] = 256,
         noverlap: Optional[int] = None,
-        center: Optional[bool] = False,
+        center: Optional[bool] = True,
         pad_mode: Optional[str] = "reflect",
         normalized: Optional[bool] = False,
-        detrend: Optional[Union[str, callable, bool]] = False,
+        nfft: Optional[int] = None,
+        detrend: Optional[str] = None,
+        return_onesided: Optional[bool] = True,
         return_complex: Optional[bool] = True,
         boundary: Optional[str] = None,
+        padded: Optional[bool] = True,
+        name: Optional[str] = None,
+    def reduce_window(
+        self: ivy.Array,
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+    ) -> ivy.Array:
+        """
+        Apply a reduction function to all elements in each window of an array.
+
+        Parameters
+        ----------
+        self
+            An array representing the base area on which the window is going to slide
+            over.
+        init_value
+            The starting value for the reduction.
+        computation
+            The reduction function to apply to elements in each window.
+        window_dimensions
+            A sequence containing the window dimensions.
+        window_strides
+            A sequence containing the window strides.
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        base_dilation
+            A sequence containing the base dilation values.
+        window_dilation
+            A sequence containing the window dilation values.
+
+        Returns
+        -------
+        ret
+            The result of the pooling-like operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.reduce_window(0, ivy.sum, (2, 2))
+        ivy.array([[32.]])
+        """
+        return ivy.reduce_window(
+            self._data,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
+        )
+
+    def fft2(
+        self: ivy.Array,
+        *,
+        s: Sequence[int] = None,
+        dim: Sequence[int] = (-2, -1),
+        norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -812,7 +938,11 @@ def stft(
         ----------
         self
             Input volume *[...,d_in,...]*,
-            where d_in indicates the dimension that needs FFT.   
+            where d_in indicates the dimension that needs FFT.
+        x   
+            Time series of measurement values.
+        input 
+            The input tensor.   
         signal
             Input tensor representing a real or complex valued signal. 
             For real input, the following shape is expected: [batch_
@@ -821,25 +951,35 @@ def stft(
             [batch_size][signal_length][0] represents the real component 
             and [batch_size][signal_length][1] represents the imaginary 
             component of the signal.        
-        n_fft
-           Size of Fourier transform.   
         frame_step
-           An integer scalar Tensor. The window length in samples.          
+            An integer scalar Tensor. The number of samples to step. 
+        n_fft
+           Size of Fourier transform.          
         axis
             The axis on which to perform the DFT. By default this
             value is  set to 1, which corresponds to the first dimension
             after the batch index.
         onesided
-            If onesided is True, only values for w in [0, 1, 2, …, floor
-            (n_fft/2) + 1] are returned because the real-to-complex Fourier 
-            transform satisfies the conjugate symmetry, i.e., X[m, w] = 
-            X[m,w]=X[m,n_fft-w]*. Note if the input or window tensors are 
-            complex, then onesided output is not possible.Enabling onesided 
-            with real inputs performs a Real-valued fast Fourier transform 
-            (RFFT). When invoked with real or complex valued input, the
+            If onesided is True, only values for w in [0, 1, 2, …, floor(n_fft/2) + 1]
+            are returned because the real-to-complex Fourier transform satisfies the
+            conjugate symmetry, i.e., X[m, w] = X[m,w]=X[m,n_fft-w]*. Note if the
+            input or window tensors are complex, then onesided output is not possible.
+            Enabling onesided with real inputs performs a Real-valued fast Fourier
+            transform (RFFT). When invoked with real or complex valued input, the
             default value is False. Values can be True or False.
         fs
             Sampling frequency of the x time series. Defaults to 1.0.
+        hop_length
+            Number of steps to advance between adjacent windows and 0 < hop_lenght.
+            Default: None`(treated as equal to `n_fft//4).
+        win_length
+            The size of window frame and STFT filter. Default: None 
+            (treated as equal to n_fft)    
+        dft_length
+            The length of the signal.If greater than the axis dimension,
+            the signal will be zero-padded up to dft_length. If less than
+            the axis dimension, only the first dft_length values will be
+            used as the signal. It’s an optional value.
         window
             Desired window to use. If window is a string or tuple, 
             it is passed to get_window to generate the window values, 
@@ -863,12 +1003,19 @@ def stft(
         normalized 
             Control whether to scale the output by 1/sqrt(n_fft). 
             Default: False
+        nfft 
+            Length of the FFT used, if a zero padded FFT is desired. 
+            If None, the FFT length is nperseg. Defaults to None.
         detrend 
             Specifies how to detrend each segment. If detrend is a string, 
             it is passed as the type argument to the detrend function. If 
             it is a function, it takes a segment and returns a detrended 
             segment. If detrend is False, no detrending is done. Defaults 
             to False.
+        return_onesided
+            If True, return a one-sided spectrum for real data. If False 
+            return a two-sided spectrum. Defaults to True, but for complex 
+            data, a two-sided spectrum is always returned. 
         return_complex
             Whether to return a complex tensor, or a real tensor with an extra 
             last dimension for the real and imaginary components.            
@@ -881,9 +1028,45 @@ def stft(
             'constant','zeros', None]. Defaults to ‘zeros’, for zero padding 
             extension. I.e. [1, 2, 3, 4] is extended to [0, 1, 2, 3, 4, 0] 
             for nperseg=3.   
+        padded 
+            Specifies whether the input signal is zero-padded at the end to make the 
+            signal fit exactly into an integer number of window segments, so that all 
+            of the signal is included in the output. Defaults to True. Padding occurs 
+            after boundary extension, if boundary is not None, and padded is True, 
+            as is the default. 
+        name
+            An optional name for the operation.        
+        Compute the 2-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT2.
+        s
+            sequence of ints, optional
+            Shape (length of each transformed axis) of the output (s[0] refers
+            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n).
+            Along each axis, if the given shape is smaller than that of the input,
+            the input is cropped. If it is larger, the input is padded with zeros.
+            If s is not given, the shape of the input along the axes specified by
+            axes is used.
+        dim
+            Axes over which to compute the FFT2. If not given, the last two axes are
+            used. A repeated index in axes means the transform over that axis is
+            performed multiple times. A one-element sequence means that a
+            one-dimensional FFT is performed.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
         out
             Optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -901,12 +1084,17 @@ def stft(
         """
         return ivy.stft(
             self._data,
-            signal,
-            n_fft,
+            x,
+            input,
             frame_step,
+            signal=signal,
+            n_fft=n_fft,
             axis=axis,
             onesided=onesided,
             fs=fs,
+            hop_length=hop_length,
+            win_length=win_length,
+            dft_length=dft_length,
             window=window,
             frame_length=frame_length,
             nperseg=nperseg,
@@ -914,8 +1102,102 @@ def stft(
             center=center,
             pad_mode=pad_mode,
             normalized=normalized,
+            nfft=nfft,
             detrend=detrend,
+            return_onesided=return_onesided,
             return_complex=return_complex,
             boundary=boundary,
+            padded=padded,
+            name=name,
+            norm=norm,
             out=out,
         )
+            The result of the FFT2 operation.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0, 0, 0, 0, 0],
+                        [1, 1, 1, 1, 1],
+                        [2, 2, 2, 2, 2],
+                        [3, 3, 3, 3, 3],
+                        [4, 4, 4, 4, 4]])
+        >>> ivy.fft2(a)
+        array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ]])
+        """
+        return ivy.fft2(self._data, s=s, dim=dim, norm=norm, out=out)
+
+    def ifftn(
+        self: ivy.Array,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the N-dimensional inverse discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+              Input array of complex numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+            `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+            the input is cropped. If larger, input is padded with zeros. If `s` is not
+            given, shape of input along axes specified by axes is used.
+        axes
+            axes over which to compute the IFFT. If not given, last `len(s)` axes are
+            used, or all axes if `s` is also not specified. Repeated indices in axes
+            means inverse transform over that axis is performed multiple times.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The truncated or zero-padded input, transformed along the axes indicated
+            by axes, or by a combination of s or x, as explained in the parameters
+            section above.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+                            0.98193269+0.49560517j],
+                            [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+                            0.2343787 +0.83528011j],
+                            [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+                            0.44719226+0.72654048j]])
+        >>> y = ivy.ifftn(x)
+        >>> print(y)
+        ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+                -0.015561  -0.04216015j],
+                [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+                -0.08371392+0.17252843j],
+                [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+                0.05344324+0.07972424j]])
+
+        >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
+        >>> print(b)
+        ivy.array([[ 0.8344667 +0.98222595j],
+                [-0.48472244+0.30233797j]])
+        """
+        return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)

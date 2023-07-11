@@ -134,7 +134,6 @@ def broadcast_arrays(
     return result
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
 def broadcast_to(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -164,7 +163,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable, np.ndarray], /) -> np.
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -271,7 +270,7 @@ def dtype_bits(dtype_in: Union[tf.DType, str, np.dtype], /) -> int:
 
 
 def is_native_dtype(dtype_in: Union[tf.DType, str], /) -> bool:
-    if dtype_in.__hash__ is None:
+    if not ivy.is_hashable_dtype(dtype_in):
         return False
     if dtype_in in ivy_dtype_dict and isinstance(dtype_in, tf.dtypes.DType):
         return True

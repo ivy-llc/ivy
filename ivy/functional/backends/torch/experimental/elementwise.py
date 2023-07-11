@@ -82,28 +82,23 @@ def count_nonzero(
 ) -> torch.Tensor:
     if isinstance(axis, list):
         axis = tuple(axis)
-
-    def _dtype_count_nonzero(a, axis, dtype):
-        if dtype is None:
-            return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(
-            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
-        )
-
-    x = _dtype_count_nonzero(a, axis, dtype)
+    if dtype is None:
+        x = torch.count_nonzero(a, dim=axis)
+    else:
+        x = torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
     if not keepdims:
         return x
-    if isinstance(axis, tuple):
-        for d in sorted(axis):
-            x = x.unsqueeze(d - 1)
-        return x
-    elif isinstance(axis, int):
+    if isinstance(axis, int):
         if axis == -1:
             temp = x.dim() - 2
             if temp < -1:
                 temp = 0
             return x.unsqueeze(temp)
         return x.unsqueeze(axis - 1)
+    elif axis is not None:
+        for d in sorted(axis):
+            x = x.unsqueeze(d - 1)
+        return x
     return x
 
 
@@ -141,41 +136,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def nan_to_num(
-    x: torch.Tensor,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if copy:
-        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
-    else:
-        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
-        return x
-
-
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
-def logaddexp2(
-    x1: Union[torch.Tensor, float, list, tuple],
-    x2: Union[torch.Tensor, float, list, tuple],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not ivy.is_float_dtype(x1):
-        x1 = x1.type(ivy.default_float_dtype(as_native=True))
-        x2 = x2.type(ivy.default_float_dtype(as_native=True))
-    return torch.logaddexp2(x1, x2, out=out)
-
-
-logaddexp2.support_native_out = True
 
 
 def diff(
@@ -252,7 +212,7 @@ def fix(
 fix.support_native_out = True
 
 
-@with_unsupported_dtypes({"1.13.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def nextafter(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -314,10 +274,6 @@ def xlogy(
 ) -> torch.tensor:
     x, y = promote_types_of_inputs(x, y)
     return torch.xlogy(x, y, out=out)
-
-
-def real(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
-    return torch.real(x)
 
 
 def conj(
@@ -398,3 +354,13 @@ def frexp(
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     mantissa, exponent = torch.frexp(x, out=out)
     return mantissa, exponent
+
+
+def modf(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    modf_x = torch.modf(x)
+    return torch.resolve_modf(input=modf_x)

@@ -363,96 +363,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
             self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
-    def nan_to_num(
-        self: ivy.Array,
-        /,
-        *,
-        copy: bool = True,
-        nan: Union[float, int] = 0.0,
-        posinf: Optional[Union[float, int]] = None,
-        neginf: Optional[Union[float, int]] = None,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.nan_to_num. This method simply wraps
-        the function, and so the docstring for ivy.nan_to_num also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Array input.
-        copy
-            Whether to create a copy of x (True) or to replace values in-place (False).
-            The in-place operation only occurs if casting to an array does not require
-            a copy. Default is True.
-        nan
-            Value to be used to fill NaN values. If no value is passed then NaN values
-            will be replaced with 0.0.
-        posinf
-            Value to be used to fill positive infinity values. If no value is passed
-            then positive infinity values will be replaced with a very large number.
-        neginf
-            Value to be used to fill negative infinity values.
-            If no value is passed then negative infinity values
-            will be replaced with a very small (or negative) number.
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Array with the non-finite values replaced.
-            If copy is False, this may be x itself.
-
-        Examples
-        --------
-        >>> x = ivy.array([1, 2, 3, nan])
-        >>> x.nan_to_num()
-        ivy.array([1.,    1.,   3.,   0.0])
-        >>> x = ivy.array([1, 2, 3, inf])
-        >>> x.nan_to_num(posinf=5e+100)
-        ivy.array([1.,   2.,   3.,   5e+100])
-        """
-        return ivy.nan_to_num(
-            self._data, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
-        )
-
-    def logaddexp2(
-        self: Union[ivy.Array, float, list, tuple],
-        x2: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.logaddexp2. This method simply wraps
-        the function, and so the docstring for ivy.logaddexp2 also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            First array-like input.
-        x2
-            Second array-like input
-        out
-            optional output array, for writing the result to.
-
-        Returns
-        -------
-        ret
-            Element-wise logaddexp2 of x1 and x2.
-
-        Examples
-        --------
-        >>> x1 = ivy.array([1, 2, 3])
-        >>> x2 = ivy.array([4, 5, 6])
-        >>> x1.logaddexp2(x2)
-        ivy.array([4.169925, 5.169925, 6.169925])
-        """
-        return ivy.logaddexp2(self._data, x2, out=out)
-
     def signbit(
         self: Union[ivy.Array, float, int, list, tuple],
         /,
@@ -850,35 +760,6 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         """
         return ivy.xlogy(self._data, y, out=out)
 
-    def real(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.real. This method simply wraps the
-        function, and so the docstring for ivy.real also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array. Should have a real-valued floating-point data type.
-        out
-            optional output array, for writing the result to.
-            It must have a shape that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            an array containing test results. If input in an
-            array is real then, it is returned unchanged. on the
-            other hand, if it is complex then, it returns real part from it
-
-        Examples
-        --------
-        >>> x = ivy.array([4+3j, 6+2j, 1-6j])
-        >>> x.real()
-        ivy.array([4., 6., 1.])
-        """
-        return ivy.real(self._data, out=out)
-
     def binarizer(
         self: ivy.Array, /, *, threshold: float = 0, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
@@ -1038,3 +919,32 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
         """
         return ivy.frexp(self._data, out=out)
+
+    def modf(
+        self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.modf. This method simply wraps the
+        function, and so the docstring for ivy.modf also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output arrays in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The fractional and integral parts of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.5, 2.7, 3.9])
+        >>> x.modf()
+        (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+        """
+        return ivy.modf(self._data, out=out)
