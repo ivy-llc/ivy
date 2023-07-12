@@ -916,7 +916,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
-        ord: Union[int, float, Literal[inf, -inf]] = 2,
+        ord: Union[int, float, Literal["inf", "-inf"]] = 2,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
