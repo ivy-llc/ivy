@@ -4046,7 +4046,7 @@ def log2(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the base ``2`` logarithm,
+    r"""Calculate an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
 
@@ -4059,6 +4059,14 @@ def log2(
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, special cases must be hanled as if
+    the operation is implemented using the standard change of base formula
+
+    .. math::
+        \log_{2} x = \frac{\log_{e} x}{\log_{e} 2}
+
+    where :math:`\log_{e}` is the natural logarithm.
 
     Parameters
     ----------
