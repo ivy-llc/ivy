@@ -52,18 +52,9 @@ def x_and_linear(draw, dtypes):
         dtypes=helpers.get_dtypes("numeric", full=False),
     ),
 )
-def test_linear(
-    *,
-    dtype_x_weight_bias,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_device):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -126,11 +117,9 @@ def test_dropout(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     (x_dtype, x), noise_shape = dtype_x_noiseshape
     ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -200,17 +189,10 @@ def x_and_scaled_attention(draw, dtypes):
     ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
-    *,
-    dtype_q_k_v_mask_scale,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_q_k_v_mask_scale, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -421,7 +403,6 @@ def test_multi_head_attention(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     (
         dtype,
@@ -439,7 +420,6 @@ def test_multi_head_attention(
         out_proj_bias,
     ) = dtype_mha
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -653,20 +633,11 @@ def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
     x_f_d_df=x_and_filters(dim=1),
     ground_truth_backend="jax",
 )
-def test_conv1d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -689,19 +660,10 @@ def test_conv1d(
     x_f_d_df=x_and_filters(dim=1, transpose=True),
     ground_truth_backend="jax",
 )
-def test_conv1d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -726,20 +688,11 @@ def test_conv1d_transpose(
     x_f_d_df=x_and_filters(dim=2),
     ground_truth_backend="jax",
 )
-def test_conv2d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -766,19 +719,10 @@ def test_conv2d(
     # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
 )
-def test_conv2d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -806,15 +750,7 @@ def test_conv2d_transpose(
     # tensorflow does not support dilations > 1 and stride > 1
     ground_truth_backend="jax",
 )
-def test_depthwise_conv2d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     # tensorflow only supports equal length strides in row and column
@@ -825,7 +761,6 @@ def test_depthwise_conv2d(
     ):
         assume(stride[0] == stride[1])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -848,19 +783,10 @@ def test_depthwise_conv2d(
     x_f_d_df=x_and_filters(dim=3),
     ground_truth_backend="jax",
 )
-def test_conv3d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -886,19 +812,10 @@ def test_conv3d(
     ),
     ground_truth_backend="jax",
 )
-def test_conv3d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -929,14 +846,7 @@ def test_conv3d_transpose(
     ground_truth_backend="jax",
 )
 def test_conv_general_dilated(
-    *,
-    dims,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
     (
         dtype,
@@ -952,7 +862,6 @@ def test_conv_general_dilated(
     ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -986,14 +895,7 @@ def test_conv_general_dilated(
     ground_truth_backend="jax",
 )
 def test_conv_general_transpose(
-    *,
-    dims,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
     (
         dtype,
@@ -1009,7 +911,6 @@ def test_conv_general_transpose(
     ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1104,15 +1005,7 @@ def x_and_lstm(draw, dtypes):
     ),
     test_with_out=st.just(False),
 )
-def test_lstm_update(
-    *,
-    dtype_lstm,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
     (
         dtype,
         x_lstm,
@@ -1124,7 +1017,6 @@ def test_lstm_update(
         recurrent_bias,
     ) = dtype_lstm
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,

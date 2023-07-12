@@ -18,7 +18,9 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    to_native_shapes_and_back,
+    inputs_to_native_shapes,
+    handle_device_shifting,
+    inputs_to_native_shapes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -285,6 +287,7 @@ Iinfo = None
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -389,6 +392,7 @@ def astype(
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Array]:
     """
     Broadcasts one or more arrays against one another.
@@ -467,8 +471,9 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@to_native_shapes_and_back
+@inputs_to_native_shapes
 @handle_array_function
+@handle_device_shifting
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -539,6 +544,7 @@ def broadcast_to(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def can_cast(
     from_: Union[ivy.Dtype, ivy.Array, ivy.NativeArray],
     to: ivy.Dtype,
@@ -616,6 +622,7 @@ def can_cast(
 
 @handle_exceptions
 @inputs_to_native_arrays
+@handle_device_shifting
 def finfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -702,6 +709,7 @@ def finfo(
 
 @handle_exceptions
 @inputs_to_native_arrays
+@handle_device_shifting
 def iinfo(
     type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray],
     /,
@@ -778,6 +786,7 @@ def iinfo(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting
 def result_type(
     *arrays_and_dtypes: Union[ivy.Array, ivy.NativeArray, ivy.Dtype]
 ) -> ivy.Dtype:
@@ -1543,6 +1552,7 @@ def default_uint_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
+@handle_device_shifting
 def default_complex_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
@@ -1597,9 +1607,7 @@ def default_complex_dtype(
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
             if ivy.nested_argwhere(
-                input,
-                lambda x: _check_complex128(x),
-                stop_after_n_found=1,
+                input, lambda x: _check_complex128(x), stop_after_n_found=1
             ):
                 ret = ivy.complex128
             else:
@@ -1640,6 +1648,7 @@ def default_complex_dtype(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting
 def dtype(
     x: Union[ivy.Array, ivy.NativeArray], *, as_native: bool = False
 ) -> Union[ivy.Dtype, ivy.NativeDtype]:
