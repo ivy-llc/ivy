@@ -1297,12 +1297,14 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> y = ivy.Container(a=ivy.array([3., 2., 1.]), b=ivy.array([3., 2., 1.]))
         >>> z = x.cov(y)
         >>> print(z)
-        {
-            a: ivy.container([ 1., -1., -1., -1.]
-                         [ 1.,  1., -1., -1.]),
-            b: ivy.container([-1., -1.,  1.,  1.]
-                         [-1.,  1.,  1.,  1.])
+
+         {
+            a: ivy.array([[1., -1.],
+                          [-1., 1.]]),
+            b: ivy.array([[1., -1.],
+                          [-1., 1.]])
         }
+
         """
         return self.static_cov(
             self,
