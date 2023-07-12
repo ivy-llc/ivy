@@ -3861,9 +3861,9 @@ def log10(
     operation is implemented using the standard change of base formula
 
     .. math::
-        \log_{10}(x) = \frac{\log_e(x)}{\log_e(10)}
+        \log_{10} x = \frac{\log_{e} x}{\log_{e} 10}
 
-    where :math:`\log_e` is the natural logarithm.
+    where :math:`\log_{e}` is the natural logarithm.
 
     Parameters
     ----------
