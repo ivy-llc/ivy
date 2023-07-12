@@ -423,17 +423,18 @@ class Shape:
 
     
 
-    def with_rank(self, rank):
-        def unknown_shape(rank=None, **kwargs):
-            if rank is None and "ndims" in kwargs:
-                rank = kwargs.pop("ndims")
-            if kwargs:
-                raise TypeError("Unknown argument: %s" % kwargs)
-            if rank is None:
-                return Shape(None)
-            else:
-                return Shape([Shape(None)] * rank)
+    def unknown_shape(rank=None, **kwargs):
+        if rank is None and "ndims" in kwargs:
+            rank = kwargs.pop("ndims")
+        if kwargs:
+            raise TypeError("Unknown argument: %s" % kwargs)
+        if rank is None:
+            return Shape(None)
+        else:
+            return Shape([Shape(None)] * rank)
 
+
+    def with_rank(self, rank):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
