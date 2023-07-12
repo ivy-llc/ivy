@@ -5198,6 +5198,14 @@ def pow(
     - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, ``x2_i`` is a finite
       number, and ``x2_i`` is not an integer value, the result is ``NaN``.
 
+    For complex floating-point operands, special cases should be handled
+    as if the operation is implemented as ``exp(x2*log(x1))``.
+
+    .. note::
+       Conforming implementations are allowed to treat special cases involving
+       complex floating-point operands more carefully than as described
+       in this specification.
+
     Parameters
     ----------
     x1
@@ -5298,7 +5306,9 @@ def real(
         ``real number`` if ``x_i`` contain real number part only
         and if it is ``real number with complex part also`` then it
         returns the real number part.
-        The returned array should have a data type of ``float``.
+        The returned array must have a floating-point data type with the
+        same floating-point precision as ``x`` (e.g., if ``x`` is ``complex64``,
+        the returned array must have the floating-point precision of ``float32``).
 
     The descriptions above assume an array input for simplicity, but
     the method also accepts :class:`ivy.Container` instances
@@ -5476,6 +5486,16 @@ def round(
     """Round each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
 
+    .. note::
+       For complex floating-point operands, real and imaginary components
+       must be independently rounded to the nearest integer-valued number.
+
+       Rounded real and imaginary components must be equal
+       to their equivalent rounded real-valued floating-point
+       counterparts (i.e., for complex-valued ``x``, ``real(round(x))``
+       must equal ``round(real(x)))`` and ``imag(round(x))`` must equal
+       ``round(imag(x))``).
+
     **Special cases**
 
     - If ``x_i`` is already an integer-valued, the result is ``x_i``.
@@ -5489,6 +5509,14 @@ def round(
     - If ``x_i`` is ``NaN``, the result is ``NaN``.
     - If two integers are equally close to ``x_i``, the result is
       the even integer closest to ``x_i``.
+
+    .. note::
+       For complex floating-point operands, the following special
+       cases apply to real and imaginary components independently
+       (e.g., if ``real(x_i)`` is ``NaN``, the rounded
+       real component is ``NaN``).
+
+    - If ``x_i`` is already integer-valued, the result is ``x_i``.
 
     Parameters
     ----------
@@ -5574,8 +5602,19 @@ def sign(
     np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return an indication of the sign of a number for each element ``x_i`` of the
+    r"""Return an indication of the sign of a number for each element ``x_i`` of the
     input array ``x``.
+
+    The sign function (also known as the **signum function**)
+    of a number :math:`x_{i}` is defined as
+
+    .. math::
+        \operatorname{sign}(x_i) = \begin{cases}
+       0 & \textrm{if } x_i = 0 \\
+       \frac{x}{|x|} & \textrm{otherwise}
+       \end{cases}
+
+    where :math:`|x_i|` is the absolute value of :math:`x_i`.
 
     **Special cases**
 
@@ -5583,6 +5622,16 @@ def sign(
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
     - For complex numbers ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``-0`` or ``+0`` and ``b`` is
+      either ``-0`` or ``+0``, the result is ``0 + 0j``.
+    - If ``a`` is ``NaN`` or ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - In the remaining cases, special cases must be handled
+      according to the rules of complex number division.
 
     Parameters
     ----------
@@ -5660,9 +5709,12 @@ def sin(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the sine, having domain
+    r"""Calculate an implementation-dependent approximation to the sine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
     the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+    .. note::
+       The sine is an entire function on the complex plane and has no branch cuts.
 
     **Special cases**
 
@@ -5672,6 +5724,9 @@ def sin(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    For complex floating-point operands, special cases
+    must be handled as if the operation is implemented as ``-1j * sinh(x*1j)``.
 
     Parameters
     ----------
@@ -5747,9 +5802,18 @@ def sinh(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the hyperbolic sine,
+    r"""Calculate an implementation-dependent approximation to the hyperbolic sine,
     having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
+
+    .. math::
+       \{sinh}(x) = \frac{e^x - e^{-x}}{2}
+
+    .. note::
+       The hyperbolic sine is an entire function in the
+       complex plane and has no branch cuts.
+       The function is periodic, with period
+       :math:`2\pi j`, with respect to the imaginary component.
 
     **Special cases**
 
@@ -5760,6 +5824,39 @@ def sinh(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    .. note::
+       For complex floating-point operands, ``sinh(conj(x))``
+       must equal ``conj(sinh(x))``.
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is ``+0`` and ``b`` is ``+infinity``,
+      the result is ``0 + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``,
+      the result is ``0 + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is a positive (i.e., greater than ``0``)
+      finite number and ``b`` is ``+infinity``, the result is ``NaN + NaN j``.
+    - If ``a`` is a positive (i.e., greater than ``0``)
+      finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+      the result is ``+infinity + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive finite number,
+      the result is ``+infinity * cis(b)``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``infinity + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``infinity + NaN j``
+      (sign of the real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``, the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is a nonzero finite number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
@@ -5827,10 +5924,31 @@ def sqrt(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the square root, having domain ``[0, +infinity]`` and codomain
+    r"""Calculate the square root, having domain ``[0, +infinity]`` and codomain
     ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
     rounding, each result must be indistinguishable from the infinitely precise result
     (as required by IEEE 754).
+
+    .. note::
+       After rounding, each result must be indistinguishable
+       from the infinitely precise result (as required by IEEE 754).
+
+    .. note::
+       For complex floating-point operands, ``sqrt(conj(x))``
+       must equal ``conj(sqrt(x))``.
+
+    .. note::
+       By convention, the branch cut of the square root is
+       the negative real axis :math:`(-\infty, 0)`.
+
+       The square root is a continuous function from above
+       the branch cut, taking into account the sign of the imaginary component.
+
+       Accordingly, for complex arguments, the function returns
+       the square root in the range of the right half-plane,
+       including the imaginary axis (i.e., the plane defined by
+       :math:`[0, +\infty)` along the real axis and :math:`(-\infty, +\infty)`
+       along the imaginary axis).
 
     **Special cases**
 
@@ -5841,6 +5959,30 @@ def sqrt(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``+0 + 0j``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is
+      ``+infinity``, the result is ``+infinity + infinity j``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` ``-infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+0 + infinity j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``NaN + infinity j``
+      (sign of the imaginary component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is any value,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
 
     Parameters
     ----------
@@ -6048,10 +6190,22 @@ def tan(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the tangent, having
+    r"""Calculate an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
     expressed in radians.
+     .. note::
+       Tangent is an analytical function on the complex plane
+       and has no branch cuts. The function is periodic,
+       with period :math:`\pi j`, with respect to the real
+       component and has first order poles along the real
+       line at coordinates :math:`(\pi (\frac{1}{2} + n), 0)`.
+       However, IEEE 754 binary floating-point representation
+       cannot represent the value :math:`\pi / 2` exactly, and,
+       thus, no argument value is possible for
+       which a pole error occurs.
+
+       where :math:`{tanh}` is the hyperbolic tangent.
 
     **Special cases**
 
@@ -6061,6 +6215,9 @@ def tan(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    For complex floating-point operands, special cases must
+    be handled as if the operation is implemented as ``-1j * tanh(x*1j)``.
 
     Parameters
     ----------
@@ -6150,6 +6307,52 @@ def tanh(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+1``.
     - If ``x_i`` is ``-infinity``, the result is ``-1``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    .. note::
+       For complex floating-point operands, ``tanh(conj(x))``
+       must equal ``conj(tanh(x))``.
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is a nonzero finite number and ``b`` is
+      ``+infinity``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+0`` and ``b`` is ``+infinity``,
+      the result is ``+0 + NaN j``.
+    - If ``a`` is a nonzero finite number and ``b``
+      is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``,
+      the result is ``+0 + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``1 + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``1 + 0j`` (sign of the imaginary
+      component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``1 + 0j`` (sign of the imaginary
+      component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``,
+      the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is a nonzero number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    .. warning::
+       For historical reasons stemming from the C standard,
+       array libraries may not return the expected
+       result when ``a`` is ``+0`` and ``b`` is either
+       ``+infinity`` or ``NaN``. The result should be
+       ``+0 + NaN j`` in both cases; however, for libraries
+       compiled against older C versions, the result may be
+       ``NaN + NaN j``.
+
+       Array libraries are not required to patch these older
+       C versions, and, thus, users are advised that results
+       may vary across array library implementations for
+       these special cases.
+
 
     Parameters
     ----------
