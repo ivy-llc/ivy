@@ -1038,7 +1038,7 @@ def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    ord: Union[int, float, Literal[inf, -inf, "fro", "nuc"]] = "fro",
+    ord: Union[int, float, Literal["inf", "-inf", "fro", "nuc"]] = "fro",
     axis: Tuple[int, int] = (-2, -1),
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
@@ -2425,7 +2425,7 @@ def vector_norm(
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
-    ord: Union[int, float, Literal[inf, -inf]] = 2,
+    ord: Union[int, float, Literal["inf", "-inf"]] = 2,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
