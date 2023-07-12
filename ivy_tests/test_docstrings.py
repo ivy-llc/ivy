@@ -194,8 +194,17 @@ def check_docstring_examples_run(
                 rtol=sig_fig,
             )
         except Exception:
+            # conditional checks that specific functions/backends require
+            # jax doesn't support inplace updates
             if ivy.current_backend_str() == "jax" and fn_name == "assert_supports_inplace":
                 return docstr_result
+            # exec returns CpuDevice with id
+            if (fn_name == "dev" and
+                doc_v.lower().startswith("cpu") and
+                doc_u.lower().startswith("cpu")):
+                return docstr_result
+
+            # end of conditional checks
             if str(doc_u) != str(doc_v):
                 docstr_result = False
         if not docstr_result:
@@ -325,7 +334,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "conv3d_transpose":
+                if method_name == "dev":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
