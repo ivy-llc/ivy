@@ -17,11 +17,6 @@ def manual_seed(seed: int):
     return None
 
 
-@to_ivy_arrays_and_back
-def set_rng_state(state):
-    return ivy.seed(seed_value=state)
-
-
 @with_supported_dtypes(
     {
         "2.0.1 and below": (
