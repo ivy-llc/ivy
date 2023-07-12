@@ -1676,6 +1676,9 @@ def cos(
     - If ``x_i`` is ``+infinity``, the result is ``NaN``.
     - If ``x_i`` is ``-infinity``, the result is ``NaN``.
 
+    For complex floating-point operands, special cases must be handled as if the
+    operation is implemented as ``cosh(x*1j)``.
+
     Parameters
     ----------
     x
