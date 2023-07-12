@@ -10,10 +10,23 @@ website:
 
   page-navigation: true
 
+  navbar:
+    title: false
+    search: true
+    pinned: true
+    logo: "assets/img/ivy_logo_text.png"
+    logo-href: https://unify.ai
+    left:
+      - text: "Github"
+        href: https://github.com/unifyai/ivy
+      - text: "Docs"
+        href: https://unify.ai/docs/ivy
+      - text: "Discord"
+        href: https://discord.com/invite/sXyFF8tDtm
+
   sidebar:
     style: "floating"
     border: true
-    logo: "assets/img/ivy_logo_text.png"
     collapse-level: 1
     contents:
       - quickstart.ipynb

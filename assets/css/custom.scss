@@ -35,6 +35,10 @@ $code-block-border-left: $ivy-green;
 $code-block-border-left-size: 3px;
 $btn-code-copy-color-active: $ivy-green;
 
+// navbar
+$navbar-bg: white;
+$navbar-fg: black;
+
 // sidebar
 $sidebar-bg: white;
 $sidebar-fg: black;
@@ -147,4 +151,21 @@ h3 {
 .callout {
     border-left-color: $ivy-green !important;
     background-color: $ivy-grey;
- }
+}
+
+img.navbar-logo {
+    max-height: 60px;
+}
+
+.navbar {
+    box-shadow: 0px 1px 0px 1px $ivy-grey;
+}
+
+.navbar-nav {
+    text-align: right;
+    margin-left: auto;
+}
+
+ul.navbar-nav.navbar-nav-scroll.me-auto {
+    margin-right: 0 !important ;
+}
