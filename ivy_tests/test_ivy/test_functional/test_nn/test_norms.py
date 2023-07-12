@@ -93,19 +93,10 @@ def _generate_data_layer_norm(
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_layer_norm(
-    *,
-    values_tuple,
-    new_std,
-    eps,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, values_tuple, new_std, eps, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, normalized_idxs, scale, offset = values_tuple
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,

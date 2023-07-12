@@ -1864,8 +1864,6 @@ def dtype_array_query(
                 helpers.dtype_and_values(
                     min_value=-s + 1,
                     max_value=s - 1,
-                    min_num_dims=0,
-                    max_num_dims=1,
                     dtype=["int64"],
                 )
             )
@@ -1967,7 +1965,7 @@ def create_nested_input(draw, dimensions, leaf_values):
 @st.composite
 def cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
-        available_dtypes=(ivy.float32, ivy.float64),
+        available_dtypes=["float32", "float64"],
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
         max_value=10,
         min_value=-10,

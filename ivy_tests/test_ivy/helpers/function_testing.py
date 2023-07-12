@@ -119,7 +119,6 @@ def test_function(
     xs_grad_idxs=None,
     ret_grad_idxs=None,
     backend_to_test: str,
-    ground_truth_backend: str,
     on_device: str,
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
@@ -152,8 +151,6 @@ def test_function(
     ret_grad_idxs
         Indices of the returned arrays for which to return computed gradients. If None,
         gradients are returned for all returned arrays. (Default value = None)
-    ground_truth_backend
-        Ground Truth Backend to compare the result-values.
     on_device
         The device on which to create arrays
     return_flat_np_arrays
@@ -395,10 +392,10 @@ def test_function(
             ret_device = ivy_backend.dev(ret_from_target)
 
     # compute the return with a Ground Truth backend
-    with update_backend(ground_truth_backend) as gt_backend:
+    with update_backend(test_flags.ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
         args, kwargs = create_args_kwargs(
-            backend=ground_truth_backend,
+            backend=test_flags.ground_truth_backend,
             args_np=args_np,
             arg_np_vals=arg_np_arrays,
             args_idxs=arrays_args_indices,
@@ -410,7 +407,7 @@ def test_function(
             on_device=on_device,
         )
         ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-            ground_truth_backend,
+            test_flags.ground_truth_backend,
             gt_backend.__dict__[fn_name],
             *args,
             test_compile=test_flags.test_compile,
@@ -429,7 +426,7 @@ def test_function(
                 include_derived=True,
             )
             ret_from_gt, ret_np_from_gt_flat = get_ret_and_flattened_np_array(
-                ground_truth_backend,
+                test_flags.ground_truth_backend,
                 gt_backend.__dict__[fn_name],
                 *args,
                 test_compile=test_flags.test_compile,
@@ -470,14 +467,15 @@ def test_function(
                     atol_=atol_,
                     xs_grad_idxs=xs_grad_idxs,
                     ret_grad_idxs=ret_grad_idxs,
-                    ground_truth_backend=ground_truth_backend,
+                    ground_truth_backend=test_flags.ground_truth_backend,
                     backend_to_test=backend_to_test,
                     on_device=on_device,
                 )
 
-    assert (
-        ret_device == ret_from_gt_device
-    ), f"ground truth backend ({ground_truth_backend}) returned array on device "
+    assert ret_device == ret_from_gt_device, (
+        f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
+        " device "
+    )
     f"{ret_from_gt_device} but target backend ({backend_to_test}) returned array on "
     f"device {ret_device}"
     if ret_device is not None:
@@ -504,7 +502,7 @@ def test_function(
         rtol=rtol_,
         atol=atol_,
         backend=backend_to_test,
-        ground_truth_backend=ground_truth_backend,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
@@ -1460,6 +1458,10 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
+    if frontend == "jax":
+        importlib.import_module("ivy.functional.frontends.jax").config.update(
+            "jax_enable_x64", True
+        )
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,

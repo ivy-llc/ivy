@@ -437,6 +437,9 @@ def frexp(
 
 
 def modf(
-    x: JaxArray,/,*,out: Optional[JaxArray] = None,
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.modf(x)
