@@ -494,3 +494,16 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def put_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    values: np.ndarray,
+    axis: int,
+    /,
+    *,
+    mode: str = None,
+    out: Optional[np.ndarray] = None,
+):
+    raise NotImplementedError
