@@ -94,6 +94,16 @@ def ihfft(a, n=None, axis=-1, norm=None):
     return output
 
 
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def ifft2(a, s=None, axes=(-2, -1), norm=None):
+    if n is None:
+        n = a.shape[axis]
+    norm = _swap_direction(norm)
+    output = ivy.conj(ivy.ifft(a, s=(n,), axes=axis, norm=norm)) * n
+    return output
+
+
 @with_unsupported_dtypes({"1.25.0 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
