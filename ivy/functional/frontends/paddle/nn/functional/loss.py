@@ -113,3 +113,9 @@ def log_loss(input, label, epsilon=0.0001, name=None):
         (1 - label) * ivy.log(1 - input + epsilon)
     )
     return out
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def square_error_cost(input, label, name=None):
+    return ivy.square(input - label)
