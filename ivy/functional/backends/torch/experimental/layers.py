@@ -272,6 +272,9 @@ def avg_pool1d(
 
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
+    elif data_format == "NCL":
+        x = x.permute(0, 2, 1)
+
     x_shape = x.shape[2]
     if isinstance(padding, str):
         pad_specific = [
@@ -312,6 +315,9 @@ def avg_pool1d(
 
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
+    elif data_format == "NCL":
+        res = res.permute(0, 2, 1)
+
     return res
 
 

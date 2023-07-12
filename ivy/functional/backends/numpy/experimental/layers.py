@@ -323,6 +323,9 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
+    elif data_format == "NCL":
+        x = np.swapaxes(x, 1, 2)
+
     x_shape = x.shape[1:-1]
     padding, pad_specific, c = _get_padded_values(
         x_shape, kernel, strides, padding, ceil_mode, 1
@@ -378,6 +381,9 @@ def avg_pool1d(
 
     if data_format == "NCW":
         return res.swapaxes(1, 2)
+    elif data_format == "NCL":
+        return res.swapaxes(1, 2)
+
     return res
 
 

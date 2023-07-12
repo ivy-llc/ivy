@@ -4,6 +4,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
+from ivy.utils.exceptions import handle_exceptions
 
 
 class _ArrayWithLayersExperimental(abc.ABC):
@@ -190,6 +191,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    @handle_exceptions
     def avg_pool1d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int]],

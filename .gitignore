@@ -31,6 +31,9 @@ internal_automation_tools/
 .ivy/*
 .DS_Store*
 fn_path_cache
+test_rand.py
+ivy_tests/test_ivy/test_misc/test_rand.py
+
 
 # Environments
 .env
@@ -41,3 +44,8 @@ ENV/
 env.bak/
 venv.bak/
 ivy_dev/
+myenv/
+ivy_tests/array_api_testing/test_array_api
+.gitignore
+.gitignore
+ivy_tests/array_api_testing/test_array_api

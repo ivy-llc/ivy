@@ -203,6 +203,8 @@ def avg_pool1d(
 
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
+    elif data_format == "NCL":
+        x = tf.transpose(x, (0, 2, 1))
 
     manual_padding = False
     # Have to manually pad if explicit padding is provided, or if ceil_mode is True
@@ -244,6 +246,9 @@ def avg_pool1d(
 
     if data_format == "NCW":
         res = tf.transpose(res, (0, 2, 1))
+    elif data_format == "NCL":
+        res = tf.transpose(res, (0, 2, 1))
+
     return res
 
 
