@@ -49,7 +49,7 @@ def test_paddle_avg_pool2d(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
         kernel_size=kernel,
         stride=stride,
         padding=padding,
