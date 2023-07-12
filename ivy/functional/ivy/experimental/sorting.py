@@ -86,3 +86,101 @@ def lexsort(
     array([2, 0, 4, 6, 5, 3, 1])
     """
     return ivy.current_backend().lexsort(keys, axis=axis, out=out)
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def argpartition(
+    a: Union[ivy.Array, ivy.NativeArray],
+    kth,
+    /,
+    *,
+    axis: int = -1,
+    kind: Literal["introselect"] = 'introselect',
+    order: Optional[List[str]] = None,
+) -> ivy.Array:
+    
+    """
+     Perform an indirect partition along the given axis using the algorithm specified by 
+     the kind keyword. It returns an array of indices of the same shape as `a` that 
+     index data along the given axis in partitioned order.
+
+    Parameters
+    ----------
+    a : array-like object
+
+        Array to sort. 
+
+    kth : integer or sequence of integers   
+
+        Element index to partition by. The k-th element will be in its final sorted position and all smaller elements will 
+        be moved before it and all larger elements behind it.
+        
+    
+    axis : int, optional 
+
+        Axis along which to sort. The default is -1 (the last axis). If None, `a` is flattened before sorting.
+
+
+    kind : {'introselect'}, optional  
+
+        Selection algorithm. Default is 'introselect'.
+
+
+    order : str or list of str, optional  
+
+        When `a` is an array with fields defined, this argument specifies which fields to compare first, second, etc.
+        
+
+    Returns
+
+    -------
+
+    index_array : ndarray[int], same shape as `a`.
+    
+            Array of indices that partition `a` along the specified axes.
+
+
+    This function conforms to the `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the standard's documentation.
+
+    Both description and type hints above assume an array input for simplicity but this function also accepts Container instances in place of any arguments.
+
+    Examples:
+
+    With class:`ivy.Array`
+    ----------------------
+
+    >>> x= ivy.array([3 ,2 ,3 ,8 ,6])
+    >>> y=ivy.argpartition(x,kth=0)
+    >>> print(y)
+
+    ivy.array([1.,2.,0.,4.,5])
+
+
+    With class:`ivy.Container`
+    --------------------------
+
+    >>> x = ivy.Container(a= np.array([[30,-10],[10,-20]]), b=np.array([[25,-15],[15,-25]]))
+    >>> y=x.argpartition(kth=[(-1,None)])
+    >>>print(y)
+
+    {
+    "b":array([[0,1],[0 ,-2]])
+    "c":array([[0.-8],[-7.-9]])}
+    }
+
+    """
+    return ivy.current_backend(a).argpartition(
+        a,
+        kth,
+        axis=axis,
+        kind='introspect',
+        order=None
+        )
+
+
+
