@@ -3949,6 +3949,30 @@ def log1p(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
 
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is ``-1`` and ``b`` is ``+0``, the result is ``-infinity + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+    the result is ``+infinity + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a positive
+    (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+    (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+    the result is ``+infinity + 3πj/4``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+    the result is ``+infinity + πj/4``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and
+    ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+    the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+
+
     Parameters
     ----------
     x
