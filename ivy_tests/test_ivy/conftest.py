@@ -95,7 +95,7 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
     if hasattr(request.function, "_ivy_test"):
         try:
             test_globals.setup_api_test(
-                backend_fw.backend,
+                backend_fw,
                 (
                     request.function.ground_truth_backend
                     if hasattr(request.function, "ground_truth_backend")
