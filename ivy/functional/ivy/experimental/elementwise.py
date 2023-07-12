@@ -894,7 +894,21 @@ def conj(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the complex conjugate of complex values in x.
+    Return the complex conjugate for each element ``x_i`` of the input array ``x``.
+
+    For complex number of the form
+
+    .. math::
+        a + bj
+    
+    the complex conjugate is defined as
+    
+    .. math::
+        a - bj
+
+    Hence, the returned conjugates must be computed by negating
+    the imaginary component of each element ``x_i``
+
 
     Parameters
     ----------
