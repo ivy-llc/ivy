@@ -354,3 +354,13 @@ def frexp(
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     mantissa, exponent = torch.frexp(x, out=out)
     return mantissa, exponent
+
+
+def modf(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    modf_x = torch.modf(x)
+    return torch.resolve_modf(input=modf_x)
