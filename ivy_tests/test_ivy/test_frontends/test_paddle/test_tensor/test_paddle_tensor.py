@@ -2678,6 +2678,7 @@ def test_paddle_instance_tolist(
         on_device=on_device,
     )
 
+
 # min
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2718,4 +2719,3 @@ def test_paddle_instance_min(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
