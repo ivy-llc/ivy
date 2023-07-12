@@ -1810,7 +1810,6 @@ def interpolate(
         "bilinear",
         "trilinear",
         "nd",
-        "bicubic",
         "bicubic_tensorflow",
         "lanczos3",
         "lanczos5",
@@ -1826,6 +1825,8 @@ def interpolate(
             scale_factor,
             mode,
         )
+    elif mode == "bicubic":
+        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode in ["nearest-exact", "nearest"]:
         ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
     elif mode == "area":
