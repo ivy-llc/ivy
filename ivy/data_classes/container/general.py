@@ -1652,11 +1652,11 @@ class _ContainerWithGeneral(ContainerBase):
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float('nan'), 2]))
-        >>> y = x.has_nans(x)
+        >>> y = x.has_nans()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_has_nans(
