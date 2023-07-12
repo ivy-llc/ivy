@@ -50,9 +50,7 @@ def nonzero(input, /, *, as_tuple=False):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def searchsorted(
-    sorted_sequence, values, /, *, out_int32=False, right=False, name=None
-):
+def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=None):
     if right:
         side = "right"
     else:

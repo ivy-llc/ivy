@@ -135,7 +135,6 @@ def test_paddle_nonzero(
         available_dtypes=helpers.get_dtypes("valid"),
         shared_dtype=True,
         min_num_dims=1,
-        max_num_dims=1,
         num_arrays=2,
     ),
     out_int32=st.booleans(),
