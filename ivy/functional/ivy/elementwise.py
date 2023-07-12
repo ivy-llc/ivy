@@ -4796,6 +4796,16 @@ def negative(
 ) -> ivy.Array:
     """Return a new array with the negative value of each element in ``x``.
 
+    .. note::
+       For signed integer data types, the numerical negative of
+       the minimum representable integer is implementation-dependent.
+
+    .. note::
+       If ``x`` has a complex floating-point data type,
+       both the real and imaginary components for each ``x_i``
+       must be negated (a result which follows from the rules of
+       complex number multiplication).
+
     Parameters
     ----------
     x
