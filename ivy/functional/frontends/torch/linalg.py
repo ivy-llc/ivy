@@ -154,8 +154,8 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
-def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
+def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
