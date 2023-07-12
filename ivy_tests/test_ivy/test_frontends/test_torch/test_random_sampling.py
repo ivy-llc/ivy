@@ -177,13 +177,16 @@ def test_torch_randint(
     fn_tree="torch.rand",
     dtype=helpers.get_dtypes("float", full=False),
     size=helpers.get_shape(
-        min_num_dims=0,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=0,
+        min_dim_size=1,
         max_dim_size=10,
     ),
 )
 def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
+    size = {f"size{i}": size[i] for i in range(len(size))}
+    test_flags.num_positional_args = len(size)
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
@@ -191,7 +194,7 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
             test_values=False,
             fn_tree=fn_tree,
             test_flags=test_flags,
-            size=size,
+            **size,
         )
 
     ret = call()
@@ -305,13 +308,16 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
     fn_tree="torch.randn",
     dtype=helpers.get_dtypes("float", full=False),
     size=helpers.get_shape(
-        min_num_dims=0,
+        min_num_dims=1,
         max_num_dims=5,
-        min_dim_size=0,
+        min_dim_size=1,
         max_dim_size=10,
     ),
 )
 def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
+    size = {f"size{i}": size[i] for i in range(len(size))}
+    test_flags.num_positional_args = len(size)
+
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
@@ -319,7 +325,7 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
             test_values=False,
             fn_tree=fn_tree,
             test_flags=test_flags,
-            size=size,
+            **size,
         )
 
     ret = call()
@@ -452,3 +458,30 @@ def test_torch_randperm(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+# set_rng_state
+@handle_frontend_test(
+    fn_tree="set_rng_state",
+    state=helpers.get_state(
+        min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=1
+    ),
+)
+def test_torch_set_rng_state(
+    *,
+    state,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[None],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=[False],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=False,
+        state=state,
+    )
