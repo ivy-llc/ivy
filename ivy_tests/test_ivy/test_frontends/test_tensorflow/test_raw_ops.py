@@ -1654,7 +1654,7 @@ def test_tensorflow_zeros_like(  # NOQA
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.LogSoftmax",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
