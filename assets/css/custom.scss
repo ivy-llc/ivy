@@ -169,3 +169,43 @@ img.navbar-logo {
 ul.navbar-nav.navbar-nav-scroll.me-auto {
     margin-right: 0 !important ;
 }
+
+span.menu-text {
+    font-size: medium;
+}
+
+.navbar-container {
+    margin: 0 auto 0 auto;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 1023px) {
+    .navbar-nav {
+        text-align: center;
+        margin-left: auto;
+    }
+}
+
+@media only screen and (max-width: 1550px) {
+    .navbar-container {
+        max-width: 95%;
+    }
+}
+
+@media only screen and (min-width: 1550px) and (max-width: 1634px) {
+    .navbar-container {
+        max-width: 80%;
+    }
+}
+
+@media only screen and (min-width: 1634px) and (max-width: 1968px) {
+    .navbar-container {
+        max-width: 70%;
+    }
+}
+
+@media only screen and (min-width: 1968px) {
+    .navbar-container {
+        max-width: 60%;
+    }
+}
