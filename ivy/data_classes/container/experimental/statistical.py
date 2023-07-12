@@ -198,11 +198,12 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
         >>> dtype = ivy.int32
-        >>> z = ivy.histogram(x, bins=y, dtype=dtype)
-        >>> print(z.a)
-        >>> print(z.b)
-        (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-        (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+        >>> z = x.histogram(bins=y, dtype=dtype)
+        >>> print(z)
+        {
+            a: ivy.array([1, 1, 1, 0, 0]),
+            b: ivy.array([0, 0, 0, 1, 2])
+        }
         """
         return self.static_histogram(
             self,
