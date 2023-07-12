@@ -269,21 +269,23 @@ def test_to_device(
     fn_tree="functional.ivy.handle_soft_device_variable",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
     ),
 )
 def test_handle_soft_device_variable(*, dtype_and_x):
     dtype, x = dtype_and_x
     dtype = dtype[0]
-    x = ivy.array(x[0], device="cpu")
+    x = ivy.to_device(x[0], "cpu")
+
+    def fn(x, y):
+        return ivy.add(x, y)
 
     for device in _get_possible_devices():
         ivy.set_default_device(device)
-
-        args, kwargs = ivy.handle_soft_device_variable(x, x=x)
+        out = ivy.handle_soft_device_variable(x, fn=fn, y=x)
 
         # check if device shifting is successful
-        assert args[0].device == ivy.default_device()
-        assert kwargs["x"].device == ivy.default_device()
+        assert out.device == ivy.default_device()
 
 
 # Function Splitting #
