@@ -1863,7 +1863,7 @@ def divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
+    r"""
     Calculate the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
 
@@ -1884,6 +1884,108 @@ def divide(
         an array containing the element-wise results. The returned array must have a
         floating-point data type determined by Type Promotion Rules.
 
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
+    is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i``
+    is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``,
+    the result is ``+0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``,
+    the result is ``-0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``,
+    the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``,
+    the result is ``+0``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``,
+    the result is ``+infinity``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``,
+    the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``,
+    the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``,
+    the result is ``+infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive
+    (i.e., greater than ``0``) finite number, the result is ``+infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative
+    (i.e., less than ``0``) finite number, the result is ``-infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive
+    (i.e., greater than ``0``) finite number, the result is ``-infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative
+    (i.e., less than ``0``) finite number, the result is ``+infinity``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
+    ``x2_i`` is ``+infinity``, the result is ``+0``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
+    ``x2_i`` is ``-infinity``, the result is ``-0``.
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
+    ``x2_i`` is ``+infinity``, the result is ``-0``.
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
+    ``x2_i`` is ``-infinity``, the result is ``+0``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign and
+    are both nonzero finite numbers, the result has a positive mathematical sign.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs and
+    are both nonzero finite numbers, the result has a negative mathematical sign.
+    - In the remaining cases, where neither ``-infinity``, ``+0``, ``-0``, nor ``NaN``
+    is involved, the quotient must be computed and rounded to the nearest representable
+    value according to IEEE 754-2019 and a supported rounding mode.
+    If the magnitude is too large to represent, the operation overflows and
+    the result is an ``infinity`` of appropriate mathematical sign.
+    If the magnitude is too small to represent, the operation
+    underflows and the result is a zero of appropriate mathematical sign.
+
+    For complex floating-point operands,
+    division is defined according to the following table.
+    For real components ``a`` and ``c`` and imaginary components ``b`` and ``d``,
+
+    +------------+----------------+-----------------+--------------------------+
+    |            | c              | dj              | c + dj                   |
+    +============+================+=================+==========================+
+    | **a**      | a / c          | -(a/d)j         | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+    | **bj**     | (b/c)j         | b/d             | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+    | **a + bj** | (a/c) + (b/c)j | b/d - (a/d)j    | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+
+    In general, for complex floating-point operands,
+    real-valued floating-point special cases
+    must independently apply to the real and imaginary component operations
+    involving real numbers as described in the above table.
+
+    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
+    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
+    division of complex floating-point operands should be computed as
+    if calculated according to the textbook formula for complex number division
+
+    .. math::
+       \frac{a + bj}{c + dj} = \frac{(ac + bd) + (bc - ad)j}{c^2 + d^2}
+
+    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
+    ``+infinity``, or ``-infinity``,
+
+    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``, the result is ``NaN + NaN j``.
+    - In the remaining cases, the result is implementation dependent.
+
+    .. note::
+       For complex floating-point operands, the results of special cases
+       may be implementation dependent depending on how an implementation
+       chooses to model complex numbers and complex infinity (e.g.,
+       complex plane versus Riemann sphere).
+       For those implementations following C99 and its one-infinity model,
+       when at least one component is infinite, even if the other component is ``NaN``,
+       the complex value is infinite, and the usual arithmetic rules do not apply to
+       complex-complex division.
+       In the interest of performance, other implementations may want
+       to avoid the complex branching logic necessary
+       to implement the one-infinity model
+       and choose to implement all complex-complex division
+       according to the textbook formula.
+       Accordingly, special case behavior is unlikely
+       to be consistent across implementations.
 
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
