@@ -841,8 +841,8 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.eigh()
         >>> print(y)
         {
-            'a': ivy.array([[-1., 3.]]),
-            'b': ivy.array([[-2., 6.]])
+            a: ivy.array([[-1., 3.]]),
+            b: ivy.array([[-2., 6.]])
         }
         """
         return self._static_eigh(
