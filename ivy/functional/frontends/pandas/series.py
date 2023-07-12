@@ -11,6 +11,7 @@ class Series:
                  fastpath=False):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
+
         data_is_array = isinstance(data, (ivy.Array, np.ndarray))
 
         if data_is_array:
@@ -19,11 +20,24 @@ class Series:
         # setup a default index if none provided
         if index is None:
             if data_is_array or isinstance(data, (list, tuple)):
-                index = ivy.arange(len(data))
+                index = ivy.arange(len(data)).tolist()
             elif isinstance(data, dict):
                 index = list(data.keys())
 
-        self.data = data
+        if data_is_array:
+            if len(data) != len(index):
+                raise ValueError(
+                    f"Length of values {len(data)} does not match length of index {len(index)}"
+                )
+            self.data = data
+            self.index = index
+        elif isinstance(data, dict):
+            pass
+        elif isinstance(data, (list, tuple)):
+            pass
+        elif isinstance(data, (int, float, str)):
+            pass
+
         self.index = index
         self.dtype = dtype
         self.name = name
