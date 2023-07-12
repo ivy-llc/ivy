@@ -1868,8 +1868,6 @@ def dtype_array_query(
                 helpers.dtype_and_values(
                     min_value=-s + 1,
                     max_value=s - 1,
-                    min_num_dims=0,
-                    max_num_dims=1,
                     dtype=["int64"],
                 )
             )
