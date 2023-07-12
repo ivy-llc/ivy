@@ -2326,12 +2326,13 @@ def imag(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the Imaginary part of a complex numbers(x+yj).
+    Return the imaginary part of a complex number for each element
+    ``x_i`` of the input array ``val``.
 
     Parameters
     ----------
     val
-        Array-like input.
+        input array. Should have a complex floating-point data type.
     out
         optional output array, for writing the result to.
 
@@ -2339,6 +2340,20 @@ def imag(
     -------
     ret
         Returns an array with the imaginary part of complex numbers.
+        The returned arrau must have a floating-point data type determined by
+        the precision of ``val`` (e.g., if ``val`` is ``complex64``,
+        the returned array must be ``float32``).
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.imag.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
