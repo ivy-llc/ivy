@@ -458,3 +458,30 @@ def test_torch_randperm(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+# set_rng_state
+@handle_frontend_test(
+    fn_tree="set_rng_state",
+    state=helpers.get_state(
+        min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=1
+    ),
+)
+def test_torch_set_rng_state(
+    *,
+    state,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[None],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=1,
+        native_array_flags=[False],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=False,
+        state=state,
+    )
