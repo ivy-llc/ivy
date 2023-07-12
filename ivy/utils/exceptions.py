@@ -10,6 +10,7 @@ import builtins
 # Helpers #
 # ------- #
 
+
 def _remove_so_log(trace):
     old_stack_trace = tb.extract_tb(trace)
     old_frames = inspect.getinnerframes(trace)
@@ -138,7 +139,7 @@ def _get_traces(curr_obj, area, local_dict, target_name):
     return [curr_obj] + traces_list
 
 
-def _check_if_path_found(path , full_path):
+def _check_if_path_found(path, full_path):
     """
     Check if the path is found in the full path.
 
@@ -160,7 +161,6 @@ def _check_if_path_found(path , full_path):
         return False
 
 
-
 def _configure_stack_trace(traceback):
     """
     Configure the stack trace to be displayed in the console.
@@ -174,9 +174,9 @@ def _configure_stack_trace(traceback):
     trace_mode = ivy.exception_trace_mode
     show_wrappers = ivy.show_func_wrapper_trace_mode
 
-    ivy_path = os.path.join('ivy', 'functional', 'ivy')
-    frontend_path = os.path.join('ivy', 'functional', 'frontends')
-    wrapper_path = os.path.join('ivy', 'func_wrapper.py')
+    ivy_path = os.path.join("ivy", "functional", "ivy")
+    frontend_path = os.path.join("ivy", "functional", "frontends")
+    wrapper_path = os.path.join("ivy", "func_wrapper.py")
 
     while 1:
         if not tb.tb_next:
@@ -189,7 +189,9 @@ def _configure_stack_trace(traceback):
             else:
                 tb.tb_next = tb.tb_next.tb_next
         elif trace_mode == "frontend":
-            if _check_if_path_found(frontend_path, file_path) or _check_if_path_found(ivy_path, file_path):
+            if _check_if_path_found(frontend_path, file_path) or _check_if_path_found(
+                ivy_path, file_path
+            ):
                 tb = tb.tb_next
             else:
                 tb.tb_next = tb.tb_next.tb_next
@@ -201,7 +203,7 @@ def _configure_stack_trace(traceback):
                     tb = tb.tb_next
             else:
                 tb = tb.tb_next
-        
+
 
 def _add_native_error(default):
     """
@@ -252,7 +254,6 @@ def _combine_messages(*messages, include_backend=True):
     # adding the native error as well if it exists and the trace mode is set to "full"
     default = _add_native_error(default)
     return delimiter.join(default)
- 
 
 
 class IvyException(Exception):
@@ -313,7 +314,6 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
-
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
         """
