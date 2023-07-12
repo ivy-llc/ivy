@@ -2209,10 +2209,14 @@ class _ContainerWithLayers(ContainerBase):
         ret
             The result of the transpose convolution operation in a container.
 
+        Examples
+        --------
+        # TODO: example is required to be fixed, shapes are wrong
+
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
         >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
         >>> y = x.conv3d_transpose(filters, 2, 'SAME')

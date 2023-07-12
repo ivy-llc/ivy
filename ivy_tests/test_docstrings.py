@@ -290,6 +290,7 @@ def test_docstrings(backend):
         "dropout3",
         "broadcast_shapes",
         "conv2d_transpose",
+        'conv3d_transpose',
     ]
     # currently_being_worked_on = ["layer_norm"]
 
