@@ -267,7 +267,10 @@ def conj(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.conj(x, out=out)
+    ret = np.conj(x, out=out)
+    if x.dtype == np.bool:
+        return ret.astype("bool")
+    return ret
 
 
 def ldexp(

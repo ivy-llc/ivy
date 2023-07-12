@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
 )
 
 
@@ -22,6 +23,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -62,6 +64,7 @@ def vorbis_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def hann_window(
     size: int,
     *,
@@ -108,6 +111,7 @@ def hann_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -263,7 +267,10 @@ def hamming_window(
 
 
 hamming_window.mixed_backend_wrappers = {
-    "to_add": ("handle_out_argument",),
+    "to_add": (
+        "handle_out_argument",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -590,6 +597,12 @@ def indices(
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+indices.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
