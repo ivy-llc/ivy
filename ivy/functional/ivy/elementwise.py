@@ -3349,6 +3349,23 @@ def isfinite(
         finite and ``False`` otherwise. The returned array must have a data type of
         ``bool``.
 
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``False``.
+    - if ``x_i`` is ``NaN``, the result is ``False``.
+    - if ``x_i`` is a finite number, the result is ``True``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``,
+    and
+
+    - If ``a`` is ``NaN`` or ``b`` is ``NaN``, the result is ``False``.
+    _ If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value,
+    the result is ``False``.
+    - If ``a`` is any value and ``b`` is either ``+infinity`` or ``-infinity``,
+    the result is ``False``.
+    - If ``a`` is a finite number and ``b`` is a finite number, the result is ``True``.
 
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
