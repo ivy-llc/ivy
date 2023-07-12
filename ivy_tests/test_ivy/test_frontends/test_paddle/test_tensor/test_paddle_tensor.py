@@ -1852,7 +1852,7 @@ def test_paddle_instance_rad2deg(
         shared_dtype=True,
     ),
 )
-def test_paddle_maximum(
+def test_paddle_instance_maximum(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1864,7 +1864,7 @@ def test_paddle_maximum(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"other": x[1]},
