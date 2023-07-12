@@ -374,6 +374,7 @@ def trim_zeros(
     filt: Union[Sequence, tf.Tensor],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:

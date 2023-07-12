@@ -1081,10 +1081,12 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
 
+    @handle_view
     def trim_zeros(
         self: ivy.Array,
         /,
         *,
+        copy: Optional[bool] = None,
         trim: str = "fb",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -1099,6 +1101,14 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ----------
         self
             input array.
+
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         trim
             A string with ‘f’ representing trim from front and ‘b’ to trim from back.
@@ -1130,4 +1140,4 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         >>> print(y)
         ivy.array([0, 0, 0, 1, 2])
         """
-        return ivy.trim_zeros(self._data, trim=trim, out=out)
+        return ivy.trim_zeros(self._data, copy=copy, trim=trim, out=out)

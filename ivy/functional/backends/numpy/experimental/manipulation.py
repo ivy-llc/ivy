@@ -511,8 +511,11 @@ def trim_zeros(
     filt: Union[Sequence, np.ndarray],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if copy:
+        filt = np.copy(filt)
     filt = np.asarray(filt)
     return np.trim_zeros(filt=filt, trim=trim)

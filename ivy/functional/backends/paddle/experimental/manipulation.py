@@ -4,7 +4,10 @@ from numbers import Number
 
 
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
@@ -630,21 +633,29 @@ def fill_diagonal(
     return a
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": ("bool", "bfloat16", "float32", "int32", "float64", "int64")
+        }
+    },
+    backend_version,
 )
 def trim_zeros(
     filt: Union[Sequence, paddle.Tensor],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    filt = paddle.to_tensor(filt)
+    filt = paddle.Tensor(filt)
+    if copy:
+        filt = paddle.clone(filt)
     nz = filt == 0
     if paddle.all(nz):
         return paddle.full((0,), 0, dtype=filt.dtype)
-    nz = nz.astype("int32")
+    nz = paddle.cast(nz, "int32")
     start = paddle.argmin(nz) if "f" in trim.lower() else 0
     end = paddle.argmin(nz[::-1]) if "b" in trim.lower() else 0
     return filt[start : len(filt) - end]

@@ -2137,10 +2137,12 @@ def fill_diagonal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_view
 def trim_zeros(
     filt: Union[Sequence, ivy.Array, ivy.NativeArray],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[ivy.Array] = None,
 ) -> Union[ivy.Array, ivy.NativeArray]:
@@ -2151,6 +2153,14 @@ def trim_zeros(
     ----------
     filt
         input array.
+
+    copy
+        boolean indicating whether to copy the input array.
+        If True, the function must always copy.
+        If False, the function must never copy and must
+        raise a ValueError in case a copy would be necessary.
+        If None, the function must reuse existing memory buffer if possible
+        and copy otherwise. Default: ``None``.
 
     trim
         A string with ‘f’ representing trim from front and ‘b’ to trim from back.
@@ -2192,4 +2202,4 @@ def trim_zeros(
         b:ivy.array([3., 4., 5.])
     }
     """
-    return ivy.current_backend(filt).trim_zeros(filt, trim=trim, out=out)
+    return ivy.current_backend(filt).trim_zeros(filt, copy=copy, trim=trim, out=out)

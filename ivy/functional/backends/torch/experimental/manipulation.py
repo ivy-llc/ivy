@@ -401,9 +401,12 @@ def trim_zeros(
     filt: Union[Sequence, torch.Tensor],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if copy:
+        filt = torch.clone(filt)
     filt = torch.asarray(filt)
     nz = filt == 0
     if torch.all(nz):

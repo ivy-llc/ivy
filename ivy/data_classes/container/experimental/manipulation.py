@@ -2988,6 +2988,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         filt: Union[Sequence, ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        copy: Optional[bool] = None,
         trim: str = "fb",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3006,6 +3007,14 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         filt
             input array.
+
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         trim
             A string with ‘f’ representing trim from front and ‘b’ to trim from back.
@@ -3045,6 +3054,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return ContainerBase.cont_multi_map_in_function(
             "trim_zeros",
             filt,
+            copy=copy,
             trim=trim,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -3057,6 +3067,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
+        copy: Optional[bool] = None,
         trim: str = "fb",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -3075,6 +3086,14 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             input array.
+
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         trim
             A string with ‘f’ representing trim from front and ‘b’ to trim from back.
@@ -3126,6 +3145,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         """
         return self.static_trim_zeros(
             self,
+            copy=copy,
             trim=trim,
             key_chains=key_chains,
             to_apply=to_apply,

@@ -422,6 +422,7 @@ def trim_zeros(
     filt: Union[Sequence, JaxArray],
     /,
     *,
+    copy: Optional[bool] = None,
     trim: str = "fb",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
