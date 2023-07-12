@@ -9,6 +9,9 @@ from ivy.utils.exceptions import IvyNotImplementedException
 # local
 import ivy
 from paddle.device import core
+from ivy.functional.ivy.random import (
+    _check_shapes_broadcastable,
+)
 
 # dirichlet
 
@@ -77,6 +80,22 @@ def gamma(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
+    },
+    backend_version,
+)
 def poisson(
     lam: Union[float, paddle.Tensor],
     *,
@@ -87,7 +106,17 @@ def poisson(
     fill_value: Optional[Union[float, int]] = 0,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    lam = paddle.to_tensor(lam, dtype=dtype)
+    if seed:
+        paddle.seed(seed)
+    if shape is None:
+        return paddle.poisson(lam)
+    _check_shapes_broadcastable(lam.shape, shape)
+    shape = paddle.to_tensor(shape, dtype="int32")
+    if not lam.shape:
+        return paddle.poisson(lam)
+    paddle.broadcast_to(lam, shape)
+    return paddle.poisson(lam)
 
 
 def bernoulli(
