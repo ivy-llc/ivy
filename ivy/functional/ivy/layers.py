@@ -833,10 +833,11 @@ def conv1d(
         Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or an int / a sequence of n (low, high) integer pairs that give the
+        padding to apply before and after each spatial dimension. Defaults to 0.
     data_format
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
@@ -930,9 +931,12 @@ def conv1d_transpose(
         Convolution filters *[fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         Either ‘SAME’ (padding so that the output's shape is the same as the
-        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+        input's), ‘VALID’ (padding so that the output's shape is `output_shape`),
+        or an int / a tuple of ints giving the implicit padding to apply before and
+        after each spatial dimension. Defaults to 0.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1062,10 +1066,11 @@ def conv2d(
         Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
-        either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+        padding), or an int / a sequence of n (low, high) integer pairs that give the
+        padding to apply before and after each spatial dimension. Defaults to 0.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1192,9 +1197,12 @@ def conv2d_transpose(
         Convolution filters *[fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one elment tuple. Defaults to 1.
     padding
         Either ‘SAME’ (padding so that the output's shape is the same as the
-        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+        input's), ‘VALID’ (padding so that the output's shape is `output_shape`),
+        or an int / a tuple of ints giving the amount of implicit padding to
+        apply before and after each spatial dimension. Defaults to 0.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1310,10 +1318,11 @@ def depthwise_conv2d(
         Convolution filters *[fh,fw,d_in]*. (d_in must be the same as d from x)
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        padding), or an int / a sequence of n (low, high) integer pairs that give the
+        padding to apply before and after each spatial dimension. Defaults to 0.
     data_format
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
@@ -1448,10 +1457,11 @@ def conv3d(
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        padding), or an int / a sequence of n (low, high) integer pairs that give the 
+        padding to apply before and after each spatial dimension. Defaults to 0.
     data_format
         The ordering of the dimensions in the input, one of "NDHWC" or "NCDHW". "NDHWC"
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
@@ -1566,9 +1576,12 @@ def conv3d_transpose(
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         Either ‘SAME’ (padding so that the output's shape is the same as the
-        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+        input's), ‘VALID’ (padding so that the output's shape is `output_shape`),
+        or an int / a tuple of ints giving the amount of implicit padding to be
+        applied before and after each spatial dimension. Defaults to 0.
     output_shape
         Shape of the output (Default value = None)
     data_format
@@ -1680,10 +1693,11 @@ def conv_general_dilated(
         Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        padding), or an int / a sequence of n (low, high) integer pairs that give the
+        padding to apply before and after each spatial dimension.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     data_format
@@ -1762,9 +1776,12 @@ def conv_general_transpose(
         Convolution filters *[fd,fh,fw,d_in,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         Either ‘SAME’ (padding so that the output's shape is the same as the
-        input's), or ‘VALID’ (padding so that the output's shape is `output_shape`).
+        input's), ‘VALID’ (padding so that the output's shape is `output_shape`),
+        or an int / a tuple of ints giving the amount of implicit padding to apply
+        before and after each spatial dimension. Defaults to 0.
     dims
         Either 1, 2, or 3 corresponding to 1-D, 2-D, and 3-D convolution.
     output_shape
@@ -1838,10 +1855,11 @@ def conv(
         Convolution filters *[fd,fh,fw,d_in/feature_group_count,d_out]*.
     strides
         The stride of the sliding window for each dimension of input.
+        A single number or a one element tuple. Defaults to 1.
     padding
         either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
-        padding), or a sequence of n (low, high) integer pairs that give the padding to
-        apply before and after each spatial dimension.
+        padding), or an int / a sequence of n (low, high) integer pairs that give the
+        padding to apply before and after each spatial dimension. Defaults to 0.
     transpose
         True for computing transpose convolution, and False for dilated convolution.
         When True, `x_dilations` must be 1 (the default).
