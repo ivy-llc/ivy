@@ -55,6 +55,5 @@
   :hide-table:
 
   ivy.stateful
-  ivy.nested_array
   ivy.utils
   ivy_tests.test_ivy.helpers

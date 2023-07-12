@@ -28,7 +28,7 @@ def l2_normalize(
     return tf.math.divide(x, denorm)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
 def batch_norm(
     x: Union[tf.Tensor, tf.Variable],
     mean: Union[tf.Tensor, tf.Variable],

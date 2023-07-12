@@ -75,25 +75,6 @@ def test_to_native_arrays_and_back():
 
 
 @pytest.mark.parametrize(
-    ("x", "expected"),
-    [
-        (1, 1.0),
-        ([1, 3], [1.0, 3.0]),
-        (
-            [[[1, 0], [-2, 1.0]]],
-            [[[1.0, 0.0], [-2.0, 1.0]]],
-        ),
-    ],
-)
-def test_integer_arrays_to_float(x, expected):
-    # Todo: Fix dtype issue (update: fixed)
-    x = ivy.array(x)
-    expected = ivy.array(expected)
-
-    assert ivy.array_equal(ivy.func_wrapper.integer_arrays_to_float(_fn1)(x), expected)
-
-
-@pytest.mark.parametrize(
     ("x", "weight", "expected"),
     [
         ([[1, 1], [1, 1]], [[1, 1], [1, 1], [1, 1]], True),
