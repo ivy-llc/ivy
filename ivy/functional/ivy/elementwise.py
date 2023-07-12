@@ -3843,7 +3843,7 @@ def log10(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the base ``10``
+    r"""Calculate an implementation-dependent approximation to the base ``10``
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
 
@@ -3856,6 +3856,14 @@ def log10(
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, special cases must be handled as if the
+    operation is implemented using the standard change of base formula
+
+    .. math::
+        \log_{10}(x) = \frac{\log_e(x)}{\log_e(10)}
+
+    where :math:`\log_e` is the natural logarithm.
 
     Parameters
     ----------
