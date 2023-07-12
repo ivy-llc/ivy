@@ -20,11 +20,15 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_pooling_functions import 
     ),
     ceil_mode=st.booleans(),
     exclusive=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_avg_pool2d(
     dtype_x_k_s,
     exclusive,
     ceil_mode,
+    divisor_override,
+    data_format,
     *,
     test_flags,
     frontend,
@@ -33,6 +37,11 @@ def test_paddle_avg_pool2d(
 ):
     input_dtype, x, kernel, stride, padding = dtype_x_k_s
 
+    if data_format == "NCHW":
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
+        )
+
     if len(stride) == 1:
         stride = (stride[0], stride[0])
 
@@ -40,8 +49,6 @@ def test_paddle_avg_pool2d(
         padding = calculate_same_padding(kernel, stride, x[0].shape[2:])
     else:
         padding = (0, 0)
-
-    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -55,5 +62,6 @@ def test_paddle_avg_pool2d(
         padding=padding,
         ceil_mode=ceil_mode,
         exclusive=exclusive,
-        divisor_override=None,
+        divisor_override=divisor_override,
+        data_format=data_format,
     )
