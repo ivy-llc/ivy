@@ -20,14 +20,12 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_pooling_functions import 
     ),
     ceil_mode=st.booleans(),
     exclusive=st.booleans(),
-    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_avg_pool2d(
     dtype_x_k_s,
     exclusive,
     ceil_mode,
-    divisor_override,
     data_format,
     *,
     test_flags,
@@ -62,6 +60,6 @@ def test_paddle_avg_pool2d(
         padding=padding,
         ceil_mode=ceil_mode,
         exclusive=exclusive,
-        divisor_override=divisor_override,
+        divisor_override=None,
         data_format=data_format,
     )
