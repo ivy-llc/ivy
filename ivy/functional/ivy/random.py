@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
+    handle_device_shifting,
 )
 from ivy.utils.backend import backend_stack
 from ivy.utils.exceptions import handle_exceptions
@@ -93,6 +94,7 @@ def _check_shapes_broadcastable(out, inp):
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def random_uniform(
     *,
@@ -208,6 +210,7 @@ def random_uniform(
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def random_normal(
     *,
@@ -318,6 +321,7 @@ def random_normal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def multinomial(
     population_size: int,
@@ -428,6 +432,7 @@ def multinomial(
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
@@ -525,6 +530,7 @@ def seed(*, seed_value: int = 0) -> None:
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,
