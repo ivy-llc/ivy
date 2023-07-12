@@ -1888,23 +1888,6 @@ def divide(
     Calculate the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
 
-    Parameters
-    ----------
-    x1
-        dividend input array. Should have a numeric data type.
-    x2
-        divisor input array. Must be compatible with x1 (see Broadcasting). Should have
-        a numeric data type.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing the element-wise results. The returned array must have a
-        floating-point data type determined by Type Promotion Rules.
-
     **Special Cases**
 
     For real-valued floating-point operands,
@@ -2020,6 +2003,23 @@ def divide(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Parameters
+    ----------
+    x1
+        dividend input array. Should have a numeric data type.
+    x2
+        divisor input array. Must be compatible with x1 (see Broadcasting). Should have
+        a numeric data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the element-wise results. The returned array must have a
+        floating-point data type determined by Type Promotion Rules.
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -2095,6 +2095,7 @@ def equal(
     ret
         an array containing the element-wise results. The returned array must have a
         data type of bool.
+
 
     **Special cases**
 
@@ -3340,6 +3341,7 @@ def multiply(
         optional output array, for writing the array result to.
         It must have a shape that the inputs broadcast to.
 
+
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/
@@ -3437,6 +3439,7 @@ def isfinite(
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is
         finite and ``False`` otherwise. The returned array must have a data type of
         ``bool``.
+
 
     **Special Cases**
 
@@ -3540,6 +3543,7 @@ def isinf(
         an array containing test results. An element out_i is True if x_i is either
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
+
 
     **Special Cases**
 
@@ -3656,6 +3660,7 @@ def isnan(
         an array containing test results. An element ``out_i`` is ``True`` if ``x_i`` is
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
+
 
     **Special Cases**
 
@@ -4026,8 +4031,9 @@ def log1p(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation to log(1+x), where log
-    refers to the natural (base e) logarithm.
+    Calculate an implementation-dependent approximation to log(1+x), where log refers to
+    the natural (base e) logarithm.
+
     .. note::
        The purpose of this function is to calculate ``log(1+x)`` more accurately
        when `x` is close to zero. Accordingly, conforming implementations should avoid
@@ -4125,7 +4131,6 @@ def log1p(
         a: ivy.array([0., 0.693, 1.1]),
         b: ivy.array([1.39, 1.61, 1.81])
     }
-
     """
     return ivy.current_backend(x).log1p(x, out=out)
 
@@ -5318,6 +5323,7 @@ def real(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[[1.1], [2], [-6.3]]])
     >>> z = ivy.real(x)
     >>> print(z)
@@ -5329,6 +5335,7 @@ def real(
     ivy.array([4.2, 0., 7.])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
                           b=ivy.array([5j, 5.32-6.55j, 3.001]))
     >>> z = ivy.real(x)
@@ -5532,6 +5539,7 @@ def round(
     -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
+
 
     Note: PyTorch supports an additional argument :code:`decimals` for the
     `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
@@ -5807,7 +5815,7 @@ def sinh(
     for each element ``x_i`` of the input array ``x``.
 
     .. math::
-       \{sinh}(x) = \frac{e^x - e^{-x}}{2}
+       \operatorname{sinh}(x) = \frac{e^x - e^{-x}}{2}
 
     .. note::
        The hyperbolic sine is an entire function in the
@@ -6194,18 +6202,18 @@ def tan(
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
     expressed in radians.
-     .. note::
-       Tangent is an analytical function on the complex plane
-       and has no branch cuts. The function is periodic,
-       with period :math:`\pi j`, with respect to the real
-       component and has first order poles along the real
-       line at coordinates :math:`(\pi (\frac{1}{2} + n), 0)`.
-       However, IEEE 754 binary floating-point representation
-       cannot represent the value :math:`\pi / 2` exactly, and,
-       thus, no argument value is possible for
-       which a pole error occurs.
+    .. note::
+        Tangent is an analytical function on the complex plane
+        and has no branch cuts. The function is periodic,
+        with period :math:`\pi j`, with respect to the real
+        component and has first order poles along the real
+        line at coordinates :math:`(\pi (\frac{1}{2} + n), 0)`.
+        However, IEEE 754 binary floating-point representation
+        cannot represent the value :math:`\pi / 2` exactly, and,
+        thus, no argument value is possible for
+        which a pole error occurs.
 
-       where :math:`{tanh}` is the hyperbolic tangent.
+        where :math:`{tanh}` is the hyperbolic tangent.
 
     **Special cases**
 
@@ -6643,6 +6651,7 @@ def maximum(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
     >>> z = ivy.maximum(x, y)
@@ -7078,6 +7087,7 @@ def isreal(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> z = ivy.isreal(x)
     >>> print(z)
@@ -7089,6 +7099,7 @@ def isreal(
     ivy.array([ True, False, False])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),\
                           b=ivy.array([5j, 5-6j, 3]))
     >>> z = ivy.isreal(x)
