@@ -681,13 +681,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ...                [6, 7, 8]])
         >>> b = ivy.array([[-1., -2., -3.],
         ...                 [-3., 4., 5.],
-        ...                 [5., 6., 7.]])],
+        ...                 [5., 6., 7.]]),
         >>> x = ivy.Container(a=a, b=b)
-        >>> d = x.diagonal(offset=-1, axis1=0)
+        >>> d = x.diagonal(offset=-1)
         >>> print(d)
         {
-            a:ivy.array([3., 7.]),
-            b:ivy.array([-3., 6.])
+            a: ivy.array([3, 7]),
+            b: ivy.array([[-3., 6.]])
         }
         """
         return self._static_diagonal(
