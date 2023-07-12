@@ -18,6 +18,16 @@ from ivy.functional.frontends.torch.func_wrapper import (
 
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
+
+        # ivy.SparseArray does not have a device attribute
+        # TODO: Update this when ivy.SparseArray has a device attribute
+        if ivy.is_ivy_sparse_array(array):
+            self.ivy_array = array
+            return
+        elif ivy.is_native_sparse_array(array):
+            self.ivy_array = ivy.SparseArray(array)
+            return
+
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -256,9 +266,9 @@ class Tensor:
             shape_tup = size
         elif args and not ivy.exists(size):
             if (
-                isinstance(args[0], tuple)
-                or isinstance(args[0], list)
-                or type(args[0]).__name__ == "Size"
+                    isinstance(args[0], tuple)
+                    or isinstance(args[0], list)
+                    or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
                 shape_tup = args[0]
             else:
@@ -399,14 +409,14 @@ class Tensor:
         return torch_frontend.tensor(self)
 
     def new_ones(
-        self,
-        *args,
-        size=None,
-        dtype=None,
-        device=None,
-        requires_grad=False,
-        layout=None,
-        pin_memory=False,
+            self,
+            *args,
+            size=None,
+            dtype=None,
+            device=None,
+            requires_grad=False,
+            layout=None,
+            pin_memory=False,
     ):
         if size is None:
             size = args[0] if isinstance(args[0], (tuple, list)) else args
@@ -428,7 +438,7 @@ class Tensor:
         return torch_frontend.equal(self, other)
 
     def new_zeros(
-        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+            self, size, *, dtype=None, device=None, requires_grad=False, layout=None
     ):
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
@@ -452,8 +462,8 @@ class Tensor:
                     )
                     return cast_tensor
             if (
-                isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
-                or args[0] in ivy._all_ivy_dtypes_str
+                    isinstance(args[0], (ivy.Dtype, ivy.NativeDtype))
+                    or args[0] in ivy._all_ivy_dtypes_str
             ):
                 if self.dtype == ivy.as_ivy_dtype(args[0]):
                     return self
@@ -463,7 +473,7 @@ class Tensor:
                     return cast_tensor
             if isinstance(args[0], (ivy.Device, ivy.NativeDevice, str)):
                 if isinstance(args[0], str) and not isinstance(
-                    args[0], (ivy.Device, ivy.NativeDevice)
+                        args[0], (ivy.Device, ivy.NativeDevice)
                 ):
                     ivy.utils.assertions.check_elem_in_list(
                         args[0],
@@ -494,10 +504,10 @@ class Tensor:
                     return cast_tensor
         else:
             if (
-                "dtype" in kwargs
-                and "device" in kwargs
-                and self.dtype == kwargs["dtype"]
-                and self.device == kwargs["device"]
+                    "dtype" in kwargs
+                    and "device" in kwargs
+                    and self.dtype == kwargs["dtype"]
+                    and self.device == kwargs["device"]
             ):
                 return self
             else:
@@ -551,14 +561,14 @@ class Tensor:
         return self
 
     def new_tensor(
-        self,
-        data,
-        *,
-        dtype=None,
-        device=None,
-        requires_grad=False,
-        layout=None,
-        pin_memory=False,
+            self,
+            data,
+            *,
+            dtype=None,
+            device=None,
+            requires_grad=False,
+            layout=None,
+            pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
         device = ivy.dev(self.ivy_array) if device is None else device
@@ -619,9 +629,9 @@ class Tensor:
         return torch_frontend.hsplit(self, indices_or_sections)
 
     def dsplit(
-        self,
-        indices_or_sections,
-        /,
+            self,
+            indices_or_sections,
+            /,
     ):
         return torch_frontend.dsplit(self, indices_or_sections)
 
@@ -635,15 +645,15 @@ class Tensor:
         return torch_frontend.heaviside(self, values, out=out)
 
     def new_full(
-        self,
-        size,
-        fill_value,
-        *,
-        dtype=None,
-        device=None,
-        requires_grad=False,
-        layout=None,
-        pin_memory=False,
+            self,
+            size,
+            fill_value,
+            *,
+            dtype=None,
+            device=None,
+            requires_grad=False,
+            layout=None,
+            pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
         if ivy.is_float_dtype(dtype):
@@ -657,14 +667,14 @@ class Tensor:
         return torch_frontend.tensor(_data)
 
     def new_empty(
-        self,
-        size,
-        *,
-        dtype=None,
-        device=None,
-        requires_grad=False,
-        layout=None,
-        pin_memory=False,
+            self,
+            size,
+            *,
+            dtype=None,
+            device=None,
+            requires_grad=False,
+            layout=None,
+            pin_memory=False,
     ):
         dtype = ivy.dtype(self.ivy_array) if dtype is None else dtype
         device = ivy.dev(self.ivy_array) if device is None else device
@@ -674,7 +684,7 @@ class Tensor:
     def unfold(self, dimension, size, step):
         slices = []
         for i in range(0, self.shape[dimension] - size + 1, step):
-            slices.append(self.ivy_array[i : i + size])
+            slices.append(self.ivy_array[i: i + size])
         return torch_frontend.stack(slices)
 
     def long(self, memory_format=None):
@@ -1206,10 +1216,12 @@ class Tensor:
         return torch_frontend.expm1(self)
 
     # fmt: off
-    @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
+    @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},
+                             "torch", )  # noqa
     def exp_(self):
         self.ivy_array = self.exp().ivy_array
         return self
+
     # fmt: on
 
     def mul(self, other):
@@ -1478,12 +1490,31 @@ class Tensor:
 
     def tile(self, *reps):
         if (
-            isinstance(reps, Iterable)
-            and len(reps) == 1
-            and isinstance(reps[0], Iterable)
+                isinstance(reps, Iterable)
+                and len(reps) == 1
+                and isinstance(reps[0], Iterable)
         ):
             reps = reps[0]
         return torch_frontend.tile(self, reps)
+
+    @property
+    def layout(self):
+        if ivy.is_ivy_array(self.ivy_array):
+            # _mkldnn is a special case, if the pytorch is built with MKLDNN
+            try:
+                import torch
+                if torch.backends.mkldnn.is_available():
+                    return "torch._mkldnn"
+            except ImportError:
+                pass
+
+            return "torch.strided"
+        if ivy.is_ivy_sparse_array(self.ivy_array):
+            # No sure that the formats which ivy.sparse_array supports are all contained in the types of sparse tensor in pytorch
+            return f"torch.sparse_{self.ivy_array.format}"
+
+    def is_sparse(self):
+        return ivy.is_ivy_sparse_array(self.ivy_array)
 
 
 class Size(tuple):
