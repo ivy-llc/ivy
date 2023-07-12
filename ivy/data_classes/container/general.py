@@ -3418,14 +3418,15 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.einops_rearrange("c h w -> c (h w)")
         >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 6])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 6])
         }
 
         >>> x = ivy.Container(a=ivy.array([[1, 2, 3, 4, 5, 6],
         ...               [7, 8, 9, 10, 11, 12]]))
         >>> y = x.einops_rearrange("c (h w) -> (c h) w", h=2, w=3)
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[4, 3])
+            a: (<class ivy.data_classes.array.array.Array> shape=[4, 3])
         }
         """
         return self._static_einops_rearrange(
