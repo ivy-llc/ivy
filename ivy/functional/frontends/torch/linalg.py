@@ -280,6 +280,7 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
 
             return result, info
+@to_ivy_arrays_and_back
 def cholesky_ex(A, *, upper=False, check_errors=False, out=None):
     try:
         matrix = ivy.cholesky(A, upper=upper, out=out)
