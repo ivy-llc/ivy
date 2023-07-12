@@ -149,7 +149,7 @@ def value_test(
             )
 
 
-def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np, device):
+def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np, device="cpu"):
     """
     Check whether a function does not support the input data types or the output data
     type.
