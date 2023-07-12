@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -379,4 +380,42 @@ def test_numpy_dot(
         atol=1e-01,
         a=a,
         b=b,
+    )
+
+@handle_frontend_test(
+    fn_tree="numpy.einsum",
+    eq_n_op_n_shp=st.sampled_from(
+        [
+            ("ii", (np.arange(25).reshape(5, 5),), ()),
+            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
+        ]
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_numpy_einsum(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    eq, operands, _ = eq_n_op_n_shp
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    # len(operands) + 1 because of the equation
+    test_flags.num_positional_args = len(operands) + 1
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        equation=eq,
+        **kw,
     )
