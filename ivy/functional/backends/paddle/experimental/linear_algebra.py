@@ -55,10 +55,6 @@ def kron(
     return paddle.kron(a, b)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
-    backend_version,
-)
 def matrix_exp(
     x: paddle.Tensor,
     /,

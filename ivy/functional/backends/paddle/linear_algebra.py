@@ -87,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -179,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def inv(
@@ -247,7 +247,7 @@ def matmul(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def matrix_norm(
@@ -329,7 +329,7 @@ def eig(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def matrix_power(
@@ -339,7 +339,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def matrix_rank(
@@ -436,7 +436,7 @@ def tensorsolve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def qr(
@@ -450,8 +450,9 @@ def qr(
     q, r = paddle.linalg.qr(x, mode=mode)
     return res(q, r)
 
-@with_supported_dtypes(
-    {"2.5.0 and below": ("float",)},
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def slogdet(
@@ -469,7 +470,7 @@ def slogdet(
     return results(sign, logabsdet)
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def solve(
@@ -497,7 +498,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.0 and below": {"cpu": ("complex64",)}},
     backend_version,
 )
 def svd(
@@ -659,7 +660,7 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "complex")}},
+    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
     backend_version,
 )
 def vander(
