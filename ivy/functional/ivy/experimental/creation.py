@@ -548,7 +548,7 @@ def ndindex(
 
 @handle_exceptions
 def indices(
-    dimensions: Sequence,
+    dimensions: Sequence[int],
     *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
