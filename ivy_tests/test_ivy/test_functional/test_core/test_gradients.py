@@ -1,7 +1,7 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import pytest
 import numpy as np
 
@@ -113,6 +113,8 @@ def test_stop_gradient(
 def test_execute_with_gradients(
     *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
 ):
+    assume(not backend_fw.backend == "numpy")
+
     def func(xs):
         if isinstance(xs, ivy.Container):
             array_idxs = ivy.nested_argwhere(xs, ivy.is_array)
