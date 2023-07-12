@@ -544,7 +544,7 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
@@ -641,7 +641,7 @@ def test_fmin(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -950,7 +950,7 @@ def test_logaddexp2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -1118,7 +1118,7 @@ def test_nan_to_num(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1273,7 +1273,7 @@ def test_real(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1563,7 +1563,7 @@ def test_trapz(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -1878,7 +1878,7 @@ def test_gcd(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1914,7 +1914,7 @@ def test_imag(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         val=x[0],
@@ -1951,7 +1951,7 @@ def test_angle(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         z=z[0],

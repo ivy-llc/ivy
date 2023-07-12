@@ -237,7 +237,7 @@ def test_group_norm(
     x_dtype, x, num_groups, data_format, scale, offset, eps = data
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
