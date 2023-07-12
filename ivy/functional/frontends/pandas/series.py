@@ -14,8 +14,9 @@ class Series:
         data_is_array = isinstance(data, (ivy.Array, np.ndarray))
 
         if data_is_array:
-            assert data.ndim == 1
+            assert data.ndim == 1, "Series Data must be 1-dimensional"
 
+        # setup a default index if none provided
         if index is None:
             if data_is_array or isinstance(data, (list, tuple)):
                 index = ivy.arange(len(data))
