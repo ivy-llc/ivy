@@ -442,6 +442,8 @@ def sigmoid(
     >>> ivy.sigmoid(x,out=y)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
+    
+    With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.]),
                           b=ivy.Container(c=ivy.array([1.]),
