@@ -5,8 +5,8 @@ Superset Behaviour
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/functional/backends/torch/experimental/layers.py#L735
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L980
+.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
 When implementing functions in Ivy, whether they are primary, compositional or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?
 
@@ -65,22 +65,6 @@ Therefore, ivy supports :code:`order` for these functions and any remaining logi
 Regarding the **only mathematics** rule regarding the superset considerations, there are two exceptions to this, which are the handling of data type and device arguments.
 Neither of these relate to the pure mathematics of the function.
 However, as is discussed below, we always strive to implement Ivy functions such that they support as many data types and devices as possible.
-
-When the Superset is Too Much
------------------------------
-
-Despite this general approach, the total superset is not always actually strived for, especially in cases where the behaviour can very easily be replicated by a simple composition of other functions, or where the extra behaviour is redundant as it is already covered by another function.
-
-As an example, many pointwise functions in NumPy support the :code:`where` argument, which enables a mask array to be specified, with the function then only evaluated at elements for which the :code:`where` array is :code:`True`.
-This inclusion of this feature in NumPy is totally understandable, compositions of NumPy functions are never compiled into computation graphs which span multiple operations, and therefore a good way to maximize efficiency of NumPy code is to minimize the number of unique NumPy functions which are called, each of which are implemented with very high efficiency in :code:`C`.
-In this case, the inclusion of :code:`where` as an argument also prevents unnecessary values from being computed in the first place, only to then be masked out in the immediately subsequent operation.
-For these reasons, calling :code:`np.absolute(x, where=mask)` is much more efficient than calling :code:`np.where(mask, np.absolute(x), np.empty_like(x))` in NumPy.
-:func:`ivy.logical_and` is another example where the superset is too much, as we explain in the extra examples given at the end of this section.
-
-However, other frameworks are able to compile compositions of python operations directly to computation graphs in low-level languages, and are also able to intelligently fuse operations into combined kernels, via libraries such as `TensorRT <https://github.com/NVIDIA/TensorRT>`_.
-This removes the need for highly general function signatures such as those found in NumPy.
-Instead, a compositional approach is preferred, where each function in Python generally serves a particular and non-overlapping purpose.
-This helps to keep things more clean and clear at the Python level, without sacrificing efficiency at the lower level.
 
 Balancing Generalization with Efficiency
 ----------------------------------------
@@ -200,18 +184,18 @@ Most frameworks contain some kind of interpolation function, usually limited to 
 On top of this, different framework-specific functions support different sets of modes for interpolation.
 For example, if we look at the framework-specific functions available that serve the purpose of interpolation
 
-1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
-2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
-3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
-4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
+    1. :func:`torch.nn.functional.interpolate` supports larger number of dimensions in the input but doesn't support the :code:`gaussian` or :code:`mitchellcubic` modes which are supported by :func:`tf.image.resize`.
+    2. :func:`tf.image.resize` supports the :code:`gaussian` or :code:`mitchellcubic` modes but doesn't support some other modes in :func:`torch.nn.functional.interpolate` and it also doesn't support larger than a 4-dimensional input.
+    3. :func:`jax.image.resize` also has missing modes and doesn't support larger number of dimensions.
+    4. :code:`numpy` doesn't have an equivalent function for interpolation (:func:`numpy.interp` is very different from the functionality required).
 
 So the ideal superset implementation for :func:`ivy.interpolate` would be supporting the union of all modes supported by different implementations and support a larger number of dimensions in the input.
 
 But there are a few considerations to be made,
 
-1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
-2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
-3. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
+    1. Implementing all the modes for all the backend-specific implementations would be tedious and repetitive as some modes may not be supported by more than one framework.
+    2. We would need a completely compositional implementation for the :code:`numpy` backend which doesn't have an equivalent framework-specific function.
+    3. But also having a single compositional implementation for all backends would be considerably inefficient as compared to the framework-specific functions with overlapping functionality.
 
 As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementation which covers all the remaining cases.
 This will make sure that we don't introduce any inefficiencies and also avoid re-implementation for all the backends.
@@ -265,8 +249,8 @@ Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-spec
         "gaussian",
     ]
 
-When the backend is set, we use this attribute to apply the `handle_mixed_function`_ decorator to the function.
-The :code:`@handle_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
+When the backend is set, we use this attribute to apply the `handle_partial_mixed_function`_ decorator to the function.
+The :code:`@handle_partial_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
 The input function is expected to be a boolean function where we'd use the backend-specific implementation if :code:`True` and the compositional implementation if :code:`False`.
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.
 
@@ -290,6 +274,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `s
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
     </iframe>

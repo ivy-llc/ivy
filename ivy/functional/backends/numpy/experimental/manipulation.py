@@ -315,7 +315,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
     if copy:
         arys = ivy.nested_map(arys, np.copy)
@@ -331,14 +331,14 @@ def dstack(
     return np.dstack(arrays)
 
 
-def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = False) -> List[np.ndarray]:
+def atleast_2d(*arys: np.ndarray, copy: Optional[bool] = None) -> List[np.ndarray]:
     if copy:
         arys = ivy.nested_map(arys, np.copy)
     return np.atleast_2d(*arys)
 
 
 def atleast_3d(
-    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[np.ndarray, bool, Number], copy: Optional[bool] = None
 ) -> List[np.ndarray]:
     if copy:
         arys = ivy.nested_map(arys, np.copy)
@@ -494,3 +494,14 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: np.ndarray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> np.ndarray:
+    np.fill_diagonal(a, v, wrap=wrap)
+    return a

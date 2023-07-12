@@ -201,7 +201,7 @@ def dsplit(
     return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
-def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
+def atleast_1d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_1d(*arys)
@@ -221,7 +221,7 @@ def dstack(
     return torch.dstack(arrays, out=out)
 
 
-def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.Tensor]:
+def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = None) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
     transformed = torch.atleast_2d(*arys)
@@ -231,7 +231,7 @@ def atleast_2d(*arys: torch.Tensor, copy: Optional[bool] = False) -> List[torch.
 
 
 def atleast_3d(
-    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = False
+    *arys: Union[torch.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[torch.Tensor]:
     if copy:
         arys = ivy.nested_map(arys, torch.clone)
@@ -364,3 +364,34 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: torch.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> torch.Tensor:
+    shape = a.shape
+    max_end = torch.prod(torch.tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
+
+    end = max_end if end > max_end else end
+    a = torch.reshape(a, (-1,))
+    w = torch.zeros(a.shape, dtype=bool).to(a.device)
+    ins = torch.arange(0, max_end).to(a.device)
+    steps = torch.arange(0, end, step).to(a.device)
+
+    for i in steps:
+        i = ins == i
+        w = torch.logical_or(w, i)
+    a = torch.where(w, v, a)
+    a = torch.reshape(a, shape)
+    return a

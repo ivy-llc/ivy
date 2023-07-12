@@ -261,7 +261,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
 ) -> List[JaxArray]:
     return jnp.atleast_1d(*arys)
 
@@ -275,12 +275,12 @@ def dstack(
     return jnp.dstack(arrays)
 
 
-def atleast_2d(*arys: JaxArray, copy: Optional[bool] = False) -> List[JaxArray]:
+def atleast_2d(*arys: JaxArray, copy: Optional[bool] = None) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
 def atleast_3d(
-    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = False
+    *arys: Union[JaxArray, bool, Number], copy: Optional[bool] = None
 ) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 
@@ -327,6 +327,8 @@ def expand(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)
+    if len(shape) > len(x.shape):
+        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -393,3 +395,24 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: JaxArray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> jnp.DeviceArray:
+    shape = jnp.array(a.shape)
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (jnp.cumprod(shape[:-1])).sum()
+    a = jnp.reshape(a, (-1,))
+    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = jnp.reshape(a, shape)
+    return a
