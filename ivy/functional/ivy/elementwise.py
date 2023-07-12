@@ -2193,6 +2193,14 @@ def exp(
     element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``,
     where ``e`` is the base of the natural logarithm).
 
+    .. note::
+        For complex floating-point operands, ``exp(conj(x))`` must
+        equal ``conj(exp(x))``.
+
+    .. note::
+        The exponential function is an entire function in
+        the complex plane and has no branch cuts.
+
     **Special cases**
 
     For floating-point operands,
@@ -2202,6 +2210,38 @@ def exp(
     - If ``x_i`` is ``-0``, the result is ``1``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``+0``.
+
+    For complex floating-point operands,
+    let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+    the result is ``1 + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+    the result is ``infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a finite number,
+    the result is ``+0 * cis(b)``.
+    - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
+    the result is ``+infinity * cis(b)``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+    the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
+    the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``,
+    the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is not equal to ``0``,
+    the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+    the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
