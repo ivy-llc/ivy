@@ -54,9 +54,9 @@ def abs(
     let ``a = real(x_i)`` and ``b = imag(x_i)``. and
 
     - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
-    (including ``NaN``), the result is ``+infinity``.
+      (including ``NaN``), the result is ``+infinity``.
     - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
     - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
@@ -158,27 +158,28 @@ def acos(
     and
 
     - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
-    the result is ``π/2 - 0j``.
+      the result is ``π/2 - 0j``.
     - if ``a`` is either ``+0`` or ``-0`` and ``b`` is ``NaN``,
-    the result is ``π/2 + NaN j``.
+      the result is ``π/2 + NaN j``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``π/2 - infinity j``.
+      the result is ``π/2 - infinity j``.
     - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``-infinity`` and ``b`` is a positive
-    (i.e., greater than 0) finite number, the result is ``π - infinity j``.
+      (i.e., greater than 0) finite number, the result is ``π - infinity j``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive
-    (i.e., greater than 0) finite number, the result is ``+0 - infinity j``.
+      (i.e., greater than 0) finite number, the result is ``+0 - infinity j``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``3π/4 - infinity j``.
+      the result is ``3π/4 - infinity j``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``π/4 - infinity j``.
+      the result is ``π/4 - infinity j``.
     - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is ``NaN``,
-    the result is ``NaN ± infinity j`` (sign of the imaginary component is unspecified).
+      the result is ``NaN ± infinity j`` (sign of
+      the imaginary component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is a finite number,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - if ``a`` is ``NaN`` and ``b`` is ``+infinity``,
-    the result is ``NaN - infinity j``.
+      the result is ``NaN - infinity j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Parameters
@@ -265,27 +266,27 @@ def acosh(
     and
 
     - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
-    the result is ``+0 + πj/2``.
+      the result is ``+0 + πj/2``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/2``.
+      the result is ``+infinity + πj/2``.
     - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``NaN ± πj/2``
-    (sign of the imaginary component is unspecified).
+      (sign of the imaginary component is unspecified).
     - If ``a`` is ``-infinity`` and ``b`` is a positive (i.e., greater than 0) finite
-    number, the result is ``+infinity + πj``.
+      number, the result is ``+infinity + πj``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than 0) finite
-    number, the result is ``+infinity + 0j``.
+      number, the result is ``+infinity + 0j``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + 3πj/4``.
+      the result is ``+infinity + 3πj/4``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/4``.
+      the result is ``+infinity + πj/4``.
     - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is ``NaN``,
-    the result is ``+infinity + NaN j``.
+      the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - if ``a`` is ``NaN`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + NaN j``.
+      the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Parameters
@@ -408,11 +409,11 @@ def add(
     +-------------------+-------------------+-------------------+-------------------+
     |                   |         c         |       dj          |         c+dj      |
     +===================+===================+===================+===================+
-    |         a         |       a + c       |      a + dj       |  (a+c) + dj       |
+    |     **a**         |       a + c       |      a + dj       |  (a+c) + dj       |
     +-------------------+-------------------+-------------------+-------------------+
-    |         bj        |    c + bj         |     (b+d)j        |   c + (b+d)j      |
+    |     **bj**        |    c + bj         |     (b+d)j        |   c + (b+d)j      |
     +-------------------+-------------------+-------------------+-------------------+
-    |         a+bj      | (a+c) + bj        |   a + (b+d)j      | (a+c) + (b+d)j    |
+    |     **a+bj**      | (a+c) + bj        |   a + (b+d)j      | (a+c) + (b+d)j    |
     +-------------------+-------------------+-------------------+-------------------+
 
     For complex floating-point operands, the real valued floating-point
@@ -614,17 +615,17 @@ def asinh(
 
     - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
     - If ``a`` is a positive (i.e., greater than ``0``) finite number and ``b`` is
-        ``+infinity``, the result is ``+infinity + πj/2``.
+      ``+infinity``, the result is ``+infinity + πj/2``.
     - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than ``0``)
-        finite number, the result is ``+infinity + 0j``.
+      finite number, the result is ``+infinity + 0j``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``, the result is
-        ``+infinity + πj/4``.
+      ``+infinity + πj/4``.
     - If ``a`` is ``NaN`` and ``b`` is ``+0``, the result is ``NaN + 0j``.
     - If ``a`` is ``NaN`` and ``b`` is nonzero finite number, the result is
-        ``NaN + NaNj``.
+      ``NaN + NaNj``.
     - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
-    the result is ``±infinity ± NaNj``, (sign of real component is unspecified).
+      the result is ``±infinity ± NaNj``, (sign of real component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, ``NaN + NaNj``.
 
     Parameters
@@ -1008,17 +1009,17 @@ def atanh(
     - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``+0 + NaN j``.
     - If ``a`` is ``1`` and ``b`` is ``+0``, the result is ``+infinity + 0j``.
     - If ``a`` is a positive (i.e., greater than ``0``) finite number and ``b``
-    is ``+infinity``, the result is ``+0 + πj/2``.
+      is ``+infinity``, the result is ``+0 + πj/2``.
     - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than ``0``)
-    finite number, the result is ``+0 + πj/2``.
+      finite number, the result is ``+0 + πj/2``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``+0 + πj/2``.
+      the result is ``+0 + πj/2``.
     - If ``a`` is ``+infinity`` and ``b`` is ``NaN``, the result is ``+0 + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``+infinity``, the result is ``±0 + πj/2``
-    (sign of the real component is unspecified).
+      (sign of the real component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Examples
@@ -1787,25 +1788,25 @@ def cosh(
 
     - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``1 + 0j``.
     - If ``a`` is ``+0`` and ``b`` is ``+infinity``, the result is ``NaN + 0j``
-    (sign of the imaginary component is unspecified).
+      (sign of the imaginary component is unspecified).
     - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``NaN + 0j``
-    (sign of the imaginary component is unspecified).
+      (sign of the imaginary component is unspecified).
     - If ``a`` is a nonzero finite number and ``b`` is ``+infinity``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
-    the result is ``+infinity + 0j``.
+      the result is ``+infinity + 0j``.
     - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
-    the result is ``+infinity * cis(b)``.
+      the result is ``+infinity * cis(b)``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + NaN j``(sign of the real component is unspecified).
+      the result is ``+infinity + NaN j``(sign of the real component is unspecified).
     - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
-    the result is ``+infinity + NaN j``.
+      the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is either ``+0`` or ``-0``,
-    the result is ``NaN + 0j`` (sign of the imaginary component is unspecified).
+      the result is ``NaN + 0j`` (sign of the imaginary component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is a nonzero finite number,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
@@ -1910,52 +1911,53 @@ def divide(
 
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
-    is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+      is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
     - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i``
-    is either ``+0`` or ``-0``, the result is ``NaN``.
+      is either ``+0`` or ``-0``, the result is ``NaN``.
     - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``,
-    the result is ``+0``.
+      the result is ``+0``.
     - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``,
-    the result is ``-0``.
+      the result is ``-0``.
     - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``,
-    the result is ``-0``.
+      the result is ``-0``.
     - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``,
-    the result is ``+0``.
+      the result is ``+0``.
     - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``,
-    the result is ``-infinity``.
+      the result is ``-infinity``.
     - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``,
-    the result is ``-infinity``.
+      the result is ``-infinity``.
     - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity``.
+      (i.e., greater than ``0``) finite number, the result is ``+infinity``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative
-    (i.e., less than ``0``) finite number, the result is ``-infinity``.
+      (i.e., less than ``0``) finite number, the result is ``-infinity``.
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``-infinity``.
+      (i.e., greater than ``0``) finite number, the result is ``-infinity``.
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative
-    (i.e., less than ``0``) finite number, the result is ``+infinity``.
+      (i.e., less than ``0``) finite number, the result is ``+infinity``.
     - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
-    ``x2_i`` is ``+infinity``, the result is ``+0``.
+      ``x2_i`` is ``+infinity``, the result is ``+0``.
     - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
-    ``x2_i`` is ``-infinity``, the result is ``-0``.
+      ``x2_i`` is ``-infinity``, the result is ``-0``.
     - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
-    ``x2_i`` is ``+infinity``, the result is ``-0``.
+      ``x2_i`` is ``+infinity``, the result is ``-0``.
     - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
-    ``x2_i`` is ``-infinity``, the result is ``+0``.
+      ``x2_i`` is ``-infinity``, the result is ``+0``.
     - If ``x1_i`` and ``x2_i`` have the same mathematical sign and
-    are both nonzero finite numbers, the result has a positive mathematical sign.
+      are both nonzero finite numbers, the result has a positive mathematical sign.
     - If ``x1_i`` and ``x2_i`` have different mathematical signs and
-    are both nonzero finite numbers, the result has a negative mathematical sign.
+      are both nonzero finite numbers, the result has a negative mathematical sign.
     - In the remaining cases, where neither ``-infinity``, ``+0``, ``-0``, nor ``NaN``
-    is involved, the quotient must be computed and rounded to the nearest representable
-    value according to IEEE 754-2019 and a supported rounding mode.
-    If the magnitude is too large to represent, the operation overflows and
-    the result is an ``infinity`` of appropriate mathematical sign.
-    If the magnitude is too small to represent, the operation
-    underflows and the result is a zero of appropriate mathematical sign.
+      is involved, the quotient must be computed and rounded
+      to the nearest representable value according to IEEE 754-2019
+      and a supported rounding mode.
+      If the magnitude is too large to represent, the operation overflows and
+      the result is an ``infinity`` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the operation
+      underflows and the result is a zero of appropriate mathematical sign.
 
     For complex floating-point operands,
     division is defined according to the following table.
@@ -2100,15 +2102,15 @@ def equal(
 
     - If ``x1_i`` is ``NaN`` or ``x2_i`` is ``NaN``, the result is ``False``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``+infinity``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``-infinity``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is ``-0`` and ``x2_i`` is either ``+0`` or ``-0``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is ``+0`` and ``x2_i`` is either ``+0`` or ``-0``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is a finite number, ``x2_i`` is a finite number,
-    and ``x1_i`` equals ``x2_i``, the result is ``True``.
+      and ``x1_i`` equals ``x2_i``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
     For complex floating-point operands, let ``a = real(x1_i)``,
@@ -2116,10 +2118,10 @@ def equal(
 
     - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``False``.
     - In the remaining cases, the result is the logical AND of the equality
-    comparison between the real values ``a`` and ``c`` (real components) and
-    between the real values ``b`` and ``d`` (imaginary components),
-    as described above for real-valued floating-point operands
-    (i.e., ``a == c AND b == d``).
+      comparison between the real values ``a`` and ``c`` (real components) and
+      between the real values ``b`` and ``d`` (imaginary components),
+      as described above for real-valued floating-point operands
+      (i.e., ``a == c AND b == d``).
 
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
@@ -2215,31 +2217,31 @@ def exp(
     let ``a = real(x_i)``, ``b = imag(x_i)``, and
 
     - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
-    the result is ``1 + 0j``.
+      the result is ``1 + 0j``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is a finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
-    the result is ``infinity + 0j``.
+      the result is ``infinity + 0j``.
     - If ``a`` is ``-infinity`` and ``b`` is a finite number,
-    the result is ``+0 * cis(b)``.
+      the result is ``+0 * cis(b)``.
     - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
-    the result is ``+infinity * cis(b)``.
+      the result is ``+infinity * cis(b)``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+      the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
     - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
-    the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+      the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
     - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
-    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is ``+0``,
-    the result is ``NaN + 0j``.
+      the result is ``NaN + 0j``.
     - If ``a`` is ``NaN`` and ``b`` is not equal to ``0``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
 
     where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
@@ -2537,31 +2539,31 @@ def expm1(
     let ``a = real(x_i)``, ``b = imag(x_i)``, and
 
     - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
-    the result is ``0 + 0j``.
+      the result is ``0 + 0j``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is a finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
-    the result is ``+infinity + 0j``.
+      the result is ``+infinity + 0j``.
     - If ``a`` is ``-infinity`` and ``b`` is a finite number,
-    the result is ``+0 * cis(b) - 1.0``.
+      the result is ``+0 * cis(b) - 1.0``.
     - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
-    the result is ``+infinity * cis(b) - 1.0``.
+      the result is ``+infinity * cis(b) - 1.0``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
+      the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
     - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
-    the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
+      the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
     - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
-    the result is ``infinity + NaN j`` (sign of real component is unspecified).
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
     - If ``a`` is ``NaN`` and ``b`` is ``+0``,
-    the result is ``NaN + 0j``.
+      the result is ``NaN + 0j``.
     - If ``a`` is ``NaN`` and ``b`` is not equal to ``0``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
 
     where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
@@ -2766,59 +2768,59 @@ def floor_divide(
 
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
-    is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+      is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
     - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i``
-    is either ``+0`` or ``-0``, the result is ``NaN``.
+      is either ``+0`` or ``-0``, the result is ``NaN``.
     - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``,
-    the result is ``+0``.
+      the result is ``+0``.
     - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``,
-    the result is ``-0``.
+      the result is ``-0``.
     - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``,
-    the result is ``-0``.
+      the result is ``-0``.
     - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``,
-    the result is ``+0``.
+      the result is ``+0``.
     - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``,
-    the result is ``-infinity``.
+      the result is ``-infinity``.
     - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``,
-    the result is ``-infinity``.
+      the result is ``-infinity``.
     - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity``.
-    (**note**: libraries may return ``NaN`` to match Python behavior.)
+      (i.e., greater than ``0``) finite number, the result is ``+infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative
-    (i.e., less than ``0``) finite number, the result is ``-infinity``.
-    (**note**: libraries may return ``NaN`` to match Python behavior.)
+      (i.e., less than ``0``) finite number, the result is ``-infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``-infinity``.
-    (**note**: libraries may return ``NaN`` to match Python behavior.)
+      (i.e., greater than ``0``) finite number, the result is ``-infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative
-    (i.e., less than ``0``) finite number, the result is ``+infinity``.
-    (**note**: libraries may return ``NaN`` to match Python behavior.)
+      (i.e., less than ``0``) finite number, the result is ``+infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
     - If ``x1_i`` is a positive (i.e., greater than ``0``)
-    finite number and ``x2_i`` is ``+infinity``, the result is ``+0``.
+      finite number and ``x2_i`` is ``+infinity``, the result is ``+0``.
     - If ``x1_i`` is a positive (i.e., greater than ``0``)
-    finite number and ``x2_i`` is ``-infinity``, the result is ``-0``.
-    (**note**: libraries may return ``-1.0`` to match Python behavior.)
+      finite number and ``x2_i`` is ``-infinity``, the result is ``-0``.
+      (**note**: libraries may return ``-1.0`` to match Python behavior.)
     - If ``x1_i`` is a negative (i.e., less than ``0``)
-    finite number and ``x2_i`` is ``+infinity``, the result is ``-0``.
-    (**note**: libraries may return ``-1.0`` to match Python behavior.)
+      finite number and ``x2_i`` is ``+infinity``, the result is ``-0``.
+      (**note**: libraries may return ``-1.0`` to match Python behavior.)
     - If ``x1_i`` is a negative (i.e., less than ``0``)
-    finite number and ``x2_i`` is ``-infinity``, the result is ``+0``.
+      finite number and ``x2_i`` is ``-infinity``, the result is ``+0``.
     - If ``x1_i`` and ``x2_i`` have the same mathematical sign and
-    are both nonzero finite numbers, the result has a positive mathematical sign.
+      are both nonzero finite numbers, the result has a positive mathematical sign.
     - If ``x1_i`` and ``x2_i`` have different mathematical signs and
-    are both nonzero finite numbers, the result has a negative mathematical sign.
+      are both nonzero finite numbers, the result has a negative mathematical sign.
     - In the remaining cases, where neither ``-infinity``, ``+0``, ``-0``,
-    nor ``NaN`` is involved, the quotient must be computed and rounded to
-    the greatest (i.e., closest to `+infinity`) representable integer-value
-    number that is not greater than the division result.
-    If the magnitude is too large to represent, the operation overflows and
-    the result is an ``infinity`` of appropriate mathematical sign.
-    If the magnitude is too small to represent, the operation underflows and
-    the result is a zero of appropriate mathematical sign.
+      nor ``NaN`` is involved, the quotient must be computed and rounded to
+      the greatest (i.e., closest to `+infinity`) representable integer-value
+      number that is not greater than the division result.
+      If the magnitude is too large to represent, the operation overflows and
+      the result is an ``infinity`` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the operation underflows and
+      the result is a zero of appropriate mathematical sign.
 
     Parameters
     ----------
@@ -3247,33 +3249,33 @@ def multiply(
 
     - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
     - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-    ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+      ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
     - If ``x1_i`` is either ``+0`` or ``-0`` and
-    ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+      ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
     - If ``x1_i`` and ``x2_i`` have the same mathematical sign,
-    the result has a positive mathematical sign, unless the result is ``NaN``.
-    If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
+      the result has a positive mathematical sign, unless the result is ``NaN``.
+      If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
     - If ``x1_i`` and ``x2_i`` have different mathematical signs,
-    the result has a negative mathematical sign,
-    unless the result is ``NaN``. If the result is ``NaN``,
-    the "sign" of ``NaN`` is implementation-defined.
+      the result has a negative mathematical sign,
+      unless the result is ``NaN``. If the result is ``NaN``,
+      the "sign" of ``NaN`` is implementation-defined.
     - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
-    ``x2_i`` is either ``+infinity`` or ``-infinity``,
-    the result is a signed infinity with the mathematical sign determined by
-    the rule already stated above.
+      ``x2_i`` is either ``+infinity`` or ``-infinity``,
+      the result is a signed infinity with the mathematical sign determined by
+      the rule already stated above.
     - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
-    is a nonzero finite number, the result is a signed infinity with
-    the mathematical sign determined by the rule already stated above.
+      is a nonzero finite number, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
     - If ``x1_i`` is a nonzero finite number and ``x2_i``
-    is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
-    the mathematical sign determined by the rule already stated above.
+      is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
     - In the remaining cases, where neither ``infinity`` nor ``NaN``
-    is involved, the product must be computed and rounded to the nearest
-    representable value according to IEEE 754-2019 and a supported
-    rounding mode. If the magnitude is too large to represent,
-    the result is an `infinity` of appropriate mathematical sign.
-    If the magnitude is too small to represent, the result is a zero of
-    appropriate mathematical sign.
+      is involved, the product must be computed and rounded to the nearest
+      representable value according to IEEE 754-2019 and a supported
+      rounding mode. If the magnitude is too large to represent,
+      the result is an `infinity` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the result is a zero of
+      appropriate mathematical sign.
 
     For complex floating-point operands, multiplication is defined according to the
     following table. For real components ``a`` and ``c`` and
@@ -3305,7 +3307,7 @@ def multiply(
     ``+infinity``, or ``-infinity``,
 
     - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - In the remaining cases, the result is implementation dependent.
 
     .. note::
@@ -3449,9 +3451,9 @@ def isfinite(
 
     - If ``a`` is ``NaN`` or ``b`` is ``NaN``, the result is ``False``.
     _ If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value,
-    the result is ``False``.
+      the result is ``False``.
     - If ``a`` is any value and ``b`` is either ``+infinity`` or ``-infinity``,
-    the result is ``False``.
+      the result is ``False``.
     - If ``a`` is a finite number and ``b`` is a finite number, the result is ``True``.
 
     This method conforms to the
@@ -3550,9 +3552,9 @@ def isinf(
     and
 
     - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
-    (including ``NaN``), the result is ``True``.
-    If ``a`` is either a finite number or ``NaN`` and ``b`` is either ``+infinity``
-    or ``-infinity``, the result is ``True``.
+      (including ``NaN``), the result is ``True``.
+    - If ``a`` is either a finite number or ``NaN`` and ``b`` is either ``+infinity``
+      or ``-infinity``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
     This function conforms to the `Array API Standard
@@ -3850,22 +3852,22 @@ def log(
     - If ``a`` is ``-0`` and ``b`` is ``+0``, the result is ``-infinity + πj``.
     - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``-infinity + 0j``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/2``.
+      the result is ``+infinity + πj/2``.
     - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
     - If ``a`` is ``-infinity`` and ``b`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + 3πj/4``.
+      the result is ``+infinity + 3πj/4``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/4``.
+      the result is ``+infinity + πj/4``.
     - If ``a`` is either ``+infinity`` or ``-infinity`` and
-    ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
+      ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + NaN j``.
+      the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
 
@@ -4048,23 +4050,23 @@ def log1p(
 
     - If ``a`` is ``-1`` and ``b`` is ``+0``, the result is ``-infinity + 0j``.
     - If ``a`` is a finite number and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/2``.
+      the result is ``+infinity + πj/2``.
     - If ``a`` is a finite number and ``b`` is ``NaN``,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``-infinity`` and ``b`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
     - If ``a`` is ``+infinity`` and ``b`` is a positive
-    (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
     - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + 3πj/4``.
+      the result is ``+infinity + 3πj/4``.
     - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + πj/4``.
+      the result is ``+infinity + πj/4``.
     - If ``a`` is either ``+infinity`` or ``-infinity`` and
-    ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
+      ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number,
-    the result is ``NaN + NaN j``.
+      the result is ``NaN + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
-    the result is ``+infinity + NaN j``.
+      the result is ``+infinity + NaN j``.
     - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
 
@@ -4889,22 +4891,22 @@ def not_equal(
 
     - If ``x1_i`` is ``NaN`` or ``x2_i`` is ``NaN``, the result is ``True``.
     - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``,
-    the result is ``True``.
+      the result is ``True``.
     - If ``x1_i`` is a finite number, ``x2_i`` is a finite number,
-    and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
+      and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
     - In the remaining cases, the result is ``False``.
 
     For omplex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
     ``c = real(x2_i)``, ``d = imag(x2_i)``, and
 
     - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``True``.
-    - - In the remaining cases, the result is the logical OR of
-    the equality comparison between the real values ``a`` and ``c``
-    (real components) and between the real values ``b`` and ``d``
-    (imaginary components), as described above for real-valued floating-point operands
-    (i.e., ``a != c OR b != d``).
+    - In the remaining cases, the result is the logical OR of
+      the equality comparison between the real values ``a`` and ``c``
+      (real components) and between the real values ``b`` and ``d``
+      (imaginary components), as described above for real-valued floating-point operands
+      (i.e., ``a != c OR b != d``).
 
     Parameters
     ----------
