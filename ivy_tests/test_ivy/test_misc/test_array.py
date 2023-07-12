@@ -17,19 +17,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 from ivy.data_classes.array import Array
 
 
-# getitem and setitem helper
-@st.composite
-def _getitem_setitem(draw, available_dtypes=None):
-    if available_dtypes is None:
-        available_dtypes = helpers.get_dtypes("numeric")
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    x = draw(
-        helpers.dtype_and_values(available_dtypes=available_dtypes, shape=(arr_size,))
-    )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    return index, x
-
-
 def test_array_function():
     HANDLED_FUNCTIONS = {}
 
@@ -103,7 +90,7 @@ def test_array_property_dtype(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data), as_array=False)
 
 
 @handle_test(
@@ -116,7 +103,7 @@ def test_array_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
 
 
 @handle_test(
@@ -132,7 +119,7 @@ def test_array_property_ndim(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.ndim, len(input_shape))
+    ivy.utils.assertions.check_equal(x.ndim, len(input_shape), as_array=False)
 
 
 @handle_test(
@@ -148,7 +135,7 @@ def test_array_property_shape(
     _, data, input_shape = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape))
+    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape), as_array=False)
 
 
 @handle_test(
@@ -168,7 +155,7 @@ def test_array_property_size(
     size_gt = 1
     for dim in input_shape:
         size_gt *= dim
-    ivy.utils.assertions.check_equal(x.size, size_gt)
+    ivy.utils.assertions.check_equal(x.size, size_gt, as_array=False)
 
 
 @handle_test(
@@ -183,7 +170,9 @@ def test_array_property_itemsize(
     dtype, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.itemsize, ivy.to_numpy(x).itemsize)
+    ivy.utils.assertions.check_equal(
+        x.itemsize, ivy.to_numpy(x).itemsize, as_array=False
+    )
 
 
 @handle_test(
@@ -198,7 +187,7 @@ def test_array_property_strides(
     dtype, data = dtype_x
     data = ivy.native_array(data[0])
     x = Array(data)
-    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides)
+    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides, as_array=False)
 
 
 @handle_test(
@@ -248,9 +237,15 @@ def test_array_property_T(
     )
 
 
-@handle_method(method_tree="Array.__getitem__", query_dtype_and_x=_getitem_setitem())
+@handle_method(
+    method_tree="Array.__getitem__",
+    ground_truth_backend="numpy",
+    dtypes_x_query=helpers.dtype_array_query(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
 def test_array__getitem__(
-    query_dtype_and_x,
+    dtypes_x_query,
     init_flags,
     method_flags,
     method_name,
@@ -258,16 +253,15 @@ def test_array__getitem__(
     ground_truth_backend,
     on_device,
 ):
-    query, x_dtype = query_dtype_and_x
-    dtype, x = x_dtype
+    dtypes, x, query = dtypes_x_query
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=dtype,
+        init_all_as_kwargs_np={"data": x},
+        init_input_dtypes=[dtypes[0]],
+        method_input_dtypes=[*dtypes[1:]],
         method_all_as_kwargs_np={"query": query},
         class_name=class_name,
         method_name=method_name,
@@ -276,12 +270,15 @@ def test_array__getitem__(
 
 @handle_method(
     method_tree="Array.__setitem__",
-    query_dtype_and_x=_getitem_setitem(),
-    val=st.floats(min_value=-6, max_value=6),
+    ground_truth_backend="numpy",
+    dtypes_x_query_val=helpers.dtype_array_query_val(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    # ToDo: fix container method
+    method_container_flags=st.just([False]),
 )
 def test_array__setitem__(
-    query_dtype_and_x,
-    val,
+    dtypes_x_query_val,
     method_name,
     class_name,
     ground_truth_backend,
@@ -289,22 +286,15 @@ def test_array__setitem__(
     method_flags,
     on_device,
 ):
-    query, x_dtype = query_dtype_and_x
-    dtype, x = x_dtype
-    if ivy.is_uint_dtype(dtype[0]):
-        val = abs(int(val))
-    elif ivy.is_int_dtype(dtype[0]):
-        val = int(val)
-    elif ivy.is_bool_dtype(dtype[0]):
-        val = bool(val)
+    dtypes, x, query, val = dtypes_x_query_val
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x[0]},
-        init_input_dtypes=dtype,
-        method_input_dtypes=[],
+        init_all_as_kwargs_np={"data": x},
+        init_input_dtypes=[dtypes[0]],
+        method_input_dtypes=[*dtypes[1:]],
         method_all_as_kwargs_np={"query": query, "val": val},
         class_name=class_name,
         method_name=method_name,
@@ -2184,9 +2174,7 @@ def test_array__deepcopy__(
 @handle_method(
     method_tree="Array.__len__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_dim_size=2,
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_array__len__(

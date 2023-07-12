@@ -1,72 +1,77 @@
 import ivy
 import functools
 from typing import Callable
-import sys
 import traceback as tb
-
+import os
 
 # Helpers #
 # ------- #
 
 
-def _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode):
-    if trace_mode in ["frontend", "ivy"]:
-        print(
-            "<stack trace is truncated to {} specific files,".format(trace_mode),
-            "call `ivy.set_exception_trace_mode('full')` to view the full trace>",
-        )
-    if not func_wrapper_trace_mode:
-        print(
-            "<func_wrapper.py stack trace is squashed,",
-            "call `ivy.set_show_func_wrapper_trace_mode(True)` in order to view this>",
-        )
+def _check_if_path_found(path , full_path):
+    """
+    Check if the path is found in the full path.
+
+    Parameters
+    ----------
+    path
+        the path to check
+    full_path
+        the full path to check
+
+    Returns
+    -------
+    ret
+        True if the path is found, False otherwise
+    """
+    if path in full_path:
+        return True
+    else:
+        return False
 
 
-def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode):
-    _log_stack_trace_truncated(trace_mode, func_wrapper_trace_mode)
-    new_stack_trace = []
-    for st in old_stack_trace:
-        if trace_mode == "full" and not func_wrapper_trace_mode:
-            if "func_wrapper.py" not in repr(st):
-                new_stack_trace.append(st)
+
+def _configure_stack_trace(traceback):
+    """
+    Configure the stack trace to be displayed in the console.
+
+    Parameters
+    ----------
+    traceback
+        the traceback object
+    """
+    tb = traceback
+    trace_mode = ivy.exception_trace_mode
+    show_wrappers = ivy.show_func_wrapper_trace_mode
+
+    ivy_path = os.path.join('ivy', 'functional', 'ivy')
+    frontend_path = os.path.join('ivy', 'functional', 'frontends')
+    wrapper_path = os.path.join('ivy', 'func_wrapper.py')
+
+    while 1:
+        if not tb.tb_next:
+            break
+        frame = tb.tb_next.tb_frame
+        file_path = frame.f_code.co_filename
+        if trace_mode == "ivy":
+            if _check_if_path_found(ivy_path, file_path):
+                tb = tb.tb_next
+            else:
+                tb.tb_next = tb.tb_next.tb_next
+        elif trace_mode == "frontend":
+            if _check_if_path_found(frontend_path, file_path) or _check_if_path_found(ivy_path, file_path):
+                tb = tb.tb_next
+            else:
+                tb.tb_next = tb.tb_next.tb_next
         else:
-            if ivy.trace_mode_dict[trace_mode] in repr(st):
-                if not func_wrapper_trace_mode and "func_wrapper.py" in repr(st):
-                    continue
-                new_stack_trace.append(st)
-    print("".join(tb.format_list(new_stack_trace)))
-
-
-def _custom_exception_handle(type, value, tb_history):
-    trace_mode = ivy.get_exception_trace_mode()
-    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
-    if trace_mode == "none":
-        return
-    if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_tb(tb_history)))
-    else:
-        _print_new_stack_trace(
-            tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode
-        )
-    print(type.__name__ + ":", value)
-
-
-def _print_traceback_history():
-    trace_mode = ivy.get_exception_trace_mode()
-    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
-    if trace_mode == "none":
-        return
-    if trace_mode == "full" and func_wrapper_trace_mode:
-        print("".join(tb.format_tb(sys.exc_info()[2])))
-    else:
-        _print_new_stack_trace(
-            tb.extract_tb(sys.exc_info()[2]), trace_mode, func_wrapper_trace_mode
-        )
-    print("During the handling of the above exception, another exception occurred:\n")
-
-
-sys.excepthook = _custom_exception_handle
-
+            if not show_wrappers:
+                if _check_if_path_found(wrapper_path, file_path):
+                    tb.tb_next = tb.tb_next.tb_next
+                else:
+                    tb = tb.tb_next
+            else:
+                tb = tb.tb_next
+        
 
 def _add_native_error(default):
     """
@@ -82,7 +87,7 @@ def _add_native_error(default):
     ret
         list containing all the messages, with the native error appended if it exists
     """
-    trace_mode = ivy.get_exception_trace_mode()
+    trace_mode = ivy.exception_trace_mode
     if isinstance(default[-1], Exception):
         if isinstance(default[-1], IvyException):
             if default[-1].native_error is not None:
@@ -117,6 +122,7 @@ def _combine_messages(*messages, include_backend=True):
     # adding the native error as well if it exists and the trace mode is set to "full"
     default = _add_native_error(default)
     return delimiter.join(default)
+ 
 
 
 class IvyException(Exception):
@@ -177,6 +183,7 @@ class IvyDtypePromotionError(IvyException):
 
 
 def handle_exceptions(fn: Callable) -> Callable:
+
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
         """
@@ -198,39 +205,42 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         # Not to rethrow as IvyBackendException
         except IvyNotImplementedException as e:
+            _configure_stack_trace(e.__traceback__)
             raise e
         except IvyError as e:
-            _print_traceback_history()
-            raise ivy.utils.exceptions.IvyError(fn.__name__, e, include_backend=True)
+            _configure_stack_trace(e.__traceback__)
+            raise ivy.utils.exceptions.IvyError(
+                fn.__name__, str(e), include_backend=True
+            )
         except IvyBroadcastShapeError as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyBroadcastShapeError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except IvyDtypePromotionError as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyDtypePromotionError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (IndexError, IvyIndexError) as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyIndexError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (AttributeError, IvyAttributeError) as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyAttributeError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (ValueError, IvyValueError) as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyValueError(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:
-            _print_traceback_history()
+            _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyBackendException(
-                fn.__name__, e, include_backend=True
+                fn.__name__, str(e), include_backend=True
             )
 
     _handle_exceptions.handle_exceptions = True

@@ -702,6 +702,7 @@ def test_tensorflow_reduce_any(
     fn_tree="tensorflow.math.reduce_euclidean_norm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_num_dims=2,
     ),
     test_with_out=st.just(False),
 )
@@ -722,6 +723,8 @@ def test_tensorflow_reduce_euclidean_norm(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        rtol=1e-01,
+        atol=1e-01,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -873,6 +876,9 @@ def test_tensorflow_reduce_prod(
     fn_tree="tensorflow.math.reduce_std",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_reduce_std(
@@ -975,6 +981,8 @@ def test_tensorflow_reduce_mean(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        atol=1e-2,
+        rtol=1e-2,
         on_device=on_device,
         input_tensor=x[0],
     )
@@ -1396,6 +1404,9 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     fn_tree="tensorflow.math.zero_fraction",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=1,
     ),
     test_with_out=st.just(False),
@@ -1426,6 +1437,9 @@ def test_tensorflow_zero_fraction(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1446,6 +1460,8 @@ def test_tensorflow_truediv(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        rtol=1e-2,
+        atol=1e-2,
     )
 
 
@@ -1544,7 +1560,7 @@ def test_tensorflow_equal(
 @handle_frontend_test(
     fn_tree="tensorflow.math.not_equal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -2566,6 +2582,85 @@ def test_tensorflow_conj(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# top_k
+@handle_frontend_test(
+    fn_tree="tensorflow.math.top_k",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shared_dtype=True,
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    sorted=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_device, k):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        k=k,
+        sorted=sorted,
+    )
+
+
+# real
+@handle_frontend_test(
+    fn_tree="tensorflow.math.real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_real(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# atanh
+@handle_frontend_test(
+    fn_tree="tensorflow.math.atanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_atanh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

@@ -4,13 +4,32 @@ from typing import Callable, Union, Sequence
 
 # local
 import ivy
-from ivy import inputs_to_ivy_arrays, handle_nestable
+from ivy import (
+    inputs_to_ivy_arrays,
+    handle_nestable,
+    handle_array_like_without_promotion,
+    handle_array_function,
+)
 from ivy.utils.exceptions import handle_exceptions
+
+
+def _correct_ivy_callable(func):
+    # get the current backend of the given ivy callable
+    if ivy.nested_any(
+        func,
+        lambda x: hasattr(x, "__module__")
+        and x.__module__.startswith("ivy")
+        and not x.__module__.startswith("ivy.functional.frontends"),
+    ):
+        return ivy.__dict__[func.__name__]
+    return func
 
 
 @handle_exceptions
 @handle_nestable
+@handle_array_like_without_promotion
 @inputs_to_ivy_arrays
+@handle_array_function
 def reduce(
     operand: Union[ivy.Array, ivy.NativeArray],
     init_value: Union[int, float],
@@ -57,13 +76,7 @@ def reduce(
     axes = sorted(axes, reverse=True)
     init_value = ivy.array(init_value)
     op_dtype = operand.dtype
-    if ivy.nested_any(
-        computation,
-        lambda x: hasattr(x, "__module__")
-        and x.__module__.startswith("ivy")
-        and not x.__module__.startswith("ivy.functional.frontends"),
-    ):
-        computation = ivy.__dict__[computation.__name__]
+    computation = _correct_ivy_callable(computation)
     for axis in axes:
         temp = ivy.moveaxis(operand, axis, 0).reshape((operand.shape[axis], -1))
         temp = functools.reduce(computation, temp, init_value)
@@ -71,3 +84,12 @@ def reduce(
     if keepdims:
         operand = ivy.expand_dims(operand, axis=axes)
     return operand.astype(op_dtype)
+
+
+reduce.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}

@@ -91,16 +91,6 @@ def isclose(
     raise IvyNotImplementedException()
 
 
-def logaddexp2(
-    x1: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
-    x2: Union[(None, mx.ndarray.NDArray, float, list, tuple)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def signbit(
     x: Union[(None, mx.ndarray.NDArray, float, int, list, tuple)],
     /,
@@ -198,15 +188,6 @@ def xlogy(
     raise IvyNotImplementedException()
 
 
-def real(
-    x: Union[(None, mx.ndarray.NDArray)],
-    /,
-    *,
-    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
-) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
-
-
 def conj(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
@@ -234,4 +215,13 @@ def frexp(
         Union[(Tuple[(None, None)], Tuple[(mx.ndarray.NDArray, mx.ndarray.NDArray)])]
     ] = None,
 ) -> Union[(Tuple[(None, None)], Tuple[(mx.ndarray.NDArray, mx.ndarray.NDArray)])]:
+    raise IvyNotImplementedException()
+
+
+def modf(
+    x: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
