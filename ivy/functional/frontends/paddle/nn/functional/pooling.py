@@ -18,8 +18,6 @@ def avg_pool2d(
     exclusive=True,
     divisor_override=None,
     data_format="NCHW",
-    /,
-    *,
     name=None,
 ):
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
