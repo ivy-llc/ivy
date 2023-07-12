@@ -9,7 +9,6 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
@@ -214,7 +213,6 @@ def acos(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def acosh(
@@ -505,7 +503,6 @@ def asin(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def asinh(
@@ -679,7 +676,6 @@ def atan(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def atan2(
@@ -855,7 +851,6 @@ def atan2(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def atanh(
@@ -1544,7 +1539,6 @@ def ceil(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def cos(
@@ -1627,7 +1621,6 @@ def cos(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def cosh(
@@ -1892,7 +1885,6 @@ def equal(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def exp(
@@ -2154,7 +2146,6 @@ def exp2(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def expm1(
@@ -2847,7 +2838,6 @@ def multiply(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def isfinite(
@@ -2927,7 +2917,6 @@ def isfinite(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def isinf(
@@ -3036,7 +3025,6 @@ def isinf(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def isnan(
@@ -3219,7 +3207,6 @@ def less(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def log(
@@ -3294,7 +3281,6 @@ def log(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def log10(
@@ -3380,7 +3366,6 @@ def log10(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def log1p(
@@ -3475,7 +3460,6 @@ def log1p(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def log2(
@@ -4952,7 +4936,6 @@ def sign(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def sin(
@@ -5040,7 +5023,6 @@ def sin(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def sinh(
@@ -5121,7 +5103,6 @@ def sinh(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def sqrt(
@@ -5431,7 +5412,6 @@ def tan(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def tanh(
@@ -5927,7 +5907,6 @@ def reciprocal(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def deg2rad(
@@ -6007,7 +5986,6 @@ def deg2rad(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 @handle_device_shifting
 def rad2deg(

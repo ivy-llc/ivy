@@ -9,7 +9,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
     handle_device_shifting,
 )
@@ -251,7 +250,6 @@ def max(
 
 
 @handle_array_function
-@integer_arrays_to_float
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_array_like_without_promotion

@@ -17,7 +17,6 @@ FN_DECORATORS = [
     "handle_device_shifting",
     "infer_dtype",
     "handle_array_function",
-    "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
@@ -758,42 +757,6 @@ def infer_dtype(fn: Callable) -> Callable:
     return _infer_dtype
 
 
-def integer_arrays_to_float(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _integer_arrays_to_float(*args, **kwargs):
-        """
-        Promote all the integer array inputs passed to the function both as positional
-        or keyword arguments to the default float dtype.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with integer array arguments
-            promoted to default float dtype.
-        """
-
-        def _to_float_array(x):
-            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
-                return x
-            if ivy.is_ivy_array(x):
-                return ivy.asarray(x, dtype=ivy.default_float_dtype())
-            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
-
-        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
-        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
-        return fn(*args, **kwargs)
-
-    _integer_arrays_to_float.integer_arrays_to_float = True
-    return _integer_arrays_to_float
-
-
 # Device Handling #
 # ----------------#
 
@@ -913,11 +876,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             ret = fn(*args, out=native_out, **kwargs)
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
-                    out[i].data = ivy.to_native(ret[i])
+                    ivy.inplace_update(out[i], ret[i])
                     if ivy.backend == "torch":
                         _update_torch_views(out[i])
             else:
-                out.data = ivy.to_native(ret)
+                ivy.inplace_update(out, ret)
                 if ivy.backend == "torch":
                     _update_torch_views(out)
             return out

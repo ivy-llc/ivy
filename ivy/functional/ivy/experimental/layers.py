@@ -13,7 +13,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_partial_mixed_function,
-    integer_arrays_to_float,
     inputs_to_ivy_arrays,
     handle_array_function,
     handle_device_shifting,
@@ -580,7 +579,6 @@ def pool(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_device_shifting
 def dct(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -680,7 +678,6 @@ def dct(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 def idct(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
