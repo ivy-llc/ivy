@@ -270,15 +270,24 @@ def test_ndindex(dtype_x_shape):
 @handle_test(
     fn_tree="functional.ivy.experimental.indices",
     ground_truth_backend="numpy",
-    shape=helpers.get_shape(min_num_dims=1),
-    dtype=helpers.get_dtypes("integer", full=False),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes(
+        "numeric", 
+        full=False,
+    ),
     sparse=st.booleans(),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_device):
+def test_indices(*, shape, dtypes, sparse, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[],
         test_flags=test_flags,
@@ -286,7 +295,7 @@ def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_de
         fw=backend_fw,
         fn_name=fn_name,
         dimensions=shape,
-        dtype=dtype[0],
+        dtype=dtypes[0],
         sparse=sparse,
     )
 

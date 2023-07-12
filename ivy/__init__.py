@@ -1406,6 +1406,7 @@ GLOBAL_PROPS = [
     "shape_array_mode",
     "dynamic_backend",
     "precise_mode",
+    "soft_device_mode",
 ]
 
 
