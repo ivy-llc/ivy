@@ -379,8 +379,11 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
 
