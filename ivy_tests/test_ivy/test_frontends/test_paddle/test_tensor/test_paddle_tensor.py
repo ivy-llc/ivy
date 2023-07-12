@@ -1852,7 +1852,7 @@ def test_paddle_instance_rad2deg(
         shared_dtype=True,
     ),
 )
-def test_paddle_instance_maximum(
+def test_paddle_maximum(
     dtype_and_x,
     frontend_method_data,
     init_flags,
