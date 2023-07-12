@@ -168,7 +168,7 @@ def deg2rad(x, name=None):
     return ivy.deg2rad(x)
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
 @to_ivy_arrays_and_back
 def gcd(x, y, name=None):
     return ivy.gcd(x, y)
@@ -224,11 +224,11 @@ def erf(x, name=None):
 
 @with_supported_dtypes(
     {
-        "2.4.2 and below": (
-            "float32",
-            "float64",
+        "2.5.0 and below": (
             "int32",
             "int64",
+            "float32",
+            "float64",
             "complex64",
             "complex128",
         )
@@ -323,3 +323,18 @@ def trunc(x, name=None):
 @to_ivy_arrays_and_back
 def sgn(x, name=None):
     return ivy.sign(x, np_variant=True)
+
+
+# maximum
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def frac(x, name=None):
+    return x - ivy.sign(x) * ivy.floor(ivy.abs(x))
