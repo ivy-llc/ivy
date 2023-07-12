@@ -1,14 +1,14 @@
 # global
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
-    outputs_to_numpy_arrays,
+    outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
 )
 
 
 @handle_numpy_dtype
-@outputs_to_numpy_arrays
+@outputs_to_frontend_arrays
 def arange(start, stop=None, step=1, dtype=None, *, like=None):
     return ivy.arange(start, stop, step, dtype=dtype)
 
