@@ -291,7 +291,18 @@ def Log(*, x, name="Log"):
 
 Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
-LogSoftmax = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log_softmax))
+LogSoftmax = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "float32",
+                "float64",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.log_softmax))
+)
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
