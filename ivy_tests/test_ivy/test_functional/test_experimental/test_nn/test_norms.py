@@ -241,11 +241,9 @@ def test_group_norm(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     x_dtype, x, num_groups, data_format, scale, offset, eps = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,

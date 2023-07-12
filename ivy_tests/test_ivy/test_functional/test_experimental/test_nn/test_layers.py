@@ -434,13 +434,13 @@ def _interp_args(draw, mode=None, mode_list=None):
         scale_factor = draw(
             st.one_of(
                 helpers.lists(
-                    x=st.floats(
+                    x=helpers.floats(
                         min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
                     ),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.floats(
+                helpers.floats(
                     min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
                 ),
             )

@@ -379,7 +379,6 @@ def test_flatten(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     (input_dtypes, x), axes, order = data
     helpers.test_function(

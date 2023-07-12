@@ -400,7 +400,7 @@ def test_diff(
     test_flags,
     backend_fw,
     fn_name,
-    on_device
+    on_device,
 ):
     input_dtype, x, axis = dtype_n_x_n_axis
     _, prepend = dtype_prepend
@@ -687,7 +687,6 @@ def _lerp_data_helper(draw):
     data=_lerp_data_helper(),
     test_gradients=st.just(False),
 )
-
 def test_lerp(
     *,
     data,
@@ -695,7 +694,6 @@ def test_lerp(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, start, end, weight = data
     helpers.test_function(
@@ -705,7 +703,6 @@ def test_lerp(
         fn_name=fn_name,
         atol_=1e-01,
         rtol_=1e-01,
-        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         input=start,
         end=end,
