@@ -1365,8 +1365,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y)
         >>> print(z)
         {
-            a: (<classivy.array.array.Array>shape=[2,9]),
-            b: (<classivy.array.array.Array>shape=[2,9])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 9]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 9])
         }
 
         >>> x = ivy.Container(a = ivy.array([3,10]),
@@ -1375,14 +1375,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> z = x.fourier_encode(y,num_bands=3)
         >>> print(z)
         {
-            a: ivy.array([[ 3.0000000e+00, 3.6739404e-16, 3.6739404e-16,
-                    3.6739404e-16,-1.0000000e+00, -1.0000000e+00, -1.0000000e+00],
-                    [ 1.0000000e+01, -1.2246468e-15, -1.2246468e-15,
-                    -1.2246468e-15, 1.0000000e+00,  1.0000000e+00,  1.0000000e+00]]),
-            b: ivy.array([[4.00000000e+00, -4.89858720e-16, -4.89858720e-16,
-                    -4.89858720e-16, 1.00000000e+00,  1.00000000e+00,  1.00000000e+00],
-                    [ 8.00000000e+00, -9.79717439e-16, -9.79717439e-16, -9.79717439e-16,
-                    1.00000000e+00,  1.00000000e+00,  1.00000000e+00]])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 7]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 7])
         }
         """
         return self._static_fourier_encode(
