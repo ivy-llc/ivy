@@ -3568,6 +3568,18 @@ def isnan(
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
 
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``,
+    and
+
+    - If ``a`` or ``b`` is ``NaN``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
