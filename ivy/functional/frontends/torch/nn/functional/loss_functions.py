@@ -431,10 +431,8 @@ def margin_ranking_loss(
     reduce=None,
     reduction="mean",
 ):
-    input1, input2 = torch_frontend.promote_types_of_torch_inputs(input1,
-                                                                  input2)
-    input2, target = torch_frontend.promote_types_of_torch_inputs(input2,
-                                                                  target)
+    input1, input2 = torch_frontend.promote_types_of_torch_inputs(input1, input2)
+    input2, target = torch_frontend.promote_types_of_torch_inputs(input2, target)
     loss = -1 * target * (input1 - input2) + margin
     loss = ivy.where(loss < 0, 0, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
