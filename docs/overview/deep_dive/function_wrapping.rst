@@ -117,7 +117,7 @@ Shape Conversion
 View Handling
 ^^^^^^^^^^^^^
 
-#.  `handle_view`_ : This wrapping function performs view handling based on our :ref:`Inplace Updates:Views` policy.
+#.  `handle_view`_ : This wrapping function performs view handling based on our :ref:`Views` policy.
 #.  `handle_view_indexing`_ : This wrapping function is aimed at handling views for indexing.
 
 Exception Handling 
@@ -128,7 +128,7 @@ Exception Handling
 Miscellaneous Wrappers 
 ^^^^^^^^^^^^^^^^^^^^^^
 
-#.  `handle_array_function`_ : This wrapping function enables :ref:`Arrays:Integrating custom classes with Ivy`
+#.  `handle_array_function`_ : This wrapping function enables :ref:`Integrating custom classes with Ivy`
 
 
 When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked to get all the wrapping functions for a particular functions.
