@@ -19,7 +19,7 @@
 #     copy=st.booleans(),
 #     test_with_out=st.just(False),
 # )
-# def test_mindspore_numpy_array(
+# def test_mindspore_array(
 #     dtype_and_a,
 #     frontend,
 #     test_flags,

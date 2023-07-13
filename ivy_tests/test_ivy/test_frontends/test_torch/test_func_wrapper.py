@@ -36,7 +36,7 @@ def _fn(*args, dtype=None, check_default=False):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_inputs_to_ivy_arrays(dtype_and_x):
+def test_torch_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -68,7 +68,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
     ).filter(lambda x: "bfloat16" not in x[0]),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
+def test_torch_outputs_to_frontend_arrays(dtype_and_x, dtype):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -95,7 +95,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
     ).filter(lambda x: "bfloat16" not in x[0]),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
+def test_torch_to_ivy_arrays_and_back(dtype_and_x, dtype):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -160,7 +160,7 @@ def mocked_func(dim=None, keepdim=None, input=None, other=None):
     input=st.lists(st.integers()),
     other=st.integers(),
 )
-def test_numpy_to_torch_style_args(dim, keepdim, input, other):
+def test_torch_numpy_to_torch_style_args(dim, keepdim, input, other):
     # PyTorch-style keyword arguments
     assert (dim, keepdim, input, other) == mocked_func(
         dim=dim, keepdim=keepdim, input=input, other=other

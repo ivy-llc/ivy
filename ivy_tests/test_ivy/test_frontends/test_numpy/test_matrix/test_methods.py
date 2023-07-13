@@ -52,7 +52,7 @@ def _property_helper(draw):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_A(matrices):
+def test_numpy_A(matrices):
     data, data_gt = matrices
     ret = np.ravel(data.A)
     ret_gt = np.ravel(data_gt.A)
@@ -64,7 +64,7 @@ def test_numpy_matrix_property_A(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_A1(matrices):
+def test_numpy_A1(matrices):
     data, data_gt = matrices
     helpers.value_test(
         ret_np_flat=data.A1,
@@ -74,7 +74,7 @@ def test_numpy_matrix_property_A1(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_I(matrices):
+def test_numpy_I(matrices):
     data, data_gt = matrices
     assume(
         np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
@@ -90,7 +90,7 @@ def test_numpy_matrix_property_I(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_T(matrices):
+def test_numpy_T(matrices):
     data, data_gt = matrices
     ret = np.ravel(data.T)
     ret_gt = np.ravel(data_gt.T)
@@ -102,7 +102,7 @@ def test_numpy_matrix_property_T(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_data(matrices):
+def test_numpy_data(matrices):
     data, data_gt = matrices
     # sanity test
     ivy.utils.assertions.check_equal(
@@ -111,7 +111,7 @@ def test_numpy_matrix_property_data(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_dtype(matrices):
+def test_numpy_dtype(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(
         str(data.dtype), str(data_gt.dtype), as_array=False
@@ -119,19 +119,19 @@ def test_numpy_matrix_property_dtype(matrices):
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_ndim(matrices):
+def test_numpy_ndim(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.ndim, data_gt.ndim, as_array=False)
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_shape(matrices):
+def test_numpy_shape(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.shape, data_gt.shape, as_array=False)
 
 
 @given(matrices=_property_helper())
-def test_numpy_matrix_property_size(matrices):
+def test_numpy_size(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.size, data_gt.size, as_array=False)
 

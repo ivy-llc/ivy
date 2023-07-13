@@ -135,7 +135,7 @@
 #     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
 #     test_with_out=st.just(False),
 # )
-# def test_fft(
+# def test_scipy_fft(
 #     d_x_d_n_n,
 #     frontend,
 #     test_flags,
@@ -162,7 +162,7 @@
 #     d_x_d_n_n=x_and_ifft(),
 #     test_with_out=st.just(False),
 # )
-# def test_ifft(
+# def test_scipy_ifft(
 #     d_x_d_n_n,
 #     frontend,
 #     test_flags,
@@ -189,7 +189,7 @@
 #     dtype_x_and_args=valid_dct(),
 #     test_with_out=st.just(False),
 # )
-# def test_dct(
+# def test_scipy_dct(
 #     dtype_x_and_args,
 #     frontend,
 #     test_flags,
@@ -219,7 +219,7 @@
 #     dtype_x_and_args=valid_idct(),
 #     test_with_out=st.just(False),
 # )
-# def test_idct(
+# def test_scipy_idct(
 #     dtype_x_and_args,
 #     frontend,
 #     test_flags,
@@ -249,7 +249,7 @@
 #     d_x_d_s_n=x_and_fft2(),
 #     test_with_out=st.just(False),
 # )
-# def test_fft2(
+# def test_scipy_fft2(
 #     d_x_d_s_n,
 #     frontend,
 #     test_flags,

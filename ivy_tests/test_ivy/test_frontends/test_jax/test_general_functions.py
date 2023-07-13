@@ -36,7 +36,7 @@ def _fn3(x, y):
     in_axes_as_cont=st.booleans(),
     sample_backend=st.sampled_from(["jax", "numpy", "tensorflow", "torch", "paddle"]),
 )
-def test_vmap(
+def test_jax_vmap(
     func,
     dtype_and_arrays_and_axes,
     in_axes_as_cont,

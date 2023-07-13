@@ -158,7 +158,7 @@ def test_tensorflow_binary_accuracy(
     from_logits=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_sparse_categorical_crossentropy(
+def test_tensorflow_sparse_categorical_crossentropy(
     *,
     y_true,
     dtype_y_pred,
@@ -234,7 +234,7 @@ def test_tensorflow_log_cosh(
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     test_with_out=st.just(False),
 )
-def test_binary_crossentropy(
+def test_tensorflow_binary_crossentropy(
     *,
     dtype_pred_and_labels,
     from_logits,
@@ -276,7 +276,7 @@ def test_binary_crossentropy(
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     test_with_out=st.just(False),
 )
-def test_categorical_crossentropy(
+def test_tensorflow_categorical_crossentropy(
     *,
     y_true,
     dtype_y_pred,
@@ -400,7 +400,7 @@ def _binary_focal_args(draw):
     binary_focal_args=_binary_focal_args(),
     test_with_out=st.just(False),
 )
-def test_binary_focal_crossentropy(
+def test_tensorflow_binary_focal_crossentropy(
     *,
     binary_focal_args,
     frontend,
@@ -437,7 +437,7 @@ def test_binary_focal_crossentropy(
     k=st.integers(min_value=3, max_value=10),
     test_with_out=st.just(False),
 )
-def test_sparse_top_k_categorical_accuracy(
+def test_tensorflow_sparse_top_k_categorical_accuracy(
     *,
     dtype_pred_and_labels,
     k,
@@ -473,7 +473,7 @@ def test_sparse_top_k_categorical_accuracy(
     ),
     test_with_out=st.just(False),
 )
-def test_categorical_accuracy(
+def test_tensorflow_categorical_accuracy(
     *,
     dtype_and_y,
     frontend,

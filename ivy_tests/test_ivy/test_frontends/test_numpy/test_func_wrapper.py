@@ -44,7 +44,7 @@ def _fn(*args, check_default=False, dtype=None):
         ret_shape=True,
     ),
 )
-def test_inputs_to_ivy_arrays(dtype_x_shape):
+def test_numpy_inputs_to_ivy_arrays(dtype_x_shape):
     x_dtype, x, shape = dtype_x_shape
 
     # check for ivy array
@@ -76,7 +76,7 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
     ),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
+def test_numpy_outputs_to_frontend_arrays(dtype_and_x, dtype):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -104,7 +104,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
     ),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_to_ivy_arrays_and_back(dtype_x_shape, dtype):
+def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype):
     x_dtype, x, shape = dtype_x_shape
 
     # check for ivy array
@@ -185,7 +185,7 @@ def _zero_dim_to_scalar_checks(x, ret_x):
 
 
 @given(x=_zero_dim_to_scalar_helper())
-def test_from_zero_dim_arrays_to_scalar(x):
+def test_numpy_from_zero_dim_arrays_to_scalar(x):
     ret_x = from_zero_dim_arrays_to_scalar(_fn)(x)
     if isinstance(x, tuple):
         assert isinstance(ret_x, tuple)

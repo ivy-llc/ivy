@@ -2197,7 +2197,9 @@ def test_tensorflow_truncatemod(
         dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=50
     ),
 )
-def test_unravel_index(*, indices, dims, frontend, test_flags, fn_tree, on_device):
+def test_tensorflow_unravel_index(
+    *, indices, dims, frontend, test_flags, fn_tree, on_device
+):
     helpers.test_frontend_function(
         input_dtypes=["int32"],
         frontend=frontend,
