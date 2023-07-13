@@ -181,7 +181,7 @@ def test_torch_tensor_property_ndim(
 ):
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim)
+    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 def test_torch_tensor_property_grad():
