@@ -661,6 +661,15 @@ def fft(
     return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def dropout(
     x: torch.Tensor,
     prob: float,
