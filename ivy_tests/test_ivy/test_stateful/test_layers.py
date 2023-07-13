@@ -16,6 +16,9 @@ from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
     test_layers as exp_layers_tests,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    valid_dct,
+)
 
 # Helpers #
 # --------#
@@ -1448,6 +1451,43 @@ def test_avgpool1d_layer(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="Dct.__call__",
+    dtype_x_and_args=valid_dct(),
+)
+def test_dct(
+    *,
+    dtype_x_and_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dtype": dtype[0],
+            "type": type,
+            "n": n,
+            "axis": axis,
+            "norm": norm,
+            "device": on_device,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"x": x[0]},
         class_name=class_name,
         method_name=method_name,
         test_gradients=test_gradients,

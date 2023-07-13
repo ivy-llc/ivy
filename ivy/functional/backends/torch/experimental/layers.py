@@ -661,6 +661,15 @@ def fft(
     return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def dropout(
     x: torch.Tensor,
     prob: float,
@@ -845,6 +854,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
     "tf_area",
+    "nd",
     "bicubic_tensorflow",
     "mitchellcubic",
     "lanczos3",
