@@ -92,14 +92,14 @@ def test_paddle_fft2(
     test_flags,
     fn_tree,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axes = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x,
+        x=x[0],
         n=n,
-        axis=axis,
+        axes=axes,
         norm=norm,
     )
