@@ -1281,6 +1281,7 @@ def test_frontend_method(
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     init_flags,
     method_flags,
+    method_name,
     init_all_as_kwargs_np: dict = None,
     method_all_as_kwargs_np: dict,
     frontend: str,
@@ -1460,7 +1461,7 @@ def test_frontend_method(
     # Run testing
     ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins.__getattribute__(frontend_method_data.method_name),
+        ins.__getattribute__(method_name),
         *args_method,
         **kwargs_method,
     )
@@ -1513,7 +1514,7 @@ def test_frontend_method(
     ins_gt = frontend_creation_fn(
         *args_constructor_frontend, **kwargs_constructor_frontend
     )
-    frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
+    frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):

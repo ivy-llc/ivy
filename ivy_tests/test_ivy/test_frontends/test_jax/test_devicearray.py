@@ -94,6 +94,7 @@ def test_jax_devicearray_property_at(x_y_index):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="all",
+    aliases="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
@@ -110,6 +111,7 @@ def test_jax_devicearray_all(
     frontend_method_data,
     init_flags,
     method_flags,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -126,6 +128,7 @@ def test_jax_devicearray_all(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        method_name=method_name,
         on_device=on_device,
     )
 

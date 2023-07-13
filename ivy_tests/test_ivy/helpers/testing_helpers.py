@@ -51,7 +51,7 @@ cmd_line_args_lists = (
 
 
 @st.composite
-def num_positional_args_method(draw, *, method):
+def num_positional_args_method(draw, *, method_name, method_class, aliases):
     """
     Draws an integers randomly from the minimum and maximum number of positional
     arguments a given method can take.
@@ -61,13 +61,17 @@ def num_positional_args_method(draw, *, method):
     draw
         special function that draws data randomly (but is reproducible) from a given
         data-set (ex. list).
-    method
-        callable method
+    method_name
+        Name of the method
 
     Returns
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
+    if aliases is not None:
+        method_name = draw(get_method_name(method_name, aliases))
+    # callable method
+    method = getattr(method_class, method_name)
     total, num_positional_only, num_keyword_only = (0, 0, 0)
     for param in inspect.signature(method).parameters.values():
         if param.name == "self":
@@ -133,6 +137,14 @@ def num_positional_args(draw, *, fn_name: str = None):
     return draw(
         nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
     )
+
+
+@st.composite
+def get_method_name(
+    draw, method_name: str, alias_name: str, *, key: str = "frontend_method_name"
+):
+    method_to_test = st.sampled_from((method_name, alias_name))
+    return draw(st.shared(method_to_test, key=key))
 
 
 # Decorators helpers
@@ -662,23 +674,23 @@ def handle_frontend_method(
     class_module = importlib.import_module(class_module_path)
     method_class = getattr(class_module, class_name)
 
-    if aliases is not None:
-        for i in range(len(aliases)):
-            aliases[i] = "ivy.functional.frontends." + aliases[i]
-
     if is_hypothesis_test:
-        callable_method = getattr(method_class, method_name)
         if init_num_positional_args is None:
             init_num_positional_args = num_positional_args(fn_name=init_tree[4:])
 
         if method_num_positional_args is None:
             method_num_positional_args = num_positional_args_method(
-                method=callable_method
+                method_name=method_name,
+                method_class=method_class,
+                aliases=aliases if aliases is not None else None,
             )
 
     def test_wrapper(test_fn):
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, class_module, class_name
+        )
+        method_name_mod = (
+            get_method_name(method_name, aliases) if aliases else method_name
         )
 
         if is_hypothesis_test:
@@ -706,18 +718,13 @@ def handle_frontend_method(
                 ivy_init_module=ivy_init_modules,
                 framework_init_module=framework_init_modules,
                 init_name=init_name,
-                method_name=method_name,
             )
 
             possible_arguments = {
                 "init_flags": init_flags,
                 "method_flags": method_flags,
                 "frontend_method_data": st.just(frontend_helper_data),
-                "init_tree": (
-                    st.sampled_from([init_tree] + aliases)
-                    if aliases is not None
-                    else st.just(init_tree)
-                ),
+                "method_name": method_name_mod,
             }
 
             filtered_args = set(param_names).intersection(possible_arguments.keys())
@@ -739,10 +746,10 @@ def handle_frontend_method(
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
-            fn_tree=f"{init_tree}.{method_name}",
-            fn_name=method_name,
+            fn_tree=f"{init_tree}.{method_name_mod}",
+            fn_name=method_name_mod,
             supported_device_dtypes=supported_device_dtypes,
-            is_method=[method_name, class_tree, split_index],
+            is_method=[method_name_mod, class_tree, split_index],
         )
 
         return wrapped_test
