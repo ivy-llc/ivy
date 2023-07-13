@@ -242,3 +242,6 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def repeat(self, repeats, axis=None, *, total_repeat_length=None):
+        return jax_frontend.numpy.repeat(self, repeats, axis=axis)
