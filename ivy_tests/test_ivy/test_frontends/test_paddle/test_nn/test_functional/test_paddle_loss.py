@@ -92,8 +92,60 @@ def test_paddle_mse_loss(
         reduction=reduction,
     )
 
+# dice_loss
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.dice_loss",
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    dtype_and_label=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+    ),
+    smooth=st.floats(min_value=0, max_value=1),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_paddle_dice_loss(
+    dtype_and_pred,
+    dtype_and_label,
+    smooth,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    pred_dtype, pred = dtype_and_pred
+    label_dtype, label = dtype_and_label
+    helpers.test_frontend_function(
+        input_dtypes=[
+            pred_dtype[0],
+            label_dtype[0],
+        ],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred=pred[0],
+        label=label[0],
+        smooth=smooth,
+        reduction=reduction,
+    )
 
 # cosine embedding loss
+
+
 @st.composite
 def _cos_embd_loss_helper(draw):
     dtype_inputs_shape = draw(
