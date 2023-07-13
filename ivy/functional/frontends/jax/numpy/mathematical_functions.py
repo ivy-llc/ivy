@@ -29,6 +29,11 @@ def add(x1, x2, /):
 
 
 @to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
+
+
+@to_ivy_arrays_and_back
 def angle(z, deg=False):
     return ivy.angle(z, deg=deg)
 
@@ -121,6 +126,7 @@ def floor(x, /):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.13 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -385,7 +391,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("uint16",)},
+    {"0.4.13 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -439,7 +445,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.12 and below": (
+        "0.4.13 and below": (
             "bfloat16",
             "float16",
         )
@@ -474,7 +480,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("bfloat16",)},
+    {"0.4.13 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -542,6 +548,11 @@ def around(a, decimals=0, out=None):
 
 
 @to_ivy_arrays_and_back
+def round(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
+
+
+@to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
 
@@ -579,7 +590,7 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("float16",)},
+    {"0.4.13 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -599,7 +610,7 @@ def polyder(p, m=1):
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("float16",)},
+    {"0.4.13 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -700,11 +711,6 @@ def product(
         else:
             a[0] *= initial
     return ivy.prod(a, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
-
-
-@to_ivy_arrays_and_back
-def round(x, decimals=0, /):
-    return ivy.round(x, decimals)
 
 
 @to_ivy_arrays_and_back

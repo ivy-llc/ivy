@@ -916,3 +916,42 @@ def test_tensorflow_band_part(
         num_lower=num_lower,
         num_upper=num_upper,
     )
+
+
+# inv
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.inv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.ints(min_value=1, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    adjoint=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_inv(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    adjoint,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        adjoint=adjoint,
+    )
