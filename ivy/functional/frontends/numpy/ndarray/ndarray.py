@@ -526,6 +526,9 @@ class ndarray:
         key, value = ivy.nested_map([key, value], _to_ivy_array)
         self.ivy_array[key] = value
 
+    def __setstate__(self, state):
+        self.ivy_array = state['ivy_array']
+
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ndarray not supported")

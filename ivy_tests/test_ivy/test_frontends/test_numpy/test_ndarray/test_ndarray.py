@@ -2969,6 +2969,34 @@ def test_numpy_instance_setitem(
     )
 
 
+#__setstate__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__setstate__",
+    state={"ivy_array": np.array},
+)
+def test_numpy_instance_setstate(
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    helpers.test_frontend_method(
+        init_input_dtypes=[],
+        init_all_as_kwargs_np={},
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={"state": {"ivy_array": np.array}},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+
 # view
 @handle_frontend_method(
     class_tree=CLASS_TREE,
