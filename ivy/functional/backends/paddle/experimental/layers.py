@@ -1,9 +1,9 @@
 # global
 from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.utils.assertions import check_kernel_padding_size
+from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
 )
@@ -247,7 +247,36 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not isinstance(dim, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(dim)}")
+
+    if n is None:
+        n = x.shape[dim]
+
+    if dim < -x.ndim or dim >= x.ndim:
+        raise IvyValueError(
+            f"Invalid dim {dim}, expecting a value ranging from {-x.ndim} to {x.ndim-1}"
+        )
+
+    if not isinstance(n, int):
+        raise TypeError(f"Expecting int type for 'n', instead of {type(n)}")
+
+    if n <= 1:
+        raise IvyValueError(f"Invalid number of data points {n}, expecting more than 1")
+
+    valid_norm_modes = ["backward", "ortho", "forward"]
+    if norm not in valid_norm_modes:
+        raise IvyValueError(
+            f"Unrecognized normalization mode {norm}, expecting one of"
+            f" {valid_norm_modes}"
+        )
+
+    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
+        x = x.cast(paddle.complex128)
+    else:
+        x = x.cast(paddle.complex64)
+
+    return paddle.fft.fft(x, n, dim, norm=norm)
 
 
 @with_supported_device_and_dtypes(
@@ -350,8 +379,11 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
 
