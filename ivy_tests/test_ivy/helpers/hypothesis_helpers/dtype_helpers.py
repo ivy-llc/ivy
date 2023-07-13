@@ -30,56 +30,10 @@ _dtype_kind_keys = {
     "bool",
 }
 
-
-# def _get_fn_dtypes(framework, kind="valid"):
-#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-#         test_globals.CURRENT_DEVICE_STRIPPED
-#     ][kind]
-
-# def _get_fn_dtypes(framework, kind="valid"):
-#     if test_globals.CURRENT_RUNNING_TEST is None:
-#         return None  # or any appropriate default value
-    
-#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-#         test_globals.CURRENT_DEVICE_STRIPPED
-#     ][kind]
-
-# def _get_fn_dtypes(framework, kind="valid"):
-#     if framework is None:
-#         return None  # or any appropriate default value
-        
-#     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-#         test_globals.CURRENT_DEVICE_STRIPPED
-#     ][kind]
-
-
-
 def _get_fn_dtypes(framework, kind="valid"):
-    if framework is None:
-        return None  # or any appropriate default value
-
-    supported_device_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
-
-    if framework.backend in supported_device_dtypes and test_globals.CURRENT_DEVICE_STRIPPED in supported_device_dtypes[framework.backend]:
-        return supported_device_dtypes[framework.backend][test_globals.CURRENT_DEVICE_STRIPPED].get(kind, None)
-
-    return None  # or any appropriate default value
-
-
-# def _get_fn_dtypes(framework, kind="valid"):
-#     if framework is None:
-#         # Handle the case where framework is None
-#         return None  # or any appropriate default value
-        
-#     supported_device_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
-    
-#     if framework.backend in supported_device_dtypes and \
-#        test_globals.CURRENT_DEVICE_STRIPPED in supported_device_dtypes[framework.backend]:
-#         return supported_device_dtypes[framework.backend][test_globals.CURRENT_DEVICE_STRIPPED][kind]
-#     else:
-#         # Handle the case where framework.backend or test_globals.CURRENT_DEVICE_STRIPPED is not found
-#         return None  # or any appropriate default value
-
+    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
+        test_globals.CURRENT_DEVICE_STRIPPED
+    ][kind]
 
 def _get_type_dict(framework, kind):
     if kind == "valid":
@@ -114,12 +68,8 @@ def _get_type_dict(framework, kind):
         return tuple(
             set(framework.valid_dtypes).difference(framework.valid_numeric_dtypes)
         )
-    # elif kind is None:  # Added None case
-    #     return None  # or any appropriate default value
     else:
         raise RuntimeError("{} is an unknown kind!".format(kind))
-
-
 
 def make_json_pickable(s):
     s = s.replace("builtins.bfloat16", "ivy.bfloat16")
