@@ -2468,17 +2468,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
-        ...                        b = [(2, 3), (1, 3)],
-        ...                        c = [(2, 3), (2, 3)],
-        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> shapes = ivy.Container(a = (2, 3, 5),
+        ...                        b = (2, 3, 1))
         >>> z = shapes.broadcast_shapes()
         >>> print(z)
         {
-            a: (2, 3),
-            b: (2, 3),
-            c: (2, 3),
-            d: (2, 3)
+            a: [2, 3, 5],
+            b: [2, 3, 1]
         }
         """
         return self.static_broadcast_shapes(self, out=out)

@@ -298,7 +298,6 @@ def test_docstrings(backend):
         "dropout1d",
         "dropout3",
         # wrong examples
-        "broadcast_shapes",
         "conv2d_transpose",
         'conv3d_transpose',
         "einops_reduce",
@@ -336,7 +335,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "einops_reduce":
+                if method_name == "histogram":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
