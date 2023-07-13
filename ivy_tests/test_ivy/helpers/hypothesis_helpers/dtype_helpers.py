@@ -28,7 +28,6 @@ _dtype_kind_keys = {
     "float_and_integer",
     "float_and_complex",
     "bool",
-    # None,
 }
 
 
@@ -294,7 +293,10 @@ def get_dtypes(
                 print(process.stderr.readlines())
                 raise Exception
             frontend_dtypes = frontend_ret
-            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+            if frontend_dtypes is not None:
+                valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+
+            # valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
