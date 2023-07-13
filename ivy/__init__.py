@@ -1439,11 +1439,4 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-if (
-    "ivy" in sys.modules.keys()
-    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
-):
-    # Required for ivy.with_backend internal compilation
-    sys.modules["ivy"].utils._importlib.import_cache[
-        __name__
-    ].__class__ = IvyWithGlobalProps
+
