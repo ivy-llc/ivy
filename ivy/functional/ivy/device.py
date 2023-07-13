@@ -39,6 +39,7 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 default_device_stack = list()
+soft_device_mode_stack = list()
 dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
@@ -91,6 +92,7 @@ class DefaultDevice:
         "cpu"
         """
         ivy.set_default_device(self._dev)
+        ivy.set_soft_device_mode(True)
         return self
 
     def __exit__(
@@ -126,10 +128,26 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
+        ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
             print(exc_tb)
             raise exc_val
         return self
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    ivy.set_array_mode(False)
+    default_device = ivy.default_device()
+    args, kwargs = ivy.nested_map(
+        [args, kwargs],
+        lambda x: (
+            ivy.to_device(x, default_device)
+            if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
+            else x
+        ),
+    )
+    ivy.unset_array_mode()
+    return fn(*args, **kwargs)
 
 
 # Helpers #
@@ -265,6 +283,56 @@ def print_all_ivy_arrays_on_dev(
         [print((arr.shape, arr.dtype)) for arr in arrs]
     else:
         [print(arr) for arr in arrs]
+
+
+ivy.soft_device_mode = False
+
+
+@handle_exceptions
+def set_soft_device_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to move input arrays to `ivy.default_device()` before
+    performing an operation.
+
+    Parameter
+    ---------
+    mode
+        boolean whether to move input arrays
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.soft_device_mode
+    False
+    >>> ivy.set_soft_device_mode(True)
+    >>> ivy.soft_device_mode
+    True
+    """
+    global soft_device_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    soft_device_mode_stack.append(mode)
+    ivy.__setattr__("soft_device_mode", mode, True)
+
+
+@handle_exceptions
+def unset_soft_device_mode() -> None:
+    """
+    Reset the mode of moving input arrays to `ivy.default_device()` before performing an
+    operation.
+
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.soft_device_mode
+    False
+    >>> ivy.unset_soft_device_mode()
+    >>> ivy.soft_device_mode
+    True
+    """
+    global soft_device_mode_stack
+    if soft_device_mode_stack:
+        soft_device_mode_stack.pop(-1)
+        mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
+        ivy.__setattr__("soft_device_mode", mode, True)
 
 
 # Retrieval
