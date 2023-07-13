@@ -133,7 +133,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -178,7 +178,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -248,7 +248,7 @@ def avg_pool1d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -288,7 +288,7 @@ def avg_pool2d(
     if divisor_override is not None:
         # sum pooling then dividing by divisor_override if it is provided
         res = tf.nn.depthwise_conv2d(
-            x, tf.ones(kernel + [x.shape[-1], 1]), [1] + strides + [1], padding
+            x, tf.ones(kernel + (x.shape[-1], 1)), (1,) + strides + (1,), padding
         )
         res = res / divisor_override
     else:
@@ -340,7 +340,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -445,7 +445,7 @@ def avg_pool3d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def pool(
     x: Union[tf.Tensor, tf.Variable],
@@ -471,7 +471,7 @@ def pool(
     )
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -545,7 +545,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
-@with_supported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -744,7 +744,7 @@ def ifft(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -816,8 +816,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
-    and mode not in ["nearest", "area", "bicubic"]
-    and recompute_scale_factor
+    and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
 

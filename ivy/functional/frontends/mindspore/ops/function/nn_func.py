@@ -1,9 +1,7 @@
 """Includes Mindspore Frontend functions listed in the TODO list
 https://github.com/unifyai/ivy/issues/14951."""
 
-import ivy
-@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
-@to_ivy_arrays_and_back
+
 def sigmoid(x):
     return ivy.sigmoid(x)
 
@@ -29,6 +27,7 @@ print(y4)
 x5 = ivy.array([0.0, 0.1, 0.5, 0.9, 1.0])
 y5 = ivy.sigmoid(x5)
 print(y5)
+
 
 
 

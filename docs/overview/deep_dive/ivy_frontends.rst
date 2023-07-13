@@ -18,7 +18,7 @@ Ivy Frontends
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
-.. _`open task`: https://unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
+.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis
 .. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
 .. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
@@ -321,14 +321,7 @@ Ideally all frontend functions should call the equivalent Ivy function and only 
 
 In case a frontend function is complex and there is no equivalent Ivy function to use, it is strongly advised to add that function to our Experimental API. To do so, you are invited to open a *Missing Function Suggestion* issue as described in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/the_basics.html#id4>`_ section. A member of our team will then review your issue, and if the proposed addition is deemed to be timely and sensible, we will add the function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 
-In case there *is* an equivalent Ivy function, but it's missing some functionality which is needed to match with the frontend framework, it is strongly advised that the backend ivy function is updated to support this. To do so, you are invited to make a comment under `this <https://github.com/unifyai/ivy/issues/6406>`_ dedicated issue. A member of our team will then review your suggestion, and if deemed sensible, we will create a subtask issue to extend the function.
-
-At this point in time, you can reserve the new task for yourself and get it implemented in a unique PR. Once merged, you can then resume working on the frontend function, which will now be a much easier task with your suggested extension added to Ivy.
-
-Temporary Compositions
-----------------------
-
-Alternatively, if you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified if/when :func:`ivy.func_name` is added to Ivy.
+If you would rather not wait around for a member of our team to review your suggestion, you can instead go straight ahead and add the frontend function as a heavy composition of the existing Ivy functions, with a :code:`#ToDo` comment included, explaining that this frontend implementation will be simplified when :func:`ivy.func_name` is added.
 
 **Examples**
 
@@ -402,7 +395,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+   @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.
@@ -692,6 +685,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/SdiyetRNey8" class="video">
     </iframe>
