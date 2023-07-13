@@ -22,6 +22,7 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
     _get_castable_dtypes_values,
 )
 
+
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
 
