@@ -919,3 +919,32 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
         """
         return ivy.frexp(self._data, out=out)
+
+    def modf(
+        self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.modf. This method simply wraps the
+        function, and so the docstring for ivy.modf also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output arrays in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The fractional and integral parts of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.5, 2.7, 3.9])
+        >>> x.modf()
+        (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+        """
+        return ivy.modf(self._data, out=out)

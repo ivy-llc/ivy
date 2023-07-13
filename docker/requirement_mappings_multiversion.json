@@ -1,7 +1,6 @@
 
 {
     "tensorflow": [
-        {"tensorflow-addons": {"2.11.0": "0.20.0"}},
         "tensorflow-probability"
     ],
     "jax": ["dm-haiku", "flax",{"jaxlib": {"0.4.10": "0.4.10","0.4.8": "0.4.7"}}],
