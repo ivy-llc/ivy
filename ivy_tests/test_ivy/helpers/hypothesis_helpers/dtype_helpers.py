@@ -86,7 +86,7 @@ def make_json_pickable(s):
 
 @st.composite
 def get_dtypes(
-    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True,
+    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
 ):
     """
     Draws a valid dtypes for the test function. For frontend tests, it draws the data
@@ -171,8 +171,6 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
-    
-    
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
@@ -243,10 +241,7 @@ def get_dtypes(
                 print(process.stderr.readlines())
                 raise Exception
             frontend_dtypes = frontend_ret
-            if frontend_dtypes is not None:
-                valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-
-            # valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
+            valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
             frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
