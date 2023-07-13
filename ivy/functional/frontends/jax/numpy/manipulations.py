@@ -328,8 +328,3 @@ def blackman(M):
         + a2 * ivy.cos(4 * ivy.pi * n / (M - 1))
     )
     return ret
-
-
-@to_ivy_arrays_and_back
-def frombuffer(buffer, dtype="float", count=-1, offset=0):
-    return ivy.frombuffer(buffer, dtype, count, offset)
