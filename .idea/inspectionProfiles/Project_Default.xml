@@ -78,7 +78,7 @@
             <item index="55" class="java.lang.String" itemvalue="pyglet" />
             <item index="56" class="java.lang.String" itemvalue="Pillow" />
             <item index="57" class="java.lang.String" itemvalue="pyquaternion" />
-            <item index="58" class="java.lang.String" itemvalue="ivy-core" />
+            <item index="58" class="java.lang.String" itemvalue="ivy" />
             <item index="59" class="java.lang.String" itemvalue="ivy-vision" />
             <item index="60" class="java.lang.String" itemvalue="ivy-mech" />
             <item index="61" class="java.lang.String" itemvalue="tensorflow-io" />
