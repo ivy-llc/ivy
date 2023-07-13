@@ -49,6 +49,6 @@ def fftshift(x, axes=None, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def fft2(x, s=None, axes=(- 2, - 1), norm='backward', name=None):
-    ret = ivy.fft2(ivy.astype(x, "complex128"), axes, norm=norm, n=s)
+def fft2(x, n=None, axes=(- 2, - 1), norm='backward', name=None):
+    ret = ivy.fft2(ivy.astype(x, "complex128"), axes, norm=norm, n=n)
     return ivy.astype(ret, x.dtype)
