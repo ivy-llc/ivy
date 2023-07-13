@@ -48,6 +48,9 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def copy(self, order=None):
+        return jax_frontend.numpy.copy(self._ivy_array, order=order)
+
     def all(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.all(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
