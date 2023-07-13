@@ -96,9 +96,6 @@ def quantize_linear(x, y_scale, y_zero_point, /, *, axis=None):
         raise ValueError("y_scale and y_zero_point must have the same shape.")
 
     if axis is not None:
-        if axis < 0:
-            axis = x.ndim + axis
-
         if axis < 0 or axis >= x.ndim:
             raise ValueError(
                 "Invalid axis. Accepted range is [-r, r-1] where r = rank(input)."
@@ -110,12 +107,7 @@ def quantize_linear(x, y_scale, y_zero_point, /, *, axis=None):
         y_zero_point = y_zero_point.reshape(shape)
 
     y = (x / y_scale) + y_zero_point
-    y = ivy.round(y)
-
-    if y.dtype == ivy.int8:
-        return ivy.clip(y, -128, 127)
-
-    return ivy.clip(y, 0, 255)
+    return ivy.round(y)
 
 
 @handle_exceptions
