@@ -1447,5 +1447,3 @@ if (
     sys.modules["ivy"].utils._importlib.import_cache[
         __name__
     ].__class__ = IvyWithGlobalProps
-else:
-    sys.modules[__name__].__class__= IvyWithGlobalProps
