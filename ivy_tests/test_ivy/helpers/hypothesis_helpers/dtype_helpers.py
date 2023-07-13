@@ -31,10 +31,13 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, kind="valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
-        test_globals.CURRENT_DEVICE_STRIPPED
-    ][kind]
+def _get_fn_dtypes(framework, kind="valid", mixed_fn_dtypes="compositional"):
+    all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+        framework.backend
+    ]
+    if mixed_fn_dtypes in all_devices_dtypes:
+        all_devices_dtypes = all_devices_dtypes[mixed_fn_dtypes]
+    return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
 def _get_type_dict(framework, kind):
@@ -82,7 +85,14 @@ def make_json_pickable(s):
 
 @st.composite
 def get_dtypes(
-    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
+    draw,
+    kind="valid",
+    index=0,
+    mixed_fn_compos=True,
+    full=True,
+    none=False,
+    key=None,
+    prune_function=True,
 ):
     """
     Draws a valid dtypes for the test function. For frontend tests, it draws the data
@@ -99,6 +109,10 @@ def get_dtypes(
         real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
+    mixed_fn_compos
+        boolean if True, the function will return the dtypes of the compositional
+        implementation for mixed partial functions and if False, it will return
+        the dtypes of the primary implementation.
     full
         returns the complete list of valid types
     none
@@ -167,10 +181,17 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
+    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND(), kind))
+            valid_dtypes = set(
+                retrieval_fn(
+                    test_globals.CURRENT_BACKEND(),
+                    mixed_fn_dtypes=mixed_fn_dtypes,
+                    kind=kind,
+                )
+            )
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -240,7 +261,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
         else:
-            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
+            frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind=kind)
             valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
@@ -278,7 +299,7 @@ def get_dtypes(
             valid_dtypes = valid_dtypes.intersection(backend_ret)
         else:
             valid_dtypes = valid_dtypes.intersection(
-                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind)
+                retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND(), kind=kind)
             )
 
     valid_dtypes = list(valid_dtypes)
@@ -428,24 +449,33 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     def cast_filter(d):
         if ivy.is_int_dtype(d):
             max_val = ivy.iinfo(d).max
+            min_val = ivy.iinfo(d).min
         elif ivy.is_float_dtype(d) or ivy.is_complex_dtype(d):
             max_val = ivy.finfo(d).max
+            min_val = ivy.finfo(d).min
         else:
             max_val = 1
+            min_val = -1
         if x is None:
             if ivy.is_int_dtype(dtype):
                 max_x = ivy.iinfo(dtype).max
+                min_x = ivy.iinfo(dtype).min
             elif ivy.is_float_dtype(dtype) or ivy.is_complex_dtype(dtype):
                 max_x = ivy.finfo(dtype).max
+                min_x = ivy.finfo(dtype).min
             else:
                 max_x = 1
+                min_x = -1
         else:
-            max_x = np.max(np.abs(np.asarray(x)))
-        return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+            max_x = np.max(np.asarray(x))
+            min_x = np.min(np.asarray(x))
+        return (
+            max_x <= max_val
+            and min_x >= min_val
+            and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+        )
 
     cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
     if x is None:
         return dtype, cast_dtype
-    if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x))
     return dtype, x, cast_dtype
