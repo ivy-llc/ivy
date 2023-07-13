@@ -11,6 +11,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_infer_dtype,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
@@ -25,7 +26,7 @@ from . import backend_version
 
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "bfloat16",
             "complex",
@@ -75,6 +76,7 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 @asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         tf.Tensor,
@@ -95,62 +97,12 @@ def asarray(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
-        if isinstance(obj, tf.TensorShape):
-            if dtype is None:
-                return tf.convert_to_tensor(obj.as_list())
-            else:
-                dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-                return tf.convert_to_tensor(obj.as_list(), dtype=dtype)
-        if copy:
-            if dtype is None and isinstance(obj, tf.Tensor):
-                return tf.identity(obj)
-            if dtype is None and not isinstance(obj, tf.Tensor):
-                try:
-                    dtype = ivy.default_dtype(item=obj, as_native=True)
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.identity(tf.cast(tensor, dtype))
-            else:
-                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
-                try:
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.identity(tf.cast(tensor, dtype))
-        else:
-            if dtype is None and isinstance(obj, tf.Tensor):
-                return obj
-            if dtype is None and not isinstance(obj, tf.Tensor):
-                if isinstance(obj, np.ndarray):
-                    dtype = ivy.as_native_dtype(ivy.as_ivy_dtype(obj.dtype.name))
-                    return tf.convert_to_tensor(obj, dtype=dtype)
-
-                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
-                return tf.convert_to_tensor(
-                    ivy.nested_map(obj, lambda x: tf.cast(x, dtype), shallow=False),
-                    dtype=dtype,
-                )
-            else:
-                if dtype is None:
-                    dtype = ivy.as_native_dtype(
-                        ivy.default_dtype(dtype=dtype, item=obj)
-                    )
-                try:
-                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
-                except (TypeError, ValueError):
-                    tensor = tf.convert_to_tensor(
-                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
-                        dtype=dtype,
-                    )
-                return tf.cast(tensor, dtype)
+        # convert the input to a tensor using the appropriate function
+        try:
+            ret = tf.convert_to_tensor(obj, dtype)
+        except (TypeError, ValueError):
+            ret = tf.cast(obj, dtype)
+        return tf.identity(ret) if copy else ret
 
 
 def empty(
@@ -176,7 +128,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("uint16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -306,7 +258,7 @@ def linspace(
         return tf.cast(ans, dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def meshgrid(
     *arrays: Union[tf.Tensor, tf.Variable],
     sparse: bool = False,
@@ -352,7 +304,7 @@ def ones_like(
         return tf.ones_like(x, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def tril(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -365,7 +317,7 @@ def tril(
     return tf.experimental.numpy.tril(x, k)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bool",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bool",)}, backend_version)
 def triu(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -448,7 +400,7 @@ def one_hot(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("uint32", "uint64")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("uint32", "uint64")}, backend_version)
 def frombuffer(
     buffer: bytes,
     dtype: Optional[tf.DType] = float,

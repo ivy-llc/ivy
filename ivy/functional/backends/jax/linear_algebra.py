@@ -144,10 +144,13 @@ def inv(
     adjoint: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if jnp.any(jnp.linalg.det(x.astype("float64")) == 0):
-        return x
     if adjoint:
-        x = jnp.transpose(x)
+        if x.ndim < 2:
+            raise ValueError("Input must be at least 2D")
+        permutation = list(range(x.ndim))
+        permutation[-2], permutation[-1] = permutation[-1], permutation[-2]
+        x_adj = jnp.transpose(x, permutation).conj()
+        return jnp.linalg.inv(x_adj)
     return jnp.linalg.inv(x)
 
 
@@ -422,21 +425,17 @@ def vector_norm(
 ) -> JaxArray:
     if dtype and x.dtype != dtype:
         x = x.astype(dtype)
-
-    ret_scalar = False
-    if x.ndim == 0:
-        x = jnp.expand_dims(x, 0)
-        ret_scalar = True
-
-    if axis is None:
-        x = x.reshape([-1])
-    elif isinstance(axis, list):
-        axis = tuple(axis)
-
-    jnp_normalized_vector = jnp.linalg.norm(x, ord, axis, keepdims)
-    if ret_scalar:
-        jnp_normalized_vector = jnp.squeeze(jnp_normalized_vector)
-    return jnp_normalized_vector
+    abs_x = jnp.abs(x)
+    if ord == 0:
+        return jnp.sum(
+            (abs_x != 0).astype(abs_x.dtype), axis=axis, keepdims=keepdims, out=out
+        )
+    elif ord == inf:
+        return jnp.max(abs_x, axis=axis, keepdims=keepdims, out=out)
+    elif ord == -inf:
+        return jnp.min(abs_x, axis=axis, keepdims=keepdims, out=out)
+    else:
+        return jnp.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
 
 
 # Extra #

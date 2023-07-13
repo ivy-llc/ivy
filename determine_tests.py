@@ -1,4 +1,6 @@
 import pickle  # noqa
+import subprocess
+
 from pydriller import Repository
 import os  # noqa
 import bz2
@@ -99,16 +101,33 @@ def main():
         # if it is a PR, we must check that the tests added were in the files_changes
         if len(sys.argv) >= 3 and sys.argv[2] == "pr":
             relevant_added_tests = []
+            subprocess.run(
+                ["git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"]
+            )
+            subprocess.run(["git", "fetch", "upstream"])
+            lca_sha = subprocess.check_output(
+                ["git", "merge-base", "HEAD", "upstream/master"]
+            )
+            lca_hash = lca_sha.decode().strip()
+            for commit in Repository(".", single=lca_hash).traverse_commits():
+                lca_commit = commit._c_object
+                break
+            for commit in Repository(".", order="reverse").traverse_commits():
+                diff_index = lca_commit.diff(commit._c_object, create_patch=True)
+                modified_files = commit._parse_diff(diff_index)
+                break
+            for file in modified_files:
+                print(file.new_path)
             for test in added_tests:
-                test_path = test.split("::")[0]
                 for file in modified_files:
-                    if test_path in file.new_path:
+                    if file.new_path.strip() in test:
                         relevant_added_tests.append(test)
                         break
             added_tests = relevant_added_tests
             print(added_tests)
-        if len(added_tests) > 10:
-            added_tests = added_tests[:10]
+        else:
+            if len(added_tests) > 50:
+                added_tests = added_tests[:50]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests
@@ -117,9 +136,9 @@ def main():
         for i in range(old_num_tests, num_tests):
             tests["tests_mapping"][new_tests[i]] = i
         directories = (
-                [x[0] for x in os.walk("ivy")]
-                + [x[0] for x in os.walk("ivy_tests/test_ivy")]
-                + ["ivy_tests"]
+            [x[0] for x in os.walk("ivy")]
+            + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+            + ["ivy_tests"]
         )
         directories_filtered = [
             x
@@ -128,35 +147,36 @@ def main():
         ]
         directories = set(directories_filtered)
         for test_backend in new_tests[old_num_tests:num_tests]:
-            print("Computing Coverage:", test_backend)
             tests_to_run.add(tests["tests_mapping"][test_backend])
-            test_name, backend = test_backend.split(",")
-            command = (
-                f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
-                f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
-                f'annotate > coverage_output" '
-            )
-            os.system(command)
-            for directory in directories:
-                for file_name in os.listdir(directory):
-                    if file_name.endswith("cover"):
-                        file_name = directory + "/" + file_name
-                        if file_name not in tests:
-                            tests[file_name] = []
+            if len(sys.argv) < 3:
+                print("Computing Coverage:", test_backend)
+                test_name, backend = test_backend.split(",")
+                command = (
+                    f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+                    f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
+                    f'annotate > coverage_output" '
+                )
+                os.system(command)
+                for directory in directories:
+                    for file_name in os.listdir(directory):
+                        if file_name.endswith("cover"):
+                            file_name = directory + "/" + file_name
+                            if file_name not in tests:
+                                tests[file_name] = []
+                                with open(file_name) as f:
+                                    for line in f:
+                                        tests[file_name].append(set())
                             with open(file_name) as f:
+                                i = 0
                                 for line in f:
-                                    tests[file_name].append(set())
-                        with open(file_name) as f:
-                            i = 0
-                            for line in f:
-                                if i >= len(tests[file_name]):
-                                    tests[file_name].append(set())
-                                if line[0] == ">":
-                                    tests[file_name][i].add(
-                                        tests["tests_mapping"][test_backend]
-                                    )
-                                i += 1
-            os.system("find . -name \\*cover -type f -delete")
+                                    if i >= len(tests[file_name]):
+                                        tests[file_name].append(set())
+                                    if line[0] == ">":
+                                        tests[file_name][i].add(
+                                            tests["tests_mapping"][test_backend]
+                                        )
+                                    i += 1
+                os.system("find . -name \\*cover -type f -delete")
 
     with bz2.BZ2File("tests.pbz2", "w") as f:
         cPickle.dump(tests, f)
