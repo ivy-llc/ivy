@@ -119,9 +119,12 @@ class Module(ModuleConverters, ModuleHelpers):
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        self._dynamic_backend = dynamic_backend
         if build_mode != "on_init":
             return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+        if v or with_partial_v:
+            # build only if `v` or `with_partial_v`
+            self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
@@ -143,7 +146,9 @@ class Module(ModuleConverters, ModuleHelpers):
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
-    def _find_variables(self, /, *, obj=None, _visited=None):
+    def _find_variables(
+        self, /, *, obj=None, _visited=None, without_initialisation=False
+    ):
         """
         Find all internal variables in obj. Return empty Container if obj is None.
 
@@ -173,16 +178,32 @@ class Module(ModuleConverters, ModuleHelpers):
             )
             obj.top_mod = lambda depth=None: self._top_mod_fn(depth=depth)
             self._sub_mods.add(obj)
-            return obj.v
+
+            if not obj.built_ and without_initialisation:
+                return lambda: obj._build_and_return_v(
+                    *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
+                )
+
+            return obj._build_and_return_v(
+                *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
+            )
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -190,10 +211,21 @@ class Module(ModuleConverters, ModuleHelpers):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
+
+    def _build_and_return_v(self, *args, **kwargs):
+        self.build(*args, **kwargs)
+        return self.v
+
+    def _find_child_objects(self, /, *, obj=None, _visited=None):
+        pass
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
@@ -568,15 +600,30 @@ class Module(ModuleConverters, ModuleHelpers):
         # kwargs["dtype"] = dtype
 
         # build local Module, and any child modules flagged with "explicit" build mode
+        # this gets the child modules initialised at best, their weights
+        # remain un-generated
         built = ivy.default(self._build(*args, **kwargs), True)
 
-        # build variables based on locally built layers, if v not passed in constructor
-        v_from_constructor = self._v_in
+        # this creates weights for this Module only
         created = Container(
             self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
         )
+
+        # build variables based on locally built layers, if v not passed in constructor
+        v_from_constructor = self._v_in
+
         created_n_found = Container(
-            dict(**self._find_variables(obj=self), **created),
+            dict(
+                **self._find_variables(
+                    obj=self,
+                    without_initialisation=(
+                        True
+                        if v_from_constructor and not self._with_partial_v
+                        else False
+                    ),
+                ),
+                **created,
+            ),
             dynamic_backend=dynamic_backend,
         )
         if ivy.exists(v_from_constructor):
@@ -590,10 +637,14 @@ class Module(ModuleConverters, ModuleHelpers):
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
+
                 ivy.Container.cont_assert_identical_structure(
-                    [created_n_found, v_from_constructor]
+                    [created_n_found, v_from_constructor],
+                    build_callable=True,
+                    assert_and_assign=True,
                 )
-                self.v = v_from_constructor
+
+                self.v = created_n_found
         else:
             self.v = created_n_found
         # remove duplicates
@@ -679,6 +730,15 @@ class Module(ModuleConverters, ModuleHelpers):
             highlight_subgraph=highlight_subgraph,
             fname=fname,
         )
+
+    def __getattribute__(self, name):
+        if name == "v":
+            if super().__getattribute__("v") is None and not self.built_:
+                self._build_and_return_v(
+                    self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+                )
+
+        return super().__getattribute__(name)
 
     def compile(
         self,
