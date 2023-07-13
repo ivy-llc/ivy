@@ -108,6 +108,31 @@ def cosine_embedding_loss(
     "paddle",
 )
 @to_ivy_arrays_and_back
+def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
+    if reduction not in ["sum", "mean", "none"]:
+        raise ValueError(
+            "'reduction' in 'hinge_embedding_loss' should be 'sum', 'mean' or 'none', "
+            "but received {}.".format(reduction)
+        )
+
+    zero_ = ivy.zeros([1], dtype=input.dtype)
+    loss = ivy.where(label == 1.0, input, zero_) + ivy.where(
+        label == -1.0, ivy.functional.ivy.activations.relu(margin - input), zero_
+    )
+
+    if reduction == "mean":
+        return ivy.mean(loss)
+    elif reduction == "sum":
+        return ivy.sum(loss)
+    elif reduction == "none":
+        return loss
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def log_loss(input, label, epsilon=0.0001, name=None):
     out = -label * ivy.log(input + epsilon) - (
         (1 - label) * ivy.log(1 - input + epsilon)

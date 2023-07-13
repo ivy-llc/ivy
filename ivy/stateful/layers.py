@@ -2,10 +2,9 @@
 
 # local
 import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
-
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -1930,6 +1929,61 @@ class AdaptiveAvgPool1d(Module):
         return ivy.adaptive_avg_pool1d(
             x,
             self._output_size,
+        )
+
+
+class FFT(Module):
+    def __init__(
+        self,
+        /,
+        *,
+        dim=0,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying FFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the FFT.
+        norm : str
+            Normalization mode. Default: 'backward'
+        n : int
+            Size of the FFT. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the FFT of.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.fft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
         )
 
 

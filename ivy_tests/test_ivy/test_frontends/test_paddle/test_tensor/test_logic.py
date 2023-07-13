@@ -1,32 +1,36 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# selu
+# Helpers #
+# ------- #
+
+
+# Tests #
+# ----- #
+
+
+# equal
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.selu",
+    fn_tree="paddle.equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
         safety_factor_scale="log",
-        small_abs_safety_factor=20,
+        small_abs_safety_factor=32,
     ),
-    scale=helpers.ints(min_value=2, max_value=10),
-    alpha=helpers.ints(min_value=1, max_value=10),
 )
-def test_paddle_selu(
-    *,
+def test_paddle_equal(
     dtype_and_x,
-    scale,
-    alpha,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -34,57 +38,27 @@ def test_paddle_selu(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
-        alpha=alpha,
-        scale=scale,
+        y=x[1],
     )
 
 
-# hardshrink
+# not_equal
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.hardshrink",
+    fn_tree="paddle.not_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    threshold=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_hardshrink(
-    *,
-    dtype_and_x,
-    threshold,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        threshold=threshold,
-    )
-
-
-# hardswish
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.hardswish",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
         safety_factor_scale="log",
+        small_abs_safety_factor=32,
     ),
 )
-def test_paddle_hardswish(
-    *,
+def test_paddle_not_equal(
     dtype_and_x,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -92,60 +66,27 @@ def test_paddle_hardswish(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
+        y=x[1],
     )
 
 
-# hardtanh
+# greater_than
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.hardtanh",
+    fn_tree="paddle.greater_than",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    max_val=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_hardtanh(
-    *,
-    dtype_and_x,
-    max_val,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    max_min = max_val, -max_val
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        min=max_min[1],
-        max=max_min[0],
-    )
-
-
-# gelu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.gelu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
         safety_factor_scale="log",
-        small_abs_safety_factor=20,
+        small_abs_safety_factor=32,
     ),
-    approximate=st.booleans(),
 )
-def test_paddle_gelu(
-    *,
+def test_paddle_greater_than(
     dtype_and_x,
-    approximate,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -153,117 +94,27 @@ def test_paddle_gelu(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
-        rtol=1e-2,
-        atol=1e-2,
         x=x[0],
-        approximate=approximate,
+        y=x[1],
     )
 
 
-# hardsigmoid
+# greater_equal
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.hardsigmoid",
+    fn_tree="paddle.greater_equal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    slope=helpers.ints(min_value=0, max_value=10),
-    offset=helpers.ints(min_value=0, max_value=10),
-)
-def test_paddle_hardsigmoid(
-    *,
-    dtype_and_x,
-    slope,
-    offset,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        slope=slope,
-        offset=offset,
-    )
-
-
-# relu6
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.relu6",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_relu6(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-# softshrink
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.softshrink",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    threshold=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_softshrink(
-    *,
-    dtype_and_input,
-    threshold,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        threshold=threshold,
-    )
-
-
-# softsign
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.softsign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
         safety_factor_scale="log",
-        small_abs_safety_factor=20,
+        small_abs_safety_factor=32,
     ),
 )
-def test_paddle_softsign(
-    *,
+def test_paddle_greater_equal(
     dtype_and_x,
-    on_device,
-    fn_tree,
     frontend,
     test_flags,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -271,258 +122,80 @@ def test_paddle_softsign(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
+        y=x[1],
     )
 
 
-# log_softmax
+# less_than
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.log_softmax",
-    dtype_x_and_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_axes_size=1,
-        force_int_axis=True,
-        valid_axis=True,
-        min_value=-30.0,
-        max_value=30.0,
-    ),
-    dtypes=helpers.get_dtypes("float", none=False, full=False),
-)
-def test_paddle_log_softmax(
-    *,
-    dtype_x_and_axis,
-    dtypes,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x, axis = dtype_x_and_axis
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        atol=1e-2,
-        x=x[0],
-        axis=axis,
-        dtype=ivy.as_ivy_dtype(dtypes[0]),
-    )
-
-
-@st.composite
-def _generate_prelu_arrays(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    input = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=(arr_size), min_value=0, max_value=10
-        )
-    )
-    weight = draw(
-        helpers.array_values(dtype=dtype[0], shape=(1,), min_value=0, max_value=1.0)
-    )
-    input_weight = input, weight
-    return dtype, input_weight
-
-
-# prelu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.prelu",
-    dtype_input_and_weight=_generate_prelu_arrays(),
-)
-def test_paddle_prelu(
-    *,
-    dtype_input_and_weight,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    dtype, x = dtype_input_and_weight
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        weight=x[1],
-    )
-
-
-# celu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.celu",
+    fn_tree="paddle.less_than",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    alpha=helpers.ints(min_value=1, max_value=10),
-)
-def test_paddle_celu(
-    *,
-    dtype_and_x,
-    alpha,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        alpha=alpha,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.rrelu",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_rrelu(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-    )
-
-
-# tanhshrink
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.tanhshrink",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_tanhshrink(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        test_values=False,
-        x=x[0],
-    )
-
-
-# relu_
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.relu_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_relu_(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        x=x[0],
-    )
-
-
-# elu
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.elu",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    alpha=helpers.floats(min_value=0, max_value=1, exclude_min=True),
-)
-def test_paddle_elu(
-    *,
-    dtype_and_input,
-    alpha,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        alpha=alpha,
-    )
-
-
-# mish
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.mish",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
         safety_factor_scale="log",
-        small_abs_safety_factor=20,
+        small_abs_safety_factor=32,
     ),
 )
-def test_paddle_mish(
-    *,
-    dtype_and_input,
-    on_device,
-    fn_tree,
+def test_paddle_less_than(
+    dtype_and_x,
     frontend,
     test_flags,
+    fn_tree,
 ):
-    input_dtype, x = dtype_and_input
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
+        y=x[1],
+    )
+
+
+# less_equal
+@handle_frontend_test(
+    fn_tree="paddle.less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
+)
+def test_paddle_less_equal(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        y=x[1],
     )
 
 
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.leaky_relu",
+    fn_tree="paddle.equal_all",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-np.inf,
+        max_value=np.inf,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
     ),
 )
-def test_paddle_leaky_relu(
+def test_paddle_equal_all(
     *,
     dtype_and_x,
     on_device,
@@ -537,6 +210,343 @@ def test_paddle_leaky_relu(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        negative_slope=0.01,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# logical_or
+@handle_frontend_test(
+    fn_tree="paddle.logical_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_logical_or(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# logical_xor
+@handle_frontend_test(
+    fn_tree="paddle.logical_xor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_logical_xor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.logical_not",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(True),
+)
+def test_paddle_logical_not(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# bitwise_or
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_or",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_bitwise_or(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_and",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_bitwise_and(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# bitwise_xor
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_xor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_bitwise_xor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# bitwise_not
+@handle_frontend_test(
+    fn_tree="paddle.bitwise_not",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_bitwise_not(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# allclose
+@handle_frontend_test(
+    fn_tree="paddle.allclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    equal_nan=st.booleans(),
+)
+def test_paddle_allclose(
+    *,
+    dtype_and_x,
+    equal_nan,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        equal_nan=equal_nan,
+    )
+
+
+# is_tensor
+@handle_frontend_test(
+    fn_tree="paddle.is_tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_paddle_is_tensor(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
+# isclose
+@handle_frontend_test(
+    fn_tree="paddle.isclose",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    equal_nan=st.booleans(),
+)
+def test_paddle_isclose(
+    *,
+    dtype_and_x,
+    equal_nan,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        equal_nan=equal_nan,
+    )
+
+
+# logical_and
+@handle_frontend_test(
+    fn_tree="paddle.logical_and",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_logical_and(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.is_empty",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
+)
+def test_paddle_is_empty(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
         x=x[0],
     )
