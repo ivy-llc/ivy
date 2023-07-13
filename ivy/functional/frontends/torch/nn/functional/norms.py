@@ -102,37 +102,6 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     "torch",
 )
 def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
-    shape = ivy.shape(input)
-    assert shape[1] % num_groups == 0
-    groups = shape[1] // num_groups
-    num_dims = ivy.get_num_dims(input)
-    expand_dims = (
-        [0, *range(2, num_dims)] if weight is not None and num_dims > 2 else [0]
+    return ivy.group_norm(
+        input, num_groups, scale=weight, offset=bias, data_format="NCS", eps=eps
     )
-    ret = ivy.concat(
-        [
-            ivy.layer_norm(
-                input[:, i * groups : (i + 1) * groups, ...],
-                list(range(1, num_dims)),
-                scale=(
-                    ivy.expand_dims(
-                        weight[i * groups : (i + 1) * groups], axis=expand_dims
-                    )
-                    if weight is not None
-                    else None
-                ),
-                offset=(
-                    ivy.expand_dims(
-                        bias[i * groups : (i + 1) * groups], axis=expand_dims
-                    )
-                    if bias is not None
-                    else None
-                ),
-                eps=eps,
-            )
-            for i in range(num_groups)
-        ],
-        axis=1,
-    )
-
-    return ret
