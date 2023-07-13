@@ -71,7 +71,7 @@ def check_neg_arr(x, kernel_size, padding, stride, dilation, data_format):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-def Maxpool2d(
+def max_pool2d(
     x,
     kernel_size,
     stride=1,
