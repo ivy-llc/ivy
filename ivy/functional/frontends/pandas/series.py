@@ -10,14 +10,16 @@ class Series:
             data = ivy.Array(data)
             self.array = data
 
+        # repeatedly used checks
         data_is_array = isinstance(data, (ivy.Array, np.ndarray))
+        data_is_array_or_like = data_is_array or isinstance(data, (list, tuple))
 
         if data_is_array:
             assert data.ndim == 1, "Series Data must be 1-dimensional"
 
         # setup a default index if none provided
         if index is None:
-            if data_is_array or isinstance(data, (list, tuple)):
+            if data_is_array_or_like:
                 index = ivy.arange(len(data)).tolist()
                 if len(data) != len(index):
                     raise ValueError(
@@ -27,19 +29,16 @@ class Series:
             elif isinstance(data, dict):
                 index = list(data.keys())
 
-        if data_is_array:
+        if data_is_array_or_like:
             self.data = data
             self.index = index
-            self.array = data
+            self.array = ivy.array(data)
 
-        if isinstance(data, dict):
-            self.index = list(data.keys())
+        elif isinstance(data, dict):
+            self.index = index
             self.data = list(data.values())
             self.array = ivy.array(self.data)
-        elif isinstance(data, (list, tuple)):
-            self.index = index
-            self.data = data
-            self.array = ivy.array(data)
+
         elif isinstance(data, (int, float, str)):
             pass
 
