@@ -1665,21 +1665,33 @@ def area_interpolate(x, dims, size, scale):
     return ret
 
 
-def _interpolate_with_kernel(
-    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
-):
-    spatial_dims = [2 + i for i in range(dims)]
+def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
-    equation = generate_einsum_equation(dims)
-    if mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     if mode == "bicubic_tensorflow":
         kernel_func = lambda inputs: _cubic_kernel(inputs)
     elif mode == "lanczos3":
         kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
     elif mode == "lanczos5":
         kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+    return kernel_func
 
+
+def generate_einsum_equation(dim):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    input_indices = alphabet[: dim + 2]
+    output_indices = [alphabet[2 + i] + alphabet[2 + dim + i] for i in range(dim)]
+    contraction_indices = ",".join([input_indices, *output_indices])
+    output = input_indices[:2] + "".join([output[-1] for output in output_indices])
+    einsum_string = contraction_indices + "->" + output
+    return einsum_string
+
+
+def _interpolate_with_kernel(
+    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
+):
+    spatial_dims = [2 + i for i in range(dims)]
+    equation = generate_einsum_equation(dims)
+    kernel_func = get_interpolate_kernel(mode)
     output_shape = tuple(input_shape[:2]) + size
     operands = []
     for i, d in enumerate(spatial_dims):
@@ -1696,16 +1708,6 @@ def _interpolate_with_kernel(
         ).astype(x.dtype)
         operands.append(w)
     return ivy.einsum(equation, x, *operands)
-
-
-def generate_einsum_equation(dim):
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-    input_indices = alphabet[: dim + 2]
-    output_indices = [alphabet[2 + i] + alphabet[2 + dim + i] for i in range(dim)]
-    contraction_indices = ",".join([input_indices, *output_indices])
-    output = input_indices[:2] + "".join([output[-1] for output in output_indices])
-    einsum_string = contraction_indices + "->" + output
-    return einsum_string
 
 
 @handle_exceptions
@@ -1808,7 +1810,6 @@ def interpolate(
         "bilinear",
         "trilinear",
         "nd",
-        "bicubic",
         "bicubic_tensorflow",
         "lanczos3",
         "lanczos5",
@@ -1824,6 +1825,8 @@ def interpolate(
             scale_factor,
             mode,
         )
+    elif mode == "bicubic":
+        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode in ["nearest-exact", "nearest"]:
         ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
     elif mode == "area":
