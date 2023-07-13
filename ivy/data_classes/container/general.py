@@ -230,8 +230,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_ivy_array()
         >>> print(y)
         {
-            a: true,
-            b: false
+            a: True,
+            b: False
         }
         """
         return self._static_is_ivy_array(
