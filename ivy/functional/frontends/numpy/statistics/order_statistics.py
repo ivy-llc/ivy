@@ -104,3 +104,24 @@ def nanpercentile(
                     arrayofpercentiles.append(_cpercentile(ii, i))
                 resultarray.append(arrayofpercentiles)
         return resultarray
+
+
+def quantile(a,
+             q,
+             axis=None,
+             out=None,
+             overwrite_input=False,
+             method="linear",
+             *,
+             keepdims=False,
+
+):
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+quantile.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16"),
+    "jax": ("float16", "bfloat16"),
+    "tensorflow": ("float16", "bfloat16"),
+}

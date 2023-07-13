@@ -6,6 +6,9 @@ from hypothesis import strategies as st
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
+    _quantile_helper,
+)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -49,4 +52,38 @@ def test_numpy_nanpercentile(
         fn_tree=fn_tree,
         test_flags=test_flags,
         input_dtypes=input_dtypes,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.quantile",
+    dtype_and_x=_quantile_helper(),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_numpy_quantile(
+    *,
+    dtype_and_x,
+    keepdims,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis, method, q = dtype_and_x
+
+    if type(axis) is tuple:
+        axis = axis[0]
+
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        method=method[0],
+        keepdims=keepdims,
     )
