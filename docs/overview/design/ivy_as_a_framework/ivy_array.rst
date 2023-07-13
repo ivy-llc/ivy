@@ -197,7 +197,7 @@ API Monkey Patching
 
 All ivy functions with array inputs/outputs have been wrapped to return :class:`ivy.Array` instances while accepting both :class:`ivy.Array` and :class:`ivy.NativeArray` instances.
 This allows for the control required to provide a unified array interface.
-For more details on wrapping, see the `Function Wrapping <https://unify.ai/docs/ivy/deep_dive/3_function_wrapping.html>`_ page in deep dive.
+For more details on wrapping, see the `Function Wrapping <https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html>`_ page in deep dive.
 
 
 Instance Methods
