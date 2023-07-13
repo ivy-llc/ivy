@@ -134,16 +134,14 @@ class Array(
         _ArrayWithSortingExperimental.__init__(self),
         _ArrayWithStatisticalExperimental.__init__(self),
         _ArrayWithUtilityExperimental.__init__(self),
-        self._view_attributes(data),
         self._init(data, dynamic_backend)
+        self._view_attributes(data)
 
     def _init(self, data, dynamic_backend=None):
         if ivy.is_ivy_array(data):
             self._data = data.data
         elif ivy.is_native_array(data):
             self._data = data
-            if hasattr(data, '_base'):
-                self._base = data._base
         elif isinstance(data, np.ndarray):
             self._data = ivy.asarray(data)._data
         else:
