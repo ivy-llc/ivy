@@ -2808,19 +2808,28 @@ def test_numpy_instance_array_wrap__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
     ),
 )
+@given(
+    indices=st.one_of(
+        st.integers(),
+        st.lists(st.integers()),
+        st.tuples(st.integers()),
+        st.arrays(dtype=np.int64, shape=st.tuples(st.integers())),
+    ),
+    axis=st.one_of(st.none(), st.integers()),
+    mode=st.one_of(st.just("raise"), st.just("wrap"), st.just("clip")),
+)
 def test_numpy_instance_take(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
+    indices,
+    axis,
+    mode,
 ):
     input_dtypes, xs = dtype_and_x
 
-    # Generate random indices
-    indices = np.random.randint(0, xs[0].size, size=xs[0].ndim)
-
-    # Test the frontend method
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -2829,9 +2838,9 @@ def test_numpy_instance_take(
         method_input_dtypes=[np.int64],
         method_all_as_kwargs_np={
             "indices": indices,
-            "axis": None,
+            "axis": axis,
             "out": None,
-            "mode": "raise",
+            "mode": mode,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
