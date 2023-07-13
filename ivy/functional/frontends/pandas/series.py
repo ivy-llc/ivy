@@ -8,6 +8,7 @@ class Series:
     ):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
+            self.array = data
 
         data_is_array = isinstance(data, (ivy.Array, np.ndarray))
 
@@ -29,6 +30,8 @@ class Series:
                 )
             self.data = data
             self.index = index
+            self.array = data
+
         elif isinstance(data, dict):
             pass
         elif isinstance(data, (list, tuple)):
@@ -39,3 +42,7 @@ class Series:
         self.index = index
         self.dtype = dtype
         self.name = name
+
+    def __repr__(self):
+        series_name = f"{self.name} " if self.name is not None else ""
+        return f"frontends.pandas.Series {series_name}({self.array.to_list()}, index={self.index})"
