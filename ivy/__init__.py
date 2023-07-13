@@ -1442,6 +1442,10 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
 
 if (
     "ivy" in sys.modules.keys()
-    and 
-    sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND):
-#Required for ivy.with_backend internal compilation
+    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
+):
+    # Updated logic for ivy.with_backend internal compilation
+    # Additional code for the ivy_tests-Docs branch
+    print("Additional code for ivy_tests-Docs branch")
+else:
+    sys.modules[__name__].__class__ = IvyWithGlobalProps
