@@ -51,10 +51,15 @@ def median(x, axis=None, keepdim=False, name=None):
 #float16 should be supported
 #nanmedian
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float16","float32", "float64", "int32", "int64")},
+    {"2.5.0 and below": ("float16","float32", "float64", "uint16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
 def nanmedian(x, axis=None, keepdim=True, name=None):
-    prod = ivy.current_backend(x).nanmedian(x, axis=axis, keepdims=keepdim)
-    return ivy.asarray(prod, dtype=x.dtype)
+    x = (
+        ivy.astype(x, ivy.float64)
+        if ivy.dtype(x) == "float64"
+        else ivy.astype(x, ivy.float32)
+    )
+    return ivy.median(x, axis=axis, keepdims=keepdim)
+
