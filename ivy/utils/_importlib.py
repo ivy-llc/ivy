@@ -19,10 +19,10 @@ IS_COMPILING_WITH_BACKEND = False
 class LocalIvyImporter:
     def __init__(self):
         self.finder = ast_helpers.IvyPathFinder()
-        global IS_COMPILING_WITH_BACKEND
-        IS_COMPILING_WITH_BACKEND = True
 
     def __enter__(self):
+        global IS_COMPILING_WITH_BACKEND
+        IS_COMPILING_WITH_BACKEND = True
         sys.meta_path.insert(0, self.finder)
         path_hooks.insert(0, self.finder)
 
