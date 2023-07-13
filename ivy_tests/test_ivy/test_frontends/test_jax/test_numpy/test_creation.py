@@ -887,9 +887,9 @@ def test_jax_cdouble(
 @handle_frontend_test(
     fn_tree="jax.numpy.compress",
     dtype_arr_ax=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=5,
         min_dim_size=10,
         max_dim_size=100,
         valid_axis=True,
@@ -901,10 +901,8 @@ def test_jax_cdouble(
             min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
         ),
     ),
-    test_with_out=st.just(True),
 )
 def test_jax_compress(
-    *,
     dtype_arr_ax,
     condition,
     frontend,
