@@ -90,7 +90,7 @@ class _ArrayWithSearching(abc.ABC):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         select_last_index: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> Union[ivy.Array, int]:
@@ -111,7 +111,7 @@ class _ArrayWithSearching(abc.ABC):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        output_dtype
+        dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         select_last_index
             If this is set to True, the index corresponding to the
@@ -149,7 +149,7 @@ class _ArrayWithSearching(abc.ABC):
             self._data,
             axis=axis,
             keepdims=keepdims,
-            output_dtype=output_dtype,
+            dtype=dtype,
             select_last_index=select_last_index,
             out=out,
         )

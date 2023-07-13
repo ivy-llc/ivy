@@ -10,7 +10,7 @@ from . import backend_version
 
 
 @_scalar_output_to_0d_array
-@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -40,46 +40,6 @@ fmax.support_native_out = True
 
 
 @_scalar_output_to_0d_array
-def fmin(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.fmin(
-        x1,
-        x2,
-        out=None,
-        where=True,
-        casting="same_kind",
-        order="K",
-        dtype=None,
-        subok=True,
-    )
-
-
-fmin.support_native_out = True
-
-
-@_scalar_output_to_0d_array
-def trapz(
-    y: np.ndarray,
-    /,
-    *,
-    x: Optional[np.ndarray] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.trapz(y, x=x, dx=dx, axis=axis)
-
-
-trapz.support_native_out = False
-
-
-@_scalar_output_to_0d_array
 def float_power(
     x1: Union[np.ndarray, float, list, tuple],
     x2: Union[np.ndarray, float, list, tuple],
@@ -92,18 +52,6 @@ def float_power(
 
 
 float_power.support_native_out = True
-
-
-def exp2(
-    x: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.exp2(x, out=out)
-
-
-exp2.support_native_out = True
 
 
 @_scalar_output_to_0d_array
@@ -162,20 +110,6 @@ def nansum(
 nansum.support_native_out = True
 
 
-def gcd(
-    x1: Union[np.ndarray, int, list, tuple],
-    x2: Union[np.ndarray, float, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    return np.gcd(x1, x2, out=out)
-
-
-gcd.support_native_out = True
-
-
 def isclose(
     a: np.ndarray,
     b: np.ndarray,
@@ -193,64 +127,6 @@ def isclose(
 
 
 isclose.support_native_out = False
-
-
-def angle(
-    z: np.ndarray,
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.angle(z, deg=deg)
-
-
-angle.support_native_out = False
-
-
-def imag(
-    val: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.imag(val)
-
-
-imag.support_native_out = False
-
-
-def nan_to_num(
-    x: np.ndarray,
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
-
-
-nan_to_num.support_native_out = False
-
-
-def logaddexp2(
-    x1: Union[np.ndarray, int, list, tuple],
-    x2: Union[np.ndarray, int, list, tuple],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    x1, x2 = promote_types_of_inputs(x1, x2)
-    if not ivy.is_float_dtype(x1):
-        x1 = x1.astype(ivy.default_float_dtype(as_native=True))
-        x2 = x2.astype(ivy.default_float_dtype(as_native=True))
-    return np.logaddexp2(x1, x2, out=out)
-
-
-logaddexp2.support_native_out = True
 
 
 def signbit(
@@ -385,17 +261,16 @@ def xlogy(
         return x * np.log(y)
 
 
-def real(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.real(x)
-
-
 def conj(
     x: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.conj(x, out=out)
+    ret = np.conj(x, out=out)
+    if x.dtype == np.bool:
+        return ret.astype("bool")
+    return ret
 
 
 def ldexp(
@@ -409,9 +284,18 @@ def ldexp(
 
 
 def frexp(
+    x: np.ndarray, /, *, out: Optional[Tuple[np.ndarray, np.ndarray]] = None
+) -> Tuple[np.ndarray, np.ndarray]:
+    if out is None:
+        return np.frexp(x, out=(None, None))
+    else:
+        return np.frexp(x, out=out)
+
+
+def modf(
     x: np.ndarray,
     /,
     *,
-    out: Union[Tuple[np.ndarray, np.ndarray], Tuple[None, None]] = (None, None),
-) -> Tuple[np.ndarray, np.ndarray]:
-    return np.frexp(x, out=out)
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.modf(x, out=out)

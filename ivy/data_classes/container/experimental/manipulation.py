@@ -47,6 +47,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -101,6 +108,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -234,6 +248,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -285,6 +306,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -816,6 +844,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -877,6 +912,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -1014,6 +1056,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         x
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1087,6 +1136,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1247,7 +1303,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_vsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1265,11 +1321,18 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         ary
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1328,7 +1391,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def vsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1342,10 +1405,18 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -1386,7 +1457,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_dsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1407,8 +1478,15 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1465,7 +1543,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def dsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -1482,8 +1560,15 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -1537,6 +1622,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1596,6 +1688,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             the container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1745,6 +1844,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1804,6 +1910,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1867,6 +1980,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1912,8 +2032,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        copy: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1930,6 +2050,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+            
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2129,7 +2250,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_hsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         /,
         *,
         copy: Optional[bool] = None,
@@ -2150,8 +2271,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2209,7 +2330,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def hsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Tuple[int, ...]],
+        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
         copy: Optional[bool] = None,
         /,
     ) -> List[ivy.Container]:
@@ -2225,8 +2346,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
-            If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple.
+            If indices_or_sections is a sequence of ints or 1-D array,
+            then input is split at each of the indices.
 
         Returns
         -------
@@ -2282,6 +2403,17 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         shapes
             the container with shapes to broadcast.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2369,14 +2501,37 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Parameters
         ----------
         x
+            input container.
         shape
-        device
-        out
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
         prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
+        Returns
+        -------
+        ret
+            An output Container with the results.
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2402,9 +2557,28 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Parameters
         ----------
+        self
+            input container.
         shape
-        device
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An output Container with the results.
+
 
         """
         return self.static_expand(self, shape, copy=copy, out=out)
@@ -2765,4 +2939,46 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def _static_fill_diagonal(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        v: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        wrap: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fill_diagonal",
+            a,
+            v,
+            wrap=wrap,
+        )
+
+    def fill_diagonal(
+        self: ivy.Container,
+        v: Union[int, float],
+        /,
+        *,
+        wrap: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return self._static_fill_diagonal(
+            self,
+            v,
+            wrap=wrap,
         )

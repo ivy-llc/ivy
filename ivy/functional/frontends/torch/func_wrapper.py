@@ -76,6 +76,10 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and all(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
             ivy.set_default_int_dtype("int64")
             ivy.set_default_float_dtype(torch_frontend.get_default_dtype())
             set_default_dtype = True
@@ -86,9 +90,23 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_int_dtype()
                 ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
-        return _from_ivy_array_to_torch_frontend_tensor(
+        ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
+        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
+        if "inplace" in kwargs and kwargs["inplace"]:
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            # ivy.inplace_update with ensure_in_backend=True fails in jax and tf
+            # so update ._data directly
+            if ivy.is_array(first_array):
+                first_array._data = ret.ivy_array._data
+            else:
+                first_array.ivy_array._data = ret.ivy_array._data
+            return first_array
+        else:
+            return ret
 
     return outputs_to_frontend_arrays_torch
 
@@ -112,3 +130,27 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return outputs_to_native_arrays_torch
+
+
+numpy_compatible_args = {
+    "axis": "dim",
+    "keepdims": "keepdim",
+    "x": "input",
+    "a": "input",
+    "x1": "input",
+    "x2": "other",
+}
+
+
+# noqa: F811
+def numpy_to_torch_style_args(func):  # noqa
+    """Convert argument names from NumPy style to PyTorch style."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        new_kwargs = {
+            numpy_compatible_args.get(key, key): value for key, value in kwargs.items()
+        }
+        return func(*args, **new_kwargs)
+
+    return wrapper

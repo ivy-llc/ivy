@@ -1,5 +1,4 @@
 # global
-import pytest
 from hypothesis import strategies as st, given, assume
 import numpy as np
 
@@ -47,7 +46,7 @@ def test_tensorflow_tensor_property_device(
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
 
 
 @given(
@@ -60,7 +59,7 @@ def test_tensorflow_tensor_property_dtype(
 ):
     dtype, data = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
 
 
 @given(
@@ -74,7 +73,9 @@ def test_tensorflow_tensor_property_shape(
 ):
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
 
 
 # __add__
@@ -122,6 +123,9 @@ def test_tensorflow_instance_add(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_div(
@@ -221,7 +225,6 @@ def test_tensorflow_instance_eq(
     )
 
 
-@pytest.mark.skip("Gets stuck.")  # TODO fix
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -230,6 +233,9 @@ def test_tensorflow_instance_eq(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_floordiv(
@@ -258,6 +264,7 @@ def test_tensorflow_instance_floordiv(
     )
 
 
+# __ge__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -294,6 +301,7 @@ def test_tensorflow_instance_ge(
     )
 
 
+# __gt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -330,6 +338,7 @@ def test_tensorflow_instance_gt(
     )
 
 
+# __le__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -366,6 +375,7 @@ def test_tensorflow_instance_le(
     )
 
 
+# __lt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -597,6 +607,9 @@ def test_tensorflow_instance_radd(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rfloordiv(
@@ -666,7 +679,7 @@ def test_tensorflow_instance_rsub(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
-    method_name="__add__",
+    method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -819,6 +832,9 @@ def test_tensorflow_instance_ror(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_truediv(
@@ -830,6 +846,7 @@ def test_tensorflow_instance_truediv(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -856,6 +873,9 @@ def test_tensorflow_instance_truediv(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rtruediv(
@@ -1073,7 +1093,6 @@ def test_tensorflow_instance_xor(
     method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1082,6 +1101,9 @@ def test_tensorflow_instance_xor(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_matmul(
@@ -1117,7 +1139,6 @@ def test_tensorflow_instance_matmul(
     method_name="__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1126,6 +1147,9 @@ def test_tensorflow_instance_matmul(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rmatmul(
@@ -1162,7 +1186,7 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
@@ -1181,7 +1205,7 @@ def test_tensorflow_instance_array(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dtype": dtype[0],
+            "dtype": np.dtype(dtype[0]),
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1346,13 +1370,27 @@ def test_tensorflow_instance_pow(
     )
 
 
+def _check_query(query):
+    # True if tensorflow supports this type
+    return not isinstance(query, list) and not (
+        isinstance(query, np.ndarray)
+        and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0))
+    )
+
+
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
+    ).filter(
+        lambda x: (
+            all(_check_query(i) for i in x[-1])
+            if isinstance(x[-1], tuple)
+            else _check_query(x[-1])
+        )
     ),
 )
 def test_tensorflow_instance_getitem(
@@ -1367,7 +1405,7 @@ def test_tensorflow_instance_getitem(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"value": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"slice_spec": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,

@@ -69,12 +69,12 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ):
     # Conversion of required arrays to float variables and duplicate index chains
-    xs, xs_required, required_duplicate_index_chains, _ = _get_required_float_variables(
-        xs, xs_grad_idxs
+    xs, xs_grad_idxs, xs_required, required_duplicate_index_chains, _ = (
+        _get_required_float_variables(xs, xs_grad_idxs)
     )
 
     # Creating a tape to record operations
@@ -83,7 +83,9 @@ def execute_with_gradients(
         func_ret = func(xs)
 
     # Getting the relevant outputs from the function return for gradient calculation
-    y, ret_idxs = _get_y_and_ret_idxs(func_ret, ret_grad_idxs, reshape=False)
+    ret_grad_idxs, y, ret_idxs = _get_y_and_ret_idxs(
+        func_ret, ret_grad_idxs, reshape=False
+    )
 
     if isinstance(y, ivy.NativeArray):
         # Gradient calculation for a single output
@@ -160,14 +162,26 @@ def stop_gradient(
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in))
+    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
 
     def callback_fn(x_in):
-        with tf.GradientTape() as tape:
-            x_in = ivy.to_native(x_in)
+        with tf.GradientTape(persistent=True) as tape:
+            x_in = ivy.to_native(x_in, nested=True)
             tape.watch(x_in)
             y = grad_fn(x_in)
-        return ivy.to_ivy(tape.jacobian(y, x_in))
+
+            # Deal with multiple outputs
+            if not isinstance(y, ivy.NativeArray):
+                jacobian = ivy.nested_map(
+                    y,
+                    lambda yi: ivy.to_ivy(
+                        tape.jacobian(yi, x_in, unconnected_gradients="zero"),
+                        nested=True,
+                    ),
+                )
+            else:
+                jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
+        return jacobian
 
     return callback_fn
 

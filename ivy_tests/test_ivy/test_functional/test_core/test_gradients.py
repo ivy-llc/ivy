@@ -1,7 +1,7 @@
 """Collection of tests for unified gradient functions."""
 
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import pytest
 import numpy as np
 
@@ -73,24 +73,18 @@ def get_gradient_arguments_with_lr(
 # stop_gradient
 @handle_test(
     fn_tree="functional.ivy.stop_gradient",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
     preserve_type=st.booleans(),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
 def test_stop_gradient(
-    *,
-    dtype_and_x,
-    preserve_type,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, preserve_type, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -117,15 +111,10 @@ def test_stop_gradient(
     test_gradients=st.just(False),
 )
 def test_execute_with_gradients(
-    *,
-    dtype_and_xs,
-    retain_grads,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
 ):
+    assume(not backend_fw.backend == "numpy")
+
     def func(xs):
         if isinstance(xs, ivy.Container):
             array_idxs = ivy.nested_argwhere(xs, ivy.is_array)
@@ -141,7 +130,6 @@ def test_execute_with_gradients(
 
     dtype, xs = dtype_and_xs
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -217,6 +205,28 @@ def test_jac(x, dtype, func, backend_fw):
         assert jacobian.shape == jacobian_from_gt.shape
         assert np.allclose(jacobian, jacobian_from_gt)
 
+    # Test nested input
+    func = lambda xs: (2 * xs[1]["x2"], xs[0])
+
+    ivy.set_backend(fw)
+    var1 = _variable(ivy.array(x[0], dtype=dtype))
+    var2 = _variable(ivy.array(x[1], dtype=dtype))
+    var = [var1, {"x2": var2}]
+    fn = ivy.jac(func)
+    jacobian = fn(var)
+    jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
+    ivy.previous_backend()
+    ivy.set_backend("tensorflow")
+    var1 = _variable(ivy.array(x[0], dtype=dtype))
+    var2 = _variable(ivy.array(x[1], dtype=dtype))
+    var = [var1, {"x2": var2}]
+    fn = ivy.jac(func)
+    jacobian_gt = fn(var)
+    jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)
+    for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+        assert jacobian.shape == jacobian_from_gt.shape
+        assert np.allclose(jacobian, jacobian_from_gt)
+
 
 # grad
 @pytest.mark.parametrize(
@@ -283,7 +293,6 @@ def test_adam_step(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
     (
@@ -292,7 +301,6 @@ def test_adam_step(
         epsilon,
     ) = beta1_n_beta2_n_epsilon
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -324,11 +332,9 @@ def test_optimizer_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         fw=backend_fw,
         test_flags=test_flags,
@@ -357,11 +363,9 @@ def test_gradient_descent_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -394,14 +398,12 @@ def test_lars_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
     if "bfloat16" in input_dtypes:
         return
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -444,13 +446,11 @@ def test_adam_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     stop_gradients = stopgrad
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -504,7 +504,6 @@ def test_lamb_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     (
@@ -518,7 +517,6 @@ def test_lamb_update(
     if "jax" in backend_fw.__name__:
         test_flags.test_gradients = False
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
