@@ -225,5 +225,11 @@ def leaky_relu(x, negative_slope=0.01, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def silu(x, name=None):
+    return ivy.silu(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def thresholded_relu(x, threshold=1.0, name=None):
     return ivy.thresholded_relu(x, threshold=threshold)
