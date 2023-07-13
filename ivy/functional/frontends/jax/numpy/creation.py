@@ -28,6 +28,9 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     return DeviceArray(ret)
 
 
+ndarray = array
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
