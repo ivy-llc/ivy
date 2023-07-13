@@ -7,7 +7,6 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 
@@ -33,11 +32,10 @@ def numel(x, name=None):
     return ivy.array([prod if prod > 0 else ivy.array(length, dtype=ivy.int64)])
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
+
 @to_ivy_arrays_and_back
 def median(y, axis=None, keepdim=False,out=None):
     mid = ivy.median(y, axis=axis, keepdims=keepdim,out=out)
-    #mid = ivy.expand_dims(mid, axis=-1) if mid.ndim == 0 else mid
     return mid
 
 
