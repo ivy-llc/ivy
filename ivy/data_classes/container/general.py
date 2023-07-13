@@ -116,8 +116,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_native_array()
         >>> print(y)
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_is_native_array(
