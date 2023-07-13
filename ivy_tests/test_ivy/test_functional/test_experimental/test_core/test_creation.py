@@ -278,7 +278,7 @@ def test_ndindex(dtype_x_shape):
         max_dim_size=10,
     ),
     dtypes=helpers.get_dtypes(
-        "numeric", 
+        "numeric",
         full=False,
     ),
     sparse=st.booleans(),
