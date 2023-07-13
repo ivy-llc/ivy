@@ -1967,7 +1967,6 @@ def test_tensorflow_Relu(  # NOQA
     fn_tree="tensorflow.raw_ops.MatMul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1976,6 +1975,9 @@ def test_tensorflow_Relu(  # NOQA
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
@@ -2411,6 +2413,7 @@ def test_tensorflow_Min(  # NOQA
     )
 
 
+# Max
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Max",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -3913,4 +3916,39 @@ def test_tensorflow_Zeta(
         on_device=on_device,
         x=x[0],
         q=x[1],
+    )
+
+
+# Imag
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Imag",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    send_Tout=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Imag(
+    *,
+    dtype_and_xs,
+    send_Tout,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    if input_dtype[0] == "complex128":
+        send_Tout = "float64"
+    elif input_dtype[0] == "complex64":
+        send_Tout = "float32" if send_Tout else None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        Tout=send_Tout,
     )

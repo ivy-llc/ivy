@@ -400,18 +400,7 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
-        if ivy.current_backend_str() == "torch":
-            self._data = self._data.detach()
-        if ivy.is_ivy_array(val):
-            val = val.data
-        target = self.__getitem__(query)
-        if not ivy.isscalar(target) and ivy.isscalar(val):
-            val = ivy.ones_like(target) * val
-        try:
-            self._data.__setitem__(query, val)
-        except:
-            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
-            self._dtype = ivy.dtype(self._data)
+        self._data = ivy.set_item(self._data, query, val)._data
 
     def __contains__(self, key):
         return self._data.__contains__(key)
@@ -1144,17 +1133,28 @@ class Array(
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
+        except RuntimeError:
+            from ivy.functional.ivy.gradients import _is_variable
+
+            # paddle and torch don't support the deepcopy protocol on non-leaf tensors
+            if _is_variable(self):
+                return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
+            return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
-        return len(self._data)
+        if not len(self._data.shape):
+            return 0
+        try:
+            return len(self._data)
+        except TypeError:
+            return self._data.shape[0]
 
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
         if ivy.current_backend_str() == "paddle":
-            if self.ndim == 1:
-                ret = [to_ivy(i).squeeze(0) for i in self._data]
-                return iter(ret)
-            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
+            if self.dtype in ["int8", "int16", "uint8", "float16"]:
                 return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+            elif self.ndim == 1:
+                return iter([to_ivy(i).squeeze(axis=0) for i in self._data])
         return iter([to_ivy(i) for i in self._data])

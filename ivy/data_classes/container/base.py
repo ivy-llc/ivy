@@ -1094,6 +1094,17 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     @staticmethod
+    def cont_load(filepath, format="h5py"):
+        if format == "json":
+            return ivy.Container.cont_from_disk_as_json(filepath)
+        elif format == "pickle":
+            return ivy.Container.cont_from_disk_as_pickled(filepath)
+        elif format == "h5py":
+            return ivy.Container.cont_from_disk_as_hdf5(filepath)
+        else:
+            raise ivy.utils.exceptions.IvyException("Unsupported format")
+
+    @staticmethod
     def cont_from_disk_as_hdf5(
         h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None
     ):
@@ -1947,6 +1958,16 @@ class ContainerBase(dict, abc.ABC):
             ),
             alphabetical_keys=False,
         )
+
+    def cont_save(self, filepath, format="h5py"):
+        if format == "json":
+            self.cont_to_disk_as_json(filepath)
+        elif format == "pickle":
+            self.cont_to_disk_as_pickled(filepath)
+        elif format == "h5py":
+            self.cont_to_disk_as_hdf5(filepath)
+        else:
+            raise ValueError("Unsupported format")
 
     def cont_to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None

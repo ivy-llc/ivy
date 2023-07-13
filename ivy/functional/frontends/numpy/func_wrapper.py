@@ -359,9 +359,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _inputs_to_ivy_arrays_np
 
 
-def outputs_to_numpy_arrays(fn: Callable) -> Callable:
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
+    def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
         """
         Convert `ivy.Array` into `ndarray` instances.
 
@@ -377,6 +377,10 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         if not ("dtype" in kwargs and ivy.exists(kwargs["dtype"])) and any(
             [not (ivy.is_array(i) or hasattr(i, "ivy_array")) for i in args]
         ):
+            if ivy.current_backend_str() == "jax":
+                import jax
+
+                jax.config.update("jax_enable_x64", True)
             (
                 ivy.set_default_int_dtype("int64")
                 if platform.system() != "Windows"
@@ -417,8 +421,8 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_numpy_arrays.outputs_to_numpy_arrays = True
-    return _outputs_to_numpy_arrays
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
@@ -429,7 +433,7 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     instances and return arrays are all converted to `ndarray`
     instances.
     """
-    return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:

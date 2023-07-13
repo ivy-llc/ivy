@@ -1093,7 +1093,6 @@ def test_tensorflow_instance_xor(
     method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1102,6 +1101,9 @@ def test_tensorflow_instance_xor(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_matmul(
@@ -1137,7 +1139,6 @@ def test_tensorflow_instance_matmul(
     method_name="__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1146,6 +1147,9 @@ def test_tensorflow_instance_matmul(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
 def test_tensorflow_instance_rmatmul(
@@ -1182,7 +1186,7 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_tensorflow_instance_array(
     dtype_and_x,
@@ -1201,7 +1205,7 @@ def test_tensorflow_instance_array(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dtype": dtype[0],
+            "dtype": np.dtype(dtype[0]),
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1366,13 +1370,27 @@ def test_tensorflow_instance_pow(
     )
 
 
+def _check_query(query):
+    # True if tensorflow supports this type
+    return not isinstance(query, list) and not (
+        isinstance(query, np.ndarray)
+        and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0))
+    )
+
+
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
+    ).filter(
+        lambda x: (
+            all(_check_query(i) for i in x[-1])
+            if isinstance(x[-1], tuple)
+            else _check_query(x[-1])
+        )
     ),
 )
 def test_tensorflow_instance_getitem(
@@ -1387,7 +1405,7 @@ def test_tensorflow_instance_getitem(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"value": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"slice_spec": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,

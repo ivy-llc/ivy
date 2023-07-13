@@ -1,5 +1,4 @@
 import numpy as np
-
 import ivy
 
 
@@ -55,7 +54,6 @@ def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
         )
         comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
     lt, lt_eq = comp_fn(x1, x2)
-    print(allow_equal, lt_eq)
     # greater_equal
     if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
@@ -196,7 +194,7 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
     if (
         not (
             (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
+            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
         )
         and not (
             ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
@@ -212,6 +210,50 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
                 fill_value, dtype
             )
         )
+
+
+def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [
+        ivy.int32,
+        ivy.int64,
+    ]
+
+    if ivy.backend == "torch":
+        import torch
+
+        valid_dtypes = [
+            torch.int32,
+            torch.int64,
+        ]
+        if isinstance(num_segments, torch.Tensor):
+            num_segments = num_segments.item()
+    elif ivy.backend == "paddle":
+        import paddle
+
+        valid_dtypes = [
+            paddle.int32,
+            paddle.int64,
+        ]
+        if isinstance(num_segments, paddle.Tensor):
+            num_segments = num_segments.item()
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an integer dtype")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if ivy.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{ivy.argmax(segment_ids)}] = "
+            f"{ivy.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
 
 
 # General #
@@ -266,10 +308,6 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
 def check_one_way_broadcastable(x1, x2):
     if len(x1) > len(x2):
         return False
-    return check_broadcastable(x1, x2)
-
-
-def check_broadcastable(x1, x2):
     for a, b in zip(x1[::-1], x2[::-1]):
         if a == 1 or a == b:
             pass
