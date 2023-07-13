@@ -657,6 +657,7 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
@@ -690,17 +691,17 @@ def interpolate(
 
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    not align_corners
+    (align_corners is None or not align_corners)
     and mode
     not in [
         "area",
         "nearest",
+        "nd",
         "tf_area",
         "mitchellcubic",
         "gaussian",
         "bicubic",
     ]
-    and recompute_scale_factor
 )
 
 
@@ -725,7 +726,7 @@ def reduce_window(
         padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
-        init_value,
+        jnp.array(init_value).astype(operand.dtype),
         computation,
         window_dimensions,
         window_strides,

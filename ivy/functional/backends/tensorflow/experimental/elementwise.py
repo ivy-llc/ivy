@@ -31,7 +31,7 @@ def sinc(
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
 )
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
@@ -47,7 +47,7 @@ def fmax(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def float_power(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -99,7 +99,7 @@ def count_nonzero(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def nansum(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -162,7 +162,7 @@ def allclose(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def fix(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -172,7 +172,7 @@ def fix(
     return tf.cast(tf.where(x > 0, tf.math.floor(x), tf.math.ceil(x)), x.dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bflaot16", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bflaot16", "float16")}, backend_version)
 def nextafter(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -184,7 +184,7 @@ def nextafter(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+    {"2.13.0 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def diff(
     x: Union[tf.Tensor, tf.Variable, list, tuple],
@@ -207,7 +207,7 @@ def diff(
 
 @with_supported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float32",
             "float64",
         )
@@ -427,7 +427,7 @@ def gradient(
 
 @with_supported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "float32",
             "float64",
@@ -457,7 +457,7 @@ def conj(
     return tf.math.conj(x)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("unsigned",)}, backend_version)
 def ldexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable, int],
@@ -478,7 +478,7 @@ def ldexp(
     return tf.cast(ret, out_dtype)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("unsigned",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("unsigned",)}, backend_version)
 def frexp(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -494,3 +494,12 @@ def frexp(
     m = x / tf.math.pow(2, e)
     e = tf.cast(e, tf.int32)
     return m, e
+
+
+def modf(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.modf(x)
