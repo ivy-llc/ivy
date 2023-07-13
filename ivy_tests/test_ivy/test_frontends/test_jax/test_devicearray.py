@@ -18,6 +18,25 @@ CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
+def test_jax_devicearray_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = DeviceArray(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ),
+)
 def test_jax_devicearray_property_dtype(
     dtype_x,
 ):
