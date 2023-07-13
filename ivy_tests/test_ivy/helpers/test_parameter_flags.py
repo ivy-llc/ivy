@@ -85,6 +85,7 @@ class TestFlags(metaclass=abc.ABCMeta):
 class FunctionTestFlags(TestFlags):
     def __init__(
         self,
+        ground_truth_backend,
         num_positional_args,
         with_out,
         instance_method,
@@ -94,6 +95,7 @@ class FunctionTestFlags(TestFlags):
         test_gradients,
         test_compile,
     ):
+        self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.instance_method = instance_method
@@ -118,6 +120,7 @@ class FunctionTestFlags(TestFlags):
 
     def __str__(self):
         return (
+            f"ground_truth_backend={self.ground_truth_backend}"
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
             f"instance_method={self.instance_method}. "
@@ -136,6 +139,7 @@ class FunctionTestFlags(TestFlags):
 def function_flags(
     draw,
     *,
+    ground_truth_backend,
     num_positional_args,
     instance_method,
     with_out,
@@ -148,6 +152,7 @@ def function_flags(
     return draw(
         st.builds(
             FunctionTestFlags,
+            ground_truth_backend=ground_truth_backend,
             num_positional_args=num_positional_args,
             with_out=with_out,
             instance_method=instance_method,
