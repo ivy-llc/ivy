@@ -689,9 +689,6 @@ def handle_frontend_method(
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, class_module, class_name
         )
-        method_name_mod = (
-            get_method_name(method_name, aliases) if aliases else method_name
-        )
 
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
@@ -724,7 +721,11 @@ def handle_frontend_method(
                 "init_flags": init_flags,
                 "method_flags": method_flags,
                 "frontend_method_data": st.just(frontend_helper_data),
-                "method_name": method_name_mod,
+                "method_name": (
+                    get_method_name(method_name, aliases)
+                    if aliases is not None
+                    else st.just(method_name)
+                ),
             }
 
             filtered_args = set(param_names).intersection(possible_arguments.keys())
@@ -746,10 +747,10 @@ def handle_frontend_method(
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
-            fn_tree=f"{init_tree}.{method_name_mod}",
-            fn_name=method_name_mod,
+            fn_tree=f"{init_tree}.{possible_arguments['method_name']}",
+            fn_name=possible_arguments["method_name"],
             supported_device_dtypes=supported_device_dtypes,
-            is_method=[method_name_mod, class_tree, split_index],
+            is_method=[possible_arguments["method_name"], class_tree, split_index],
         )
 
         return wrapped_test
