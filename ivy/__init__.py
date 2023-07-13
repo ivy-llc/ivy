@@ -1448,3 +1448,7 @@ if (
     print("Additional code for ivy_tests-Docs branch")
 else:
     sys.modules[__name__].__class__ = IvyWithGlobalProps
+    # Required for ivy.with_backend internal compilation
+    sys.modules["ivy"].utils._importlib.import_cache[
+        __name__
+    ].__class__ = IvyWithGlobalProps
