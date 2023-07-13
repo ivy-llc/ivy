@@ -1446,6 +1446,8 @@ sys.modules[__name__].__class__ = modified_class
 
 # Additional code
 additional_variable = "Hello, world!"
+# Added a print statement
+print("Conflict resolved!")
 
 if (
     "ivy" in sys.modules.keys()
