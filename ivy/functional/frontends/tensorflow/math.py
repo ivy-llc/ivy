@@ -195,11 +195,6 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 
 
 @to_ivy_arrays_and_back
-def lgamma(x, name=None):
-    return ivy.lgamma(x)
-
-
-@to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
 
