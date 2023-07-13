@@ -6,6 +6,7 @@ class Series:
     def __init__(
         self, data, index=None, dtype=None, name=None, copy=False, fastpath=False
     ):
+        self.name = name
         if ivy.is_native_array(data):
             data = ivy.Array(data)
             self.array = data
@@ -39,12 +40,16 @@ class Series:
             self.data = list(data.values())
             self.array = ivy.array(self.data)
 
-        elif isinstance(data, (int, float, str)):
-            pass
-
-        self.index = index
-        self.dtype = dtype
-        self.name = name
+        elif isinstance(data, (int, float)):
+            if len(index) > 1:
+                data = [data] * len(index)
+            self.data = data
+            self.index = index
+            self.array = ivy.array(self.data)
+        elif isinstance(data, str):
+            pass # TODO: implement string series
+        else:
+            raise TypeError(f"Data must be one of array, dict, iterables or scalar value, got {type(data)}")
 
     def __repr__(self):
         series_name = f"{self.name} " if self.name is not None else ""
