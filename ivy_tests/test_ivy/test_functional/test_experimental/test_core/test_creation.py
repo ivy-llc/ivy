@@ -210,7 +210,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
 @handle_test(
     fn_tree="functional.ivy.experimental.eye_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
