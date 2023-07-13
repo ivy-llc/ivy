@@ -44,23 +44,6 @@ def heaviside(
 heaviside.support_native_out = True
 
 
-def complex(
-    real: torch.tensor,
-    imag: torch.tensor,
-    /,
-    *,
-    out: Optional[torch.tensor] = None,
-) -> torch.complex:
-    return torch.complex(
-        real,
-        imag,
-        out=out,
-    )
-
-
-complex.support_native_out = False
-
-
 def flipud(
     m: torch.Tensor,
     /,
