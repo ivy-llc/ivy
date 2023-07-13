@@ -8,7 +8,9 @@ from collections import namedtuple
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def vector_norm(input, ord=2, dim=None, keepdim=False, *, dtype=None, out=None):
     return ivy.vector_norm(
         input, axis=dim, keepdims=keepdim, ord=ord, out=out, dtype=dtype
@@ -26,13 +28,17 @@ def divide(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def inv(A, *, out=None):
     return ivy.inv(A, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
     # TODO: add handling for hermitian
     if atol is None:
@@ -49,13 +55,17 @@ def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def det(A, *, out=None):
     return ivy.det(A, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def eigvals(input, *, out=None):
     ret = ivy.eigvals(input)
     if ivy.exists(out):
@@ -64,7 +74,9 @@ def eigvals(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def eigvalsh(input, UPLO="L", *, out=None):
     ret = ivy.eigvalsh(input, UPLO=UPLO, out=out)
     if "complex64" in ivy.as_ivy_dtype(ret.dtype):
@@ -75,13 +87,17 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def eigh(a, /, UPLO="L", out=None):
     return ivy.eigh(a, UPLO=UPLO, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def qr(A, mode="reduced", *, out=None):
     if mode == "reduced":
         ret = ivy.qr(A, mode="reduced")
@@ -97,7 +113,9 @@ def qr(A, mode="reduced", *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def slogdet(A, *, out=None):
     sign, logabsdet = ivy.slogdet(A)
     if "complex64" in ivy.as_ivy_dtype(logabsdet.dtype):
@@ -117,7 +135,9 @@ def cond(input, p=None, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 
@@ -129,7 +149,9 @@ def matrix_exp(A):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
     if "complex" in ivy.as_ivy_dtype(input.dtype):
         input = ivy.abs(input)
@@ -139,13 +161,17 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def cross(input, other, *, dim=None, out=None):
     return torch_frontend.miscellaneous_ops.cross(input, other, dim=dim, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def vecdot(x, y, *, dim=-1, out=None):
     if "complex" in ivy.as_ivy_dtype(x.dtype):
         x = ivy.conj(x)
@@ -153,33 +179,43 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
     return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def cholesky(input, *, upper=False, out=None):
     return ivy.cholesky(input, upper=upper, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def svd(A, /, *, full_matrices=True, driver=None, out=None):
     # TODO: add handling for driver and out
     return ivy.svd(A, compute_uv=True, full_matrices=full_matrices)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def svdvals(A, *, driver=None, out=None):
     # TODO: add handling for driver
     return ivy.svdvals(A, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def inv_ex(A, *, check_errors=False, out=None):
     if ivy.any(ivy.det(A) == 0):
         if check_errors:
@@ -196,7 +232,9 @@ def inv_ex(A, *, check_errors=False, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def tensorinv(input, ind=2, *, out=None):
     not_invertible = "Reshaped tensor is not invertible"
     prod_cond = "Tensor shape must satisfy prod(A.shape[:ind]) == prod(A.shape[ind:])"
@@ -227,26 +265,34 @@ def eig(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def solve(A, B, *, left=True, out=None):
-    #TODO: Implement left
+    # TODO: Implement left
     return ivy.solve(A, B, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def matmul(input, other, *, out=None):
     return ivy.matmul(input, other, out=out)
 
@@ -284,13 +330,17 @@ def vander(x, N=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def multi_dot(tensors, *, out=None):
     return ivy.multi_dot(tensors, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
     # TODO: Implement left
     try:
