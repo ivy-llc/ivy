@@ -98,6 +98,12 @@ def matrix_power(A, n, *, out=None):
     return ivy.matrix_power(A, n, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+@to_ivy_arrays_and_back
+def matrix_exp(A):
+    return ivy.matrix_exp(A)
+
+
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex64", "complex128")}, "torch"
 )
@@ -122,8 +128,8 @@ def vecdot(x, y, *, dim=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    return ivy.matrix_rank(input, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
+def matrix_rank(A, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.matrix_rank(A, atol=atol, rtol=rtol, hermitian=hermitian, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -251,6 +257,16 @@ def multi_dot(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
+def characteristic_equation_solver(matrix):
+    eigenvalues = ivy.eigenvalues(matrix)
+    coefficients = ivy.array(
+        [1.0, *[-1.0] * (len(eigenvalues) + 1)], dtype=matrix.dtype
+    )
+    return ivy.roots(coefficients)
+
+
+@to_ivy_arrays_and_back
 def solve_ex(A, B, *, left=True, check_errors=False, out=None):
     try:
         result = ivy.solve(A, B, out=out)
@@ -262,4 +278,5 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
         else:
             result = A * math.nan
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
+
             return result, info

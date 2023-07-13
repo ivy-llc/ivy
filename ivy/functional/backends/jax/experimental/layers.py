@@ -171,9 +171,10 @@ def general_pool(
         pad_list = [(0, 0)] * (dim + 2)
 
     if not ivy.is_array(inputs):
-        inputs = jnp.array(inputs)
+        # if dtype is not set here, jax casts it to float64
+        inputs = jnp.array(inputs, dtype=jnp.float32)
     if not ivy.is_array(init):
-        init = jnp.array(init)
+        init = jnp.array(init, dtype=jnp.float32)
     promoted_type = jnp.promote_types(inputs.dtype, init.dtype)
     inputs = inputs.astype(promoted_type)
     init = init.astype(promoted_type)
@@ -413,7 +414,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.12 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -656,6 +657,7 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
@@ -689,17 +691,17 @@ def interpolate(
 
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
-    not align_corners
+    (align_corners is None or not align_corners)
     and mode
     not in [
         "area",
         "nearest",
+        "nd",
         "tf_area",
         "mitchellcubic",
         "gaussian",
         "bicubic",
     ]
-    and recompute_scale_factor
 )
 
 
@@ -724,7 +726,7 @@ def reduce_window(
         padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
-        init_value,
+        jnp.array(init_value).astype(operand.dtype),
         computation,
         window_dimensions,
         window_strides,
@@ -778,7 +780,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.12 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -797,3 +799,4 @@ def embedding(
         embeddings = jnp.where(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
+    return embeddings
