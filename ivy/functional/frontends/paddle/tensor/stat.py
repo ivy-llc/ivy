@@ -18,8 +18,6 @@ def mean(input, axis=None, keepdim=False, out=None):
 
 
 
-@with_unsupported_dtypes({"2.4.2 and below": ("complex", "int8")}, "paddle")
-
 @with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
 
 @to_ivy_arrays_and_back
