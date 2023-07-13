@@ -125,6 +125,9 @@ class DeviceArray:
             order=order,
         )
 
+    def argsort(self, axis=-1, kind="stable", order=None):
+        return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
+
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
