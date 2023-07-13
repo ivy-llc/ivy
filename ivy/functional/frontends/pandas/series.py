@@ -19,23 +19,27 @@ class Series:
         if index is None:
             if data_is_array or isinstance(data, (list, tuple)):
                 index = ivy.arange(len(data)).tolist()
+                if len(data) != len(index):
+                    raise ValueError(
+                        f"Length of values {len(data)} does not match length of index"
+                        f" {len(index)}"
+                    )
             elif isinstance(data, dict):
                 index = list(data.keys())
 
         if data_is_array:
-            if len(data) != len(index):
-                raise ValueError(
-                    f"Length of values {len(data)} does not match length of index"
-                    f" {len(index)}"
-                )
             self.data = data
             self.index = index
             self.array = data
 
-        elif isinstance(data, dict):
-            pass
+        if isinstance(data, dict):
+            self.index = list(data.keys())
+            self.data = list(data.values())
+            self.array = ivy.array(self.data)
         elif isinstance(data, (list, tuple)):
-            pass
+            self.index = index
+            self.data = data
+            self.array = ivy.array(data)
         elif isinstance(data, (int, float, str)):
             pass
 
