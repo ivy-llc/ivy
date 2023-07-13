@@ -1843,7 +1843,7 @@ def _searchsorted(draw):
     method_name="searchsorted",
     dtype_x_v_side_sorter=_searchsorted(),
 )
-def test_numpy_searchsorted(
+def test_jax_searchsorted(
     dtype_x_v_side_sorter,
     frontend,
     frontend_method_data,
