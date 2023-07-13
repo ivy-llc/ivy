@@ -1209,6 +1209,12 @@ def stft(
     boundary: Optional[str] = None,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if not isinstance(frame_step, int):
+        raise TypeError("frame_step must be an int.")
+
+    if not isinstance(n_fft, int):
+        raise TypeError("n_fft must be an int.")
+
     return tf.signal.stft(
         signal,
         n_fft,

@@ -2541,7 +2541,6 @@ def ifftn(
 @handle_out_argument
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
-@handle_exceptions
 def stft(
     signal: Union[ivy.Array, ivy.NativeArray],
     n_fft: Union[int, Tuple[int]],
@@ -2673,4 +2672,10 @@ def stft(
     )    
 
 
-stft.mixed_function = True   
+stft.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}    

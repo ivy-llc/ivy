@@ -878,7 +878,7 @@ def stft(
     normalized: Optional[bool] = False,
     detrend: Optional[Union[str, callable, bool]] = False,
     return_complex: Optional[bool] = True,
-    boundary: Optional[str] = None,
+    boundary: Optional[str] = 'zeros',
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(signal, int):

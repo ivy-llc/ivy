@@ -821,6 +821,13 @@ def stft(
     return_complex: Optional[bool] = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if axis is None:
+        axis = -1
+
+    window_length = min(nperseg, signal.shape[axis])
+    window = jnp.hanning(window_length)
+    signal = signal * window 
+
     if frame_step is None:
         frame_step = n_fft//4
 
@@ -835,6 +842,7 @@ def stft(
 
     if not isinstance(n_fft, tuple):
         raise TypeError("n_fft must be an int or tuple[int].")
+    
 
     return jax.scipy.signal.stft(
         signal,
