@@ -2,7 +2,6 @@
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
-
 @to_ivy_arrays_and_back
 def cond(pred, true_fun, false_fun, *operands, operand=None, linear=None):
     if operand is not None:
@@ -72,7 +71,7 @@ def scan(f, init, xs, length=None, reverse=False, unroll=1):
     carry = init
     for x in xs:
         for _ in range(unroll):
-            carry = f(carry, x)
-            ys.append(carry)
+            carry, y = f(carry, x)
+            ys.append(y)
 
-    return ivy.stack(ys)
+    return carry, ivy.stack(ys)

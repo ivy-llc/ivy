@@ -4,8 +4,6 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import pytest
-
 
 @handle_frontend_test(
     fn_tree="jax.lax.cond",
@@ -215,31 +213,26 @@ def test_jax_lax_while_loop(
         min_num_dims=1,
         min_dim_size=1,
     ),
-    unroll=st.just(1),    
+    unroll=st.sampled_from([1, 2, 3]),
+    reverse=st.booleans(),
 )
 def test_jax_lax_scan(
     *,
     dtype_and_x,
     unroll,
+    reverse,
     test_flags,
     on_device,
     fn_tree,
     frontend,
 ):
-    def _test_f(carry, x):
+    def _test_scan_f(carry, x):
         y = carry * x
         new_carry = x + y
         return new_carry, y
 
     input_dtype, x = dtype_and_x
-    length = len(x)
-    expected_carry = 0
-    expected_ys = []
-    carry = expected_carry
-    for _ in range(unroll):
-        for elem in x:
-            carry, y = _test_f(carry, elem)
-            expected_ys.append(y)
+    length = len(x[0])
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -247,10 +240,9 @@ def test_jax_lax_scan(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        f=_test_f,
-        init=expected_carry,
-        xs=x,
+        f=_test_scan_f,
+        init=x[0],
+        xs=x[0],
         length=length,
-        reverse=False,
-        unroll=unroll,
+        reverse=reverse,
     )

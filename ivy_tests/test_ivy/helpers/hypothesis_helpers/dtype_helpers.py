@@ -30,10 +30,12 @@ _dtype_kind_keys = {
     "bool",
 }
 
+
 def _get_fn_dtypes(framework, kind="valid"):
     return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework.backend][
         test_globals.CURRENT_DEVICE_STRIPPED
     ][kind]
+
 
 def _get_type_dict(framework, kind):
     if kind == "valid":
@@ -71,18 +73,12 @@ def _get_type_dict(framework, kind):
     else:
         raise RuntimeError("{} is an unknown kind!".format(kind))
 
+
 def make_json_pickable(s):
     s = s.replace("builtins.bfloat16", "ivy.bfloat16")
     s = s.replace("jax._src.device_array.reconstruct_device_array", "jax.numpy.array")
     return s
 
-# frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND(), kind)
-# if frontend_dtypes is not None:
-#     valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
-# else:
-#     # Handle the case when frontend_dtypes is None
-#     # Assign a default value or handle the scenario as needed
-#     valid_dtypes = set()  # or any other default value or error handling logic
 
 @st.composite
 def get_dtypes(
