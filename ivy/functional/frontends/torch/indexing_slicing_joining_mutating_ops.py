@@ -1,6 +1,9 @@
 # local
 import ivy
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
+)
 
 
 @to_ivy_arrays_and_back
@@ -83,15 +86,18 @@ def permute(input, dims):
 
 @to_ivy_arrays_and_back
 def reshape(input, shape):
+    if isinstance(shape, ivy.functional.frontends.torch.Size):
+        shape = tuple(shape)
     return ivy.reshape(input, shape)
 
 
+@numpy_to_torch_style_args
 @to_ivy_arrays_and_back
 def squeeze(input, dim=None):
     if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
             return input
-    return ivy.squeeze(input, dim)
+    return ivy.squeeze(input, axis=dim)
 
 
 @to_ivy_arrays_and_back
