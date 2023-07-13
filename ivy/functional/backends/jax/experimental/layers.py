@@ -277,6 +277,8 @@ def avg_pool1d(
 ) -> JaxArray:
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
+    elif data_format == "NCL":
+        x = jnp.transpose(x, (0, 2, 1))
 
     if isinstance(kernel, int):
         kernel = (kernel,)
@@ -306,6 +308,8 @@ def avg_pool1d(
         ceil_mode=ceil_mode,
     )
     if data_format == "NCW":
+        res = jnp.transpose(res, (0, 2, 1))
+    elif data_format == "NCL":
         res = jnp.transpose(res, (0, 2, 1))
     return res
 
