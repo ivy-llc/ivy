@@ -1440,6 +1440,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
 
 
 
+
 # Updated code with modifications
 # Placeholder comment
 modified_class = IvyWithGlobalProps
@@ -1455,9 +1456,4 @@ if (
     "ivy" in sys.modules.keys()
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
 ):
-    # Updated logic for ivy.with_backend internal compilation
-    sys.modules["ivy"].utils._importlib.import_cache[
-        __name__
-    ].__class__ = IvyWithGlobalProps
-else:
-    sys.modules[__name__].__class__ = IvyWithGlobalProps
+# Updated logic for ivy.with_backend internal compilation
