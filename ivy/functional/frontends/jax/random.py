@@ -283,24 +283,3 @@ def pareto(key, b, shape=None, dtype="float64"):
     e = -ivy.log(1 - uniform)
 
     return ivy.exp(e / b)
-
-
-@handle_jax_dtype
-@to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {
-        "0.3.14 and below": (
-            "float16",
-            "bfloat16",
-        )
-    },
-    "jax",
-)
-def orthogonal(key, n, shape=None, dtype= "float64"):
-  seed = _get_seed(key)
-  if shape is None:
-      shape = n.shape
-  z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-  q,r = ivy.qr(z)
-  d = ivy.diagonal(r, 0, -2, -1)
-  return ivy.matmul(q, ivy.expand_dims(ivy.divide(d, ivy.abs(d).astype(d.dtype)), [-2]))
