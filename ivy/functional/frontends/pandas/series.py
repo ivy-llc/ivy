@@ -1,14 +1,11 @@
 import ivy
 import numpy as np
 
+
 class Series:
-    def __init__(self,
-                 data,
-                 index=None,
-                 dtype=None,
-                 name=None,
-                 copy=False,
-                 fastpath=False):
+    def __init__(
+        self, data, index=None, dtype=None, name=None, copy=False, fastpath=False
+    ):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
 
@@ -27,7 +24,8 @@ class Series:
         if data_is_array:
             if len(data) != len(index):
                 raise ValueError(
-                    f"Length of values {len(data)} does not match length of index {len(index)}"
+                    f"Length of values {len(data)} does not match length of index"
+                    f" {len(index)}"
                 )
             self.data = data
             self.index = index
