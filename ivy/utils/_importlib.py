@@ -13,10 +13,14 @@ path_hooks = []
 # assumes they exist in sys.modules.
 MODULES_TO_SKIP = ["ivy.compiler"]
 
+IS_COMPILING_WITH_BACKEND = False
+
 
 class LocalIvyImporter:
     def __init__(self):
         self.finder = ast_helpers.IvyPathFinder()
+        global IS_COMPILING_WITH_BACKEND
+        IS_COMPILING_WITH_BACKEND = True
 
     def __enter__(self):
         sys.meta_path.insert(0, self.finder)
@@ -25,6 +29,8 @@ class LocalIvyImporter:
     def __exit__(self, *exc):
         path_hooks.remove(self.finder)
         sys.meta_path.remove(self.finder)
+        global IS_COMPILING_WITH_BACKEND
+        IS_COMPILING_WITH_BACKEND = False
 
 
 def _clear_cache():
