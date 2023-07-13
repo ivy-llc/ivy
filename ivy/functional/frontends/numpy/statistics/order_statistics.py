@@ -45,7 +45,8 @@ def ptp(a, axis=None, out=None, dtype=None, keepdims=False):
     x = ivy.max(a, axis=axis, keepdims=keepdims)
     y = ivy.min(a, axis=axis, keepdims=keepdims)
     ret = ivy.subtract(x, y)
-    return ret.astype(dtype, copy=False)
+    return ret.astype(a.dtype, copy=False)
+
 
 
 def nanpercentile(
