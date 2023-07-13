@@ -351,8 +351,8 @@ class _ContainerWithGeneral(ContainerBase):
         >>> y = x.is_array()
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self._static_is_array(
