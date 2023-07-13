@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.func_wrapper import with_supported_device_and_dtypes
 
 
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
@@ -22,6 +23,35 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
         )
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "bfloat16",
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "bfloat16",
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": (
+                "float16",
+                "float32",
+                "float64",
+            ),
+        },
+    },
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def max_pool1d(x, kernel_size, stride=None, padding=0):
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
