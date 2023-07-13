@@ -60,6 +60,30 @@ def test_jax_devicearray_property_shape(
 
 
 @st.composite
+def _transpose_helper(draw):
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+        )
+    )
+
+    _, data = dtype_x
+    x = data[0]
+    xT = np.transpose(x)
+    return x, xT
+
+
+@given(x_transpose=_transpose_helper())
+def test_jax_devicearray_property_T(x_transpose):
+    x, xT = x_transpose
+    x = DeviceArray(x)
+    assert np.array_equal(x.T, xT)
+
+
+@st.composite
 def _at_helper(draw):
     _, data, shape = draw(
         helpers.dtype_and_values(

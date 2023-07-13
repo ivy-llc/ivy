@@ -41,6 +41,10 @@ class DeviceArray:
     def at(self):
         return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.ivy_array)
 
+    @property
+    def T(self):
+        return self.ivy_array.T
+
     # Instance Methods #
     # ---------------- #
 
