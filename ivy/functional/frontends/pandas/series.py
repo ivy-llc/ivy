@@ -61,3 +61,7 @@ class Series:
         elif isinstance(self.orig_data, dict):
             ret = dict(zip(self.orig_data.keys(), ret))
         return ret
+
+    def abs(self):
+        return Series(ivy.abs(self.array), index=self.index, name=self.name)
+
