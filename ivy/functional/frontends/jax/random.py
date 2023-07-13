@@ -296,11 +296,10 @@ def pareto(key, b, shape=None, dtype="float64"):
     },
     "jax",
 )
-def orthogonal(key, n, shape=None, dtype= "float64"):
-  seed = _get_seed(key)
-  if shape is None:
-      shape = n.shape
-  z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-  q,r = ivy.qr(z)
-  d = ivy.diagonal(r, 0, -2, -1)
-  return ivy.matmul(q, ivy.expand_dims(ivy.divide(d, ivy.abs(d).astype(d.dtype)), [-2]))
+def maxwell(key, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    # generate uniform random numbers between 0 and 1
+    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    # applying inverse transform sampling
+    x = (z**2) * ivy.exp(-(z**2) / 2)
+    return x

@@ -8,7 +8,8 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# ToDo: Find solution around torch and paddle not running with uints 32, 64 and remove xfail fixture
+# ToDo: Find solution around torch and paddle not running with uints 32,
+#  64 and remove xfail fixture
 
 
 @st.composite
@@ -1195,7 +1196,7 @@ def test_jax_pareto(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.orthogonal",
+    fn_tree="jax.random.maxwell",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -1205,20 +1206,12 @@ def test_jax_pareto(
         min_dim_size=2,
         max_dim_size=2,
     ),
-     dtype_n=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
-        min_value=0,
-        max_value=3,
-        min_dim_size=0,
-        max_dim_size=1,
-    ),
+    shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("float", full=False),
-    shape=helpers.get_shape(allow_none=False, min_num_dims=1, min_dim_size=1)
 )
-def test_jax_orthogonal(
+def test_jax_maxwell(
     *,
     dtype_key,
-    dtype_n,
     shape,
     dtype,
     on_device,
@@ -1227,7 +1220,6 @@ def test_jax_orthogonal(
     test_flags,
 ):
     input_dtype, key = dtype_key
-    _,n = dtype_n
 
     def call():
         return helpers.test_frontend_function(
@@ -1238,7 +1230,6 @@ def test_jax_orthogonal(
             on_device=on_device,
             test_values=False,
             key=key[0],
-            n=n[0],
             shape=shape,
             dtype=dtype[0],
         )
@@ -1247,8 +1238,10 @@ def test_jax_orthogonal(
 
     if not ivy.exists(ret):
         return
+
     ret_np, ret_from_np = ret
-    if shape is not None:
-        assert ret_np.shape == shape
-    else:
-        assert ret_np.shape == b.shape
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
