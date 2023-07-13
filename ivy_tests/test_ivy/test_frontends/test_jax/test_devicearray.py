@@ -325,7 +325,7 @@ def test_jax_devicearray_cumprod(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="cumsum",
-    dtype_and_x=_get_castable_dtype()
+    dtype_and_x=_get_castable_dtype(),
 )
 def test_jax_devicearray_cumsum(
     dtype_and_x,
@@ -812,7 +812,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__pow__",
-    dtype_x_pow= helpers.dtype_and_values(
+    dtype_x_pow=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,

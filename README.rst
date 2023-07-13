@@ -294,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y), xs_grad_idxs=[[0]])
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -1551,6 +1551,12 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
+    # training hyperparams
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
@@ -1559,13 +1565,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
         device=device,
     )
     model_name = type(model).__name__.lower()
-    
-    
-    # training hyperparams
-    optimizer= ivy.Adam(1e-4)
-    batch_size = 64 
-    num_epochs = 20
-    num_classes = 10
     
     
     # training loop
@@ -1597,8 +1596,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])
