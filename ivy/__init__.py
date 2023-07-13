@@ -1448,4 +1448,4 @@ if (
         __name__
     ].__class__ = IvyWithGlobalProps
 else:
-    sys.modules[__name__].__class__= IvyWithGlobalProps
+    sys.modules[__name__].__class__ = IvyWithGlobalProps
