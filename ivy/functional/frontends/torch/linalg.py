@@ -355,3 +355,16 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
 
             return result, info
+@to_ivy_arrays_and_back
+def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
+    try:
+        matrix = ivy.cholesky(input, upper=upper, out=out)
+        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        return matrix, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            matrix = input * math.nan
+            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            return matrix, info

@@ -1223,3 +1223,30 @@ def test_torch_solve_ex(
         left=left,
         check_errors=check_errors,
     )
+@handle_frontend_test(
+    fn_tree="torch.linalg.cholesky_ex",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+    upper=st.booleans(),
+)
+def test_torch_cholesky_ex(
+    *,
+    dtype_and_x,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        input=x,
+        upper=upper,
+    )
