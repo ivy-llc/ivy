@@ -1851,7 +1851,6 @@ def dtype_array_query(
             max_size=len(shape),
         )
     )
-
     index = []
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
