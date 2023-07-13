@@ -11,9 +11,9 @@ from ivy.functional.frontends.numpy import (
 
 class matrix:
     def __init__(self, data, dtype=None, copy=True):
-        self._init_data(data, dtype)
+        self._init_data(data, dtype, copy)
 
-    def _init_data(self, data, dtype):
+    def _init_data(self, data, dtype, copy):
         if isinstance(data, str):
             self._process_str_data(data, dtype)
         elif isinstance(data, (list, ndarray)) or ivy.is_array(data):
@@ -21,7 +21,7 @@ class matrix:
                 data = data.ivy_array
             if ivy.is_array(data) and dtype is None:
                 dtype = data.dtype
-            data = ivy.array(data, dtype=dtype)
+            data = ivy.array(data, dtype=dtype, copy=copy)
             self._data = data
         else:
             raise ivy.utils.exceptions.IvyException(
