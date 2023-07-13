@@ -116,6 +116,8 @@ class DeviceArray:
             order=order,
         )
 
+    flatten = ravel
+
     def sort(self, axis=-1, order=None):
         return jax_frontend.numpy.sort(
             self,
