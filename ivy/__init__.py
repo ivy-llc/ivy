@@ -7,8 +7,9 @@ import numpy as np
 import sys
 import inspect
 import os
-import ivy.utils.backend.handler
 
+
+import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -421,8 +422,6 @@ class Shape:
         if self.rank not in (None, rank):
             raise ValueError("Shape %s must have rank %d" % (self, rank))
 
-    
-
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
@@ -433,13 +432,11 @@ class Shape:
         else:
             return Shape([Shape(None)] * rank)
 
-
     def with_rank(self, rank):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
             raise ValueError("Shape %s must have rank %d" % (self, rank))
-
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
@@ -924,6 +921,7 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
             general.show_func_wrapper_trace_mode_stack
@@ -1408,6 +1406,7 @@ GLOBAL_PROPS = [
     "shape_array_mode",
     "dynamic_backend",
     "precise_mode",
+    "soft_device_mode",
 ]
 
 
@@ -1440,4 +1439,13 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-sys.modules[__name__].__class__ = IvyWithGlobalProps
+if (
+    "ivy" in sys.modules.keys()
+    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
+):
+    # Required for ivy.with_backend internal compilation
+    sys.modules["ivy"].utils._importlib.import_cache[
+        __name__
+    ].__class__ = IvyWithGlobalProps
+else:
+    sys.modules[__name__].__class__ = IvyWithGlobalProps
