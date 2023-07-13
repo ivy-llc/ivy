@@ -344,6 +344,7 @@ def lerp(
 lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
     _are_suitable_types_for_torch_lerp(input, end, weight)
 )
+lerp.support_native_out = True
 
 
 def frexp(
