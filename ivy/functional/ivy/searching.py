@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 
 
@@ -25,6 +26,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -71,7 +73,8 @@ def argmax(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmax.html#signatures.searching_functions.argmax>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmax.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -129,6 +132,7 @@ def argmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -172,7 +176,8 @@ def argmin(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.argmin.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argmin.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -233,6 +238,7 @@ def argmin(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -275,7 +281,8 @@ def nonzero(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.nonzero.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.nonzero.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -372,6 +379,7 @@ def nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -404,7 +412,8 @@ def where(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.searching_functions.where.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.where.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -463,6 +472,7 @@ def where(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

@@ -4,12 +4,14 @@ from typing import Union, Optional, Tuple
 import ivy
 from ivy.utils.backend import current_backend
 from ivy.func_wrapper import (
+    handle_partial_mixed_function,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +20,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -58,6 +61,7 @@ def l1_normalize(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -95,8 +99,8 @@ def l2_normalize(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def batch_norm(
@@ -203,10 +207,21 @@ def batch_norm(
     return xnormalized, runningmean, runningvariance
 
 
+batch_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
-@handle_out_argument
 @inputs_to_ivy_arrays
 @handle_array_function
 def instance_norm(
@@ -321,10 +336,108 @@ def instance_norm(
     return (xnormalized, runningmean, runningvariance)
 
 
+instance_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def group_norm(
+    x: Union[ivy.NativeArray, ivy.Array],
+    num_groups: int = 1,
+    /,
+    *,
+    offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+    eps: Optional[float] = 1e-5,
+    data_format: Optional[str] = "NSC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Apply group normalization to the input array and returns the normalized input.
+
+    Parameters
+    ----------
+    x
+        Input array of default shape (N, *S, C), where N is the batch dimension,
+        *S corresponds to any number of spatial dimensions and
+         C corresponds to the channel dimension.
+    num_groups
+        number of groups to separate the channels into
+    offset
+        An offset array of size C. If present, will be added
+        to the normalized input.
+    scale
+        A scale array of size C. If present, the scale is
+        applied to the normalized input.
+    eps
+        A small float number to avoid dividing by 0.
+    data_format
+        The ordering of the dimensions in the input, one of "NSC" or "NCS",
+        where N is the batch dimension, S represents any number of spatial
+        dimensions and C is the channel dimension. Default is "NSC".
+    out
+        optional output arrays, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The normalized array.
+    """
+    xdims = ivy.get_num_dims(x)
+    if data_format == "NSC":
+        x = ivy.permute_dims(x, axes=(0, xdims - 1, *range(1, xdims - 1)))
+    N = x.shape[0]
+    C = x.shape[1]
+    S = ivy.to_scalar(ivy.prod(x.shape[2:])) if xdims > 2 else 1
+    assert C % num_groups == 0
+    x_ = ivy.reshape(x, [N, num_groups, C // num_groups, S])
+    mean = ivy.mean(x_, axis=(2, 3), keepdims=True)
+    var = ivy.var(x_, axis=(2, 3), keepdims=True)
+    x_normalized = (x_ - mean) / ivy.sqrt(var + eps)
+    x_normalized = ivy.reshape(x_normalized, x.shape)
+
+    if ivy.exists(scale):
+        scale = ivy.expand_dims(scale, axis=[0, *(range(2, xdims))])
+        x_normalized = x_normalized * scale
+
+    if ivy.exists(offset):
+        offset = ivy.expand_dims(offset, axis=[0, *(range(2, xdims))])
+        x_normalized = x_normalized + offset
+
+    if data_format == "NSC":
+        x_normalized = ivy.permute_dims(x_normalized, axes=(0, *range(2, xdims), 1))
+
+    if ivy.exists(out):
+        x_normalized = ivy.inplace_update(out, x_normalized)
+    return x_normalized
+
+
+group_norm.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

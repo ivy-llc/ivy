@@ -30,22 +30,13 @@ import ivy
     test_gradients=st.just(False),
 )
 def test_dirichlet(
-    *,
-    dtype_and_alpha,
-    size,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_alpha, size, seed, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, alpha = dtype_and_alpha
     assume("bfloat16" not in dtype)
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             test_flags=test_flags,
             test_values=False,
@@ -91,14 +82,12 @@ def test_beta(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
     test_flags,
 ):
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
@@ -133,20 +122,12 @@ def test_beta(
     test_gradients=st.just(False),
 )
 def test_gamma(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_alpha_beta, seed, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
@@ -173,12 +154,13 @@ def test_gamma(
     fn_tree="functional.ivy.experimental.poisson",
     dtype_and_lam=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=False),
-        min_value=0,
+        min_value=-2,
         max_value=5,
         min_num_dims=0,
     ),
     dtype=helpers.get_dtypes("float", full=False),
     seed=helpers.ints(min_value=0, max_value=100),
+    fill_value=helpers.floats(min_value=0, max_value=1),
     test_gradients=st.just(False),
 )
 def test_poisson(
@@ -186,17 +168,16 @@ def test_poisson(
     dtype_and_lam,
     dtype,
     seed,
+    fill_value,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     lam_dtype, lam = dtype_and_lam
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=lam_dtype,
             test_flags=test_flags,
             on_device=on_device,
@@ -207,6 +188,7 @@ def test_poisson(
             shape=None,
             dtype=dtype[0],
             seed=seed,
+            fill_value=fill_value,
         )
 
     ret, ret_gt = call()
@@ -232,14 +214,7 @@ def test_poisson(
     test_gradients=st.just(False),
 )
 def test_bernoulli(
-    *,
-    dtype_and_probs,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_probs, seed, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, probs = dtype_and_probs
     # torch doesn't support half precision on CPU
@@ -247,7 +222,6 @@ def test_bernoulli(
         not ("torch" in str(backend_fw) and "float16" in dtype and on_device == "cpu")
     )
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,

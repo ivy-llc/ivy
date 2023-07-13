@@ -28,6 +28,9 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     return DeviceArray(ret)
 
 
+ndarray = array
+
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
@@ -144,7 +147,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -169,7 +172,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -236,9 +239,7 @@ def compress(condition, a, *, axis=None, out=None):
         axis = 0
     else:
         arr = ivy.moveaxis(a, axis, 0)
-
-    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
-    if any(extra):
+    if condition_arr.shape[0] > arr.shape[0]:
         raise ivy.utils.exceptions.IvyException(
             "Condition contains entries that are out of bounds"
         )

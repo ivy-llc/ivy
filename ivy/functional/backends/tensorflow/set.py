@@ -4,10 +4,9 @@ from typing import Tuple, Union, Optional
 from collections import namedtuple
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
-import ivy.functional.backends.tensorflow as tf_backend
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def unique_all(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -59,11 +58,8 @@ def unique_all(
     if by_value:
         values_ = tf.experimental.numpy.moveaxis(values, axis, 0)
         values_ = tf.reshape(values_, (values_.shape[0], -1))
-        sort_idx = tf_backend.lexsort(
-            tf.stack(
-                tuple(values_[:, i] for i in range(values_.shape[1])),
-                axis=0,
-            )
+        sort_idx = tf.stack(
+            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
         )
         sort_idx = tf.cast(sort_idx, tf.int32)
         values = tf.gather(values, sort_idx, axis=axis)
@@ -82,7 +78,7 @@ def unique_all(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def unique_counts(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -94,7 +90,7 @@ def unique_counts(
     return Results(v, c)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def unique_inverse(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -111,7 +107,7 @@ def unique_inverse(
     return Results(values, inverse_indices)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def unique_values(
     x: Union[tf.Tensor, tf.Variable],
     /,
