@@ -70,6 +70,9 @@ class DeviceArray:
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
 
+    def conjugate(self, /):
+        return jax_frontend.numpy.conjugate(self._ivy_array)
+
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
         return jax_frontend.numpy.mean(
             self._ivy_array,
@@ -109,12 +112,11 @@ class DeviceArray:
             order=order,
         )
 
-    def sort(self, axis=-1):
-        out_arr = jax_frontend.numpy.zeros_like(self)
+    def sort(self, axis=-1, order=None):
         return jax_frontend.numpy.sort(
             self,
             axis=axis,
-            out=out_arr,
+            order=order,
         )
 
     def __add__(self, other):
@@ -240,3 +242,6 @@ class DeviceArray:
             raise TypeError("iteration over a 0-d devicearray not supported")
         for i in range(self.shape[0]):
             yield self[i]
+
+    def round(self, decimals=0):
+        return jax_frontend.numpy.round(self, decimals)
