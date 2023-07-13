@@ -657,6 +657,7 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
@@ -725,7 +726,7 @@ def reduce_window(
         padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
-        init_value,
+        jnp.array(init_value).astype(operand.dtype),
         computation,
         window_dimensions,
         window_strides,
