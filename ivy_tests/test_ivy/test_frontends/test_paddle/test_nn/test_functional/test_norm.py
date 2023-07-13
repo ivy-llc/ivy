@@ -57,28 +57,6 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             safety_factor_scale="log",
         )
     )
-    _, offset = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=shape3,
-            min_value=-1001,
-            max_value=999,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
-        )
-    )
-    _, scale = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-            shape=shape4,
-            min_value=-1001,
-            max_value=999,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
-        )
-    )
     eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
     momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
     return (
@@ -86,8 +64,6 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         x[0],
         mean[0],
         variance[0],
-        offset[0],
-        scale[0],
         eps,
         momentum,
         data_format,
@@ -97,29 +73,27 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.instance_norm",
     data=_instance_and_batch_norm_helper(min_dims=3),
-    training=st.booleans(),
+    use_input_stats=st.booleans(),
 )
 def test_paddle_instance_norm(
         *,
         data,
-        training,
+        use_input_stats,
         frontend,
         test_flags,
         fn_tree,
 ):
-    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
+    x_dtype, x, running_mean, running_var, eps, momentum, data_format = data
     helpers.test_frontend_function(
         test_flags=test_flags,
         fn_tree=fn_tree,
         frontend=frontend,
         input_dtypes=x_dtype,
         x=x,
-        mean=mean,
-        variance=variance,
-        offset=offset,
-        scale=scale,
+        running_mean=running_mean,
+        running_var=running_var,
         eps=eps,
         momentum=momentum,
         data_format=data_format,
-        training=training,
+        use_input_stats=use_input_stats,
     )
