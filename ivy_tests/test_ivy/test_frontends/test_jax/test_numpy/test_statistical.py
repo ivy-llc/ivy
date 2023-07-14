@@ -235,32 +235,20 @@ def test_jax_bincount(
 @handle_frontend_test(
     fn_tree="jax.numpy.cumprod",
     # aliases=["jax.numpy.cumproduct"], deprecated since 0.4.12
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("float", none=True, full=False),
+    dtype_x_axis=_get_castable_dtype(),
     test_with_out=st.just(False),
 )
 def test_jax_cumprod(
     *,
     dtype_x_axis,
-    dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -268,46 +256,34 @@ def test_jax_cumprod(
         rtol=1e-2,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
 # cumsum
 @handle_frontend_test(
     fn_tree="jax.numpy.cumsum",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    dtype_x_axis=_get_castable_dtype(),
     test_with_out=st.just(False),
 )
 def test_jax_cumsum(
     *,
     dtype_x_axis,
-    dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 

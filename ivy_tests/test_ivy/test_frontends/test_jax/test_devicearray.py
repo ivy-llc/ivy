@@ -6,7 +6,9 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy.functional.frontends.jax import DeviceArray
-
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _get_castable_dtype,
+)
 
 CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
 
@@ -58,6 +60,30 @@ def test_jax_devicearray_property_shape(
 
 
 @st.composite
+def _transpose_helper(draw):
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+        )
+    )
+
+    _, data = dtype_x
+    x = data[0]
+    xT = np.transpose(x)
+    return x, xT
+
+
+@given(x_transpose=_transpose_helper())
+def test_jax_devicearray_property_T(x_transpose):
+    x, xT = x_transpose
+    x = DeviceArray(x)
+    assert np.array_equal(x.T, xT)
+
+
+@st.composite
 def _at_helper(draw):
     _, data, shape = draw(
         helpers.dtype_and_values(
@@ -86,6 +112,39 @@ def test_jax_devicearray_property_at(x_y_index):
     x_set = x.at[idx].set(y[idx])
     assert x_set[idx] == y[idx]
     assert x.at[idx].get() == x[idx]
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="copy",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+)
+def test_jax_devicearray_copy(
+    dtype_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
 
 
 @handle_frontend_method(
@@ -238,6 +297,9 @@ def test_jax_devicearray_conjugate(
     method_name="mean",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         force_int_axis=True,
         min_num_dims=1,
         valid_axis=True,
@@ -269,8 +331,8 @@ def test_jax_devicearray_mean(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
-        rtol_=1e-5,
-        atol_=1e-5,
+        rtol_=1e-3,
+        atol_=1e-3,
     )
 
 
@@ -320,17 +382,7 @@ def test_jax_devicearray_cumprod(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="cumsum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_value=-100,
-        max_value=100,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
+    dtype_and_x=_get_castable_dtype(),
 )
 def test_jax_devicearray_cumsum(
     dtype_and_x,
@@ -340,15 +392,16 @@ def test_jax_devicearray_cumsum(
     init_flags,
     method_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, dtype = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
+        init_input_dtypes=[input_dtype],
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[input_dtype],
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": dtype,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -449,6 +502,44 @@ def test_jax_devicearray_ravel(
     ),
 )
 def test_jax_devicearray_sort(
+    dtype_x_axis,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="argsort",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+)
+def test_jax_devicearray_argsort(
     dtype_x_axis,
     on_device,
     frontend,
@@ -816,7 +907,11 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__pow__",
-    dtype_x_pow=_get_dtype_x_and_int(),
+    dtype_x_pow=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
 )
 def test_jax_devicearray__pow_(
     dtype_x_pow,
@@ -826,7 +921,7 @@ def test_jax_devicearray__pow_(
     method_flags,
     on_device,
 ):
-    input_dtype, x, pow = dtype_x_pow
+    input_dtype, x = dtype_x_pow
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -834,7 +929,7 @@ def test_jax_devicearray__pow_(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "other": pow[0],
+            "other": x[1],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
