@@ -457,15 +457,13 @@ def test_paddle_broadcast_to(
     fn_tree="paddle.gather",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=6,
     ),
-    index=st.integers(min_value=0, max_value=10),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_paddle_gather(
     *,
     dtype_and_x,
-    index,
+    dtype,
     on_device,
     fn_tree,
     frontend,
@@ -478,6 +476,6 @@ def test_paddle_gather(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        index=index,
+        x=x[0],
+        dtype=dtype[0],
     )
