@@ -2807,8 +2807,6 @@ def test_numpy_instance_array_wrap__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
     ),
-)
-@given(
     indices=st.one_of(
         st.integers(),
         st.lists(st.integers()),
@@ -2817,6 +2815,7 @@ def test_numpy_instance_array_wrap__(
     ),
     axis=st.one_of(st.none(), st.integers()),
     mode=st.one_of(st.just("raise"), st.just("wrap"), st.just("clip")),
+    out=st.none(),
 )
 def test_numpy_instance_take(
     dtype_and_x,
@@ -2827,9 +2826,9 @@ def test_numpy_instance_take(
     indices,
     axis,
     mode,
+    out,
 ):
     input_dtypes, xs = dtype_and_x
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -2839,7 +2838,7 @@ def test_numpy_instance_take(
         method_all_as_kwargs_np={
             "indices": indices,
             "axis": axis,
-            "out": None,
+            "out": out,
             "mode": mode,
         },
         frontend=frontend,
