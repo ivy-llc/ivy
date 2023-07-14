@@ -468,3 +468,38 @@ def test_jax_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
         return_counts=return_counts,
         axis=axis,
     )
+
+
+# argpartition
+@handle_frontend_test(
+    fn_tree="jax.numpy.argpartition",
+    dtype_x_kth_axis=helpers.dtype_values_kth_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+        min_kth=-10,
+        max_kth=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_argpartition(
+    *,
+    dtype_x_kth_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, kth, axis = dtype_x_kth_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        kth=kth,
+        axis=axis,
+    )

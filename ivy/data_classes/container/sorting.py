@@ -438,6 +438,160 @@ class _ContainerWithSorting(ContainerBase):
             out=out,
         )
 
+
+@staticmethod
+def _static_argpartition(
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    kth: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+    /,
+    *,
+    axis: int = -1,
+    kind: str = "introselect",
+    order: Optional[Union[str, List[str]]] = None,
+    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+    to_apply: bool = True,
+    prune_unapplied: bool = False,
+    map_sequences: bool = False,
+    out: Optional[ivy.Container] = None,
+) -> ivy.Container:
+    """
+    ivy.Container static method variant of numpy.argpartition.
+
+    Perform an indirect partition along the given axis using the algorithm specified by the kind keyword.
+    It returns an array of indices of the same shape as `x` that index data along the given axis in partitioned order.
+
+    Parameters
+    ----------
+    x : Union[ivy.Array, ivy.NativeArray, ivy.Container]
+        Input array or container.
+    kth : Union[int, ivy.Array, ivy.NativeArray, ivy.Container]
+        Element index to partition by.
+    axis : int, optional
+        Axis along which to sort. If not provided, the last axis is used. Default is -1.
+    kind : str, optional
+        Algorithm used to select the partition. Default is 'introselect'.
+    order : Optional[Union[str, List[str]]], optional
+        If `x` is a structured array or a container of structured arrays, this parameter specifies the field(s) to use for sorting.
+        Default is None.
+    key_chains : Optional[Union[List[str], Dict[str, str]]], optional
+        The key-chains to apply or not apply the method to. Default is None.
+    to_apply : bool, optional
+        If True, the method will be applied to key_chains, otherwise key_chains will be skipped. Default is True.
+    prune_unapplied : bool, optional
+        Whether to prune key_chains for which the function was not applied. Default is False.
+    map_sequences : bool, optional
+        Whether to also map the method to sequences (lists, tuples). Default is False.
+    out : Optional[ivy.Container], optional
+        Optional output container, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ivy.Container
+        A container containing the indices of `x` that index data along the given axis in partitioned order.
+
+    Examples
+    --------
+    With ivy.Container input:
+
+    >>> x = ivy.Container(a=ivy.array([3, 4, 2, 1]),
+    ...                   b=ivy.array([[9, 5], [7, 8], [2, 4], [1, 6]]))
+    >>> kth = ivy.Container(a=2, b=1)
+    >>> y = ivy.Container._static_argpartition(x, kth, axis=-1)
+    >>> print(y)
+    {
+        a: ivy.array([3, 2, 1, 0]),
+        b: ivy.array([[4, 3], [2, 0], [0, 2], [1, 1]])
+    }
+    """
+    return ContainerBase.cont_multi_map_in_function(
+        "argpartition",
+        x,
+        kth,
+        axis=axis,
+        kind=kind,
+        order=order,
+        key_chains=key_chains,
+        to_apply=to_apply,
+        prune_unapplied=prune_unapplied,
+        map_sequences=map_sequences,
+        out=out,
+    )
+
+
+def argpartition(
+    self: ivy.Container,
+    kth: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+    /,
+    *,
+    axis: int = -1,
+    kind: str = "introselect",
+    order: Optional[Union[str, List[str]]] = None,
+    key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+    to_apply: bool = True,
+    prune_unapplied: bool = False,
+    map_sequences: bool = False,
+    out: Optional[ivy.Container] = None,
+) -> ivy.Container:
+    """
+    ivy.Container instance method variant of numpy.argpartition.
+
+    Perform an indirect partition along the given axis using the algorithm specified by the kind keyword.
+    It returns an array of indices of the same shape as `self` that index data along the given axis in partitioned order.
+
+    Parameters
+    ----------
+    self : ivy.Container
+        Input array or container.
+    kth : Union[int, ivy.Array, ivy.NativeArray, ivy.Container]
+        Element index to partition by.
+    axis : int, optional
+        Axis along which to sort. If not provided, the last axis is used. Default is -1.
+    kind : str, optional
+        Algorithm used to select the partition. Default is 'introselect'.
+    order : Optional[Union[str, List[str]]], optional
+        If `self` is a structured array or a container of structured arrays, this parameter specifies the field(s) to use for sorting.
+        Default is None.
+    key_chains : Optional[Union[List[str], Dict[str, str]]], optional
+        The key-chains to apply or not apply the method to. Default is None.
+    to_apply : bool, optional
+        If True, the method will be applied to key_chains, otherwise key_chains will be skipped. Default is True.
+    prune_unapplied : bool, optional
+        Whether to prune key_chains for which the function was not applied. Default is False.
+    map_sequences : bool, optional
+        Whether to also map the method to sequences (lists, tuples). Default is False.
+    out : Optional[ivy.Container], optional
+        Optional output container, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ivy.Container
+        A container containing the indices of `self` that index data along the given axis in partitioned order.
+
+    Examples
+    --------
+    >>> x = ivy.Container(a=ivy.array([3, 4, 2, 1]),
+    ...                   b=ivy.array([[9, 5], [7, 8], [2, 4], [1, 6]]))
+    >>> kth = ivy.Container(a=2, b=1)
+    >>> y = x.argpartition(kth, axis=-1)
+    >>> print(y)
+    {
+        a: ivy.array([3, 2, 1, 0]),
+        b: ivy.array([[4, 3], [2, 0], [0, 2], [1, 1]])
+    }
+    """
+    return self._static_argpartition(
+        self,
+        kth,
+        axis=axis,
+        kind=kind,
+        order=order,
+        key_chains=key_chains,
+        to_apply=to_apply,
+        prune_unapplied=prune_unapplied,
+        map_sequences=map_sequences,
+        out=out,
+    )
+
     @staticmethod
     def _static_searchsorted(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],

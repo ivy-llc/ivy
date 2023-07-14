@@ -61,6 +61,18 @@ def msort(
 msort.support_native_out = True
 
 
+# argpartition
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
+def argpartition(
+    x: torch.Tensor,
+    /,
+    kth: int,
+    *,
+    axis: int = -1,
+) -> torch.Tensor:
+    return torch.argpartition(x, kth=kth, dim=axis)
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: torch.Tensor,

@@ -363,3 +363,108 @@ def searchsorted(
         out=out,
         ret_dtype=ret_dtype,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def argpartition(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kth: Union[int, List[int]],
+    /,
+    *,
+    axis: int = -1,
+    kind: Optional[str] = "introselect",
+    order: Optional[Union[str, List[str]]] = None,
+) -> ivy.Array:
+    """
+    Perform an indirect partition along the given axis using the algorithm specified by
+    the `kind` keyword. It returns an array of indices of the same shape as `x` that
+    index data along the given axis in partitioned order.
+
+    Parameters
+    ----------
+    x
+        input array.
+    kth
+        Element indices to partition by. The k-th element will be in its final
+        sorted position and all smaller elements will be moved before it and all
+        larger elements behind it. The order of all elements in the partitions is
+        undefined. If provided with a list or array of k-th it partitions along
+        all dimensions.
+    axis
+        axis along which to sort. If set to ``-1``, the function must sort along
+        the last axis. Default: ``-1``.
+    kind
+        Specifies the algorithm used to perform the partition:
+            * 'introselect': Select the algorithm to use depending on the size
+              of the input and the number of partitions. Performs an intro sort
+              on each partition independently.
+            * 'quickselect': Select the algorithm to use depending on the size
+              of the input and the number of partitions. Performs a quick sort
+              on each partition independently.
+        Default: 'introselect'.
+    order
+        When `x` is a structured array, this parameter specifies the field(s)
+        to use for sorting. It can be a string or a list of strings specifying
+        the field(s) to order by. Default: ``None``.
+
+    Returns
+    -------
+    ret
+        An array of indices that index the data in `x` along the given `axis` in
+        partitioned order.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+    the `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.argpartition.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([3, 4, 2, 1])
+    >>> y = ivy.argpartition(x, kth=2)
+    >>> print(y)
+    ivy.array([2, 3, 0, 1])
+
+    >>> x = ivy.array([[1, 4], [3, 1]])
+    >>> y = ivy.argpartition(x, kth=1, axis=0)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0]])
+
+    >>> x = ivy.array([[1, 4], [3, 1]])
+    >>> y = ivy.argpartition(x, kth=0, axis=1)
+    >>> print(y)
+    ivy.array([[0, 1], [1, 0]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([5, 1, 3]), b=ivy.array([[0, 3], [3, 2]]))
+    >>> y = ivy.argpartition(x, kth=[1, 0])
+    >>> print(y)
+    {
+        a: ivy.array([1, 2, 0]),
+        b: ivy.array([[0, 1], [1, 0]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[3.5, 5], [2.4, 1]]))
+    >>> y = ivy.argpartition(x, kth=0, axis=1)
+    >>> print(y)
+    {
+        a: ivy.array([[0, 1], [1, 0]])
+    }
+    """
+    return ivy.current_backend(x).argpartition(
+        x, kth=kth, axis=axis, kind=kind, order=order
+    )

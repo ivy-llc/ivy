@@ -62,6 +62,39 @@ def msort(a):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.4.13 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def argpartition(
+    a,
+    kth,
+    axis=-1,
+    kind="stable",
+    order=None,
+) -> ivy.Array:
+    if kind != "stable":
+        logging.warning(
+            "'kind' argument to argpartition is ignored; only 'stable' partitions are"
+            " supported."
+        )
+    if order is not None:
+        raise ivy.utils.exceptions.IvyError(
+            "'order' argument to argpartition is not supported."
+        )
+
+    return ivy.argpartition(a, kth, axis=axis)
+
+
+argpartition.support_native_out = True
+
+
+@to_ivy_arrays_and_back
 def nonzero(a, *, size=None, fill_value=None):
     return ivy.nonzero(a, size=size, fill_value=fill_value)
 

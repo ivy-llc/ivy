@@ -61,6 +61,22 @@ def msort(
     return tf.sort(a, axis=0)
 
 
+# argpartition
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def argpartition(
+    x: paddle.Tensor,
+    /,
+    kth: Union[int, paddle.Tensor],
+    *,
+    axis: int = -1,
+    order: Optional[str] = None,
+) -> paddle.Tensor:
+    return paddle.argsort(x, axis=axis).argsort(axis=axis)
+
+
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def searchsorted(
     x: Union[tf.Tensor, tf.Variable],

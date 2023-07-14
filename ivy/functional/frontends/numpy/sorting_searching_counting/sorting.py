@@ -26,6 +26,30 @@ def msort(a):
 
 
 @to_ivy_arrays_and_back
+def argpartition(a, kth, axis=-1, kind="introselect", order=None):
+    sorted_indices = ivy.argsort(a, axis=axis)
+    partitions = []
+    for k in kth:
+        partition_indices = sorted_indices.copy()
+        if len(a.shape) == 1:
+            partition_indices[a <= a[k]] = -1
+            partition_indices[ivy.argwhere(partition_indices == -1)] = k
+        else:
+            partition_indices[
+                ivy.all(a <= ivy.expand_dims(a[k], axis=axis), axis=axis)
+            ] = -1
+            partition_indices[
+                ivy.where(
+                    partition_indices == -1,
+                    ivy.expand_dims(k, axis=axis),
+                    partition_indices,
+                )
+            ]
+        partitions.append(partition_indices)
+    return ivy.stack(partitions, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def sort_complex(a):
     return ivy.sort(a)
 

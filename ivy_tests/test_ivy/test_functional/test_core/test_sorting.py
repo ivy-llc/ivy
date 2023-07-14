@@ -159,7 +159,7 @@ def test_searchsorted(
     test_flags,
     backend_fw,
     fn_name,
-    on_device
+    on_device,
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
@@ -180,4 +180,38 @@ def test_searchsorted(
         side=side,
         sorter=sorter,
         ret_dtype=ret_dtype[0],
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.argpartition",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    k=st.integers(),
+    test_gradients=st.just(False),
+)
+def test_argpartition(
+    *,
+    dtype_x_axis,
+    k,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        k=k,
     )

@@ -762,3 +762,74 @@ def test_torch_topk(
         sorted=sorted,
         test_values=False,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.argpartition",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    k=st.integers(),
+)
+def test_torch_argpartition(
+    *,
+    dtype_input_axis,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dim=axis,
+        k=k,
+    )
+
+
+# argpartition
+@handle_frontend_test(
+    fn_tree="torch.argpartition",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    k=st.integers(),
+)
+def test_torch_argpartition(
+    *,
+    dtype_input_axis,
+    k,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        dim=axis,
+        k=k,
+    )

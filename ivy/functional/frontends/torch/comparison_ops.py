@@ -254,6 +254,33 @@ def msort(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def argpartition(input, kth, axis=-1, kind="introselect", order=None):
+    if axis is None:
+        input = ivy.flatten(input)
+        axis = 0
+    sorted_indices = ivy.argsort(input, axis=axis, kind=kind, order=order)
+    partitions = []
+    for k in kth:
+        partition_indices = sorted_indices.copy()
+        if len(input.shape) == 1:
+            partition_indices[input <= input[k]] = -1
+            partition_indices[ivy.argwhere(partition_indices == -1)] = k
+        else:
+            partition_indices[
+                ivy.all(input <= ivy.expand_dims(input[k], axis=axis), axis=axis)
+            ] = -1
+            partition_indices[
+                ivy.where(
+                    partition_indices == -1,
+                    ivy.expand_dims(k, axis=axis),
+                    partition_indices,
+                )
+            ]
+        partitions.append(partition_indices)
+    return ivy.stack(partitions, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def maximum(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.maximum(input, other, out=out)

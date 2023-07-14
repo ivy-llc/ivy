@@ -88,3 +88,16 @@ def msort(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.sort(a, axis=0, kind="mergesort")
+
+
+def argpartition(
+    x: JaxArray,
+    /,
+    kth: Union[int, JaxArray],
+    *,
+    axis: int = -1,
+    kind: str = "introselect",
+    order: Optional[Union[str, List[str]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.argpartition(x, kth, axis=axis, kind=kind, order=order)

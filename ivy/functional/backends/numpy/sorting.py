@@ -52,6 +52,20 @@ def msort(
 msort.support_native_out = False
 
 
+# argpartition
+def argpartition(
+    x: np.ndarray,
+    /,
+    kth: Union[int, np.ndarray],
+    *,
+    axis: int = -1,
+    kind: str = "introselect",
+    order: Optional[Union[str, List[str]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.argpartition(x, kth, axis=axis, kind=kind, order=order, out=out)
+
+
 def searchsorted(
     x: np.ndarray,
     v: np.ndarray,
