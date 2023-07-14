@@ -327,8 +327,12 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and ensure the order
-    array_list = [arr for arr in array_list if arr.__dict__]
+    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    array_list = [
+        arr
+        for arr in array_list
+        if arr.__dict__ and arr.backend == ivy.current_backend_str()
+    ]
     arr_ids = [id(item.data) for item in array_list]
     new_objs = {k: v for k, v in zip(arr_ids, array_list)}
     new_objs = list(new_objs.values())
@@ -442,9 +446,9 @@ def set_backend(backend: str, dynamic: bool = False):
             backend = importlib.import_module(_backend_dict[backend])
             for fw in reversed(temp_stack):
                 backend_stack.append(fw)
-        if backend.current_backend_str() == "numpy":
+        if ivy.current_backend_str() == "numpy":
             ivy.set_default_device("cpu")
-        elif backend.current_backend_str() == "jax":
+        elif ivy.current_backend_str() == "jax":
             ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
