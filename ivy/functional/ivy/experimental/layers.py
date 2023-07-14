@@ -1665,21 +1665,33 @@ def area_interpolate(x, dims, size, scale):
     return ret
 
 
-def _interpolate_with_kernel(
-    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
-):
-    spatial_dims = [2 + i for i in range(dims)]
+def get_interpolate_kernel(mode):
     kernel_func = _triangle_kernel
-    equation = generate_einsum_equation(dims)
-    if mode == "bicubic":
-        return _upsample_bicubic2d_default(x, size, align_corners)
     if mode == "bicubic_tensorflow":
         kernel_func = lambda inputs: _cubic_kernel(inputs)
     elif mode == "lanczos3":
         kernel_func = lambda inputs: _lanczos_kernel(3, inputs)
     elif mode == "lanczos5":
         kernel_func = lambda inputs: _lanczos_kernel(5, inputs)
+    return kernel_func
 
+
+def generate_einsum_equation(dim):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    input_indices = alphabet[: dim + 2]
+    output_indices = [alphabet[2 + i] + alphabet[2 + dim + i] for i in range(dim)]
+    contraction_indices = ",".join([input_indices, *output_indices])
+    output = input_indices[:2] + "".join([output[-1] for output in output_indices])
+    einsum_string = contraction_indices + "->" + output
+    return einsum_string
+
+
+def _interpolate_with_kernel(
+    x, dims, size, scale, input_shape, align_corners, antialias, scale_factor, mode
+):
+    spatial_dims = [2 + i for i in range(dims)]
+    equation = generate_einsum_equation(dims)
+    kernel_func = get_interpolate_kernel(mode)
     output_shape = tuple(input_shape[:2]) + size
     operands = []
     for i, d in enumerate(spatial_dims):
@@ -1696,16 +1708,6 @@ def _interpolate_with_kernel(
         ).astype(x.dtype)
         operands.append(w)
     return ivy.einsum(equation, x, *operands)
-
-
-def generate_einsum_equation(dim):
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
-    input_indices = alphabet[: dim + 2]
-    output_indices = [alphabet[2 + i] + alphabet[2 + dim + i] for i in range(dim)]
-    contraction_indices = ",".join([input_indices, *output_indices])
-    output = input_indices[:2] + "".join([output[-1] for output in output_indices])
-    einsum_string = contraction_indices + "->" + output
-    return einsum_string
 
 
 @handle_exceptions
@@ -1808,7 +1810,6 @@ def interpolate(
         "bilinear",
         "trilinear",
         "nd",
-        "bicubic",
         "bicubic_tensorflow",
         "lanczos3",
         "lanczos5",
@@ -1824,6 +1825,8 @@ def interpolate(
             scale_factor,
             mode,
         )
+    elif mode == "bicubic":
+        return _upsample_bicubic2d_default(x, size, align_corners)
     elif mode in ["nearest-exact", "nearest"]:
         ret = nearest_interpolate(x, dims, size, input_shape, mode == "nearest-exact")
     elif mode == "area":
@@ -2568,3 +2571,84 @@ def ifftn(
             [-0.48472244+0.30233797j]])
     """
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+# @inputs_to_ivy_arrays
+@to_native_arrays_and_back
+def rfftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
+    *,
+    norm: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the N-dimensional discrete Fourier Transform for real input.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array, taken to be real.
+    s : sequence of ints, optional
+        Shape (length along each transformed axis) to use from the input.
+        (s[0] refers to axis 0, s[1] to axis 1, etc.). The final element of s
+        corresponds to n for rfft(x, n), while for the remaining axes, it
+        corresponds to n for fft(x, n). Along any axis, if the given shape is
+        smaller than that of the input, the input is cropped. If it is larger,
+        the input is padded with zeros. If s is not given, the shape of the
+        input along the axes specified by axes is used.
+    axes : sequence of ints, optional
+        Axes over which to compute the FFT. If not given, the last len(s) axes
+        are used, or all axes if s is also not specified.
+    norm : {"backward", "ortho", "forward"}, optional
+        Normalization mode. Default is "backward". Indicates which direction of
+        the forward/backward pair of transforms is scaled and with what
+        normalization factor.
+    out : array_like, optional
+        Optional output array to store the result of the computation. The shape
+        and dtype of this array must match the expected output.
+
+    Returns
+    -------
+    out : complex ndarray
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes or by a combination of s and a, as explained in the parameters
+        section above. The length of the last axis transformed will be
+        s[-1] // 2 + 1, while the remaining transformed axes will have lengths
+        according to s, or unchanged from the input.
+
+    Raises
+    ------
+    ValueError
+        If s and axes have different lengths.
+    IndexError
+        If an element of axes is larger than the number of axes of a.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x)
+    >>> print(result)
+    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
+    >>> print(result)
+    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
+     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
+    """
+    if norm is None:
+        norm = "backward"
+
+    if axes is None:
+        axes = list(range(x.ndim - len(s), x.ndim))
+    elif s is None:
+        s = [x.shape[axis] for axis in axes]
+    elif len(s) != len(axes):
+        raise ValueError("s and axes must have the same length.")
+
+    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
