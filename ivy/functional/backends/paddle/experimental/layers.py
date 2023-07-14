@@ -379,8 +379,11 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
 
@@ -394,3 +397,30 @@ def ifftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.ifftn(x, s, axes, norm)
+
+
+# @with_unsupported_dtypes(
+# {"0.4.13 and below": ("float32",
+# "complex")}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "float32",
+                "float64",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def rfftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.fft.rfftn(x, s, axes, norm)
+    return result.astype("complex128")
