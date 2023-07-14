@@ -5,6 +5,10 @@ from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
+@to_ivy_arrays_and_back
+def multi_dot(a):
+    return ivy.multi_dot(a)
+
 
 @to_ivy_arrays_and_back
 def inv(a):
