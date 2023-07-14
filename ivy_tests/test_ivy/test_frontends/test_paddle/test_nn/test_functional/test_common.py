@@ -2,6 +2,7 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linear_functions import (
@@ -207,6 +208,7 @@ def test_linear(
     test_flags,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
+    weight = ivy.swapaxes(weight, -1, -2)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
