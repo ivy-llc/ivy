@@ -143,26 +143,26 @@ def inv(
     adjoint: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if torch.linalg.det == 0:
-        ret = x
-        if ivy.exists(out):
-            return ivy.inplace_update(out, ret)
+    if adjoint:
+        if x.dim() < 2:
+            raise ValueError("Input must be at least 2D")
+        x_adj = x.transpose(-2, -1).conj()
+        ret = torch.linalg.inv(x_adj)
     else:
-        if adjoint is False:
-            ret = torch.inverse(x, out=out)
-            return ret
-        else:
-            x = torch.t(x)
-            ret = torch.inverse(x, out=out)
-            if ivy.exists(out):
-                return ivy.inplace_update(out, ret)
-            return ret
+        ret = torch.linalg.inv(x)
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+
+    return ret
 
 
 inv.support_native_out = True
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: torch.Tensor,
     x2: torch.Tensor,
@@ -278,7 +278,7 @@ def matrix_transpose(
     x: torch.Tensor, /, *, conjugate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     if conjugate:
-        torch.conj(x)
+        x = torch.conj(x)
     return torch.swapaxes(x, -1, -2)
 
 
@@ -313,6 +313,7 @@ def pinv(
 pinv.support_native_out = True
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
 def tensorsolve(
     x1: torch.Tensor,
     x2: torch.Tensor,
