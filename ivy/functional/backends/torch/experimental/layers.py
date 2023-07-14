@@ -661,6 +661,15 @@ def fft(
     return torch.fft.fft(x, n, dim, norm, out=out).to(dtype=out_dtype)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.0.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def dropout(
     x: torch.Tensor,
     prob: float,
@@ -845,6 +854,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
     "tf_area",
+    "nd",
     "bicubic_tensorflow",
     "mitchellcubic",
     "lanczos3",
@@ -907,3 +917,38 @@ def ifftn(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def rfftn(
+    x: torch.Tensor,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid axes {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}"
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.tensor(
+        torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
+    )
