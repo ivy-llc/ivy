@@ -588,6 +588,16 @@ def test_paddle_log_sigmoid(
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+    
+
 # silu
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.silu",
