@@ -1867,6 +1867,7 @@ def as_strided(
     )
 
 
+as_strided.unsupported_dtypes = ("bfloat16",)
 as_strided.mixed_backend_wrappers = {
     "to_add": (
         "inputs_to_native_arrays",
