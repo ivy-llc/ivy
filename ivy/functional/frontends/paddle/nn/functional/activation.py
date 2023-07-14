@@ -227,5 +227,7 @@ def leaky_relu(x, negative_slope=0.01, name=None):
 @to_ivy_arrays_and_back
 def log_sigmoid(x, name=None):
     return -ivy.softplus(-x)
+
+
 def silu(x, name=None):
     return ivy.silu(x)
