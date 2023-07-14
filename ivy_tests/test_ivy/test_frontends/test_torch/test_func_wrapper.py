@@ -1,5 +1,5 @@
 # global
-from hypothesis import given
+from hypothesis import given, strategies as st
 import torch
 
 # local
@@ -9,6 +9,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
+    numpy_to_torch_style_args,
     handle_gradients,
 )
 from ivy.functional.frontends.torch.tensor import Tensor
@@ -206,3 +207,31 @@ def test_to_ivy_arrays_and_back(dtype_and_x, dtype):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+
+
+@numpy_to_torch_style_args
+def mocked_func(dim=None, keepdim=None, input=None, other=None):
+    return dim, keepdim, input, other
+
+
+@given(
+    dim=st.integers(),
+    keepdim=st.booleans(),
+    input=st.lists(st.integers()),
+    other=st.integers(),
+)
+def test_numpy_to_torch_style_args(dim, keepdim, input, other):
+    # PyTorch-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        dim=dim, keepdim=keepdim, input=input, other=other
+    )
+
+    # NumPy-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdims=keepdim, x=input, x2=other
+    )
+
+    # Mixed-style keyword arguments
+    assert (dim, keepdim, input, other) == mocked_func(
+        axis=dim, keepdim=keepdim, input=input, x2=other
+    )

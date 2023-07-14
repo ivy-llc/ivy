@@ -41,8 +41,15 @@ class DeviceArray:
     def at(self):
         return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.ivy_array)
 
+    @property
+    def T(self):
+        return self.ivy_array.T
+
     # Instance Methods #
     # ---------------- #
+
+    def copy(self, order=None):
+        return jax_frontend.numpy.copy(self._ivy_array, order=order)
 
     def all(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.all(
@@ -66,6 +73,9 @@ class DeviceArray:
 
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
+
+    def conjugate(self, /):
+        return jax_frontend.numpy.conjugate(self._ivy_array)
 
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
         return jax_frontend.numpy.mean(
@@ -106,13 +116,17 @@ class DeviceArray:
             order=order,
         )
 
-    def sort(self, axis=-1):
-        out_arr = jax_frontend.numpy.zeros_like(self)
+    flatten = ravel
+
+    def sort(self, axis=-1, order=None):
         return jax_frontend.numpy.sort(
             self,
             axis=axis,
-            out=out_arr,
+            order=order,
         )
+
+    def argsort(self, axis=-1, kind="stable", order=None):
+        return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
