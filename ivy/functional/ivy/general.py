@@ -2861,9 +2861,9 @@ set_item.mixed_backend_wrappers = {
 
 def _int_list_or_array(var):
     # check if var is a list/tuple of integers or a 1-d array of integers
-    return \
-        (isinstance(var, (list, tuple)) and all(isinstance(i, int) for i in var)) or \
-        (ivy.is_array(var) and ivy.is_int_dtype(var) and len(var.shape) == 1)
+    return (
+        isinstance(var, (list, tuple)) and all(isinstance(i, int) for i in var)
+    ) or (ivy.is_array(var) and ivy.is_int_dtype(var) and len(var.shape) == 1)
 
 
 def _parse_query(query, x_shape):
@@ -2876,7 +2876,7 @@ def _parse_query(query, x_shape):
                 query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
         query = ivy.array(query)
         query = query.T if len(query.shape) > 1 else query
-        target_shape = [query.shape[0], *x_shape[query.shape[1]:]]
+        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
         return query, target_shape
     query = (query,) if not isinstance(query, tuple) else query
     query = (

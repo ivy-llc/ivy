@@ -1441,7 +1441,10 @@ class Tensor:
         )
 
     def stride(self, dim=None):
-        strides = [stride // math.ceil(ivy.dtype_bits(self.dtype) / 8) for stride in self.ivy_array.strides]
+        strides = [
+            stride // math.ceil(ivy.dtype_bits(self.dtype) / 8)
+            for stride in self.ivy_array.strides
+        ]
         if dim is not None:
             return strides[dim]
         return strides

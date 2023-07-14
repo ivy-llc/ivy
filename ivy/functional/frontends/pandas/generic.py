@@ -43,9 +43,13 @@ class NDFrame:
             self.index = index
             self.array = ivy.array(data)
         elif isinstance(data, str):
-            pass # TODO: implement string series
+            pass  # TODO: implement string series
         else:
-            raise TypeError(f"Data must be one of array, dict, iterables or scalar value, got {type(data)}")
+            raise TypeError(
+                "Data must be one of array, dict, iterables or scalar value, got"
+                f" {type(data)}"
+            )
+
     @property
     def data(self):
         # return underlying data in the original format
