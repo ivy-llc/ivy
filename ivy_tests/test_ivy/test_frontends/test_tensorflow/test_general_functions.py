@@ -2,7 +2,6 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from tensorflow import errors as tf_errors
-import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -2042,7 +2041,12 @@ def test_tensorflow_unique(
     fn_tree="tensorflow.unique_with_counts",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=1,)),
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+            )
+        ),
         dtype=["int32", "int64"],
     ),
     output_dtype=st.sampled_from(["int32", "int64"]),
