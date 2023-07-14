@@ -2734,7 +2734,7 @@ def test_paddle_instance_min(
     keep_dims=st.booleans(),
     unbiased=st.booleans(),
 )
-def test_paddle_std(
+def test_paddle_instance_std(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
