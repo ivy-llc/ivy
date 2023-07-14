@@ -346,3 +346,11 @@ def frac(x, name=None):
 @to_ivy_arrays_and_back
 def max(x, axis=None, keepdim=False, name=None):
     return ivy.max(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def all(x, axis=None, keepdim=False, name=None):
+    return ivy.all(x, axis=axis, keepdims=keepdim)
