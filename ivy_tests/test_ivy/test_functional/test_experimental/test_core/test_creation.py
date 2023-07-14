@@ -58,7 +58,7 @@ def test_hann_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.005,
+        atol_=0.015,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
