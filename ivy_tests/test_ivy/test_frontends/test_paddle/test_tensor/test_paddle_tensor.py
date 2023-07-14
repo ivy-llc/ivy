@@ -2653,9 +2653,14 @@ def test_paddle_instance_sgn(
     init_tree="paddle.to_tensor",
     method_name="bincount",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=["int32", "int64"],
-        num_arrays=2,
-        min_value=0,
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=1,
+        min_value=1,
+        max_value=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=2,
     ),
 )
 def test_paddle_instance_bincount(
@@ -2673,9 +2678,7 @@ def test_paddle_instance_bincount(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "weights": x[1],
-        },
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

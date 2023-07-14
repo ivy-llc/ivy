@@ -526,10 +526,10 @@ class Tensor:
     def cond(self, p=None, name=None):
         return paddle_frontend.cond(self, p=p, name=name)
 
-    @with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+    @with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
     def bincount(self, weights=None, minlength=0, name=None):
-        return ivy.bincount(
-            self._ivy_array, weights=weights, minlength=minlength, out=None
+        return paddle_frontend.bincount(
+            self, weights=weights, minlength=minlength, name=name
         )
 
     @with_unsupported_dtypes({"2.4.2 and below": ("int16", "float16")}, "paddle")
