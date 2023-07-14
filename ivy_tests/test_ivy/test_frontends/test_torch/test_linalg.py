@@ -1223,6 +1223,8 @@ def test_torch_solve_ex(
         left=left,
         check_errors=check_errors,
     )
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
     dtype_and_x=_get_dtype_and_square_matrix(),
