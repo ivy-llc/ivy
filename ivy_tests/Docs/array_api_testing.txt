@@ -30,4 +30,5 @@ Comments:
 ---------
 - If you have a deep understanding of the files and their functionalities within the `ivy_tests/array_api_testing` folder, please consider adding comments or explanations in this document. Your insights will help newcomers to the project better understand the contents and functionalities of the files.
 
+Happy coding !
 ------------------------------------------------------------
