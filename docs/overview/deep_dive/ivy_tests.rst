@@ -619,8 +619,8 @@ As explained in the :ref:`Function Types` section, partial mixed functions are a
 or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by a partial mixed function depends on which implementation will
 be used for the given input. For example, when :code:`function_supported_dtypes` is called with respect to `ivy.linear` with torch backend, the following output is returned:
 
-
 .. code-block:: python
+
     {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
 
 As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slighlty
@@ -629,6 +629,7 @@ will be used and then based on that generate the data to test the function. Here
 
 
 .. code-block:: python
+
     def x_and_linear(draw):
         mixed_fn_compos = draw(st.booleans())
         is_torch_backend = ivy.current_backend_str() == "torch"
