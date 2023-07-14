@@ -28,8 +28,7 @@ def intersection(
 
     aux = paddle.concat([x1, x2], 0)
     if return_indices:
-        values_ = paddle.moveaxis(aux, 0, 0)
-        values_ = paddle.reshape(values_, (values_.shape[0], -1))
+        values_ = paddle.reshape(aux, (aux.shape[0], -1))
         aux_sort_indices = paddle.to_tensor(
             [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
         )
