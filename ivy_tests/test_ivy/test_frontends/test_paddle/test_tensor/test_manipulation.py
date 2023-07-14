@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -469,8 +470,8 @@ def test_paddle_scatter_nd(
 ):
     input_dtype, x = dtype_x_and_shape
     shape = x[0].shape
-    indices = np.random.randint(0, shape[0], size=(shape[0], 1))
-    updates = np.random.randint(0, 10, size=(shape[0], 1))
+    indices = np.random.randint(0, shape[0], size=(shape[0], 2))
+    updates = np.random.randint(0, 10, size=(shape[0], 2))
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
