@@ -71,7 +71,6 @@ def test_paddle_numel(
     dtype_and_x=_statistical_dtype_values(function="median"),
     keepdim=st.booleans(),
 )
-
 def test_paddle_median(
     *,
     dtype_and_x,
@@ -129,4 +128,3 @@ def test_paddle_nanquantile(
         interpolation=interpolation,
         keepdims=keepdims,
     )
-

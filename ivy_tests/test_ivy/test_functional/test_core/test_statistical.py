@@ -166,6 +166,8 @@ def test_mean(
         axis=axis,
         keepdims=keep_dims,
     )
+
+
 # median
 # @handle_test(
 #     fn_tree="functional.ivy.median",
@@ -201,6 +203,7 @@ def test_mean(
 #         keepdims=keep_dims,
 #         #dtype=castable_dtype,
 #     )
+
 
 # var
 @handle_test(
@@ -563,4 +566,3 @@ def test_einsum(
         rtol_=1e-2,
         atol_=1e-2,
     )
-    
