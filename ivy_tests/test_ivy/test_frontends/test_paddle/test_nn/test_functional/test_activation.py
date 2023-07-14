@@ -515,7 +515,7 @@ def test_paddle_mish(
         x=x[0],
     )
 
-
+'''
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.softplus",
     dtype_and_input=helpers.dtype_and_values(
@@ -540,7 +540,7 @@ def test_paddle_softplus(
         on_device=on_device,
         x=x[0],
     )
-
+'''
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.leaky_relu",
@@ -576,6 +576,31 @@ def test_paddle_leaky_relu(
     ),
 )
 def test_paddle_silu(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+#softplus_test
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softplus",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_softplus(
     *,
     dtype_and_input,
     on_device,
