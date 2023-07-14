@@ -594,8 +594,8 @@ def test_paddle_log_sigmoid(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-    )
+        x=x[0],
+    )
     
 
 # silu
