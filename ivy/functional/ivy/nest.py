@@ -1097,9 +1097,9 @@ def nested_map(
        b: ivy.array([[4, 5,  6], [12, 13, 14]])
     }
 
-    >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
+    >>> nest = [[1, 2], [3, 4], [5, 6]]
     >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list, dict))
-    []
+    [[1, 2], [3, 4], [5, 6]]
 
     >>> nest = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
     >>> ivy.nested_map(lambda x: x * 2, nest, max_depth=1)
