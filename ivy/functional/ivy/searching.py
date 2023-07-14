@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 
 
@@ -25,6 +26,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -130,6 +132,7 @@ def argmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -235,6 +238,7 @@ def argmin(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -375,6 +379,7 @@ def nonzero(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -467,6 +472,7 @@ def where(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
