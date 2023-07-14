@@ -1083,34 +1083,34 @@ def nested_map(
     >>> ivy.nested_map(x, function)
     >>> print(x)
     [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(
+      a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
+    )
+    >>> function = lambda a : a  + 1
+    >>> ivy.nested_map(x, function)
+    >>> print(x)
+    {
+       a: ivy.array([[1, 2, 3], [9, 8, 7]]),
+       b: ivy.array([[4, 5,  6], [12, 13, 14]])
+    }
+
+    >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
+    >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list, dict))
+    []
+
+    >>> nest = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+    >>> ivy.nested_map(lambda x: x * 2, nest, max_depth=1)
+    [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
+
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> function = lamba a :  a + 1
+    >>> ivy.nested_map(nest, function, to_mutable = True)
+    >>> print(nest)
+    [[24, 25, 1338], [64, 99, 7]]
     """
-    # With :class:`ivy.Container` input:
-
-    # >>> x = ivy.Container(
-    #  a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
-    # )
-    # >>> function = lambda a : a  + 1
-    # >>> ivy.nested_map(x, function)
-    # >>> print(x)
-    # {
-    #   a: ivy.array([[1, 2, 3], [9, 8, 7]]),
-    #  b: ivy.array([[4, 5,  6], [12, 13, 14]])
-    # }
-
-    # >>> nest = [[1, 2], (3, 4), {'a': 5, 'b': 6}]
-    # >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list, dict))
-    # []
-
-    # >>> nest = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-    # >>> ivy.nested_map(lambda x: x * 2, nest, max_depth=1)
-    # [[[2, 4], [6, 8]], [[10, 12], [14, 16]]]
-
-    # >>> nest = ([23, 25, 1337], [63, 98, 6])
-    # >>> function = lamba a :  a + 1
-    # >>> ivy.nested_map(nest, function, to_mutable = True)
-    # >>> print(nest)
-    # [[24, 25, 1338], [64, 99, 7]]
-    # """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
