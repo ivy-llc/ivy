@@ -1138,7 +1138,6 @@ def lerp(
 
 lerp.mixed_backend_wrappers = {
     "to_add": (
-        "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",

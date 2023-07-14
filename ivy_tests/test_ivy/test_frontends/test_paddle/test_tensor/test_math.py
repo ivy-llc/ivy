@@ -1409,3 +1409,35 @@ def test_paddle_frac(
         on_device=on_device,
         x=x[0],
     )
+
+
+# max
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.max",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=False,
+    ),
+)
+def test_paddle_max(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdim=False,
+    )
