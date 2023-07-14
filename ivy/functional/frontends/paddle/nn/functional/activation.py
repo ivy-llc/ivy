@@ -232,6 +232,19 @@ def silu(x, name=None):
 #softplus
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def softplus(x, name=None):
-    return ivy.softplus(x)
+def softplus(x, beta=1.0, threshold=20.0, name=None):
+    """
+    Computes the softplus activation function.
+
+    Args:
+        x (ivy.Array): Input array.
+        beta (float, optional): Scaling factor for the input. Defaults to 1.0.
+        threshold (float, optional): Threshold value for numerical stability. Defaults to 20.0.
+        name (str, optional): Name of the operation. Defaults to None.
+
+    Returns:
+        ivy.Array: Result of the softplus activation function.
+    """
+    return ivy.softplus(x, beta=beta, threshold=threshold)
+
 

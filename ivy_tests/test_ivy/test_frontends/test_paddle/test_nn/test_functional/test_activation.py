@@ -593,16 +593,20 @@ def test_paddle_silu(
         x=x[0],
     )
 
-#softplus_test
+# softplus_test
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.softplus",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
+    beta=st.floats(min_value=1e-3, max_value=10),  # strategy for the beta argument
+    threshold=st.floats(min_value=1e-3, max_value=10),  # strategy for the threshold argument
 )
 def test_paddle_softplus(
     *,
     dtype_and_input,
+    beta,
+    threshold,
     on_device,
     fn_tree,
     frontend,
@@ -616,4 +620,6 @@ def test_paddle_softplus(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        beta=beta,
+        threshold=threshold,
     )
