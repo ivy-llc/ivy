@@ -2571,3 +2571,84 @@ def ifftn(
             [-0.48472244+0.30233797j]])
     """
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+# @inputs_to_ivy_arrays
+@to_native_arrays_and_back
+def rfftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
+    *,
+    norm: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the N-dimensional discrete Fourier Transform for real input.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array, taken to be real.
+    s : sequence of ints, optional
+        Shape (length along each transformed axis) to use from the input.
+        (s[0] refers to axis 0, s[1] to axis 1, etc.). The final element of s
+        corresponds to n for rfft(x, n), while for the remaining axes, it
+        corresponds to n for fft(x, n). Along any axis, if the given shape is
+        smaller than that of the input, the input is cropped. If it is larger,
+        the input is padded with zeros. If s is not given, the shape of the
+        input along the axes specified by axes is used.
+    axes : sequence of ints, optional
+        Axes over which to compute the FFT. If not given, the last len(s) axes
+        are used, or all axes if s is also not specified.
+    norm : {"backward", "ortho", "forward"}, optional
+        Normalization mode. Default is "backward". Indicates which direction of
+        the forward/backward pair of transforms is scaled and with what
+        normalization factor.
+    out : array_like, optional
+        Optional output array to store the result of the computation. The shape
+        and dtype of this array must match the expected output.
+
+    Returns
+    -------
+    out : complex ndarray
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes or by a combination of s and a, as explained in the parameters
+        section above. The length of the last axis transformed will be
+        s[-1] // 2 + 1, while the remaining transformed axes will have lengths
+        according to s, or unchanged from the input.
+
+    Raises
+    ------
+    ValueError
+        If s and axes have different lengths.
+    IndexError
+        If an element of axes is larger than the number of axes of a.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x)
+    >>> print(result)
+    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
+    >>> print(result)
+    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
+     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
+    """
+    if norm is None:
+        norm = "backward"
+
+    if axes is None:
+        axes = list(range(x.ndim - len(s), x.ndim))
+    elif s is None:
+        s = [x.shape[axis] for axis in axes]
+    elif len(s) != len(axes):
+        raise ValueError("s and axes must have the same length.")
+
+    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
