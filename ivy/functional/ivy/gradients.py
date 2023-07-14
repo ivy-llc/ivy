@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -322,6 +323,7 @@ def _variable_data(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -396,6 +398,7 @@ def stop_gradient(
 
 
 @handle_exceptions
+@handle_device_shifting
 def execute_with_gradients(
     func,
     xs: Union[ivy.Array, ivy.NativeArray],
