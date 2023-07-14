@@ -4,7 +4,6 @@ from hypothesis import strategies as st
 # local	# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy.functional.ivy.layers import _handle_padding
 
 
 # avg_pool1d
@@ -32,18 +31,8 @@ def test_paddle_avg_pool1d(
     if len(stride) == 1:
         stride = stride[0]
 
-    if isinstance(padding, str):
-        if padding == "SAME":
-            padding = [
-                _handle_padding(x[0].shape[i + 1], stride[i], kernel[i], padding)
-                for i in range(1)
-            ]
-        else:
-            padding = 0
-    elif len(padding) == 1:
-        pass
-    else:
-        padding = 0
+    if padding == "VALID":
+        ceil_mode = False
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
