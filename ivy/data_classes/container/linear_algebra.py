@@ -2436,10 +2436,19 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.random_normal(shape = (2, 4))
         >>> z = ivy.Container(a=x, b=y)
         >>> ret = z.svd()
-        >>> aU, aS, aVh = ret.a
-        >>> bU, bS, bVh = ret.b
-        >>> print(aU.shape, aS.shape, aVh.shape, bU.shape, bS.shape, bVh.shape)
-        (9, 9) (6,) (6, 6) (2, 2) (2,) (4, 4)
+        >>> print(ret[0], ret[1], ret[2])
+        {
+            a: (<class ivy.data_classes.array.array.Array> shape=[9, 9]),
+            b: ivy.array([[-0.3475602, -0.93765765],
+                          [-0.93765765, 0.3475602]])
+        } {
+            a: ivy.array([3.58776021, 3.10416126, 2.80644298, 1.87024701, 1.48127627,
+                          0.79101127]),
+            b: ivy.array([1.98288572, 0.68917423])
+        } {
+            a: (<class ivy.data_classes.array.array.Array> shape=[6, 6]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[4, 4])
+        }
         """
         return self._static_svd(
             self,

@@ -297,6 +297,8 @@ def test_docstrings(backend):
         "dropout",
         "dropout1d",
         "dropout3",
+        # generate different results due to randomization
+        "svd",
         # wrong examples/implementations
         "conv2d_transpose",
         'conv3d_transpose',
@@ -340,7 +342,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "sigmoid":
+                if method_name == "top_k":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
