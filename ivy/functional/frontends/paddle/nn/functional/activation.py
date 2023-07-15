@@ -241,4 +241,4 @@ def gumbel_softmax(x, temperature=1.0, hard=False, seed=None, name=None):
         hard_sample = ivy.one_hot(ivy.argmax(softmax_sample, axis=-1), num_classes)
         return ivy.astype(hard_sample, dtype=x.dtype)
     else:
-        return softmax_sample
+        return ivy.astype(softmax_sample,dtype=x.dtype)
