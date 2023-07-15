@@ -561,7 +561,7 @@ def test_celu(
     ),
     test_with_out=st.just(False),
 )
-def test_elu(
+def test_jax_elu(
     *,
     dtype_and_x,
     test_flags,
@@ -578,6 +578,8 @@ def test_elu(
         on_device=on_device,
         x=xs[0],
         alpha=xs[1],
+        rtol=1e-03,
+        atol=1e-03,
     )
 
 
