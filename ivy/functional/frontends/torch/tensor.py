@@ -1495,6 +1495,47 @@ class Tensor:
             reps = reps[0]
         return torch_frontend.tile(self, reps)
 
+    def scatter_(self, dim, index, src, reduce=None):
+        if reduce is not None:
+            if reduce not in ["add", "multiply"]:
+                raise Exception(
+                    f"Unsupported reduce operation '{reduce}', "
+                    "only 'add', 'multiply' and 'sum' are supported."
+                )
+            if reduce == "add":
+                reduce = "sum"
+            elif reduce == "multiply":
+                reduce = "prod"
+        self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=self)
+        return self
+
+    scatter = scatter_
+
+    def scatter_add_(self, dim, index, src):
+        self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction="sum", out=self)
+        return self
+
+    scatter_add = scatter_add_
+    
+    def scatter_reduce_(self, dim, index, src, reduce, include_self=True):
+        if reduce not in ["sum", "prod", "mean", "amax", "amin"]:
+            raise Exception(
+                f"Unsupported reduce operation '{reduce}', "
+                "only 'sum', 'prod', 'mean', 'amax' and 'amin' are supported."
+            )
+        if reduce == "amax":
+            reduce = "max"
+        elif reduce == "amin":
+            reduce = "min"
+        if include_self:
+            self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=self)
+        else:
+            self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=None)
+        return self
+
+    def scatter_reduce(self, dim, index, src, reduce, include_self=True):
+        return self.scatter_reduce_(self, dim=dim, index=index, src=src, reduce=reduce, include_self=True)
+    
 
 class Size(tuple):
     def __new__(cls, iterable=()):
