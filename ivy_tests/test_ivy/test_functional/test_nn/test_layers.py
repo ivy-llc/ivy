@@ -134,8 +134,10 @@ def test_dropout(
         training=training,
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    gt_ret = helpers.flatten_and_to_np(
+        ret=gt_ret, backend=test_flags.ground_truth_backend
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
