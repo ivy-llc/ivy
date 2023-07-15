@@ -456,26 +456,33 @@ def test_paddle_broadcast_to(
 @handle_frontend_test(
     fn_tree="paddle.gather",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("all"),
+        min_num_dims=1,
+        max_num_dims=6,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    index=st.integers(min_value=0, max_value=10),
+    axis=st.integers(min_value=0, max_value=5),
+    test_with_out=st.just(False),
 )
 def test_paddle_gather(
     *,
     dtype_and_x,
-    dtype,
+    index,
+    axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
+    index = index % x[0].shape[axis]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device,
         x=x[0],
-        dtype=dtype[0],
+        index=index,
+        axis=axis,
+        on_device=on_device,
     )
