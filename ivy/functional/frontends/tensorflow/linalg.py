@@ -311,7 +311,7 @@ def band_part(input, num_lower, num_upper, name=None):
 
 
 @to_ivy_arrays_and_back
-def qr(input, full_matrices=False, name=None):
+def qr(input, /, *, full_matrices=False, name=None):
     return ivy.qr(input)
 
 
