@@ -15,7 +15,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 # helpers
@@ -1241,7 +1240,7 @@ def test_torch_solve_ex(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky_ex(
