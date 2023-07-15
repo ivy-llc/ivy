@@ -432,8 +432,8 @@ class _ContainerWithSearching(ContainerBase):
         >>> res = x1.where((x1.a > x2.a), x2)
         >>> print(res)
         {
-            a: ivy.array([3, 7, 5]),
-            b: ivy.array([2, 8, 6])
+            a: ivy.array([1, 0, 1]),
+            b: ivy.array([1, 0, 1])
         }
         """
         return self._static_where(self, x1, x2, out=out)
