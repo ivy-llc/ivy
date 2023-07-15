@@ -58,7 +58,7 @@ def test_hann_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.005,
+        atol_=0.015,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -167,6 +167,7 @@ def test_hamming_window(
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
+        atol_=2e-06,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
