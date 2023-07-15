@@ -2859,8 +2859,26 @@ set_item.mixed_backend_wrappers = {
 }
 
 
+def _int_list_or_array(var):
+    # check if var is a list/tuple of integers or a 1-d array of integers
+    return (
+        isinstance(var, (list, tuple)) and all(isinstance(i, int) for i in var)
+    ) or (ivy.is_array(var) and ivy.is_int_dtype(var) and len(var.shape) == 1)
+
+
 def _parse_query(query, x_shape):
-    query = (query,) if not isinstance(query, (tuple, list)) else query
+    if isinstance(query, tuple) and all(_int_list_or_array(q) for q in query):
+        query = list(query) if isinstance(query, tuple) else query
+        for i, idx in enumerate(query):
+            if ivy.is_array(idx):
+                query[i] = ivy.where(idx < 0, idx + x_shape[i], idx)
+            else:
+                query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
+        query = ivy.array(query)
+        query = query.T if len(query.shape) > 1 else query
+        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
+        return query, target_shape
+    query = (query,) if not isinstance(query, tuple) else query
     query = (
         _parse_ellipsis(query, len(x_shape))
         if any(q is Ellipsis for q in query)
@@ -2889,6 +2907,7 @@ def _parse_query(query, x_shape):
         elif isinstance(idx, int):
             query[i] = ivy.array(idx + s if idx < 0 else idx)
         elif isinstance(idx, (tuple, list)):
+            # ToDo: add handling for case of nested tuple/lists
             query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
         elif ivy.is_array(idx):
             query[i] = ivy.where(idx < 0, idx + s, idx)
@@ -2896,8 +2915,6 @@ def _parse_query(query, x_shape):
             raise ivy.exceptions.IvyException("unsupported query format")
         query[i] = ivy.astype(query[i], ivy.int64)
     target_shape = [s for q in query for s in q.shape]
-    if all(s == 1 for s in target_shape):
-        target_shape = list(max(query, key=lambda x: x.ndim).shape)
     target_shape += list(x_shape[len(query) :])
     query = [q.reshape((-1,)) if len(q.shape) > 1 else q for q in query]
     grid = ivy.meshgrid(*query, indexing="ij")
