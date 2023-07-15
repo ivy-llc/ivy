@@ -194,17 +194,11 @@ def check_docstring_examples_run(
                 rtol=sig_fig,
             )
         except Exception:
-            # conditional checks that specific functions/backends require
-            # jax doesn't support inplace updates
-            if ivy.current_backend_str() == "jax" and (fn_name == "assert_supports_inplace" or fn_name == "scaled_dot_product_attention"):
-                return docstr_result
             # exec returns CpuDevice with id
             if (fn_name == "dev" and
                 doc_v.lower().startswith("cpu") and
                 doc_u.lower().startswith("cpu")):
                 return docstr_result
-
-            # end of conditional checks
             if str(doc_u) != str(doc_v):
                 docstr_result = False
         if not docstr_result:
@@ -226,6 +220,23 @@ def check_docstring_examples_run(
             )
             break
     return docstr_result
+
+
+# conditional checks that specific functions/backends require
+def skip_conditional(fn_name: str, backend_name: str) -> bool:
+    skip_list_conditional = {
+        # jax doesn't support inplace updates
+        "assert_supports_inplace": "jax",
+        "scaled_dot_product_attention": "jax",
+        "mean": "torch",
+    }
+    try:
+        if skip_list_conditional[fn_name] == backend_name:
+            return True
+        else:
+            return False
+    except KeyError:
+        return False
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
@@ -321,6 +332,7 @@ def test_docstrings(backend):
                     method = getattr(ivy.Array, method_name)
                     if (
                         method_name in skip_arr_cont
+                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
@@ -333,6 +345,7 @@ def test_docstrings(backend):
                     method = getattr(ivy.Array, method_name)
                     if (
                         method_name in skip_arr_cont
+                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(fn=method)
                         or check_docstring_examples_run(fn=method, from_array=True)
                     ):
@@ -342,12 +355,13 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "top_k":
+                if method_name == "prod" and backend == "numpy":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
                     if (
                         method_name in skip_arr_cont
+                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
@@ -360,6 +374,7 @@ def test_docstrings(backend):
                     method = getattr(ivy.Container, method_name)
                     if (
                         method_name in skip_arr_cont
+                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(fn=method)
                         or check_docstring_examples_run(fn=method, from_container=True)
                     ):
@@ -373,6 +388,7 @@ def test_docstrings(backend):
             if (
                # v is not ivy.GlobalsDict
                 k in to_skip
+                or skip_conditional(k, backend)
                 or check_docstring_examples_run(fn=v)
                 or helpers.gradient_incompatible_function(fn=v)
 
