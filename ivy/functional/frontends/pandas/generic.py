@@ -61,4 +61,6 @@ class NDFrame:
         return ret
 
     def abs(self):
-        return self.__class__(ivy.abs(self.array), index=self.index, name=self.name)
+        return self.__class__(
+            ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
+        )
