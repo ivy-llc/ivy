@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
@@ -124,4 +125,41 @@ def test_paddle_nonzero(
         on_device=on_device,
         input=input[0],
         as_tuple=as_tuple,
+    )
+
+
+# searchsorted
+@handle_frontend_test(
+    fn_tree="paddle.searchsorted",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shared_dtype=True,
+        min_num_dims=1,
+        num_arrays=2,
+    ),
+    out_int32=st.booleans(),
+    right=st.booleans(),
+)
+def test_paddle_searchsorted(
+    *,
+    dtype_and_values,
+    out_int32,
+    right,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, input = dtype_and_values
+    input[0] = np.sort(input[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        sorted_sequence=input[0],
+        values=input[1],
+        out_int32=out_int32,
+        right=right,
     )
