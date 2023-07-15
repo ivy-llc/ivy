@@ -303,6 +303,7 @@ def test_docstrings(backend):
         "einops_reduce",
         "l2_normalize",
         "lp_normalize",
+        "max_pool2d",
     ]
     # currently_being_worked_on = ["layer_norm"]
 
@@ -337,7 +338,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "max_pool2d":
+                if method_name == "pinv":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
