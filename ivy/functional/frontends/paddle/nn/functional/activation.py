@@ -229,4 +229,16 @@ def silu(x, name=None):
     return ivy.silu(x)
 
 
-
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def gumbel_softmax(logits, temperature=1.0, hard=False,seed=None):
+    gumbel_noise = -ivy.log(-ivy.log(ivy.random_uniform(shape= logits.shape,low=1e-6,high=1.0- 1e-6,seed=seed)))
+    gumbel_sample = (logits + gumbel_noise) / temperature
+    softmax_sample = ivy.softmax(gumbel_sample, axis=-1)
+    if hard:
+        # Apply one-hot sample approximation
+        num_classes=logits.shape[-1]
+        hard_sample = ivy.one_hot(ivy.argmax(softmax_sample, axis=-1), num_classes)
+        return ivy.astype(hard_sample, dtype=logits.dtype)
+    else:
+        return softmax_sample
