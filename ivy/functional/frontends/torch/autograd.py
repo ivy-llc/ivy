@@ -1,4 +1,5 @@
 # local
+import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
@@ -35,6 +36,13 @@ def _grad_out_multiply(grad_out, jacobian_wrt_input):
     return new_grad_out
 
 
+def get_elemnt(nest, idx):
+    ret = nest
+    for i in idx:
+        ret = ret[i]
+    return ret
+
+
 def _get_grad(output, input, grad_output):
     """Compute gradient of output w.r.t input."""
 
@@ -52,8 +60,12 @@ def _get_grad(output, input, grad_output):
 
     # Case #3
     grads = None
-    for i, func_input in enumerate(func_inputs):
-        new_grad_out = _grad_out_multiply(grad_output, output.grads[i])
+    all_indices = ivy.all_nested_indices(func_inputs)
+    for idx in all_indices:
+        func_input = get_elemnt(func_inputs, idx)
+        grad_wrt_input = get_elemnt(output.grads, idx)
+
+        new_grad_out = _grad_out_multiply(grad_output, grad_wrt_input)
         grad = _get_grad(func_input, input, new_grad_out)
         grads = _add_grad(grads, grad)
 
@@ -90,10 +102,6 @@ def grad(
         for output, grad_output in zip(outputs, grad_outputs):
             if not output.requires_grad:
                 raise RuntimeError("One of the output tensors does not require grad")
-            if len(output.shape) != sum(output.shape) and grad_outputs is None:
-                raise RuntimeError(
-                    "grad can be implicitly created only for scalar outputs"
-                )
 
             g = _batched_get_grad(output, input, grad_output, is_grads_batched)
             grad_wrt_input = _add_grad(grad_wrt_input, g)

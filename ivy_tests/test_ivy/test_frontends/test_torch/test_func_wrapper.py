@@ -45,7 +45,7 @@ def test_handle_gradients(dtype_and_xs):
         return
 
     dtypes, xs = dtype_and_xs
-    fn = lambda x: 2 * x  # TODO: when ivy.jac is fixed, add more args
+    fn = lambda x: 2 * x
 
     # Test when requires_grad = False
     x = torch_frontend.tensor(xs[0], dtype=dtypes[0])
@@ -67,10 +67,8 @@ def test_handle_gradients(dtype_and_xs):
     assert output_wrapped.requires_grad
 
     # Test function inputs are stored
-    # TODO: when ivy.jac is fixed edit this to
-    # check only inputs with req_grad = True
     for stored, gt in zip(output_wrapped.func_inputs, [x]):
-        assert ivy.all(stored.ivy_array == gt.ivy_array)
+        assert ivy.all(stored[0].ivy_array == gt.ivy_array)
 
     # Test gradients are stored
     x_native = torch.tensor(xs[0], requires_grad=True)
@@ -80,7 +78,7 @@ def test_handle_gradients(dtype_and_xs):
     )
 
     axis = list(range(len(output_wrapped.shape)))
-    grads = output_wrapped.grads[0].sum(dim=axis)
+    grads = output_wrapped.grads[0][0].sum(dim=axis)
 
     ivy.set_backend("torch")
     grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(grads_gt[0]))

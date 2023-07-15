@@ -224,7 +224,11 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
 
 
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+    grad_fn = lambda x_in: ivy.to_native(
+        func(ivy.to_ivy(x_in, nested=True)),
+        nested=True,
+        include_derived={tuple: True},
+    )
 
     def callback_fn(xs):
         fn_ret = grad_fn(xs)

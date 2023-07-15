@@ -2,7 +2,10 @@
 import math
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_gradients,
+)
 from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from collections import namedtuple
 
@@ -86,6 +89,7 @@ def eigvalsh(input, UPLO="L", *, out=None):
     return ret
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
@@ -222,7 +226,8 @@ def inv_ex(A, *, check_errors=False, out=None):
             raise RuntimeError("Singular Matrix")
         else:
             inv = A * math.nan
-            # TODO: info should return an array containing the diagonal element of the LU decomposition
+            # TODO: info should return an array containing the diagonal
+            # element of the LU decomposition
             #  of the input matrix that is exactly zero
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
     else:
@@ -289,6 +294,7 @@ def lu_factor(A, *, pivot=True, out=None):
     return ivy.lu_factor(A, pivot=pivot, out=out)
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"

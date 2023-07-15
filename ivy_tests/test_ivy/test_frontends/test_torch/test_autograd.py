@@ -12,6 +12,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 @st.composite
 def _get_grad_args(draw):
+    # Case 1: functions with one input
     # Sample a function
     fn = draw(st.sampled_from(["sin", "cos", "exp", "mean", "sum"]))
 
@@ -22,6 +23,17 @@ def _get_grad_args(draw):
             max_value=20,
             max_num_dims=2,
             max_dim_size=2,
+            available_dtypes=("float32", "float64"),
+        )
+    )
+
+    # Case 2: functions with multi input
+    fn2 = draw(st.sampled_from(["add", "matmul"]))
+    dtypes2, xs2 = draw(
+        helpers.dtype_and_values(
+            num_arrays=2,
+            shape=(2, 2),
+            shared_dtype=True,
             available_dtypes=("float32", "float64"),
         )
     )
@@ -49,7 +61,7 @@ def _get_grad_args(draw):
     if len(out_shape) == 0 and not is_grads_batched:
         g_output = draw(st.sampled_from([g_output, None]))
 
-    return dtypes, xs, fn, is_grads_batched, g_output
+    return dtypes, xs, fn, is_grads_batched, g_output, dtypes2, xs2, fn2
 
 
 @given(grad_args=_get_grad_args())
@@ -62,13 +74,14 @@ def test_torch_grad(grad_args):
 
         jax.config.update("jax_enable_x64", True)
 
-    dtypes, xs, fn, is_grads_batched, g_output = grad_args
+    dtypes, xs, fn, is_grads_batched, g_output, dtypes2, xs2, fn2 = grad_args
 
     # Convert dtypes to native
     ivy_torch = ivy.with_backend("torch")
     dtypes_torch = [ivy_torch.as_native_dtype(t) for t in dtypes]
+    dtypes_torch2 = [ivy_torch.as_native_dtype(t) for t in dtypes2]
 
-    # Main test
+    # Case 1: fn has single input and single output
     fn_ivy = torch_frontend.__dict__[fn]
     fn_torch = torch.__dict__[fn]
 
@@ -110,6 +123,115 @@ def test_torch_grad(grad_args):
         rtol=1e-4,
         atol=1e-4,
     )
+
+    # Multiple input
+    fn_ivy2 = torch_frontend.__dict__[fn2]
+    fn_torch2 = torch.__dict__[fn2]
+
+    x_ivy1 = torch_frontend.tensor(xs2[0], requires_grad=True, dtype=dtypes2[0])
+    x_ivy2 = torch_frontend.tensor(xs2[1], requires_grad=True, dtype=dtypes2[1])
+    x_torch1 = torch.tensor(xs2[0], requires_grad=True, dtype=dtypes_torch2[0])
+    x_torch2 = torch.tensor(xs2[1], requires_grad=True, dtype=dtypes_torch2[1])
+
+    y_ivy2 = fn_ivy2(x_ivy1, x_ivy2)
+    y_torch2 = fn_torch2(x_torch1, x_torch2)
+
+    grad_outputs_ivy2 = torch_frontend.ones_like(y_ivy2)
+    grad_outputs_torch2 = torch.ones_like(y_torch2)
+
+    grads_ivy2 = torch_frontend.autograd.grad(
+        y_ivy2,
+        (x_ivy1, x_ivy2),
+        grad_outputs=grad_outputs_ivy2,
+    )
+
+    grads_torch2 = torch.autograd.grad(
+        y_torch2,
+        (x_torch1, x_torch2),
+        grad_outputs=grad_outputs_torch2,
+    )
+
+    for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
+        grads_flat_np = helpers.flatten_frontend_to_np(ret=g_ivy)
+        ivy.set_backend("torch")
+        grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(g_torch))
+        ivy.previous_backend()
+
+        helpers.value_test(
+            ret_np_flat=grads_flat_np,
+            ret_np_from_gt_flat=grads_flat_np_gt,
+            rtol=1e-4,
+            atol=1e-4,
+        )
+
+    # Multiple outputs
+    x_ivy = torch_frontend.tensor(xs2[0], requires_grad=True, dtype=dtypes2[0])
+    x_torch = torch.tensor(xs2[0], requires_grad=True, dtype=dtypes_torch2[0])
+
+    y_ivy = (x_ivy, torch_frontend.add(x_ivy, x_ivy))
+    y_torch = (x_torch, torch.add(x_torch, x_torch))
+
+    grad_outputs_ivy = (
+        torch_frontend.ones_like(y_ivy[0]),
+        torch_frontend.ones_like(y_ivy[1]),
+    )
+    grad_outputs_torch = (torch.ones_like(y_torch[0]), torch.ones_like(y_torch[1]))
+
+    grads_ivy = torch_frontend.autograd.grad(
+        y_ivy,
+        x_ivy,
+        grad_outputs=grad_outputs_ivy,
+    )
+
+    grads_torch = torch.autograd.grad(
+        y_torch,
+        x_torch,
+        grad_outputs=grad_outputs_torch,
+    )
+
+    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads_ivy[0])
+    ivy.set_backend("torch")
+    grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(grads_torch[0]))
+    ivy.previous_backend()
+
+    helpers.value_test(
+        ret_np_flat=grads_flat_np,
+        ret_np_from_gt_flat=grads_flat_np_gt,
+        rtol=1e-4,
+        atol=1e-4,
+    )
+
+    # Nested functions
+    x_ivy1 = torch_frontend.tensor(xs2[0], requires_grad=True, dtype=dtypes2[0])
+    x_ivy2 = torch_frontend.tensor(xs2[1], requires_grad=True, dtype=dtypes2[1])
+    x_torch1 = torch.tensor(xs2[0], requires_grad=True, dtype=dtypes_torch2[0])
+    x_torch2 = torch.tensor(xs2[1], requires_grad=True, dtype=dtypes_torch2[1])
+
+    y_ivy2 = torch_frontend.mean(
+        torch_frontend.matmul(torch_frontend.sin(x_ivy1), torch_frontend.sin(x_ivy2))
+    )
+    y_torch2 = torch.mean(
+        torch.matmul(
+            torch.sin(x_torch1),
+            torch.sin(x_torch2),
+        )
+    )
+
+    grads_ivy2 = torch_frontend.autograd.grad(y_ivy2, (x_ivy1, x_ivy2))
+    grads_torch2 = torch.autograd.grad(y_torch2, (x_torch1, x_torch2))
+
+    for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
+        grads_flat_np = helpers.flatten_frontend_to_np(ret=g_ivy)
+        ivy.set_backend("torch")
+        grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(g_torch))
+        ivy.previous_backend()
+
+        helpers.value_test(
+            ret_np_flat=grads_flat_np,
+            ret_np_from_gt_flat=grads_flat_np_gt,
+            rtol=1e-4,
+            atol=1e-4,
+        )
 
     # Test arg: allow_unused
     # Test inputs and outputs that are not

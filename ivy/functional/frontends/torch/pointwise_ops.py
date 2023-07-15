@@ -14,6 +14,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
 @with_supported_dtypes(
     {"1.12.0 and below": ("float32", "float64", "int32", "int64")}, "jax"
 )
+@handle_gradients
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)

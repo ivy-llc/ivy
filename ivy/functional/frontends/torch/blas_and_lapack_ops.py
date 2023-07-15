@@ -2,7 +2,10 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_gradients,
+)
 
 
 @to_ivy_arrays_and_back
@@ -116,6 +119,7 @@ def logdet(input):
     return ivy.det(input).log()
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def matmul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
