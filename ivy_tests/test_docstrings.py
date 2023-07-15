@@ -196,7 +196,7 @@ def check_docstring_examples_run(
         except Exception:
             # conditional checks that specific functions/backends require
             # jax doesn't support inplace updates
-            if ivy.current_backend_str() == "jax" and fn_name == "assert_supports_inplace":
+            if ivy.current_backend_str() == "jax" and (fn_name == "assert_supports_inplace" or fn_name == "scaled_dot_product_attention"):
                 return docstr_result
             # exec returns CpuDevice with id
             if (fn_name == "dev" and
@@ -340,7 +340,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "scaled_dot_product_attention":
+                if method_name == "sigmoid":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)

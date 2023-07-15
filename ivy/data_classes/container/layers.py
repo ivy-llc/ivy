@@ -934,25 +934,21 @@ class _ContainerWithLayers(ContainerBase):
         ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
         >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
         ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-        >>> mask =
-        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
+        >>> mask = ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
         ...                             [1.0, 1.0, 1.0],
         ...                             [1.0, 1.0,1.0]]]),
         ...               b=ivy.array([[[1.0, 1.0, 1.0],
         ...                             [1.0, 1.0, 1.0],
         ...                             [1.0, 1.0,1.0]]]))
-        >>> result = q.scaled_dot_product_attention(k,
-                                                    v,
-                                                    1,
-                                                    mask=mask)
+        >>> result = q.scaled_dot_product_attention(k, v, 1, mask=mask)
         >>> print(result)
         {
-            a: ivy.array([[[4.27, 5.4],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]]),
-            b: ivy.array([[[4.35, 5.54],
-                        [4.4, 5.6],
-                        [4.4, 5.6]]])
+            a: ivy.array([[[4.26894283, 5.40236187],
+                           [4.39999437, 5.59999037],
+                           [4.4000001, 5.5999999]]]),
+            b: ivy.array([[[4.35046196, 5.54282808],
+                           [4.39989519, 5.5998764],
+                           [4.4000001, 5.5999999]]])
         }
         """
         return self._static_scaled_dot_product_attention(
