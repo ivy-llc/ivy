@@ -21,11 +21,6 @@ class NDFrame:
         if index is None:
             if data_is_array_or_like:
                 index = ivy.arange(len(data)).tolist()
-                if len(data) != len(index):
-                    raise ValueError(
-                        f"Length of values {len(data)} does not match length of index"
-                        f" {len(index)}"
-                    )
             elif isinstance(data, dict):
                 index = list(data.keys())
 
