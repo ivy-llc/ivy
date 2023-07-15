@@ -616,11 +616,11 @@ It would be helpful to keep in mind the following points while writing test -:
 Testing Partial Mixed Functions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 As explained in the :ref:`Function Types` section, partial mixed functions are a special type of mixed functions that either utilize the compositional implementation
-or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by a partial mixed function depends on which implementation will
+or the primary implementation depending on some conditions on the input. Therefore, the data-types supported by partial mixed functions depend on which implementation will
 be used for the given input. For example, when :code:`function_supported_dtypes` is called with respect to `ivy.linear` with torch backend, the following output is returned:
 
-
 .. code-block:: python
+
     {'compositional': ('float32', 'int8', 'uint8', 'float64', 'int16', 'int32', 'int64'), 'primary': ('bool', 'float32', 'int8', 'uint8', 'float64', 'int64', 'int16', 'int32')}
 
 As can be seen from the above output that the data-types supported will depend on the implementation used for the given input. It's because of this reason that we need a slighlty
@@ -629,6 +629,7 @@ will be used and then based on that generate the data to test the function. Here
 
 
 .. code-block:: python
+
     def x_and_linear(draw):
         mixed_fn_compos = draw(st.booleans())
         is_torch_backend = ivy.current_backend_str() == "torch"
@@ -674,18 +675,17 @@ will be used and then based on that generate the data to test the function. Here
         )
         return dtype, x, weight, bias
 
-As can be seen from the above code, a boolean parameter :code:`mixed_fn_compos` is generated to determine whether to test the compositional
-implementation or the primary one. When it is equal to :code:`True`, the relevant data for the compositional implementation should be generated
-and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend` is to used
-to determine if the current backend is :code:`torch`. Then these booleans are used together here: :code:`if is_torch_backend and not mixed_fn_compos`
-and :code:`weight_shape` is updated to be 2 dimensional because the torch backend implementation only supports 2 dimensional weights. Notice that the
-parameter :code:`mixed_fn_compos` is also be passed to :code:`helpers.get_dtypes` and :code:`helpers.ints` functions so that the dtypes corresponding
-to the implementation to be tested are returned. In general, :code:`helpers.get_dtypes`, :code:`helpers.ints`, :code:`helpers.floats`, and
-:code:`helpers.numbers` all have the `mixed_fn_compos` argument which must be supplied for the correct dtypes to be returned. In case the backend has
-a partial mixed implementation, the dtypes corresponding to either the compositional or the primary implementation are returned, depending on the value
-of the parameter, and otherwise the parameter is ignored. Rest of the testing pipeline is the same is as other functions.
-
-
+As can be seen from the above code, a boolean parameter :code:`mixed_fn_compos` is generated first to determine whether to generate test data for
+the compositional implementation or the primary one. When it is equal to :code:`True`, the relevant data for the compositional implementation should
+be generated and when :code:`False`, data corresponding to the primary implementation should be generated. Another boolean, :code:`is_torch_backend` 
+is to used to determine if the current backend is :code:`torch`. Then these booleans are used together in this :code:`if` condition: 
+:code:`if is_torch_backend and not mixed_fn_compos` and :code:`weight_shape` is updated to be 2 dimensional because the torch backend implementation
+only supports 2 dimensional weights. Notice that the parameter :code:`mixed_fn_compos` is also be passed to :code:`helpers.get_dtypes` and
+:code:`helpers.ints` functions so that the dtypes corresponding to the implementation to be tested are returned. In general, :code:`helpers.get_dtypes`,
+:code:`helpers.ints`, :code:`helpers.floats`, and :code:`helpers.numbers` all have the `mixed_fn_compos` argument which must be supplied for the correct
+dtypes to be returned. In case the backend has a partial mixed implementation, the dtypes corresponding to either the compositional or the primary
+implementation are returned, depending on the value of the parameter, and otherwise the parameter is ignored. Rest of the testing pipeline is the
+same is as other functions.
 
 
 Bonus: Hypothesis' Extended Features
