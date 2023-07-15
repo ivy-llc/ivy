@@ -7,7 +7,7 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.numpy.func_wrapper import (
     inputs_to_ivy_arrays,
-    outputs_to_numpy_arrays,
+    outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
     handle_numpy_dtype,
     from_zero_dim_arrays_to_scalar,
@@ -76,20 +76,20 @@ def test_inputs_to_ivy_arrays(dtype_x_shape):
     ),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_outputs_to_numpy_arrays(dtype_and_x, dtype):
+def test_outputs_to_frontend_arrays(dtype_and_x, dtype):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
     if not len(input_ivy.shape):
         scalar_input_ivy = ivy.to_scalar(input_ivy)
-        outputs_to_numpy_arrays(_fn)(
+        outputs_to_frontend_arrays(_fn)(
             scalar_input_ivy, scalar_input_ivy, check_default=True, dtype=dtype
         )
-        outputs_to_numpy_arrays(_fn)(
+        outputs_to_frontend_arrays(_fn)(
             scalar_input_ivy, input_ivy, check_default=True, dtype=dtype
         )
-    output = outputs_to_numpy_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
+    output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True, dtype=dtype)
     assert isinstance(output, ndarray)
     assert input_ivy.dtype == output.ivy_array.dtype
     assert ivy.all(input_ivy == output.ivy_array)

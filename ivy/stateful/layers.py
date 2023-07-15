@@ -2,10 +2,9 @@
 
 # local
 import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
-
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -1933,6 +1932,61 @@ class AdaptiveAvgPool1d(Module):
         )
 
 
+class FFT(Module):
+    def __init__(
+        self,
+        /,
+        *,
+        dim=0,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying FFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the FFT.
+        norm : str
+            Normalization mode. Default: 'backward'
+        n : int
+            Size of the FFT. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the FFT of.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.fft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
+
+
 class AvgPool1D(Module):
     def __init__(
         self,
@@ -1982,4 +2036,62 @@ class AvgPool1D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+        )
+
+
+class Dct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the DCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.dct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
         )
