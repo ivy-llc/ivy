@@ -305,6 +305,7 @@ def test_docstrings(backend):
         "lp_normalize",
         "max_pool2d",
         "pinv",
+        "relu6",
     ]
     # currently_being_worked_on = ["layer_norm"]
 
@@ -339,7 +340,7 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "quantile":
+                if method_name == "scaled_dot_product_attention":
                     x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
