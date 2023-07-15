@@ -15,9 +15,20 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_side=1,
         max_side=4,
     ),
+    exclusive=st.booleans(),
+    ceil_mode=st.just(False),
     test_with_out=st.just(False),
 )
-def test_paddle_avg_pool1d(*, x_k_s_p_df, frontend, test_flags, on_device, fn_tree):
+def test_paddle_avg_pool1d(
+    *,
+    x_k_s_p_df,
+    frontend,
+    test_flags,
+    on_device,
+    fn_tree,
+    exclusive,
+    ceil_mode,
+):
     (input_dtype, x, kernel_size, stride, padding) = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -29,6 +40,6 @@ def test_paddle_avg_pool1d(*, x_k_s_p_df, frontend, test_flags, on_device, fn_tr
         kernel_size=kernel_size,
         stride=stride,
         padding=padding,
-        exclusive=False,
-        ceil_mode=False,
+        exclusive=exclusive,
+        ceil_mode=ceil_mode,
     )

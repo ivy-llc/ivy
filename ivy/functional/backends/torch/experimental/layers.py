@@ -270,10 +270,10 @@ def avg_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    if data_format == "NWC":
+    if data_format == "NWC" or "NCL":
         x = x.permute(0, 2, 1)
-    elif data_format == "NCL":
-        x = x.permute(0, 2, 1)
+    # elif data_format == "NCL":
+    #     x = x.permute(0, 2, 1)
 
     x_shape = x.shape[2]
     if isinstance(padding, str):

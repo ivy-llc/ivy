@@ -321,10 +321,10 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format == "NCW" or "NCL":
         x = np.swapaxes(x, 1, 2)
-    elif data_format == "NCL":
-        x = np.swapaxes(x, 1, 2)
+    # elif data_format == "NCL":
+    #     x = np.swapaxes(x, 1, 2)
 
     x_shape = x.shape[1:-1]
     padding, pad_specific, c = _get_padded_values(
