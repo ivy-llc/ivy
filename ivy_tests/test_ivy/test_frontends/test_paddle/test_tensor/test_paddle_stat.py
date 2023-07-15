@@ -128,7 +128,9 @@ def test_paddle_median(
         axis=axis,
         keepdim=keepdim,
     )
-#nanmedian
+
+
+# nanmedian
 @handle_frontend_test(
     fn_tree="paddle.nanmedian",
     dtype_x_and_axis=helpers.dtype_values_axis(
@@ -141,7 +143,6 @@ def test_paddle_median(
     ),
     keepdim=st.booleans(),
 )
-
 def test_paddle_nanmedian(
     dtype_x_and_axis,
     frontend,
@@ -155,5 +156,5 @@ def test_paddle_nanmedian(
         test_flags=test_flags,
         fn_tree=fn_tree,
         x=x[0],
-        axis=axis
+        axis=axis,
     )
