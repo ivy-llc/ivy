@@ -955,3 +955,41 @@ def test_tensorflow_inv(
         input=x[0],
         adjoint=adjoint,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tf.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tf_qr(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        test_values=False,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    q, r = ret
+    frontend_q, frontend_r = frontend_ret
+
+    assert_all_close(
+        ret_np=q @ r,
+        ret_from_gt_np=frontend_q @ frontend_r,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
