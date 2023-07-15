@@ -259,6 +259,7 @@ def max_pool3d(
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        # res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 

@@ -8,18 +8,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # avg_pool1d
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.pooling.avg_pool1d",
+    fn_tree="paddle.nn.functional.pooling.max_pool3d",
     dtype_x_k_s=helpers.arrays_for_pooling(
-        min_dims=3,
-        max_dims=3,
+        min_dims=5,
+        max_dims=5,
         min_side=1,
-        max_side=3,
+        max_side=5,
     ),
-    ceil_mode=st.booleans(),
+    data_format=st.sampled_from(["NDHWC", "NCDHW"]),
 )
-def test_paddle_avg_pool1d(
+def test_paddle_max_pool3d(
     dtype_x_k_s,
-    ceil_mode,
+    data_format,
     *,
     test_flags,
     frontend,
@@ -29,10 +29,12 @@ def test_paddle_avg_pool1d(
     input_dtype, x, kernel, stride, padding = dtype_x_k_s
 
     if len(stride) == 1:
-        stride = stride[0]
+        stride = (stride) * 3
 
-    if padding == "VALID":
-        ceil_mode = False
+    if data_format == "NCDHW":
+        x[0] = x[0].reshape(
+            (x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3])
+        )
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -44,5 +46,5 @@ def test_paddle_avg_pool1d(
         kernel_size=kernel,
         stride=stride,
         padding=padding,
-        ceil_mode=ceil_mode,
+        data_format=data_format,
     )
