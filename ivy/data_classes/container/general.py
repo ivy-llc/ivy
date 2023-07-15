@@ -1977,14 +1977,14 @@ class _ContainerWithGeneral(ContainerBase):
         --------
         With :class:`ivy.Container` input:
         >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \
-                            b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
+        ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
         >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
-                            b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+        ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
         >>> size = 8
         >>> print(ivy.scatter_flat(indices, updates, size=size))
         {
-            a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
-            b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+            a: ivy.array([2, 0, 2, 8, 0, 0, 0, 0]),
+            b: ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
         }
         """
         return self._static_scatter_flat(
