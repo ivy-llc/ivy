@@ -413,14 +413,17 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+#TODO: Add Ivy function for block_diag but only scipy.linalg and \
+# and torch supports block_diag currently
 @to_ivy_arrays_and_back
 def block_diag(*tensors):
     shapes_list = [ivy.shape(t) for t in tensors]
-    # TODO: Add the highest promoted dtype detected for multiple tensors at once
+    # TODO: Add ivy function to return promoted dtype for multiple tensors at once
     promoted_dtype = ivy.as_ivy_dtype(tensors[0].dtype)
     for idx in range(1, len(tensors)):
-        promoted_dtype =  torch_frontend.promote_types_torch(tensors[idx-1].dtype,
-                                                             tensors[idx].dtype)
+        promoted_dtype = torch_frontend.promote_types_torch(
+           tensors[idx - 1].dtype, tensors[idx].dtype
+        )
 
     inp_tensors = [ivy.asarray(t, dtype=promoted_dtype) for t in tensors]
     tensors_2d = []

@@ -1508,10 +1508,7 @@ def test_torch_block_diag(
 ):
     dtypes, tensors = dtype_and_tensors
     if isinstance(dtypes, list):  # If more than one value was generated
-        args = {
-            f"x{i}": np.array(t, dtype=dtypes[i])
-            for i, t in enumerate(tensors)
-        }
+        args = {f"x{i}": np.array(t, dtype=dtypes[i]) for i, t in enumerate(tensors)}
     else:  # If exactly one value was generated
         args = {"x0": np.array(tensors, dtype=dtypes)}
     test_flags.num_positional_args = len(tensors)
