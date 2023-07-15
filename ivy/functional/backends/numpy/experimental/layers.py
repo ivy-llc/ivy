@@ -641,7 +641,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.25.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.1 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -903,7 +903,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,
@@ -922,3 +922,35 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def rfftn(
+    x: np.ndarray,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)

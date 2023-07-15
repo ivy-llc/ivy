@@ -622,6 +622,38 @@ def test_tensorflow_Atan(  # NOQA
     )
 
 
+# Atan2
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Atan2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Atan2(  # NOQA
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+
+    # Assuming x and y have the same shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=xs[0],
+        x=xs[1],
+    )
+
+
 # BitwiseAnd
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.BitwiseAnd",
@@ -1647,6 +1679,34 @@ def test_tensorflow_zeros_like(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# LogSoftmax
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.LogSoftmax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_LogSoftmax(  # NOQA
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        logits=x[0],
     )
 
 
@@ -3916,4 +3976,39 @@ def test_tensorflow_Zeta(
         on_device=on_device,
         x=x[0],
         q=x[1],
+    )
+
+
+# Imag
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Imag",
+    dtype_and_xs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    send_Tout=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_Imag(
+    *,
+    dtype_and_xs,
+    send_Tout,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, xs = dtype_and_xs
+    if input_dtype[0] == "complex128":
+        send_Tout = "float64"
+    elif input_dtype[0] == "complex64":
+        send_Tout = "float32" if send_Tout else None
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        Tout=send_Tout,
     )

@@ -1,4 +1,6 @@
 # global
+from typing import Iterable
+import math
 
 # local
 import ivy
@@ -397,7 +399,18 @@ class Tensor:
     def contiguous(self, memory_format=None):
         return torch_frontend.tensor(self)
 
-    def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
+    def new_ones(
+        self,
+        *args,
+        size=None,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
+    ):
+        if size is None:
+            size = args[0] if isinstance(args[0], (tuple, list)) else args
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -1064,12 +1077,16 @@ class Tensor:
         self.ivy_array = self.addr(vec1, vec2, beta=beta, alpha=alpha).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def dot(self, tensor):
+        return torch_frontend.dot(self, tensor)
+
     # Special Methods #
     # -------------------#
 
     def __bool__(self):
         if len(self.shape) == sum(self.shape):
-            return self.ivy_array.to_scalar().__bool__()
+            return torch_frontend.tensor(self.ivy_array.to_scalar().__bool__())
         raise ValueError(
             "The truth value of an array with more than one element is ambiguous. "
             "Use a.any() or a.all()"
@@ -1362,6 +1379,11 @@ class Tensor:
     def sign(self):
         return torch_frontend.sign(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
+    def sign_(self):
+        self.ivy_array = self.sign().ivy_array
+        return self
+
     @numpy_to_torch_style_args
     def std(self, dim=None, unbiased=True, keepdim=False, *, out=None):
         return torch_frontend.std(
@@ -1488,6 +1510,15 @@ class Tensor:
             self, size=size, stride=stride, storage_offset=storage_offset
         )
 
+    def stride(self, dim=None):
+        strides = [
+            stride // math.ceil(ivy.dtype_bits(self.dtype) / 8)
+            for stride in self.ivy_array.strides
+        ]
+        if dim is not None:
+            return strides[dim]
+        return strides
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log1p(self):
         return torch_frontend.log1p(self)
@@ -1524,6 +1555,15 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, "torch")
     def cholesky(self, upper=False):
         return torch_frontend.cholesky(self, upper=upper)
+
+    def tile(self, *reps):
+        if (
+            isinstance(reps, Iterable)
+            and len(reps) == 1
+            and isinstance(reps[0], Iterable)
+        ):
+            reps = reps[0]
+        return torch_frontend.tile(self, reps)
 
 
 class Size(tuple):
