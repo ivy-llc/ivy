@@ -250,6 +250,44 @@ def corrcoef(
     return torch.corrcoef(xarr)
 
 
+def _nanmedian(input, axis, keepdims):
+    dtype = input.dtype
+    temp = input.to(torch.float64)
+    num_dim = len(temp.size())
+    keepdim_shape = list(temp.size())
+    q = 0.5
+
+    axis = [axis] if isinstance(axis, int) else list(axis)
+
+    for i in axis:
+        keepdim_shape[i] = 1
+    axis = [num_dim + x if x < 0 else x for x in axis]
+    axis.sort()
+    dimension = len(temp.size())
+    while len(axis) > 0:
+        axis1 = axis[0]
+        for axis2 in range(axis1 + 1, dimension):
+            temp = torch.transpose(temp, axis1, axis2)
+            axis1 = axis2
+        axis = [x - 1 for x in axis]
+        axis.pop(0)
+        dimension = dimension - 1
+    temp = torch.flatten(temp, start_dim=dimension - len(axis))
+    ret = torch.nanquantile(temp, q, dim=-1, keepdim=keepdims, interpolation="midpoint")
+    if keepdims:
+        keepdim_shape = tuple(keepdim_shape)
+        ret = ret.reshape(keepdim_shape)
+
+    if dtype in [torch.int32, torch.int64, torch.float64]:
+        ret = torch.asarray(ret, dtype=torch.float64)
+    elif dtype in [torch.float16, torch.bfloat16]:
+        ret = torch.asarray(ret, dtype=torch.float16)
+    else:
+        ret = torch.asarray(ret, dtype=torch.float32)
+
+    return ret
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def nanmedian(
     input: torch.Tensor,
@@ -262,74 +300,44 @@ def nanmedian(
 ) -> torch.Tensor:
     if overwrite_input:
         copied_input = input.clone()
-        dtype = copied_input.dtype
-        result = input.double()
-        if axis is not None:
-            if isinstance(axis, int):
-                axis = (axis,)
-            axis = list(axis)
-            for i in axis:
-                if result.dim() == 1:
-                    result = torch.quantile(
-                        result,
-                        0.5,
-                        interpolation="midpoint",
-                        keepdim=keepdims,
-                    )
-                    break
-                else:
-                    result = torch.quantile(
-                        result,
-                        0.5,
-                        dim=i,
-                        interpolation="midpoint",
-                        keepdim=keepdims,
-                    )
-        else:
-            result = torch.quantile(
-                input.double(),
+        if axis is None:
+            copied_input = copied_input.flatten()
+
+            ret = torch.nanquantile(
+                copied_input.double(),
                 0.5,
-                interpolation="midpoint",
+                dim=-1,
                 keepdim=keepdims,
+                interpolation="midpoint",
             )
 
-        result = result.to(dtype)
-
-        return result
-    dtype = input.dtype
-    result = input.double()
-    if axis is not None:
-        if isinstance(axis, int):
-            axis = (axis,)
-        axis = list(axis)
-        for i in axis:
-            if result.dim() == 1:
-                result = torch.quantile(
-                    result,
-                    0.5,
-                    interpolation="midpoint",
-                    keepdim=keepdims,
-                )
-                break
+            if input.dtype in [torch.int32, torch.int64, torch.float64]:
+                ret = ret.to(torch.float64)
+            elif input.dtype in [torch.float16, torch.bfloat16]:
+                ret = ret.to(torch.float16)
             else:
-                result = torch.quantile(
-                    result,
-                    0.5,
-                    dim=i,
-                    interpolation="midpoint",
-                    keepdim=keepdims,
-                )
+                ret = ret.to(torch.float32)
+            return ret
+
+        return _nanmedian(copied_input, axis, keepdims)
+
     else:
-        result = torch.quantile(
-            input.double(),
-            0.5,
-            interpolation="midpoint",
-            keepdim=keepdims,
-        )
+        if axis is None:
+            input = input.flatten()
 
-    result = result.to(dtype)
+            ret = torch.nanquantile(
+                input.double(), 0.5, dim=-1, keepdim=keepdims, interpolation="midpoint"
+            )
 
-    return result
+            if input.dtype in [torch.int32, torch.int64, torch.float64]:
+                ret = ret.to(torch.float64)
+            elif input.dtype in [torch.float16, torch.bfloat16]:
+                ret = ret.to(torch.float16)
+            else:
+                ret = ret.to(torch.float32)
+            return ret
+
+        return _nanmedian(input, axis, keepdims)
 
 
 nanmedian.support_native_out = True
