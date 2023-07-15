@@ -1,6 +1,7 @@
 from .generic import NDFrame
 import ivy
 
+
 class DataFrame(NDFrame):
     def __init__(
             self,
@@ -32,4 +33,3 @@ class DataFrame(NDFrame):
     def __repr__(self):
         return f"frontends.pandas.DataFrame ({self.array.to_list()}, " \
                f"index={self.index}), columns={self.columns})"
-    
