@@ -1643,8 +1643,8 @@ class _ContainerWithManipulation(ContainerBase):
         >>> y = x.tile((2,3))
         >>> print(y)
         {
-            a: (<classivy.array.array.Array>shape=[4,6]),
-            b: (<classivy.array.array.Array>shape=[2,6])
+            a: (<class ivy.data_classes.array.array.Array> shape=[4, 6]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 6])
         }
         """
         return self._static_tile(
