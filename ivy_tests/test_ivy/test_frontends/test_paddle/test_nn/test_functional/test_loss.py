@@ -118,6 +118,32 @@ def _cos_embd_loss_helper(draw):
     return input_dtypes, inputs, label
 
 
+# dice loss
+@st.composite
+def _dice_loss_helper(draw):
+    dtype_inputs_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            ret_shape=True,
+            num_arrays=2,
+            shared_dtype=True,
+            min_dim_size=2,
+        )
+    )
+
+    input_dtypes, inputs, shape = dtype_inputs_shape
+
+    _, label = draw(
+        helpers.dtype_and_values(
+            dtype=input_dtypes, shape=shape, min_value=2, max_value=4
+        ),
+    )
+
+    return input_dtypes, inputs, label
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.cosine_embedding_loss",
     dtype_xs_label=_cos_embd_loss_helper(),
@@ -154,6 +180,36 @@ def test_paddle_cosine_embedding_loss(
         label=label[0],
         margin=margin,
         reduction=reduction,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.dice_loss",
+    dtype_xs_label=_dice_loss_helper(),
+    test_with_out=st.just(False),
+    epsilon=st.floats(
+        min_value=1e-7,
+        max_value=0.8,
+    ),
+)
+def test_paddle_dice_loss(
+        dtype_xs_label,
+        epsilon,
+        test_flags,
+        fn_tree,
+        frontend,
+        on_device,
+):
+    input_dtypes, xs, label = dtype_xs_label
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=xs[0],
+        label=label[0],
+        epsilon=epsilon,
     )
 
 

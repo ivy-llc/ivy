@@ -64,7 +64,7 @@ def mse_loss(input, label, reduction="mean", name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
-    input1, input2, label, margin=0.0, reduction="mean", name=None
+        input1, input2, label, margin=0.0, reduction="mean", name=None
 ):
     if len(label.shape) != 1:
         raise ValueError("1D target tensor expected, multi-target not supported")
@@ -101,6 +101,28 @@ def cosine_embedding_loss(
         out = ivy.sum(out)
 
     return out
+
+
+@handle_exceptions
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def dice_loss(input, label, epsilon=0.00001, name=None):
+    if len(label.shape) < 2:
+        raise ValueError("The rank of input should be greater than or equal to 2.")
+
+    if input.shape != label.shape:
+        raise ValueError(
+            "the shape of input tensor 1 should be equal to input tensor 2, but found"
+            " inputs with different sizes"
+        )
+
+    intersection = ivy.sum(input * label)
+    union = ivy.sum(input) + ivy.sum(label)
+    dice = epsilon + (2 * intersection) / union + epsilon
+
+    loss = 1.0 - dice
+
+    return loss
 
 
 @with_supported_dtypes(
