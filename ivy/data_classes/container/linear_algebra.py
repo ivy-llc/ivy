@@ -1275,7 +1275,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.pinv()
         >>> print(y)
         {
-            a: ivy.array([[-2., 1.],
+            a: ivy.array([[-1.99999988, 1.],
                           [1.5, -0.5]])
         }
 
