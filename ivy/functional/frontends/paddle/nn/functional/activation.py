@@ -230,7 +230,7 @@ def silu(x, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def gumbel_softmax(x, temperature=1.0, hard=False,seed=None,name=None):
+def gumbel_softmax(x, temperature=1.0, hard=False, seed=None, name=None):
     gumbel_noise = -ivy.log(-ivy.log(ivy.random_uniform(shape= x.shape,low=1e-6,high=1.0- 1e-6,seed=seed)))
     gumbel_sample = (x + gumbel_noise) / temperature
     softmax_sample = ivy.softmax(gumbel_sample, axis=-1)
