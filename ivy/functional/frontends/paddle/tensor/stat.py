@@ -45,3 +45,25 @@ def median(x, axis=None, keepdim=False, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.median(x, axis=axis, keepdims=keepdim)
+
+#nanmedian
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    "paddle"
+)
+@to_ivy_arrays_and_back
+def nanmedian(x, axis=None):
+    x = (
+        ivy.astype(x, ivy.float64)
+        if ivy.dtype(x) == "float64"
+        else ivy.astype(x, ivy.float32)
+    )
+    return ivy.nanmedian(x, axis=axis)
+
+
+
+
+
+
+
