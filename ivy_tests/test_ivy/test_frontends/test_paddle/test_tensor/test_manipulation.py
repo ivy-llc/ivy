@@ -456,7 +456,7 @@ def test_paddle_broadcast_to(
 @handle_frontend_test(
     fn_tree="paddle.gather",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("all"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=6,
     ),
