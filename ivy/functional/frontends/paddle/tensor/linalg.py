@@ -150,4 +150,29 @@ def matrix_power(x, n, name=None):
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def cond(x, p=None, name=None):
-    return ivy.cond(x, p=p, out=name)
+    ret = ivy.cond(x, p=p, out=name)
+    if ret.shape == ():
+        ret = ret.reshape((1,))
+    return ret
+
+
+# dot
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dot(x, y, name=None):
+    x, y = promote_types_of_paddle_inputs(x, y)
+    out = ivy.multiply(x, y)
+    return ivy.sum(out, axis=ivy.get_num_dims(x) - 1, keepdims=False)
+
+
+# transpose
+@with_unsupported_dtypes({"2.5.0 and below": ("uint8", "int8", "int16")}, "paddle")
+@to_ivy_arrays_and_back
+def transpose(x, perm, name=None):
+    return ivy.permute_dims(x, axes=perm)
+
+
+@with_supported_dtypes({"2.4.1 and above": ("int64",)}, "paddle")
+@to_ivy_arrays_and_back
+def bincount(x, weights=None, minlength=0, name=None):
+    return ivy.bincount(x, weights=weights, minlength=minlength)

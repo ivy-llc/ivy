@@ -7,10 +7,11 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_partial_mixed_function,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
+    infer_dtype,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -20,7 +21,7 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
+@handle_device_shifting
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -95,6 +96,7 @@ def sinc(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -139,6 +141,7 @@ def fmax(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -186,6 +189,7 @@ def float_power(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_device_shifting
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -231,6 +235,8 @@ def copysign(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -288,6 +294,8 @@ def count_nonzero(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -344,6 +352,7 @@ def nansum(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -407,6 +416,7 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -441,6 +451,7 @@ def signbit(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -477,6 +488,7 @@ def hypot(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -531,6 +543,7 @@ def diff(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -604,6 +617,7 @@ def allclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -641,6 +655,7 @@ def fix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -681,6 +696,7 @@ def nextafter(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -722,6 +738,7 @@ def zeta(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -800,6 +817,7 @@ def gradient(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_device_shifting
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -886,6 +904,7 @@ def binarizer(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -893,7 +912,31 @@ def conj(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the complex conjugate of complex values in x.
+    Return the complex conjugate for each element ``x_i`` of the input array ``x``.
+
+    For complex number of the form
+
+    .. math::
+        a + bj
+    
+    the complex conjugate is defined as
+    
+    .. math::
+        a - bj
+
+    Hence, the returned conjugates must be computed by negating
+    the imaginary component of each element ``x_i``
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.conj.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Parameters
     ----------
@@ -943,6 +986,7 @@ def conj(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -984,6 +1028,7 @@ def ldexp(
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1093,9 +1138,9 @@ def lerp(
 
 lerp.mixed_backend_wrappers = {
     "to_add": (
-        "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -1106,6 +1151,7 @@ lerp.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1135,3 +1181,39 @@ def frexp(
     (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
     """
     return ivy.current_backend(x).frexp(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def modf(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Decompose the elements of x into fractional and integral parts.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A tuple of two arrays, the fractional and integral parts.
+
+    Examples
+    --------
+    >>> x = ivy.array([1.5, 2.7, 3.9])
+    >>> ivy.modf(x)
+    (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+    """
+    return ivy.current_backend(x).modf(x, out=out)
