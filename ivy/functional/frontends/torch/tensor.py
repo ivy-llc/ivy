@@ -1011,6 +1011,10 @@ class Tensor:
     def dot(self, tensor):
         return torch_frontend.dot(self, tensor)
 
+    @with_supported_dtypes({"2.0.1 and below": "float"}, "torch")
+    def bernoulli(self, prob, *, generator=None, out=None):
+        return torch_frontend.bernoulli(prob)
+
     # Special Methods #
     # -------------------#
 
