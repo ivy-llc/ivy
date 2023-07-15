@@ -799,16 +799,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
         >>> y = x.top_k(2)
         >>> print(y)
-        {
-            a: [
-                values = ivy.array([ 2, -1]),
-                indices = ivy.array([1, 0])
-            ],
-            b: [
-                values = ivy.array([5., 4.]),
-                indices = ivy.array([1, 0])
-            ]
-        }
+        [{
+            a: ivy.array([2, -1]),
+            b: ivy.array([5., 4.])
+        }, {
+            a: ivy.array([1, 0]),
+            b: ivy.array([1, 0])
+        }]
         """
         return self.static_top_k(
             self,
