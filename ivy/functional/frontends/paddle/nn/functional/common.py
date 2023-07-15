@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -87,7 +87,7 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
 
 
-@with_unsupported_dtypes({"2.4.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def pad(x, padding, mode="constant", value=0.0, data_format="NCHW", name=None):
     return ivy.pad(
