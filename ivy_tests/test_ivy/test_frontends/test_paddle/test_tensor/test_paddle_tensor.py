@@ -1493,7 +1493,7 @@ def test_paddle_cumprod(
     init_tree="paddle.to_tensor",
     method_name="is_complex",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes(["float", "complex"]),
         num_arrays=1,
         shared_dtype=True,
     ),
@@ -1506,11 +1506,16 @@ def test_paddle_is_complex(
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+   input_dtype, x = dtype_and_x
+    if np.iscomplexobj(x[0]):  
+        value = x[0]
+    else:
+        value = x[0].real
+    
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
-            "value": x[0],
+            "value": value,
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
