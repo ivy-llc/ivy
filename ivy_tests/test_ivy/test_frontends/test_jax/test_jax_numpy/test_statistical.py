@@ -1163,7 +1163,7 @@ def test_jax_cov(
 # percentile
 @handle_frontend_test(
     fn_tree="jax.numpy.percentile",
-    dtype_x_axis=helpers.dtype_axis(
+    dtype_x_axis=helpers.dtype_x_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         min_num_dims=1,
@@ -1172,9 +1172,12 @@ def test_jax_cov(
         max_value=1e04,
         shared_dtype=True,
     ),
-    keepdims=st.booleans(),
+    test_with_out=st.just(False),
     q=st.floats(min_value=0, max_value=100),
+    axis=st.integers(min_value=0, max_value=1),
+    interpolation=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
 )
+
 def test_jax_percentile(
     *,
     dtype_x_axis,
@@ -1182,8 +1185,9 @@ def test_jax_percentile(
     fn_tree,
     frontend,
     test_flags,
-    keepdims,
     q,
+    axis,
+    interpolation,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -1197,5 +1201,6 @@ def test_jax_percentile(
         a=x,
         q=q,
         axis=axis,
-        keepdims=keepdims,
+        interpolation=interpolation,
     )
+

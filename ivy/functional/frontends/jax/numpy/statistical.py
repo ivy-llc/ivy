@@ -490,5 +490,5 @@ def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=N
 # percentile
 
 @to_ivy_arrays_and_back
-def percentile(a, q, axis=None, out=None, overwrite_input=False, interpolation="linear", keepdims=False):
-    return ivy.percentile(a, q, axis=axis, out=out, interpolation=interpolation, keepdims=keepdims)
+def percentile(a, q, axis=None, out=None, overwrite_input=False, method='linear', keepdims=False, interpolation=None):
+    return ivy.percentile(a, q, axis=axis, out=out, overwrite_input=overwrite_input, method=method, keepdims=keepdims, interpolation=interpolation)

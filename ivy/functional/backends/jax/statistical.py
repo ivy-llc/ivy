@@ -215,3 +215,4 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+

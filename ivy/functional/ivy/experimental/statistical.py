@@ -905,3 +905,61 @@ def cummin(
     return ivy.current_backend(x).cummin(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def percentile(
+        a: Union[ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, ivy.NativeArray],
+        axis: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+        overwrite_input: Optional[bool] = False,
+        interpolation: Optional[str] = None,
+        method: Optional[str] = 'linear',
+        keepdims: Optional[bool] = False,
+) -> ivy.Array:
+    """
+    Compute the q-th percentile of the data along the specified axis.
+
+    Parameters
+    ----------
+    a : array_like
+        Input array or object that can be converted to an array.
+    q : array_like of float
+        Percentile or sequence of percentiles to compute, which must be between 0 and 100 inclusive.
+    axis : {int, tuple of int, None}, optional
+        Axis or axes along which the percentiles are computed. The default is to compute the percentile(s) along a
+        flattened version of the array.
+    out : ndarray, optional
+        Alternative output array in which to place the result. It must have the same shape and buffer length as the
+        expected output, but the type (of the output) will be cast if necessary.
+    overwrite_input : bool, optional
+        If True, then allow the input array a to be modified by intermediate calculations, to save memory.
+        In this case, the contents of the input a after this function completes is undefined.
+    interpolation : {'linear', 'lower', 'higher', 'midpoint', 'nearest'}
+        This optional parameter specifies the interpolation method to use when the desired percentile lies between two
+        data points i < j:
+        - linear: i + (j - i) * fraction, where fraction is the fractional part of the index surrounded by i and j.
+        - lower: i.
+        - higher: j.
+        - nearest: i or j, whichever is nearest.
+        - midpoint: (i + j) / 2.
+    method : {'auto', 'exact', 'approx', 'nearest'}
+        Method used to interpolate between requested percentiles. Default is 'linear'.
+    keepdims : bool, optional
+        If this is set to True, the axes which are reduced are left in the result as dimensions with size one.
+        With this option, the result will broadcast correctly against the original array a.
+
+    Returns
+    -------
+    percentile : scalar or ndarray
+        If q is a single percentile and axis=None, then the result is a scalar. If multiple percentiles are given,
+        first axis of the result corresponds to the percentiles. The other axes are the axes that remain after the
+        reduction of a. If the input contains integers or floats smaller than float64, the output data-type is
+        float64. Otherwise, the output data-type is the same as that of the input
+    """
+    return ivy.current_backend(a).percentile(
+        a, q, axis, out, overwrite_input, interpolation, method, keepdims)
