@@ -2478,8 +2478,12 @@ def ifftn(
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
-@to_native_arrays_and_back
+# @to_native_arrays_and_back
+# @handle_exceptions
 @handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
 def overlap_and_add(
     signal: Union[ivy.Array, ivy.NativeArray],
     frame_step: int,

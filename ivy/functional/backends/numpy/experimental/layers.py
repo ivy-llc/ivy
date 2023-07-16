@@ -922,3 +922,135 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+def overlap_and_add(
+    signal: np.ndarray,
+    frame_step: int,
+    name: Optional[str] = None,
+) -> np.ndarray:
+    # convert to tensor for signal
+    signal = np.asarray(signal)
+
+    # shape limit check
+    if len(signal.shape) < 2:
+        raise ValueError("input must be at least 2-D")
+
+    # convert to tensor for frame_step
+    frame_step = np.asarray(frame_step)
+
+    # check rank for frame_step
+    if len(frame_step.shape) > 1:
+        raise ValueError("frame_step must be a scalar")
+
+    # check dtype for frame_step as integer
+    if frame_step.dtype not in (np.int8, np.int16, np.int32, np.int64):
+        raise ValueError("frame_step must be an integer")
+
+    # convert frame_step to static value
+    # ex. frame_step_static = tensor_util.constant_value(frame_step)
+
+    # get signal shape as constant value
+    signal_shape = np.array(signal.shape)
+
+    # get outer_dimensions [:-2]
+    outer_dimensions = np.array(signal_shape[:-2])
+
+    # get outer_rank [:-2]
+    outer_rank = len(outer_dimensions)
+
+    # make func for full_shape
+    # full shape = outer_dimensions + inner_shape
+    # frame_length = signal_shape[-1], frames = signal_shape[-2]
+    # output_size = (frames - 1) * frame_step + frame_length
+    def full_shape(inner_shape):
+        return np.concatenate([outer_dimensions, inner_shape], axis=0)
+
+    frame_length = signal_shape[-1]
+    frames = signal_shape[-2]
+
+    # Compute output length
+    output_size = frame_length + (frames - 1) * frame_step
+
+    # If frame_length is equal to frame_step, there's no overlap so just
+    # reshape the tensor.
+    # e.g. return array_ops.reshape(signal, output_shape, name="fast_path")
+    if frame_step and signal.shape is not None and frame_step == signal.shape[-1]:
+        output_shape = full_shape([output_size])
+        return np.reshape(signal, output_shape)
+
+    # The following code is documented using this example:
+    #
+    # frame_step = 2
+    # signal.shape = (3, 5)
+    # a b c d e
+    # f g h i j
+    # k l m n o
+
+    # Compute the number of segments per frame.
+    segments = -(-frame_length // frame_step)  # Divide and round up.
+
+    # Pad the frame_length dimension to a multiple of the frame step.
+    # Pad the frames dimension by `segments` so that signal.shape = (6, 6)
+    # a b c d e 0
+    # f g h i j 0
+    # k l m n o 0
+    # 0 0 0 0 0 0
+    # 0 0 0 0 0 0
+    # 0 0 0 0 0 0
+    paddings = [
+        [0, segments],
+        [0, segments * frame_step - frame_length],
+    ]  # zero padding for frames
+    outer_paddings = np.zeros(
+        [outer_rank, 2], dtype=np.int32
+    )  # dummy for outer_rank [0, 0]
+    paddings = np.concatenate([outer_paddings, paddings], axis=0)
+    signal = np.pad(signal, paddings, mode="constant", constant_values=0)
+
+    # Reshape so that signal.shape = (3, 6, 2)
+    # ab cd e0
+    # fg hi j0
+    # kl mn o0
+    # 00 00 00
+    # 00 00 00
+    # 00 00 00
+    shape = full_shape([frames + segments, segments, frame_step])
+    signal = np.reshape(signal, shape)
+
+    # Transpose dimensions so that signal.shape = (3, 6, 2)
+    # ab fg kl 00 00 00
+    # cd hi mn 00 00 00
+    # e0 j0 o0 00 00 00
+    perm = np.concatenate(
+        [np.arange(outer_rank), outer_rank + np.array([1, 0, 2])], axis=0
+    )
+    signal = np.transpose(signal, axes=perm)
+
+    # Reshape so that signal.shape = (18, 2)
+    # ab fg kl 00 00 00 cd hi mn 00 00 00 e0 j0 o0 00 00 00
+    shape = full_shape([(frames + segments) * segments, frame_step])
+    signal = np.reshape(signal, shape)
+
+    # Truncate so that signal.shape = (15, 2)
+    # ab fg kl 00 00 00 cd hi mn 00 00 00 e0 j0 o0
+    signal = signal[..., : (frames + segments - 1) * segments, :]
+
+    # Reshape so that signal.shape = (3, 5, 2)
+    # ab fg kl 00 00
+    # 00 cd hi mn 00
+    # 00 00 e0 j0 o0
+    shape = full_shape([segments, frames + segments - 1, frame_step])
+    signal = np.reshape(signal, shape)
+
+    # Now, reduce over the columns, to achieve the desired sum.
+    signal = np.sum(signal, axis=-3)
+
+    # Flatten the array.
+    shape = full_shape([(frames + segments - 1) * frame_step])
+    signal = np.reshape(signal, shape)
+
+    # Truncate to final length.
+    signal = signal[..., :output_size]
+
+    return signal

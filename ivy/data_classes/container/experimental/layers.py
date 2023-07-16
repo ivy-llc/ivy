@@ -2023,3 +2023,105 @@ class _ContainerWithLayersExperimental(ContainerBase):
             norm=norm,
             out=out,
         )
+
+    @staticmethod
+    def static_overlap_and_add(
+        signal: ivy.Container,
+        frame_step: int,
+        name: Optional[str] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.overlap_and_add. This method simply
+        wraps the function, and so the docstring for ivy.overlap_and_add also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        signal
+            Input A '[..., frames, frame_length]' Tensor,
+            where frames, frame_length, and frame step denote returning output size.
+        frame_step
+            An integer scalar Tensor denoting overlap offsets.
+            Should be less than or equal to frame_length
+        name
+            optional string, name for the operation
+
+        Returns
+        -------
+        ret
+            A '[..., output_size]' array,
+            where output_size is (frames-1) * frame_step + frame_length
+
+        Raises
+        ------
+            ValueError: 'signal' rank should be at least 2,
+            frame_step should be integer scalar, if not, it raises ValueError.
+
+        [overlap_and_add]:
+            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],])
+        >>> ivy.overlap_and_add(a)
+        ivy.array([1, 1, 2, 2, 2, 2, 2, 2, 1, 1])
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "overlap_and_add",
+            signal,
+            frame_step=frame_step,
+            name=name,
+        )
+
+    def overlap_and_add(
+        self: ivy.Container,
+        frame_step: int,
+        name: Optional[str] = None,
+    ):
+        """
+        ivy.Container static method variant of ivy.overlap_and_add. This method simply
+        wraps the function, and so the docstring for ivy.overlap_and_add also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        signal
+            Input A '[..., frames, frame_length]' Tensor,
+            where frames, frame_length, and frame step denote returning output size.
+        frame_step
+            An integer scalar Tensor denoting overlap offsets.
+            Should be less than or equal to frame_length
+        name
+            optional string, name for the operation
+
+        Returns
+        -------
+        ret
+            A '[..., output_size]' array,
+            where output_size is (frames-1) * frame_step + frame_length
+
+        Raises
+        ------
+            ValueError: 'signal' rank should be at least 2,
+            frame_step should be integer scalar, if not, it raises ValueError.
+
+        [overlap_and_add]:
+            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],])
+        >>> ivy.overlap_and_add(a)
+        ivy.array([1, 1, 2, 2, 2, 2, 2, 2, 1, 1])
+        """
+        return self.static_overlap_and_add(
+            self,
+            frame_step=frame_step,
+            name=name,
+        )

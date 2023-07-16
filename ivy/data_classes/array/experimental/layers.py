@@ -1024,3 +1024,47 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def overlap_and_add(
+        self: ivy.Array,
+        frame_step: int,
+        name: Optional[str] = None,
+    ) -> ivy.Array:
+        r"""
+        Reconstruct a signal from a framed representation.
+
+        Parameters
+        ----------
+        signal
+            Input A '[..., frames, frame_length]' Tensor,
+            where frames, frame_length, and frame step denote returning output size.
+        frame_step
+            An integer scalar Tensor denoting overlap offsets.
+            Should be less than or equal to frame_length
+        name
+            optional string, name for the operation
+
+        Returns
+        -------
+        ret
+            A '[..., output_size]' array,
+            where output_size is (frames-1) * frame_step + frame_length
+
+        Raises
+        ------
+            ValueError: 'signal' rank should be at least 2,
+            frame_step should be integer scalar, if not, it raises ValueError.
+
+        [overlap_and_add]:
+            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],])
+        >>> ivy.overlap_and_add(a)
+        ivy.array([1, 1, 2, 2, 2, 2, 2, 2, 1, 1])
+        """
+        return ivy.overlap_and_add(self._data, frame_step, name=name)

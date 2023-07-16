@@ -327,3 +327,134 @@ def ifftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.ifftn(x, s, axes, norm)
+
+
+def overlap_and_add(
+    signal: paddle.Tensor,
+    frame_step: int,
+    name: str = None,
+) -> paddle.Tensor:
+    # convert to tensor for signal
+    signal = paddle.to_tensor(signal)
+
+    # shape limit check
+    if len(signal.shape) < 2:
+        raise ValueError("input must be at least 2-D")
+
+    # check dtype for frame_step as integer
+    if type(frame_step) not in (int,):
+        raise ValueError("frame_step must be an integer")
+
+    # Paddle Error
+    # RuntimeError: (NotFound) The kernel with key (CPU, NCHW, float16) of kernel
+    # `pad` is not registered.
+    signal_dtype = None
+    if signal.dtype == paddle.float16:
+        signal_dtype = paddle.float16
+        signal = signal.astype(paddle.float32)
+
+    # get signal shape as constant value
+    signal_shape = list(signal.shape)
+
+    # get outer_dimensions [:-2]
+    outer_dimensions = signal_shape[:-2]
+
+    # get outer_rank [:-2]
+    outer_rank = len(outer_dimensions)
+
+    # make func for full_shape
+    def full_shape(inner_shape):
+        return outer_dimensions + inner_shape
+
+    frame_length = signal_shape[-1]
+    frames = signal_shape[-2]
+
+    # Compute output length
+    output_size = frame_length + (frames - 1) * frame_step
+
+    # If frame_length is equal to frame_step, there's no overlap so just
+    # reshape the tensor.
+    if frame_step and signal.shape is not None and frame_step == signal.shape[-1]:
+        output_shape = full_shape([output_size])
+        return paddle.reshape(signal, output_shape)
+
+    # The following code is documented using this example:
+    #
+    # frame_step = 2
+    # signal.shape = (3, 5)
+    # a b c d e
+    # f g h i j
+    # k l m n o
+
+    # Compute the number of segments per frame.
+    segments = -(-frame_length // frame_step)  # Divide and round up.
+
+    # Pad the frame_length dimension to a multiple of the frame step.
+    # Pad the frames dimension by `segments` so that signal.shape = (6, 6)
+    # a b c d e 0
+    # f g h i j 0
+    # k l m n o 0
+    # 0 0 0 0 0 0
+    # 0 0 0 0 0 0
+    # 0 0 0 0 0 0
+    paddings = [
+        0,
+        segments,
+        0,
+        segments * frame_step - frame_length,
+    ]  # zero padding for frames
+    outer_paddings = [0] * outer_rank * 2  # dummy for outer_rank [0, 0]
+    outer_paddings += paddings
+
+    signal = paddle.nn.functional.pad(signal, paddings, mode="constant", value=0)
+
+    # Reshape so that signal.shape = (3, 6, 2)
+    # ab cd e0
+    # fg hi j0
+    # kl mn o0
+    # 00 00 00
+    # 00 00 00
+    # 00 00 00
+    shape = full_shape([frames + segments, segments, frame_step])
+    signal = paddle.reshape(signal, shape)
+
+    # Transpose dimensions so that signal.shape = (3, 6, 2)
+    # ab fg kl 00 00 00
+    # cd hi mn 00 00 00
+    # e0 j0 o0 00 00 00
+    perm = list(range(outer_rank)) + [1 + outer_rank, outer_rank, 2 + outer_rank]
+    signal = paddle.transpose(signal, perm=perm, name=None)
+
+    # Reshape so that signal.shape = (18, 2)
+    # ab fg kl 00 00 00 cd hi mn 00 00 00 e0 j0 o0 00 00 00
+    shape = full_shape([(frames + segments) * segments, frame_step])
+    signal = paddle.reshape(signal, shape)
+
+    # Truncate so that signal.shape = (15, 2)
+    # ab fg kl 00 00 00 cd hi mn 00 00 00 e0 j0 o0
+    signal = signal[..., : (frames + segments - 1) * segments, :]
+
+    # Reshape so that signal.shape = (3, 5, 2)
+    # ab fg kl 00 00
+    # 00 cd hi mn 00
+    # 00 00 e0 j0 o0
+    shape = full_shape([segments, frames + segments - 1, frame_step])
+    signal = paddle.reshape(signal, shape)
+
+    # Now, reduce over the columns, to achieve the desired sum.
+    signal = paddle.sum(signal, axis=-3)
+
+    # Flatten the array.
+    shape = full_shape([(frames + segments - 1) * frame_step])
+    signal = paddle.reshape(signal, shape)
+
+    # Truncate to final length.
+    signal = signal[..., :output_size]
+
+    # Paddle Error
+    # RuntimeError: (NotFound) The kernel with key (CPU, NCHW, float16) of kernel
+    # `pad` is not registered.
+    if signal_dtype is not None:
+        signal = signal.astype(signal_dtype)
+
+    return signal
