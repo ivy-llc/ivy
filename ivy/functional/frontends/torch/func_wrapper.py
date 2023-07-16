@@ -93,7 +93,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         ret = _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
-        array_fn = lambda x: ivy.is_array(x) or hasattr(x, 'ivy_array')
+        array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
         if "inplace" in kwargs and kwargs["inplace"]:
             first_array = ivy.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
@@ -130,3 +130,27 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return outputs_to_native_arrays_torch
+
+
+numpy_compatible_args = {
+    "axis": "dim",
+    "keepdims": "keepdim",
+    "x": "input",
+    "a": "input",
+    "x1": "input",
+    "x2": "other",
+}
+
+
+# noqa: F811
+def numpy_to_torch_style_args(func):  # noqa
+    """Convert argument names from NumPy style to PyTorch style."""
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        new_kwargs = {
+            numpy_compatible_args.get(key, key): value for key, value in kwargs.items()
+        }
+        return func(*args, **new_kwargs)
+
+    return wrapper
