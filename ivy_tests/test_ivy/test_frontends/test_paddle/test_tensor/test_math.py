@@ -1411,7 +1411,7 @@ def test_paddle_frac(
     )
 
 
- # asinh
+# asinh
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.asinh",
     dtype_and_x=helpers.dtype_and_values(
@@ -1435,7 +1435,7 @@ def test_paddle_asinh(
         on_device=on_device,
         atol=1e-2,
         x=x[0],
-    )   
+    )
 
 
 # max
