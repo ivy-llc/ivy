@@ -568,6 +568,7 @@ def test_paddle_silu(
     )
 
 
+# softplus
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.softplus",
     dtype_and_input=helpers.dtype_and_values(
