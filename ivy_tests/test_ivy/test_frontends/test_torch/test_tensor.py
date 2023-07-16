@@ -55,6 +55,20 @@ CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 
 # Helper functions
 @st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
+
+@st.composite
 def _dtypes(draw):
     return draw(
         st.shared(
@@ -7712,7 +7726,7 @@ def test_torch_instance_cross(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="det",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_det(
     dtype_and_x,
@@ -8550,7 +8564,7 @@ def test_torch_instance_bitwise_right_shift(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logdet",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_logdet(
     dtype_and_x,
@@ -9866,7 +9880,10 @@ def test_torch_instance_addcdiv_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="cholesky",
-    dtype_and_x=_get_dtype_and_matrix(square=True),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        square=True,
+    ),
     upper=st.booleans(),
 )
 def test_torch_instance_cholesky(
@@ -10007,6 +10024,169 @@ def test_torch_instance_tile(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "reps": reps,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_",
+    dtype_and_x = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="x_shape"),
+    ),
+    dim=st.integers(min_value=0, max_value=3),
+    dtype_and_indices=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        shape=st.shared(helpers.get_shape(), key="indices_shape"),
+    ),
+    dtype_and_src=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="src_shape"),
+    ),
+    reduce=st.sampled_from([None, "add", "multiply"]),
+)
+def test_torch_instance_scatter_(
+    dtype_and_x,
+    dim,
+    dtype_and_indices,
+    dtype_and_src,
+    reduce,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    x_dtype, x = dtype_and_x
+    indicies_dtype, indices = dtype_and_indices
+    src_dtype, src = dtype_and_src
+
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        method_input_dtypes=x_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "index": indices,
+            "src": src,
+            "reduce": reduce,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_add_",
+    dtype_and_x = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="x_shape"),
+    ),
+    dim=st.integers(min_value=0, max_value=3),
+    dtype_and_indices=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        shape=st.shared(helpers.get_shape(), key="indices_shape"),
+    ),
+    dtype_and_src=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="src_shape"),
+    ),
+)
+def test_torch_instance_scatter_add_(
+    dtype_and_x,
+    dim,
+    dtype_and_indices,
+    dtype_and_src,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    x_dtype, x = dtype_and_x
+    indicies_dtype, indices = dtype_and_indices
+    src_dtype, src = dtype_and_src
+
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        method_input_dtypes=x_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "index": indices,
+            "src": src,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="scatter_reduce_",
+    dtype_and_x = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="x_shape"),
+    ),
+    dim=st.integers(min_value=0, max_value=3),
+    dtype_and_indices=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        shape=st.shared(helpers.get_shape(), key="indices_shape"),
+    ),
+    dtype_and_src=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(), key="src_shape"),
+    ),
+    reduce=st.sampled_from(["sum", "prod", "mean", "amax", "amin"]),
+    include_self=st.booleans(),
+)
+
+def test_torch_instance_scatter_reduce_(
+    dtype_and_x,
+    dim,
+    dtype_and_indices,
+    dtype_and_src,
+    reduce,
+    include_self,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    x_dtype, x = dtype_and_x
+    indicies_dtype, indices = dtype_and_indices
+    src_dtype, src = dtype_and_src
+
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        method_input_dtypes=x_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_all_as_kwargs_np={
+            "dim": dim,
+            "index": indices,
+            "src": src,
+            "reduce": reduce,
+            "include_self": include_self,
         },
         init_flags=init_flags,
         method_flags=method_flags,

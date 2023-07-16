@@ -15,7 +15,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
-from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
 
 # helpers
@@ -44,6 +43,20 @@ def _get_dtype_and_matrix(
             lambda x: np.all(np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon)
         )
     return draw(ret)
+
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
 
 
 # vector_norm
@@ -1227,7 +1240,7 @@ def test_torch_solve_ex(
 
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky_ex",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
     upper=st.booleans(),
 )
 def test_torch_cholesky_ex(
