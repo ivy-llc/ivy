@@ -195,14 +195,9 @@ def relu_(x, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def elu(
-    x,
-    /,
-    *,
-    alpha=1.0,
-    name=None,
-):
-    return ivy.elu(x, alpha=alpha)
+def elu(x, alpha=1.0, name=None):
+    ivy_elu = ivy.where(x > 0, x, alpha * (ivy.exp(x) - 1))
+    return ivy.astype(ivy_elu, x.dtype)
 
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
