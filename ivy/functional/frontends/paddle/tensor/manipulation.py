@@ -96,3 +96,12 @@ def cast(x, dtype):
 @to_ivy_arrays_and_back
 def broadcast_to(x, shape, name=None):
     return ivy.broadcast_to(x, shape)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float64", "complex128", "float32", "complex64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def tensordot(x,y, axes=2,name=None):
+    return ivy.tensordot(x, y, axes=axes)

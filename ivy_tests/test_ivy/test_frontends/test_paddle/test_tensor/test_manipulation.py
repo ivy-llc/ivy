@@ -5,7 +5,9 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_value1_value2_axis_for_tensordot,
+)
 
 # Helpers #
 # ------ #
@@ -449,4 +451,29 @@ def test_paddle_broadcast_to(
         on_device=on_device,
         x=x[0],
         shape=shape,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensordot",
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_tensordot(
+    dtype_values_and_axes,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    dtype, x, y, axes = dtype_values_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x,
+        y=y,
+        axes=axes,
     )
