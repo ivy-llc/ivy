@@ -408,5 +408,5 @@ def sparse_bsc_tensor(
         dense_shape=size,
         format="bsc",
         ccol_indices=ccol_indices,
-        row_indices=row_indices, 
+        row_indices=row_indices,
     )
