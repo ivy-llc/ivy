@@ -270,10 +270,8 @@ def avg_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    if data_format == "NWC" or "NCL":
+    if data_format in ("NWC", "NCL"):
         x = x.permute(0, 2, 1)
-    # elif data_format == "NCL":
-    #     x = x.permute(0, 2, 1)
 
     x_shape = x.shape[2]
     if isinstance(padding, str):
@@ -313,10 +311,9 @@ def avg_pool1d(
 
         res = (kernel[0] * res) / (kernel[0] - num_padded_values)
 
-    if data_format == "NWC":
+    if data_format in ("NWC", "NCL"):
         res = res.permute(0, 2, 1)
-    elif data_format == "NCL":
-        res = res.permute(0, 2, 1)
+
     return res
 
 

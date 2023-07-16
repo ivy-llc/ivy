@@ -201,10 +201,9 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW" or "NCL":
+    if data_format in ("NCW", "NCL"):
+        print("why")
         x = tf.transpose(x, (0, 2, 1))
-    # elif data_format == "NCL":
-    #     x = tf.transpose(x, (0, 2, 1))
 
     manual_padding = False
     # Have to manually pad if explicit padding is provided, or if ceil_mode is True
@@ -244,9 +243,7 @@ def avg_pool1d(
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
-        res = tf.transpose(res, (0, 2, 1))
-    elif data_format == "NCL":
+    if data_format in ("NCW", "NCL"):
         res = tf.transpose(res, (0, 2, 1))
     return res
 
