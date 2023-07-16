@@ -103,5 +103,6 @@ def broadcast_to(x, shape, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def gather(x, indices, axis=0, name=None):
-    return ivy.gather(x, indices, axis=axis)
+def gather(params, indices, axis=-1, batch_dims=0, name=None):
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
