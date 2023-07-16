@@ -1,8 +1,10 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back, \
-    outputs_to_frontend_arrays
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    outputs_to_frontend_arrays,
+)
 
 
 @to_ivy_arrays_and_back
@@ -319,9 +321,12 @@ def sparse_coo_tensor(
     dtype=None,
     device=None,
     requires_grad=False,
-    check_invariants=None):
-    return ivy.SparseArray(coo_indices=indices, values=values, dense_shape=size,
-                           format="coo")
+    check_invariants=None,
+):
+    return ivy.SparseArray(
+        coo_indices=indices, values=values, dense_shape=size,
+                           format="coo"
+    )
 
 
 @outputs_to_frontend_arrays
@@ -336,9 +341,13 @@ def sparse_csr_tensor(
     requires_grad=False,
     check_invariants=None,
 ):
-    return ivy.SparseArray(values=values, dense_shape=size, format="csr",
-                           crow_indices=crow_indices,
-                           col_indices=col_indices)
+    return ivy.SparseArray(
+        values=values,
+        dense_shape=size,
+        format="csr",
+        crow_indices=crow_indices,
+        col_indices=col_indices
+    )
 
 
 @outputs_to_frontend_arrays
@@ -353,9 +362,13 @@ def sparse_csc_tensor(
     requires_grad=False,
     check_invariants=None,
 ):
-    return ivy.SparseArray(values=values, dense_shape=size, format="csc",
-                           ccol_indices=ccol_indices,
-                           row_indices=row_indices)
+    return ivy.SparseArray(
+        values=values,
+        dense_shape=size,
+        format="csc",
+        ccol_indices=ccol_indices,
+        row_indices=row_indices
+    )
 
 
 @outputs_to_frontend_arrays
@@ -370,9 +383,12 @@ def sparse_bsr_tensor(
     requires_grad=False,
     check_invariants=None,
 ):
-    return ivy.SparseArray(values=values, dense_shape=size, format="bsr",
-                           crow_indices=crow_indices,
-                           col_indices=col_indices)
+    return ivy.SparseArray(
+        values=values,
+        dense_shape=size,
+        format="bsr",
+        crow_indices=crow_indices,
+        col_indices=col_indices)
 
 
 @outputs_to_frontend_arrays
@@ -387,6 +403,10 @@ def sparse_bsc_tensor(
     requires_grad=False,
     check_invariants=None,
 ):
-    return ivy.SparseArray(values=values, dense_shape=size, format="bsc",
-                           ccol_indices=ccol_indices,
-                           row_indices=row_indices)
+    return ivy.SparseArray(
+        values=values,
+        dense_shape=size,
+        format="bsc",
+        ccol_indices=ccol_indices,
+        row_indices=row_indices
+    )
