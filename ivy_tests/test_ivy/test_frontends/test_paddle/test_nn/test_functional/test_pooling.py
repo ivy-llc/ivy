@@ -16,10 +16,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_side=3,
     ),
     ceil_mode=st.booleans(),
+    data_format=st.sampled_from(["NCW", "NWC"]),
 )
 def test_paddle_avg_pool1d(
     dtype_x_k_s,
     ceil_mode,
+    data_format,
     *,
     test_flags,
     frontend,
@@ -28,8 +30,8 @@ def test_paddle_avg_pool1d(
 ):
     input_dtype, x, kernel, stride, padding = dtype_x_k_s
 
-    if len(stride) == 1:
-        stride = stride[0]
+    if data_format == "NCW":
+        x[0] = x[0].reshape((x[0].shape[0], x[0].shape[2], x[0].shape[1]))
 
     if padding == "VALID":
         ceil_mode = False
@@ -45,4 +47,5 @@ def test_paddle_avg_pool1d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
+        # data_format=data_format,
     )

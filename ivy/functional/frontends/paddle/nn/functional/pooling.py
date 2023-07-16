@@ -28,7 +28,7 @@ def avg_pool1d(
     padding=0,
     /,
     *,
-    data_format: str = "NWC",
+    data_format: str = "NCW",
     count_include_pad=False,
     ceil_mode=False,
     divisor_override=None,
