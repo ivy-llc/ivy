@@ -15,6 +15,8 @@ from ivy.functional.frontends.torch.func_wrapper import (
     _to_ivy_array,
     numpy_to_torch_style_args,
 )
+import copy
+from ivy.utils.exceptions import IvyAttributeError
 
 
 class Tensor:
@@ -1494,6 +1496,46 @@ class Tensor:
         ):
             reps = reps[0]
         return torch_frontend.tile(self, reps)
+
+    def is_sparse(self):
+        return ivy.is_ivy_sparse_array(self.ivy_array)
+
+    def to_dense(self):
+        if not self.is_sparse():
+            return self
+        cp_obj = copy.deepcopy(self)
+        cp_obj.ivy_array = self.ivy_array.to_dense_array()
+        return self
+
+    def values(self):
+        if self.is_sparse():
+            return self.ivy_array.values
+        raise IvyAttributeError("Only sparse arrays have values")
+
+    def indices(self):
+        if self.is_sparse() and self.ivy_array.indices is not None:
+            return self.ivy_array.indices
+        raise IvyAttributeError("Only sparse COO arrays have indices")
+
+    def crow_indices(self):
+        if self.is_sparse() and self.ivy_array.crow_indices is not None:
+            return self.ivy_array.crow_indices
+        raise IvyAttributeError("Only sparse CSR or BSR arrays have crow_indices")
+
+    def col_indices(self):
+        if self.is_sparse() and self.ivy_array.col_indices is not None:
+            return self.ivy_array.col_indices
+        raise IvyAttributeError("Only sparse CSR or BSR arrays have col_indices")
+
+    def ccol_indices(self):
+        if self.is_sparse() and self.ivy_array.ccol_indices is not None:
+            return self.ivy_array.ccol_indices
+        raise IvyAttributeError("Only sparse CSC or BSC arrays have ccol_indices")
+
+    def row_indices(self):
+        if self.is_sparse() and self.ivy_array.row_indices is not None:
+            return self.ivy_array.row_indices
+        raise IvyAttributeError("Only sparse CSC or BSC arrays have row_indices")
 
 
 class Size(tuple):
