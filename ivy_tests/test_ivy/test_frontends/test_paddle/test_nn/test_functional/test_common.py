@@ -190,29 +190,19 @@ def test_paddle_zeropad2d(
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.pad",
-    d_type_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=1,
-        shared_dtype=True,
-        min_value=2,
-        max_value=5,
-        min_dim_size=2,
-        shape=(4, 4),
-        data_format=st.sampled_from(["NCHW", "NHWC"]),
-        padding=st.tuples(int, int, int, int),
-    ),
-)
+    d_type_and_x_paddings=_zero2pad(),
+    dataformat=st.sampled_from(["NCHW", "NHWC"]),
+    )
 def test_paddle_pad(
     *,
-    d_type_and_x,
+    d_type_and_x_paddings,
     on_device,
     fn_tree,
     frontend,
     test_flags,
-    padding,
     dataformat,
 ):
-    dtype, x = d_type_and_x
+    dtype, x, padding = d_type_and_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -221,5 +211,5 @@ def test_paddle_pad(
         on_device=on_device,
         x=x[0],
         padding=padding,
-        dataformat=dataformat,
+        data_format=dataformat,
     )
