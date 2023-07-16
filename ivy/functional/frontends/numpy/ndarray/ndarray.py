@@ -267,7 +267,7 @@ class ndarray:
         return np_frontend.copy(self, order=order)
 
     def put(self, ind, v, mode="raise"):
-        return np_frontend.put(self, ind, v, mode="raise")
+        return np_frontend.put(self, ind, v, mode=mode)
 
     def nonzero(
         self,

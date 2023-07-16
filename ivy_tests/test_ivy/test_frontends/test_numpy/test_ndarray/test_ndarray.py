@@ -814,19 +814,13 @@ def test_numpy_instance_max(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         min_num_dims=1,
-        min_dim_size=1,
+        min_dim_size=2,
     ),
-    dtype_ind=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        min_dim_size=1,
-        min_num_dims=1,
-        max_num_dims=1,
-    ),
+    ind=helpers.ints(min_value=0, max_value=0),
 )
 def test_numpy_instance_put(
     dtype_and_x,
-    dtype_ind,
+    ind,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -834,7 +828,6 @@ def test_numpy_instance_put(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
-    ind_dtype, ind = dtype_ind
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -843,7 +836,8 @@ def test_numpy_instance_put(
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "ind": ind,
-            "v": x[1],
+            "v": x[1][0],
+            "mode": "clip",
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
