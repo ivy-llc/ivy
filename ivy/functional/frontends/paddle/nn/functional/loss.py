@@ -178,5 +178,4 @@ def l1_loss(
     out = reduction(sum_diff)
     if out.shape == ():
         out = out.expand_dims()
-
-    return  paddle.to_tensor(out)
+    return paddle.to_tensor(out)
