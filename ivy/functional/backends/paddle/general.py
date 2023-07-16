@@ -408,12 +408,8 @@ def scatter_nd(
                 paddle.gather_nd(target.cast("float32"), indices),
             ).cast(target.dtype)
         if paddle.is_complex(target):
-            result_real = paddle.scatter_nd_add(
-                target.real(), indices, updates.real().cast(target.dtype)
-            )
-            result_imag = paddle.scatter_nd_add(
-                target.imag(), indices, updates.imag().cast(target.dtype)
-            )
+            result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
+            result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
             ret = paddle.complex(result_real, result_imag)
         else:
             ret = paddle.scatter_nd_add(

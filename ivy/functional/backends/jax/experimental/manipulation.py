@@ -403,7 +403,7 @@ def fill_diagonal(
     /,
     *,
     wrap: bool = False,
-) -> jnp.DeviceArray:
+) -> JaxArray:
     shape = jnp.array(a.shape)
     end = None
     if len(shape) == 2:
