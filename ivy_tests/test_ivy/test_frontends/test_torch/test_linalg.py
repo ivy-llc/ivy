@@ -45,6 +45,20 @@ def _get_dtype_and_matrix(
         )
     return draw(ret)
 
+@st.composite
+def _get_dtype_and_square_matrix(draw):
+    dim_size = draw(helpers.ints(min_value=2, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", full=True))
+    dtype = [
+        draw(st.sampled_from(tuple(set(dtype).difference({"bfloat16", "float16"}))))
+    ]
+    mat = draw(
+        helpers.array_values(
+            dtype=dtype[0], shape=(dim_size, dim_size), min_value=0, max_value=10
+        )
+    )
+    return dtype, mat
+
 
 # vector_norm
 @handle_frontend_test(

@@ -15,10 +15,20 @@ from ivy.functional.frontends.torch.func_wrapper import (
     _to_ivy_array,
     numpy_to_torch_style_args,
 )
+import copy
+from ivy.utils.exceptions import IvyAttributeError
 
 
 class Tensor:
     def __init__(self, array, device=None, _init_overload=False):
+
+        if ivy.is_ivy_sparse_array(array):
+            self.ivy_array = array
+            return
+        elif ivy.is_native_sparse_array(array):
+            self.ivy_array = ivy.SparseArray(array)
+            return
+
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -1494,6 +1504,87 @@ class Tensor:
         ):
             reps = reps[0]
         return torch_frontend.tile(self, reps)
+
+    def scatter_(self, dim, index, src, reduce=None):
+        if reduce is not None:
+            if reduce not in ["add", "multiply"]:
+                raise Exception(
+                    f"Unsupported reduce operation '{reduce}', "
+                    "only 'add', 'multiply' and 'sum' are supported."
+                )
+            if reduce == "add":
+                reduce = "sum"
+            elif reduce == "multiply":
+                reduce = "prod"
+        self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=self)
+        return self
+
+    scatter = scatter_
+
+    def scatter_add_(self, dim, index, src):
+        self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction="sum", out=self)
+        return self
+
+    scatter_add = scatter_add_
+
+    def scatter_reduce_(self, dim, index, src, reduce, include_self=True):
+        if reduce not in ["sum", "prod", "mean", "amax", "amin"]:
+            raise Exception(
+                f"Unsupported reduce operation '{reduce}', "
+                "only 'sum', 'prod', 'mean', 'amax' and 'amin' are supported."
+            )
+        if reduce == "amax":
+            reduce = "max"
+        elif reduce == "amin":
+            reduce = "min"
+        if include_self:
+            self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=self)
+        else:
+            self.ivy_array = ivy.scatter_nd(indices=index, updates=src, reduction=reduce, out=None)
+        return self
+
+    def scatter_reduce(self, dim, index, src, reduce, include_self=True):
+        return self.scatter_reduce_(self, dim=dim, index=index, src=src, reduce=reduce, include_self=True)
+
+    def is_sparse(self):
+        return ivy.is_ivy_sparse_array(self.ivy_array)
+
+    def to_dense(self):
+        if not self.is_sparse():
+            return self
+        cp_obj = copy.deepcopy(self)
+        cp_obj.ivy_array = self.ivy_array.to_dense_array()
+        return self
+
+    def values(self):
+        if self.is_sparse():
+            return self.ivy_array.values
+        raise IvyAttributeError("Only sparse arrays have values")
+
+    def indices(self):
+        if self.is_sparse() and self.ivy_array.indices is not None:
+            return self.ivy_array.indices
+        raise IvyAttributeError("Only sparse COO arrays have indices")
+
+    def crow_indices(self):
+        if self.is_sparse() and self.ivy_array.crow_indices is not None:
+            return self.ivy_array.crow_indices
+        raise IvyAttributeError("Only sparse CSR or BSR arrays have crow_indices")
+
+    def col_indices(self):
+        if self.is_sparse() and self.ivy_array.col_indices is not None:
+            return self.ivy_array.col_indices
+        raise IvyAttributeError("Only sparse CSR or BSR arrays have col_indices")
+
+    def ccol_indices(self):
+        if self.is_sparse() and self.ivy_array.ccol_indices is not None:
+            return self.ivy_array.ccol_indices
+        raise IvyAttributeError("Only sparse CSC or BSC arrays have ccol_indices")
+
+    def row_indices(self):
+        if self.is_sparse() and self.ivy_array.row_indices is not None:
+            return self.ivy_array.row_indices
+        raise IvyAttributeError("Only sparse CSC or BSC arrays have row_indices")
 
 
 class Size(tuple):
