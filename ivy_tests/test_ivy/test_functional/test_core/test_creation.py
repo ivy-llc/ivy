@@ -5,9 +5,9 @@ from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
@@ -200,9 +200,10 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
-    x_list = ivy.nested_map(x, lambda x: x.tolist(), shallow=False)
-    sh = draw(helpers.get_shape(min_num_dims=1))
-    sh = ivy.Shape(sh)
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
+        sh = draw(helpers.get_shape(min_num_dims=1))
+        sh = ivy_backend.Shape(sh)
     # np_array = x[0]
     # dim = draw(helpers.get_shape(min_num_dims=1))
     # nested_values = draw(
@@ -375,10 +376,11 @@ def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 @st.composite
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
-    if ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype):
+            return draw(helpers.ints(min_value=0, max_value=5))
+        if ivy_backend.is_int_dtype(dtype):
+            return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -646,6 +648,7 @@ def test_copy_array(
     test_flags,
     dtype_and_x,
     to_ivy_array_bool,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -653,32 +656,42 @@ def test_copy_array(
     if test_flags.as_variable[0]:
         assume("float" in dtype[0])
     # smoke test
-    x = test_flags.apply_flags(x, dtype, on_device, 0)[0]
-    test_flags.instance_method = (
-        test_flags.instance_method if not test_flags.native_arrays[0] else False
-    )
-    if test_flags.instance_method:
-        ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
-    else:
-        ret = ivy.copy_array(x, to_ivy_array=to_ivy_array_bool)
-    # type test
-    test_ret = ret
-    test_x = x
-    if test_flags.container[0]:
-        assert ivy.is_ivy_container(ret)
-        test_ret = ret["a"]
-        test_x = x["a"]
-    if to_ivy_array_bool:
-        assert ivy.is_ivy_array(test_ret)
-    else:
-        assert ivy.is_native_array(test_ret)
-    # cardinality test
-    assert test_ret.shape == test_x.shape
-    # value test
-    x, ret = ivy.to_ivy(x), ivy.to_ivy(ret)
-    x_np, ret_np = helpers.flatten_and_to_np(ret=x), helpers.flatten_and_to_np(ret=ret)
-    helpers.value_test(ret_np_flat=ret_np, ret_np_from_gt_flat=x_np)
-    assert id(x) != id(ret)
+    with update_backend(backend_fw) as ivy_backend:
+        x = test_flags.apply_flags(
+            x, dtype, 0, backend=backend_fw, on_device=on_device
+        )[0]
+        test_flags.instance_method = (
+            test_flags.instance_method if not test_flags.native_arrays[0] else False
+        )
+        if test_flags.instance_method:
+            ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
+        else:
+            ret = ivy_backend.copy_array(x, to_ivy_array=to_ivy_array_bool)
+        # type test
+        test_ret = ret
+        test_x = x
+        if test_flags.container[0]:
+            assert ivy_backend.is_ivy_container(ret)
+            test_ret = ret["a"]
+            test_x = x["a"]
+        if to_ivy_array_bool:
+            assert ivy_backend.is_ivy_array(test_ret)
+        else:
+            assert ivy_backend.is_native_array(test_ret)
+        # cardinality test
+        assert test_ret.shape == test_x.shape
+        # value test
+        x, ret = ivy_backend.to_ivy(x), ivy_backend.to_ivy(ret)
+        x_np, ret_np = helpers.flatten_and_to_np(
+            backend=backend_fw, ret=x
+        ), helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+        helpers.value_test(
+            backend=backend_fw,
+            ground_truth_backend=backend_fw,
+            ret_np_flat=ret_np,
+            ret_np_from_gt_flat=x_np,
+        )
+        assert id(x) != id(ret)
 
 
 @st.composite
