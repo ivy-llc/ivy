@@ -219,19 +219,44 @@ def check_docstring_examples_run(
 
 
 # conditional checks that specific functions/backends require
-# at least two doc tests should pass to assume problem is spesific to backend
+# at least two doc tests should pass to assume problem is specific to a backend
 def skip_conditional(fn_name: str, backend_name: str) -> bool:
     skip_list_conditional_first = {
         # jax doesn't support inplace updates
         "assert_supports_inplace": "jax",
-        "scaled_dot_product_attention": "jax",
         "mean": "torch",
         "prod": "numpy",
+        "abs": "tensorflow",
+        "avg_pool2d": "torch",
+        "avg_pool3d": "torch",
+        "fourier_encode": "torch",
+        "frombuffer": "torch",
+        "max_pool3d": "torch",
+        "std": "torch",
+        "eigh_tridiagonal": "tensorflow",
+        "isreal": "tensorflow",
+        "reciprocal": "tensorflow",
+        "finfo": "torch",
+        "histogram": "torch",
+        "inplace_update": "torch",
+        "layer_norm": "torch",
+        "linear": "torch",
+        "outer": "torch",
+        "quantile": "torch",
+        "where": "torch",
 
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
+        "assert_supports_inplace": "tensorflow",
         "prod": "torch",
+        "abs": "torch",
+        "avg_pool2d": "tensorflow",
+        "avg_pool3d": "tensorflow",
+        "fourier_encode": "tensorflow",
+        "frombuffer": "tensorflow",
+        "max_pool3d": "tensorflow",
+        "std": "tensorflow",
     }
     try:
         if (
@@ -324,8 +349,10 @@ def test_docstrings(backend):
         "max_pool2d",
         "pinv",
         "relu6",
-        # exec and self run generates diff results ( CpuDevice with id vs cpu)
+        # exec and self run generates diff results
         "dev",
+        "scaled_dot_product_attention",
+
     ]
     # currently_being_worked_on = ["layer_norm"]
 
@@ -362,8 +389,6 @@ def test_docstrings(backend):
 
         elif k == "Container":
             for method_name in dir(v):
-                if method_name == "prod" and backend == "torch":
-                    x = 1
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
                     if (
@@ -390,8 +415,6 @@ def test_docstrings(backend):
                     failures.append("Container." + method_name)
 
         else:
-            if k == "abs":
-                x = 1
             if (
                # v is not ivy.GlobalsDict
                 k in to_skip
