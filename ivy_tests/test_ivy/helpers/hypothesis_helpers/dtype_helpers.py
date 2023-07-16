@@ -187,7 +187,7 @@ def get_dtypes(
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
             valid_dtypes = set(
                 retrieval_fn(
-                    test_globals.CURRENT_BACKEND
+                    test_globals.CURRENT_BACKEND,
                     mixed_fn_dtypes=mixed_fn_dtypes,
                     kind=kind,
                 )
