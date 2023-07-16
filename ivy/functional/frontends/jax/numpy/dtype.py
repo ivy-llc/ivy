@@ -82,3 +82,7 @@ def promote_types(type1, type2, /):
 @to_ivy_arrays_and_back
 def result_type(*args):
     return ivy.result_type(*args)
+
+@to_ivy_arrays_and_back
+def finfo(dtype):
+    return ivy.finfo(dtype)

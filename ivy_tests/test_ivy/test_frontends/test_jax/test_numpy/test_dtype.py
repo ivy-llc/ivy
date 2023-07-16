@@ -94,3 +94,20 @@ def test_jax_result_type(*, dtype_and_x, test_flags, on_device, fn_tree, fronten
         test_values=False,
         **kw,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.finfo",
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_jax_finfo(*, dtype, test_flags, on_device, fn_tree, frontend):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtype[0],
+        test_values=False,
+    )
