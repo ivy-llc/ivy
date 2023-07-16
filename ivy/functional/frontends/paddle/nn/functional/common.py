@@ -85,3 +85,20 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     else:
         raise ValueError("Unknown data_format: {}".format(data_format))
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def interpolate(
+    x,
+    size=None,
+    scale_factor=None,
+    mode="nearest",
+    align_corners=False,
+    align_mode=0,
+    data_format="NCHW",
+    name=None,
+):
+    return ivy.interpolate(
+        x, size=size, mode=mode, scale_factor=scale_factor, align_corners=align_corners
+    )
