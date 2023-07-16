@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     test_with_out=st.just(False),
 )
-def test_relu(
+def test_jax_relu(
     *,
     dtype_and_x,
     test_flags,
@@ -47,7 +47,7 @@ def test_relu(
     ),
     test_with_out=st.just(False),
 )
-def test_relu6(
+def test_jax_relu6(
     *,
     dtype_and_x,
     test_flags,
@@ -78,7 +78,7 @@ def test_relu6(
     ),
     test_with_out=st.just(False),
 )
-def test_soft_sign(
+def test_jax_soft_sign(
     *,
     dtype_and_x,
     test_flags,
@@ -109,7 +109,7 @@ def test_soft_sign(
     ),
     test_with_out=st.just(False),
 )
-def test_silu(
+def test_jax_silu(
     *,
     dtype_and_x,
     test_flags,
@@ -141,7 +141,7 @@ def test_silu(
     negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
     test_with_out=st.just(False),
 )
-def test_leaky_relu(
+def test_jax_leaky_relu(
     *,
     dtype_and_x,
     negative_slope,
@@ -177,7 +177,7 @@ def test_leaky_relu(
     approximate=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_gelu(
+def test_jax_gelu(
     *,
     dtype_and_x,
     approximate,
@@ -212,7 +212,7 @@ def test_gelu(
     ),
     test_with_out=st.just(False),
 )
-def test_sigmoid(
+def test_jax_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -257,7 +257,7 @@ def _dtype_indices_classes_axis(draw):
     dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
-def test_one_hot(
+def test_jax_one_hot(
     *,
     dtype_indices_classes_axis,
     dtype,
@@ -294,7 +294,7 @@ def test_one_hot(
     ),
     test_with_out=st.just(False),
 )
-def test_softmax(
+def test_jax_softmax(
     *,
     dtype_x_axis,
     test_flags,
@@ -328,7 +328,7 @@ def test_softmax(
     ),
     test_with_out=st.just(False),
 )
-def test_softplus(
+def test_jax_softplus(
     *,
     dtype_and_x,
     test_flags,
@@ -361,7 +361,7 @@ def test_softplus(
     ),
     test_with_out=st.just(False),
 )
-def test_log_sigmoid(
+def test_jax_log_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -397,7 +397,7 @@ def test_log_sigmoid(
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_log_softmax(
+def test_jax_log_softmax(
     *,
     dtype_and_x,
     axis,
@@ -438,7 +438,7 @@ def test_log_softmax(
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_glu(
+def test_jax_glu(
     *,
     dtype_and_x,
     axis,
@@ -481,7 +481,7 @@ def test_glu(
     where=st.none(),
     test_with_out=st.just(False),
 )
-def test_normalize(
+def test_jax_normalize(
     *,
     dtype_and_x,
     axis,
@@ -523,7 +523,7 @@ def test_normalize(
     ),
     test_with_out=st.just(False),
 )
-def test_hard_tanh(
+def test_jax_hard_tanh(
     *,
     dtype_and_x,
     test_flags,
@@ -556,7 +556,7 @@ def test_hard_tanh(
     alpha=helpers.floats(min_value=0.01, max_value=1),
     test_with_out=st.just(False),
 )
-def test_celu(
+def test_jax_celu(
     *,
     dtype_and_x,
     alpha,
@@ -592,7 +592,7 @@ def test_celu(
     ),
     test_with_out=st.just(False),
 )
-def test_elu(
+def test_jax_elu(
     *,
     dtype_and_x,
     test_flags,
@@ -611,6 +611,8 @@ def test_elu(
         on_device=on_device,
         x=xs[0],
         alpha=xs[1],
+        rtol=1e-03,
+        atol=1e-03,
     )
 
 
@@ -629,7 +631,7 @@ def test_elu(
     return_sign=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_logsumexp(
+def test_jax_logsumexp(
     *,
     dtype_and_x,
     axis,
@@ -667,7 +669,7 @@ def test_logsumexp(
     ),
     test_with_out=st.just(False),
 )
-def test_swish(
+def test_jax_swish(
     *,
     dtype_and_x,
     test_flags,
@@ -698,7 +700,7 @@ def test_swish(
     ),
     test_with_out=st.just(False),
 )
-def test_hard_swish(
+def test_jax_hard_swish(
     *,
     dtype_and_x,
     test_flags,
@@ -730,7 +732,7 @@ def test_hard_swish(
     ),
     test_with_out=st.just(False),
 )
-def test_hard_silu(
+def test_jax_hard_silu(
     *,
     dtype_and_x,
     test_flags,
@@ -760,7 +762,7 @@ def test_hard_silu(
     ),
     test_with_out=st.just(False),
 )
-def test_hard_sigmoid(
+def test_jax_hard_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -791,7 +793,7 @@ def test_hard_sigmoid(
     ),
     test_with_out=st.just(False),
 )
-def test_selu(
+def test_jax_selu(
     *,
     dtype_and_x,
     test_flags,

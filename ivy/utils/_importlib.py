@@ -30,7 +30,7 @@ class LocalIvyImporter:
         path_hooks.remove(self.finder)
         sys.meta_path.remove(self.finder)
         global IS_COMPILING_WITH_BACKEND
-        IS_COMPILING_WITH_BACKEND = True
+        IS_COMPILING_WITH_BACKEND = False
 
 
 def _clear_cache():

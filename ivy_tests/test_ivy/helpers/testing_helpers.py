@@ -221,24 +221,44 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             fn_name = "_" + fn_name
 
     for backend_str in available_frameworks:
-        with update_backend(backend_str) as backend:
-            _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
+        with update_backend(backend_str) as ivy_backend:
+            _tmp_mod = importlib.import_module(fn_module) # TODO use dynamic import?
             _fn = _tmp_mod.__dict__[fn_name]
-            devices_and_dtypes = backend.function_supported_devices_and_dtypes(_fn)
-            try:
-                # Issue with bfloat16 and tensorflow
-                if "bfloat16" in devices_and_dtypes["gpu"]:
-                    tmp = list(devices_and_dtypes["gpu"])
-                    tmp.remove("bfloat16")
-                    devices_and_dtypes["gpu"] = tuple(tmp)
-            except KeyError:
-                pass
+            # for partial mixed functions we should pass the backend function
+            # to ivy.function_supported_devices_and_dtypes
+            if hasattr(_fn, "mixed_backend_wrappers") and ivy_backend.__dict__[fn_name] != _fn:
+                _fn = ivy_backend.__dict__[fn_name]
+            devices_and_dtypes = ivy_backend.function_supported_devices_and_dtypes(_fn)
+            devices_and_dtypes = (
+                tuple(devices_and_dtypes.values())
+                if "compositional" in devices_and_dtypes.keys()
+                else (devices_and_dtypes,)
+            )
+            # Issue with bfloat16 and tensorflow
+            for device_and_dtype in devices_and_dtypes:
+                try:
+                    if "bfloat16" in device_and_dtype["gpu"]:
+                        tmp = list(device_and_dtype["gpu"])
+                        tmp.remove("bfloat16")
+                        device_and_dtype["gpu"] = tuple(tmp)
+                except KeyError:
+                    pass
             organized_dtypes = {}
-            for device in devices_and_dtypes.keys():
-                organized_dtypes[device] = _partition_dtypes_into_kinds(
-                    backend_str, devices_and_dtypes[device]
-                )
-            supported_device_dtypes[backend_str] = organized_dtypes
+            all_organized_dtypes = []
+            for device_and_dtype in devices_and_dtypes:
+                for device in device_and_dtype.keys():
+                    organized_dtypes[device] = _partition_dtypes_into_kinds(
+                        ivy_backend, device_and_dtype[device]
+                    )
+                all_organized_dtypes.append(organized_dtypes)
+            supported_device_dtypes[backend_str] = (
+                {
+                    "compositional": all_organized_dtypes[0],
+                    "primary": all_organized_dtypes[1],
+                }
+                if len(all_organized_dtypes) > 1
+                else all_organized_dtypes[0]
+            )
     return supported_device_dtypes
 
 

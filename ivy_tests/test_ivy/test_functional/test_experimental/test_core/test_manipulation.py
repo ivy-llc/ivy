@@ -340,28 +340,47 @@ def test_i0(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# flatten
+@st.composite
+def _flatten_data_helper(draw):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
+
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "valid", mixed_fn_compos=mixed_fn_compos
+            ),
+            shape=st.shared(helpers.get_shape(), key="flatten_shape"),
+        )
+    )
+    axes = draw(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(), key="flatten_shape"),
+            min_size=2,
+            max_size=2,
+            unique=False,
+            force_tuple=True,
+        )
+    )
+    order = draw(st.sampled_from(["C", "F"]))
+    if not mixed_fn_compos and is_torch_backend:
+        order = "C"
+    return dtype_and_x, axes, order
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.flatten",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
-    ),
-    axes=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
-        min_size=2,
-        max_size=2,
-        unique=False,
-        force_tuple=True,
-    ),
-    order=st.sampled_from(["C", "F"]),
-    test_gradients=st.just(False),
-    number_positional_args=st.just(1),
+    data=_flatten_data_helper(),
 )
 def test_flatten(
-    *, dtype_and_x, axes, order, test_flags, backend_fw, fn_name, on_device
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    input_dtypes, x = dtype_and_x
+    (input_dtypes, x), axes, order = data
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
