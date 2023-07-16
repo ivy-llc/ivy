@@ -352,3 +352,11 @@ def asinh(x, name=None):
 @to_ivy_arrays_and_back
 def max(x, axis=None, keepdim=False, name=None):
     return ivy.max(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16","float32", "float64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def heaviside(x,y, name = None):
+    return ivy.heaviside(x,y)
