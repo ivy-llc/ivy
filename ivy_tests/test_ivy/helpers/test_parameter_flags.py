@@ -173,6 +173,7 @@ class FrontendFunctionTestFlags(TestFlags):
         inplace,
         as_variable,
         native_arrays,
+        test_compile,
         generate_frontend_arrays,
     ):
         self.num_positional_args = num_positional_args
@@ -180,6 +181,7 @@ class FrontendFunctionTestFlags(TestFlags):
         self.inplace = inplace
         self.native_arrays = native_arrays
         self.as_variable = as_variable
+        self.test_compile = test_compile
         self.generate_frontend_arrays = generate_frontend_arrays
 
     def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
@@ -200,6 +202,7 @@ class FrontendFunctionTestFlags(TestFlags):
             f"inplace={self.inplace}. "
             f"native_arrays={self.native_arrays}. "
             f"as_variable={self.as_variable}. "
+            f"test_compile={self.test_compile}. "
             f"generate_frontend_arrays={self.generate_frontend_arrays}. "
         )
 
@@ -216,6 +219,7 @@ def frontend_function_flags(
     inplace,
     as_variable,
     native_arrays,
+    test_compile,
     generate_frontend_arrays,
 ):
     return draw(
@@ -226,6 +230,7 @@ def frontend_function_flags(
             inplace=inplace,
             as_variable=as_variable,
             native_arrays=native_arrays,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
         )
     )

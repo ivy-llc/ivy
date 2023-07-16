@@ -413,6 +413,7 @@ def handle_frontend_test(
     test_inplace=BuiltInplaceStrategy,
     as_variable_flags=BuiltAsVariableStrategy,
     native_array_flags=BuiltNativeArrayStrategy,
+    test_compile=BuiltCompileStrategy,
     generate_frontend_arrays=BuiltFrontendArrayStrategy,
     **_given_kwargs,
 ):
@@ -446,6 +447,10 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to be
         passed as a native array
 
+    test_compile
+        A search strategy that generates a boolean to graph compile and test the
+        function
+
     generate_frontend_arrays
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
@@ -467,6 +472,7 @@ def handle_frontend_test(
             inplace=test_inplace,
             as_variable=as_variable_flags,
             native_arrays=native_array_flags,
+            test_compile=test_compile,
             generate_frontend_arrays=generate_frontend_arrays,
         )
 
