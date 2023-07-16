@@ -1,7 +1,6 @@
 # global
 from hypothesis import strategies as st
 import math
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -453,22 +452,30 @@ def test_paddle_broadcast_to(
     )
 
 
-@handle_frontend_test(fn_tree="paddle.roll")
+@handle_frontend_test(
+    fn_tree="paddle.roll",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
 def test_paddle_roll(
     *,
+    dtype_and_x,
+    dtype,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    x = np.random.rand(2, 3, 4, 5)
-    shift = (1, 2, 3, 4)
+    input_dtype, x = dtype_and_x
+    shift = 1
     helpers.test_frontend_function(
-        input_dtypes=["float32"],
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
+        x=x[0],
         shift=shift,
     )
