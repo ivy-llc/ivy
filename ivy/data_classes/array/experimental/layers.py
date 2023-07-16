@@ -1047,24 +1047,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         Returns
         -------
         ret
-            A '[..., output_size]' array,
-            where output_size is (frames-1) * frame_step + frame_length
-
-        Raises
-        ------
-            ValueError: 'signal' rank should be at least 2,
-            frame_step should be integer scalar, if not, it raises ValueError.
-
-        [overlap_and_add]:
-            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
-
-        Examples
-        --------
-        >>> a = ivy.array([[1, 1, 1, 1],
-                    [1, 1, 1, 1],
-                    [1, 1, 1, 1],
-                    [1, 1, 1, 1],])
-        >>> ivy.overlap_and_add(a)
-        ivy.array([1, 1, 2, 2, 2, 2, 2, 2, 1, 1])
+            The result of the RFFT operation.
         """
-        return ivy.overlap_and_add(self._data, frame_step, name=name)
+        return ivy.overlap_and_add(self._data, frame_step=frame_step, name=name)

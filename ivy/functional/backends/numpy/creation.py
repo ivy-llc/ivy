@@ -10,6 +10,7 @@ from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
+    asarray_infer_dtype,
     asarray_handle_nestable,
     NestedSequence,
     SupportsBufferProtocol,
@@ -47,6 +48,7 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 @asarray_inputs_to_native_shapes
+@asarray_infer_dtype
 def asarray(
     obj: Union[
         np.ndarray, bool, int, float, tuple, NestedSequence, SupportsBufferProtocol
@@ -58,20 +60,8 @@ def asarray(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(obj, np.ndarray):
-        if dtype is not None:
-            obj = ivy.astype(obj, dtype, copy=False).to_native()
-        ret = np.copy(obj) if copy else obj
-        return _to_device(ret, device=device)
-    elif dtype is None:
-        if isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
-            dtype = ivy.default_dtype(item=obj, as_native=True)
-        else:
-            dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
-    if copy is True:
-        return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
-    else:
-        return _to_device(np.asarray(obj, dtype=dtype), device=device)
+    ret = _to_device(np.asarray(obj, dtype=dtype), device=device)
+    return np.copy(ret) if copy else ret
 
 
 def empty(
