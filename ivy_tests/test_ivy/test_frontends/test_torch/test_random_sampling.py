@@ -1,7 +1,6 @@
 # global
 from hypothesis import strategies as st
 import importlib
-import random
 
 # local
 import ivy
@@ -463,7 +462,8 @@ def test_torch_randperm(
 
 # set_rng_state
 @handle_frontend_test(
-    fn_tree="torch.set_rng_state", state=st.shared(random.random(), key="state")
+    fn_tree="torch.set_rng_state",
+    state=helpers.dtype_and_values(available_dtypes=("int64", "int32"), min_value=0),
 )
 def test_torch_set_rng_state(
     *,
@@ -472,15 +472,12 @@ def test_torch_set_rng_state(
     test_flags,
     fn_tree,
 ):
+    dtype, state = state
     helpers.test_frontend_function(
-        input_dtypes=[None],
-        as_variable_flags=[False],
-        with_out=False,
-        num_positional_args=1,
-        native_array_flags=[False],
+        nput_dtypes=dtype,
         frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
         test_values=False,
-        state=state,
+        fn_tree=fn_tree,
+        num_positional_args=1,
+        state=state[0],
     )
