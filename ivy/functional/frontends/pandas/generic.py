@@ -1,6 +1,6 @@
 import ivy
 import numpy as np
-
+import copy as py_copy
 
 class NDFrame:
     def __init__(self, data, index, columns, dtype, name, copy, *args, **kwargs):
@@ -8,7 +8,7 @@ class NDFrame:
         self.columns = columns
         self.dtype = dtype
         self.copy = copy
-        self.orig_data = data
+        self.orig_data = py_copy.deepcopy(data)
 
         if ivy.is_native_array(data):
             self.array = ivy.array(data)
