@@ -165,7 +165,6 @@ def _zero2pad(draw):
     return dtype, input, padding
 
 
-# interpolate
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.zeropad2d",
     d_type_and_x_paddings=_zero2pad(),
@@ -193,6 +192,7 @@ def test_paddle_zeropad2d(
     )
 
 
+# interpolate
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.interpolate",
     d_type_and_x=helpers.dtype_and_values(
@@ -215,7 +215,9 @@ def test_paddle_zeropad2d(
         min_size=2,
         max_size=2,
     ),
-    mode=st.sampled_from(["nearest", "linear", "bilinear", "trilinear", "bicubic", "area"]),
+    mode=st.sampled_from(
+        ["nearest", "linear", "bilinear", "trilinear", "bicubic", "area"]
+    ),
     align_corners=st.booleans(),
 )
 def test_paddle_interpolate(
@@ -244,7 +246,7 @@ def test_paddle_interpolate(
         align_corners=align_corners,
     )
 
-    
+
 # linear
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.linear",
@@ -271,4 +273,4 @@ def test_linear(
         x=x,
         weight=weight,
         bias=bias,
-    )    
+    )
