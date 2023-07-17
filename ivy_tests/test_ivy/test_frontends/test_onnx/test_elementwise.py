@@ -168,80 +168,101 @@ def test_onnx_abs_v2(dtype_x):
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="torch",
     )
-    # x = ivy.random_uniform(low=-100.0, high=0, shape=10)
-
-    # onnx_abs = onnx.abs(x)
-    # torch_abs = torch.abs(x)
-    # jax_abs = jax.lax.abs(x)
-    # paddle_abs = paddle.abs(x)
-    # tf_abs = tf.abs(x)
-    #
-    # all_list = [onnx_abs, jax_abs, paddle_abs, tf_abs]
-    #
-    # assert torch.allclose(torch_abs, all_list)
 
 
-#
-# def test_onnx_acos_v2():
-#     x = ivy.random_uniform(low=-1, high=1, shape=10)
-#
-#     onnx_acos = onnx.acos(x)
-#     torch_acos = torch.acos(x)
-#     jax_acos = jax.lax.acos(x)
-#     paddle_acos = paddle.acos(x)
-#     tf_acos = tf.acos(x)
-#
-#     all_list = [onnx_acos, jax_acos, paddle_acos, tf_acos]
-#
-#     are_equal = torch.allclose(torch_acos, all_list)
-#
-#     assert are_equal
-#
-#
-# def test_onnx_acosh_v2():
-#     x = ivy.random_uniform(low=1, high=1000000, shape=10)
-#
-#     onnx_acosh = onnx.acosh(x)
-#     torch_acosh = torch.acosh(x)
-#     paddle_acosh = paddle.acosh(x)
-#     tf_acosh = tf.acosh(x)
-#
-#     all_list = [onnx_acosh, paddle_acosh, tf_acosh]
-#
-#     are_equal = torch.allclose(torch_acosh, all_list)
-#
-#     assert are_equal
-#
-#
-# def test_onnx_add_v2():
-#     x = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
-#     y = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
-#
-#     jax_numpy_add = jax.numpy.add(x, y)
-#     mxnet_add = mxnet.numpy.add(x, y)
-#     onnx_add = onnx.add(x, y)
-#     torch_add = torch.add(x, y)
-#     paddle_add = paddle.add(x, y)
-#     tf_add = tf.add(x, y)
-#
-#     all_list = [jax_numpy_add, mxnet_add, onnx_add, paddle_add, tf_add]
-#
-#     are_equal = torch.allclose(torch_add, all_list)
-#
-#     assert are_equal
-#
-#
-# def test_onnx_asin_v2():
-#     x = ivy.random_uniform(low=-1, high=1, shape=8)
-#
-#     jax_asin = jax.lax.asin(x)
-#     onnx_asin = onnx.asin(x)
-#     torch_asin = torch.asin(x)
-#     paddle_asin = paddle.asin(x)
-#     tf_asin = tf.asin(x)
-#
-#     all_list = [jax_asin, onnx_asin, paddle_asin, tf_asin]
-#
-#     are_equal = torch.allclose(torch_asin, all_list)
-#
-#     assert are_equal
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+    ).filter(lambda x: "float16" not in x[0]),
+)
+def test_onnx_acos_v2(dtype_x):
+    _, data = dtype_x
+    x_onnx = onnx.Tensor(data[0])
+    x_torch = torch.Tensor(data[0])
+
+    onnx_acos = onnx.acos(x_onnx)
+    torch_acos = torch.acos(x_torch)
+
+    ret = helpers.flatten_and_to_np(ret=onnx_acos)
+    ret_gt = helpers.flatten_and_to_np(ret=torch_acos)
+
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+    ).filter(lambda x: "float16" not in x[0]),
+)
+def test_onnx_acosh_v2(dtype_x):
+    _, data = dtype_x
+    x_onnx = onnx.Tensor(data[0])
+    x_torch = torch.Tensor(data[0])
+
+    onnx_acosh = onnx.acosh(x_onnx)
+    torch_acosh = torch.acosh(x_torch)
+
+    ret = helpers.flatten_and_to_np(ret=onnx_acosh)
+    ret_gt = helpers.flatten_and_to_np(ret=torch_acosh)
+
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_onnx_add_v2(dtype_x):
+    _, data = dtype_x
+    x_onnx_1 = onnx.Tensor(data[0])
+    x_onnx_2 = onnx.Tensor(data[1])
+    x_torch_1 = torch.Tensor(data[0])
+    x_torch_2 = torch.Tensor(data[1])
+
+    onnx_add = onnx.add(x_onnx_1, x_onnx_2)
+    torch_add = torch.add(x_torch_1, x_torch_2)
+
+    ret = helpers.flatten_and_to_np(ret=onnx_add)
+    ret_gt = helpers.flatten_and_to_np(ret=torch_add)
+
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+    ).filter(lambda x: "float16" not in x[0]),
+)
+def test_onnx_asin_v2(dtype_x):
+    _, data = dtype_x
+    x_onnx = onnx.Tensor(data[0])
+    x_torch = torch.Tensor(data[0])
+
+    onnx_asin = onnx.asin(x_onnx)
+    torch_asin = torch.asin(x_torch)
+
+    ret = helpers.flatten_and_to_np(ret=onnx_asin)
+    ret_gt = helpers.flatten_and_to_np(ret=torch_asin)
+
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="tensorflow",
+    )
