@@ -21,7 +21,6 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
 def lgamma(
     x: Union[ivy.Array, ivy.NativeArray],
