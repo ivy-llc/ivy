@@ -6132,6 +6132,44 @@ def test_torch_instance_tril(
     )
 
 
+# tril_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tril_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_torch_instance_tril_(
+    dtype_and_values,
+    diagonal,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "diagonal": diagonal,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # sqrt
 @handle_frontend_method(
     class_tree=CLASS_TREE,

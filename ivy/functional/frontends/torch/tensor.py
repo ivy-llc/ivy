@@ -854,6 +854,10 @@ class Tensor:
     def tril(self, diagonal=0):
         return torch_frontend.tril(self, diagonal=diagonal)
 
+    def tril_(self, diagonal=0):
+        self.ivy_array = self.tril(diagonal=diagonal).ivy_array
+        return self
+
     def index_select(self, dim, index):
         return torch_frontend.index_select(self, dim, index)
 
