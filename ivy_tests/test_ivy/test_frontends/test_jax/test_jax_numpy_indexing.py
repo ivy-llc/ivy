@@ -62,6 +62,35 @@ def test_jax_numpy_diagonal(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.indices",
+    dimensions=helpers.get_shape(),
+    dtype=helpers.get_dtypes(kind="float", full=False),
+    sparse=helpers.get_dtypes(kind="bool"),
+    test_with_out=st.just(False),
+)
+def test_indices(
+    *,
+    dimensions,
+    dtype,
+    sparse,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions,
+        dtype=dtype[0],
+        sparse=sparse,
+    )
+
+
 # diag
 @st.composite
 def _diag_helper(draw):
@@ -405,4 +434,33 @@ def test_jax_numpy_diag_indices_from(
         fn_tree=fn_tree,
         on_device=on_device,
         arr=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.indices",
+    dimensions=helpers.get_shape(),
+    dtype=helpers.get_dtypes(kind="float", full=False),
+    sparse=helpers.get_dtypes(kind="bool"),
+    test_with_out=st.just(False),
+)
+def test_jax_indices(
+    *,
+    dimensions,
+    dtype,
+    sparse,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions,
+        dtype=dtype[0],
+        sparse=sparse,
     )
