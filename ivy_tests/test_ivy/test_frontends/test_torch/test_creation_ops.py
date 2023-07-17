@@ -741,7 +741,7 @@ def test_torch_frombuffer(
 def _complex_helper(draw):
     input_dtype = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("float"),
         )
     )
     return input_dtype
