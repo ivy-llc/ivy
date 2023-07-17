@@ -1047,6 +1047,8 @@ def test_jax_numpy_correlate(
         v=x[1],
         mode=mode,
     )
+
+
 @handle_frontend_test(
     fn_tree="jax.numpy.nansum",
     dtype_x_axis=helpers.dtype_values_axis(

@@ -479,7 +479,9 @@ def correlate(a, v, mode="valid", precision=None):
         data_format="channel_first",
     )
     return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
-#nansum
+
+
+# nansum
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def nansum(a, axis=None, dtype=None, out=None):
