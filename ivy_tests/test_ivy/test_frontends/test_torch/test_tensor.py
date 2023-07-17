@@ -1733,8 +1733,6 @@ def test_torch_instance_aminmax(
     method_name="bernoulli",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0,
-        max_value=1,
     ),
     test_with_out=st.just(True),
 )
