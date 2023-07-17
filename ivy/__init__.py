@@ -432,6 +432,7 @@ class Shape:
         else:
             return Shape([Shape(None)] * rank)
 
+    
     def with_rank(self, rank):
         try:
             return self.merge_with(unknown_shape(rank=rank))
