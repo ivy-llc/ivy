@@ -583,45 +583,19 @@ def test_torch_vecdot(
     )
 
 
-@st.composite
-def _matrix_rank_helper(draw):
-    _batch_shape = draw(
-        helpers.get_shape(min_num_dims=1, max_num_dims=3, min_dim_size=1)
-    )
-    _batch_dim = draw(st.sampled_from([(), _batch_shape]))
-    _matrix_dim = draw(helpers.ints(min_value=2, max_value=20))
-    shape = _batch_dim + (_matrix_dim, _matrix_dim)
-    dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=shape,
-            min_value=-1e05,
-            max_value=1e05,
-            abs_smallest_val=1e-05,
-            safety_factor_scale="log",
-        )
-    )
-    if np.all(np.swapaxes(x[0], -1, -2) == x[0]):
-        hermitian = True
-    else:
-        hermitian = False
-
-    return dtype, x[0], hermitian
-
-
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    dtype_x_hermitian=_matrix_rank_helper(),
+    dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_matrix_rank(
-    dtype_x_hermitian,
+    dtype_x_hermitian_atol_rtol,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    dtype, x, hermitian = dtype_x_hermitian
+    dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
     assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -630,8 +604,8 @@ def test_matrix_rank(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
-        rtol=1e-04,
-        atol=1e-04,
+        rtol=rtol,
+        atol=atol,
         hermitian=hermitian,
     )
 
@@ -1222,4 +1196,33 @@ def test_torch_solve_ex(
         B=other,
         left=left,
         check_errors=check_errors,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.cholesky_ex",
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
+    upper=st.booleans(),
+)
+def test_torch_cholesky_ex(
+    *,
+    dtype_and_x,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        input=x,
+        upper=upper,
     )

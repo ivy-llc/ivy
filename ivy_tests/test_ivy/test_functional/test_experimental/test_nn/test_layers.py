@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_max_pool1d(
@@ -22,7 +23,6 @@ def test_max_pool1d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -96,6 +96,7 @@ def test_max_pool2d(
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_max_pool3d(
@@ -108,7 +109,6 @@ def test_max_pool3d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -128,6 +128,7 @@ def test_max_pool3d(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool1d(
@@ -141,7 +142,6 @@ def test_avg_pool1d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -166,6 +166,7 @@ def test_avg_pool1d(
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
@@ -188,7 +189,6 @@ def test_avg_pool2d(
         )
 
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -213,6 +213,7 @@ def test_avg_pool2d(
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool3d(
@@ -228,7 +229,6 @@ def test_avg_pool3d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1051,7 +1051,7 @@ def x_and_ifftn(draw):
         )
     )
 
-    return dtype, x, axes, norm, s
+    return dtype, x, s, axes, norm
 
 
 @handle_test(
@@ -1067,16 +1067,78 @@ def test_ifftn(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x, axes, norm, s = d_x_d_s_n
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
+    )
+
+
+@st.composite
+def x_and_rfftn(draw):
+    min_rfftn_points = 2
+    dtype = draw(helpers.get_dtypes("float"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=3
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e10,
+            max_value=1e10,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    s = draw(
+        st.lists(
+            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    return dtype, x, s, axes, norm
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.rfftn",
+    d_x_d_s_n=x_and_rfftn(),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+)
+def test_rfftn(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, s, axes, norm = d_x_d_s_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=0.8,
+        atol_=0.8,
         x=x,
         s=s,
         axes=axes,
