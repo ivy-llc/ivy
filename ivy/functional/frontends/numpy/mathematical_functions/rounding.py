@@ -124,5 +124,3 @@ def around(a, decimals=0, out=None):
 @from_zero_dim_arrays_to_scalar
 def round(a, decimals=0, out=None):
     return ivy.round(a, decimals=decimals, out=out)
-
-

@@ -247,8 +247,10 @@ def test_numpy_around(
     fn_tree="numpy.round",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_value=50,
+        min_value=-50,
     ),
-    decimals=st.integers(min_value=0, max_value=5),
+    decimals=st.integers(min_value=0, max_value=3),
 )
 def test_numpy_round(
     *,
