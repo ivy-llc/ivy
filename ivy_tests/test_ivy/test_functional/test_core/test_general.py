@@ -914,14 +914,12 @@ def test_framework_setting_with_threading(backend_fw):
         ivy.previous_backend()
         return True
 
-    # get original framework string and array
-    ivy.set_backend(backend_fw)
-    x = ivy.array([0.0, 1.0, 2.0])
-
     # start jax loop thread
     thread = threading.Thread(target=thread_fn)
     thread.start()
     time.sleep(0.01)
+    ivy.set_backend(backend_fw)
+    x = ivy.array([0.0, 1.0, 2.0])
     # start local original framework loop
     for _ in range(2000):
         ivy.mean(x)
