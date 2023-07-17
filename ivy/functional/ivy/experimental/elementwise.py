@@ -75,7 +75,6 @@ def lgamma(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_device_shifting
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
