@@ -1458,10 +1458,6 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    if frontend == "jax":
-        importlib.import_module("ivy.functional.frontends.jax").config.update(
-            "jax_enable_x64", True
-        )
     # Constructor arguments #
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
         num_positional_args=init_flags.num_positional_args,
@@ -1541,6 +1537,11 @@ def test_frontend_method(
         ]
 
     with update_backend(backend_to_test) as ivy_backend:
+        if frontend == "jax":
+            importlib.import_module("ivy.functional.frontends.jax").config.update(
+                "jax_enable_x64", True
+            )
+
         method_flags.as_variable = [
             v if ivy_backend.is_float_dtype(d) else False
             for v, d in zip(method_flags.as_variable, method_input_dtypes)
@@ -1597,13 +1598,11 @@ def test_frontend_method(
         )
 
         # TODO, pretty bad hack, please do it this in proper way.
-        ivy_backend.utils.dynamic_import.import_module(
+        frontend_fw = ivy_backend.utils.dynamic_import.import_module(
             f"ivy.functional.frontends.{frontend}"
         )
-        ivy_frontend_creation_fn = getattr(
-            getattr(getattr(getattr(ivy_backend, "functional"), "frontends"), frontend),
-            frontend_method_data.init_name,
-        )
+        ivy_frontend_creation_fn = getattr(frontend_fw, frontend_method_data.init_name)
+
         # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
         ret, ret_np_flat = get_ret_and_flattened_np_array(
