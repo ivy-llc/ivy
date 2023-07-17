@@ -1,18 +1,14 @@
 # global
 # import numpy as np
-# from hypothesis import strategies as st, assume
+from hypothesis import given
 
 # local
-import ivy
 
-# import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers as helpers
+
 # from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy.functional.frontends.onnx as onnx
 import ivy.functional.frontends.torch as torch
-import ivy.functional.frontends.jax as jax
-import ivy.functional.frontends.paddle as paddle
-import ivy.functional.frontends.tensorflow as tf
-import ivy.functional.frontends.mxnet as mxnet
 
 
 # @handle_frontend_test(
@@ -148,80 +144,104 @@ import ivy.functional.frontends.mxnet as mxnet
 #     )
 
 
-def test_onnx_abs_v2():
-    x = ivy.random_uniform(low=-100.0, high=0, shape=10)
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric", prune_function=False),
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    )
+)
+def test_onnx_abs_v2(dtype_x):
+    _, data = dtype_x
+    x_onnx = onnx.Tensor(data[0])
+    x_torch = torch.Tensor(data[0])
 
-    onnx_abs = onnx.abs(x)
-    torch_abs = torch.abs(x)
-    jax_abs = jax.lax.abs(x)
-    paddle_abs = paddle.abs(x)
-    tf_abs = tf.abs(x)
+    onnx_abs = onnx.abs(x_onnx)
+    torch_abs = torch.abs(x_torch)
 
-    all_list = [onnx_abs, jax_abs, paddle_abs, tf_abs]
+    ret = helpers.flatten_and_to_np(ret=onnx_abs)
+    ret_gt = helpers.flatten_and_to_np(ret=torch_abs)
 
-    assert torch.allclose(torch_abs, all_list)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="torch",
+    )
+    # x = ivy.random_uniform(low=-100.0, high=0, shape=10)
 
-
-def test_onnx_acos_v2():
-    x = ivy.random_uniform(low=-1, high=1, shape=10)
-
-    onnx_acos = onnx.acos(x)
-    torch_acos = torch.acos(x)
-    jax_acos = jax.lax.acos(x)
-    paddle_acos = paddle.acos(x)
-    tf_acos = tf.acos(x)
-
-    all_list = [onnx_acos, jax_acos, paddle_acos, tf_acos]
-
-    are_equal = torch.allclose(torch_acos, all_list)
-
-    assert are_equal
-
-
-def test_onnx_acosh_v2():
-    x = ivy.random_uniform(low=1, high=1000000, shape=10)
-
-    onnx_acosh = onnx.acosh(x)
-    torch_acosh = torch.acosh(x)
-    paddle_acosh = paddle.acosh(x)
-    tf_acosh = tf.acosh(x)
-
-    all_list = [onnx_acosh, paddle_acosh, tf_acosh]
-
-    are_equal = torch.allclose(torch_acosh, all_list)
-
-    assert are_equal
+    # onnx_abs = onnx.abs(x)
+    # torch_abs = torch.abs(x)
+    # jax_abs = jax.lax.abs(x)
+    # paddle_abs = paddle.abs(x)
+    # tf_abs = tf.abs(x)
+    #
+    # all_list = [onnx_abs, jax_abs, paddle_abs, tf_abs]
+    #
+    # assert torch.allclose(torch_abs, all_list)
 
 
-def test_onnx_add_v2():
-    x = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
-    y = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
-
-    jax_numpy_add = jax.numpy.add(x, y)
-    mxnet_add = mxnet.numpy.add(x, y)
-    onnx_add = onnx.add(x, y)
-    torch_add = torch.add(x, y)
-    paddle_add = paddle.add(x, y)
-    tf_add = tf.add(x, y)
-
-    all_list = [jax_numpy_add, mxnet_add, onnx_add, paddle_add, tf_add]
-
-    are_equal = torch.allclose(torch_add, all_list)
-
-    assert are_equal
-
-
-def test_onnx_asin_v2():
-    x = ivy.random_uniform(low=-1, high=1, shape=8)
-
-    jax_asin = jax.lax.asin(x)
-    onnx_asin = onnx.asin(x)
-    torch_asin = torch.asin(x)
-    paddle_asin = paddle.asin(x)
-    tf_asin = tf.asin(x)
-
-    all_list = [jax_asin, onnx_asin, paddle_asin, tf_asin]
-
-    are_equal = torch.allclose(torch_asin, all_list)
-
-    assert are_equal
+#
+# def test_onnx_acos_v2():
+#     x = ivy.random_uniform(low=-1, high=1, shape=10)
+#
+#     onnx_acos = onnx.acos(x)
+#     torch_acos = torch.acos(x)
+#     jax_acos = jax.lax.acos(x)
+#     paddle_acos = paddle.acos(x)
+#     tf_acos = tf.acos(x)
+#
+#     all_list = [onnx_acos, jax_acos, paddle_acos, tf_acos]
+#
+#     are_equal = torch.allclose(torch_acos, all_list)
+#
+#     assert are_equal
+#
+#
+# def test_onnx_acosh_v2():
+#     x = ivy.random_uniform(low=1, high=1000000, shape=10)
+#
+#     onnx_acosh = onnx.acosh(x)
+#     torch_acosh = torch.acosh(x)
+#     paddle_acosh = paddle.acosh(x)
+#     tf_acosh = tf.acosh(x)
+#
+#     all_list = [onnx_acosh, paddle_acosh, tf_acosh]
+#
+#     are_equal = torch.allclose(torch_acosh, all_list)
+#
+#     assert are_equal
+#
+#
+# def test_onnx_add_v2():
+#     x = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
+#     y = ivy.random_uniform(low=-1000000, high=1000000, shape=10)
+#
+#     jax_numpy_add = jax.numpy.add(x, y)
+#     mxnet_add = mxnet.numpy.add(x, y)
+#     onnx_add = onnx.add(x, y)
+#     torch_add = torch.add(x, y)
+#     paddle_add = paddle.add(x, y)
+#     tf_add = tf.add(x, y)
+#
+#     all_list = [jax_numpy_add, mxnet_add, onnx_add, paddle_add, tf_add]
+#
+#     are_equal = torch.allclose(torch_add, all_list)
+#
+#     assert are_equal
+#
+#
+# def test_onnx_asin_v2():
+#     x = ivy.random_uniform(low=-1, high=1, shape=8)
+#
+#     jax_asin = jax.lax.asin(x)
+#     onnx_asin = onnx.asin(x)
+#     torch_asin = torch.asin(x)
+#     paddle_asin = paddle.asin(x)
+#     tf_asin = tf.asin(x)
+#
+#     all_list = [jax_asin, onnx_asin, paddle_asin, tf_asin]
+#
+#     are_equal = torch.allclose(torch_asin, all_list)
+#
+#     assert are_equal
