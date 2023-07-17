@@ -191,7 +191,7 @@ def test_paddle_zeropad2d(
         data_format=dataformat,
     )
 
- 
+
 # linear
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.linear",
