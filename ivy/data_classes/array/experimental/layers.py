@@ -1025,6 +1025,38 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
+    def rfftn(
+        self: ivy.Array,
+        s: Sequence[int] = None,
+        axes: Sequence[int] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the n-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        s
+            Shape (length of each transformed axis) of the output.
+        axes
+            Axes over which to compute the RFFT. If not given, the last len(s) axes are
+            used.
+        norm
+            Normalization mode: "backward", "ortho", or "forward".
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            The result of the RFFT operation.
+        """
+        return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
     def overlap_and_add(
         self: ivy.Array,
         frame_step: int,
@@ -1047,6 +1079,24 @@ class _ArrayWithLayersExperimental(abc.ABC):
         Returns
         -------
         ret
-            The result of the RFFT operation.
+            A '[..., output_size]' array,
+            where output_size is (frames-1) * frame_step + frame_length
+
+        Raises
+        ------
+            ValueError: 'signal' rank should be at least 2,
+            frame_step should be integer scalar, if not, it raises ValueError.
+
+        [overlap_and_add]:
+            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
+
+        Examples
+        --------
+        >>> a = ivy.array([[1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],
+                    [1, 1, 1, 1],])
+        >>> ivy.overlap_and_add(a)
+        ivy.array([1, 1, 2, 2, 2, 2, 2, 2, 1, 1])
         """
-        return ivy.overlap_and_add(self._data, frame_step=frame_step, name=name)
+        return ivy.overlap_and_add(self._data, frame_step, name=name)

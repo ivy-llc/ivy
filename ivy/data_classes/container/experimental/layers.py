@@ -1764,6 +1764,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool1d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: int,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1802,6 +1803,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool1d(
         self: ivy.Container,
         output_size: int,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1836,6 +1838,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def static_adaptive_avg_pool2d(
         input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         output_size: Union[Sequence[int], int],
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1874,6 +1877,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def adaptive_avg_pool2d(
         self: ivy.Container,
         output_size: int,
+        /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -2162,9 +2166,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             ValueError: 'signal' rank should be at least 2,
             frame_step should be integer scalar, if not, it raises ValueError.
 
-        [overlap_and_add]:
-            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
-
         Examples
         --------
         >>> a = ivy.array([[1, 1, 1, 1],
@@ -2187,9 +2188,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         name: Optional[str] = None,
     ):
         """
-        ivy.Container static method variant of ivy.overlap_and_add. This method simply
-        wraps the function, and so the docstring for ivy.overlap_and_add also applies to
-        this method with minimal changes.
+        Reconstruct a signal from a framed representation.
 
         Parameters
         ----------
@@ -2212,9 +2211,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
         ------
             ValueError: 'signal' rank should be at least 2,
             frame_step should be integer scalar, if not, it raises ValueError.
-
-        [overlap_and_add]:
-            https://github.com/tensorflow/tensorflow/blob/master/tensorflow/python/ops/signal/reconstruction_ops.py
 
         Examples
         --------

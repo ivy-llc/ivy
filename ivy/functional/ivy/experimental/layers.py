@@ -2654,6 +2654,8 @@ def rfftn(
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
+# @to_native_arrays_and_back
+# @handle_exceptions
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
