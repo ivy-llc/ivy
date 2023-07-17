@@ -4931,7 +4931,6 @@ def _array_idxes_n_dtype(draw, **kwargs):
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    unpack_dims=st.booleans(),
 )
 def test_torch_instance_permute(
     dtype_values_axis,
@@ -7712,7 +7711,7 @@ def test_torch_instance_cross(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="det",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_det(
     dtype_and_x,
@@ -8550,7 +8549,7 @@ def test_torch_instance_bitwise_right_shift(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logdet",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_logdet(
     dtype_and_x,
