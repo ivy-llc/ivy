@@ -26,7 +26,8 @@ class NDFrame:
                 index = list(data.keys())
         elif isinstance(data, dict) and len(index) > orig_data_len:
             for i in index:
-                if i not in data: data[i] = ivy.nan
+                if i not in data:
+                    data[i] = ivy.nan
 
         if data_is_array_or_like:
             self.index = index
