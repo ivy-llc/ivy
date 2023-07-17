@@ -2280,6 +2280,47 @@ def test_torch_special_truediv(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__floordiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+)
+def test_torch_special_floordiv(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        atol_=1,
+    )
+
+
 # remainder
 @handle_frontend_method(
     class_tree=CLASS_TREE,
