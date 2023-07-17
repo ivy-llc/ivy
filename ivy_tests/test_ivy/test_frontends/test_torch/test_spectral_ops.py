@@ -26,6 +26,7 @@ def test_torch_hann_window(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        frontend=frontend,
         window_length=x[0],
         periodic=periodic,
         dtype=dtype[0],
