@@ -10,6 +10,7 @@ class Series(NDFrame):
         name=None,
         copy=False,
         fastpath=False,
+        columns=None,
         *args,
         **kwargs,
     ):
