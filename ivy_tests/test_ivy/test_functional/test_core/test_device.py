@@ -29,7 +29,6 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.helpers import handle_test, update_backend
-from ivy.functional.ivy.device import _get_nvml_gpu_handle
 
 
 # Helpers #
@@ -445,7 +444,7 @@ def test_profiler(*, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         this_dir = os.path.dirname(os.path.realpath(__file__))
         log_dir = os.path.join(this_dir, "../log")
-        fw_log_dir = os.path.join(log_dir, backend_fw.__name__)
+        fw_log_dir = os.path.join(log_dir, backend_fw)
 
         # Remove old content and recreate log dir
         _empty_dir(fw_log_dir, True)
@@ -581,7 +580,7 @@ def test_total_mem_on_dev(backend_fw):
                     == psutil.virtual_memory().total / 1e9
                 )
             elif "gpu" in device:
-                handle = _get_nvml_gpu_handle(device)
+                handle = ivy_backend.functional.ivy.device._get_nvml_gpu_handle(device)
                 gpu_mem = pynvml.nvmlDeviceGetMemoryInfo(handle)
                 assert ivy_backend.total_mem_on_dev(device) == gpu_mem.total / 1e9
 
@@ -693,8 +692,8 @@ def test_function_unsupported_devices(
         assert sorted(tuple(exp)) == sorted(res)
 
 
-def get_gpu_mem_usage(device="gpu:0"):
-    handle = _get_nvml_gpu_handle(device)
+def get_gpu_mem_usage(backend, device="gpu:0"):
+    handle = backend.ivy.functional.ivy.device._get_nvml_gpu_handle(device)
     info = pynvml.nvmlDeviceGetMemoryInfo(handle)
     return (info.used / info.total) * 100
 
@@ -737,7 +736,7 @@ def test_dev_util(backend_fw):
                 # equal but absolute difference should be below a safe threshold
                 assert abs(get_cpu_percent() - ivy_backend.dev_util(device)) < 10
             elif "gpu" in device:
-                handle = _get_nvml_gpu_handle(device)
+                handle = ivy_backend.functional.ivy.device._get_nvml_gpu_handle(device)
                 assert (
                     ivy_backend.dev_util(device)
                     == pynvml.nvmlDeviceGetUtilizationRates(handle).gpu
