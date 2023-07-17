@@ -1,10 +1,10 @@
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
-from ivy.func_wrapper import with_supported_device_and_dtypes
-
 
 def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
     dims = {"1d": 1, "2d": 2, "3d": 3}
