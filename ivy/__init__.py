@@ -1025,7 +1025,9 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
-ivy.array_decimal_values = 8
+ivy.array_decimal_values = (
+    array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+)
 
 
 def set_array_decimal_values(dec_vals):
