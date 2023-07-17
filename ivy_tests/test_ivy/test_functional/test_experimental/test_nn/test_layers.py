@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
@@ -929,6 +930,9 @@ def _reduce_window_helper(draw, get_func_st):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
+    for i, arg in enumerate(others):
+        if len(np.unique(arg)) == 1 and draw(st.booleans()):
+            others[i] = arg[0]
     return dtype * 2, operand, init_value, py_func, others, padding
 
 
