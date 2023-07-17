@@ -1,8 +1,7 @@
 # local
-from ivy.functional.frontends.numpy.func_wrapper import inputs_to_ivy_arrays
 import ivy.functional.frontends.numpy as np_frontend
+import ivy
 
 
-@inputs_to_ivy_arrays
 def asmatrix(data, dtype=None):
-    return np_frontend.matrix(data, dtype=dtype, copy=False)
+    return np_frontend.matrix(ivy.array(data), dtype=dtype, copy=False)
