@@ -82,7 +82,6 @@ def test_mse_loss(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -105,7 +104,6 @@ def test_mse_loss(
     elif len(pred.shape) < len(true.shape):
         true = true[: pred.ndim]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -139,7 +137,6 @@ def test_mae_loss(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -160,7 +157,6 @@ def test_mae_loss(
     elif len(pred.shape) < len(true.shape):
         true = true[: pred.ndim]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         test_flags=test_flags,
         fw=backend_fw,
