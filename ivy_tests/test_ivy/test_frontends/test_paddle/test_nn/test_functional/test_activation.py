@@ -596,7 +596,7 @@ def test_paddle_log_sigmoid(
         on_device=on_device,
         x=x[0],
     )
-    
+
 
 # silu
 @handle_frontend_test(
