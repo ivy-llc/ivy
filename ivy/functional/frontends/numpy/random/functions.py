@@ -183,3 +183,16 @@ def gumbel(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     x = loc - scale * ivy.log(-ivy.log(u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def f(dfn=1.0, dfd=1.0, size=None):
+    # Generate samples from the uniform distribution
+    x1 = ivy.gamma(dfn / 2, 2, shape=size)
+    x2 = ivy.gamma(dfd / 2, 2, shape=size)
+
+    # Calculate the F-distributed samples
+    samples = (x1 / dfn) / (x2 / dfd)
+
+    return samples
