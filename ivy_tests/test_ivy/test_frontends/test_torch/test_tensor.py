@@ -4931,7 +4931,6 @@ def _array_idxes_n_dtype(draw, **kwargs):
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    unpack_dims=st.booleans(),
 )
 def test_torch_instance_permute(
     dtype_values_axis,
