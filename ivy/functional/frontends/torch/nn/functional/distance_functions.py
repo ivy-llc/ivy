@@ -53,5 +53,3 @@ def pdist(input, p=2):
         ]
     )
     return ivy.vector_norm(x, ord=p, axis=1)
-
-

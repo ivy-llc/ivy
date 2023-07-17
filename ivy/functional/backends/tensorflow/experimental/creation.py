@@ -14,7 +14,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.12.0 and below": {"cpu": ("bfloat16",)}},
+    {"2.13.0 and below": {"cpu": ("bfloat16",)}},
     backend_version,
 )
 def kaiser_window(
