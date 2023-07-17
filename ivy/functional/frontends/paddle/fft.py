@@ -11,8 +11,9 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     "paddle",
 )
 @to_ivy_arrays_and_back
-def fft(x, n=None, axis=-1.0, norm="backward", name=None):
-    ret = ivy.fft(ivy.astype(x, "complex128"), axis, norm=norm, n=n)
+def fft2(x, s=None, axes=(- 2, - 1), norm='backward', name=None):
+    x_comp = x.astype("complex128")
+    ret = ivy.fft2(x_comp, s=s, dim=axes, norm=norm)
     return ivy.astype(ret, x.dtype)
 
 
