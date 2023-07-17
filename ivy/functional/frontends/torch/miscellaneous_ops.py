@@ -410,3 +410,13 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@to_ivy_arrays_and_back
+def view_as_real(input, /):
+    # check if the function is complex
+    if not ivy.is_complex_dtype(input):
+        raise ivy.exceptions.IvyError(
+            "view_as_real is only supported for complex tensors"
+        )
+    return ivy.real(input)
