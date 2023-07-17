@@ -42,7 +42,7 @@ CLASS_TREE = "ivy.functional.frontends.pandas.Series"
 #     dtype_x=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"))
 # )
-# def test_pandas_series_abs(
+# def test_pandas_series_to_numpy(
 #     dtype_x,
 #     frontend,
 #     frontend_method_data,
