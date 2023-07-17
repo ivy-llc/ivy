@@ -1356,7 +1356,6 @@ def handle_nans(fn: Callable) -> Callable:
         # check all args and kwards for presence of nans
         result = _nest_has_nans(args) or _nest_has_nans(kwargs)
 
-        ivy.set_logging_mode("DEBUG")
         if result:
             # handle nans based on the selected policy
             if nan_policy == "raise_exception":
@@ -1366,7 +1365,6 @@ def handle_nans(fn: Callable) -> Callable:
             elif nan_policy == "warns":
                 logging.warning("Nans are present in the input.")
 
-        ivy.unset_logging_mode()
 
         return fn(*args, **kwargs)
 
