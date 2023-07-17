@@ -18,16 +18,16 @@ class NDFrame:
         data_is_array_or_like = data_is_array or isinstance(data, (list, tuple))
 
         # setup a default index if none provided
+        orig_data_len = len(self.orig_data)
         if index is None:
             if data_is_array_or_like:
-                index = ivy.arange(len(data)).tolist()
-                if len(data) != len(index):
-                    raise ValueError(
-                        f"Length of values {len(data)} does not match length of index"
-                        f" {len(index)}"
-                    )
+                index = ivy.arange(orig_data_len).tolist()
             elif isinstance(data, dict):
                 index = list(data.keys())
+        elif isinstance(data, dict) and len(index) > orig_data_len:
+            for i in index:
+                if i not in data:
+                    data[i] = ivy.nan
 
         if data_is_array_or_like:
             self.index = index
@@ -43,9 +43,13 @@ class NDFrame:
             self.index = index
             self.array = ivy.array(data)
         elif isinstance(data, str):
-            pass # TODO: implement string series
+            pass  # TODO: implement string series
         else:
-            raise TypeError(f"Data must be one of array, dict, iterables or scalar value, got {type(data)}")
+            raise TypeError(
+                "Data must be one of array, dict, iterables or scalar value, got"
+                f" {type(data)}"
+            )
+
     @property
     def data(self):
         # return underlying data in the original format
@@ -57,4 +61,6 @@ class NDFrame:
         return ret
 
     def abs(self):
-        return self.__class__(ivy.abs(self.array), index=self.index, name=self.name)
+        return self.__class__(
+            ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
+        )

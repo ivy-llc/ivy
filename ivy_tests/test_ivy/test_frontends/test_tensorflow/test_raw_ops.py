@@ -627,7 +627,7 @@ def test_tensorflow_Atan(  # NOQA
     fn_tree="tensorflow.raw_ops.Atan2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays = 2,
+        num_arrays=2,
         shared_dtype=True,
     ),
     test_with_out=st.just(False),

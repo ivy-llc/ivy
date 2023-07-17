@@ -259,3 +259,8 @@ def size(a, axis=None):
         sh = ivy.shape(a)
         return sh[axis]
     return a.size
+
+
+@to_ivy_arrays_and_back
+def frombuffer(buffer, dtype="float", count=-1, offset=0):
+    return ivy.frombuffer(buffer, dtype, count, offset)
