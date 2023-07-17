@@ -559,6 +559,7 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
+        return ivy.sign(self._ivy_array)
         return paddle_frontend.Tensor(ivy.sign(self._ivy_array, np_variant=False))
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
@@ -567,3 +568,14 @@ class Tensor:
 
     def tolist(self):
         return paddle_frontend.Tensor(ivy.to_list(self._ivy_array))
+
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def min(self, axis=None, keepdim=False, name=None):
+        return ivy.min(self._ivy_array, axis=axis, keepdims=keepdim)
+
+    @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+    def std(self, axis=None, unbiased=True, keepdim=False, name=None):
+        return ivy.std(self._ivy_array, axis=axis, keepdims=keepdim)

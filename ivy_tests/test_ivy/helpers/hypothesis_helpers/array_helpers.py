@@ -1724,6 +1724,7 @@ def arrays_for_pooling(
     explicit_or_str_padding=False,
     only_explicit_padding=False,
     return_dilation=False,
+    mixed_fn_compos=True,
     data_format="channel_last",
 ):
     in_shape = draw(
@@ -1733,7 +1734,7 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=get_dtypes("float"),
+            available_dtypes=get_dtypes("float", mixed_fn_compos=mixed_fn_compos),
             shape=in_shape,
             num_arrays=1,
             max_value=100,
@@ -1810,6 +1811,7 @@ def dtype_array_query(
     min_dim_size=1,
     max_dim_size=10,
     allow_mask=True,
+    allow_none=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1834,6 +1836,8 @@ def dtype_array_query(
             small_abs_safety_factor=2,
         )
     )
+    if allow_none and draw(st.booleans()):
+        return dtype, array, None
     if allow_mask and draw(st.booleans()):
         mask_shape = shape[: draw(st.integers(0, len(shape)))]
         index = draw(
@@ -1868,8 +1872,6 @@ def dtype_array_query(
                 helpers.dtype_and_values(
                     min_value=-s + 1,
                     max_value=s - 1,
-                    min_num_dims=0,
-                    max_num_dims=1,
                     dtype=["int64"],
                 )
             )
