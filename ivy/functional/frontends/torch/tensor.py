@@ -1079,7 +1079,7 @@ class Tensor:
     def __truediv__(self, other):
         return torch_frontend.div(self, other)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def __floordiv__(self, other):
         return torch_frontend.floor_divide(self, other)
 

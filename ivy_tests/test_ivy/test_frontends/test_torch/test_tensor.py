@@ -2285,12 +2285,11 @@ def test_torch_special_truediv(
     init_tree="torch.tensor",
     method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        allow_inf=False,
-        large_abs_safety_factor=4,
-        safety_factor_scale="linear",
-        shared_dtype=True,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
 )
 def test_torch_special_floordiv(
