@@ -35,6 +35,7 @@ class matrix:
 
     def _process_str_data(self, data, dtype):
         is_float = "." in data or "e" in data
+        is_complex = "j" in data
         data = data.replace(",", " ")
         data = " ".join(data.split())
         data = data.split(";")
@@ -42,9 +43,15 @@ class matrix:
             row = row.strip().split(" ")
             data[i] = row
             for j, elem in enumerate(row):
-                data[i][j] = float(elem) if is_float else int(elem)
+                if is_complex:
+                    data[i][j] = complex(elem)
+                else:
+                    data[i][j] = float(elem) if is_float else int(elem)
         if dtype is None:
-            dtype = ivy.float64 if is_float else ivy.int64
+            if is_complex:
+                dtype = ivy.complex128
+            else:
+                dtype = ivy.float64 if is_float else ivy.int64
         self._data = ivy.array(data, dtype=dtype)
 
     # Properties #
