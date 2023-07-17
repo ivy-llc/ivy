@@ -4,8 +4,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy.functional.frontends.jax import DeviceArray
+from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
@@ -20,16 +19,22 @@ CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
 )
 def test_jax_devicearray_property_ivy_array(
     dtype_x,
+    backend_fw,
 ):
     _, data = dtype_x
-    x = DeviceArray(data[0])
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        x = jax_frontend.DeviceArray(data[0])
+        ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=backend_fw)
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend="jax",
+        )
 
 
 @given(
@@ -39,10 +44,15 @@ def test_jax_devicearray_property_ivy_array(
 )
 def test_jax_devicearray_property_dtype(
     dtype_x,
+    backend_fw,
 ):
     dtype, data = dtype_x
-    x = DeviceArray(data[0])
-    assert x.dtype == dtype[0]
+    with update_backend(backend_fw) as ivy_backend:
+        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        x = jax_frontend.DeviceArray(data[0])
+        assert x.dtype == dtype[0]
 
 
 @given(
@@ -53,10 +63,15 @@ def test_jax_devicearray_property_dtype(
 )
 def test_jax_devicearray_property_shape(
     dtype_x_shape,
+    backend_fw,
 ):
     _, data, shape = dtype_x_shape
-    x = DeviceArray(data[0])
-    assert x.shape == shape
+    with update_backend(backend_fw) as ivy_backend:
+        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        x = jax_frontend.DeviceArray(data[0])
+        assert x.shape == shape
 
 
 @st.composite
@@ -77,10 +92,14 @@ def _transpose_helper(draw):
 
 
 @given(x_transpose=_transpose_helper())
-def test_jax_devicearray_property_T(x_transpose):
-    x, xT = x_transpose
-    x = DeviceArray(x)
-    assert np.array_equal(x.T, xT)
+def test_jax_devicearray_property_T(x_transpose, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        x, xT = x_transpose
+        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        x = jax_frontend.DeviceArray(x)
+        assert np.array_equal(x.T, xT)
 
 
 @st.composite
@@ -104,14 +123,18 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-def test_jax_devicearray_property_at(x_y_index):
-    xy, idx = x_y_index
-    x = DeviceArray(xy[0])
-    y = DeviceArray(xy[1])
-    idx = idx[0]
-    x_set = x.at[idx].set(y[idx])
-    assert x_set[idx] == y[idx]
-    assert x.at[idx].get() == x[idx]
+def test_jax_devicearray_property_at(x_y_index, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+            "ivy.functional.frontends.jax"
+        )
+        xy, idx = x_y_index
+        x = jax_frontend.DeviceArray(xy[0])
+        y = jax_frontend.DeviceArray(xy[1])
+        idx = idx[0]
+        x_set = x.at[idx].set(y[idx])
+        assert x_set[idx] == y[idx]
+        assert x.at[idx].get() == x[idx]
 
 
 @handle_frontend_method(
@@ -128,6 +151,7 @@ def test_jax_devicearray_copy(
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
@@ -140,6 +164,7 @@ def test_jax_devicearray_copy(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -278,6 +303,7 @@ def test_jax_devicearray_conjugate(
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
@@ -291,6 +317,7 @@ def test_jax_devicearray_conjugate(
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
@@ -399,6 +426,7 @@ def test_jax_devicearray_cumsum(
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
@@ -414,6 +442,7 @@ def test_jax_devicearray_cumsum(
             "dtype": dtype,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -520,11 +549,13 @@ def test_jax_devicearray_sort(
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
+        backend_to_test=backend_fw,
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "object": x[0],
@@ -557,6 +588,7 @@ def test_jax_devicearray_argsort(
     dtype_x_axis,
     on_device,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -572,6 +604,7 @@ def test_jax_devicearray_argsort(
             "axis": axis,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1972,6 +2005,7 @@ def test_jax_devicearray_round(
     decimals,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -1985,6 +2019,7 @@ def test_jax_devicearray_round(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"decimals": decimals},
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
