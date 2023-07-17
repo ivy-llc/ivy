@@ -222,11 +222,14 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     for backend_str in available_frameworks:
         with update_backend(backend_str) as ivy_backend:
-            _tmp_mod = importlib.import_module(fn_module) # TODO use dynamic import?
+            _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
             _fn = _tmp_mod.__dict__[fn_name]
             # for partial mixed functions we should pass the backend function
             # to ivy.function_supported_devices_and_dtypes
-            if hasattr(_fn, "mixed_backend_wrappers") and ivy_backend.__dict__[fn_name] != _fn:
+            if (
+                hasattr(_fn, "mixed_backend_wrappers")
+                and ivy_backend.__dict__[fn_name] != _fn
+            ):
                 _fn = ivy_backend.__dict__[fn_name]
             devices_and_dtypes = ivy_backend.function_supported_devices_and_dtypes(_fn)
             devices_and_dtypes = (
@@ -248,7 +251,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
             for device_and_dtype in devices_and_dtypes:
                 for device in device_and_dtype.keys():
                     organized_dtypes[device] = _partition_dtypes_into_kinds(
-                        ivy_backend, device_and_dtype[device]
+                        backend_str, device_and_dtype[device]
                     )
                 all_organized_dtypes.append(organized_dtypes)
             supported_device_dtypes[backend_str] = (
@@ -262,7 +265,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     return supported_device_dtypes
 
 
-def _partition_dtypes_into_kinds(framework, dtypes):
+def _partition_dtypes_into_kinds(framework: str, dtypes):
     partitioned_dtypes = {}
     for kind in _dtype_kind_keys:
         partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(
