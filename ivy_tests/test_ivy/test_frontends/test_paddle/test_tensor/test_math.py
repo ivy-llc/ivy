@@ -1000,25 +1000,24 @@ def test_paddle_lcm(
 # cumprod
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.cumprod",
-    dtype_and_x=helpers.dtype_values_axis(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        safety_factor_scale="log",
-        large_abs_safety_factor=6,
-        small_abs_safety_factor=5,
-        min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
     ),
 )
 def test_paddle_cumprod(
     *,
-    dtype_and_x,
+    dtype_x_axis,
     on_device,
     fn_tree,
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -1027,8 +1026,6 @@ def test_paddle_cumprod(
         on_device=on_device,
         x=x[0],
         dim=axis,
-        rtol=1e-01,
-        atol=1e-01,
     )
 
 
@@ -1037,10 +1034,11 @@ def test_paddle_cumprod(
     fn_tree="paddle.gcd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+        min_value=-100,
+        max_value=100,
         min_num_dims=1,
-        safety_factor_scale="log",
-        large_abs_safety_factor=2,
+        min_dim_size=1,
+        num_arrays=2,
         shared_dtype=True,
     ),
 )
@@ -1410,4 +1408,63 @@ def test_paddle_frac(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# asinh
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.asinh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_paddle_asinh(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# max
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.max",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=False,
+    ),
+)
+def test_paddle_max(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        keepdim=False,
     )
