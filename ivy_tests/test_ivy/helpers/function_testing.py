@@ -1124,8 +1124,8 @@ def test_method(
     if any(
         dtype
         in ivy.function_unsupported_devices_and_dtypes(
-            ins.__getattribute__(method_name)
-        )[on_device]
+            ins.__getattribute__(method_name), device=on_device
+        )
         for dtype in method_input_dtypes
     ):
         return
@@ -1168,8 +1168,8 @@ def test_method(
     if any(
         dtype
         in ivy.function_unsupported_devices_and_dtypes(
-            ins_gt.__getattribute__(method_name)
-        )[on_device]
+            ins_gt.__getattribute__(method_name), device=on_device
+        )
         for dtype in method_input_dtypes
     ):
         return

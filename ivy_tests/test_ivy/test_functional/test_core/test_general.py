@@ -1215,7 +1215,9 @@ def test_inplace_variables_supported():
 )
 def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
-    if dtype in ivy.function_unsupported_devices_and_dtypes(ivy.inplace_update)[on_device]:
+    if dtype in ivy.function_unsupported_devices_and_dtypes(
+        ivy.inplace_update, device=on_device
+    ):
         return
     x, val = x_val_and_dtypes[1]
     x = ivy.array(x.tolist(), dtype=dtype, device=on_device)
@@ -1281,7 +1283,9 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device):
 )
 def test_inplace_increment(x_val_and_dtypes, test_flags, on_device):
     dtype = x_val_and_dtypes[0][0]
-    if dtype in ivy.function_unsupported_devices_and_dtypes(ivy.inplace_increment)[on_device]:
+    if dtype in ivy.function_unsupported_devices_and_dtypes(
+        ivy.inplace_increment, device=on_device
+    ):
         return
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()

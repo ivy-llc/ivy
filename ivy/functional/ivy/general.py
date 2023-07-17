@@ -3886,7 +3886,9 @@ def _get_devices_and_dtypes(fn, complement=True):
 
 @handle_exceptions
 @handle_nestable
-def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
+def function_supported_devices_and_dtypes(
+    fn: Callable, recurse: bool = True, device=None
+) -> Dict:
     """
     Return the supported combination of devices and dtypes of the current backend's
     function. The function returns a dict containing the supported combination of
@@ -3919,7 +3921,13 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
             "compositional": function_supported_devices_and_dtypes(
                 fn.compos, recurse=recurse
             ),
-            "primary": _get_devices_and_dtypes(fn, complement=False),
+            "primary": (
+                _get_devices_and_dtypes(fn, complement=False)
+                if not device
+                else getattr(
+                    _get_devices_and_dtypes(fn, complement=False), device, (None)
+                )
+            ),
         }
     else:
         supported_devices_dtypes = _get_devices_and_dtypes(fn, complement=False)
@@ -3932,12 +3940,20 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
                 wrapper=lambda x: x,
             )
 
-    return supported_devices_dtypes
+    return (
+        supported_devices_dtypes
+        if not device
+        else getattr(supported_devices_dtypes, device, (None,))
+    )
 
 
 @handle_exceptions
 @handle_nestable
-def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
+def function_unsupported_devices_and_dtypes(
+    fn: Callable,
+    recurse: bool = True,
+    device=None,
+) -> Dict:
     """
     Return the unsupported combination of devices and dtypes of the current backend's
     function. The function returns a dict containing the unsupported combination of
@@ -3969,7 +3985,13 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
             "compositional": function_unsupported_devices_and_dtypes(
                 fn.compos, recurse=recurse
             ),
-            "primary": _get_devices_and_dtypes(fn, complement=True),
+            "primary": (
+                _get_devices_and_dtypes(fn, complement=True)
+                if not device
+                else getattr(
+                    _get_devices_and_dtypes(fn, complement=True), device, (None,)
+                )
+            ),
         }
     else:
         unsupported_devices_dtypes = _get_devices_and_dtypes(fn, complement=True)
@@ -3981,7 +4003,11 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
                 function_unsupported_devices_and_dtypes,
                 wrapper=lambda x: x,
             )
-    return unsupported_devices_dtypes
+    return (
+        unsupported_devices_dtypes
+        if not device
+        else getattr(unsupported_devices_dtypes, device, (None,))
+    )
 
 
 @handle_exceptions

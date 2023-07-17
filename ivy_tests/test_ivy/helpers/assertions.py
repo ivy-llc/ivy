@@ -169,8 +169,10 @@ def check_unsupported_dtype(*, fn, input_dtypes, all_as_kwargs_np, device="cpu")
     otherwise.
     """
     test_unsupported = False
-    unsupported_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(fn)[device]
-    supported_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn)[device]
+    unsupported_dtypes_fn = ivy.function_unsupported_devices_and_dtypes(
+        fn, device=device
+    )
+    supported_dtypes_fn = ivy.function_supported_devices_and_dtypes(fn, device=device)
     if unsupported_dtypes_fn:
         for d in input_dtypes:
             if d in unsupported_dtypes_fn:
