@@ -47,7 +47,7 @@ except ImportError:
     ivy.functional.backends.torch = SimpleNamespace()
 
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import pow_helper
 
@@ -229,7 +229,7 @@ def test_set_item(
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x,
         query=query,
@@ -572,7 +572,7 @@ def values_and_ndindices(
 def test_scatter_flat(x, reduction, test_flags, backend_fw, fn_name, on_device):
     # scatter_flat throws an error while computing gradients for tensorflow
     # this has been fixed in the newer versions of tensorflow (2.10.0 onwards)
-    if "tensorflow" in backend_fw.__name__:
+    if backend_fw == "tensorflow":
         grad_support_version = [2, 10, 0]
         k = 0
         for number in [int(s) for s in tf.__version__.split(".") if s.isdigit()]:
@@ -810,35 +810,38 @@ def test_exists(x):
         st.sampled_from([lambda *args, **kwargs: None]),
     ),
 )
-def test_default(x, default_val):
-    with_callable = False
-    if x is not None:
-        if hasattr(x, "__call__"):
-            with_callable = True
+def test_default(x, default_val, test_flags, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        with_callable = False
+        if x is not None:
+            if hasattr(x, "__call__"):
+                with_callable = True
+            else:
+                x_dtype, x = x
+                x = x[0].tolist() if isinstance(x, list) else x
         else:
-            x_dtype, x = x
-            x = x[0].tolist() if isinstance(x, list) else x
-    else:
-        if hasattr(default_val, "__call__"):
-            with_callable = True
-        else:
-            dv_dtype, default_val = default_val
-            default_val = (
-                default_val[0].tolist()
-                if isinstance(default_val, list)
-                else default_val
-            )
+            if hasattr(default_val, "__call__"):
+                with_callable = True
+            else:
+                dv_dtype, default_val = default_val
+                default_val = (
+                    default_val[0].tolist()
+                    if isinstance(default_val, list)
+                    else default_val
+                )
 
-    truth_val = ivy.to_native(x if x is not None else default_val)
-    if with_callable:
-        assert ivy.default(x, default_val) == truth_val
-    else:
-        assert_all_close(
-            np.asarray(ivy.default(x, default_val)),
-            np.asarray(truth_val),
-            rtol=1e-3,
-            atol=1e-3,
-        )
+        truth_val = ivy_backend.to_native(x if x is not None else default_val)
+        if with_callable:
+            assert ivy_backend.default(x, default_val) == truth_val
+        else:
+            assert_all_close(
+                np.asarray(ivy_backend.default(x, default_val)),
+                np.asarray(truth_val),
+                rtol=1e-3,
+                atol=1e-3,
+                backend=backend_fw,
+                ground_truth_backend=test_flags.ground_truth_backend,
+            )
 
 
 def test_cache_fn():
@@ -895,8 +898,8 @@ def test_cache_fn_with_args():
     assert ret0 is not ret1
 
 
-def test_framework_setting_with_threading():
-    if ivy.current_backend_str() == "jax":
+def test_framework_setting_with_threading(backend_fw):
+    if backend_fw == "jax":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
@@ -912,7 +915,7 @@ def test_framework_setting_with_threading():
         return True
 
     # get original framework string and array
-    fws = ivy.current_backend_str()
+    ivy.set_backend(backend_fw)
     x = ivy.array([0.0, 1.0, 2.0])
 
     # start jax loop thread
@@ -920,15 +923,14 @@ def test_framework_setting_with_threading():
     thread.start()
     time.sleep(0.01)
     # start local original framework loop
-    ivy.set_backend(fws)
     for _ in range(2000):
         ivy.mean(x)
     ivy.previous_backend()
     assert not thread.join()
 
 
-def test_framework_setting_with_multiprocessing():
-    if ivy.current_backend_str() == "numpy":
+def test_framework_setting_with_multiprocessing(backend_fw):
+    if backend_fw == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
@@ -945,7 +947,7 @@ def test_framework_setting_with_multiprocessing():
         out_queue.put(True)
 
     # get original framework string and array
-    fws = ivy.current_backend_str()
+    ivy.set_backend(backend_fw)
     x = ivy.array([0.0, 1.0, 2.0])
 
     # start numpy loop thread
@@ -954,7 +956,6 @@ def test_framework_setting_with_multiprocessing():
     worker.start()
 
     # start local original framework loop
-    ivy.set_backend(fws)
     for _ in range(1000):
         ivy.mean(x)
     ivy.previous_backend()
@@ -963,18 +964,14 @@ def test_framework_setting_with_multiprocessing():
     assert output_queue.get_nowait()
 
 
-def test_explicit_ivy_framework_handles():
-    if ivy.current_backend_str() == "numpy":
+def test_explicit_ivy_framework_handles(backend_fw):
+    if backend_fw == "numpy":
         # Numpy is the conflicting framework being tested against
         pytest.skip()
 
-    # store original framework string and unset
-    fw_str = ivy.current_backend_str()
-    ivy.previous_backend()
-
     # set with explicit handle caught
-    ivy_exp = ivy.with_backend(fw_str)
-    assert ivy_exp.current_backend_str() == fw_str
+    ivy_exp = ivy.with_backend(backend_fw)
+    assert ivy_exp.current_backend_str() == backend_fw
 
     # assert backend implemented function is accessible
     assert "array" in ivy_exp.__dict__
@@ -989,7 +986,7 @@ def test_explicit_ivy_framework_handles():
 
     # assert the explicit handle is still unchanged
     assert ivy.current_backend_str() == "numpy"
-    assert ivy_exp.current_backend_str() == fw_str
+    assert ivy_exp.current_backend_str() == backend_fw
 
     # unset global ivy from numpy
     ivy.previous_backend()
@@ -1118,7 +1115,7 @@ def test_einops_reduce(
     if (reduction in ["mean", "prod"]) and (dtype not in floattypes):
         dtype = ["float32"]
     # torch computes min and max differently and leads to inconsistent gradients
-    if "torch" in backend_fw.__name__ and reduction in ["min", "max"]:
+    if backend_fw == "torch" and reduction in ["min", "max"]:
         test_flags.test_gradients = False
     helpers.test_function(
         input_dtypes=dtype,
@@ -1183,24 +1180,24 @@ def test_container_types():
         assert hasattr(cont_type, "items")
 
 
-def test_inplace_arrays_supported():
-    cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "torch"]:
-        assert ivy.inplace_arrays_supported()
-    elif cur_fw in ["jax", "tensorflow", "paddle"]:
-        assert not ivy.inplace_arrays_supported()
-    else:
-        raise Exception("Unrecognized framework")
+def test_inplace_arrays_supported(backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        if backend_fw in ["numpy", "torch"]:
+            assert ivy_backend.inplace_arrays_supported()
+        elif backend_fw in ["jax", "tensorflow", "paddle"]:
+            assert not ivy_backend.inplace_arrays_supported()
+        else:
+            raise Exception("Unrecognized framework")
 
 
-def test_inplace_variables_supported():
-    cur_fw = ivy.current_backend_str()
-    if cur_fw in ["numpy", "torch", "tensorflow"]:
-        assert ivy.inplace_variables_supported()
-    elif cur_fw in ["jax", "paddle"]:
-        assert not ivy.inplace_variables_supported()
-    else:
-        raise Exception("Unrecognized framework")
+def test_inplace_variables_supported(backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        if backend_fw in ["numpy", "torch", "tensorflow"]:
+            assert ivy_backend.inplace_variables_supported()
+        elif backend_fw in ["jax", "paddle"]:
+            assert not ivy_backend.inplace_variables_supported()
+        else:
+            raise Exception("Unrecognized framework")
 
 
 # inplace_update
@@ -1213,26 +1210,31 @@ def test_inplace_variables_supported():
     ),
     keep_x_dtype=st.booleans(),
 )
-def test_inplace_update(x_val_and_dtypes, keep_x_dtype, test_flags, on_device):
-    dtype = x_val_and_dtypes[0][0]
-    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_update):
-        return
-    x, val = x_val_and_dtypes[1]
-    x = ivy.array(x.tolist(), dtype=dtype, device=on_device)
-    val = ivy.array(val.tolist(), dtype=dtype, device=on_device)
-    if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
-        test_flags.as_variable and ivy.inplace_variables_supported()
-    ):
-        if keep_x_dtype:
-            x_dtype = x.dtype
-            x_inplace = ivy.inplace_update(x, val, keep_input_dtype=True)
-            assert x_dtype == x_inplace.dtype
-        else:
-            x_inplace = ivy.inplace_update(x, val)
-        assert id(x_inplace) == id(x)
-        x = helpers.flatten_and_to_np(ret=x)
-        val = helpers.flatten_and_to_np(ret=val)
-        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=val)
+def test_inplace_update(
+    x_val_and_dtypes, keep_x_dtype, test_flags, on_device, backend_fw
+):
+    with update_backend(backend_fw) as ivy_backend:
+        dtype = x_val_and_dtypes[0][0]
+        if dtype in ivy_backend.function_unsupported_dtypes(ivy_backend.inplace_update):
+            return
+        x, val = x_val_and_dtypes[1]
+        x = ivy_backend.array(x.tolist(), dtype=dtype, device=on_device)
+        val = ivy_backend.array(val.tolist(), dtype=dtype, device=on_device)
+        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
+            test_flags.as_variable and ivy_backend.inplace_variables_supported()
+        ):
+            if keep_x_dtype:
+                x_dtype = x.dtype
+                x_inplace = ivy_backend.inplace_update(x, val, keep_input_dtype=True)
+                assert x_dtype == x_inplace.dtype
+            else:
+                x_inplace = ivy_backend.inplace_update(x, val)
+            assert id(x_inplace) == id(x)
+            x = helpers.flatten_and_to_np(backend=backend_fw, ret=x)
+            val = helpers.flatten_and_to_np(backend=backend_fw, ret=val)
+            helpers.value_test(
+                backend=backend_fw, ret_np_flat=x, ret_np_from_gt_flat=val
+            )
 
 
 # inplace_decrement
@@ -1638,19 +1640,20 @@ _composition_2.test_unsupported_devices_and_dtypes = {
     "func",
     [_composition_1, _composition_2],
 )
-def test_function_supported_device_and_dtype(func):
-    res = ivy.function_supported_devices_and_dtypes(func, recurse=True)
-    exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
-    for dev in exp:
-        exp[dev] = tuple(
-            set(ivy.valid_dtypes).difference(exp[dev][ivy.current_backend_str()])
-        )
+def test_function_supported_device_and_dtype(func, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.function_supported_devices_and_dtypes(func, recurse=True)
+        exp = {"cpu": func.test_unsupported_devices_and_dtypes.copy()["cpu"]}
+        for dev in exp:
+            exp[dev] = tuple(
+                set(ivy.valid_dtypes).difference(exp[dev][ivy.current_backend_str()])
+            )
 
-    all_key = set(res.keys()).union(set(exp.keys()))
-    for key in all_key:
-        assert key in res
-        assert key in exp
-        assert set(res[key]) == set(exp[key])
+        all_key = set(res.keys()).union(set(exp.keys()))
+        for key in all_key:
+            assert key in res
+            assert key in exp
+            assert set(res[key]) == set(exp[key])
 
 
 # function_unsupported_devices_and_dtypes
@@ -1658,21 +1661,22 @@ def test_function_supported_device_and_dtype(func):
     "func",
     [_composition_1, _composition_2],
 )
-def test_function_unsupported_devices(func):
-    res = ivy.function_unsupported_devices_and_dtypes(func)
-    exp = func.test_unsupported_devices_and_dtypes.copy()
-    for dev in exp:
-        exp[dev] = exp[dev][ivy.current_backend_str()]
-    devs = list(exp.keys())
-    for dev in devs:
-        if len(exp[dev]) == 0:
-            exp.pop(dev)
+def test_function_unsupported_devices(func, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.function_unsupported_devices_and_dtypes(func)
+        exp = func.test_unsupported_devices_and_dtypes.copy()
+        for dev in exp:
+            exp[dev] = exp[dev][backend_fw]
+        devs = list(exp.keys())
+        for dev in devs:
+            if len(exp[dev]) == 0:
+                exp.pop(dev)
 
-    all_key = set(res.keys()).union(set(exp.keys()))
-    for key in all_key:
-        assert key in res
-        assert key in exp
-        assert set(res[key]) == set(exp[key])
+        all_key = set(res.keys()).union(set(exp.keys()))
+        for key in all_key:
+            assert key in res
+            assert key in exp
+            assert set(res[key]) == set(exp[key])
 
 
 # Still to Add #
