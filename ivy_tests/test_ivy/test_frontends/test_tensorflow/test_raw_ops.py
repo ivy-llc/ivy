@@ -792,19 +792,15 @@ def test_tensorflow_Square(  # NOQA
         x=x[0],
     )
 
+    
 
-    def _squared_difference_helper():
-        dtype_and_x = helpers.dtype_and_values(
+    @handle_frontend_test(
+        fn_tree="tensorflow.raw_ops.SquaredDifference",
+         dtype_and_x = helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shared_dtype=True,
         ),
-        return dtype_and_x
-
-
-    @handle_frontend_test(
-        fn_tree="tensorflow.raw_ops.SquaredDifference",
-        dtype_and_x=_squared_difference_helper(),
         test_with_out=st.just(False),
     )
     def test_tensorflow_SquaredDifference(
