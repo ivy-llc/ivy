@@ -711,3 +711,8 @@ def real(input, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def igamma(a, x, name=None):
+    return ivy.igamma(a, x=x)
