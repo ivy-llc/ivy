@@ -102,3 +102,9 @@ def interpolate(
     return ivy.interpolate(
         x, size=size, mode=mode, scale_factor=scale_factor, align_corners=align_corners
     )
+  
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def linear(x, weight, bias=None, name=None):
+    weight = ivy.swapaxes(weight, -1, -2)
+    return ivy.linear(x, weight, bias=bias)

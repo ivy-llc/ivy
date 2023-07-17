@@ -2,8 +2,12 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_linear_functions import (
+    x_and_linear,
+)
 
 
 # Cosine Similarity
@@ -161,6 +165,7 @@ def _zero2pad(draw):
     return dtype, input, padding
 
 
+# interpolate
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.zeropad2d",
     d_type_and_x_paddings=_zero2pad(),
@@ -210,9 +215,7 @@ def test_paddle_zeropad2d(
         min_size=2,
         max_size=2,
     ),
-    mode=st.sampled_from(
-        ["nearest", "linear", "bilinear", "trilinear", "bicubic", "area"]
-    ),
+    mode=st.sampled_from(["nearest", "linear", "bilinear", "trilinear", "bicubic", "area"]),
     align_corners=st.booleans(),
 )
 def test_paddle_interpolate(
@@ -240,3 +243,32 @@ def test_paddle_interpolate(
         mode=mode,
         align_corners=align_corners,
     )
+
+    
+# linear
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.linear",
+    dtype_x_weight_bias=x_and_linear(
+        dtypes=helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_linear(
+    *,
+    dtype_x_weight_bias,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, weight, bias = dtype_x_weight_bias
+    weight = ivy.swapaxes(weight, -1, -2)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        weight=weight,
+        bias=bias,
+    )    
