@@ -321,7 +321,7 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     d = operator.index(d)
 
     g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
-    b = ivy.bernoulli(ivy.array([0.5]), shape=None, dtype=dtype, seed=seed)
+    b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype=dtype, seed=seed)
     r = 2 * b - 1
     gn =  r * g ** (1 / p)
 
