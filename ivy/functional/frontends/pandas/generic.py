@@ -66,5 +66,12 @@ class NDFrame:
             ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
         )
 
-    def to_numpy(self):
-        return self.array.to_numpy()
+    def to_numpy(self, dtype=None, copy=False, na_value=None):
+        ret = self.array.to_numpy()
+        if na_value is not None:
+            ret = np.where(ret == np.nan, na_value, ret)
+        if dtype is not None:
+            ret = ret.astype(dtype)
+        if copy:
+            return ret.copy()
+        return ret
