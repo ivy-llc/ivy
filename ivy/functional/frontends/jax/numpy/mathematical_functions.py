@@ -6,7 +6,6 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 from ivy.functional.frontends.numpy.manipulation_routines import trim_zeros
-from math import factorial
 
 
 # sign
@@ -27,6 +26,11 @@ abs = absolute
 def add(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def imag(val, /):
+    return ivy.imag(val)
 
 
 @to_ivy_arrays_and_back
@@ -70,12 +74,7 @@ def arctan2(x1, x2, /):
 @to_ivy_arrays_and_back
 def convolve(a, v, mode="full", *, precision=None):
     a, v = promote_types_of_jax_inputs(a, v)
-    if ivy.get_num_dims(a) != 1:
-        raise ValueError("convolve() only support 1-dimensional inputs.")
-    if len(a) == 0 or len(v) == 0:
-        raise ValueError(
-            f"convolve: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
-        )
+
     if len(a) < len(v):
         a, v = v, a
     v = ivy.flip(v)
@@ -89,9 +88,12 @@ def convolve(a, v, mode="full", *, precision=None):
     elif mode == "full":
         padding = [(v.shape[0] - 1, v.shape[0] - 1)]
 
+    a = a.reshape([1, 1, a.shape[0]])
+    v = v.reshape([v.shape[0], 1, 1])
+
     result = ivy.conv_general_dilated(
-        a[None, None, :],
-        v[:, None, None],
+        a,
+        v,
         (1,),
         padding,
         dims=1,
@@ -122,6 +124,7 @@ def floor(x, /):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.13 and below": ("complex",)}, "jax")
 def mod(x1, x2, /):
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.remainder(x1, x2)
@@ -129,8 +132,8 @@ def mod(x1, x2, /):
 
 @to_ivy_arrays_and_back
 def modf(x, /, out=None):
-    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x)) # integral part
-    y2 = x - y1 # fractional part
+    y1 = ivy.where(x >= 0, ivy.floor(x), ivy.ceil(x))  # integral part
+    y2 = x - y1  # fractional part
     dtype_str = str(x.dtype)
     if "float" in dtype_str:
         return y2, y1
@@ -386,7 +389,7 @@ def fmin(x1, x2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("uint16",)},
+    {"0.4.13 and below": ("uint16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -440,7 +443,7 @@ def sinc(x, /):
 
 @with_unsupported_dtypes(
     {
-        "0.4.10 and below": (
+        "0.4.13 and below": (
             "bfloat16",
             "float16",
         )
@@ -475,7 +478,7 @@ def vdot(a, b):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("bfloat16",)},
+    {"0.4.13 and below": ("bfloat16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -543,6 +546,11 @@ def around(a, decimals=0, out=None):
 
 
 @to_ivy_arrays_and_back
+def round(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
+
+
+@to_ivy_arrays_and_back
 def frexp(x, /):
     return ivy.frexp(x)
 
@@ -580,33 +588,27 @@ def polyadd(a1, a2):
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.13 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
 def polyder(p, m=1):
-    p = ivy.atleast_1d(p)
-    n = p.size
-
     if m < 0:
         raise ValueError("Order of derivative must be positive.")
 
     if m == 0:
         return p
-
-    if n == 1 or m >= n:
-        return ivy.array(0, dtype=p.dtype)
-
-    result = ivy.array(
-        [factorial(n - 1 - k) // factorial(n - 1 - k - m) * p[k] for k in range(n - m)],
-        dtype=p.dtype,
+    p_dtype = p.dtype
+    coeff = ivy.prod(
+        ivy.expand_dims(ivy.arange(m, len(p), dtype=p_dtype))
+        - ivy.expand_dims(ivy.arange(m, dtype=p_dtype), axis=1),
+        axis=0,
     )
-
-    return result
+    return (p[:-m] * coeff[::-1]).astype(p_dtype)
 
 
 @with_unsupported_dtypes(
-    {"0.4.10 and below": ("float16",)},
+    {"0.4.13 and below": ("float16",)},
     "jax",
 )
 @to_ivy_arrays_and_back
@@ -710,5 +712,5 @@ def product(
 
 
 @to_ivy_arrays_and_back
-def round(x, decimals=0, /):
-    return ivy.round(x, decimals)
+def conjugate(x, /):
+    return ivy.conj(x)

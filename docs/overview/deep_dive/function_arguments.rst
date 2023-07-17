@@ -2,7 +2,7 @@ Function Arguments
 ==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/2022.12/API_specification
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
@@ -29,8 +29,12 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
-    @to_native_arrays_and_back
+    @handle_exceptions
+    @handle_nestable
+    @handle_array_like_without_promotion
     @handle_out_argument
+    @to_native_arrays_and_back
+    @handle_array_function
     def tan(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -39,6 +43,7 @@ We present both the Ivy API signature and also a backend-specific signature for 
     ) -> ivy.Array:
 
     # PyTorch
+    @handle_numpy_arrays_in_specific_backend
     def tan(
         x: torch.Tensor,
         /,
@@ -49,8 +54,12 @@ We present both the Ivy API signature and also a backend-specific signature for 
 .. code-block:: python
 
     # Ivy
-    @to_native_arrays_and_back
+    @handle_exceptions
+    @handle_nestable
+    @handle_array_like_without_promotion
     @handle_out_argument
+    @to_native_arrays_and_back
+    @handle_array_function
     def roll(
         x: Union[ivy.Array, ivy.NativeArray],
         /,
@@ -67,37 +76,49 @@ We present both the Ivy API signature and also a backend-specific signature for 
         shift: Union[int, Sequence[int]],
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
+        out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
 
 .. code-block:: python
 
     # Ivy
-    @to_native_arrays_and_back
+    @handle_exceptions
+    @handle_nestable
     @handle_out_argument
+    @to_native_arrays_and_back
+    @handle_array_function
     def add(
-        x1: Union[ivy.Array, ivy.NativeArray, float],
-        x2: Union[ivy.Array, ivy.NativeArray, float],
+        x1: Union[float, ivy.Array, ivy.NativeArray],
+        x2: Union[float, ivy.Array, ivy.NativeArray],
         /,
         *,
+        alpha: Optional[Union[int, float]] = None,
         out: Optional[ivy.Array] = None,
-    ) -> Union[ivy.Array, float]:
+    ) -> ivy.Array:
 
     # TensorFlow
     def add(
-        x1: Union[tf.Tensor, tf.Variable, float],
-        x2: Union[tf.Tensor, tf.Variable, float],
+        x1: Union[float, tf.Tensor, tf.Variable],
+        x2: Union[float, tf.Tensor, tf.Variable],
         /,
-    ) -> Union[tf.Tensor, tf.Variable, float]:
+        *,
+        alpha: Optional[Union[int, float]] = None,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    ) -> Union[tf.Tensor, tf.Variable]:
 
 .. code-block:: python
 
     # Ivy
-    @outputs_to_ivy_arrays
+    @handle_nestable
+    @handle_array_like_without_promotion
     @handle_out_argument
+    @inputs_to_native_shapes
+    @outputs_to_ivy_arrays
+    @handle_array_function
     @infer_dtype
     @infer_device
     def zeros(
-        shape: Union[int, Sequence[int]],
+        shape: Union[ivy.Shape, ivy.NativeShape],
         *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -106,10 +127,11 @@ We present both the Ivy API signature and also a backend-specific signature for 
 
     # JAX
     def zeros(
-        shape: Union[int, Sequence[int]],
+        shape:  Union[ivy.NativeShape, Sequence[int]],
         *,
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
+        out: Optional[JaxArray] = None,
     ) -> JaxArray:
 
 
@@ -196,6 +218,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5cAbryXza18" class="video">
     </iframe>
