@@ -18,8 +18,29 @@ from ivy.stateful.converters import ModuleConverters
 
 # Base #
 # -----#
-class Module(ModuleConverters, ModuleHelpers):
+class Module(
+    ModuleConverters,
+    ModuleHelpers,
+):
     """Module is a base class for deriving trainable modules."""
+
+    def __new__(cls, *args, **kwargs):
+        # check the module of the class
+        # if it's stateful, it's internal
+        # we leave this untouched
+        if "stateful" in cls.__module__:
+            # we are not assigning it a variable
+            pass
+        else:
+            # first check if a var is already assigned
+            # this would mean it is a nested custom class
+            if not hasattr(Module, "_init_var"):
+                # if not , create it and add
+                Module._init_var = [cls]
+            else:
+                Module._init_var.append(cls)
+        instance = super().__new__(cls)
+        return instance
 
     def __init__(
         self,
@@ -124,9 +145,37 @@ class Module(ModuleConverters, ModuleHelpers):
         self._dynamic_backend = dynamic_backend
         if build_mode != "on_init":
             return
-        if v or with_partial_v:
-            # build only if `v` or `with_partial_v`
+        if Module._init_var:
+            if "stateful" in self.__module__:
+                # we know we are operating within the
+                # context of another class, and it's a
+                # stateful class internally defined
+                # so we freeze weight generation
+                # unless `v` or `with_partial_v` is passed
+
+                if v or with_partial_v:
+                    # build only if `v` or `with_partial_v`
+                    self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+                # we don't want to delete the class variable now
+                # since there could be other child modules
+                return
+            # we know this is the custom class that has triggered the
+            # class var, so we do the building, and after that delete
+            # the class variable, but before that we check if it's a
+            # nested scenario, because if it's another custom class initialised
+            # within another one, then we have to hold variable initialisation
+            # here too, unless `v` or `with_partial_v`
+            if len(Module._init_var) > 1:
+                # hold off initialisation, delete key for this class and
+                # move on
+                Module._init_var.pop()
+                return
             self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+            if Module._init_var[-1] == self.__class__.__name__:
+                # you delete it, only if this is the class that caused it's creation
+                Module._init_var.pop()
+            return
+        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
@@ -146,7 +195,6 @@ class Module(ModuleConverters, ModuleHelpers):
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
             fn=fn,
