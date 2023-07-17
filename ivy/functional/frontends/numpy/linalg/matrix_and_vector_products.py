@@ -75,3 +75,10 @@ def multi_dot(arrays, *, out=None):
 def dot(a, b, out=None):
     a, b = promote_types_of_numpy_inputs(a, b)
     return ivy.matmul(a, b)
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+def einsum(equation, *operands, out=None):
+    operands = promote_types_of_numpy_inputs(*operands)
+    return ivy.einsum(equation, *operands, out=out)

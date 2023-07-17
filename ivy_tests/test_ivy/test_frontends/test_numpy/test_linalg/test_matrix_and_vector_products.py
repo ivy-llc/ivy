@@ -380,3 +380,34 @@ def test_numpy_dot(
         a=a,
         b=b,
     )
+
+
+# Einsum
+@handle_frontend_test(
+    fn_tree="numpy.linalg.einsum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-10,
+        max_value=10,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_einsum(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_flags=test_flags,
+        a=xs[0],
+        b=xs[1],
+    )

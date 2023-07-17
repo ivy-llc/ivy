@@ -504,7 +504,7 @@ from .linalg.matrix_and_vector_products import (
     outer,
     matrix_power,
     tensordot,
-    # einsum,
+    einsum,
     # einsum_path,
     kron,
     cross,
