@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import List
+from typing import List, Tuple
 
 # local
 import ivy
@@ -9,7 +9,7 @@ import ivy
 class NestedArrayBase(abc.ABC):
     """Base class for nested array objects."""
 
-    def __init__(self, data, dtype, device, internal=False):
+    def __init__(self, data, nested_rank, inner_shape, dtype, device, internal=False):
         if not internal:
             raise RuntimeError(
                 "NestedArray is an abstract class "
@@ -17,58 +17,76 @@ class NestedArrayBase(abc.ABC):
                 "Please use one of the factory methods instead"
             )
         self._data = data
-        self._shape = self._generate_shape()
+        self._nested_rank = nested_rank
+        self._inner_shape = inner_shape
+        self._shape = [len(self._data)] + [None] * self._nested_rank + self._inner_shape
         self._dtype = dtype
         self._device = device
         self._pre_repr = "ivy."
 
     @classmethod
-    def nested_array(cls, data, dtype=None, device=None):
+    def nested_array(
+        cls, data, nested_rank=None, inner_shape=None, dtype=None, device=None
+    ):
         dtype = ivy.default_dtype(dtype=dtype, item=data)
         device = ivy.default_device(device, item=data)
-        if ivy.is_ivy_array(data):
-            data = [data]
-        elif isinstance(data, (list, tuple)):
-            data = ivy.to_ivy(data)
-        elif ivy.is_native_array(data):
-            data = [ivy.to_ivy(data)]
+
+        # convert all the leaf lists to ivy arrays, determine inner_shape and depth
+        def _seq_to_ivy(x, depth=0, inner_shape=None):
+            inner_shape = [] if inner_shape is None else inner_shape
+            if (
+                isinstance(x, (list, tuple))
+                and len(x) != 0
+                and isinstance(x[0], (list, tuple))
+            ):
+                depth_ret = None
+                for i, item in enumerate(x):
+                    x = list(x) if isinstance(x, tuple) else x
+                    ret_inner_shape = []
+                    if nested_rank is not None and depth >= nested_rank:
+                        ret_inner_shape = inner_shape + [len(item)]
+                    x[i], depth_ret, ret_inner_shape = _seq_to_ivy(
+                        item, depth=depth + 1, inner_shape=ret_inner_shape
+                    )
+
+                # We don't need to take max here,
+                # because the depth will be the same for all the leafs
+                depth = depth_ret
+                inner_shape = ret_inner_shape
+            else:
+                x = ivy.array(x, dtype=dtype, device=device)
+            return x, depth, inner_shape
+
+        if isinstance(data, (list, tuple)):
+            data, depth, def_inner_shape = _seq_to_ivy(data)
+            depth += 1
+            default_nested_rank = (
+                max(0, depth - 1)
+                if inner_shape is None
+                else max(0, depth - 1 - len(inner_shape))
+            )
+            default_inner_shape = list() if nested_rank is None else def_inner_shape
+
+            nested_rank = (
+                nested_rank if nested_rank is not None else default_nested_rank
+            )
+            inner_shape = (
+                list(inner_shape) if inner_shape is not None else default_inner_shape
+            )
         elif isinstance(data, cls):
             data = data._data
+            nested_rank = nested_rank if nested_rank is not None else data._nested_rank
+            inner_shape = (
+                list(inner_shape)
+                if list(inner_shape) is not None
+                else data._inner_shape
+            )
         else:
             raise TypeError(
-                "Input data must be ivy.Array, ivy.NativeArray"
-                " or a list of either, got: {}".format(type(data))
+                "Input data must be pylist or tuple, got: {}".format(type(data))
             )
-        for i in range(len(data)):
-            data[i] = ivy.astype(data[i], dtype)
-            data[i] = ivy.to_device(data[i], device)
-        return cls(data, dtype, device, internal=True)
 
-    def _generate_shape(
-        self,
-    ):
-        final_shape = [len(self._data)]
-        shapes = list()
-        ndims = list()
-        for arr in self._data:
-            shapes.append(arr.shape)
-            ndims.append(arr.ndim)
-        if ndims.count(ndims[0]) != len(ndims):
-            raise RuntimeError(
-                "All arrays in a nested array must have the same number of dimensions."
-            )
-        for i in range(ndims[0]):
-            same_shape = True
-            current_shape = shapes[0][i]
-            for j in range(final_shape[0]):
-                if shapes[j][i] != current_shape:
-                    same_shape = False
-                    break
-            if same_shape:
-                final_shape.append(current_shape)
-            else:
-                final_shape.append(None)
-        return final_shape
+        return cls(data, nested_rank, inner_shape, dtype, device, internal=True)
 
     @staticmethod
     def nested_multi_map_in_static_method(fn_name, *args, **kwargs):
@@ -134,6 +152,16 @@ class NestedArrayBase(abc.ABC):
         """Number of array dimensions (axes)."""
         return len(tuple(self._shape))
 
+    @property
+    def nested_rank(self) -> int:
+        """Nested Rank."""
+        return self._nested_rank
+
+    @property
+    def inner_shape(self) -> Tuple[int]:
+        """Inner Shape."""
+        return self._inner_shape
+
     # Built-ins #
     # ----------#
 
@@ -145,4 +173,9 @@ class NestedArrayBase(abc.ABC):
         return self._pre_repr + self.__class__.__name__ + "([\n" + arrays_repr + "\n])"
 
     def __getitem__(self, query):
-        return self._data[query]
+        ret = self._data[query]
+        if isinstance(ret, list):
+            return self.__class__.nested_array(
+                ret, self._nested_rank - 1, dtype=self._dtype, device=self._device
+            )
+        return ret
