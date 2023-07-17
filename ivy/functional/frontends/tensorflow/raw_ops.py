@@ -516,6 +516,8 @@ SquaredDifference = to_ivy_arrays_and_back(
                 "float16",
                 "float64",
                 "float32",
+                "int32",
+                "int64",
             ),
         },
         "tensorflow",
