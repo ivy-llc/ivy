@@ -1474,7 +1474,7 @@ def test_paddle_max(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.heaviside",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=2,

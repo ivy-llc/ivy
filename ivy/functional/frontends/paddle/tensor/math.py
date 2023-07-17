@@ -355,7 +355,7 @@ def max(x, axis=None, keepdim=False, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float16","float32", "float64")}, "paddle"
+    {"2.5.0 and below": ("float16","float32", "float64","int32" , "int64" )}, "paddle"
 )
 @to_ivy_arrays_and_back
 def heaviside(x,y, name = None):
