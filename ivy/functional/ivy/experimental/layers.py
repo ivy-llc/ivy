@@ -2225,10 +2225,10 @@ def adaptive_avg_pool3d(
             or (C, S_0, S_1, S_2), where S = `output_size`
     """
     squeeze = False
-    if len(input.shape) == 4:
+    if input.ndim == 4:
         input = ivy.expand_dims(input, axis=0)
         squeeze = True
-    elif len(input.shape) != 5:
+    elif input.ndim != 5:
         raise ivy.utils.exceptions.IvyException(
             f"Got {len(input.shape)}D input, but only 4D and 5D inputs are supported.",
         )
@@ -2281,7 +2281,7 @@ def adaptive_avg_pool3d(
             ret = vals[..., i, :, j, :, k]
         else:
             ret = ret + vals[..., i, :, j, :, k]
-    pooled_output = ret / (length_d * length_h * length_w)
+    pooled_output = ret / (length_d * length_h * length_w).astype(vals.dtype)
 
     if squeeze:
         return ivy.squeeze(pooled_output, axis=0)

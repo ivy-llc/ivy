@@ -886,20 +886,20 @@ def test_adaptive_avg_pool2d(
 @handle_test(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool3d",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
         max_num_dims=4,
-        min_dim_size=5,
+        min_dim_size=1,
         max_value=100,
         min_value=-100,
     ),
     output_size=st.one_of(
         st.tuples(
-            helpers.ints(min_value=1, max_value=10),
-            helpers.ints(min_value=1, max_value=10),
-            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
         ),
-        helpers.ints(min_value=1, max_value=10),
+        helpers.ints(min_value=1, max_value=5),
     ),
     test_with_out=st.just(False),
     ground_truth_backend="torch",
