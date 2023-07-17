@@ -2369,7 +2369,7 @@ def reduce_window(
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
-    >>> ivy.reduce_window(x, 0, ivy.sum, (2, 2))
+    >>> ivy.reduce_window(x, 0, ivy.add, (2, 2))
     ivy.array([[32.]])
     """
     # ToDo: add support for window_dilation
