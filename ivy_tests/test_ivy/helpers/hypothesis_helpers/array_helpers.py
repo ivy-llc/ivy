@@ -2119,3 +2119,97 @@ def einsum_helper(draw):
     eq = eq_1 + "," + eq_2 + "->" + output_eq
 
     return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]
+
+
+@st.composite
+def histogram_helper(draw):
+    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5
+        )
+    )
+    a = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
+            abs_smallest_val=-10,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
+    if len(bins) == 1:
+        bins = int(abs(bins[0]))
+        if bins == 0:
+            bins = 1
+        if dtype_input in draw(helpers.get_dtypes("unsigned")):
+            range = (
+                draw(
+                    helpers.floats(
+                        min_value=0,
+                        max_value=np.min(a),
+                        exclude_min=False,
+                        exclude_max=False,
+                    )
+                ),
+                draw(
+                    helpers.floats(
+                        min_value=np.max(a),
+                        max_value=20,
+                        exclude_min=False,
+                        exclude_max=False,
+                    )
+                ),
+            )
+        else:
+            range = (
+                draw(
+                    helpers.floats(
+                        min_value=min(np.min(a), -20),
+                        max_value=np.min(a),
+                        exclude_min=False,
+                        exclude_max=False,
+                    )
+                ),
+                draw(
+                    helpers.floats(
+                        min_value=np.max(a),
+                        max_value=max(np.max(a), 20),
+                        exclude_min=False,
+                        exclude_max=False,
+                    )
+                ),
+            )
+        range = draw(st.sampled_from([range, None]))
+    else:
+        if np.min(a) < bins[0]:
+            bins[0] = np.min(a)
+        if np.max(a) > bins[-1]:
+            bins[-1] = np.max(a)
+        range = None
+    weights = draw(
+        helpers.array_values(
+            dtype=dtype_input,
+            shape=shape,
+            min_value=-20,
+            max_value=20,
+        )
+    )
+    density = draw(st.booleans())
+    return (
+        a,
+        bins,
+        range,
+        weights,
+        density,
+        dtype_input,
+    )

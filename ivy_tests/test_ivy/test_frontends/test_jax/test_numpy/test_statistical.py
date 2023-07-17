@@ -13,101 +13,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
     _get_castable_dtype,
 )
+from ivy_tests.test_ivy.helpers.hypothesis_helpers import histogram_helper
 from ivy import inf
-
-
-@st.composite
-def _histogram_helper(draw):
-    dtype_input = draw(st.sampled_from(draw(helpers.get_dtypes("float"))))
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5
-        )
-    )
-    a = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=shape,
-            min_value=-20,
-            max_value=20,
-        )
-    )
-    bins = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=(draw(helpers.ints(min_value=1, max_value=10)),),
-            abs_smallest_val=-10,
-            min_value=-10,
-            max_value=10,
-        )
-    )
-    bins = np.asarray(sorted(set(bins)), dtype=dtype_input)
-    if len(bins) == 1:
-        bins = int(abs(bins[0]))
-        if bins == 0:
-            bins = 1
-        if dtype_input in draw(helpers.get_dtypes("unsigned")):
-            range = (
-                draw(
-                    helpers.floats(
-                        min_value=0,
-                        max_value=np.min(a),
-                        exclude_min=False,
-                        exclude_max=False,
-                    )
-                ),
-                draw(
-                    helpers.floats(
-                        min_value=np.max(a),
-                        max_value=20,
-                        exclude_min=False,
-                        exclude_max=False,
-                    )
-                ),
-            )
-        else:
-            range = (
-                draw(
-                    helpers.floats(
-                        min_value=min(np.min(a), -20),
-                        max_value=np.min(a),
-                        exclude_min=False,
-                        exclude_max=False,
-                    )
-                ),
-                draw(
-                    helpers.floats(
-                        min_value=np.max(a),
-                        max_value=max(np.max(a), 20),
-                        exclude_min=False,
-                        exclude_max=False,
-                    )
-                ),
-            )
-        range = draw(st.sampled_from([range, None]))
-    else:
-        if np.min(a) < bins[0]:
-            bins[0] = np.min(a)
-        if np.max(a) > bins[-1]:
-            bins[-1] = np.max(a)
-        range = None
-    weights = draw(
-        helpers.array_values(
-            dtype=dtype_input,
-            shape=shape,
-            min_value=-20,
-            max_value=20,
-        )
-    )
-    density = draw(st.booleans())
-    return (
-        a,
-        bins,
-        range,
-        weights,
-        density,
-        dtype_input,
-    )
 
 
 # einsum
@@ -160,9 +67,9 @@ def test_jax_einsum(
 # histogram_bin_edges
 @handle_frontend_test(
     fn_tree="jax.numpy.histogram_bin_edges",
-    values=_histogram_helper(),
+    values=histogram_helper(),
 )
-def test_jax_numpy_histogram_bin_edges(
+def test_jax_histogram_bin_edges(
     *,
     values,
     on_device,
