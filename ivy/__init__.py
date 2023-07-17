@@ -1294,8 +1294,9 @@ INTERNAL_FILENAMES = [
 def _is_from_internal(filename):
     return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
+
 class LoggingMode:
-    logging_modes = ['DEBUG', 'INFO', 'WARNING', 'ERROR']
+    logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
     logging_mode_stack = []
 
     def __init__(self):
@@ -1305,18 +1306,20 @@ class LoggingMode:
 
     def set_logging_mode(self, mode):
         """
-        Sets the current logging mode for Ivy. Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
+        Sets the current logging mode for Ivy.
+
+        Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
         """
-        assert mode in self.logging_modes, 'Invalid logging mode. Choose from: ' + ', '.join(self.logging_modes)
+        assert (
+            mode in self.logging_modes
+        ), "Invalid logging mode. Choose from: " + ", ".join(self.logging_modes)
 
         # Update the logging level
         logging.getLogger().setLevel(mode)
         self.logging_mode_stack.append(mode)
 
     def unset_logging_mode(self):
-        """
-        Removes the most recently set logging mode, returning to the previous one.
-        """
+        """Removes the most recently set logging mode, returning to the previous one."""
         if len(self.logging_mode_stack) > 1:
             # Remove the current mode
             self.logging_mode_stack.pop()
