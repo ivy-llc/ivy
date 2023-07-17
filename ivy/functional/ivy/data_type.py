@@ -1,5 +1,6 @@
 # global
 import ast
+import logging
 import inspect
 import math
 from numbers import Number
@@ -18,7 +19,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
-    inputs_to_native_shapes,
     handle_device_shifting,
     inputs_to_native_shapes,
 )
@@ -148,8 +148,19 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
-            f_supported = wrapper(get_fn(fn, False))
-            out = merge_fn(f_supported, out)
+            f_supported = get_fn(fn, False)
+            if hasattr(fn, "partial_mixed_handler"):
+                f_supported = merge_fn(
+                    wrapper(f_supported["compositional"]),
+                    wrapper(f_supported["primary"]),
+                )
+                logging.warning(
+                    "This function includes the mixed partial function"
+                    f" 'ivy.{fn.__name__}'. Please note that the returned data types"
+                    " may not be exhaustive. Please check the dtypes of"
+                    f" `ivy.{fn.__name__}` for more details"
+                )
+            out = merge_fn(wrapper(f_supported), out)
             continue
         elif "frontend" in fn.__module__ or (
             hasattr(fn, "__name__") and "einops" in fn.__name__
@@ -179,8 +190,8 @@ def _get_dtypes(fn, complement=True):
     # we can comment out the following condition
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
-    is_einops_fn = "einops" in fn.__name__
-    if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
+    has_unsupported_dtypes_attr = hasattr(fn, "unsupported_dtypes")
+    if not is_backend_fn and not is_frontend_fn and not has_unsupported_dtypes_attr:
         if complement:
             supported = set(ivy.all_dtypes).difference(supported)
         return supported
@@ -208,10 +219,13 @@ def _get_dtypes(fn, complement=True):
     return tuple(supported)
 
 
-def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+def _function_supported_dtypes(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the absolute intersection of  supported data types of the current backend's
-    function for all the known devices.
+    Return the supported data types of the current backend's function. The function
+    returns a dict containing the supported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -223,7 +237,7 @@ def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        The supported data types of the function
+        Tuple or dict containing the supported dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
@@ -232,19 +246,31 @@ def _function_supported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
             "in a particular backend"
         ),
     )
-    supported_dtypes = set(_get_dtypes(fn, complement=False))
-    if recurse:
-        supported_dtypes = _nested_get(
-            fn, supported_dtypes, set.intersection, _function_supported_dtypes
-        )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": _function_supported_dtypes(fn.compos, recurse=recurse),
+            "primary": _get_dtypes(fn, complement=False),
+        }
+    else:
+        supported_dtypes = set(_get_dtypes(fn, complement=False))
+        if recurse:
+            supported_dtypes = _nested_get(
+                fn, supported_dtypes, set.intersection, _function_supported_dtypes
+            )
+    return (
+        supported_dtypes
+        if isinstance(supported_dtypes, dict)
+        else tuple(supported_dtypes)
+    )
 
-    return tuple(supported_dtypes)
 
-
-def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
+def _function_unsupported_dtypes(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the absolute intersection of  unsupported data types of the current backend's
-    function for all the known devices.
+    Return the unsupported data types of the current backend's function. The function
+    returns a dict containing the unsupported dtypes for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -256,7 +282,7 @@ def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        The unsupported data types of the function
+        Tuple or dict containing the unsupported dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_dtypes_attributes(fn),
@@ -265,13 +291,23 @@ def _function_unsupported_dtypes(fn: Callable, recurse: bool = True) -> Tuple:
             "in a particular backend"
         ),
     )
-    unsupported_dtypes = set(_get_dtypes(fn, complement=True))
-    if recurse:
-        unsupported_dtypes = _nested_get(
-            fn, unsupported_dtypes, set.union, _function_unsupported_dtypes
-        )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": _function_unsupported_dtypes(fn.compos, recurse=recurse),
+            "primary": _get_dtypes(fn, complement=True),
+        }
+    else:
+        unsupported_dtypes = set(_get_dtypes(fn, complement=True))
+        if recurse:
+            unsupported_dtypes = _nested_get(
+                fn, unsupported_dtypes, set.union, _function_unsupported_dtypes
+            )
 
-    return tuple(unsupported_dtypes)
+    return (
+        unsupported_dtypes
+        if isinstance(unsupported_dtypes, dict)
+        else tuple(unsupported_dtypes)
+    )
 
 
 # Array API Standard #

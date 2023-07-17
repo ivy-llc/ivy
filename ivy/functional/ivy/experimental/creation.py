@@ -548,7 +548,7 @@ def ndindex(
 
 @handle_exceptions
 def indices(
-    dimensions: Sequence,
+    dimensions: Sequence[int],
     *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
@@ -613,7 +613,7 @@ def unsorted_segment_min(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    r"""
+    """
     Compute the minimum along segments of an array. Segments are defined by an integer
     array of segment IDs.
 
