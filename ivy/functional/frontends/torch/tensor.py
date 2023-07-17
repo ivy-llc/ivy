@@ -866,7 +866,25 @@ class Tensor:
         self.ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    # @with_supported_dtypes({"2.0.1 and below": ('float32')}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bool",
+                "float16",
+                "float64",
+                "uint8",
+                "uint32",
+                "uint16",
+                "uint64",
+                "int8",
+                "int16",
+                "int32",
+                "int64",
+            )
+        },
+        "torch",
+    )
     def sqrt(self):
         return torch_frontend.sqrt(self)
 

@@ -6138,7 +6138,7 @@ def test_torch_instance_tril(
     init_tree="torch.tensor",
     method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_torch_instance_sqrt(
