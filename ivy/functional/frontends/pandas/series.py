@@ -32,3 +32,14 @@ class Series(NDFrame):
             f"frontends.pandas.Series {series_name}({self.array.to_list()},"
             f" index={self.index})"
         )
+
+    def __getitem__(self, index_val):
+        if isinstance(index_val, slice):
+            return Series(
+                self.array[index_val],
+                index=self.index[index_val],
+                name=self.name,
+                dtype=self.dtype,
+                copy=self.copy,
+            )
+        return self.array[index_val].item()
