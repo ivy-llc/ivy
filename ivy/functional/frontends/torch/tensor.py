@@ -36,6 +36,7 @@ class Tensor:
             self._is_leaf = True
         else:
             self._is_leaf = False
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
