@@ -1,5 +1,6 @@
 # global
 from typing import Iterable
+import math
 
 # local
 import ivy
@@ -27,6 +28,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self._grads = None
         self._requires_grad = requires_grad
         self.grad_fn = None
         self._grads = None
@@ -85,6 +87,10 @@ class Tensor:
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
+
+    @property
+    def grad(self):
+        return self._grads
 
     @property
     def requires_grad(self):
@@ -449,6 +455,10 @@ class Tensor:
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf(self, *, out=None):
+        return torch_frontend.erf(self, out=out)
 
     def new_zeros(
         self, size, *, dtype=None, device=None, requires_grad=False, layout=None
@@ -1033,6 +1043,10 @@ class Tensor:
     def dot(self, tensor):
         return torch_frontend.dot(self, tensor)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def bernoulli(self, *, generator=None, out=None):
+        return torch_frontend.bernoulli(self._ivy_array, generator=generator, out=out)
+
     # Special Methods #
     # -------------------#
 
@@ -1100,6 +1114,10 @@ class Tensor:
 
     def __truediv__(self, other):
         return torch_frontend.div(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def __floordiv__(self, other):
+        return torch_frontend.floor_divide(self, other)
 
     def __iadd__(self, other):
         ret = torch_frontend.add(self, other)
@@ -1462,6 +1480,15 @@ class Tensor:
             self, size=size, stride=stride, storage_offset=storage_offset
         )
 
+    def stride(self, dim=None):
+        strides = [
+            stride // math.ceil(ivy.dtype_bits(self.dtype) / 8)
+            for stride in self.ivy_array.strides
+        ]
+        if dim is not None:
+            return strides[dim]
+        return strides
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log1p(self):
         return torch_frontend.log1p(self)
@@ -1507,6 +1534,12 @@ class Tensor:
         ):
             reps = reps[0]
         return torch_frontend.tile(self, reps)
+
+    def apply_(self, callable, /):
+        if self.device != "cpu":
+            raise Exception("apply_ is only supported on cpu tensors")
+        self.ivy_array = callable(self.ivy_array)
+        return self
 
 
 class Size(tuple):

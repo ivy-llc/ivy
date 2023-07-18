@@ -138,3 +138,44 @@ def log_loss(input, label, epsilon=0.0001, name=None):
         (1 - label) * ivy.log(1 - input + epsilon)
     )
     return out
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def smooth_l1_loss(
+    input,
+    label,
+    reduction="mean",
+    delta=1.0,
+    name=None,
+):
+    sum_diff = ivy.abs(input - label).astype(label.dtype)
+    condition = sum_diff <= delta
+    out = ivy.where(
+        condition,
+        0.5 * ivy.pow(ivy.abs(input - label), 2).astype(label.dtype),
+        (delta * ivy.abs(ivy.abs(input - label))).astype(label.dtype)
+        - (0.5 * ivy.pow(delta, 2)).astype(label.dtype),
+    )
+    if reduction == "none":
+        pass
+    elif reduction == "mean":
+        out = ivy.mean(out)
+    elif reduction == "sum":
+        out = ivy.sum(out)
+    return out.astype(label.dtype)
+
+
+@inputs_to_ivy_arrays
+def l1_loss(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    sum_diff = ivy.abs(input - label)
+    reduction = _get_reduction_func(reduction)
+    out = reduction(sum_diff)
+    if out.shape == ():
+        out = out.expand_dims()
+    return paddle.to_tensor(out)
