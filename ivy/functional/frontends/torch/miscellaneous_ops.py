@@ -413,7 +413,7 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
 
 
 @to_ivy_arrays_and_back
-def view_as_real(input, /):
+def view_as_real(input):
     if not ivy.is_complex_dtype(input):
         raise ivy.exceptions.IvyError(
             "view_as_real is only supported for complex tensors"
