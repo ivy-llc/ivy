@@ -264,3 +264,6 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def real(self, /):
+        return jax_frontend.numpy.conj(self._ivy_array)
