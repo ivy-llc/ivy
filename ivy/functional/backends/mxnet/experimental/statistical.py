@@ -103,3 +103,16 @@ def cov(
     dtype: Optional[type] = None,
 ) -> None:
     raise IvyNotImplementedException()
+
+
+def percentile(
+    a: Union[(None, mx.ndarray.NDArray)],
+    q: Union[(None, float)],
+    /,
+    *,
+    axis: Optional[Union[(int, Sequence[int])]] = None,
+    interpolation: str = "nearest",
+    keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    raise IvyNotImplementedException()
