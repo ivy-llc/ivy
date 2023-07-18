@@ -1503,6 +1503,12 @@ class Tensor:
             reps = reps[0]
         return torch_frontend.tile(self, reps)
 
+    def apply_(self, callable, /):
+        if self.device != "cpu":
+            raise Exception("apply_ is only supported on cpu tensors")
+        self.ivy_array = callable(self.ivy_array)
+        return self
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
