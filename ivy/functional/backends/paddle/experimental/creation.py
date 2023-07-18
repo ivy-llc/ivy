@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Union
 import math
 import paddle
 import ivy.functional.backends.paddle as paddle_backend
-from paddle.fluid.libpaddle import Place
+from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
@@ -86,11 +86,13 @@ def tril_indices(
     k: Optional[int] = 0,
     /,
     *,
-    device: Place,
+    device: core.Place,
 ) -> Tuple[paddle.Tensor, ...]:
     # special case due to inconsistent behavior when n_cols=1 and n_rows=0
     if not (n_cols and n_rows):
-        return paddle.to_tensor([], dtype="int64"), paddle.to_tensor([], dtype="int64")
+        return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
+            [], place=device, dtype="int64"
+        )
     return tuple(
         to_device(
             paddle.tril_indices(n_rows, col=n_cols, offset=k, dtype="int64"), device
