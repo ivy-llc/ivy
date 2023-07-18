@@ -135,12 +135,12 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
     def dot(
         self: ivy.Array,
-        b: ivy.Array,
+        x2: ivy.Array,
         /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.dot(self._data, b, out=out)
+        return ivy.dot(self._data, x2, out=out)
 
     def matrix_exp(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
