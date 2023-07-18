@@ -2758,6 +2758,7 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
+    query = ivy.array(True) if query is None else query
     if query is Ellipsis or (
         isinstance(query, tuple) and len(query) == 1 and query[0] is Ellipsis
     ):
@@ -2837,6 +2838,7 @@ def set_item(
     >>> print(y)
     ivy.array([[0, -1, 20], [10, 10, -8]])
     """
+    query = ivy.array(True) if query is None else query
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
