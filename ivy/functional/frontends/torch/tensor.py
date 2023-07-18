@@ -1546,6 +1546,10 @@ class Tensor:
         self.ivy_array = callable(self.ivy_array)
         return self
 
+    def requires_grad_(self, requires_grad=True):
+        self._requires_grad = requires_grad
+        return self
+
     def backward(self, gradient=None, retain_graph=None, create_graph=False):
         if gradient is None and int(torch_frontend.numel(self)) > 1:
             raise RuntimeError("grad can be implicitly created only for scalar outputs")
