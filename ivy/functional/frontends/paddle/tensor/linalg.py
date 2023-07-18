@@ -180,4 +180,5 @@ def bincount(x, weights=None, minlength=0, name=None):
 @with_supported_dtypes({"2.4.1 and above": ("float64","float32")}, "paddle")
 @to_ivy_arrays_and_back
 def dist(x, y, p=2):
-    return ivy.vector_norm(ivy.subtract(x, y), ord=p)
+    ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)
+    return ivy.reshape(ret, (1,))
