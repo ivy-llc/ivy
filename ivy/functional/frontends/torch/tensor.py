@@ -433,6 +433,10 @@ class Tensor:
     def equal(self, other):
         return torch_frontend.equal(self, other)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf(self, *, out=None):
+        return torch_frontend.erf(self, out=out)
+
     def new_zeros(
         self, size, *, dtype=None, device=None, requires_grad=False, layout=None
     ):
