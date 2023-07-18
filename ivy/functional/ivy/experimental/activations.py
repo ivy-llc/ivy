@@ -224,19 +224,6 @@ def relu6(
     >>> ivy.relu6(x, out = y)
     >>> print(y)
     ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = {
-                a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-            }
-    >>> x = ivy.relu6(x, out=x)
-    >>> print(x)
-    {
-    a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-    b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-    }
     """
     return current_backend(x).relu6(x, out=out)
 
