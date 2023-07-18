@@ -147,7 +147,7 @@ def test_jax_devicearray_copy(
     )
 
 
-handle_frontend_method(
+@handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="diagonal",
@@ -156,8 +156,6 @@ handle_frontend_method(
         min_num_dims=2,
     ),
 )
-
-
 def test_jax_devicearray_diagonal(
     dtype_and_x,
     on_device,
@@ -167,7 +165,6 @@ def test_jax_devicearray_diagonal(
     method_flags,
 ):
     input_dtype, x = dtype_and_x
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
