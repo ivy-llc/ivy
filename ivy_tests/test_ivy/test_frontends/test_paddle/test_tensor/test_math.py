@@ -1510,6 +1510,7 @@ def test_paddle_lerp(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
+        min_num_dims=1,
         shared_dtype=True,
     ),
 )
