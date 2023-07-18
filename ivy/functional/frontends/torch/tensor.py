@@ -28,6 +28,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
+        self._grads = None
 
     def __len__(self):
         return len(self._ivy_array)
@@ -79,6 +80,10 @@ class Tensor:
         return torch_frontend.tensor(
             ivy.stop_gradient(self.ivy_array, preserve_type=False)
         )
+
+    @property
+    def grad(self):
+        return self._grads
 
     # Setters #
     # --------#
@@ -427,6 +432,10 @@ class Tensor:
 
     def equal(self, other):
         return torch_frontend.equal(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def erf(self, *, out=None):
+        return torch_frontend.erf(self, out=out)
 
     def new_zeros(
         self, size, *, dtype=None, device=None, requires_grad=False, layout=None
@@ -1502,6 +1511,12 @@ class Tensor:
         ):
             reps = reps[0]
         return torch_frontend.tile(self, reps)
+
+    def apply_(self, callable, /):
+        if self.device != "cpu":
+            raise Exception("apply_ is only supported on cpu tensors")
+        self.ivy_array = callable(self.ivy_array)
+        return self
 
 
 class Size(tuple):

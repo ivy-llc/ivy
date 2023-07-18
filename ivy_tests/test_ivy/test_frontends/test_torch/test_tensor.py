@@ -183,6 +183,13 @@ def test_torch_tensor_property_ndim(
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
+def test_torch_tensor_property_grad():
+    x = Tensor(ivy.array([1.0, 2.0, 3.0]))
+    grads = ivy.array([1.0, 2.0, 3.0])
+    x._grads = grads
+    assert ivy.array_equal(x.grad, grads)
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(
@@ -9051,6 +9058,39 @@ def test_torch_instance_equal(
     )
 
 
+# erf
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="erf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_erf(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # greater
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -10078,6 +10118,48 @@ def test_torch_instance_tile(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "reps": reps,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# write test for torch instance apply_
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="apply_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+)
+def test_torch_instance_apply_(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    def func(x):
+        return x + 1
+
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "callable": func,
         },
         init_flags=init_flags,
         method_flags=method_flags,
