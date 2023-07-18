@@ -62,6 +62,7 @@ def test_paddle_avg_pool2d(
         exclusive=exclusive,
         divisor_override=None,
         data_format=data_format,
+    )
 
 
 # avg_pool1d
