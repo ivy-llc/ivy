@@ -303,3 +303,25 @@ def maxwell(key, shape=None, dtype="float64"):
     # applying inverse transform sampling
     x = (z**2) * ivy.exp(-(z**2) / 2)
     return x
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def double_sided_maxwell(key, loc, scale, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    # generate uniform random numbers between 0 and 1
+    y = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    # Refactoring y
+    z = (y - loc) / scale
+    # applying inverse transform sampling
+    x = (z**2) * ivy.exp(-(z**2) / 2)
+    return x
