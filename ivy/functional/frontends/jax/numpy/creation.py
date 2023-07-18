@@ -239,9 +239,7 @@ def compress(condition, a, *, axis=None, out=None):
         axis = 0
     else:
         arr = ivy.moveaxis(a, axis, 0)
-
-    condition_arr, extra = condition_arr[: arr.shape[0]], condition_arr[arr.shape[0] :]
-    if any(extra):
+    if condition_arr.shape[0] > arr.shape[0]:
         raise ivy.utils.exceptions.IvyException(
             "Condition contains entries that are out of bounds"
         )
@@ -261,3 +259,8 @@ def size(a, axis=None):
         sh = ivy.shape(a)
         return sh[axis]
     return a.size
+
+
+@to_ivy_arrays_and_back
+def frombuffer(buffer, dtype="float", count=-1, offset=0):
+    return ivy.frombuffer(buffer, dtype, count, offset)

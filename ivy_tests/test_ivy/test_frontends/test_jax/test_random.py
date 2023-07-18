@@ -1249,7 +1249,7 @@ def test_jax_maxwell(
 
 @pytest.mark.xfail
 @handle_frontend_test(
-    fn_tree="jax.random.double_sided_maxwell",
+    fn_tree="jax.random.ball",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["uint32"],
         min_value=0,
@@ -1259,16 +1259,19 @@ def test_jax_maxwell(
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(),
+    shape=helpers.get_shape(
+        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
+    ),
     dtype=helpers.get_dtypes("float", full=False),
-    loc=st.floats(min_value=0, max_value=5, exclude_min=True),
-    scale=st.floats(min_value=0, max_value=5, exclude_min=True),
+    d=st.integers(min_value=1, max_value=100),
+    p=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
 )
-def test_jax_double_sided_maxwell(
+def test_jax_ball(
     *,
     dtype_key,
-    loc,
-    scale,
+    d,
+    p,
     shape,
     dtype,
     on_device,
@@ -1281,14 +1284,14 @@ def test_jax_double_sided_maxwell(
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
-            loc=loc,
-            scale=scale,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             key=key[0],
+            d=d,
+            p=p,
             shape=shape,
             dtype=dtype[0],
         )
