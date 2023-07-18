@@ -1011,6 +1011,10 @@ class Tensor:
     def dot(self, tensor):
         return torch_frontend.dot(self, tensor)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def bernoulli(self, *, generator=None, out=None):
+        return torch_frontend.bernoulli(self._ivy_array, generator=generator, out=out)
+
     # Special Methods #
     # -------------------#
 
@@ -1078,6 +1082,10 @@ class Tensor:
 
     def __truediv__(self, other):
         return torch_frontend.div(self, other)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def __floordiv__(self, other):
+        return torch_frontend.floor_divide(self, other)
 
     def __iadd__(self, other):
         ret = torch_frontend.add(self, other)

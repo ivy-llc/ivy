@@ -1245,3 +1245,65 @@ def test_jax_maxwell(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.ball",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(
+        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    d=st.integers(min_value=1, max_value=100),
+    p=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
+)
+def test_jax_ball(
+    *,
+    dtype_key,
+    d,
+    p,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            d=d,
+            p=p,
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

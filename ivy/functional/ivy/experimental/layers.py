@@ -2308,12 +2308,6 @@ def _get_identity(func, dtype, init):
     return init
 
 
-def _int_arg_to_tuple(arg, dims):
-    if isinstance(arg, int):
-        arg = tuple([arg] * dims)
-    return arg
-
-
 avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
@@ -2375,27 +2369,16 @@ def reduce_window(
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
-    >>> ivy.reduce_window(x, 0, ivy.sum, (2, 2))
+    >>> ivy.reduce_window(x, 0, ivy.add, (2, 2))
     ivy.array([[32.]])
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-
-    dims, strides, padding, base_dilation, window_dilation = ivy.map(
-        _int_arg_to_tuple,
-        unique={
-            "arg": [
-                window_dimensions,
-                window_strides,
-                padding,
-                base_dilation,
-                window_dilation,
-            ]
-        },
-        constant={"dims": len(op.shape)},
+    dims, strides, padding, base_dilation, window_dilation = map(
+        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
     )
-
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
