@@ -4,8 +4,8 @@ from hypothesis import given, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import update_backend
 from ivy.functional.frontends.tensorflow.func_wrapper import (
-    inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -26,29 +26,34 @@ def _fn(x=None, dtype=None):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_inputs_to_ivy_arrays(dtype_and_x):
+def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
 
-    # check for ivy array
-    input_ivy = ivy.array(x[0], dtype=x_dtype[0])
-    output = inputs_to_ivy_arrays(_fn)(input_ivy)
-    assert isinstance(output, ivy.Array)
-    assert input_ivy.dtype == output.dtype
-    assert ivy.all(input_ivy == output)
+    with update_backend(backend_fw) as ivy_backend:
+        _import_fn = ivy_backend.utils.dynamic_import.import_module
+        _import_fn("ivy.functional.frontends.tensorflow.func_wrapper")
+        _tensor_module = _import_fn("ivy.functional.frontends.tensorflow.tensor")
 
-    # check for native array
-    input_native = ivy.native_array(input_ivy)
-    output = inputs_to_ivy_arrays(_fn)(input_native)
-    assert isinstance(output, ivy.Array)
-    assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype
-    assert ivy.all(input_native == output.data)
+        # check for ivy array
+        input_ivy = ivy_backend.array(x[0], dtype=x_dtype[0])
+        output = ivy_backend.inputs_to_ivy_arrays(_fn)(input_ivy)
+        assert isinstance(output, ivy_backend.Array)
+        assert input_ivy.dtype == output.dtype
+        assert ivy_backend.all(input_ivy == output)
 
-    # check for frontend array
-    input_frontend = EagerTensor(x[0])
-    output = inputs_to_ivy_arrays(_fn)(input_frontend)
-    assert isinstance(output, ivy.Array)
-    assert input_frontend.dtype.ivy_dtype == output.dtype
-    assert ivy.all(input_frontend.ivy_array == output)
+        # check for native array
+        input_native = ivy_backend.native_array(input_ivy)
+        output = ivy_backend.inputs_to_ivy_arrays(_fn)(input_native)
+        assert isinstance(output, ivy_backend.Array)
+        assert ivy_backend.as_ivy_dtype(input_native.dtype) == output.dtype
+        assert ivy_backend.all(input_native == output.data)
+
+        # check for frontend array
+        input_frontend = _tensor_module.EagerTensor(x[0])
+        output = ivy_backend.inputs_to_ivy_arrays(_fn)(input_frontend)
+        assert isinstance(output, ivy_backend.Array)
+        assert input_frontend.dtype.ivy_dtype == output.dtype
+        assert ivy_backend.all(input_frontend.ivy_array == output)
 
 
 @given(
