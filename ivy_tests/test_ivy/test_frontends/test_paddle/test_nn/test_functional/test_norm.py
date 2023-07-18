@@ -46,6 +46,7 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             safety_factor_scale="log",
         )
     )
+
     _, variance = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
