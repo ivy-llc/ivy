@@ -496,6 +496,17 @@ def unique_consecutive(
     )
 
 
+def fill_diagonal(
+    a: np.ndarray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> np.ndarray:
+    np.fill_diagonal(a, v, wrap=wrap)
+    return a
+
+
 def put_along_axis(
     arr: np.ndarray,
     indices: np.ndarray,

@@ -74,7 +74,7 @@ There will be some implicit discussion of the locations of frontend functions in
 The native arrays of each framework have their own attributes and instance methods which differ from the attributes and instance methods of :class:`ivy.Array`.
 As such we have implemented framework-specific array classes: :class:`tf_frontend.Tensor`, :class:`torch_frontend.Tensor`, :class:`numpy_frontend.ndarray`, and :class:`jax_frontend.DeviceArray`.
 These classes simply wrap an :class:`ivy.Array`, which is stored in the :code:`ivy_array` attribute, and behave as closely as possible to the native framework array classes.
-This is explained further in the `Classes and Instance Methods <https://unify.ai/docs/ivy/deep_dive/ivy_frontends.html#classes-and-instance-methods>`_ section.
+This is explained further in the `Classes and Instance Methods <https://unify.ai/docs/ivy/overview/deep_dive/ivy_frontends.html#id6>`_ section.
 
 As we aim to replicate the frontend frameworks as closely as possible, all functions accept their frontend array class (as well as :class:`ivy.Array` and :class:`ivy.NativeArray`) and return a frontend array.
 However, since most logic in each function is handled by Ivy, the :class:`ivy.Array` must be extracted from any frontend array inputs.
@@ -349,7 +349,7 @@ The native TensorFlow function :func:`tf.reduce_logsumexp` does not have an equi
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://unify.ai/docs/ivy/contributing/open_tasks.html#frontend-apis>`_ section.
+The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the `Open Tasks <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#frontend-apis>`_ section.
 
 Unused Arguments
 ----------------
@@ -395,7 +395,7 @@ For these reasons, all frontend functions which correspond to functions with lim
 
 .. code-block:: python
 
-   @with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+   @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 
 The same logic applies to unsupported devices.
 Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.

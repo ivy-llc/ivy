@@ -11,6 +11,6 @@ jobs:
     secrets: inherit
 
   deploy:
-    name: Publish Release Docs
+    name: Deploy to PyPI
     uses: ./.github/workflows/pypi.yml
     secrets: inherit
