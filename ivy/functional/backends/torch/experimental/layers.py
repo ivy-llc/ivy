@@ -270,8 +270,9 @@ def avg_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    if data_format == "NWC":
+    if data_format in ("NWC", "NCL"):
         x = x.permute(0, 2, 1)
+
     x_shape = x.shape[2]
     if isinstance(padding, str):
         pad_specific = [
@@ -310,8 +311,9 @@ def avg_pool1d(
 
         res = (kernel[0] * res) / (kernel[0] - num_padded_values)
 
-    if data_format == "NWC":
+    if data_format in ("NWC", "NCL"):
         res = res.permute(0, 2, 1)
+
     return res
 
 
@@ -917,3 +919,38 @@ def ifftn(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.fft.ifftn(x, s=s, dim=axes, norm=norm, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def rfftn(
+    x: torch.Tensor,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid axes {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}"
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return torch.tensor(
+        torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
+    )
