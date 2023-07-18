@@ -183,6 +183,13 @@ def test_torch_tensor_property_ndim(
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
+def test_torch_tensor_property_grad():
+    x = Tensor(ivy.array([1.0, 2.0, 3.0]))
+    grads = ivy.array([1.0, 2.0, 3.0])
+    x._grads = grads
+    assert ivy.array_equal(x.grad, grads)
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(
