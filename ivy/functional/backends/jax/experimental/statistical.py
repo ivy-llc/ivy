@@ -401,3 +401,25 @@ def igamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jlax.igamma(a=a, x=x)
+
+
+@with_unsupported_dtypes(
+    {"0.4.13 and below": ("bfloat16",)},
+    backend_version,
+)
+def percentile(
+    a: JaxArray,
+    q: Union[float, JaxArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "nearest",
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
+    return jnp.percentile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    )
