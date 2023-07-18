@@ -15,11 +15,8 @@ def instance_norm(x,
                   eps=1e-05,
                   data_format='NCHW',
                   name=None):
-    return ivy.instance_norm(x,
-                             scale=None,
-                             bias=bias,
-                             eps=eps,
-                             momentum=momentum,
-                             data_format=data_format,
-                             running_mean=running_mean,
-                             running_stddev=running_var)
+    return ivy.instance_norm(x, running_mean, running_var,
+                             offset=None, scale=None,
+                             training=use_input_stats,
+                             eps=eps, momentum=momentum,
+                             data_format=data_format, out=None)
