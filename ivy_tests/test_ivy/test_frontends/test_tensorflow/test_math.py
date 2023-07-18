@@ -2677,6 +2677,8 @@ def test_tensorflow_atanh(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        min_value=0.0,
+        exclude_min=True,
     ),
     test_with_out=st.just(False),
 )
