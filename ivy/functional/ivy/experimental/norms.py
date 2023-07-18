@@ -470,8 +470,9 @@ def lp_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.lp_normalize(x, p=1, axis=1)
-    ivy.array([[0.3333, 0.6666],
-               [0.75, 1.]])
+    >>> y = ivy.lp_normalize(x, p=1, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 0.66666669],
+           [0.42857143, 0.5714286 ]])
     """
     return current_backend(x).lp_normalize(x, p=p, axis=axis, out=out)
