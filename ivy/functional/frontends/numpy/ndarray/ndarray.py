@@ -352,7 +352,7 @@ class ndarray:
             out=out,
         )
 
-    def take(self, indices, /, *, axis=None, out=None, mode="raise"):
+    def take(self, indices, axis=None, out=None, mode="raise"):
         return np_frontend.take(self._ivy_array, indices, axis=axis, out=out, mode=mode)
 
     def tofile(self, fid, /, sep="", format_="%s"):
