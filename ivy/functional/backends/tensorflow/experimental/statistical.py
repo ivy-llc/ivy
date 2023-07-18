@@ -638,3 +638,25 @@ def cummin(
         return cummin_x
     else:
         return tf.cast(cummin_x, dtype)
+
+
+def percentile(
+    a: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "nearest",
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    result = tfp.stats.percentile(
+        a,
+        q=q,
+        axis=axis,
+        interpolation=interpolation,
+        keepdims=keepdims,
+    )
+    return result
