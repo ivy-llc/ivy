@@ -222,7 +222,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 
     for backend_str in available_frameworks:
         with update_backend(backend_str) as ivy_backend:
-            _tmp_mod = importlib.import_module(fn_module)  # TODO use dynamic import?
+            _tmp_mod = ivy_backend.utils.dynamic_import.import_module(fn_module)
             _fn = _tmp_mod.__dict__[fn_name]
             # for partial mixed functions we should pass the backend function
             # to ivy.function_supported_devices_and_dtypes
