@@ -191,10 +191,7 @@ def test_jax_devicearray_all(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="astype",
-    dtype_and_x=_get_castable_dtype(
-        min_value=-1e04,
-        max_value=1e04,
-    ),
+    dtype_and_x=_get_castable_dtype(),
 )
 def test_jax_devicearray_astype(
     dtype_and_x,
