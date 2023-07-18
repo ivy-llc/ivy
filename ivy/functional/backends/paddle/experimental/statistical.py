@@ -612,3 +612,38 @@ def cummin(
     if reverse:
         cummin_x = paddle.flip(cummin_x, axis=[axis])
     return cummin_x.cast(dtype)
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def percentile(
+    a: paddle.Tensor,
+    q: Union[paddle.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    interpolation: Optional[str] = "nearest",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return _compute_quantile(
+        x=a,
+        q=paddle.divide(q, 100),
+        axis=axis,
+        keepdim=keepdims,
+        interpolation=interpolation,
+        ignore_nan=False,
+    )
