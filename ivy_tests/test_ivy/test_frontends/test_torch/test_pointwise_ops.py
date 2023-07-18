@@ -2458,6 +2458,7 @@ def test_torch_erf(
         input=x[0],
     )
 
+
 # erfc
 @handle_frontend_test(
     fn_tree="torch.erfc",

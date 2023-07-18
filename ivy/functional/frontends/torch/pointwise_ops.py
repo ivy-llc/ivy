@@ -527,10 +527,11 @@ def frexp(input, *, out=None):
 def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def erfc(input, *, out=None):
-    return 1. - ivy.erf(input, out=out)
+    return 1.0 - ivy.erf(input, out=out)
 
 
 @to_ivy_arrays_and_back
