@@ -131,3 +131,30 @@ def unsorted_segment_min(
             res[i] = paddle.min(data[mask_index], 0)
 
     return res
+
+def unsorted_segment_max(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    ivy.utils.assertions.check_unsorted_segment_max_valid_params(
+        data, segment_ids, num_segments
+    )
+    if data.dtype == paddle.float32:
+        init_val = -3.4028234663852886e38  # float32 min
+    elif data.dtype == paddle.float64:
+        init_val = -1.7976931348623157e308  # float64 min
+    elif data.dtype == paddle.int32:
+        init_val = -2147483647
+    elif data.dtype == paddle.int64:
+        init_val = -9223372036854775807
+    else:
+        raise ValueError("Unsupported data type")
+    res = paddle.empty((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
+    res[:] = init_val
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if paddle.any(mask_index):
+            res[i] = paddle.max(data[mask_index], 0)
+
+    return res
