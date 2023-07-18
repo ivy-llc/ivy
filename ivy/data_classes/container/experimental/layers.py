@@ -261,13 +261,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> y = x.max_pool2d(3, 1, "VALID")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 0, 1, 4)),
+            b: ivy.array([[[[16., 17.]],
+                           [[22., 23.]]],
+                         [[[40., 41.]],
+                           [[46., 47.]]]])
         }
         """
         return self.static_max_pool2d(
