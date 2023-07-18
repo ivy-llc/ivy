@@ -57,7 +57,7 @@ def set_item(
     return x
 
 
-def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
+def _to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return x.copy()
     else:

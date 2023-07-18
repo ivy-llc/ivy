@@ -776,7 +776,6 @@ def all_equal(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_native_arrays
 @handle_array_function
 @handle_device_shifting
 def to_numpy(
@@ -836,7 +835,18 @@ def to_numpy(
                   [1, 1, 1]], dtype=int32)
     }
     """
-    return current_backend(x).to_numpy(x, copy=copy)
+    _to_numpy = current_backend(x).general._to_numpy
+    if ivy.is_ivy_array(x) and x.base is None:
+        return _to_numpy(x.data, copy=copy)
+    if ivy.is_native_array(x):
+        return _to_numpy(x, copy=copy)
+    # if x is an ivy array with a base,
+    # convert it to a numpy array with the same base:
+    ret = _to_numpy(x.base.data, copy=copy)
+    for fn, args, kwargs, index in x._manipulation_stack:
+        ret = ivy.functional.backends.numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ret[index] if ivy.exists(index) else ret
+    return ret
 
 
 @handle_exceptions
