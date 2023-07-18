@@ -61,6 +61,14 @@ class DeviceArray:
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
         )
 
+    def astype(self, dtype):
+        try:
+            return jax_frontend.numpy.asarray(self, dtype=dtype)
+        except:
+            raise ivy.utils.exceptions.IvyException(
+                f"Dtype {self.dtype} is not castable to {dtype}"
+            )
+
     def argmax(
         self,
         /,
@@ -132,6 +140,11 @@ class DeviceArray:
 
     def argsort(self, axis=-1, kind="stable", order=None):
         return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
+
+    def any(self, *, axis=None, out=None, keepdims=False, where=None):
+        return jax_frontend.numpy.any(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
+        )
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
