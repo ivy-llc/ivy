@@ -90,9 +90,10 @@ def l2_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l2_normalize(x, axis=1)
-    ivy.array([[0.4472, 0.8944],
-               [0.6, 0.8]])
+    >>> y = ivy.l2_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.44721359, 0.89442718],
+           [0.60000002, 0.80000001]])
     """
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
