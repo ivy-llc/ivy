@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
 from .. import backend_version
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "complex")}, backend_version)
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, backend_version)
 def lgamma(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.lgamma(x, out=out)
 

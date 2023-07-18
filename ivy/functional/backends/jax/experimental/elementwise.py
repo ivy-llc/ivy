@@ -23,7 +23,9 @@ def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
 
 
-@with_supported_dtypes({"0.4.13 and below": ("float",)}, backend_version)
+@with_supported_dtypes(
+    {"0.4.13 and below": ("float16", "float32", "float64")}, backend_version
+)
 def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jlax.lgamma(x)
 

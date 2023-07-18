@@ -14,7 +14,6 @@ from ivy_tests.test_ivy.helpers import handle_test
     fn_tree="functional.ivy.experimental.lgamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=3,
         safety_factor_scale="log",
     ),
     test_gradients=st.just(False),
