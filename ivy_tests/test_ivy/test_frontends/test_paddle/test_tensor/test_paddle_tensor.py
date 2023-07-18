@@ -154,9 +154,13 @@ def test_paddle_instance_reshape(
 
 def _filter_query(query):
     return (
-        query.ndim > 1 if isinstance(query, np.ndarray) else
-        not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
-        if isinstance(query, tuple) else True
+        query.ndim > 1
+        if isinstance(query, np.ndarray)
+        else (
+            not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
+            if isinstance(query, tuple)
+            else True
+        )
     )
 
 

@@ -55,6 +55,10 @@ def native_sparse_array(
         )
         return data
 
+    dtype = "float32"  # change to the dtype you need
+    device = paddle.CPUPlace()  # or paddle.CUDAPlace(n), where n is the GPU id
+    requires_grad = True  # change to the value you need
+
     if format == "coo":
         _verify_coo_components(
             indices=coo_indices, values=values, dense_shape=dense_shape
