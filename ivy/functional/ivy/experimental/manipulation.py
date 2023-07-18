@@ -1702,7 +1702,7 @@ def put_along_axis(
     axis: int,
     /,
     *,
-    mode: str = "raise",
+    mode: Optional[str] = "assign",
     out: Optional[ivy.Array] = None,
 ) -> None:
     """
@@ -1719,14 +1719,8 @@ def put_along_axis(
         The values to put into `arr`.
     axis : int
         The axis over which to put the `values`.
-    mode : {'raise', 'wrap', 'clip'}, optional
-        Specifies how out-of-bounds indices will be handled.
-        The following modes are available:
-
-        - 'raise': a `ValueError` is raised when an index is out of bounds.
-        - 'wrap': the index is wrapped around to the corresponding index
-        at the other end of the axis.
-        - 'clip': the index is clipped to the closest in-bounds index.
+    mode : {'assign', 'add', 'mul', 'mean', 'amax', 'amin'}, optional
+        The reduction operation to apply for non-unique indices.
     out : ndarray, optional
         Output array in which to place the result.
         If not specified, a new array is created.
