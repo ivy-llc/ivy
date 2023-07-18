@@ -45,19 +45,19 @@ def test_paddle_avg_pool1d(
     )
 
 
-# max_pool2d
+# avg_pool3d
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.pooling.max_pool2d",
+    fn_tree="paddle.nn.functional.pooling.avg_pool3d",
     dtype_x_k_s=helpers.arrays_for_pooling(
-        min_dims=4,
-        max_dims=4,
+        min_dims=5,
+        max_dims=5,
         min_side=1,
-        max_side=4,
+        max_side=5,
     ),
     ceil_mode=st.booleans(),
-    data_format=st.sampled_from(["NCHW", "NHWC"]),
+    data_format=st.sampled_from(["NCDHW", "NDHWC"]),
 )
-def test_paddle_max_pool2d(
+def test_paddle_avg_pool3d(
     dtype_x_k_s,
     ceil_mode,
     data_format,
@@ -70,10 +70,12 @@ def test_paddle_max_pool2d(
     input_dtype, x, kernel, stride, padding = dtype_x_k_s
 
     if len(stride) == 1:
-        stride = (stride[0], stride[0])
+        stride = (stride[0], stride[0], stride[0])
 
-    if data_format == "NCHW":
-        x[0] = x[0].reshape(x[0].shape[0], x[0].shape[3], x[0].shape[1], x[0].shape[2])
+    if data_format == "NCDHW":
+        x[0] = x[0].reshape(
+            x[0].shape[0], x[0].shape[4], x[0].shape[1], x[0].shape[2], x[0].shape[3]
+        )
 
     if padding == "VALID":
         ceil_mode = False
