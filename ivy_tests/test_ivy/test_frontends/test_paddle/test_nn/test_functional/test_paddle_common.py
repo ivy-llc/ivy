@@ -134,3 +134,37 @@ def test_paddle_dropout(
         axis=axis,
         mode=mode,
     )
+
+# linear
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.linear",
+    d_type_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=2,
+        max_value=5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_paddle_linear(
+    *,
+    d_type_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = d_type_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        weight=x[1],
+        bias=None,
+    )
