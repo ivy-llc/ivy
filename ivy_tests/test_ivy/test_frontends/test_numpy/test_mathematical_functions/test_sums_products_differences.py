@@ -365,3 +365,33 @@ def test_numpy_ediff1d(
         to_end=to_end,
         to_begin=to_begin,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.trapz",
+    dtype_and_y=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+    ),
+    x=st.lists(st.integers(min_value=0, max_value=5)),
+    dx=st.integers(min_value=0, max_value=5),
+)
+def test_numpy_trapz(
+    dtype_and_y,
+    x,
+    dx,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, y = dtype_and_y
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        y=y,
+        x=x,
+        dx=dx,
+    )
