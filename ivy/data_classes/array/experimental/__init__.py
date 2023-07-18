@@ -1,3 +1,5 @@
+from . import tensors
+from .tensors import *
 from .activations import _ArrayWithActivationsExperimental
 from .conversions import _ArrayWithConversionsExperimental
 from .creation import _ArrayWithCreationExperimental

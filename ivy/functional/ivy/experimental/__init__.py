@@ -20,6 +20,8 @@ from .sorting import *
 from .statistical import *
 from .sparse_array import *
 from .utility import *
+from . import tensors
+from .tensors import *
 import types
 
 __all__ = [

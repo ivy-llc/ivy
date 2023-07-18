@@ -1,3 +1,1 @@
 from .base import *
-
-del(base)
