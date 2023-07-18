@@ -311,6 +311,11 @@ def band_part(input, num_lower, num_upper, name=None):
 
 
 @to_ivy_arrays_and_back
+def qr(input, /, *, full_matrices=False, name=None):
+    return ivy.qr(input)
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "2.13.0 and below": (
