@@ -403,3 +403,20 @@ def igamma(
 
     igamma_vec = np.vectorize(igamma_cal)
     return igamma_vec(a, x)
+
+
+def percentile(
+    a: np.ndarray,
+    q: Union[float, np.ndarray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    keepdims: bool = False,
+    interpolation: str = "nearest",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    (tuple(axis) if isinstance(axis, list) else axis)
+
+    return np.percentile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    ).astype(a.dtype)
