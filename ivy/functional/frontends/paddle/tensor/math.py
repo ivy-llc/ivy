@@ -364,3 +364,8 @@ def max(x, axis=None, keepdim=False, name=None):
 @to_ivy_arrays_and_back
 def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
+
+
+@to_ivy_arrays_and_back
+def any(x, axis=None, keepdim=False, name=None):
+    return ivy.max(x, axis=axis, keepdims=keepdim)
