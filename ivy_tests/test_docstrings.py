@@ -244,6 +244,8 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "outer": "torch",
         "quantile": "torch",
         "where": "torch",
+        "conv2d_transpose": "tensorflow",
+        "max_pool2d": "torch",
 
     }
     # second dict to keep if a function fails in two backends
@@ -328,6 +330,8 @@ def test_docstrings(backend):
         "where",
         "sinc",
         "grad",
+        # all examples are wrong including functional/ivy
+        "einops_reduce",
     ]
 
     # skip list for array and container docstrings
@@ -338,20 +342,13 @@ def test_docstrings(backend):
         "dropout",
         "dropout1d",
         "dropout3",
-        # generate different results due to randomization
+        # generates different results due to randomization
         "svd",
-        # wrong examples/implementations
-        "conv2d_transpose",
-        'conv3d_transpose',
-        "einops_reduce",
-        "l2_normalize",
-        "lp_normalize",
-        "max_pool2d",
-        "pinv",
-        "relu6",
         # exec and self run generates diff results
         "dev",
         "scaled_dot_product_attention",
+        # temp list for array/container methods
+        "einops_reduce",
 
     ]
     # currently_being_worked_on = ["layer_norm"]
