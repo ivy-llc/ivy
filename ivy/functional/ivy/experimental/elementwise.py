@@ -1272,4 +1272,13 @@ def logcumsumexp(
     #  [ 4.         5.3132615  6.407606   7.44019  ]
     #  [ 8.         9.313262  10.407606  11.440189 ]]
     """
-    return ivy.current_backend(x).logcumsumexp(x, axis=axis, dtype=dtype, out=out)
+    if len(x.shape) == 0:
+        ret = 0
+    else:
+        original_dtype = dtype
+        exponentiated_x = ivy.exp(x.astype("float64"))
+        summated_exponentiated_x = ivy.cumsum(exponentiated_x, axis=axis)
+        ret = ivy.log(summated_exponentiated_x).astype(original_dtype)
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+    return ret
