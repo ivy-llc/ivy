@@ -4139,7 +4139,6 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@to_native_arrays_and_back
 @handle_device_shifting
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -4164,7 +4163,9 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend(x).strides(x)
+    # for this to work consistently for non-contiguous arrays
+    # we must not use a decorator that converts x to a native array
+    return ivy.to_numpy(x).strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:
