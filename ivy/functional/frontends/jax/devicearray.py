@@ -57,12 +57,11 @@ class DeviceArray:
         )
 
     def astype(self, dtype):
-        x = ivy.asarray(self._ivy_array)
-        if jax_frontend.numpy.can_cast(x.dtype, dtype):
+        try:
             return jax_frontend.numpy.asarray(self, dtype=dtype)
-        else:
+        except:
             raise ivy.utils.exceptions.IvyException(
-                f"Dtype {x.dtype} is not castable to {dtype}"
+                f"Dtype {self.dtype} is not castable to {dtype}"
             )
 
     def argmax(
