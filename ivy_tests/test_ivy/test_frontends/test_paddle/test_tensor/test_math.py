@@ -1500,5 +1500,5 @@ def test_paddle_lerp(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        weight = x[2],
+        weight=x[2],
     )
