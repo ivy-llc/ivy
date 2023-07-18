@@ -91,3 +91,14 @@ def unsorted_segment_min(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_min(data, segment_ids, num_segments)
+
+def unsorted_segment_max(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # added this check to keep the same behavior as TensorFlow
+    ivy.utils.assertions.check_unsorted_segment_max_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_max(data, segment_ids, num_segments)
