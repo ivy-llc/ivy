@@ -115,8 +115,9 @@ def teardown_api_test():
     _unset_ground_truth_backend()
 
 
-def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
-    _set_test_data(test_data)
+def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
+    if test_data is not None:
+        _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
