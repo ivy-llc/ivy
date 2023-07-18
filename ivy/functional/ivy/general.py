@@ -175,7 +175,7 @@ class ArrayMode:
         return self
 
 
-def _parse_ellipsis(so, ndims):
+def _parse_ellipsis(so, ndims, ret_inds=False):
     pre = list()
     for s in so:
         if s is Ellipsis:
@@ -186,11 +186,14 @@ def _parse_ellipsis(so, ndims):
         if s is Ellipsis:
             break
         post.append(s)
-    return tuple(
+    ret = tuple(
         pre
         + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
         + list(reversed(post))
     )
+    if ret_inds:
+        return ret, (len(pre), ndims-len(post))
+    return ret
 
 
 def _parse_index(indices, shape):
@@ -2758,7 +2761,6 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    query = ivy.array(True) if query is None else query
     if query is Ellipsis or (
         isinstance(query, tuple) and len(query) == 1 and query[0] is Ellipsis
     ):
@@ -2838,7 +2840,6 @@ def set_item(
     >>> print(y)
     ivy.array([[0, -1, 20], [10, 10, -8]])
     """
-    query = ivy.array(True) if query is None else query
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
@@ -2849,6 +2850,8 @@ def set_item(
     val = _broadcast_to(val, target_shape).astype(x.dtype)
     if copy:
         x = ivy.copy_array(x)
+    if not math.prod(tuple(query.shape)):
+        return x
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
 
 
@@ -2881,11 +2884,11 @@ def _parse_query(query, x_shape):
         target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
         return query, target_shape
     query = (query,) if not isinstance(query, tuple) else query
-    query = (
-        _parse_ellipsis(query, len(x_shape))
-        if any(q is Ellipsis for q in query)
-        else query
-    )
+    new_axes = [i for i, q in enumerate(query) if q is None]
+    query = [q for q in query if q is not None]
+    ellipsis_inds = None
+    if any(q is Ellipsis for q in query):
+        query, ellipsis_inds = _parse_ellipsis(query, len(x_shape), ret_inds=True)
     query = (
         list(query)
         if isinstance(query, tuple)
@@ -2916,11 +2919,29 @@ def _parse_query(query, x_shape):
         else:
             raise ivy.exceptions.IvyException("unsupported query format")
         query[i] = ivy.astype(query[i], ivy.int64)
-    target_shape = [s for q in query for s in q.shape]
+    target_shape = [list(q.shape) for q in query]
+    if ellipsis_inds is not None:
+        target_shape = target_shape[:ellipsis_inds[0]] + \
+                       [target_shape[ellipsis_inds[0]:ellipsis_inds[1]]] + \
+                       target_shape[ellipsis_inds[1]:]
+    for ax in new_axes:
+        target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape += list(x_shape[len(query) :])
+    target_shape = _deep_flatten(target_shape)
     query = [q.reshape((-1,)) if len(q.shape) > 1 else q for q in query]
     grid = ivy.meshgrid(*query, indexing="ij")
-    return ivy.stack(grid, axis=-1), target_shape
+    indices = ivy.stack(grid, axis=-1) if len(grid) else ivy.array([], dtype=ivy.int64)
+    return indices, target_shape
+
+
+def _deep_flatten(iterable):
+    def _flatten_gen(iterable):
+        for item in iterable:
+            if isinstance(item, list):
+                yield from _flatten_gen(item)
+            else:
+                yield item
+    return list(_flatten_gen(iterable))
 
 
 def _numel(shape):
