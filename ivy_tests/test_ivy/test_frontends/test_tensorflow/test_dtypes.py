@@ -55,6 +55,7 @@ def test_tensorflow_cast(
     helpers.test_frontend_function(
         input_dtypes=input_dtype + dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
