@@ -1279,9 +1279,9 @@ class _ContainerWithLinearAlgebra(ContainerBase):
                           [1.5, -0.5]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
-        >>> out = ivy.Container(a=ivy.zeros_like(x[a]))
-        >>> x.pinv(0., out=out)
+        >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a = ivy.zeros(x["a"].shape))
+        >>> x.pinv(out=out)
         >>> print(out)
         {
             a: ivy.array([[-1.99999988, 1.],

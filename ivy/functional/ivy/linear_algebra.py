@@ -1646,14 +1646,15 @@ def pinv(
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.pinv(x)
     >>> print(y)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
+    ivy.array([[-1.99999988,  1.        ],
+           [ 1.5       , -0.5       ]])
 
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> out = ivy.zeros(x.shape)
     >>> ivy.pinv(x, out=out)
     >>> print(out)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
-
+    ivy.array([[-1.99999988,  1.        ],
+           [ 1.5       , -0.5       ]])
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 

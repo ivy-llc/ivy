@@ -645,15 +645,15 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = x.pinv()
         >>> print(y)
-        ivy.array([[-2., 1.],
-                   [1.5, -0.5]])
+        ivy.array([[-1.99999988,  1.        ],
+               [ 1.5       , -0.5       ]])
 
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> z = ivy.zeros((2,2))
         >>> x.pinv(rtol=0, out=z)
         >>> print(z)
-        ivy.array([[0.0426, 0.0964],
-                   [0.0605, 0.1368]])
+        ivy.array([[-1.99999988,  1.        ],
+               [ 1.5       , -0.5       ]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
