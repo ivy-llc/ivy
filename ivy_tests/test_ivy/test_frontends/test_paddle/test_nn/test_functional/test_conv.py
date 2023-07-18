@@ -1,9 +1,13 @@
+# global
 from hypothesis import strategies as st
 
+# local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+
+# conv2D
 @handle_frontend_test(
   fn_tree = "paddle.nn.functional.conv2D",
   dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
@@ -12,7 +16,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
   strides = helpers.ints(min_value=1, max_value=10),
   padding = helpers.ints(min_value=0,max_value=10),
 )
-
 def test_paddle_conv2D(
   *,
   dtype_and_x,
