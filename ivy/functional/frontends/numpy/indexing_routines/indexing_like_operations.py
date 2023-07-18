@@ -5,6 +5,35 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     handle_numpy_out,
 )
 
+@to_ivy_arrays_and_back
+def take(a, indices, axis=None, mode='raise', out=None):
+    indices = ivy.array(indices)
+    shape = ivy.shape(a)
+    if ivy.ndim(indices) == 0:
+        indices = ivy.expand_dims(indices, axis=0)
+    elif ivy.ndim(indices) == 1:
+        indices = ivy.expand_dims(indices, axis=axis)
+    if axis is None:
+        slice_obj = [ivy.newaxis] * ivy.ndim(a)
+    else:
+        slice_obj = [slice(None)] * axis + [ivy.newaxis] + [slice(None)] * (ivy.ndim(a) - axis - 1)
+    if mode == 'raise':
+        out_of_bounds = ivy.logical_or(indices < 0, indices >= shape[axis])
+        if ivy.any(out_of_bounds):
+            raise ValueError('indices are out of bounds')
+    elif mode == 'clip':
+        indices = ivy.clip(indices, 0, shape[axis] - 1)
+    elif mode == 'wrap':
+        indices = ivy.mod(indices, shape[axis])
+    else:
+        raise ValueError('invalid mode')
+
+    slice_obj[axis] = indices
+    result = a[tuple(slice_obj)]
+    if out is not None:
+        ivy.assign(out, result)
+        return out
+    return result
 
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
