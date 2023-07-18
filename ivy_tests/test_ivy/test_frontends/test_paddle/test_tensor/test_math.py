@@ -1470,6 +1470,40 @@ def test_paddle_max(
     )
 
 
+# lerp
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.lerp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+)
+def test_paddle_lerp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        weight=x[2],
+    )
+
+
 # outer
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.outer",

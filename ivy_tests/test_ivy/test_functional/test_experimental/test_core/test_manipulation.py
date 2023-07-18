@@ -689,6 +689,7 @@ def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         valid_bounds=False,
     ),
     mode=st.sampled_from(["clip", "fill", "drop"]),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_take_along_axis(
@@ -702,7 +703,6 @@ def test_take_along_axis(
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -1014,11 +1014,9 @@ def test_fill_diagonal(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dt, a = dt_a
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dt,
         test_flags=test_flags,
         on_device=on_device,
