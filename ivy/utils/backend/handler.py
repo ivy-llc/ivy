@@ -446,9 +446,9 @@ def set_backend(backend: str, dynamic: bool = False):
             backend = importlib.import_module(_backend_dict[backend])
             for fw in reversed(temp_stack):
                 backend_stack.append(fw)
-        if ivy.current_backend_str() == "numpy":
+        if backend.current_backend_str() == "numpy":
             ivy.set_default_device("cpu")
-        elif ivy.current_backend_str() == "jax":
+        elif backend.current_backend_str() == "jax":
             ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         backend_stack.append(backend)
         set_backend_to_specific_version(backend)
