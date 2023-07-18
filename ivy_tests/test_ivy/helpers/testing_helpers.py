@@ -720,14 +720,8 @@ def handle_frontend_method(
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
             )
-            try:
-                ivy_init_modules = importlib.import_module(ivy_init_module)
-            except Exception:
-                ivy_init_modules = str(ivy_init_module)
-            try:
-                framework_init_modules = importlib.import_module(framework_init_module)
-            except Exception:
-                framework_init_modules = str(framework_init_module)
+            ivy_init_modules = str(ivy_init_module)
+            framework_init_modules = str(framework_init_module)
             frontend_helper_data = FrontendMethodData(
                 ivy_init_module=ivy_init_modules,
                 framework_init_module=framework_init_modules,
