@@ -277,12 +277,9 @@ def pinv(
     hermitian: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if rtol is None:
-        ret = jnp.linalg.pinv(x)
-    elif hermitian:
-        ret = jnp.linalg.pinv(x, hermitian=hermitian)
-    else:
-        ret = jnp.linalg.pinv(x, rtol)
+    if rtol is None and not hermitian:
+        ret = jnp.linalg.pinv(x, rcond=0)
+    ret = jnp.linalg.pinv(x, rcond=rtol, hermitian=hermitian)
     return ret
 
 

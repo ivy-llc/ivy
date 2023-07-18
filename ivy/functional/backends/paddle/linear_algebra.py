@@ -419,11 +419,9 @@ def pinv(
     hermitian: Optional[bool] = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if rtol is None:
-        return paddle.linalg.pinv(x)
-    elif hermitian:
-        return paddle.linalg.pinv(x, hermitian=hermitian)
-    return paddle.linalg.pinv(x, rcond=rtol)
+    if rtol is None and not hermitian:
+        return paddle.linalg.pinv(x, rcond=0)
+    return paddle.linalg.pinv(x, rcond=rtol, hermitian=hermitian)
 
 
 def tensorsolve(

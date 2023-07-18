@@ -306,11 +306,9 @@ def pinv(
     hermitian: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if rtol is None:
-        return torch.linalg.pinv(x, out=out)
-    if hermitian:
-        return torch.linalg.pinv(x, hermitian=hermitian, out=out)
-    return torch.linalg.pinv(x, rtol, out=out)
+    if rtol is None and not hermitian:
+        return torch.linalg.pinv(x, rtol=0, out=out)
+    return torch.linalg.pinv(x, rtol=rtol, hermitian=hermitian, out=out)
 
 
 pinv.support_native_out = True

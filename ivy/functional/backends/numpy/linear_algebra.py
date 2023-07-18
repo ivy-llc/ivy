@@ -226,12 +226,9 @@ def pinv(
     hermitian: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if rtol is None:
-        return np.linalg.pinv(x)
-    elif hermitian:
-        return np.linalg.pinv(x, hermitian=hermitian)
-    else:
-        return np.linalg.pinv(x, rtol)
+    if rtol is None and not hermitian:
+        return np.linalg.pinv(x, rcond=0)
+    return np.linalg.pinv(x, rcond=rtol, hermitian=hermitian)
 
 
 @with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, backend_version)

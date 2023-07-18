@@ -446,8 +446,8 @@ def pinv(
     hermitian: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if rtol is None:
-        ret = tf.linalg.pinv(x)
+    if rtol is None and not hermitian:
+        ret = tf.linalg.pinv(x, rcond=0)
     if hermitian:
         s, u = tf.linalg.eigh(x)
         s_abs = tf.abs(s)
