@@ -325,6 +325,12 @@ def sgn(x, name=None):
     return ivy.sign(x, np_variant=True)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def outer(x, y, name=None):
+    return ivy.outer(x, y)
+
+
 # maximum
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
@@ -352,3 +358,9 @@ def asinh(x, name=None):
 @to_ivy_arrays_and_back
 def max(x, axis=None, keepdim=False, name=None):
     return ivy.max(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def lerp(x, y, weight, name=None):
+    return ivy.lerp(x, y, weight)
