@@ -11,6 +11,10 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .. import backend_version
 
 
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    backend_version,
+)
 def lgamma(
     x: Union[tf.Tensor, tf.Variable],
     /,
