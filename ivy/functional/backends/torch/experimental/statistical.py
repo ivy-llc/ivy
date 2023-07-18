@@ -503,3 +503,27 @@ def cummin(
     if ivy.exists(out):
         return ivy.inplace_update(out, ret.to(dtype))
     return ret.to(dtype)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def percentile(
+    a: torch.Tensor,
+    q: Union[torch.Tensor, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = "nearest",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return quantile(
+        a,
+        q=torch.divide(q, 100),
+        axis=axis,
+        keepdim=keepdims,
+        interpolation=interpolation,
+        out=out,
+    )
+
+
+percentile.support_native_out = True
