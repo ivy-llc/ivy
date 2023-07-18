@@ -88,20 +88,21 @@ def max_pool1d(
         x, kernel, strides, padding, data_format=data_format, out=out
     )
 
+
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_unpool1d(
-    x:  ivy.Union[ivy.Array, ivy.NativeArray],
-    indices : Union[ivy.Array, ivy.NativeArray],
-    kernel : Union[int, Tuple[int]],
-    strides : Union[int, Tuple[int]],
-    padding : str,
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
     /,
     *,
-    data_format : str = "NWC",
-    out : Optional[ivy.Array] = None
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
@@ -155,7 +156,7 @@ def max_unpool1d(
     """
     return ivy.current_backend(x).max_unpool1d(
         x, indices, kernel, strides, padding, data_format=data_format, out=out
-)
+    )
 
 
 @handle_nestable
