@@ -792,11 +792,9 @@ def test_tensorflow_Square(  # NOQA
         x=x[0],
     )
 
-    
-
     @handle_frontend_test(
         fn_tree="tensorflow.raw_ops.SquaredDifference",
-         dtype_and_x = helpers.dtype_and_values(
+        dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shared_dtype=True,
@@ -804,12 +802,12 @@ def test_tensorflow_Square(  # NOQA
         test_with_out=st.just(False),
     )
     def test_tensorflow_SquaredDifference(
-            *,
-            dtype_and_x,
-            frontend,
-            test_flags,
-            fn_tree,
-            on_device,
+        *,
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
     ):
         dtype, x = dtype_and_x
         helpers.test_frontend_function(
@@ -821,6 +819,7 @@ def test_tensorflow_Square(  # NOQA
             x=x[0],
             y=x[1],
         )
+
 
 @st.composite
 def _squeeze_helper(draw):
