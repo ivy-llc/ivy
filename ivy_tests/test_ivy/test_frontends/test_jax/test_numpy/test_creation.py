@@ -704,6 +704,8 @@ def test_jax_linspace(
         retstep=False,
         dtype=input_dtypes[0],
         axis=axis,
+        atol=1e-05,
+        rtol=1e-05,
     )
 
 

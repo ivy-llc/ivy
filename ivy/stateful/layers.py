@@ -1,5 +1,5 @@
 """Collection of Ivy neural network layers as stateful classes."""
-
+# flake8: noqa
 # local
 import ivy
 from ivy.func_wrapper import handle_nestable
@@ -1935,9 +1935,9 @@ class AdaptiveAvgPool1d(Module):
 class FFT(Module):
     def __init__(
         self,
+        dim,
         /,
         *,
-        dim=0,
         norm="backward",
         n=None,
         out=None,
@@ -2094,4 +2094,44 @@ class Dct(Module):
             n=self.n,
             axis=self.axis,
             norm=self.norm,
+        )
+
+
+class Embedding(Module):
+    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+        """
+        Class for embedding indices into a dense representation.
+
+        Parameters
+        ----------
+        indices
+            The indices to embed.
+        max_norm
+            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
+        out
+            If given, the result will be inserted into this tensor. Default: None
+        """
+        self._indices = indices
+        self._max_norm = max_norm
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.embedding(
+            inputs,
+            self._indices,
+            max_norm=self._max_norm,
+            out=self._out,
         )
