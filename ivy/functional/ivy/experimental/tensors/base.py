@@ -19,62 +19,6 @@ from ivy.utils.exceptions import handle_exceptions
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
-def tensor_to_vec(
-    input: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
-) -> ivy.Array:
-    """
-    Vectorises a tensor.
-
-    Parameters
-    ----------
-    input
-        input tensor of shape ``(i_1, ..., i_n)``
-
-    Returns
-    -------
-    ret
-        1D-array vectorised tensor of shape ``(i_1 * i_2 * ... * i_n)``
-    """
-    return ivy.reshape(input, (-1,), out=out)
-
-
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
-def vec_to_tensor(
-    input: Union[ivy.Array, ivy.NativeArray],
-    /,
-    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Folds a vectorised tensor back into a tensor of shape `shape`
-
-    Parameters
-    ----------
-    input
-        1D-array vectorised tensor of shape ``(i_1 * i_2 * ... * i_n)``
-    shape
-        shape of the ful tensor
-
-    Returns
-    -------
-    ret
-        tensor of shape `shape` = ``(i_1, ..., i_n)``
-    """
-    return ivy.reshape(input, shape, out=out)
-
-
-@handle_nestable
-@handle_exceptions
-@handle_array_like_without_promotion
-@inputs_to_ivy_arrays
-@handle_array_function
-@handle_device_shifting
 def unfold(
     input: Union[ivy.Array, ivy.NativeArray],
     /,

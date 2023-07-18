@@ -51,6 +51,7 @@ from .experimental import (
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
 )
+from .experimental.tensors import _ArrayWithTensors
 
 
 class Array(
@@ -93,6 +94,7 @@ class Array(
     _ArrayWithSortingExperimental,
     _ArrayWithStatisticalExperimental,
     _ArrayWithUtilityExperimental,
+    _ArrayWithTensors,
 ):
     def __init__(self, data, dynamic_backend=None):
         _ArrayWithActivations.__init__(self)
@@ -134,6 +136,7 @@ class Array(
         _ArrayWithSortingExperimental.__init__(self),
         _ArrayWithStatisticalExperimental.__init__(self),
         _ArrayWithUtilityExperimental.__init__(self),
+        _ArrayWithTensors.__init__(self),
         self._init(data, dynamic_backend)
         self._view_attributes(data)
 
