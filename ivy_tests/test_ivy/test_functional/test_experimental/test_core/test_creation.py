@@ -366,3 +366,69 @@ def test_unsorted_segment_min(
         segment_ids=segment_ids,
         num_segments=num_segments,
     )
+
+@st.composite
+def valid_unsorted_segment_max_inputs(draw):
+    while True:
+        dtype = draw(st.sampled_from([ivy.int32, ivy.int64, ivy.float32, ivy.float64]))
+        segment_ids_dim = draw(st.integers(min_value=3, max_value=10))
+        num_segments = draw(st.integers(min_value=2, max_value=segment_ids_dim))
+
+        data_dim = draw(
+            helpers.get_shape(
+                min_dim_size=segment_ids_dim,
+                max_dim_size=segment_ids_dim,
+                min_num_dims=1,
+                max_num_dims=4,
+            )
+        )
+        data_dim = (segment_ids_dim,) + data_dim[1:]
+
+        data = draw(
+            helpers.array_values(
+                dtype=dtype,
+                shape=data_dim,
+                min_value=1,
+                max_value=10,
+            )
+        )
+
+        segment_ids = draw(
+            helpers.array_values(
+                dtype=ivy.int32,
+                shape=(segment_ids_dim,),
+                min_value=0,
+                max_value=num_segments + 1,
+            )
+        )
+        if data.shape[0] == segment_ids.shape[0]:
+            if np.max(segment_ids) < num_segments:
+                return (dtype, ivy.int32), data, num_segments, segment_ids
+
+
+# unsorted_segment_max
+@handle_test(
+    fn_tree="functional.ivy.experimental.unsorted_segment_max",
+    d_x_n_s=valid_unsorted_segment_max_inputs(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_unsorted_segment_max(
+    *,
+    d_x_n_s,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, data, num_segments, segment_ids = d_x_n_s
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=num_segments,
+    )
