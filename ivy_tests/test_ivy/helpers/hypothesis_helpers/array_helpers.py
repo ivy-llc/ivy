@@ -1807,6 +1807,7 @@ def dtype_array_query(
     min_dim_size=1,
     max_dim_size=10,
     allow_mask=True,
+    allow_none=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1831,6 +1832,8 @@ def dtype_array_query(
             small_abs_safety_factor=2,
         )
     )
+    if allow_none and draw(st.booleans()):
+        return dtype, array, None
     if allow_mask and draw(st.booleans()):
         mask_shape = shape[: draw(st.integers(0, len(shape)))]
         index = draw(
