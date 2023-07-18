@@ -826,7 +826,7 @@ def test_tensorflow_argmax(
     on_device,
     output_type,
 ):
-    if ivy.current_backend_str() in ("torch", "paddle"):
+    if backend_fw in ("torch", "paddle"):
         assume(output_type != "uint16")
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -1421,6 +1421,7 @@ def test_tensorflow_polyval(
         input_dtypes=dtype_coeffs + dtype_x,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         coeffs=coeffs,
@@ -1433,7 +1434,7 @@ def test_tensorflow_polyval(
     fn_tree="tensorflow.math.unsorted_segment_mean",
     data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
     segment_ids=helpers.array_values(
-        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+        dtype="int32", shape=(5,), min_value=0, max_value=4
     ),
     test_with_out=st.just(False),
 )
@@ -1448,8 +1449,9 @@ def test_tensorflow_unsorted_segment_mean(
     on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=[ivy.float32, ivy.int32],
+        input_dtypes=["int32", "int64"],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2800,6 +2802,7 @@ def test_tensorflow_real(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -2808,6 +2811,7 @@ def test_tensorflow_real(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2828,6 +2832,7 @@ def test_tensorflow_atanh(
     dtype_and_x,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -2835,6 +2840,7 @@ def test_tensorflow_atanh(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

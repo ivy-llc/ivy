@@ -1,10 +1,10 @@
 # global
-import ivy
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 
 
 # empty
@@ -304,21 +304,22 @@ def test_numpy_zeros_like(
 def _input_fill_and_dtype(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
     dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-    if ivy.is_uint_dtype(dtype[0]):
-        fill_values = draw(st.integers(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtype[0]):
-        fill_values = draw(st.integers(min_value=-5, max_value=5))
-    else:
-        fill_values = draw(
-            helpers.floats(
-                min_value=-5,
-                max_value=5,
-                large_abs_safety_factor=10,
-                small_abs_safety_factor=10,
-                safety_factor_scale="log",
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype[0]):
+            fill_values = draw(st.integers(min_value=0, max_value=5))
+        elif ivy_backend.is_int_dtype(dtype[0]):
+            fill_values = draw(st.integers(min_value=-5, max_value=5))
+        else:
+            fill_values = draw(
+                helpers.floats(
+                    min_value=-5,
+                    max_value=5,
+                    large_abs_safety_factor=10,
+                    small_abs_safety_factor=10,
+                    safety_factor_scale="log",
+                )
             )
-        )
-    dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+        dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
     return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
 
 

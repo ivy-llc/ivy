@@ -993,6 +993,7 @@ def test_tensorflow_ensure_shape(
     dtype_and_x,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
@@ -1000,6 +1001,7 @@ def test_tensorflow_ensure_shape(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         x=x[0],
         shape=x[1],
