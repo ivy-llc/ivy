@@ -1746,24 +1746,15 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        # TODO: example is required to be fixed, shapes are wrong
-        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
-        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> x = ivy.Container(a=a, b=b)
-        >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(filters, 2, 'SAME')
+        >>> x = ivy.full((1, 6, 6, 1), 2.7)
+        >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
+        >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
+        >>> filters = ivy.Container(a=a, b=b)
+        >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=2)
         >>> print(y.shape)
         {
-            a: {
-                c: ivy.Shape(1,28,28,6),
-                d: ivy.Shape(1,28,28,6)
-            },
-            b: {
-                c: ivy.Shape(1,56,56,6),
-                d: ivy.Shape(1,56,56,6)
-            }
+            a: ivy.Shape(1, 10, 10, 1),
+            b: ivy.Shape(1, 10, 10, 1)
         }
         """
         return self._static_conv2d_transpose(
@@ -2211,25 +2202,19 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        # TODO: example is required to be fixed, shapes are wrong
-
-        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-        >>> x = ivy.Container(a=a, b=b)
-        >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv3d_transpose(filters, 2, 'SAME')
-        >>> print(y.shape)
+        >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
+        >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
+        >>> result = x.conv3d(filters, 2, 'SAME')
+        >>> print(result)
         {
-            a: {
-                c: [1, 6, 28, 28, 6],
-                d: [1, 6, 28, 28, 6]
-            },
-            b: {
-                c: [1, 6, 56, 56, 6],
-                d: [1, 6, 56, 56, 6]
-            }
+            a: ivy.array([[[[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]],
+                          [[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]]]])
         }
         """
         return self._static_conv3d_transpose(
