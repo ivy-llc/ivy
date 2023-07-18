@@ -23,7 +23,7 @@ def test_jax_devicearray_property_ivy_array(
 ):
     _, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
-        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
         x = jax_frontend.DeviceArray(data[0])
@@ -48,7 +48,7 @@ def test_jax_devicearray_property_dtype(
 ):
     dtype, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
-        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
         x = jax_frontend.DeviceArray(data[0])
@@ -67,7 +67,7 @@ def test_jax_devicearray_property_shape(
 ):
     _, data, shape = dtype_x_shape
     with update_backend(backend_fw) as ivy_backend:
-        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
         x = jax_frontend.DeviceArray(data[0])
@@ -95,7 +95,7 @@ def _transpose_helper(draw):
 def test_jax_devicearray_property_T(x_transpose, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         x, xT = x_transpose
-        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
         x = jax_frontend.DeviceArray(x)
@@ -125,7 +125,7 @@ def _at_helper(draw):
 )
 def test_jax_devicearray_property_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
-        jax_frontend = ivy_backend.utils.dyanmic_import.import_module(
+        jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
         xy, idx = x_y_index
