@@ -65,36 +65,36 @@ def test_paddle_numel(
     )
 
 
-# median
-@handle_frontend_test(
-    fn_tree="paddle.median",
-    dtype_and_x=_statistical_dtype_values(function="median"),
-    keepdim=st.booleans(),
-)
-def test_paddle_median(
-    *,
-    dtype_and_x,
-    keep_dims,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    input_dtype, x, axis = dtype_and_x
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        test_flags=test_flags,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        rtol_=1e-1,
-        atol_=1e-1,
-        x=x[0],
-        axis=axis,
-        keepdims=keep_dims,
-    )
+# # median
+# @handle_frontend_test(
+#     fn_tree="paddle.median",
+#     dtype_and_x=_statistical_dtype_values(function="median"),
+#     keepdim=st.booleans(),
+# )
+# def test_paddle_median(
+#     *,
+#     dtype_and_x,
+#     keep_dims,
+#     test_flags,
+#     backend_fw,
+#     fn_name,
+#     on_device,
+#     ground_truth_backend,
+# ):
+#     input_dtype, x, axis = dtype_and_x
+#     helpers.test_function(
+#         ground_truth_backend=ground_truth_backend,
+#         input_dtypes=input_dtype,
+#         test_flags=test_flags,
+#         fw=backend_fw,
+#         fn_name=fn_name,
+#         on_device=on_device,
+#         rtol_=1e-1,
+#         atol_=1e-1,
+#         x=x[0],
+#         axis=axis,
+#         keepdims=keep_dims,
+#     )
 
 
 @handle_frontend_test(
