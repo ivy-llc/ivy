@@ -370,7 +370,7 @@ def test_numpy_ediff1d(
 @handle_frontend_test(
     fn_tree="numpy.trapz",
     dtype_and_y=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+        available_dtypes=helpers.get_dtypes("valid"), min_num_dims=1, max_num_dims=1
     ),
     x=st.lists(st.integers(min_value=0, max_value=5)),
     dx=st.integers(min_value=0, max_value=5),

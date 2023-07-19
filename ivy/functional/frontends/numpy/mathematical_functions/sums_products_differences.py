@@ -158,4 +158,24 @@ def ediff1d(ary, to_end=None, to_begin=None):
 
 @to_ivy_arrays_and_back
 def trapz(y, x=None, dx=1, axis=-1):
-    return ivy.trapz(y)
+    y = ivy.asarray(y)
+    x = ivy.asarray(x)
+
+    if x.size <= 1:
+        return ivy.array([0.0])
+
+    if x is None:
+        x = ivy.arange(len(y)) * dx
+    else:
+        x = ivy.asarray(x)
+        if len(y) != len(x):
+            raise ValueError("Arrays y and x must have the same length.")
+
+    dx = ivy.diff(x)
+
+    if axis != -1:
+        y = ivy.moveaxis(y, axis, -1)
+        dx = ivy.moveaxis(dx, axis, -1)
+
+    integral = ivy.sum((dx / 2) * (y[..., :-1] + y[..., 1:]), axis=-1)
+    return integral
