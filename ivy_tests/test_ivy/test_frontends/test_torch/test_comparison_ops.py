@@ -65,6 +65,7 @@ def test_torch_equal(
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -96,6 +97,7 @@ def test_torch_eq(
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
