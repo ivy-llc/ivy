@@ -121,7 +121,6 @@ def bernoulli(
         probs = ivy.softmax(logits)
     probs = paddle.cast(probs, dtype)
     probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
-    shape = list(paddle.shape(probs)) if shape is None else shape
     probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
-    dist = paddle.distribution.Multinomial(1, probs)
-    return to_device(dist.sample(shape), device)
+    sample = paddle.bernoulli(probs)
+    return to_device(sample, device)
