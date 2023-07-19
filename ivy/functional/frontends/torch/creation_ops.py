@@ -262,7 +262,7 @@ def as_strided(input, size, stride, storage_offset=None):
         ind = ind + storage_offset
     # in case the input is a non-contiguous native array,
     # the return will differ from torch.as_strided
-    if input.base is not None:
+    if ivy.is_ivy_array(input) and input.base is not None:
         return ivy.gather(ivy.flatten(input.base), ind)
     return ivy.gather(ivy.flatten(input), ind)
 
