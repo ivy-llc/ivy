@@ -2174,7 +2174,7 @@ def test_torch_sigmoid(
 @handle_frontend_test(
     fn_tree="torch.lerp",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", mixed_fn_compos=False),
         num_arrays=3,
         shared_dtype=True,
         large_abs_safety_factor=2.5,

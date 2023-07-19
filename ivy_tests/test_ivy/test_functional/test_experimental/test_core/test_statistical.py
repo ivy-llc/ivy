@@ -517,11 +517,9 @@ def test_cov(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
         fw=backend_fw,
@@ -555,11 +553,9 @@ def test_cummax(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
         fw=backend_fw,
@@ -592,11 +588,9 @@ def test_cummin(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
         fw=backend_fw,
@@ -609,4 +603,39 @@ def test_cummin(
         dtype=castable_dtype,
         rtol_=1e-1,
         atol_=1e-1,
+    )
+
+
+# nanmedian
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanmedian",
+    dtype_x_axis=_statistical_dtype_values(function="nanmedian"),
+    keep_dims=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+    overwriteinput=st.booleans(),
+    test_gradients=st.just(False),
+)
+def test_nanmedian(
+    *,
+    dtype_x_axis,
+    keep_dims,
+    overwriteinput,
+    dtype,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        atol_=1e-02,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+        overwrite_input=overwriteinput,
     )
