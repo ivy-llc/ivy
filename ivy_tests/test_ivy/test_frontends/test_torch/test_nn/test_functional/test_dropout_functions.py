@@ -70,7 +70,14 @@ def test_torch_dropout(
     test_inplace=st.just(False),
 )
 def test_torch_dropout1d(
-    *, dtype_and_x, prob, training, on_device, fn_tree, frontend, test_flags, backend_fw
+    *,
+    dtype_and_x,
+    prob,
+    training,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
