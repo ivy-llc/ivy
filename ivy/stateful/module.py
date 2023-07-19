@@ -143,7 +143,6 @@ class Module(ModuleConverters, ModuleHelpers):
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
             fn=fn,
