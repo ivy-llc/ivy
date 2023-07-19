@@ -215,6 +215,14 @@ class ndarray:
             subok=subok,
         )
 
+    def compress(self, condition, axis=None, out=None):
+        return np_frontend.compress(
+            condition=condition,
+            a=self,
+            axis=axis,
+            out=out,
+        )
+
     def conj(
         self,
         /,
@@ -251,6 +259,9 @@ class ndarray:
             dtype=dtype,
             out=out,
         )
+
+    def dot(self, b, out=None):
+        return np_frontend.dot(self, b, out=out)
 
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
