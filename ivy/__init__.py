@@ -986,7 +986,9 @@ def vec_sig_fig(x, sig_fig=3):
     return x
 
 
-ivy.array_significant_figures = 10
+ivy.array_significant_figures = (
+    array_significant_figures_stack[-1] if array_significant_figures_stack else 10
+)
 
 
 def set_array_significant_figures(sig_figs):
@@ -1054,7 +1056,7 @@ def unset_array_decimal_values():
         ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-ivy.warning_level = "ivy_only"
+ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -1087,7 +1089,7 @@ def warn(warning_message, stacklevel=0):
 
 
 # nan policy #
-ivy.nan_policy = "nothing"
+ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -1121,7 +1123,7 @@ def unset_nan_policy():
 # Dynamic Backend
 
 
-ivy.dynamic_backend = True
+ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
 def set_dynamic_backend(flag):
