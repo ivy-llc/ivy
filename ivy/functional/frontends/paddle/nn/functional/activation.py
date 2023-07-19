@@ -231,3 +231,20 @@ def log_sigmoid(x, name=None):
 
 def silu(x, name=None):
     return ivy.silu(x)
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def gumbel_softmax(x, temperature=1.0, axis=-1, hard=False, name=None):
+    gumbel_noise = -ivy.log(
+        -ivy.log(ivy.random_uniform(shape=x.shape, low=1e-8, high=1.0 - 1e-8))
+    )
+    gumbel_sample = (x + gumbel_noise) / temperature
+    softmax_sample = ivy.softmax(gumbel_sample, axis=axis)
+
+    if hard:
+        # Apply one-hot sample approximation
+        num_classes = x.shape[-1]
+        hard_sample = ivy.one_hot(ivy.argmax(softmax_sample, axis=axis), num_classes)
+        return ivy.astype(hard_sample, dtype=x.dtype)
+    else:
+        return ivy.astype(softmax_sample, dtype=x.dtype)
