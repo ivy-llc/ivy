@@ -456,38 +456,37 @@ def test_paddle_broadcast_to(
 def _scatter_nd_helper(draw):
     array_dtype = draw(helpers.get_dtypes("numeric"))
     indices_dtype = draw(st.sampled_from(["int32", "int64"]))
-    x_min_value = draw(st.floats(min_value=0, max_value=0))
-    x_max_value = draw(st.floats(min_value=0, max_value=0))
     min_num_dims = draw(st.integers(min_value=2, max_value=6))
     allow_inf = draw(st.booleans())
+
+    x_min_value = draw(st.floats(min_value=0, max_value=10))
+    x_max_value = draw(st.floats(min_value=x_min_value, max_value=20))
+    
+    shape_st = st.shared(
+        helpers.get_shape(
+            min_num_dims=min_num_dims,
+            max_num_dims=min_num_dims,
+        ),
+        key="value_shape",
+    )
+
     x = draw(
         helpers.dtype_and_values(
             dtype=array_dtype,
-            shape=st.shared(
-                helpers.get_shape(
-                    min_num_dims=min_num_dims,
-                    max_num_dims=min_num_dims,
-                ),
-                key="value_shape",
-            ),
+            shape=shape_st,
             min_value=x_min_value,
             max_value=x_max_value,
-            allow_nan=allow_inf,
+            allow_nan=False,
             allow_inf=allow_inf,
         )
     )
+    indices_max_value = draw(st.integers(min_value=1, max_value=10))
     ind = draw(
         helpers.dtype_and_values(
             dtype=indices_dtype,
-            shape=st.shared(
-                helpers.get_shape(
-                    min_num_dims=min_num_dims,
-                    max_num_dims=min_num_dims,
-                ),
-                key="value_shape",
-            ),
+            shape=shape_st,
             min_value=0,
-            max_value=0,
+            max_value=indices_max_value,
             allow_nan=False,
             allow_inf=False,
         )
@@ -495,17 +494,10 @@ def _scatter_nd_helper(draw):
     updates = draw(
         helpers.dtype_and_values(
             dtype=array_dtype,
-            shape=st.shared(
-                helpers.get_shape(
-                    min_num_dims=min_num_dims,
-                    max_num_dims=min_num_dims,
-                ),
-                key="value_shape",
-            ),
+            shape=shape_st,
             min_value=x_min_value,
             max_value=x_max_value,
-            allow_nan=allow_inf,
-            allow_inf=allow_inf,
+            allow_nan=False,
         )
     )
     return (array_dtype, indices_dtype, array_dtype), x, ind, updates
