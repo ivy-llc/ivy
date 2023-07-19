@@ -843,6 +843,8 @@ def to_numpy(
     # if x is an ivy array with a base,
     # convert it to a numpy array with the same base:
     ret = _to_numpy(x.base.data, copy=copy)
+    ivy.set_numpy_backend()
+    ivy.previous_backend()
     for fn, args, kwargs, index in x._manipulation_stack:
         ret = ivy.functional.backends.numpy.__dict__[fn](ret, *args, **kwargs)
         ret = ret[index] if ivy.exists(index) else ret
