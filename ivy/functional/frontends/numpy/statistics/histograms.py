@@ -181,9 +181,9 @@ def _hist_bin_doane(x, range):
         sigma = ivy.std(ivy.array(x, dtype=ivy.float64))
         if sigma > 0.0:
             temp = x - ivy.mean(ivy.array(x, dtype=ivy.float64))
-            ivy.divide(ivy.array(x, dtype=ivy.float64), sigma, out=temp)
-            ivy.pow(ivy.array(x, dtype=ivy.float64), 3, out=temp)
-            g1 = ivy.mean(ivy.array(x, dtype=ivy.float64))
+            ivy.divide(ivy.array(temp, dtype=ivy.float64), sigma, out=temp)
+            ivy.pow(ivy.array(temp, dtype=ivy.float64), 3, out=temp)
+            g1 = ivy.mean(ivy.array(temp, dtype=ivy.float64))
             return _ptp(x) / (
                 1.0 + ivy.log2(x.size) + ivy.log2(1.0 + ivy.abs(g1) / sg1)
             )
