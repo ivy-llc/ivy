@@ -2148,3 +2148,112 @@ class _ContainerWithLayersExperimental(ContainerBase):
             boundary=boundary,
             out=out,
         )
+
+    @staticmethod
+    def static_rfftn(
+        x: ivy.Container,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.rfftn.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.rfftn also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array of real numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) to use from the input (`s[0]` refers to
+            axis 0,`s[1]` to axis 1, etc.). The final element of `s` corresponds to `n`
+            for `rfft(x, n)`, while for the remaining axes, it corresponds to `n` for
+            `fft(x, n)`. Along any axis, if the given shape is smaller than that of the
+            input, the input is cropped. If it is larger,the input is padded with zeros.
+            If `s` is not given, the shape of the input along the axes specified by
+            `axes` is used.
+
+        axes
+            sequence of ints, optional
+            Axes over which to compute the FFT. If not given, the last `len(s)` axes
+            are used, or all axes if `s` is also not specified.
+
+        norm
+            Optional argument, "backward", "ortho" or "forward".
+            Defaults to be "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The truncated or zero-padded input, transformed along the axes indicated by
+            `axes` or by a combination of `s` or `x`, as explained in the parameters
+            section above.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "rfftn",
+            x,
+            s=s,
+            axes=axes,
+            norm=norm,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def rfftn(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        s: Optional[Sequence[int]] = None,
+        axes: Optional[Union[int, Tuple[int]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        Compute the n-dimensional discrete Fourier Transform for real input.
+
+        Parameters
+        ----------
+        axes : int or tuple of ints, optional
+            Axes over which to compute the FFT. If not given, the last `n` axes are
+            used.
+        s : sequence of ints, optional
+            Shape (length of each transformed axis) of the output. Along each axis,
+            if the given shape is smaller than
+            that of the input, the input is cropped. If it is larger, the input
+            is padded with zeros.
+        norm : {'backward', 'ortho', 'forward'}, optional
+            Normalization mode. Default is 'backward'.
+        out : array-like, optional
+            Output array. Must have the same shape and type as the expected output.
+
+        Returns
+        -------
+        transformed : Container
+            The n-dimensional discrete Fourier Transform of the input.
+        """
+        return self.static_rfftn(
+            self,
+            s=s,
+            axes=axes,
+            norm=norm,
+            out=out,
+        )

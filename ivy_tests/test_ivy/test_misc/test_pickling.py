@@ -28,7 +28,8 @@ def test_pickle_to_string(dtype_and_x, on_device):
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
 
-    # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    # paddle tensors can't be pickled directly as referenced in this issue
+    # https://github.com/PaddlePaddle/Paddle/issues/41107
     if ivy.backend == "paddle":
         x = x.to_numpy()
     pickled_arr = pickle.dumps(x)
@@ -53,7 +54,8 @@ def test_pickle_to_and_from_disk(dtype_and_x, on_device):
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
 
-    # paddle tensors can't be pickled directly as referenced in this issue https://github.com/PaddlePaddle/Paddle/issues/41107
+    # paddle tensors can't be pickled directly as referenced in this issue
+    # https://github.com/PaddlePaddle/Paddle/issues/41107
     if ivy.backend == "paddle":
         x = x.to_numpy()
 
