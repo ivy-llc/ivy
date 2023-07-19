@@ -3,6 +3,7 @@ import numpy as np
 import copy as py_copy
 from ivy.functional.frontends.pandas.pandas_func_wrappers import outputs_to_self_class
 
+
 class NDFrame:
     def __init__(self, data, index, columns, dtype, name, copy, *args, **kwargs):
         self.name = name
