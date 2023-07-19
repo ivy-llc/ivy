@@ -1249,21 +1249,24 @@ def test_inplace_update(
         safety_factor_scale="log",
     ),
 )
-def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device):
+def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device, backend_fw):
     dtype = x_val_and_dtypes[0][0]
     x, val = x_val_and_dtypes[1]
     x, val = x.tolist(), val.tolist()
-    x = ivy.array(x, dtype=dtype, device=on_device)
-    val = ivy.array(val, dtype=dtype, device=on_device)
-    new_val = x - val
-    if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
-        test_flags.as_variable and ivy.inplace_variables_supported()
-    ):
-        x_inplace = ivy.inplace_decrement(x, val)
-        assert id(x_inplace) == id(x)
-        x = helpers.flatten_and_to_np(ret=x)
-        new_val = helpers.flatten_and_to_np(ret=new_val)
-        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.array(x, dtype=dtype, device=on_device)
+        val = ivy_backend.array(val, dtype=dtype, device=on_device)
+        new_val = x - val
+        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
+            test_flags.as_variable and ivy_backend.inplace_variables_supported()
+        ):
+            x_inplace = ivy_backend.inplace_decrement(x, val)
+            assert id(x_inplace) == id(x)
+            x = helpers.flatten_and_to_np(ret=x, backend=backend_fw)
+            new_val = helpers.flatten_and_to_np(ret=new_val, backend=backend_fw)
+            helpers.value_test(
+                ret_np_flat=x, ret_np_from_gt_flat=new_val, backend=backend_fw
+            )
 
 
 # inplace_increment
@@ -1279,23 +1282,28 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device):
         shared_dtype=True,
     ),
 )
-def test_inplace_increment(x_val_and_dtypes, test_flags, on_device):
+def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
     dtype = x_val_and_dtypes[0][0]
-    if dtype in ivy.function_unsupported_dtypes(ivy.inplace_increment):
-        return
-    x, val = x_val_and_dtypes[1]
-    x, val = x.tolist(), val.tolist()
-    x = ivy.array(x, dtype=dtype, device=on_device)
-    val = ivy.array(val, dtype=dtype, device=on_device)
-    new_val = x + val
-    if (not test_flags.as_variable and ivy.inplace_arrays_supported()) or (
-        test_flags.as_variable and ivy.inplace_variables_supported()
-    ):
-        x_inplace = ivy.inplace_increment(x, val)
-        assert id(x_inplace) == id(x)
-        x = helpers.flatten_and_to_np(ret=x)
-        new_val = helpers.flatten_and_to_np(ret=new_val)
-        helpers.value_test(ret_np_flat=x, ret_np_from_gt_flat=new_val)
+    with update_backend(backend_fw) as ivy_backend:
+        if dtype in ivy_backend.function_unsupported_dtypes(
+            ivy_backend.inplace_increment
+        ):
+            return
+        x, val = x_val_and_dtypes[1]
+        x, val = x.tolist(), val.tolist()
+        x = ivy_backend.array(x, dtype=dtype, device=on_device)
+        val = ivy_backend.array(val, dtype=dtype, device=on_device)
+        new_val = x + val
+        if (not test_flags.as_variable and ivy_backend.inplace_arrays_supported()) or (
+            test_flags.as_variable and ivy_backend.inplace_variables_supported()
+        ):
+            x_inplace = ivy_backend.inplace_increment(x, val)
+            assert id(x_inplace) == id(x)
+            x = helpers.flatten_and_to_np(ret=x, backend=backend_fw)
+            new_val = helpers.flatten_and_to_np(ret=new_val, backend=backend_fw)
+            helpers.value_test(
+                ret_np_flat=x, ret_np_from_gt_flat=new_val, backend=backend_fw
+            )
 
 
 # is_ivy_array
@@ -1857,7 +1865,7 @@ def test_assert_supports_inplace(
     x_val_and_dtypes, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = x_val_and_dtypes
-    if ivy.current_backend_str() in ["tensorflow", "jax", "paddle"]:
+    if backend_fw in ["tensorflow", "jax", "paddle"]:
         return
     assume("bfloat16" not in dtype)
     helpers.test_function(
@@ -1901,43 +1909,51 @@ def _fn3(x, y):
     ),
     in_axes_as_cont=st.booleans(),
 )
-def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont):
-    dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
-    arrays = [ivy.native_array(array) for array in generated_arrays]
-    assume(ivy.as_ivy_dtype(dtype[0]) not in ivy.function_unsupported_dtypes(ivy.vmap))
+def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
+        arrays = [ivy_backend.native_array(array) for array in generated_arrays]
+        assume(
+            ivy_backend.as_ivy_dtype(dtype[0])
+            not in ivy_backend.function_unsupported_dtypes(ivy_backend.vmap)
+        )
 
-    if in_axes_as_cont:
-        vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
-    else:
-        vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+        if in_axes_as_cont:
+            vmapped_func = ivy_backend.vmap(func, in_axes=in_axes, out_axes=0)
+        else:
+            vmapped_func = ivy_backend.vmap(func, in_axes=0, out_axes=0)
 
-    assert callable(vmapped_func)
+        assert callable(vmapped_func)
 
-    try:
-        fw_res = helpers.flatten_and_to_np(ret=vmapped_func(*arrays))
-        fw_res = fw_res if len(fw_res) else None
-    except Exception:
-        fw_res = None
+        try:
+            fw_res = helpers.flatten_and_to_np(
+                ret=vmapped_func(*arrays), backend=backend_fw
+            )
+            fw_res = fw_res if len(fw_res) else None
+        except Exception:
+            fw_res = None
 
-    ivy.set_backend("jax")
-    arrays = [ivy.native_array(array) for array in generated_arrays]
-    if in_axes_as_cont:
-        jax_vmapped_func = ivy.vmap(func, in_axes=in_axes, out_axes=0)
-    else:
-        jax_vmapped_func = ivy.vmap(func, in_axes=0, out_axes=0)
+    with update_backend("jax") as gt_backend:
+        arrays = [gt_backend.native_array(array) for array in generated_arrays]
+        if in_axes_as_cont:
+            jax_vmapped_func = gt_backend.vmap(func, in_axes=in_axes, out_axes=0)
+        else:
+            jax_vmapped_func = gt_backend.vmap(func, in_axes=0, out_axes=0)
 
-    assert callable(jax_vmapped_func)
+        assert callable(jax_vmapped_func)
 
-    try:
-        jax_res = helpers.flatten_and_to_np(ret=jax_vmapped_func(*arrays))
-        jax_res = jax_res if len(jax_res) else None
-    except Exception:
-        jax_res = None
-
-    ivy.previous_backend()
+        try:
+            jax_res = helpers.flatten_and_to_np(
+                ret=jax_vmapped_func(*arrays), backend="jax"
+            )
+            jax_res = jax_res if len(jax_res) else None
+        except Exception:
+            jax_res = None
 
     if fw_res is not None and jax_res is not None:
         helpers.value_test(
+            backend=backend_fw,
+            ground_truth_backend="jax",
             ret_np_flat=fw_res,
             ret_np_from_gt_flat=jax_res,
             rtol=1e-1,
