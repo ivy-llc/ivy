@@ -11,16 +11,16 @@ from run_tests_CLI.get_all_tests import get_all_tests
 # Shared Map
 tests = {}
 
-N = 128
-run_iter = int(sys.argv[1]) - 1
+# N = 128
+# run_iter = int(sys.argv[1]) - 1
 
-test_names = get_all_tests()
-
-# Create a Dictionary of Test Names to Index
-tests["index_mapping"] = test_names
-tests["tests_mapping"] = {}
-for i in range(len(test_names)):
-    tests["tests_mapping"][test_names[i]] = i
+# test_names = get_all_tests()
+#
+# # Create a Dictionary of Test Names to Index
+# tests["index_mapping"] = test_names
+# tests["tests_mapping"] = {}
+# for i in range(len(test_names)):
+#     tests["tests_mapping"][test_names[i]] = i
 
 # if __name__ == "__main__":
 #     directories = (
@@ -63,10 +63,10 @@ for i in range(len(test_names)):
 #                             i += 1
 #         os.system("find . -name \\*cover -type f -delete")
 
-commit_hash = ""
-for commit in Repository(".", order="reverse").traverse_commits():
-    commit_hash = commit.hash
-    break
-tests["commit"] = commit_hash
+# commit_hash = ""
+# for commit in Repository(".", order="reverse").traverse_commits():
+#     commit_hash = commit.hash
+#     break
+# tests["commit"] = commit_hash
 with bz2.BZ2File("tests.pbz2", "w") as f:
     cPickle.dump(tests, f)
