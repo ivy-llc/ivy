@@ -722,6 +722,10 @@ def reduce_window(
 ) -> JaxArray:
     computation = _correct_ivy_callable(computation)
     computation = output_to_native_arrays(computation)
+    window_dimensions, window_strides, padding, base_dilation, window_dilation = map(
+        lambda x: tuple([x] * len(operand.shape)) if isinstance(x, int) else x,
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
+    )
     if not isinstance(padding, str):
         # for containers the padding reaches the function as a list of lists instead of
         # a list of tuples, which gives an unhashable dtype error
