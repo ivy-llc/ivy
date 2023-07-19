@@ -7,12 +7,12 @@ Ivy Frontend Tests
 .. _`test ivy`: https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy
 .. _`test_frontend_function`: https://github.com/unifyai/ivy/blob/591ac37a664ebdf2ca50a5b0751a3a54ee9d5934/ivy_tests/test_ivy/helpers.py#L1047
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`Function Wrapping`: https://unify.ai/docs/ivy/deep_dive/3_function_wrapping.html
-.. _`open task`: https://unify.ai/docs/ivy/contributing/open_tasks.html#open-tasks
-.. _`Ivy Tests`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html
+.. _`Function Wrapping`: https://unify.ai/docs/ivy/overview/deep_dive/function_wrapping.html
+.. _`open task`: https://unify.ai/docs/ivy/overview/contributing/open_tasks.html
+.. _`Ivy Tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
-.. _`setting up`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
+.. _`setting up`: https://unify.ai/docs/ivy/compiler/setting_up.html#setting-up-testing
 
 
 Introduction

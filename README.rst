@@ -285,7 +285,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
-    def loss_fn(pred, target):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
     for epoch in range(40):
@@ -293,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -477,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
@@ -1550,6 +1551,12 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
+    # training hyperparams
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
@@ -1558,13 +1565,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
         device=device,
     )
     model_name = type(model).__name__.lower()
-    
-    
-    # training hyperparams
-    optimizer= ivy.Adam(1e-4)
-    batch_size = 64 
-    num_epochs = 20
-    num_classes = 10
     
     
     # training loop
@@ -1596,8 +1596,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])
