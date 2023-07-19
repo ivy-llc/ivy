@@ -4,8 +4,8 @@ from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
     if len(x1.shape) == len(x2.shape) and len(x2.shape) >= 2:
         numerator = ivy.sum(x1 * x2, axis=axis)
@@ -25,8 +25,8 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
     return cosine
 
 
-@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
     return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
 
@@ -40,8 +40,8 @@ def get_mask(shape, device, prob, seed=None):
     return mask
 
 
-@with_supported_dtypes({"2.4.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
     if axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
@@ -65,3 +65,30 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
         else:
             ret = ivy.multiply(x, (1.0 - p))
     return ret
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def zeropad2d(x, padding, data_format="NCHW", name=None):
+    if ivy.is_array(padding):
+        padding = padding.to_list()
+    if isinstance(padding, int):
+        padding = [padding, padding, padding, padding]
+    if len(padding) != 4:
+        raise ValueError("Padding length should be 4.")
+    if x.ndim != 4:
+        raise ValueError("Input x must be 4-dimensional.")
+    if data_format == "NCHW":
+        padding = ((0, 0), (0, 0), (padding[2], padding[3]), (padding[0], padding[1]))
+    elif data_format == "NHWC":
+        padding = ((0, 0), (padding[2], padding[3]), (padding[0], padding[1]), (0, 0))
+    else:
+        raise ValueError("Unknown data_format: {}".format(data_format))
+    return ivy.pad(x, padding, mode="constant", constant_values=0.0)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def linear(x, weight, bias=None, name=None):
+    weight = ivy.swapaxes(weight, -1, -2)
+    return ivy.linear(x, weight, bias=bias)

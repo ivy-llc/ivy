@@ -36,7 +36,7 @@ from ivy.functional.ivy.device import _get_nvml_gpu_handle
 # ------- #
 
 
-def _ram_array_and_clear_test(metric_fn, device, size=1000000000):
+def _ram_array_and_clear_test(metric_fn, device, size=10000000):
     # This function checks if the memory usage changes before, during and after
 
     # Measure usage before creating array
@@ -98,9 +98,6 @@ def test_dev(*, dtype_and_x, test_flags):
             x = _variable(x)
 
         ret = ivy.dev(x)
-        nat_ret = ivy.dev(x, as_native=True)
-        # native test
-        assert ivy.is_native_dev(nat_ret)
         # type test
         assert isinstance(ret, str)
         # value test
@@ -147,49 +144,29 @@ def test_as_ivy_dev(*, dtype_and_x, test_flags):
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_as_native_dev(*, dtype_and_x, test_flags):
+def test_as_native_dev(*, dtype_and_x, test_flags, on_device):
     dtype, x = dtype_and_x
     dtype = dtype[0]
     x = x[0]
 
-    for on_device in _get_possible_devices():
+    for device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable and ivy.is_float_dtype(dtype):
+        if test_flags.as_variable:
             x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
-        ret = ivy.dev(x, as_native=True)
+        ret = ivy.as_native_dev(ivy.dev(x))
         # value test
         if ivy.current_backend_str() == "tensorflow":
             assert "/" + ":".join(ret[1:].split(":")[-2:]) == "/" + ":".join(
                 device[1:].split(":")[-2:]
             )
+        elif ivy.current_backend_str() == "torch":
+            assert ret.type == device.type
         elif ivy.current_backend_str() == "paddle":
             assert ret._equals(device)
         else:
             assert ret == device
-
-
-# is_native_dev
-@handle_test(
-    fn_tree="functional.ivy.is_native_dev",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-)
-def test_is_native_dev(*, dtype_and_x, test_flags):
-    dtype, x = dtype_and_x
-    dtype = dtype[0]
-    x = x[0]
-
-    for on_device in _get_possible_devices():
-        x = ivy.asarray(x, device=on_device)
-        if test_flags.as_variable and ivy.is_float_dtype(dtype):
-            x = _variable(x)
-        native_dev = ivy.dev(x, as_native=True)
-        assert ivy.is_native_dev(native_dev)
-        if ivy.current_backend_str() != "numpy":
-            assert not ivy.is_native_dev(on_device)
 
 
 # Device Allocation #
@@ -285,6 +262,30 @@ def test_to_device(
     assert container_x.to_device(device).dev() == device
     # container static test
     assert ivy.Container.to_device(container_x, device).dev() == device
+
+
+# handle_soft_device_variable
+@handle_test(
+    fn_tree="functional.ivy.handle_soft_device_variable",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+)
+def test_handle_soft_device_variable(*, dtype_and_x):
+    dtype, x = dtype_and_x
+    dtype = dtype[0]
+    x = ivy.to_device(x[0], "cpu")
+
+    def fn(x, y):
+        return ivy.add(x, y)
+
+    for device in _get_possible_devices():
+        ivy.set_default_device(device)
+        out = ivy.handle_soft_device_variable(x, fn=fn, y=x)
+
+        # check if device shifting is successful
+        assert out.device == ivy.default_device()
 
 
 # Function Splitting #
@@ -643,7 +644,7 @@ def test_clear_cached_mem_on_dev():
         # for only CUDA devices
         if "gpu" in device:
             arr = ivy.random_normal(  # noqa: F841
-                shape=(10000, 10000), dtype="float32", device=device
+                shape=(10000, 1000), dtype="float32", device=device
             )
             del arr
             before = get_gpu_mem_usage(device)

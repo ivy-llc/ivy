@@ -12,6 +12,8 @@ from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
 def dev(x: np.ndarray, /, *, as_native: bool = False) -> Union[ivy.Device, str]:
+    if as_native:
+        return "cpu"
     return as_ivy_dev("cpu")
 
 
@@ -19,24 +21,8 @@ def as_ivy_dev(device: str, /):
     return ivy.Device("cpu")
 
 
-def as_native_dev(device, /):
-    if isinstance(device, str):
-        dev = ivy.Device(device).split(":")[0]
-        if dev != "cpu":
-            ivy.warn(
-                f"Native Numpy does not support {dev} placement. Using cpu instead."
-                + " This behavious can change in the future."
-                + " Please use ivy.dev() to get the device"
-            )
-        return "cpu"
-    else:
-        raise ivy.utils.exceptions.IvyError(
-            f"device must be a valid ivy device, but was {type(device)}"
-        )
-
-
-def is_native_dev(device: str, /):
-    return device == "cpu"
+def as_native_dev(device: str, /):
+    return "cpu"
 
 
 def clear_cached_mem_on_dev(device: str, /):
@@ -82,8 +68,25 @@ def to_device(
     stream: Optional[Union[int, Any]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    # TODO: implement stream and out
-    return _to_device(x, device)
+    if device is not None:
+        device = as_native_dev(device)
+        if "gpu" in device:
+            raise ivy.utils.exceptions.IvyException(
+                "Native Numpy does not support GPU placement, "
+                "consider using Jax instead"
+            )
+        elif "cpu" in device:
+            pass
+        else:
+            raise ivy.utils.exceptions.IvyException(
+                "Invalid device specified, must be in the form "
+                "[ 'cpu:idx' | 'gpu:idx' ], but found {}".format(device)
+            )
+    return x
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):
