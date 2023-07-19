@@ -18,6 +18,7 @@ jobs:
           python update_optional_requirements.py
 
       - name: Commit changes 📝
+        if: steps.check.outputs.changes == 'true'
         run: |
           git config --local user.email "ivy.branch@lets-unify.ai"
           git config --local user.name "ivy-branch"
