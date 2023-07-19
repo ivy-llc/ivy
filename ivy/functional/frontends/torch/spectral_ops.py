@@ -7,5 +7,13 @@ from ivy.func_wrapper import with_supported_dtypes
 
 @with_supported_dtypes({"2.0.1 and below": "int"}, "torch")
 @to_ivy_arrays_and_back
-def hann_window(size, *, periodic=True, dtype=None, out=None) -> ivy.Array:
-    return ivy.hann_window(size, periodic, dtype, out)
+def hann_window(
+    window_length,
+    periodic=True,
+    *,
+    dtype=None,
+    device=None,
+    requires_grad=False,
+    out=None
+):
+    return ivy.hann_window(window_length, periodic, dtype, out=out)
