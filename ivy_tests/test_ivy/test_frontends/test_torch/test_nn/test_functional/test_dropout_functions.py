@@ -78,6 +78,7 @@ def test_torch_dropout1d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
@@ -124,6 +125,7 @@ def test_torch_dropout2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
