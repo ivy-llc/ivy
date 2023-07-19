@@ -18,12 +18,9 @@ from ivy.stateful.converters import ModuleConverters
 
 # Base #
 # -----#
-class Module(
-    ModuleConverters,
-    ModuleHelpers,
-):
-    """Module is a base class for deriving trainable modules."""
 
+
+class ModuleMeta:
     def __new__(cls, *args, **kwargs):
         # check the module of the class
         # if it's stateful, it's internal
@@ -41,6 +38,10 @@ class Module(
                 Module._init_var.append(cls)
         instance = super().__new__(cls)
         return instance
+
+
+class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
+    """Module is a base class for deriving trainable modules."""
 
     def __init__(
         self,
