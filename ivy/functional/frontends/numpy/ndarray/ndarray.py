@@ -526,3 +526,10 @@ class ndarray:
 
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
+
+    def __getfield__(self, dtype, offset=0):
+        if isinstance(dtype, np_frontend.dtype):
+            dtype = dtype.ivy_dtype
+
+        new_array = ivy.getfield(self.ivy_array, dtype=dtype, offset=offset)
+        return ndarray(new_array, _init_overload=True)
