@@ -1,12 +1,12 @@
 # global
-from hypothesis import given, assume, strategies as st
+from hypothesis import assume, strategies as st
 import numpy as np
 import sys
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 import ivy.functional.frontends.numpy as ivy_np
 
 
@@ -51,7 +51,10 @@ def _property_helper(draw):
     return data, data_gt
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_A(matrices):
     data, data_gt = matrices
     ret = np.ravel(data.A)
@@ -63,7 +66,10 @@ def test_numpy_A(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_A1(matrices):
     data, data_gt = matrices
     helpers.value_test(
@@ -73,7 +79,10 @@ def test_numpy_A1(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_I(matrices):
     data, data_gt = matrices
     assume(
@@ -89,7 +98,10 @@ def test_numpy_I(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_T(matrices):
     data, data_gt = matrices
     ret = np.ravel(data.T)
@@ -101,7 +113,10 @@ def test_numpy_T(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_data(matrices):
     data, data_gt = matrices
     # sanity test
@@ -110,7 +125,10 @@ def test_numpy_data(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_dtype(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(
@@ -118,19 +136,28 @@ def test_numpy_dtype(matrices):
     )
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_ndim(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.ndim, data_gt.ndim, as_array=False)
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_shape(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.shape, data_gt.shape, as_array=False)
 
 
-@given(matrices=_property_helper())
+@handle_frontend_test(
+    fn_tree="numpy.add",  # dummy fn_tree
+    matrices=_property_helper(),
+)
 def test_numpy_size(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.size, data_gt.size, as_array=False)
@@ -159,6 +186,7 @@ def test_numpy_matrix_argmax(
     method_flags,
     frontend_method_data,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     x = _get_x_matrix(x, to_str)
@@ -178,6 +206,7 @@ def test_numpy_matrix_argmax(
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )
 
 
@@ -204,6 +233,7 @@ def test_numpy_matrix_any(
     method_flags,
     frontend_method_data,
     frontend,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     x = _get_x_matrix(x, to_str)
@@ -223,4 +253,5 @@ def test_numpy_matrix_any(
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        on_device=on_device,
     )

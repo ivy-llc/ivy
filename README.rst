@@ -478,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 

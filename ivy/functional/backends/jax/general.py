@@ -365,18 +365,8 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-
-    expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
-        if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
-    )
-    updates = _broadcast_to(updates, expected_shape)._data
-
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
-
-    # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -386,6 +376,7 @@ def scatter_nd(
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
         target = jnp.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)._data
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":

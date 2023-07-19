@@ -222,8 +222,8 @@ def inv_ex(A, *, check_errors=False, out=None):
             raise RuntimeError("Singular Matrix")
         else:
             inv = A * math.nan
-            # TODO: info should return an array containing the diagonal element of the LU decomposition
-            #  of the input matrix that is exactly zero
+            # TODO: info should return an array containing the diagonal element of the
+            # LU decomposition of the input matrix that is exactly zero
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
     else:
         inv = ivy.inv(A, out=out)
@@ -355,3 +355,18 @@ def solve_ex(A, B, *, left=True, check_errors=False, out=None):
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
 
             return result, info
+
+
+@to_ivy_arrays_and_back
+def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
+    try:
+        matrix = ivy.cholesky(input, upper=upper, out=out)
+        info = ivy.zeros(input.shape[:-2], dtype=ivy.int32)
+        return matrix, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            matrix = input * math.nan
+            info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
+            return matrix, info

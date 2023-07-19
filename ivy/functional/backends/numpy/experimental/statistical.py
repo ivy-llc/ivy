@@ -197,6 +197,10 @@ def corrcoef(
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"1.25.0 and below": ("bfloat16",)},
+    backend_version,
+)
 def nanmedian(
     input: np.ndarray,
     /,
