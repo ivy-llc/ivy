@@ -192,7 +192,7 @@ def _parse_ellipsis(so, ndims, ret_inds=False):
         + list(reversed(post))
     )
     if ret_inds:
-        return ret, (len(pre), ndims-len(post))
+        return ret, (len(pre), ndims - len(post))
     return ret
 
 
@@ -2927,9 +2927,11 @@ def _parse_query(query, x_shape):
         query[i] = ivy.astype(query[i], ivy.int64)
     target_shape = [list(q.shape) for q in query]
     if ellipsis_inds is not None:
-        target_shape = target_shape[:ellipsis_inds[0]] + \
-                       [target_shape[ellipsis_inds[0]:ellipsis_inds[1]]] + \
-                       target_shape[ellipsis_inds[1]:]
+        target_shape = (
+            target_shape[: ellipsis_inds[0]]
+            + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
+            + target_shape[ellipsis_inds[1] :]
+        )
     for ax in new_axes:
         target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape += list(x_shape[len(query) :])
@@ -2947,6 +2949,7 @@ def _deep_flatten(iterable):
                 yield from _flatten_gen(item)
             else:
                 yield item
+
     return list(_flatten_gen(iterable))
 
 
