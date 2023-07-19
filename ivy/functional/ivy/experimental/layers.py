@@ -2440,7 +2440,7 @@ def reduce_window(
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
     >>> ivy.reduce_window(x, 0, ivy.add, (2, 2))
-    ivy.array([[32.]])
+    ivy.array([[14, 18, 22], [30, 34, 38]])
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)

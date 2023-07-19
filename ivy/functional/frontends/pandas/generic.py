@@ -79,7 +79,6 @@ class NDFrame:
     def __array__(self):
         return self.array.to_numpy()
 
+    @outputs_to_self_class
     def __array_wrap__(self, array):
-        return self.__class__(
-            array, index=self.index, name=self.name, columns=self.columns
-        )
+        return array
