@@ -12,7 +12,6 @@ jobs:
       - shell: bash
         run: |
           pip install pur
-          cd ivy
           python update_optional_requirements.py
 
       - name: Check if there are changes 📝
