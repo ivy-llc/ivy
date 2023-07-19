@@ -11,10 +11,10 @@ jaxlib # unpinned, we test for latest version now
 tensorflow  # unpinned, we test for latest version now
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
 -f https://download.pytorch.org/whl/cpu/torch_stable.html
--f https://data.pyg.org/whl/torch-2.0.0%2Bcu117.html
--f https://data.pyg.org/whl/torch-2.0.0%2Bcu118.html
-torch==2.0.0
-torch-scatter==2.1.0
+-f https://data.pyg.org/whl/torch-2.0.1%2Bcu117.html
+-f https://data.pyg.org/whl/torch-2.0.1%2Bcu118.html
+torch==2.0.1+cpu
+torch-scatter==2.1.1+pt20cu118
 functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku

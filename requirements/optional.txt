@@ -12,9 +12,9 @@ paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
 -f https://download.pytorch.org/whl/cpu/torch_stable.html
--f https://data.pyg.org/whl/torch-2.0.0%2Bcpu.html
-torch==2.0.0
-torch-scatter==2.1.0
+-f https://data.pyg.org/whl/torch-2.0.1%2Bcpu.html
+torch==2.0.1+cpu
+torch-scatter==2.1.1+pt20cpu
 functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
