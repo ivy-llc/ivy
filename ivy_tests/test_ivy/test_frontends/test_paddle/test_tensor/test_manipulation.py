@@ -456,7 +456,14 @@ def test_paddle_broadcast_to(
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
     dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
-    axis = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    axis = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=len(shape) - 1),
+            min_size=len(shape),
+            max_size=len(shape),
+            unique=True,
+        )
+    )
     return dtype, x, axis
 
 
