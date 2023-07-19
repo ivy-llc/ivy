@@ -328,38 +328,9 @@ def test_numpy_multi_dot(
 
 
 # dot
-@st.composite
-def _get_dtype_input_and_vectors(draw):
-    dim_size = draw(helpers.ints(min_value=1, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
-    if dim_size == 1:
-        vec1 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
-        vec2 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
-            )
-        )
-    else:
-        vec1 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-        vec2 = draw(
-            helpers.array_values(
-                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
-            )
-        )
-    return dtype, vec1, vec2
-
-
 @handle_frontend_test(
     fn_tree="numpy.dot",
-    dtype_a_b=_get_dtype_input_and_vectors(),
+    dtype_a_b=np_frontend_helpers._get_dtype_input_and_vectors(),
 )
 def test_numpy_dot(
     dtype_a_b,
