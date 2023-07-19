@@ -84,7 +84,7 @@ class PreciseMode:
         return self
 
 
-ivy.precise_mode = True
+ivy.precise_mode = precise_mode_stack[-1] if precise_mode_stack else True
 
 
 @handle_exceptions
@@ -417,7 +417,7 @@ def is_ivy_container(x: Any, /) -> bool:
     return isinstance(x, ivy.Container)
 
 
-ivy.array_mode = True
+ivy.array_mode = array_mode_stack[-1] if array_mode_stack else True
 
 
 @handle_exceptions
@@ -473,7 +473,7 @@ def unset_array_mode() -> None:
         ivy.__setattr__("array_mode", mode, True)
 
 
-ivy.nestable_mode = True
+ivy.nestable_mode = nestable_mode_stack[-1] if nestable_mode_stack else True
 
 
 @handle_exceptions
@@ -525,7 +525,9 @@ def unset_nestable_mode() -> None:
         ivy.__setattr__("nestable_mode", mode, True)
 
 
-ivy.exception_trace_mode = "full"
+ivy.exception_trace_mode = (
+    exception_trace_mode_stack[-1] if exception_trace_mode_stack else "full"
+)
 
 
 @handle_exceptions
@@ -580,7 +582,11 @@ def unset_exception_trace_mode() -> None:
         ivy.__setattr__("exception_trace_mode", mode, True)
 
 
-ivy.show_func_wrapper_trace_mode = True
+ivy.show_func_wrapper_trace_mode = (
+    show_func_wrapper_trace_mode_stack[-1]
+    if show_func_wrapper_trace_mode_stack
+    else True
+)
 
 
 @handle_exceptions
@@ -2105,7 +2111,7 @@ def einops_repeat(
     return ret
 
 
-ivy.min_denominator = 1e-12
+ivy.min_denominator = min_denominator_stack[-1] if min_denominator_stack else 1e-12
 
 
 @handle_exceptions
@@ -2160,7 +2166,7 @@ def unset_min_denominator() -> None:
         ivy.__setattr__("min_denominator", val, True)
 
 
-ivy.min_base = 1e-05
+ivy.min_base = min_base_stack[-1] if min_base_stack else 1e-05
 
 
 @handle_exceptions
@@ -2430,7 +2436,7 @@ def print_all_arrays_in_memory():
         print(type(arr), arr.shape)
 
 
-ivy.queue_timeout = 15.0
+ivy.queue_timeout = queue_timeout_stack[-1] if queue_timeout_stack else 15.0
 
 
 @handle_exceptions
@@ -2489,7 +2495,7 @@ def unset_queue_timeout() -> None:
         ivy.__setattr__("queue_timeout", timeout, True)
 
 
-ivy.tmp_dir = "/tmp"
+ivy.tmp_dir = tmp_dir_stack[-1] if tmp_dir_stack else "/tmp"
 
 
 @handle_exceptions
@@ -3623,7 +3629,7 @@ def shape(
     return current_backend(x).shape(x, as_array=as_array)
 
 
-ivy.shape_array_mode = False
+ivy.shape_array_mode = shape_array_mode_stack[-1] if shape_array_mode_stack else False
 
 
 @handle_exceptions
