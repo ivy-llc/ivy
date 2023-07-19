@@ -2554,6 +2554,83 @@ fft2.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+def fftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    *,
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute an n-dimensional discrete Fourier Transform.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFTN.
+    s
+        sequence of ints, optional
+        Shape (length of each transformed axis) of the output (s[0] refers to axis 0,
+                s[1] to axis 1, etc.). This is equivalent to s for for fft2(x, s). Along each axis
+                if the given shape is smaller than that of the input, the input is cropped.
+                If it is larger, the input is padded with zeros. if s is not given, the shape
+                of the input along the axes specified by axes is used.
+    dim
+        Axes over which to compute the FFTN. If not given, the FFTN is applied along
+        all dimensions. A repeated index in axes means the transform over that axis is 
+        performed multiple times. A one-element sequence means that a one-dimensional
+        FFT is performed.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+                "forward" indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFTN operation.
+
+    Examples
+    --------
+    >>> a = ivy.array( [[[0, 0, 0],
+                         [1, 1, 1],
+                         [2, 2, 2]],
+
+                        [[3, 3, 3], 
+                         [4, 4, 4],
+                         [5, 5, 5]],
+
+                        [[6, 6, 6],
+                         [7, 7, 7],
+                         [8, 8, 8]]])
+
+    >>> ivy.fftn(a)
+    array([[[108.  +0.j       ,   0.  +0.j       ,   0.  -0.j       ],
+            [-13.5 +7.7942286j,   0.  +0.j       ,   0.  -0.j       ],
+            [-13.5 -7.7942286j,   0.  +0.j       ,   0.  -0.j       ]],
+
+           [[-40.5+23.382687j ,   0.  +0.j       ,   0.  -0.j       ],
+            [  0.  +0.j       ,   0.  +0.j       ,   0.  -0.j       ],
+            [  0.  +0.j       ,   0.  +0.j       ,   0.  -0.j       ]],
+
+           [[-40.5-23.382687j ,   0.  +0.j       ,   0.  -0.j       ],
+            [  0.  +0.j       ,   0.  +0.j       ,   0.  -0.j       ],
+            [  0.  +0.j       ,   0.  +0.j       ,   0.  -0.j       ]]]
+    """
+    return ivy.current_backend(x).fftn(x, s=s, dim=dim, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 def ifftn(
     x: Union[ivy.Array, ivy.NativeArray],
     s: Optional[Union[int, Tuple[int, ...]]] = None,
