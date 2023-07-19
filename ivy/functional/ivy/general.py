@@ -2872,7 +2872,11 @@ def _int_list_or_array(var):
 
 
 def _parse_query(query, x_shape):
-    if isinstance(query, tuple) and len(query) and all(_int_list_or_array(q) for q in query):
+    if (
+        isinstance(query, tuple)
+        and len(query)
+        and all(_int_list_or_array(q) for q in query)
+    ):
         query = list(query) if isinstance(query, tuple) else query
         for i, idx in enumerate(query):
             if ivy.is_array(idx):
