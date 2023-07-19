@@ -17,6 +17,13 @@ jobs:
           cd ivy
           python update_optional_requirements.py
 
+      - name: Check if there are changes 📝
+        id: check
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Commit changes 📝
         if: steps.check.outputs.changes == 'true'
         run: |
