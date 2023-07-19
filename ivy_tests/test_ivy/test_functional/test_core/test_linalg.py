@@ -6,9 +6,8 @@ import numpy as np
 from hypothesis import assume, strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
@@ -420,7 +419,11 @@ def test_eigh(*, dtype_x, UPLO, test_flags, backend_fw, fn_name, on_device):
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+        reconstructed_np,
+        reconstructed_from_np,
+        rtol=1e-1,
+        atol=1e-2,
+        backend=backend_fw,
     )
 
 
@@ -758,15 +761,27 @@ def test_vector_norm(
 
     # Specific value test to handle cases when ord is one of {inf, -inf}
 
-    arr = ivy.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
-    arr_normed_inf = ivy.vector_norm(arr, axis=0, ord=float("inf"))
-    arr_normed_min_inf = ivy.vector_norm(arr, axis=0, ord=float("-inf"))
+    with update_backend(backend_fw) as ivy_backend:
+        arr = ivy_backend.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
+        arr_normed_inf = ivy_backend.vector_norm(arr, axis=0, ord=float("inf"))
+        arr_normed_min_inf = ivy_backend.vector_norm(arr, axis=0, ord=float("-inf"))
 
-    gt_arr_normed_inf = ivy.array([1.0, 2.0, 4.0])
-    gt_arr_normed_min_inf = ivy.array([1.0, 2.0, 3.0])
+    with update_backend(test_flags.ground_truth_backend) as gt_backend:
+        gt_arr_normed_inf = gt_backend.array([1.0, 2.0, 4.0])
+        gt_arr_normed_min_inf = gt_backend.array([1.0, 2.0, 3.0])
 
-    helpers.assert_all_close(arr_normed_inf, gt_arr_normed_inf)
-    helpers.assert_all_close(arr_normed_min_inf, gt_arr_normed_min_inf)
+    helpers.assert_all_close(
+        arr_normed_inf,
+        gt_arr_normed_inf,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
+    )
+    helpers.assert_all_close(
+        arr_normed_min_inf,
+        gt_arr_normed_min_inf,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
+    )
 
 
 # pinv
@@ -835,7 +850,12 @@ def test_qr(*, dtype_x, mode, test_flags, backend_fw, fn_name, on_device):
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-1, atol=1e-1
+        reconstructed_np_flat,
+        reconstructed_from_np_flat,
+        rtol=1e-1,
+        atol=1e-1,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
@@ -892,13 +912,16 @@ def test_svd(*, dtype_x, uv, fm, test_flags, backend_fw, fn_name, on_device):
             Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-        with ivy.functional.backends.numpy.use:
+        with update_backend("numpy") as ivy_backend:
             S_mat = (
-                S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
+                S
+                * ivy_backend.eye(
+                    U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]
+                ).data
             )
             S_mat_gt = (
                 S_gt
-                * ivy.eye(
+                * ivy_backend.eye(
                     U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
                 ).data
             )
@@ -906,12 +929,30 @@ def test_svd(*, dtype_x, uv, fm, test_flags, backend_fw, fn_name, on_device):
         reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
 
         # value test
-        helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
-        helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
+        helpers.assert_all_close(
+            reconstructed,
+            reconstructed_gt,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+        helpers.assert_all_close(
+            reconstructed,
+            x[0],
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
     else:
         S = ret_flat_np
         S_gt = ret_from_gt_flat_np
-        helpers.assert_all_close(S[0], S_gt[0], atol=1e-04)
+        helpers.assert_all_close(
+            S[0],
+            S_gt[0],
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
 
 
 # matrix_norm
