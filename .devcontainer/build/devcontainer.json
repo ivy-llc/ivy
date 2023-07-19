@@ -7,7 +7,7 @@
 		"dockerfile": "../../docker/Dockerfile",
 		"context": "../..",
 		"args": {
-      "pycon": ["3.10"]
+      "pycon": ["3.9"]
     }
 	},
 
