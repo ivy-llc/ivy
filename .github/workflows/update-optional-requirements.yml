@@ -9,7 +9,8 @@ jobs:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
 
-      - shell: bash
+      - name: Run Update Script
+        shell: bash
         run: |
           pip install pur
           python update_optional_requirements.py
