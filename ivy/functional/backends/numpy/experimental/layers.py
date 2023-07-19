@@ -863,7 +863,7 @@ def ifft(
 def stft(
     signal: Union[np.ndarray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
+    frame_step: int,
     /,
     *,
     axis: Optional[int] = None,

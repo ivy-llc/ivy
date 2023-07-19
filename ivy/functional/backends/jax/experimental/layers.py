@@ -803,14 +803,13 @@ def embedding(
 def stft(
     signal: Union[JaxArray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],   
+    frame_step: int,    
     /,
     *,  
     axis: Optional[int] = None,
     fs: Optional[float] = 1.0,
-    window: Union[None, str, Tuple[int], JaxArray] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
-    nperseg: Optional[int] = 256,
+    window: Optional[Union[str, int, Tuple[int], JaxArray]] = None,
+    win_length: Optional[int] = None,
     noverlap: Optional[int] = None,
     boundary: Optional[str] = 'zeros',
     center: Optional[bool] = True,
@@ -824,31 +823,26 @@ def stft(
     if axis is None:
         axis = -1
 
-    window_length = min(nperseg, signal.shape[axis])
-    window = jnp.hanning(window_length)
-    signal = signal * window 
+    if window is None:
+        window = "hann"
 
     if frame_step is None:
         frame_step = n_fft//4
 
-    if isinstance(frame_step, int):
-        frame_step = (frame_step,)  
+    if not isinstance(frame_step, int):
+        raise TypeError("frame_step must be an int.")
 
-    if not isinstance(frame_step, tuple):
-        raise TypeError("frame_step must be an int or tuple[int].")
+    if not isinstance(n_fft, int):
+        raise TypeError("n_fft must be an int.")
 
-    if isinstance(n_fft, int):
-        n_fft = (n_fft,) 
-
-    if not isinstance(n_fft, tuple):
-        raise TypeError("n_fft must be an int or tuple[int].")
+    if win_length is None:
+        win_length = n_fft        
     
-
     return jax.scipy.signal.stft(
         signal,
         fs,
         window,
-        nperseg,
+        win_length,
         noverlap,
         n_fft,
         detrend,

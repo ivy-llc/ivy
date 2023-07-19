@@ -1191,15 +1191,14 @@ def ifftn(
 def stft(
     signal: Union[tf.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: Union[int, Tuple[int]],
+    frame_step: int,
     /,
     *,
     axis: Optional[int] = None,
     onesided:Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[tf.Tensor, list, str, Tuple[int]]] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
-    nperseg: Optional[int] = 256,
+    win_length: Optional[int] = None,
     noverlap: Optional[int] = None,
     center: Optional[bool] = True,
     pad_mode: Optional[str] = "reflect",
@@ -1209,9 +1208,6 @@ def stft(
     boundary: Optional[str] = None,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if not isinstance(frame_step, int):
-        raise TypeError("frame_step must be an int.")
-
     if not isinstance(n_fft, int):
         raise TypeError("n_fft must be an int.")
 
@@ -1220,6 +1216,6 @@ def stft(
         n_fft,
         frame_step,
         window,
-        frame_length,
+        win_length,
         pad_mode,
     )

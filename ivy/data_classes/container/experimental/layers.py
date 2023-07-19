@@ -2025,15 +2025,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def stft(
         signal: Union[ivy.Array, ivy.NativeArray],
         n_fft: Optional[Union[int, Tuple[int]]],
-        frame_step: Union[int, Tuple[int]] ,
+        frame_step: int,
         /,
         *,
         axis: Optional[int] = None,
         onesided:Optional[bool] = True,
         fs: Optional[float] = 1.0,
         window: Optional[Union[ivy.Array, list, str, Tuple[int]]] = None,
-        frame_length: Optional[Union[int, Tuple[int]]] = None,
-        nperseg: Optional[int] = 256,
+        win_length: Optional[int] = None,
         noverlap: Optional[int] = None,
         center: Optional[bool] = False,
         pad_mode: Optional[str] = "reflect",
@@ -2081,10 +2080,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             windows and required parameters. If window is array_like it 
             will be used directly as the window and its length must be 
             nperseg. Defaults to a Hann window.
-        frame_length
+        win_length
             An integer scalar Tensor. The window length in samples.   
-        nperseg
-            Length of each segment. Defaults to 256.
         noverlap
             Number of points to overlap between segments. If None, 
             noverlap = nperseg // 2. Defaults to None.
