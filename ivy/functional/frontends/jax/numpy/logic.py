@@ -220,8 +220,18 @@ def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
 
 
+def create_nested_list(arr, pad_length):
+    if arr.ndim > 1:
+        nested_list = []
+        for sub_arr in arr:
+            nested_list.append(create_nested_list(sub_arr, pad_length))
+        return nested_list
+    else:
+        return arr.zero_pad(pad_width=[[0, pad_length]])
+
+
 @to_ivy_arrays_and_back
-def packbits(x, axis=None, bitorder="big"):
+def packbits(x, /, *, axis=None, bitorder="big"):
     x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
     bits = ivy.arange(8, dtype="uint8")
     if bitorder == "big":
@@ -233,10 +243,10 @@ def packbits(x, axis=None, bitorder="big"):
 
     remainder = x.shape[-1] % 8
     if remainder:
-        pad_config = [(0, 8 - remainder)]
-        x = ivy.zero_pad(x, pad_config)
+        x = create_nested_list(x, 8 - remainder)
+        x = ivy.array(x)
 
-    x = tuple(x.shape[:-1] + [x.shape[-1] // 8, 8])
+    x = ivy.reshape(x, list(x.shape[:-1]) + [x.shape[-1] // 8, 8])
     bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
-    packed = (x << bits).sum(-1).astype("uint8")
+    packed = (x << bits).sum(axis=-1).astype("uint8")
     return ivy.swapaxes(packed, axis, -1)
