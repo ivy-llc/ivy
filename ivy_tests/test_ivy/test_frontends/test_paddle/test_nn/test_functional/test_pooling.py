@@ -4,8 +4,8 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_pooling_functions import (
-    calculate_same_padding,
+from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional import (
+    test_pooling_functions,
 )
 
 
@@ -21,12 +21,14 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_pooling_functions import 
     ceil_mode=st.booleans(),
     exclusive=st.booleans(),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
 )
 def test_paddle_avg_pool2d(
     dtype_x_k_s,
     exclusive,
     ceil_mode,
     data_format,
+    divisor_override,
     *,
     test_flags,
     frontend,
@@ -44,7 +46,9 @@ def test_paddle_avg_pool2d(
         stride = (stride[0], stride[0])
 
     if padding == "SAME":
-        padding = calculate_same_padding(kernel, stride, x[0].shape[2:])
+        padding = test_pooling_functions.calculate_same_padding(
+            kernel, stride, x[0].shape[2:]
+        )
     else:
         padding = (0, 0)
 
@@ -60,7 +64,7 @@ def test_paddle_avg_pool2d(
         padding=padding,
         ceil_mode=ceil_mode,
         exclusive=exclusive,
-        divisor_override=None,
+        divisor_override=divisor_override,
         data_format=data_format,
     )
 
