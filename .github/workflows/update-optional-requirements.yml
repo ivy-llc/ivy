@@ -1,0 +1,27 @@
+name: Update Optional Requirements
+on: workflow_dispatch
+
+jobs:
+  update-optional-requirements:
+    name: Update Optional Requirements
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v3
+        with:
+          path: ivy
+
+      - shell: bash
+        run: |
+          pip install pur
+          cd ivy
+          python update_optional_requirements.py
+
+      - name: Commit changes 📝
+        if: steps.check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "ivy.branch@lets-unify.ai"
+          git config --local user.name "ivy-branch"
+          git add .
+          git commit -m "🤖 Update Optional Requirements"
+          git push
