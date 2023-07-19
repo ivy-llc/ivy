@@ -47,7 +47,7 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
-def _to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
+def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (
         ivy.is_array(x)

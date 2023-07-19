@@ -67,7 +67,7 @@ def current_backend_str() -> str:
     return "torch"
 
 
-def _to_numpy(
+def to_numpy(
     x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
     if isinstance(x, (float, int, bool)):

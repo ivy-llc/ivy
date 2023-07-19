@@ -776,6 +776,7 @@ def all_equal(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@inputs_to_native_arrays
 @handle_array_function
 @handle_device_shifting
 def to_numpy(
@@ -835,20 +836,7 @@ def to_numpy(
                   [1, 1, 1]], dtype=int32)
     }
     """
-    _to_numpy = current_backend(x).general._to_numpy
-    if ivy.is_ivy_array(x) and x.base is None:
-        return _to_numpy(x.data, copy=copy)
-    if ivy.is_native_array(x):
-        return _to_numpy(x, copy=copy)
-    # if x is an ivy array with a base,
-    # convert it to a numpy array with the same base:
-    ret = _to_numpy(x.base.data, copy=copy)
-    ivy.set_numpy_backend()
-    ivy.previous_backend()
-    for fn, args, kwargs, index in x._manipulation_stack:
-        ret = ivy.functional.backends.numpy.__dict__[fn](ret, *args, **kwargs)
-        ret = ret[index] if ivy.exists(index) else ret
-    return ret
+    return current_backend(x).to_numpy(x, copy=copy)
 
 
 @handle_exceptions
@@ -4165,9 +4153,20 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    # for this to work consistently for non-contiguous arrays
-    # we must not use a decorator that converts x to a native array
-    return ivy.to_numpy(x).strides
+    _to_numpy = current_backend(x).general.to_numpy
+    if ivy.is_ivy_array(x) and x.base is None:
+        return _to_numpy(x.data)
+    if ivy.is_native_array(x):
+        return _to_numpy(x)
+    # if x is an ivy array with a base,
+    # convert it to a numpy array with the same base:
+    ret = _to_numpy(x.base.data)
+    ivy.set_numpy_backend()
+    ivy.previous_backend()
+    for fn, args, kwargs, index in x._manipulation_stack:
+        ret = ivy.functional.backends.numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ret[index] if ivy.exists(index) else ret
+    return ret.strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:

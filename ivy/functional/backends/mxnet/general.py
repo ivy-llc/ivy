@@ -21,7 +21,7 @@ def is_native_array(
         return isinstance(x, mx.ndarray.NDArray) or isinstance(x, np.ndarray)
 
 
-def _to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
+def to_numpy(x: mx.ndarray.NDArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         if x.shape == ():
             new_arr = x.asnumpy()

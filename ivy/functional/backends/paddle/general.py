@@ -32,7 +32,7 @@ def current_backend_str() -> str:
     return "paddle"
 
 
-def _to_numpy(
+def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
     if isinstance(x, (float, int, bool)):
