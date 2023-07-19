@@ -515,7 +515,7 @@ def test_paddle_mish(
         x=x[0],
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.softplus",
     dtype_and_input=helpers.dtype_and_values(
@@ -541,7 +541,7 @@ def test_paddle_softplus(
         x=x[0],
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
