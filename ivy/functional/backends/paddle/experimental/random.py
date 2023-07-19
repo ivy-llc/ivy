@@ -6,9 +6,11 @@ from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.random import _check_bounds_and_get_shape
+
 # local
 import ivy
 from paddle.device import core
+
 # dirichlet
 
 
