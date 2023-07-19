@@ -250,6 +250,15 @@ def nonzero(
     """
     Return the indices of the array elements which are non-zero.
 
+    .. note::
+        If ``x`` has a complex floating-point data type, non-zero elements
+        are those elements having at least one component (real or imaginary)
+        which is non-zero.
+
+    .. note::
+        If ``x`` has a boolean data type, non-zeroelements are those elements
+        which are equal to ``True``.
+
     Parameters
     ----------
     x
