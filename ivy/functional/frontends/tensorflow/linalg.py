@@ -329,3 +329,19 @@ def qr(input, /, *, full_matrices=False, name=None):
 )
 def inv(input, adjoint=False, name=None):
     return ivy.inv(input, adjoint=adjoint)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "half",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def sqrtm(input, name=None):
+    return ivy.sqrtm(input)
