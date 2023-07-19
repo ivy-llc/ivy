@@ -2008,3 +2008,62 @@ def test_jax_devicearray_round(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+@st.composite
+def _get_input_and_two_swapabble_axes(draw):
+    x_dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True,
+            min_num_dims=1,
+            max_num_dims=10,
+        )
+    )
+
+    axis1 = draw(
+        helpers.ints(
+            min_value=-1 * len(x_shape),
+            max_value=len(x_shape) - 1,
+        )
+    )
+    axis2 = draw(
+        helpers.ints(
+            min_value=-1 * len(x_shape),
+            max_value=len(x_shape) - 1,
+        )
+    )
+    return x_dtype, x, axis1, axis2
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="swapaxes",
+    dtype_and_x=_get_input_and_two_swapabble_axes(),
+)
+def test_jax_devicearray_swapaxes(
+    dtype_and_x,
+    on_device,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis1, axis2 = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
