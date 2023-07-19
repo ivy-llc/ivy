@@ -381,6 +381,17 @@ def interpolate(
     raise IvyNotImplementedException()
 
 
+def fftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    dim: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.fftn(x, s, axes=dim, norm=norm, name=out)
+
+
 def ifftn(
     x: paddle.Tensor,
     s: Optional[Union[int, Tuple[int]]] = None,
