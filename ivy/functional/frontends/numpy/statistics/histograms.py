@@ -141,7 +141,7 @@ def _hist_bin_sqrt(x, range):
 
 def _hist_bin_sturges(x, range):
     del range  # unused
-    return _ptp(x) / (ivy.log2(x.size) + 1.0)
+    return _ptp(x) / (ivy.log2(float(x.size)) + 1.0)
 
 
 def _hist_bin_rice(x, range):
@@ -185,7 +185,7 @@ def _hist_bin_doane(x, range):
             ivy.pow(ivy.array(temp, dtype=ivy.float64), 3, out=temp)
             g1 = ivy.mean(ivy.array(temp, dtype=ivy.float64))
             return _ptp(x) / (
-                1.0 + ivy.log2(x.size) + ivy.log2(1.0 + ivy.abs(g1) / sg1)
+                1.0 + ivy.log2(float(x.size)) + ivy.log2(1.0 + ivy.abs(g1) / sg1)
             )
     return 0.0
 
