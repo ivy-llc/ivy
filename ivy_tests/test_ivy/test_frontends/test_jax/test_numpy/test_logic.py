@@ -393,7 +393,8 @@ def test_jax_not_equal(
 # all
 @handle_frontend_test(
     fn_tree="jax.numpy.all",
-    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
+    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12. uncomment with
+    # multi-version testing pipeline
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
@@ -543,7 +544,8 @@ def test_jax_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
-    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with multi-version testing pipeline
+    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with
+    # multi-version testing pipeline
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,

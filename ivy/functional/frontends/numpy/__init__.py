@@ -490,6 +490,8 @@ from . import matrix
 from .matrix import *
 from . import random
 from .random import *
+from . import broadcast
+from .broadcast import *
 
 from . import ma
 from . import fft

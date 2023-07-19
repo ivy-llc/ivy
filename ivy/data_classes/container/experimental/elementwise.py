@@ -9,6 +9,137 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithElementWiseExperimental(ContainerBase):
     @staticmethod
+    def static_lgamma(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.lgamma. This method simply wraps the
+        function, and so the docstring for ivy.lgamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated result for each element in ``x``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
+        >>> y = ivy.Container.static_lgamma(x)
+        >>> print(y)
+        {
+            a: ivy.array([inf, 0., 0.]),
+            b: ivy.array([0.69314718, 1.79175949, 3.32976389])
+        }
+
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([ 4., 5.1]))
+        >>> ivy.Container.static_lgamma(x, out = x)
+        >>> print(y)
+        {
+            a: ivy.array([inf, 0.]),
+            b: ivy.array([1.79175949, 3.32976389])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "lgamma",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def lgamma(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.lgamma. This method simply wraps
+        the function, and so the docstring for ivy.lgamma also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a real-valued floating-point data type.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a container containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data type
+            determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+        ...                   b=ivy.array([4.5, 5.3, 2.3]))
+        >>> y = x.lgamma()
+        >>> print(y)
+        {
+            a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
+            b: ivy.array([2.45373821, 3.63963795, 0.15418935])
+        }
+        """
+        return self.static_lgamma(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_sinc(
         x: ivy.Container,
         /,
@@ -2765,7 +2896,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         x
-            The container whose arrays should be split into the fractional and integral parts.
+            The container whose arrays should be split into the fractional and integral
+            parts.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2788,7 +2920,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> x = ivy.Container(
+                a=ivy.array([1.2, 2.7, 3.9]),
+                b=ivy.array([-1.5, 5.3, -10.7])
+            )
         >>> ivy.Container.static_modf(x)
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
@@ -2819,7 +2954,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         self
-            The container whose arrays should be split into the fractional and integral parts.
+            The container whose arrays should be split into the fractional and integral
+            parts.
         out
             optional output container, for writing the result to.
 
@@ -2831,7 +2967,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> x = ivy.Container(
+                a=ivy.array([1.2, 2.7, 3.9]),
+                b=ivy.array([-1.5, 5.3, -10.7])
+            )
         >>> x.modf()
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),

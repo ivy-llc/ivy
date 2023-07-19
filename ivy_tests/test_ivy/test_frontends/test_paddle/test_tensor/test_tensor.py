@@ -1,14 +1,4 @@
 # global
-<<<<<<< HEAD
-import ivy
-from hypothesis import strategies as st, assume, given
-
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy.functional.frontends.paddle import Tensor
-
-=======
 import numpy as np
 from hypothesis import assume, given
 from hypothesis import strategies as st
@@ -19,10 +9,12 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _statistical_dtype_values,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
->>>>>>> master
 
 CLASS_TREE = "ivy.functional.frontends.paddle.Tensor"
 
@@ -56,22 +48,6 @@ def _reshape_helper(draw):
 
 
 @st.composite
-<<<<<<< HEAD
-def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
-    input_dtype, x, index = draw(
-        helpers.dtype_array_index(
-            available_dtypes=available_dtypes,
-            allow_neg_step=allow_neg_step,
-        )
-    )
-    val_dtype, val = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=x[index].shape,
-        )
-    )
-    return input_dtype + val_dtype, x, index, val[0]
-=======
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
     dtype = draw(helpers.get_dtypes("float", index=1, full=False))
@@ -109,7 +85,6 @@ def _get_clip_inputs(draw):
     elif draw(st.booleans()):
         max = None
     return x_dtype, x, min, max
->>>>>>> master
 
 
 # Tests #
@@ -2778,16 +2753,11 @@ def test_paddle_instance_min(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="std",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(helpers.get_dtypes("float")),
-        min_axis=-1,
-        max_axis=0,
-    ),
+    dtypes_and_x=_statistical_dtype_values(function="std"),
     keep_dims=st.booleans(),
-    unbiased=st.booleans(),
 )
 def test_paddle_instance_std(
-    dtype_x_axis,
+    dtypes_and_x,
     keep_dims,
     frontend_method_data,
     init_flags,
@@ -2795,7 +2765,7 @@ def test_paddle_instance_std(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis, _ = dtypes_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={

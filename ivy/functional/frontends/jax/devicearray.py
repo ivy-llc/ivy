@@ -64,7 +64,7 @@ class DeviceArray:
     def astype(self, dtype):
         try:
             return jax_frontend.numpy.asarray(self, dtype=dtype)
-        except:
+        except:  # noqa: E722
             raise ivy.utils.exceptions.IvyException(
                 f"Dtype {self.dtype} is not castable to {dtype}"
             )

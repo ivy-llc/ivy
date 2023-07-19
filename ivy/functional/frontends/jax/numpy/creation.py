@@ -15,7 +15,6 @@ from ivy.func_wrapper import handle_out_argument
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
-    # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
@@ -23,6 +22,10 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+
+    default_device = ivy.default_device()
+    ret = ivy.to_device(ret, default_device)
+
     if ret.shape == () and dtype is None:
         return DeviceArray(ret, weak_type=True)
     return DeviceArray(ret)
