@@ -81,7 +81,7 @@ def test_torch_batch_norm(
     data=_instance_and_batch_norm_helper(min_num_dims=3, min_dim_size=2),
     use_input_stats=st.booleans(),
 )
-def test_torch___norm(
+def test_torch_instance_norm(
     *,
     data,
     use_input_stats,

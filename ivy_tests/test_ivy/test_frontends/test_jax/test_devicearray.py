@@ -1088,7 +1088,7 @@ def test_jax__rxor_(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
-def test_jax__invert_(
+def test_jax___invert__(
     dtype_and_x,
     frontend,
     frontend_method_data,

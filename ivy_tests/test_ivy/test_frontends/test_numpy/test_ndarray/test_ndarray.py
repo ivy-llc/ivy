@@ -1294,7 +1294,7 @@ def test_numpy_fill(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_add__(
+def test_numpy___add__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1329,7 +1329,7 @@ def test_numpy_add__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_radd__(
+def test_numpy___radd__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1364,7 +1364,7 @@ def test_numpy_radd__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_sub__(
+def test_numpy___sub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1400,7 +1400,7 @@ def test_numpy_sub__(
         num_arrays=2,
     ),
 )
-def test_numpy_mul__(
+def test_numpy___mul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1436,7 +1436,7 @@ def test_numpy_mul__(
         num_arrays=2,
     ),
 )
-def test_numpy_rmul__(
+def test_numpy___rmul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1477,7 +1477,7 @@ def test_numpy_rmul__(
         shared_dtype=True,
     ),
 )
-def test_numpy_floordiv__(
+def test_numpy___floordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1514,7 +1514,7 @@ def test_numpy_floordiv__(
         num_arrays=2,
     ),
 )
-def test_numpy_truediv__(
+def test_numpy___truediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1551,7 +1551,7 @@ def test_numpy_truediv__(
         num_arrays=2,
     ),
 )
-def test_numpy_rtruediv__(
+def test_numpy___rtruediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1588,7 +1588,7 @@ def test_numpy_rtruediv__(
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
-def test_numpy_pow__(
+def test_numpy___pow__(
     dtype_and_x,
     power,
     frontend_method_data,
@@ -1625,7 +1625,7 @@ def test_numpy_pow__(
         num_arrays=2,
     ),
 )
-def test_numpy_and__(
+def test_numpy___and__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1661,7 +1661,7 @@ def test_numpy_and__(
         num_arrays=2,
     ),
 )
-def test_numpy_or__(
+def test_numpy___or__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1697,7 +1697,7 @@ def test_numpy_or__(
         num_arrays=2,
     ),
 )
-def test_numpy_xor__(
+def test_numpy___xor__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1731,7 +1731,7 @@ def test_numpy_xor__(
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
 )
-def test_numpy_matmul__(
+def test_numpy___matmul__(
     x,
     y,
     frontend_method_data,
@@ -1770,7 +1770,7 @@ def test_numpy_matmul__(
         min_num_dims=1,
     ),
 )
-def test_numpy_copy__(
+def test_numpy___copy__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1804,7 +1804,7 @@ def test_numpy_copy__(
         min_num_dims=1,
     ),
 )
-def test_numpy_deepcopy__(
+def test_numpy___deepcopy__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1840,7 +1840,7 @@ def test_numpy_deepcopy__(
         min_num_dims=1,
     ),
 )
-def test_numpy_neg__(
+def test_numpy___neg__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1874,7 +1874,7 @@ def test_numpy_neg__(
         min_num_dims=1,
     ),
 )
-def test_numpy_pos__(
+def test_numpy___pos__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1912,7 +1912,7 @@ def test_numpy_pos__(
         shared_dtype=True,
     ),
 )
-def test_numpy_ifloordiv__(
+def test_numpy___ifloordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1949,7 +1949,7 @@ def test_numpy_ifloordiv__(
         max_dim_size=1,
     ),
 )
-def test_numpy_bool__(
+def test_numpy___bool__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1983,7 +1983,7 @@ def test_numpy_bool__(
         num_arrays=2,
     ),
 )
-def test_numpy_ne__(
+def test_numpy___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2019,7 +2019,7 @@ def test_numpy_ne__(
         num_arrays=2,
     ),
 )
-def test_numpy_eq__(
+def test_numpy___eq__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2055,7 +2055,7 @@ def test_numpy_eq__(
         num_arrays=2,
     ),
 )
-def test_numpy_ge__(
+def test_numpy___ge__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2091,7 +2091,7 @@ def test_numpy_ge__(
         num_arrays=2,
     ),
 )
-def test_numpy_gt__(
+def test_numpy___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2127,7 +2127,7 @@ def test_numpy_gt__(
         num_arrays=2,
     ),
 )
-def test_numpy_le__(
+def test_numpy___le__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2163,7 +2163,7 @@ def test_numpy_le__(
         num_arrays=2,
     ),
 )
-def test_numpy_lt__(
+def test_numpy___lt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2200,7 +2200,7 @@ def test_numpy_lt__(
         max_dim_size=1,
     ),
 )
-def test_numpy_int__(
+def test_numpy___int__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2235,7 +2235,7 @@ def test_numpy_int__(
         max_dim_size=1,
     ),
 )
-def test_numpy_float__(
+def test_numpy___float__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2270,7 +2270,7 @@ def test_numpy_float__(
         max_dim_size=1,
     ),
 )
-def test_numpy_complex__(
+def test_numpy___complex__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2303,7 +2303,7 @@ def test_numpy_complex__(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_numpy_contains__(
+def test_numpy___contains__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2338,7 +2338,7 @@ def test_numpy_contains__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_iadd__(
+def test_numpy___iadd__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2373,7 +2373,7 @@ def test_numpy_iadd__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_isub__(
+def test_numpy___isub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2408,7 +2408,7 @@ def test_numpy_isub__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_imul__(
+def test_numpy___imul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2446,7 +2446,7 @@ def test_numpy_imul__(
         shared_dtype=True,
     ),
 )
-def test_numpy_itruediv__(
+def test_numpy___itruediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2482,7 +2482,7 @@ def test_numpy_itruediv__(
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
-def test_numpy_ipow__(
+def test_numpy___ipow__(
     dtype_and_x,
     power,
     frontend_method_data,
@@ -2519,7 +2519,7 @@ def test_numpy_ipow__(
         num_arrays=2,
     ),
 )
-def test_numpy_iand__(
+def test_numpy___iand__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2555,7 +2555,7 @@ def test_numpy_iand__(
         num_arrays=2,
     ),
 )
-def test_numpy_ior__(
+def test_numpy___ior__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2591,7 +2591,7 @@ def test_numpy_ior__(
         num_arrays=2,
     ),
 )
-def test_numpy_ixor__(
+def test_numpy___ixor__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2629,7 +2629,7 @@ def test_numpy_ixor__(
         exclude_min=True,
     ),
 )
-def test_numpy_imod__(
+def test_numpy___imod__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2667,7 +2667,7 @@ def test_numpy_imod__(
         safety_factor_scale="linear",
     ),
 )
-def test_numpy_abs__(
+def test_numpy___abs__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2703,7 +2703,7 @@ def test_numpy_abs__(
         max_num_dims=5,
     ),
 )
-def test_numpy_len__(
+def test_numpy___len__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2736,7 +2736,7 @@ def test_numpy_len__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_array__(
+def test_numpy___array__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2773,7 +2773,7 @@ def test_numpy_array__(
         num_arrays=2,
     ),
 )
-def test_numpy_array_wrap__(
+def test_numpy___array_wrap__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2808,7 +2808,7 @@ def test_numpy_array_wrap__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_tobytes__(
+def test_numpy_tobytes(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2846,7 +2846,7 @@ def test_numpy_tobytes__(
         max_size=50,
     ),
 )
-def test_numpy_tofile__(
+def test_numpy_tofile(
     dtype_and_x,
     path,
     frontend_method_data,
@@ -2882,7 +2882,7 @@ def test_numpy_tofile__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_tolist__(
+def test_numpy_tolist(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3014,7 +3014,7 @@ def test_numpy_view(
         exclude_min=True,
     ),
 )
-def test_numpy_mod__(
+def test_numpy___mod__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3085,7 +3085,7 @@ def test_numpy_ptp(
         num_arrays=2,
     ),
 )
-def test_numpy_rshift__(
+def test_numpy___rshift__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3123,7 +3123,7 @@ def test_numpy_rshift__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_tostring__(
+def test_numpy_tostring(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3156,7 +3156,7 @@ def test_numpy_tostring__(
         num_arrays=1,
     ),
 )
-def test_numpy_invert__(
+def test_numpy___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,

@@ -93,7 +93,7 @@ def _get_clip_inputs(draw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_property_device(
+def test_paddle_device(
     dtype_x,
 ):
     _, data = dtype_x
@@ -109,7 +109,7 @@ def test_paddle_property_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_property_dtype(
+def test_paddle_dtype(
     dtype_x,
 ):
     dtype, data = dtype_x
@@ -124,7 +124,7 @@ def test_paddle_property_dtype(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_property_shape(dtype_x):
+def test_paddle_shape(dtype_x):
     _, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(
@@ -137,7 +137,7 @@ def test_paddle_property_shape(dtype_x):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_property_ndim(
+def test_paddle_ndim(
     dtype_x,
 ):
     _, data = dtype_x
