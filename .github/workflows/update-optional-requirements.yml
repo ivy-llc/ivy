@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout Ivy 🛎
         uses: actions/checkout@v3
+        with:
+          token:  ${{ github.token }}
 
       - name: Run Update Script
         shell: bash
