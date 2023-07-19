@@ -16,13 +16,11 @@ from ivy.func_wrapper import _dtype_from_version
 
 backend_version = {"version": jax.__version__}
 
-# To avoid trying to add ivy.Container multiple times when with_backend is called
-if not ivy.is_local():
-    register_pytree_node(
-        ivy.Container,
-        lambda c: tree_flatten(c.cont_to_dict()),
-        lambda a, c: ivy.Container(tree_unflatten(a, c)),
-    )
+register_pytree_node(
+    ivy.Container,
+    lambda c: tree_flatten(c.cont_to_dict()),
+    lambda a, c: ivy.Container(tree_unflatten(a, c)),
+)
 
 
 # noinspection PyUnresolvedReferences
