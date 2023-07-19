@@ -622,3 +622,35 @@ def test_paddle_silu(
         on_device=on_device,
         x=x[0],
     )
+
+# gumbel_softmax
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.gumbel_softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_dim_size=1,
+    ),
+    temperature=helpers.floats(min_value=-5, max_value=5, allow_nan=False),
+    hard=helpers.array_bools(size=2),
+)
+def test_paddle_gumbel_softmax(
+    *,
+    dtype_x_and_axis,
+    temperature,
+    hard,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        x=x[0],
+        temperature=temperature,
+        axis=axis,
+        hard=hard,
+    )
