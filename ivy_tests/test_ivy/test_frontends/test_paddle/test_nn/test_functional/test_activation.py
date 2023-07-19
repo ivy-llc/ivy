@@ -631,7 +631,7 @@ def test_paddle_silu(
         min_dim_size=1,
     ),
     temperature=helpers.floats(min_value=-5, max_value=5, allow_nan=False),
-    hard=helpers.array_bools(size=2),
+    hard=helpers.array_bools(size=1),
 )
 def test_paddle_gumbel_softmax(
     *,
