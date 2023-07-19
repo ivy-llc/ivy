@@ -58,6 +58,31 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             safety_factor_scale="log",
         )
     )
+
+    _, weights = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape2,
+            min_value=0,
+            max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+        )
+    )
+
+    _, bias = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=shape2,
+            min_value=0,
+            max_value=999,
+            large_abs_safety_factor=24,
+            small_abs_safety_factor=24,
+            safety_factor_scale="log",
+        )
+    )
+
     eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
     momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
     return (
@@ -65,6 +90,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         x[0],
         mean[0],
         variance[0],
+        weights[0],
+        bias[0],
         eps,
         momentum,
         data_format,
@@ -84,7 +111,7 @@ def test_paddle_instance_norm(
         test_flags,
         fn_tree,
 ):
-    x_dtype, x, running_mean, running_var, eps, momentum, data_format = data
+    x_dtype, x, running_mean, running_var, weights, bias, eps, momentum, data_format = data
     helpers.test_frontend_function(
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -93,6 +120,8 @@ def test_paddle_instance_norm(
         x=x,
         running_mean=running_mean,
         running_var=running_var,
+        weight=weights,
+        bias=bias,
         eps=eps,
         momentum=momentum,
         data_format=data_format,
