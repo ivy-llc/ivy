@@ -93,6 +93,76 @@ def max_pool1d(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+def max_unpool1d(
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    x
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+
+    Both the description and the type hints above assume an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
+    >>> print(pool_result)
+    ivy.array([[[ 4.,  5.,  6.,  7.],
+            [ 8.,  9., 10., 11.]],
+
+           [[16., 17., 18., 19.],
+            [20., 21., 22., 23.]]])
+    >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
+    >>> print(unpool_result)
+    ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  8.,  0.,  9.,  0., 10.,  0., 11.,  0.]],
+
+           [[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 16.,  0., 17.,  0.],
+            [ 0., 18.,  0., 19.,  0.,  0.,  0.,  0., 20.,  0., 21.,  0.]]])
+    """
+    return ivy.current_backend(x).max_unpool1d(
+        x, indices, kernel, strides, padding, data_format=data_format, out=out
+    )
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int], Tuple[int, int]],

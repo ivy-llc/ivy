@@ -1811,7 +1811,6 @@ def dtype_array_query(
     min_dim_size=1,
     max_dim_size=10,
     allow_mask=True,
-    allow_none=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1836,8 +1835,6 @@ def dtype_array_query(
             small_abs_safety_factor=2,
         )
     )
-    if allow_none and draw(st.booleans()):
-        return dtype, array, None
     if allow_mask and draw(st.booleans()):
         mask_shape = shape[: draw(st.integers(0, len(shape)))]
         index = draw(
@@ -1909,6 +1906,8 @@ def dtype_array_query(
         end = draw(st.integers(min_value=min_, max_value=max_))
         if start != end:
             index = index[:start] + [Ellipsis] + index[end:]
+    for _ in range(draw(st.integers(min_value=0, max_value=3))):
+        index.insert(draw(st.integers(0, len(index))), None)
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]

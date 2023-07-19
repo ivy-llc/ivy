@@ -7,6 +7,11 @@ from ivy import promote_types_of_inputs
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
+
+
+def lgamma(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    raise IvyNotImplementedException()
 
 
 @_scalar_output_to_0d_array
