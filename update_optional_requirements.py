@@ -102,6 +102,7 @@ def _update_torch(updates: dict, device: Device):
 
 
 def _update_requirements_for(device: Device):
+    print(f"Updating requirements for ${device}")
     input_file_name: str = _input_file_name_from_device(device)
     updates: dict = update_requirements(input_file=input_file_name)
 
