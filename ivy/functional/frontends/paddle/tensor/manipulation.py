@@ -103,5 +103,5 @@ def broadcast_to(x, shape, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def scatter_nd(x, indices, updates, name=None):
-    return ivy.scatter_nd(indices, updates, shape=x.shape)
+def scatter_nd(index, updates, shape, name=None):
+    return ivy.scatter_nd(index, updates, shape)

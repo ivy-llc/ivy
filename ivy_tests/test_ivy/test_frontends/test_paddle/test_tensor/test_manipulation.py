@@ -452,34 +452,77 @@ def test_paddle_broadcast_to(
     )
 
 
+@st.composite
+def _scatter_nd_helper(draw):
+    array_dtype = draw(helpers.get_dtypes("numeric"))
+    indices_dtype = draw(st.sampled_from(["int32", "int64"]))
+    x_min_value = draw(st.floats(min_value=0, max_value=0))
+    x_max_value = draw(st.floats(min_value=0, max_value=0))
+    min_num_dims = draw(st.integers(min_value=2, max_value=6))
+    allow_inf = draw(st.booleans())
+    x = draw(
+        helpers.dtype_and_values(
+            dtype=array_dtype,
+            shape=st.shared(
+                helpers.get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=min_num_dims,
+                ),
+                key="value_shape",
+            ),
+            min_value=x_min_value,
+            max_value=x_max_value,
+            allow_nan=allow_inf,
+            allow_inf=allow_inf,
+        )
+    )
+    ind = draw(
+        helpers.dtype_and_values(
+            dtype=indices_dtype,
+            shape=st.shared(
+                helpers.get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=min_num_dims,
+                ),
+                key="value_shape",
+            ),
+            min_value=0,
+            max_value=0,
+            allow_nan=False,
+            allow_inf=False,
+        )
+    )
+    updates = draw(
+        helpers.dtype_and_values(
+            dtype=array_dtype,
+            shape=st.shared(
+                helpers.get_shape(
+                    min_num_dims=min_num_dims,
+                    max_num_dims=min_num_dims,
+                ),
+                key="value_shape",
+            ),
+            min_value=x_min_value,
+            max_value=x_max_value,
+            allow_nan=allow_inf,
+            allow_inf=allow_inf,
+        )
+    )
+    return (array_dtype, indices_dtype, array_dtype), x, ind, updates
+
 @handle_frontend_test(
     fn_tree="paddle.scatter_nd",
-    dtype_x_and_shape=st.tuples(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=1,
-            max_num_dims=6,
-        ),
-        st.shared(helpers.get_shape(), key="value_shape"),
-    ),
-    shape=st.shared(helpers.get_shape(), key="value_shape"),
+    x=_scatter_nd_helper(),
 )
-def test_paddle_scatter_nd(
-    *,
-    dtype_x_and_shape,
-    shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    dtype, x = dtype_x_and_shape
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        frontend=frontend,
+def test_scatter_nd(x, test_flags, backend_fw, on_device):
+    (ind_dtype, update_dtype, val_dtype), vals, ind, updates = x
+    shape = vals.shape
+    helpers.test_function(
+        input_dtypes=[ind_dtype, update_dtype],
         test_flags=test_flags,
-        fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        fw=backend_fw,
+        index=np.asarray(ind, dtype=ind_dtype),
+        updates=updates,
         shape=shape,
     )
