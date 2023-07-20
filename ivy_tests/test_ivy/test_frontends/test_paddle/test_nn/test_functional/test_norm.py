@@ -21,14 +21,14 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
 def test_paddle_layer_norm(
     *,
     values_tuple,
-    normalized_idxs,
+    normalized_shape,
     eps,
     test_flags,
     frontend,
     on_device,
     fn_tree,
 ):
-    dtype, x, normalized_idxs, scale, offset = values_tuple
+    (dtype, x, normalized_shape, scale, offset) = values_tuple
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -36,7 +36,7 @@ def test_paddle_layer_norm(
         on_device=on_device,
         fn_tree=fn_tree,
         x=x[0],
-        normalized_shape=normalized_idxs,
+        normalized_shape=normalized_shape,
         weight=scale[0],
         bias=offset[0],
         epsilon=eps,
