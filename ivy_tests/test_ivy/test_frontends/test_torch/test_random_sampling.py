@@ -466,6 +466,7 @@ def test_torch_randperm(
     state=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"),
         min_value=0,
+        max_value=2**32 - 1,
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
