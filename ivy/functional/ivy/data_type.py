@@ -566,7 +566,6 @@ def can_cast(
         return False
 
 
-
 @handle_exceptions
 @inputs_to_native_arrays
 @handle_device_shifting

@@ -21,8 +21,6 @@ from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers im
 )
 
 
-
-
 # Helpers #
 # --------#
 
@@ -359,7 +357,9 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
                 min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
             )
         )
-    data_format = draw(st.sampled_from(["NHWC", "NWC", "NDHWC"]))  # Assign a value to data_format
+    data_format = draw(
+        st.sampled_from(["NHWC", "NWC", "NDHWC"])
+    )  # Assign a value to data_format
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = [batch_size] + x_dim + [input_channels]
     else:
