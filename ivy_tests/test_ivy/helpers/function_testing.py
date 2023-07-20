@@ -211,6 +211,11 @@ def test_function(
     >>> x2 = np.array([-3, 15, 24])
     >>> test_function(input_dtypes, test_flags, fw, fn_name, x1=x1, x2=x2)
     """
+    inplace_updates = [test_flags.with_out, test_flags.with_copy]
+    assert (
+        inplace_updates.count(True) <= 1
+    ), "only at most one of with_out or with_copy or with_inplace can be set as True"
+
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
         num_positional_args=test_flags.num_positional_args, kwargs=all_as_kwargs_np
@@ -270,7 +275,6 @@ def test_function(
         getattr(ivy, fn_name)
     ).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
-
     # Run either as an instance method or from the API directly
     instance = None
     if instance_method:
@@ -308,6 +312,27 @@ def test_function(
     ret_from_target, ret_np_flat_from_target = get_ret_and_flattened_np_array(
         target_fn, *args, test_compile=test_flags.test_compile, **kwargs
     )
+
+    if test_flags.with_copy:
+        array_fn = ivy.is_array
+        if "copy" in list(inspect.signature(target_fn).parameters.keys()):
+            kwargs["copy"] = True
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
+                target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            )
+            assert not np.may_share_memory(first_array, ret_)
+        else:
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            assert first_array is not None
+            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
+                target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+            )
+            assert not np.may_share_memory(first_array, ret_)
 
     # Assert indices of return if the indices of the out array provided
     if test_flags.with_out and not test_flags.test_compile:
@@ -504,9 +529,10 @@ def test_frontend_function(
     ret_np
         optional, return value from the Numpy function
     """
+    inplace_updates = [test_flags.with_out, test_flags.with_copy, test_flags.inplace]
     assert (
-        not test_flags.with_out or not test_flags.inplace
-    ), "only one of with_out or with_inplace can be set as True"
+        inplace_updates.count(True) <= 1
+    ), "only at most one of with_out or with_copy or with_inplace can be set as True"
 
     # split the arguments into their positional and keyword components
     args_np, kwargs_np = kwargs_to_args_n_kwargs(
@@ -667,6 +693,39 @@ def test_frontend_function(
                 else:
                     assert ret.data is out.data
             assert ret is out
+    elif test_flags.with_copy:
+        assert not isinstance(ret, tuple)
+
+        if test_flags.generate_frontend_arrays:
+            assert _is_frontend_array(ret)
+        else:
+            assert ivy.is_array(ret)
+
+        if test_flags.generate_frontend_arrays:
+            array_fn = _is_frontend_array
+        else:
+            array_fn = ivy.is_array
+        if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
+            copy_kwargs["copy"] = True
+            first_array = ivy.func_wrapper._get_first_array(
+                *copy_args, array_fn=array_fn, **copy_kwargs
+            )
+            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+            if _is_frontend_array(first_array):
+                first_array = first_array.ivy_array
+            if _is_frontend_array(ret_):
+                ret_ = ret_.ivy_array
+            assert not np.may_share_memory(first_array, ret_)
+        else:
+            first_array = ivy.func_wrapper._get_first_array(
+                *args, array_fn=array_fn, **kwargs
+            )
+            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
+            if _is_frontend_array(first_array):
+                first_array = first_array.ivy_array
+            if _is_frontend_array(ret_):
+                ret_ = ret_.ivy_array
+            assert not np.may_share_memory(first_array, ret_)
     elif test_flags.inplace:
         assert not isinstance(ret, tuple)
 
