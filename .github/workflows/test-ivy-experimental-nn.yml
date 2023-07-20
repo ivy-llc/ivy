@@ -1,5 +1,6 @@
 name: test-experimental-nn-ivy
 on:
+  workflow_dispatch:
 #  push:
 #  pull_request:
 #    types: [labeled, opened, synchronize, reopened, review_requested]
@@ -65,16 +66,16 @@ jobs:
           mkdir -p examples
         continue-on-error: true
 
-       - name: Run Experimental Test
-         if: steps.check_file_changed.outputs.changed == 'True'
-         id: tests
-         run: |
-           cd ivy
-           mkdir .ivy
-           touch .ivy/key.pem
-           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-           ./run_tests_CLI/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
-         continue-on-error: true
+      - name: Run Experimental Test
+        if: steps.check_file_changed.outputs.changed == 'True'
+        id: tests
+        run: |
+          cd ivy
+          mkdir .ivy
+          touch .ivy/key.pem
+          echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+          ./run_tests_CLI/test_experimental_nn.sh ${{ matrix.backends }} test_${{ matrix.submodules }} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+        continue-on-error: true
 
       - name: Zip Hypothesis Examples
         if: github.event_name == 'pull_request' && steps.check_file_changed.outputs.changed == 'True'

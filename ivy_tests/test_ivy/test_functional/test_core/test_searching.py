@@ -177,11 +177,11 @@ def test_where(*, broadcastables, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.argwhere",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=("bool",)),
+    ground_truth_backend="torch",
 )
 def test_argwhere(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="torch",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
