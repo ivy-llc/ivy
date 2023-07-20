@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
     _generate_data_layer_norm,
 )
 
+
 # instance_norm
 @st.composite
 def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
@@ -127,7 +128,7 @@ def test_paddle_instance_norm(
         eps=eps,
         momentum=momentum,
         data_format=data_format,
-        use_input_stats=use_input_stats,
+        use_input_stats=use_input_stats, )
 
 
 # layer_norm
@@ -139,14 +140,14 @@ def test_paddle_instance_norm(
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_paddle_layer_norm(
-    *,
-    values_tuple,
-    normalized_shape,
-    eps,
-    test_flags,
-    frontend,
-    on_device,
-    fn_tree,
+        *,
+        values_tuple,
+        normalized_shape,
+        eps,
+        test_flags,
+        frontend,
+        on_device,
+        fn_tree,
 ):
     (dtype, x, normalized_shape, scale, offset) = values_tuple
     helpers.test_frontend_function(
