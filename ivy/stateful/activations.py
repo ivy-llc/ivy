@@ -323,3 +323,26 @@ class Logit(Module):
             The outputs following the LOGIT activation *[batch_shape, d]*
         """
         return ivy.logit(x, eps=eps)
+
+
+class PReLU(Module):
+    def __init__(self):
+        """Apply the PRELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, slope):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        slope
+            The slope value for the prelu formation.
+
+        Returns
+        -------
+        ret
+            The outputs following the PRELU activation *[batch_shape, d]*
+        """
+        return ivy.prelu(x, slope=slope)
