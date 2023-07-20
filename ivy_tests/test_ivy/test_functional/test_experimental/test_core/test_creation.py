@@ -358,6 +358,7 @@ def test_unsorted_segment_min(
     dtypes, data, num_segments, segment_ids = d_x_n_s
     helpers.test_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
