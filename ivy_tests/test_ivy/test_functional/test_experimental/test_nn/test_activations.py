@@ -202,7 +202,7 @@ def test_elu(
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

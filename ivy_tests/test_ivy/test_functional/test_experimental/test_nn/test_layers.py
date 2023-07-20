@@ -13,7 +13,6 @@ from ivy_tests.test_ivy.helpers import handle_test
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
-    ground_truth_backend="jax",
 )
 def test_max_pool1d(
     *,
@@ -133,7 +132,6 @@ def test_max_pool2d(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
-    ground_truth_backend="jax",
 )
 def test_max_pool3d(
     *,
@@ -166,7 +164,6 @@ def test_max_pool3d(
     ceil_mode=st.booleans(),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
-    ground_truth_backend="jax",
 )
 def test_avg_pool1d(
     *,
@@ -205,7 +202,6 @@ def test_avg_pool1d(
     data_format=st.sampled_from(["NCHW", "NHWC"]),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
-    ground_truth_backend="jax",
 )
 def test_avg_pool2d(
     *,
@@ -253,7 +249,6 @@ def test_avg_pool2d(
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     ground_truth_backend="jax",
     test_gradients=st.just(False),
-    ground_truth_backend="jax",
 )
 def test_avg_pool3d(
     *,
