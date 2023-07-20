@@ -2767,10 +2767,6 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    if query is Ellipsis or (
-        isinstance(query, tuple) and len(query) == 1 and query[0] is Ellipsis
-    ):
-        return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             if not query:
@@ -2856,8 +2852,6 @@ def set_item(
     val = _broadcast_to(val, target_shape).astype(x.dtype)
     if copy:
         x = ivy.copy_array(x)
-    if not math.prod(tuple(query.shape)):
-        return x
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
 
 
@@ -2878,20 +2872,10 @@ def _int_list_or_array(var):
 
 
 def _parse_query(query, x_shape):
-    if isinstance(query, tuple) and all(_int_list_or_array(q) for q in query):
-        query = list(query) if isinstance(query, tuple) else query
-        for i, idx in enumerate(query):
-            if ivy.is_array(idx):
-                query[i] = ivy.where(idx < 0, idx + x_shape[i], idx)
-            else:
-                query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
-        query = ivy.array(query)
-        query = query.T if len(query.shape) > 1 else query
-        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
-        return query, target_shape
     query = (query,) if not isinstance(query, tuple) else query
     new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
+    query = [Ellipsis] if query == [] else query
     ellipsis_inds = None
     if any(q is Ellipsis for q in query):
         query, ellipsis_inds = _parse_ellipsis(query, len(x_shape), ret_inds=True)
@@ -2900,32 +2884,45 @@ def _parse_query(query, x_shape):
         if isinstance(query, tuple)
         else [query] if not isinstance(query, list) else query
     )
-    for i, idx in enumerate(query):
-        s = x_shape[i]
-        if isinstance(idx, slice):
-            step = 1 if idx.step is None else idx.step
-            if idx.start is None:
-                start = 0 if step >= 0 else s - 1
+    vectorized_indexing = False
+    if all(_int_list_or_array(q) for q in query):
+        vectorized_indexing = True
+        for i, idx in enumerate(query):
+            if ivy.is_array(idx):
+                query[i] = ivy.where(idx < 0, idx + x_shape[i], idx)
             else:
-                start = idx.start
-            start = start + s if start < 0 else start
-            if idx.stop is None:
-                stop = s if step >= 0 else -1
+                query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
+        query = ivy.array(query)
+        query = query.T if len(query.shape) > 1 else query
+        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
+        target_shape = [target_shape]
+    else:
+        for i, idx in enumerate(query):
+            s = x_shape[i]
+            if isinstance(idx, slice):
+                step = 1 if idx.step is None else idx.step
+                if idx.start is None:
+                    start = 0 if step >= 0 else s - 1
+                else:
+                    start = idx.start
+                start = start + s if start < 0 else start
+                if idx.stop is None:
+                    stop = s if step >= 0 else -1
+                else:
+                    stop = idx.stop
+                stop = stop + s if stop < 0 and idx.stop is not None else stop
+                query[i] = ivy.arange(start, stop, step)
+            elif isinstance(idx, int):
+                query[i] = ivy.array(idx + s if idx < 0 else idx)
+            elif isinstance(idx, (tuple, list)):
+                # ToDo: add handling for case of nested tuple/lists
+                query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
+            elif ivy.is_array(idx):
+                query[i] = ivy.where(idx < 0, idx + s, idx)
             else:
-                stop = idx.stop
-            stop = stop + s if stop < 0 and idx.stop is not None else stop
-            query[i] = ivy.arange(start, stop, step)
-        elif isinstance(idx, int):
-            query[i] = ivy.array(idx + s if idx < 0 else idx)
-        elif isinstance(idx, (tuple, list)):
-            # ToDo: add handling for case of nested tuple/lists
-            query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
-        elif ivy.is_array(idx):
-            query[i] = ivy.where(idx < 0, idx + s, idx)
-        else:
-            raise ivy.exceptions.IvyException("unsupported query format")
-        query[i] = ivy.astype(query[i], ivy.int64)
-    target_shape = [list(q.shape) for q in query]
+                raise ivy.exceptions.IvyException("unsupported query format")
+            query[i] = ivy.astype(query[i], ivy.int64)
+        target_shape = [list(q.shape) for q in query]
     if ellipsis_inds is not None:
         target_shape = (
             target_shape[: ellipsis_inds[0]]
@@ -2934,11 +2931,13 @@ def _parse_query(query, x_shape):
         )
     for ax in new_axes:
         target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
-    target_shape += list(x_shape[len(query) :])
     target_shape = _deep_flatten(target_shape)
+    if vectorized_indexing:
+        return query, target_shape
+    target_shape += list(x_shape[len(query) :])
     query = [q.reshape((-1,)) if len(q.shape) > 1 else q for q in query]
     grid = ivy.meshgrid(*query, indexing="ij")
-    indices = ivy.stack(grid, axis=-1) if len(grid) else ivy.array([], dtype=ivy.int64)
+    indices = ivy.stack(grid, axis=-1)
     return indices, target_shape
 
 
