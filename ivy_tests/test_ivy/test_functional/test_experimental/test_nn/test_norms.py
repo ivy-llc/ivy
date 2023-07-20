@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+import ivy
 
 
 @handle_test(
@@ -29,6 +30,8 @@ def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_
 
 @st.composite
 def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
     data_format = draw(st.sampled_from(["NSC", "NCS"]))
     shape1, shape2, shape3, shape4 = draw(
         helpers.mutually_broadcastable_shapes(
@@ -36,7 +39,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         )
     )
     shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
-    if test_function == "instance_norm":
+
+    if (test_function == "instance_norm") or (is_torch_backend and not mixed_fn_compos):
         shape1 = shape2 = shape3 = shape4 = (shape[-1],)
 
     if data_format == "NCS":
@@ -46,6 +50,7 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(
                 "float",
+                mixed_fn_compos=mixed_fn_compos,
             ),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
@@ -100,8 +105,12 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             safety_factor_scale="log",
         )
     )
-    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
-    momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
+    eps = draw(
+        helpers.floats(min_value=1e-5, max_value=0.1, mixed_fn_compos=mixed_fn_compos)
+    )
+    momentum = draw(
+        helpers.floats(min_value=0.0, max_value=1.0, mixed_fn_compos=mixed_fn_compos)
+    )
     return (
         x_dtype,
         x[0],
@@ -232,11 +241,9 @@ def test_group_norm(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     x_dtype, x, num_groups, data_format, scale, offset, eps = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,

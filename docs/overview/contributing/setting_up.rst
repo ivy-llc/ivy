@@ -89,7 +89,7 @@ Virtual environments - No Docker
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
 The stable version of Ivy from PyPI maybe used for personal projects and experiments but avoided in development, for now.
-If you want to use the stable version, you are welcome to use the docker container or :code:`pip install ivy`.
+If you want to use the stable version, you are welcome to use the docker container or pip install ivy.
 
 Below is a guide to creating your own virtual environment.
 The benefit of creating a python environment is the ability to install certain packages for a project and then other packages (perhaps different versions) in a new environment for another project.

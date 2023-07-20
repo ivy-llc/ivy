@@ -20,7 +20,6 @@ import ivy_tests.test_ivy.helpers as helpers
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
-    test_with_out=st.just(True),
     test_inplace=st.just(False),
 )
 def test_torch_dropout(

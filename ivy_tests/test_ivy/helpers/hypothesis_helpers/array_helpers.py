@@ -1,5 +1,4 @@
 # global
-import math
 import numpy as np
 import hypothesis.extra.numpy as nph
 from hypothesis import strategies as st, assume
@@ -1724,6 +1723,7 @@ def arrays_for_pooling(
     explicit_or_str_padding=False,
     only_explicit_padding=False,
     return_dilation=False,
+    mixed_fn_compos=True,
     data_format="channel_last",
 ):
     in_shape = draw(
@@ -1733,7 +1733,7 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=get_dtypes("float"),
+            available_dtypes=get_dtypes("float", mixed_fn_compos=mixed_fn_compos),
             shape=in_shape,
             num_arrays=1,
             max_value=100,
@@ -1847,7 +1847,7 @@ def dtype_array_query(
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
-            min_size=1,
+            min_size=0,
             max_size=len(shape),
         )
     )
@@ -1898,13 +1898,15 @@ def dtype_array_query(
                 ),
             )
         index += [new_index]
-    if draw(st.booleans()):
+    if len(index_types) and draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
         min_ = len(index) if len(index_types) < len(shape) else start
         max_ = len(index) if len(index_types) < len(shape) else len(index) - 1
         end = draw(st.integers(min_value=min_, max_value=max_))
         if start != end:
             index = index[:start] + [Ellipsis] + index[end:]
+    for _ in range(draw(st.integers(min_value=0, max_value=3))):
+        index.insert(draw(st.integers(0, len(index))), None)
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
@@ -1935,7 +1937,6 @@ def dtype_array_query_val(
         )
     )
     real_shape = x[query].shape
-    assume(math.prod(real_shape) > 0)
     if len(real_shape):
         val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
     else:
