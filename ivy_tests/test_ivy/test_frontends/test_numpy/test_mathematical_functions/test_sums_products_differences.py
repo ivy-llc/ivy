@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
@@ -367,6 +368,31 @@ def test_numpy_ediff1d(
     )
 
 
+@st.composite
+def _either_x_dx(draw):
+    rand = (draw(st.integers(min_value=0, max_value=1)),)
+    if rand == 0:
+        either_x_dx = draw(
+            helpers.dtype_and_values(
+                avaliable_dtypes=st.shared(
+                    helpers.get_dtypes("float"), key="trapz_dtype"
+                ),
+                min_value=-100,
+                max_value=100,
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            )
+        )
+        return rand, either_x_dx
+    else:
+        either_x_dx = draw(
+            st.floats(min_value=-10, max_value=10),
+        )
+        return rand, either_x_dx
+
+
 @handle_frontend_test(
     fn_tree="numpy.trapz",
     dtype_and_y=helpers.dtype_and_values(
@@ -395,3 +421,4 @@ def test_numpy_trapz(
         x=x,
         dx=dx,
     )
+    

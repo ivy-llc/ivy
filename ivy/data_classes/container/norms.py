@@ -12,13 +12,13 @@ from ivy.data_classes.container.base import ContainerBase
 class _ContainerWithNorms(ContainerBase):
     def layer_norm(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        normalized_idxs: List[int],
+        normalized_idxs: List[Union[int, ivy.Container]],
         /,
         *,
         scale: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         offset: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        eps: float = 1e-05,
-        new_std: float = 1.0,
+        eps: Union[float, ivy.Container] = 1e-05,
+        new_std: Union[float, ivy.Container] = 1.0,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """

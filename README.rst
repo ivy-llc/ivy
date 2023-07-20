@@ -75,7 +75,7 @@ Status
     <a href="https://github.com/unifyai/ivy/pulls">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://pypi.org/project/ivy-core">
+    <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
@@ -383,13 +383,13 @@ The easiest way to set up Ivy is to install it using pip with the following comm
 
 .. code-block:: bash
 
-    pip install ivy-core
+    pip install ivy
 
 or alternatively:
 
 .. code-block:: bash
 
-    python3 -m pip install ivy-core
+    python3 -m pip install ivy
 
 
 Docker
@@ -478,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
