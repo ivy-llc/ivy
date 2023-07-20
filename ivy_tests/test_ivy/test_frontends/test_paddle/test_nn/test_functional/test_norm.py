@@ -19,14 +19,14 @@ from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
     eps=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_paddle_layer_norm(
-    *,
-    values_tuple,
-    normalized_shape,
-    eps,
-    test_flags,
-    frontend,
-    on_device,
-    fn_tree,
+        *,
+        values_tuple,
+        normalized_shape,
+        eps,
+        test_flags,
+        frontend,
+        on_device,
+        fn_tree,
 ):
     (dtype, x, normalized_shape, scale, offset) = values_tuple
     helpers.test_frontend_function(
@@ -40,4 +40,37 @@ def test_paddle_layer_norm(
         weight=scale[0],
         bias=offset[0],
         epsilon=eps,
+    )
+
+
+# normalize
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.normalize",
+    dtype_and_x_and_axis=helpers.arrays_and_axes(
+        available_dtypes=helpers.get_dtypes("float"),
+        num=1,
+        return_dtype=True,
+        force_int_axis=True,
+    ),
+    p=st.floats(min_value=0.1, max_value=2),
+)
+def test_paddle_normalize(
+        *,
+        dtype_and_x_and_axis,
+        p,
+        test_flags,
+        frontend,
+        on_device,
+        fn_tree,
+):
+    dtype, x, _ = dtype_and_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x[0],
+        p=p,
+        axis=0,
     )
