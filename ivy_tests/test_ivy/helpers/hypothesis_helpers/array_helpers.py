@@ -2040,7 +2040,7 @@ def get_second_solve_matrix(draw):
     )
 
 
-@st.composite./merge_with_upstream.sh master
+@st.composite
 def einsum_helper(draw):
     # Todo: generalize to n equations and arrays
 
