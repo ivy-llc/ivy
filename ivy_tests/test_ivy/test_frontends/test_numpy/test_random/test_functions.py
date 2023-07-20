@@ -711,7 +711,7 @@ def test_numpy_gumbel(
 
 @handle_frontend_test(
     fn_tree="numpy.random.gamma",
-    dtypes=helpers.get_dtypes("float", full=False),
+    input_dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(
         allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
@@ -724,7 +724,7 @@ def test_numpy_gumbel(
     test_with_out=st.just(False),
 )
 def test_numpy_gamma(
-    dtypes,
+    input_dtypes,
     shape,
     scale,
     size,
@@ -734,7 +734,7 @@ def test_numpy_gamma(
     on_device,
 ):
     helpers.test_frontend_function(
-        input_dtypes=dtypes,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
