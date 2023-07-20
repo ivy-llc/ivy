@@ -386,5 +386,4 @@ def lerp(x, y, weight, name=None):
 )
 @to_ivy_arrays_and_back
 def count_nonzero(x, axis=None, keepdim=False, name=None):
-    ret = ivy.count_nonzero(x, axis=axis, keepdims=keepdim)
-    return ivy.astype(ret, ivy.int64)
+    return ivy.astype(ivy.count_nonzero(x, axis=axis, keepdims=keepdim), ivy.int64)
