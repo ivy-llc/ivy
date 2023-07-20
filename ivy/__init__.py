@@ -7,9 +7,8 @@ import numpy as np
 import sys
 import inspect
 import os
-import ivy
 import ivy.utils.backend.handler
-#from ivy._version import __version__ as __version__
+from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
 try:
