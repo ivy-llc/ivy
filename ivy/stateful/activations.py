@@ -279,3 +279,24 @@ class ReLU6(Module):
             The outputs following the RELU6 activation *[batch_shape, d]*
         """
         return ivy.relu6(x)
+
+
+class Hardswish(Module):
+    def __init__(self):
+        """Apply the HARDSWISH activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the HARDSWISH activation *[batch_shape, d]*
+        """
+        return ivy.hardswish(x)
