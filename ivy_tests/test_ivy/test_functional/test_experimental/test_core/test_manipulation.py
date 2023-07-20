@@ -1207,3 +1207,38 @@ def test_partial_fold(*, data, test_flags, backend_fw, fn_name, on_device):
         shape=shape,
         skip_begin=skip_begin,
     )
+
+
+@st.composite
+def _partial_tensor_to_vec_data(draw):
+    input_dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, ret_shape=True
+        )
+    )
+    ndims = len(shape)
+    skip_begin = draw(helpers.ints(min_value=0, max_value=ndims - 1))
+    skip_end = draw(helpers.ints(min_value=0, max_value=ndims - 1 - skip_begin))
+    return input_dtype, input, skip_begin, skip_end
+
+
+# TODO Add container and instance methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_tensor_to_vec",
+    data=_partial_tensor_to_vec_data(),
+)
+def test_partial_tensor_to_vec(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, skip_begin, skip_end = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+    )

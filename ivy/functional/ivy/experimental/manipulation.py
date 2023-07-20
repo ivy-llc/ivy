@@ -2323,3 +2323,40 @@ def partial_fold(
     return ivy.moveaxis(
         ivy.reshape(input, transposed_shape), skip_begin, skip_begin + mode, out=out
     )
+
+
+def partial_tensor_to_vec(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    skip_begin: Optional[int] = 1,
+    skip_end: Optional[int] = 0,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Partial vectorization of a tensor while ignoring the specified dimension at the
+    beginning and the end.
+
+    Parameters
+    ----------
+    input
+        tensor to partially vectorise
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    skip_end
+        number of dimensions to leave untouched at the end
+
+    Returns
+    -------
+    ret
+        partially vectorised tensor with the
+        `skip_begin` first and `skip_end` last dimensions untouched
+    """
+    return partial_unfold(
+        input,
+        mode=0,
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+        ravel_tensors=True,
+        out=out,
+    )
