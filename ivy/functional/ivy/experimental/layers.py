@@ -2377,7 +2377,7 @@ def reduce_window(
     op = operand
     dims, strides, padding, base_dilation, window_dilation = map(
         lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
-        [window_dimensions, window_strides, padding, base_dilation, window_dilation]
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
     )
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)

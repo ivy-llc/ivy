@@ -1467,3 +1467,51 @@ def test_torch_narrow(
         start=start,
         length=length,
     )
+
+
+@st.composite
+def _dtype_input_idx_axis(draw):
+    dtype_x_axis_shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            force_int_axis=True,
+            ret_shape=True,
+            valid_axis=True,
+            min_num_dims=2,
+        )
+    )
+
+    input_dtype, x, axis, shape = dtype_x_axis_shape
+    max_idx = 0
+    if shape:
+        max_idx = shape[axis] - 1
+    idx = draw(helpers.ints(min_value=0, max_value=max_idx))
+    x = x[0]
+
+    return input_dtype, x, idx, axis
+
+
+@handle_frontend_test(
+    fn_tree="torch.select",
+    dtype_x_idx_axis=_dtype_input_idx_axis(),
+)
+def test_torch_select(
+    *,
+    dtype_x_idx_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, idx, axis = dtype_x_idx_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        dim=axis,
+        index=idx,
+    )

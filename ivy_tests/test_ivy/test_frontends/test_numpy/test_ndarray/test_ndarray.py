@@ -735,6 +735,55 @@ def test_numpy_instance_clip(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
+    method_name="compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+)
+def test_numpy_ndarray_compress(
+    dtype_arr_ax,
+    condition,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, arr, ax = dtype_arr_ax
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": arr[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "condition": condition,
+            "axis": ax,
+            "out": None,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
     method_name="conj",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("real_and_complex"),

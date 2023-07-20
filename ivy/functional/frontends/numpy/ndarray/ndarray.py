@@ -215,6 +215,14 @@ class ndarray:
             subok=subok,
         )
 
+    def compress(self, condition, axis=None, out=None):
+        return np_frontend.compress(
+            condition=condition,
+            a=self,
+            axis=axis,
+            out=out,
+        )
+
     def conj(
         self,
         /,
