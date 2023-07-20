@@ -43,19 +43,9 @@ def _reduce_helper(draw):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_reduce(
-    *,
-    args,
-    keepdims,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_reduce(*, args, keepdims, test_flags, backend_fw, fn_name, on_device):
     dtype, operand, init_value, func, axes = args
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,

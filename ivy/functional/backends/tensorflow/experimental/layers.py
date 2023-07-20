@@ -4,7 +4,11 @@ from typing import Union, Optional, Tuple, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from .. import backend_version
 import ivy
 from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
@@ -133,7 +137,7 @@ def max_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -178,7 +182,7 @@ def _handle_manual_pad_avg_pool(x, kernel, strides, padding, ceil_mode, dims):
     return padding, pad_specific, c
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
@@ -201,7 +205,8 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
+        print("why")
         x = tf.transpose(x, (0, 2, 1))
 
     manual_padding = False
@@ -242,13 +247,13 @@ def avg_pool1d(
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         res = tf.transpose(res, (0, 2, 1))
     return res
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
@@ -288,7 +293,7 @@ def avg_pool2d(
     if divisor_override is not None:
         # sum pooling then dividing by divisor_override if it is provided
         res = tf.nn.depthwise_conv2d(
-            x, tf.ones(kernel + [x.shape[-1], 1]), [1] + strides + [1], padding
+            x, tf.ones(kernel + (x.shape[-1], 1)), (1,) + strides + (1,), padding
         )
         res = res / divisor_override
     else:
@@ -340,7 +345,7 @@ def avg_pool2d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
@@ -445,7 +450,7 @@ def avg_pool3d(
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "float64", "float16")}, backend_version
+    {"2.13.0 and below": ("bfloat16", "float64", "float16")}, backend_version
 )
 def pool(
     x: Union[tf.Tensor, tf.Variable],
@@ -471,7 +476,7 @@ def pool(
     )
 
 
-@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -545,7 +550,7 @@ def _ifft_norm(
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
 
 
-@with_supported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def fft(
     x: Union[tf.Tensor, tf.Variable],
     dim: int,
@@ -744,7 +749,7 @@ def ifft(
     return ret
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def embedding(
     weights: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -816,8 +821,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
-    and mode not in ["nearest", "area", "bicubic"]
-    and recompute_scale_factor
+    and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
 
@@ -1187,3 +1191,180 @@ def ifftn(
         return out
     else:
         return result
+
+
+"""
+RFFTN Function implementation
+"""
+
+
+def rfft_input_validation(x):
+    if not x.dtype.is_floating:
+        raise TypeError(
+            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
+                x.dtype
+            )
+        )
+    return x
+
+
+def rfft_operations(x, rank, norm_factor):
+    if x.shape.rank == 1:
+        x = tf.signal.rfft(x)
+    elif x.shape.rank == 2:
+        x = tf.switch_case(
+            rank - 1, {0: lambda: tf.signal.rfft(x), 1: lambda: tf.signal.rfft2d(x)}
+        )
+    else:
+        x = tf.switch_case(
+            rank - 1,
+            {
+                0: lambda: tf.signal.rfft(x),
+                1: lambda: tf.signal.rfft2d(x),
+                2: lambda: tf.signal.rfft3d(x),
+            },
+        )
+    # norm_factor = tf.cast(norm_factor, tf.complex64)
+    norm_factor = tf.cast(norm_factor, tf.complex128)
+    x = x * norm_factor
+    return x
+
+
+def _rfftn_helper(x, shape, axes, norm):
+    x = rfft_input_validation(tf.convert_to_tensor(x))
+    # x = rfft_input_validation(x)
+    input_shape = x.shape
+    input_rank_tensor = tf.rank(x)
+
+    shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
+
+    axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
+
+    perform_padding, perform_transpose = perform_actions_initialization(
+        shape, axes, input_shape, input_rank_tensor
+    )
+
+    shape = shape_initialization(shape, axes, x)
+
+    rank = rank_initialization(axes)
+
+    norm_factor = norm_initialization(norm, shape, x)
+
+    x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
+
+    perm = get_perm(input_rank_tensor, axes)
+
+    x = transpose_x(x, perm, perform_transpose)
+
+    x = rfft_operations(x, rank, norm_factor)
+
+    x = transpose_x(x, tf.argsort(perm), perform_transpose)
+
+    x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
+
+    return x
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "floar32",
+                "float64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def rfftn(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = [("forward", "ortho", "backward")],
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    result = _rfftn_helper(x, s, axes, norm)
+
+    if out is not None:
+        out = tf.cast(result, tf.complex128)
+        # out = result
+        return out
+    else:
+        # return result
+        return tf.cast(result, tf.complex128)
+
+
+# def _rfftn_norm(
+#     x: Union[tf.Tensor, tf.Variable],
+#     s: Sequence[int] = None,
+#     axes: Sequence[int] = None,
+#     norm: str = "backward",
+# ):
+#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
+#     if norm == "backward":
+#         return x
+#     elif norm == "ortho":
+#         return x / tf.sqrt(n)
+#     elif norm == "forward":
+#         return x / n
+#     else:
+#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+# @with_unsupported_dtypes(
+#     {"0.4.13 and below": ("float32", "complex")}, backend_version
+# )
+# def rfftn(
+#     x: Union[tf.Tensor, tf.Variable],
+#     s: Sequence[int] = None,
+#     axes: Sequence[int] = None,
+#     *,
+#     norm: str = "backward",
+#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+# ) -> Union[tf.Tensor, tf.Variable]:
+#     if axes is None:
+#         axes = list(range(len(s)))
+#     elif s is None:
+#         s = [x.shape[axis] for axis in axes]
+#     elif len(s) != len(axes):
+#         raise ValueError("s and axes must have the same length.")
+
+#     if not all(isinstance(j, int) for j in s):
+#         raise ivy.utils.exceptions.IvyError(
+#             f"Expecting {s} to be a sequence of integers <class integer>"
+#         )
+#     if all(j <= 1 for j in s):
+#         raise ivy.utils.exceptions.IvyError(
+#             f"Invalid data points {s}, expecting s points larger than 1"
+#         )
+#     if norm != "backward" and norm != "ortho" and norm != "forward":
+#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+
+
+#     if len(s) != 2:
+#         raise ValueError("fft_length must have shape [2]")
+#     fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
+
+#     # Convert s to a tensor with shape [2]
+#     # fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
+#     # if tf.shape(fft_length).shape != [1] or tf.shape(fft_length).as_list()[0] != 2:
+#     #     raise ValueError("fft_length must have shape [2]")
+#     operation_name = f"RFFTn with s={s}, axes={axes}, norm={norm}"
+#     # tf_rfftn = tf.signal.rfft2d(x, fft_length=fft_length, name=operation_name)
+
+# # Reshape the input tensor to 2D
+#     x_2d = tf.reshape(x, [-1, s[0]])
+
+#     # Perform rfft2d operation on the reshaped tensor
+#     tf_rfftn_2d = tf.signal.rfft2d(x_2d, fft_length=s[1], name=operation_name)
+
+#     # Reshape the result back to the original shape
+#     output_shape = tf.concat([tf.shape(x)[:-1], [s[-1] // 2 + 1]], axis=0)
+#     tf_rfftn = tf.reshape(tf_rfftn_2d, output_shape)
+
+
+#     # Apply the same normalization as 'backward' in NumPy
+#     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out).astype("complex128")
+#     return tf_rfftn

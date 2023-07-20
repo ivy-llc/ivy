@@ -1,6 +1,9 @@
+# global
+import operator
+
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
@@ -283,3 +286,49 @@ def pareto(key, b, shape=None, dtype="float64"):
     e = -ivy.log(1 - uniform)
 
     return ivy.exp(e / b)
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def maxwell(key, shape=None, dtype="float64"):
+    seed = _get_seed(key)
+    # generate uniform random numbers between 0 and 1
+    z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    # applying inverse transform sampling
+    x = (z**2) * ivy.exp(-(z**2) / 2)
+    return x
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "0.4.13 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+def ball(key, d, p=2.0, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    d = operator.index(d)
+
+    g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
+    b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype=dtype, seed=seed)
+    r = 2 * b - 1
+    gn = r * g ** (1 / p)
+
+    uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
+    exp = -ivy.log(1 - uniform)
+
+    return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]
