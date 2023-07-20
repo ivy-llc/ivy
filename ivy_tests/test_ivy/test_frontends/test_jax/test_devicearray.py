@@ -1978,8 +1978,6 @@ def test_jax_devicearray_round(
 
 
 # repeat
-
-
 @st.composite
 def _repeat_helper(draw):
     shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
