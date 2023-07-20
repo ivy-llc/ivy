@@ -406,3 +406,14 @@ def rfftn(
 ) -> paddle.Tensor:
     result = paddle.fft.rfftn(x, s, axes, norm)
     return result.astype("complex128")
+
+
+def irfftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.irfftn(x, s, axes, norm)

@@ -1056,3 +1056,54 @@ class _ArrayWithLayersExperimental(abc.ABC):
             The result of the RFFT operation.
         """
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def irfftn(
+        self: ivy.Array,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the inverse of rfftn.
+
+        Parameters
+        ----------
+        self
+            Input array
+        s
+            Shape (length of each transformed axis) of the output (s[0] refers to axis 0
+            s[1] to axis 1, etc.). s is also the number of input points used along this
+            axis, except for the last axis, where s[-1]//2+1 points of the input are
+            used. Along any axis, if the shape indicated by s is smaller than that of
+            the input, the input is cropped. If it is larger, the input is padded with
+            zeros. If s is not given, the shape of the input along the axes specified by
+            axes is used. Except for the last axis which is taken to be 2*(m-1) where m
+            is the length of the input along that axis.
+        axes
+            Axes over which to compute the inverse FFT. If not given, the last len(s)
+            axes are used, or all axes if s is also not specified. Repeated indices in
+            axes means that the inverse transform over that axis is performed multiple
+            times.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional Out array for writing the result
+
+        Returns
+        -------
+            The truncated or zero-padded input, transformed along the axes indicated by
+            axes, or by a combination of s or a, as explained in the parameters section
+            above. The length of each transformed axis is as given by the corresponding
+            element of s, or the length of the input in every axis except for the last
+            one if s is not given. In the final transformed axis the length of the
+            output when s is not given is 2*(m-1) where m is the length of the final
+            transformed axis of the input. To get an odd number of output points in
+            the final axis, s must be specified.
+        """
+        return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)

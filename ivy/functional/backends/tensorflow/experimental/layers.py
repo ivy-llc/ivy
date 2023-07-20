@@ -1368,3 +1368,86 @@ def rfftn(
 #     # Apply the same normalization as 'backward' in NumPy
 #     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out).astype("complex128")
 #     return tf_rfftn
+
+
+# IRFFTN FUNCTION IMPLEMENTATION
+def irfftn_input_validation(x):
+    if not x.dtype.is_floating:
+        raise TypeError(
+            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
+                x.dtype
+            )
+        )
+    return x
+
+
+def irfftn_operations(x, rank, norm_factor):
+    if x.shape.rank == 1:
+        x = tf.signal.ifft(x)
+    elif x.shape.rank == 2:
+        x = tf.switch_case(
+            rank - 1, {0: lambda: tf.signal.irfft(x), 1: lambda: tf.signal.irfft2d(x)}
+        )
+    else:
+        x = tf.switch_case(
+            rank - 1,
+            {
+                0: lambda: tf.signal.irfft(x),
+                1: lambda: tf.signal.irfft2d(x),
+                2: lambda: tf.signal.irfft3d(x),
+            },
+        )
+    x = x * norm_factor
+    return x
+
+
+def _irfftn_helper(x, shape, axes, norm):
+    x = irfftn_input_validation(tf.convert_to_tensor(x))
+    # x = rfft_input_validation(x)
+    input_shape = x.shape
+    input_rank_tensor = tf.rank(x)
+
+    shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
+
+    axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
+
+    perform_padding, perform_transpose = perform_actions_initialization(
+        shape, axes, input_shape, input_rank_tensor
+    )
+
+    shape = shape_initialization(shape, axes, x)
+
+    rank = rank_initialization(axes)
+
+    norm_factor = norm_initialization(norm, shape, x)
+
+    x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
+
+    perm = get_perm(input_rank_tensor, axes)
+
+    x = transpose_x(x, perm, perform_transpose)
+
+    x = irfftn_operations(x, rank, norm_factor)
+
+    x = transpose_x(x, tf.argsort(perm), perform_transpose)
+
+    x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
+
+    return x
+
+
+def irfftn(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    result = _irfftn_helper(x, s, axes, norm)
+
+    if out is not None:
+        out = result
+        return out
+    else:
+        return result

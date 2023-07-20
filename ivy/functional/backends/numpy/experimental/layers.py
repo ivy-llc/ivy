@@ -956,3 +956,14 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
+
+
+def irfftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.irfftn(x, s, axes, norm).astype(x.dtype)

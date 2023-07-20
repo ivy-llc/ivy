@@ -954,3 +954,14 @@ def rfftn(
     return torch.tensor(
         torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
     )
+
+
+def irfftn(
+    x: torch.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fft.irfftn(x, s=s, dim=axes, norm=norm, out=out)

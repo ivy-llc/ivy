@@ -840,3 +840,14 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
+
+
+def irfftn(
+    x: JaxArray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fft.irfftn(x, s, axes, norm)

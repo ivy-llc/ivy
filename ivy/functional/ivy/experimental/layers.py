@@ -2705,3 +2705,88 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def irfftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Union[int, Tuple[int, ...]]] = None,
+    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    Compute the inverse of `rfftn`.
+
+    This function computes the inverse of the N-dimensional discrete Fourier Transform
+    for real input over any number of axes in an M-dimensional array by means of the
+    Fast Fourier Transform (FFT). In other words, `irfftn(rfftn(x), x.shape) == x` to
+    within numerical accuracy. (The `x.shape` is necessary like `len(x)` is for irfft,
+    and for the same reason.)
+
+    The input should be ordered in the same way as is returned by rfftn.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array, taken to be real
+    s : sequence of ints, optional
+        Shape (length of each transformed axis) of the output (`s[0]` refers to axis 0,
+        `s[1]` to axis 1, etc.). `s` is also the number of input points used along this
+        axis, except for the last axis, where `s[-1]//2+1` points of the input are used.
+        Along any axis, if the shape indicated by s is smaller than that of the input,
+        the input is cropped. If it is larger, the input is padded with zeros. If s is
+        not given, the shape of the input along the axes specified by axes is used.
+        Except for the last axis which is taken to be 2*(m-1) where m is the length of
+        the input along that axis.
+    axes : sequence of ints, optional
+        Axes over which to compute the IFFT. If not given, last `len(s)` axes are
+        used, or all axes if `s` is also not specified. Repeated indices in axes
+        means inverse transform over that axis is performed multiple times.
+    norm : str, optional
+        Indicates direction of the forward/backward pair of transforms is scaled
+        and with what normalization factor. "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$. "forward"
+        indicates normalization by $\frac{1}{n}$.
+    out
+        Optional output array for writing the result to. It must have a shape that
+        the inputs broadcast to.
+
+    Returns
+    -------
+    out
+        The truncated or zero-padded input, transformed along the axes indicated by axes
+        or by a combination of s or a, as explained in the parameters section above.
+        The length of each transformed axis is as given by the corresponding element of
+        s, or the length of the input in every axis except for the last one if s is not
+        given. In the final transformed axis the length of the output when s is not
+        given is `2*(m-1)` where `m` is the length of the final transformed axis of the
+        input. To get an odd number of output points in the final axis, s must be
+        specified.
+
+    Raises
+    ------
+    ValueError
+        If `s` and `axes` have different length.
+    IndexError
+        If an element of axes is larger than the number of axes of x.
+
+    Examples
+    --------
+    >>> x = ivy.zeros((3, 2, 2))
+    >>> x[0, 0, 0] = 3 * 2 * 2
+    >>> result = ivy.irfftn(x)
+    >>> print(result)
+    ([[[1.,  1.],
+        [1.,  1.]],
+       [[1.,  1.],
+        [1.,  1.]],
+       [[1.,  1.],
+        [1.,  1.]]])
+    """
+    return ivy.current_backend(x).irfftn(x, s=s, axes=axes, norm=norm, out=out)
