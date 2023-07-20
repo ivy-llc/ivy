@@ -179,3 +179,34 @@ def l1_loss(
     if out.shape == ():
         out = out.expand_dims()
     return paddle.to_tensor(out)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def kl_div(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    if input.shape != label.shape:
+        raise ValueError(
+            "the shape of input tensor should be equal to target tensor, but found"
+            " inputs with different sizes"
+        )
+
+    out = label * (ivy.log(label) - input)
+
+    size = ivy.shape(input)
+    if len(size) < 1:
+        size = [1]
+
+    if reduction == "mean":
+        out = ivy.mean(out)
+    elif reduction == "batchmean":
+        out = ivy.sum(out) / size[0]
+    elif reduction == "sum":
+        out = ivy.sum(out)
+    else:
+        pass
+    return out.astype(label.dtype)

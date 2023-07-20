@@ -297,3 +297,33 @@ def test_paddle_l1_loss(
         label=x[1],
         reduction=reduction,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.kl_div",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_value=1.0013580322265625e-05,
+    ),
+    reduction=st.sampled_from(["mean", "batchmean", "sum", "none"]),
+)
+def test_paddle_kl_div(
+    dtype_and_x, reduction, on_device, fn_tree, frontend, test_flags
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        reduction=reduction,
+    )
