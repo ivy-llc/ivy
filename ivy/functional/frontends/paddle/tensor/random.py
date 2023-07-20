@@ -91,3 +91,8 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
 @to_ivy_arrays_and_back
 def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
+
+@to_ivy_arrays_and_back
+def randint_like(x, low, high, seed=None, dtype=None, name=None):
+    x = ivy.array(x)
+    return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=seed)

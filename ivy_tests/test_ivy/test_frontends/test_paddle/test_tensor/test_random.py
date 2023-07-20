@@ -220,3 +220,40 @@ def test_paddle_standard_normal(
         shape=shape,
         dtype=dtype[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.randint_like",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+    ),
+    dtype=helpers.get_dtypes("integer"),
+    low=st.integers(min_value=0, max_value=10),
+    high=st.integers(min_value=11, max_value=20),
+    seed=st.integers(min_value=2, max_value=5),
+    test_with_out=st.just(False),
+)
+def test_paddle_randint_like(
+    dtype_and_x,
+    low,
+    high,
+    seed,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        low=low,
+        high=high,
+        seed=seed,
+        dtype=dtype[0]
+    )
