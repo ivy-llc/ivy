@@ -122,9 +122,9 @@ def test_paddle_avg_pool1d(
     output_size=helpers.ints(min_value=1, max_value=5),
 )
 def test_paddle_adaptive_avg_pool1d(
+    *,
     dtype_and_x,
     output_size,
-    *,
     test_flags,
     frontend,
     on_device,
