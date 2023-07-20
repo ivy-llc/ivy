@@ -111,13 +111,7 @@ def test_paddle_nanquantile(
     ),
     keepdim=st.booleans(),
 )
-def test_paddle_median(
-    dtype_x_and_axis,
-    keepdim,
-    frontend,
-    test_flags,
-    fn_tree,
-):
+def test_paddle_median(dtype_x_and_axis, keepdim, frontend, test_flags, fn_tree):
     input_dtypes, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
