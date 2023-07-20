@@ -216,3 +216,66 @@ class SiLU(Module):
             The outputs following the SiLU activation *[batch_shape, d]*
         """
         return ivy.silu(x)
+
+
+class Sigmoid(Module):
+    def __init__(self):
+        """Apply the SIGMOID activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the SIGMOID activation *[batch_shape, d]*
+        """
+        return ivy.sigmoid(x)
+
+
+class Tanh(Module):
+    def __init__(self):
+        """Apply the TANH activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the TANH activation *[batch_shape, d]*
+        """
+        return ivy.tanh(x)
+
+
+class ReLU6(Module):
+    def __init__(self):
+        """Apply the RELU6 activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the RELU6 activation *[batch_shape, d]*
+        """
+        return ivy.relu6(x)
