@@ -481,7 +481,7 @@ def test_jax_average(
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
-def test_numpy_nanmax(
+def test_jax_nanmax(
     dtype_x_axis,
     frontend,
     test_flags,
@@ -532,7 +532,7 @@ def test_numpy_nanmax(
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
-def test_numpy_nanmin(
+def test_jax_nanmin(
     dtype_x_axis,
     frontend,
     test_flags,
