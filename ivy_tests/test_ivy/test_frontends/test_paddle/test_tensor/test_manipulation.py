@@ -564,5 +564,4 @@ def test_paddle_gather(
         on_device=on_device,
         param=param[0],
         indices=indices[0],
-
     )
