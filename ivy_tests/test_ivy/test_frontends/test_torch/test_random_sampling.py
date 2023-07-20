@@ -474,10 +474,10 @@ def test_torch_set_rng_state(
 ):
     dtype, state = state
     helpers.test_frontend_function(
-        nput_dtypes=dtype,
+        input_dtypes=dtype,
         frontend=frontend,
         test_values=False,
         fn_tree=fn_tree,
-        num_positional_args=1,
+        test_flags=test_flags,
         state=state[0],
     )
