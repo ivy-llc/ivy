@@ -1242,3 +1242,39 @@ def test_partial_tensor_to_vec(*, data, test_flags, backend_fw, fn_name, on_devi
         skip_begin=skip_begin,
         skip_end=skip_end,
     )
+
+
+@st.composite
+def _partial_vec_to_tensor(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=5))
+    numel = int(ivy.prod(shape))
+    input_dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), shape=(numel,)
+        )
+    )
+    ndims = len(shape)
+    skip_begin = draw(helpers.ints(min_value=0, max_value=ndims - 1))
+    return input_dtype, input, shape, skip_begin
+
+
+# TODO Add container and instance methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_vec_to_tensor",
+    data=_partial_vec_to_tensor(),
+)
+def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, shape, skip_begin = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        shape=shape,
+        skip_begin=skip_begin,
+    )

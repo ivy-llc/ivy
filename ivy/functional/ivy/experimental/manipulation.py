@@ -2360,3 +2360,31 @@ def partial_tensor_to_vec(
         ravel_tensors=True,
         out=out,
     )
+
+
+def partial_vec_to_tensor(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    skip_begin: Optional[int] = 1,
+    skip_end: Optional[int] = 0,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Refolds a partially vectorised tensor into a full one.
+
+    Parameters
+    ----------
+    input
+        a partially vectorised tensor
+    shape
+        the shape of the original full tensor (including skipped dimensions)
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    Returns
+    -------
+    ret
+        full tensor
+    """
+    return partial_fold(input, mode=0, shape=shape, skip_begin=skip_begin, out=out)
