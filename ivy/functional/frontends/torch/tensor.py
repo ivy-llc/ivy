@@ -18,7 +18,7 @@ from ivy.functional.frontends.torch.func_wrapper import (
 
 
 class Tensor:
-    def __init__(self, array, device=None, _init_overload=False):
+    def __init__(self, array, device=None, _init_overload=False, requires_grad=False):
         if _init_overload:
             self._ivy_array = (
                 ivy.array(array) if not isinstance(array, ivy.Array) else array
@@ -29,6 +29,14 @@ class Tensor:
                 array, dtype=torch_frontend.float32, device=device
             )
         self._grads = None
+        self._requires_grad = requires_grad
+        self.grad_fn = None
+        self._grads = None
+        if not _init_overload:
+            self._is_leaf = True
+        else:
+            self._is_leaf = False
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -85,6 +93,14 @@ class Tensor:
     def grad(self):
         return self._grads
 
+    @property
+    def requires_grad(self):
+        return self._requires_grad
+
+    @property
+    def is_leaf(self):
+        return self._is_leaf
+
     # Setters #
     # --------#
 
@@ -93,6 +109,14 @@ class Tensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+
+    @requires_grad.setter
+    def requires_grad(self, requires_grad):
+        self._requires_grad = requires_grad
+
+    @is_leaf.setter
+    def is_leaf(self, is_leaf):
+        self._is_leaf = is_leaf
 
     # Instance Methods #
     # ---------------- #
@@ -863,6 +887,10 @@ class Tensor:
     def tril(self, diagonal=0):
         return torch_frontend.tril(self, diagonal=diagonal)
 
+    def tril_(self, diagonal=0):
+        self.ivy_array = self.tril(diagonal=diagonal).ivy_array
+        return self
+
     def index_select(self, dim, index):
         return torch_frontend.index_select(self, dim, index)
 
@@ -1517,6 +1545,26 @@ class Tensor:
             raise Exception("apply_ is only supported on cpu tensors")
         self.ivy_array = callable(self.ivy_array)
         return self
+
+    def requires_grad_(self, requires_grad=True):
+        self._requires_grad = requires_grad
+        return self
+
+    def backward(self, gradient=None, retain_graph=None, create_graph=False):
+        if gradient is None and int(torch_frontend.numel(self)) > 1:
+            raise RuntimeError("grad can be implicitly created only for scalar outputs")
+        if self.grad_fn is None and self._grads is None:
+            assert self.shape == gradient.shape, "Mismatch in shape"
+            self._grads = gradient
+            return
+        _grad_list = self.grad_fn(
+            gradient if gradient is not None else torch_frontend.tensor(1.0)
+        )
+        for idx, next_function in enumerate(self.grad_fn.next_functions):
+            if next_function.__self__.grad_fn is not None:
+                next_function.__self__.backward(_grad_list[idx])
+            else:
+                next_function(_grad_list[idx])
 
 
 class Size(tuple):
