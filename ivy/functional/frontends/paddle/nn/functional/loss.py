@@ -164,3 +164,18 @@ def smooth_l1_loss(
     elif reduction == "sum":
         out = ivy.sum(out)
     return out.astype(label.dtype)
+
+
+@inputs_to_ivy_arrays
+def l1_loss(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    sum_diff = ivy.abs(input - label)
+    reduction = _get_reduction_func(reduction)
+    out = reduction(sum_diff)
+    if out.shape == ():
+        out = out.expand_dims()
+    return paddle.to_tensor(out)

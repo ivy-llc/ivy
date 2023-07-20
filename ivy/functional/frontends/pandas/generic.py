@@ -1,5 +1,7 @@
 import ivy
 import numpy as np
+import copy as py_copy
+from ivy.functional.frontends.pandas.pandas_func_wrappers import outputs_to_self_class
 
 
 class NDFrame:
@@ -8,7 +10,7 @@ class NDFrame:
         self.columns = columns
         self.dtype = dtype
         self.copy = copy
-        self.orig_data = data
+        self.orig_data = py_copy.deepcopy(data)
 
         if ivy.is_native_array(data):
             self.array = ivy.array(data)
@@ -26,7 +28,8 @@ class NDFrame:
                 index = list(data.keys())
         elif isinstance(data, dict) and len(index) > orig_data_len:
             for i in index:
-                if i not in data: data[i] = ivy.nan
+                if i not in data:
+                    data[i] = ivy.nan
 
         if data_is_array_or_like:
             self.index = index
@@ -59,7 +62,23 @@ class NDFrame:
             ret = dict(zip(self.orig_data.keys(), ret))
         return ret
 
+    @outputs_to_self_class
     def abs(self):
-        return self.__class__(
-            ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
-        )
+        return ivy.abs(self.array)
+
+    def to_numpy(self, dtype=None, copy=False, na_value=None):
+        ret = self.array.to_numpy()
+        if na_value is not None:
+            ret = np.where(ret == np.nan, na_value, ret)
+        if dtype is not None:
+            ret = ret.astype(dtype)
+        if copy:
+            return ret.copy()
+        return ret
+
+    def __array__(self):
+        return self.array.to_numpy()
+
+    @outputs_to_self_class
+    def __array_wrap__(self, array):
+        return array
