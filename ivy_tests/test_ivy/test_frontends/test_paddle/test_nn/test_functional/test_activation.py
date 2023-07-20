@@ -622,3 +622,38 @@ def test_paddle_silu(
         on_device=on_device,
         x=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softmax",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_axes_size=1,
+        force_int_axis=True,
+        valid_axis=True,
+        min_value=-30.0,
+        max_value=30.0,
+    ),
+    dtypes=helpers.get_dtypes("float"),
+)
+def test_paddle_softmax(
+    *,
+    dtype_x_and_axis,
+    dtypes,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        dtype=ivy.as_ivy_dtype(dtypes[0]),
+    )
