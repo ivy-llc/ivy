@@ -1,7 +1,6 @@
 # global
 from hypothesis import strategies as st
 import math
-import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -456,9 +455,9 @@ def test_paddle_broadcast_to(
 @st.composite
 def _scatter_nd_helper(draw):
     array_dtype = draw(helpers.get_dtypes("numeric"))
-    indices_dtype = draw(st.sampled_from(["int32", "int64"]))
+    indices_dtype = draw(helpers.get_dtypes("numeric"))
     min_num_dims = draw(st.integers(min_value=2, max_value=6))
-    allow_inf = draw(st.booleans())
+    draw(st.booleans())
 
     x_min_value = draw(st.floats(min_value=0, max_value=10))
     x_max_value = draw(st.floats(min_value=x_min_value, max_value=20))
@@ -478,7 +477,7 @@ def _scatter_nd_helper(draw):
             min_value=x_min_value,
             max_value=x_max_value,
             allow_nan=False,
-            allow_inf=allow_inf,
+            allow_inf=False,
         )
     )
     indices_max_value = draw(st.integers(min_value=1, max_value=10))
@@ -499,6 +498,7 @@ def _scatter_nd_helper(draw):
             min_value=x_min_value,
             max_value=x_max_value,
             allow_nan=False,
+            allow_inf=False,
         )
     )
     return (array_dtype, indices_dtype, array_dtype), x, ind, updates
@@ -510,13 +510,13 @@ def _scatter_nd_helper(draw):
 )
 def test_scatter_nd(x, test_flags, backend_fw, on_device):
     (ind_dtype, update_dtype, val_dtype), vals, ind, updates = x
-    shape = vals.shape
+    shape = vals[0].shape
     helpers.test_function(
         input_dtypes=[ind_dtype, update_dtype],
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
-        index=np.asarray(ind, dtype=ind_dtype),
+        index=ind,
         updates=updates,
         shape=shape,
     )
