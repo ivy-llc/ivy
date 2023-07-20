@@ -130,33 +130,33 @@ def check_neg_arr(x, kernel_size, padding, stride, dilation, data_format):
 def max_pool3d(
     x,
     kernel_size,
-    stride=1,
-    padding=0,
+    stride=(1, 1, 1),
+    padding=(0, 0, 0),
     /,
     *,
-    data_format="NCDHW",
-    dilation=1,
+    data_format="NDHWC",
+    dilation=(1, 1, 1),
     out=None,
 ):
-    kernel_size = _broadcast_pooling_helper(kernel_size, 3, name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, 3, name="stride")
-    padding = _broadcast_pooling_helper(padding, 3, name="padding")
-    dilation = _broadcast_pooling_helper(dilation, 3, name="dilation")
-    kernel_pads = list(zip(kernel_size, padding))
+    # kernel_size = _broadcast_pooling_helper(kernel_size, 3, name="kernel_size")
+    # stride = _broadcast_pooling_helper(stride, 3, name="stride")
+    # padding = _broadcast_pooling_helper(padding, 3, name="padding")
+    # dilation = _broadcast_pooling_helper(dilation, 3, name="dilation")
+    # kernel_pads = list(zip(kernel_size, padding))
 
     # Padding should be less than or equal to half of kernel size
-    if not isinstance(padding, str):
-        if not all([pad <= kernel // 2 for kernel, pad in kernel_pads]):
-            raise ValueError(
-                "pad should be smaller than or equal to half of kernel size, "
-                f"but got padding={padding}, kernel_size={kernel_size}. "
-            )
+    # if not isinstance(padding, str):
+    #     if not all([pad <= kernel // 2 for kernel, pad in kernel_pads]):
+    #         raise ValueError(
+    #             "pad should be smaller than or equal to half of kernel size, "
+    #             f"but got padding={padding}, kernel_size={kernel_size}. "
+    #         )
 
     # Dilation must always follows the formual
     # H(out) = H(in) + 2*Padding[0] - dilation[0]*(kernel_size[0]-1)
     #          -----------------------------------------------------   + 1
     #                           Stride[0]
-    check_neg_arr(x, kernel_size, padding, stride, dilation, data_format)
+    # check_neg_arr(x, kernel_size, padding, stride, dilation, data_format)
 
     return ivy.max_pool3d(
         x,

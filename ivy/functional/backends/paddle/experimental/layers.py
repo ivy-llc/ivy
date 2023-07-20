@@ -146,9 +146,9 @@ def max_pool3d(
         kernel = (kernel, kernel, kernel)
     elif len(kernel) == 1:
         kernel = (kernel[0], kernel[0], kernel[0])
-    if data_format == "NDHWC":
+    if data_format == "NCDHW":
         x = paddle.transpose(x, perm=[0, 2, 3, 4, 1])
-    x_shape = list(x.shape[2:])
+    x_shape = list(x.shape[1:4])
     pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
     pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
     pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
@@ -170,9 +170,9 @@ def max_pool3d(
             f'Invalid padding arg {padding}\nMust be one of: "VALID" or "SAME"'
         )
     res = paddle.nn.functional.max_pool3d(
-        x, kernel_size=kernel, stride=strides, padding=0
+        x, kernel_size=kernel, stride=strides, padding=0, data_format="NDHWC"
     )
-    if data_format == "NDHWC":
+    if data_format == "NCDHW":
         res = paddle.transpose(res, perm=[0, 4, 1, 2, 3])
     return res
 
