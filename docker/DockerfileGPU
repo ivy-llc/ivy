@@ -99,9 +99,6 @@ RUN apt-get install -y python-opengl
 # Ivy #
 # ----#
 
-# Make sure torch installed before torch-scatter (in optional_gpu.txt)
-RUN pip install --no-cache-dir torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
-
 # Install Ivy Upstream
 RUN git clone --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
     cd ivy && \
