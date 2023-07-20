@@ -265,3 +265,32 @@ def get_num_positional_args_ufunc(draw, *, fn_name=None):
     nin = func.nin
     nargs = func.nargs
     return draw(st.integers(min_value=nin, max_value=nargs))
+
+
+@st.composite
+def _get_dtype_input_and_vectors(draw):
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    if dim_size == 1:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
+        )
+    else:
+        vec1 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        vec2 = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    return dtype, vec1, vec2
