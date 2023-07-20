@@ -764,6 +764,7 @@ def test_numpy_remainder(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
+    assume(not np.any(np.isclose(xs[1], 0.0)))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,

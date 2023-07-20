@@ -144,10 +144,8 @@ def broadcast_to(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
-    shape = list(shape)
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape[i]
+    # paddle doesn't accept 0 in shape and uses -1 instead
+    shape = [-1 if dim == 0 else dim for dim in shape]
     if x.ndim == 0:
         if len(shape) == 0:
             return x

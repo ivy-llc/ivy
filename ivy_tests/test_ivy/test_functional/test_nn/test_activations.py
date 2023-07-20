@@ -18,18 +18,9 @@ from ivy_tests.test_ivy.helpers import handle_test
         safety_factor_scale="log",
     ),
 )
-def test_relu(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -50,19 +41,9 @@ def test_relu(
     ),
     alpha=st.floats(min_value=-1e-4, max_value=1e-4),
 )
-def test_leaky_relu(
-    *,
-    dtype_and_x,
-    alpha,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -86,19 +67,9 @@ def test_leaky_relu(
     ),
     approximate=st.booleans(),
 )
-def test_gelu(
-    *,
-    dtype_and_x,
-    approximate,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -121,18 +92,9 @@ def test_gelu(
         safety_factor_scale="log",
     ),
 )
-def test_sigmoid(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_sigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -159,19 +121,9 @@ def test_sigmoid(
         st.none(),
     ),
 )
-def test_softmax(
-    *,
-    dtype_and_x,
-    axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -198,21 +150,12 @@ def test_softmax(
     threshold=st.one_of(helpers.number(min_value=0.1, max_value=30), st.none()),
 )
 def test_softplus(
-    *,
-    dtype_and_x,
-    beta,
-    threshold,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, beta, threshold, test_flags, backend_fw, fn_name, on_device
 ):
     assume(beta != 0)
     assume(threshold != 0)
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -238,19 +181,9 @@ def test_softplus(
     ),
     axis=st.one_of(helpers.ints(min_value=-1, max_value=0), st.none()),
 )
-def test_log_softmax(
-    *,
-    dtype_and_x,
-    axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_log_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -273,18 +206,9 @@ def test_log_softmax(
         safety_factor_scale="log",
     ),
 )
-def test_mish(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_mish(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -292,5 +216,34 @@ def test_mish(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
+        x=x[0],
+    )
+
+
+# hardswish
+@handle_test(
+    fn_tree="functional.ivy.hardswish",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+)
+def test_hardswish(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
     )
