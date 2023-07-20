@@ -123,6 +123,9 @@ class DeviceArray:
             fill_value=fill_value,
         )
 
+    def prod(self, axis=None):
+        return jax_frontend.numpy.product(self, axis=axis)
+
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
             self,
