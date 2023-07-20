@@ -318,22 +318,13 @@ def test_function(
         array_fn = ivy.is_array
         if "copy" in list(inspect.signature(target_fn).parameters.keys()):
             kwargs["copy"] = True
-            first_array = ivy.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
-                target_fn, *args, test_compile=test_flags.test_compile, **kwargs
-            )
-            assert not np.may_share_memory(first_array, ret_)
-        else:
-            first_array = ivy.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            assert first_array is not None
-            ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
-                target_fn, *args, test_compile=test_flags.test_compile, **kwargs
-            )
-            assert not np.may_share_memory(first_array, ret_)
+        first_array = ivy.func_wrapper._get_first_array(
+            *args, array_fn=array_fn, **kwargs
+        )
+        ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
+            target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+        )
+        assert not np.may_share_memory(first_array, ret_)
 
     # Assert indices of return if the indices of the out array provided
     if test_flags.with_out and not test_flags.test_compile:
@@ -708,25 +699,15 @@ def test_frontend_function(
             array_fn = ivy.is_array
         if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
             copy_kwargs["copy"] = True
-            first_array = ivy.func_wrapper._get_first_array(
-                *copy_args, array_fn=array_fn, **copy_kwargs
-            )
-            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
-            if _is_frontend_array(first_array):
-                first_array = first_array.ivy_array
-            if _is_frontend_array(ret_):
-                ret_ = ret_.ivy_array
-            assert not np.may_share_memory(first_array, ret_)
-        else:
-            first_array = ivy.func_wrapper._get_first_array(
-                *args, array_fn=array_fn, **kwargs
-            )
-            ret_ = get_frontend_ret(frontend_fn, *args, **kwargs)
-            if _is_frontend_array(first_array):
-                first_array = first_array.ivy_array
-            if _is_frontend_array(ret_):
-                ret_ = ret_.ivy_array
-            assert not np.may_share_memory(first_array, ret_)
+        first_array = ivy.func_wrapper._get_first_array(
+            *copy_args, array_fn=array_fn, **copy_kwargs
+        )
+        ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+        if _is_frontend_array(first_array):
+            first_array = first_array.ivy_array
+        if _is_frontend_array(ret_):
+            ret_ = ret_.ivy_array
+        assert not np.may_share_memory(first_array, ret_)
     elif test_flags.inplace:
         assert not isinstance(ret, tuple)
 
