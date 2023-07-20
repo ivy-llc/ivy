@@ -2885,37 +2885,35 @@ def test_numpy_instance_array_wrap__(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="take",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=1
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+        valid_bounds=False,
     ),
-    indices=st.one_of(
-        st.integers(),
-        st.lists(st.integers()),
-        st.tuples(st.integers()),
-        st.arrays(dtype=np.int64, shape=st.tuples(st.integers())),
-    ),
-    axis=st.one_of(st.none(), st.integers()),
-    mode=st.one_of(st.just("raise"), st.just("wrap"), st.just("clip")),
-    out=st.none(),
+    mode=st.sampled_from(['clip', 'wrap', 'raise']),
+    test_with_out=st.just(False),
 )
 def test_numpy_instance_take(
-    dtype_and_x,
+    dtype_x_indices_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    indices,
-    axis,
     mode,
     out,
 ):
-    input_dtypes, xs = dtype_and_x
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
-        method_input_dtypes=[np.int64],
+        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "indices": indices,
             "axis": axis,
