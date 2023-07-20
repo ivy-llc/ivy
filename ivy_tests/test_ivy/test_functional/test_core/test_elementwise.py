@@ -269,6 +269,7 @@ def test_bitwise_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    ground_truth_backend="numpy",  # tensorflow gt has maximum shift that is equal
     test_gradients=st.just(False),
 )
 def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -291,7 +292,6 @@ def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_
         )
     )
     helpers.test_function(
-        ground_truth_backend="numpy",  # tensorflow gt has maximum shift that is equal
         # to dtype bits - 1 while other backends overflow to zero
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1317,11 +1317,11 @@ def test_remainder(*, dtype_and_x, modulus, test_flags, backend_fw, fn_name, on_
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     decimals=st.integers(min_value=0, max_value=5),
+    ground_truth_backend="numpy",
 )
 def test_round(*, dtype_and_x, decimals, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="numpy",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,

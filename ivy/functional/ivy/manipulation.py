@@ -469,14 +469,14 @@ def reshape(
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
-        ‘C’ means to read / write the elements using C-like index order,
+        ``C`` means to read / write the elements using C-like index order,
         with the last axis index changing fastest, back to the first axis index
         changing slowest.
-        ‘F’ means to read / write the elements using Fortran-like index order, with
+        ``F`` means to read / write the elements using Fortran-like index order, with
         the first index changing fastest, and the last index changing slowest.
-        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        Note that the ``C`` and ``F`` options take no account of the memory layout
         of the underlying array, and only refer to the order of indexing.
-        Default order is 'C'
+        Default order is ``C``
     allowzero
         When ``allowzero=True``, any value in the ``shape`` argument that is equal to
         zero, the zero value is honored. When ``allowzero=False``, any value in the
