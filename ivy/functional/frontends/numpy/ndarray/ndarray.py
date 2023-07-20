@@ -50,6 +50,10 @@ class ndarray:
         return self.ivy_array.shape
 
     @property
+    def size(self):
+        return self.ivy_array.size
+
+    @property
     def dtype(self):
         return self.ivy_array.dtype
 
