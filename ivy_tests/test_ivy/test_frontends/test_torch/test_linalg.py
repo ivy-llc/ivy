@@ -472,11 +472,13 @@ def test_torch_matrix_exp(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -873,6 +875,7 @@ def test_torch_solve(
     test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=[input_dtype[0], input_dtype[0]],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1018,6 +1021,7 @@ def test_torch_tensorsolve(
     test_flags.num_positional_args = len(a_and_b) - 1
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
