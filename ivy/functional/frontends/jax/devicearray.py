@@ -151,7 +151,7 @@ class DeviceArray:
         return jax_frontend.numpy.sum(
             self,
             axis=axis,
-            dtype=dtype,
+            dtype=self.dtype,
             out=out,
             keepdims=keepdims,
             initial=initial,
