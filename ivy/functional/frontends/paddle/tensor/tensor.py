@@ -292,9 +292,9 @@ class Tensor:
             ivy.any(self._ivy_array, axis=axis, keepdims=keepdim)
         )
 
-    @with_supported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
     def astype(self, dtype):
-        return paddle_frontend.Tensor(ivy.astype(self._ivy_array, dtype=dtype))
+        return paddle_frontend.Tensor(ivy.astype(self._ivy_array, dtype))
 
     @with_supported_dtypes(
         {"2.5.0 and below": ("bool", "uint8", "int8", "int16", "int32", "int64")},

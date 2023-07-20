@@ -260,7 +260,7 @@ class Array(
             self._size = (
                 functools.reduce(mul, self._data.shape)
                 if len(self._data.shape) > 0
-                else 0
+                else 1
             )
         return self._size
 
