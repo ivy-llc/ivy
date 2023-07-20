@@ -29,6 +29,7 @@ def test_lgamma(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,

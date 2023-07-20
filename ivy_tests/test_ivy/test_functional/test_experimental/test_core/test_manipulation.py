@@ -1020,7 +1020,7 @@ def test_fill_diagonal(
         input_dtypes=dt,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=a[0],
         v=v,

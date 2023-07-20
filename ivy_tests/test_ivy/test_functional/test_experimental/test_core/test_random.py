@@ -3,8 +3,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
-import ivy
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 
 
 # Helpers #
@@ -49,16 +48,21 @@ def test_dirichlet(
         )
 
     ret, ret_gt = call()
-    if seed:
-        ret1, ret_gt1 = call()
-        assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for u, v in zip(ret, ret_gt):
-        u, v = ivy.array(u), ivy.array(v)
-        assert ivy.all(ivy.sum(u, axis=-1) == ivy.sum(v, axis=-1))
-        assert ivy.all(u >= 0) and ivy.all(u <= 1)
-        assert ivy.all(v >= 0) and ivy.all(v <= 1)
+    with update_backend(backend_fw) as ivy_backend:
+        if seed:
+            ret1, ret_gt1 = call()
+            assert ivy_backend.any(ret == ret1)
+        ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(
+            ret=ret_gt, backend=test_flags.ground_truth_backend
+        )
+        for u, v in zip(ret, ret_gt):
+            u, v = ivy_backend.array(u), ivy_backend.array(v)
+            assert ivy_backend.all(
+                ivy_backend.sum(u, axis=-1) == ivy_backend.sum(v, axis=-1)
+            )
+            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
 
 # beta
@@ -100,11 +104,14 @@ def test_beta(
         dtype=dtype[0],
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for u, v in zip(ret, ret_gt):
-        assert ivy.all(u >= 0) and ivy.all(u <= 1)
-        assert ivy.all(v >= 0) and ivy.all(v <= 1)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    with update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            assert ivy_backend.all(u >= 0) and ivy_backend.all(u <= 1)
+            assert ivy_backend.all(v >= 0) and ivy_backend.all(v <= 1)
 
 
 # gamma
@@ -140,11 +147,14 @@ def test_gamma(
         dtype=dtype[0],
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for u, v in zip(ret, ret_gt):
-        assert ivy.all(u >= 0)
-        assert ivy.all(v >= 0)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
+    with update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            assert ivy_backend.all(u >= 0)
+            assert ivy_backend.all(v >= 0)
 
 
 # poisson
@@ -194,9 +204,12 @@ def test_poisson(
     ret, ret_gt = call()
     if seed:
         ret1, ret_gt1 = call()
-        assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+        with update_backend(backend_fw) as ivy_backend:
+            assert ivy_backend.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
     for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
