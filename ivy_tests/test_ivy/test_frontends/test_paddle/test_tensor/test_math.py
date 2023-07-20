@@ -1,4 +1,5 @@
 # global
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1578,15 +1579,16 @@ def test_paddle_heaviside(
     fn_tree="paddle.tensor.math.count_nonzero",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
+        valid_axis=True,
+        allow_neg_axes=False,
         force_int_axis=False,
     ),
+    keepdim=st.booleans(),
 )
 def test_paddle_count_nonzero(
     *,
     dtype_and_x,
+    keepdim,
     on_device,
     fn_tree,
     frontend,
@@ -1601,5 +1603,5 @@ def test_paddle_count_nonzero(
         on_device=on_device,
         x=x[0],
         axis=axis,
-        keepdim=False,
+        keepdim=keepdim,
     )
