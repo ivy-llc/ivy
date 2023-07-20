@@ -810,39 +810,33 @@ def test_numpy_instance_max(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="put",
-    dtype_and_x=helpers.dtype_and_values(
+    dtypes_x_index_value_mode=helpers.dtype_array_index_value_mode(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        min_num_dims=1,
-        min_dim_size=2,
     ),
-    ind=helpers.ints(min_value=0, max_value=0),
 )
 def test_numpy_instance_put(
-    dtype_and_x,
-    ind,
+    dtypes_x_index_value_mode,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtypes, x = dtype_and_x
+    input_dtype, x, ind, v, mode = dtypes_x_index_value_mode
+    print(ind)
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"object": x},
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={
             "ind": ind,
-            "v": x[1][0],
-            "mode": "clip",
+            "v": v,
+            "mode": mode,
         },
-        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 

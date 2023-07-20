@@ -1956,6 +1956,55 @@ def dtype_array_query_val(
     return input_dtype + [val_dtype], x, query, val
 
 
+# change so that it suits with the mode
+@st.composite
+def dtype_array_index_value_mode(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=1,
+    min_dim_size=1,
+    max_dim_size=10,
+    allow_mask=True,
+    allow_neg_step=True,
+):
+    mode = st.sampled_from(["raise", "clip", "wrap"])
+
+    input_dtype, x, index = draw(
+        helpers.dtype_array_query(
+            available_dtypes=available_dtypes,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            allow_mask=allow_mask,
+            allow_neg_step=allow_neg_step,
+        )
+    )
+
+    real_shape = x[index].shape
+    assume(math.prod(real_shape) > 0)
+    if len(real_shape):
+        val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
+    else:
+        val_shape = real_shape
+    value_dtype, value = draw(
+        helpers.dtype_and_values(
+            dtype=[input_dtype[0]],
+            shape=val_shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+        )
+    )
+    value_dtype = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+    )[-1]
+    value = value[0].astype(value_dtype)
+
+    return input_dtype + [value_dtype], x, index, value, mode
+
+
 @st.composite
 def create_nested_input(draw, dimensions, leaf_values):
     if len(dimensions) != 1:
