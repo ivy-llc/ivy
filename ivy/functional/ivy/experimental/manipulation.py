@@ -2280,3 +2280,46 @@ def partial_unfold(
     return ivy.reshape(
         ivy.moveaxis(input, mode + skip_begin, skip_begin), new_shape, out=out
     )
+
+
+# TODO add container and array methods
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_fold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: int,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    skip_begin: Optional[int] = 1,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Re-folds a partially unfolded tensor.
+
+    Parameters
+    ----------
+    input
+        a partially unfolded tensor
+    mode
+        indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+    shape
+        the shape of the original full tensor (including skipped dimensions)
+    skip_begin
+        number of dimensions left untouched at the beginning
+
+    Returns
+    -------
+    ret
+        partially re-folded tensor
+    """
+    transposed_shape = list(shape)
+    mode_dim = transposed_shape.pop(skip_begin + mode)
+    transposed_shape.insert(skip_begin, mode_dim)
+    return ivy.moveaxis(
+        ivy.reshape(input, transposed_shape), skip_begin, skip_begin + mode, out=out
+    )
