@@ -158,8 +158,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             b: ivy.array(9.)
         }
         """
-        return self.cont_single_map_in_function(
-            "mse_loss",
+        return _ContainerWithLossesExperimental._static_mse_loss(
             pred,
             axis=axis,
             key_chains=key_chains,
@@ -320,8 +319,7 @@ class _ContainerWithLossesExperimental(ContainerBase):
             b: ivy.array(2.)
         }
         """
-        return self.cont_single_map_in_function(
-            "mae_loss",
+        return _ContainerWithLossesExperimental._static_mae_loss(
             pred,
             axis=axis,
             key_chains=key_chains,
