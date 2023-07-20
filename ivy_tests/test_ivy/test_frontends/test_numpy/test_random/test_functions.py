@@ -711,34 +711,34 @@ def test_numpy_gumbel(
 
 @handle_frontend_test(
     fn_tree="numpy.random.f",
-    input_dtypes=helpers.get_dtypes("float"),
-    dfn=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    dfn=st.one_of(
+        st.floats(
+            min_value=0,
+            max_value=1000,
+            exclude_min=True,
+            width=32,
+        ),
     ),
-    dfd=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
+    dfd=st.one_of(
+        st.floats(
+            min_value=0,
+            max_value=1000,
+            exclude_min=True,
+            width=32,
+        ),
     ),
     size=helpers.get_shape(allow_none=True),
 )
 def test_numpy_f(
     input_dtypes,
+    size,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    dfd,
     dfn,
-    size,
+    dfd,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -746,8 +746,7 @@ def test_numpy_f(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
-        dfd=dfd,
         dfn=dfn,
+        dfd=dfd,
         size=size,
     )
