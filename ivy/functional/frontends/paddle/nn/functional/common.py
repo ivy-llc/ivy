@@ -89,8 +89,8 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def pad(x, pad_width, mode="constant", stat_length=1, constant_values=0, end_values=0, reflect_type="even", name=None):
-    return ivy.pad(x, pad_width, mode=mode, stat_length=stat_length, constant_values=constant_values, end_values=end_values, reflect_type=reflect_type)
+def pad(x, pad, mode='constant', value=0.0, name=None):
+    return ivy.pad(x, pad, mode=mode, constant_values=value)
 
 
 @to_ivy_arrays_and_back
