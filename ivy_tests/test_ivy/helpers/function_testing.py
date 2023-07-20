@@ -275,6 +275,7 @@ def test_function(
         getattr(ivy, fn_name)
     ).parameters:
         raise Exception(f"Function {fn_name} does not have an out parameter")
+
     # Run either as an instance method or from the API directly
     instance = None
     if instance_method:
