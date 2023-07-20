@@ -2152,3 +2152,73 @@ def fill_diagonal(
         Array with the diagonal filled.
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+
+
+# TODO add container and array methods
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def unfold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: Optional[int] = 0,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the mode-`mode` unfolding of `tensor` with modes starting at `0`.
+
+    Parameters
+    ----------
+    input
+        input tensor to be unfolded
+    mode
+        indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+
+    Returns
+    -------
+    ret
+        unfolded_tensor of shape ``(tensor.shape[mode], -1)``
+    """
+    return ivy.reshape(ivy.moveaxis(input, mode, 0), (input.shape[mode], -1), out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def fold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: int,
+    shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Refolds the mode-`mode` unfolding into a tensor of shape `shape` In other words,
+    refolds the n-mode unfolded tensor into the original tensor of the specified shape.
+
+    Parameters
+    ----------
+    input
+        unfolded tensor of shape ``(shape[mode], -1)``
+    mode
+        the mode of the unfolding
+    shape
+        shape of the original tensor before unfolding
+
+    Returns
+    -------
+    ret
+        folded_tensor of shape `shape`
+    """
+    full_shape = list(shape)
+    mode_dim = full_shape.pop(mode)
+    full_shape.insert(0, mode_dim)
+    return ivy.moveaxis(ivy.reshape(input, full_shape), 0, mode, out=out)

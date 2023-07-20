@@ -1026,3 +1026,71 @@ def test_fill_diagonal(
         v=v,
         wrap=wrap,
     )
+
+
+# TODO Add instance and container methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.unfold",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    ),
+)
+def test_unfold(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, axis = dtype_values_axis
+    if axis is None:
+        axis = 0
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        mode=axis,
+    )
+
+
+@st.composite
+def _fold_data(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=3
+        )
+    )
+    mode = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    reduced_dims = int(ivy.prod(shape[0:mode]) * ivy.prod(shape[mode + 1 :]))
+    unfolded_shape = (shape[mode], reduced_dims)
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), shape=unfolded_shape
+        )
+    )
+    return dtype, input, shape, mode
+
+
+# TODO Add container and instance methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.fold",
+    data=_fold_data(),
+)
+def test_fold(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, shape, mode = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        mode=mode,
+        shape=shape,
+    )
