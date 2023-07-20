@@ -1,6 +1,7 @@
 # global
 from hypothesis import strategies as st
 import math
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -461,7 +462,7 @@ def _scatter_nd_helper(draw):
 
     x_min_value = draw(st.floats(min_value=0, max_value=10))
     x_max_value = draw(st.floats(min_value=x_min_value, max_value=20))
-    
+
     shape_st = st.shared(
         helpers.get_shape(
             min_num_dims=min_num_dims,
@@ -501,6 +502,7 @@ def _scatter_nd_helper(draw):
         )
     )
     return (array_dtype, indices_dtype, array_dtype), x, ind, updates
+
 
 @handle_frontend_test(
     fn_tree="paddle.scatter_nd",
