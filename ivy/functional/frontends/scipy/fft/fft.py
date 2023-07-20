@@ -28,3 +28,8 @@ def dct(x, type=2, n=None, axis=-1, norm=None, overwrite_x=False, orthogonalize=
 def idct(x, type=2, n=None, axis=-1, norm=None, overwrite_x=False, orthogonalize=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(x, type=inverse_type, n=n, axis=axis, norm=norm)
+
+
+@to_ivy_arrays_and_back
+def fft2(x, s=None, axes=(-2, -1), norm=None, overwrite_x=False):
+    return ivy.fft2(x, s=s, dim=axes, norm=norm)

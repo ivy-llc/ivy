@@ -18,7 +18,7 @@
 
 ..
 
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+   🚀 We are granting pilot access to **Ivy's Compiler and Transpiler** to some users, `join the waitlist <https://console.unify.ai/>`_ if you want to test them out!
 
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
@@ -75,14 +75,14 @@ Status
     <a href="https://github.com/unifyai/ivy/pulls">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://pypi.org/project/ivy-core">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
+    <a href="https://pypi.org/project/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/intelligent-tests.yml/badge.svg">
     </a>
     <a href="https://discord.gg/sXyFF8tDtm">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
@@ -235,9 +235,13 @@ The `Ivy Stateful API <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framew
 
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
-            ivy.Module.__init__(self)
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
+
+        def _build(self, *args, **kwargs):
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -256,9 +260,13 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
-            ivy.Module.__init__(self)
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
+
+        def _build(self, *args, **kwargs):
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -277,7 +285,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
-    def loss_fn(pred, target):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
     for epoch in range(40):
@@ -285,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -374,13 +383,13 @@ The easiest way to set up Ivy is to install it using pip with the following comm
 
 .. code-block:: bash
 
-    pip install ivy-core
+    pip install ivy
 
 or alternatively:
 
 .. code-block:: bash
 
-    python3 -m pip install ivy-core
+    python3 -m pip install ivy
 
 
 Docker
@@ -469,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
@@ -1431,22 +1440,30 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
             data_format="NCHW",
             device="cpu",
         ):
+            self.h_w = h_w
+            self.input_channels = input_channels
+            self.output_channels = output_channels
+            self.num_classes = num_classes
+            self.data_format = data_format
+            self.device = device
+            super().__init__()
+        
+        def _build(self, *args, **kwargs):
             self.extractor = ivy.Sequential(
-                ivy.Conv2D(input_channels, 6, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(self.input_channels, 6, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(16, output_channels, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(16, self.output_channels, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
             )
 
             self.classifier = ivy.Sequential(
                 # since padding is "SAME", this would be image_height x image_width x output_channels
-                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
+                ivy.Linear(self.h_w[0] * self.h_w[1] * self.output_channels, 512),
                 ivy.GELU(),
-                ivy.Linear(512, num_classes),
+                ivy.Linear(512, self.num_classes),
             )
-            ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = self.extractor(x)
@@ -1534,6 +1551,12 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
+    # training hyperparams
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
@@ -1542,13 +1565,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
         device=device,
     )
     model_name = type(model).__name__.lower()
-    
-    
-    # training hyperparams
-    optimizer= ivy.Adam(1e-4)
-    batch_size = 64 
-    num_epochs = 20
-    num_classes = 10
     
     
     # training loop
@@ -1580,8 +1596,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])

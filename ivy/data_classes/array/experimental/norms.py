@@ -20,10 +20,11 @@ class _ArrayWithNormsExperimental(abc.ABC):
         self
             Input array.
         axis
-            Axis or axes along which to normalize. If ``None``, the whole array is normalized.
+            Axis or axes along which to normalize. If ``None``,
+            the whole array is normalized.
         out
-            Optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            Optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -208,6 +209,60 @@ class _ArrayWithNormsExperimental(abc.ABC):
             training=training,
             eps=eps,
             momentum=momentum,
+            out=out,
+            data_format=data_format,
+        )
+
+    def group_norm(
+        self: Union[ivy.NativeArray, ivy.Array],
+        num_groups: int = 1,
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array]] = None,
+        eps: Optional[float] = 1e-5,
+        data_format: Optional[str] = "NSC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.group_norm. This method simply wraps
+        the function, and so the docstring for ivy.group_norm also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array of default shape (N, *S, C), where N is the batch dimension,
+            *S corresponds to any number of spatial dimensions and
+            C corresponds to the channel dimension.
+        num_groups
+            number of groups to separate the channels into
+        offset
+            An offset array of size C. If present, will be added
+            to the normalized input.
+        scale
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
+        eps
+            A small float number to avoid dividing by 0.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
+        out
+            optional output arrays, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The normalized array.
+        """
+        return ivy.group_norm(
+            self._data,
+            num_groups,
+            scale=scale,
+            offset=offset,
+            eps=eps,
             out=out,
             data_format=data_format,
         )

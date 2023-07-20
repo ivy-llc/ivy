@@ -1,7 +1,6 @@
 # global
-_round = round
 import tensorflow as tf
-from typing import Union, Optional, Sequence, Tuple
+from typing import Union, Optional, Sequence
 
 # local
 import ivy
@@ -13,7 +12,7 @@ from . import backend_version
 # -------------------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def min(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -26,7 +25,7 @@ def min(
     return tf.math.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def max(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -131,27 +130,18 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-    if correction == 1:
-        return tf.experimental.numpy.var(
-            x, axis=axis[0], out=out, keepdims=keepdims, dtype=x.dtype, ddof=1
-        )
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
-        ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
+        ret = tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+        ret = tf.cast(tf.fill(ret.shape, float("nan")), ret.dtype)
         return ret
     else:
-        return ivy.astype(
-            tf.math.multiply(
-                tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
-                size / (size - correction),
-            ),
-            x.dtype,
-            copy=False,
+        return (
+            tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
+            * size
+            / (size - correction)
         )
 
 
@@ -159,7 +149,7 @@ def var(
 # ------#
 
 
-@with_unsupported_dtypes({"2.12.0 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -179,37 +169,6 @@ def cumprod(
         dtype = ivy.as_native_dtype(dtype)
     x = tf.cast(x, dtype)
     return tf.math.cumprod(x, axis, exclusive, reverse)
-
-
-@with_unsupported_dtypes(
-    {"2.12.0 and below": ("bfloat16", "complex")},
-    backend_version,
-)
-def cummin(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    axis: int = 0,
-    reverse: bool = False,
-    dtype: Optional[tf.DType] = None,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    dtype = ivy.as_native_dtype(dtype)
-    if reverse:
-        x = tf.reverse(x, axis=[axis])
-    x_unstacked = tf.unstack(x, axis=axis)
-    cummin_x_unstacked = []
-    cummin_x_unstacked.append(x_unstacked[0])
-    for i, x_sub in enumerate(x_unstacked[1:]):
-        cummin_x_sub = tf.minimum(cummin_x_unstacked[i], x_sub)
-        cummin_x_unstacked.append(cummin_x_sub)
-    cummin_x = tf.stack(cummin_x_unstacked, axis=axis)
-    if reverse:
-        cummin_x = tf.reverse(cummin_x, axis=[axis])
-    if dtype is None:
-        return cummin_x
-    else:
-        return tf.cast(cummin_x, dtype)
 
 
 def cumsum(
@@ -234,135 +193,8 @@ def cumsum(
     return tf.math.cumsum(x, axis, exclusive, reverse)
 
 
-def cummax(
-    x: Union[tf.Tensor, tf.Variable],
-    axis: int = 0,
-    exclusive: bool = False,
-    reverse: bool = False,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor, tf.Tensor]:
-    if x.dtype in (tf.bool, tf.float16):
-        x = tf.cast(x, tf.float64)
-    elif x.dtype in (tf.int16, tf.int8, tf.uint8):
-        x = tf.cast(x, tf.int64)
-    elif x.dtype in (tf.complex128, tf.complex64):
-        x = tf.cast(tf.math.real(x), tf.float64)
-
-    if exclusive or reverse:
-        if exclusive and reverse:
-            x, indices = __find_cummax(
-                tf.experimental.numpy.flip(x, axis=axis), axis=axis
-            )
-            x, indices = tf.experimental.numpy.swapaxes(
-                x, axis, -1
-            ), tf.experimental.numpy.swapaxes(indices, axis, -1)
-            x, indices = tf.experimental.numpy.concatenate(
-                (tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1
-            ), tf.experimental.numpy.concatenate(
-                (
-                    tf.experimental.numpy.zeros_like(indices[..., -1:]),
-                    indices[..., :-1],
-                ),
-                -1,
-            )
-            x, indices = tf.experimental.numpy.swapaxes(
-                x, axis, -1
-            ), tf.experimental.numpy.swapaxes(indices, axis, -1)
-            res, indices = tf.experimental.numpy.flip(
-                x, axis=axis
-            ), tf.experimental.numpy.flip(indices, axis=axis)
-        elif exclusive:
-            x = tf.experimental.numpy.swapaxes(x, axis, -1)
-            x = tf.experimental.numpy.concatenate(
-                (tf.experimental.numpy.zeros_like(x[..., -1:]), x[..., :-1]), -1
-            )
-            x = tf.experimental.numpy.swapaxes(x, axis, -1)
-            res, indices = __find_cummax(x, axis=axis)
-        elif reverse:
-            x = tf.experimental.numpy.flip(x, axis=axis)
-            x, indices = __find_cummax(x, axis=axis)
-            res, indices = tf.experimental.numpy.flip(
-                x, axis=axis
-            ), tf.experimental.numpy.flip(indices, axis=axis)
-        return res, indices
-
-    return __find_cummax(x, axis=axis)
-
-
-def __find_cummax(x: tf.Tensor, axis: int = 0) -> Tuple[tf.Tensor, tf.Tensor]:
-    values, indices = [], []
-    if (
-        isinstance(x[0], tf.Tensor)
-        and isinstance(x[0].numpy().tolist(), list)
-        and len(x[0].numpy().tolist()) >= 1
-    ):
-        if axis >= 1:
-            for ret1 in x:
-                value, indice = __find_cummax(ret1, axis=axis - 1)
-                indices.append(indice)
-                values.append(value)
-        else:
-            x_list = x.numpy()
-            z_list = __get_index(x_list.tolist())
-            indices, values, n1 = x_list.copy(), x_list.copy(), {}
-            indices.fill(0)
-            values.fill(0)
-            z_list = sorted(z_list, key=lambda i: i[1])
-            for y, y_index in z_list:
-                multi_index = y_index
-                if tuple(multi_index[1:]) not in n1:
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                elif (
-                    y
-                    >= x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-                ):
-                    n1[tuple(multi_index[1:])] = multi_index[0]
-                    indices[y_index] = multi_index[0]
-                    values[y_index] = y
-                else:
-                    indices[y_index] = n1[tuple(multi_index[1:])]
-                    values[y_index] = x_list[
-                        tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))
-                    ]
-    else:
-        x_indices = tf.convert_to_tensor(list(range(0, x.shape[0])), dtype=x.dtype)
-        values, indices = tf.scan(
-            lambda a, b: (
-                a
-                if a > b
-                or tf.experimental.numpy.where(x[0].numpy() == b[0].numpy()) == 0
-                else b
-            ),
-            (x, x_indices),
-        )
-
-    return tf.convert_to_tensor(values, dtype=x.dtype), tf.cast(
-        tf.convert_to_tensor(indices), dtype=tf.int64
-    )
-
-
-def __get_index(lst, indices=None, prefix=None):
-    if indices is None:
-        indices = []
-    if prefix is None:
-        prefix = []
-
-    if isinstance(lst, list):
-        for i, sub_lst in enumerate(lst):
-            sub_indices = prefix + [i]
-            __get_index(sub_lst, indices, sub_indices)
-    else:
-        indices.append((lst, tuple(prefix)))
-    return indices
-
-
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("unsigned", "int8", "int16")},
+    {"2.13.0 and below": ("unsigned", "int8", "int16")},
     backend_version,
 )
 def einsum(

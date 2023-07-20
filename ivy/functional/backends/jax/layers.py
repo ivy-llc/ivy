@@ -120,6 +120,9 @@ def conv2d(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if isinstance(padding, int):
         padding = [(padding, padding)] * 2
+    promoted_type = jnp.promote_types(x.dtype, filters.dtype)
+    x = x.astype(promoted_type)
+    filters = filters.astype(promoted_type)
     return jlax.conv_general_dilated(
         x,
         filters,
