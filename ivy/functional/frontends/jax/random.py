@@ -1,5 +1,6 @@
-#global
+# global
 import operator
+
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
@@ -325,7 +326,7 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     g = ivy.gamma(1 / p, 1.0, shape=shape, dtype=dtype, seed=seed)
     b = ivy.bernoulli(ivy.array([0.5]), shape=shape, dtype=dtype, seed=seed)
     r = 2 * b - 1
-    gn =  r * g ** (1 / p)
+    gn = r * g ** (1 / p)
 
     uniform = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     exp = -ivy.log(1 - uniform)
