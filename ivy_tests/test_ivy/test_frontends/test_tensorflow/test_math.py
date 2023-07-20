@@ -1482,6 +1482,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -2776,10 +2777,13 @@ def test_tensorflow_conj(
     sorted=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_tensorflow_top_k(*, dtype_and_x, frontend, test_flags, fn_tree, on_device, k):
+def test_tensorflow_top_k(
+    *, dtype_and_x, frontend, test_flags, fn_tree, on_device, k, backend_fw
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
