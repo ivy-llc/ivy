@@ -4012,3 +4012,36 @@ def test_tensorflow_Imag(
         input=xs[0],
         Tout=send_Tout,
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.ExpandDims",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_tensorflow_ExpandDims(
+    *,
+    dtype_value,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        axis=axis,
+    )
