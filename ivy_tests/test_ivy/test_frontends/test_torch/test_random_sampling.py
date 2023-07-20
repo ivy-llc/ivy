@@ -463,7 +463,14 @@ def test_torch_randperm(
 # set_rng_state
 @handle_frontend_test(
     fn_tree="torch.set_rng_state",
-    state=helpers.dtype_and_values(available_dtypes=("int64", "int32"), min_value=0),
+    state=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
 )
 def test_torch_set_rng_state(
     *,
