@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method, handle_test
+from ivy_tests.test_ivy.helpers import handle_method, handle_test, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -14,7 +14,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
-from ivy.data_classes.array import Array
 
 CLASS_TREE = "ivy.array"
 
@@ -68,18 +67,21 @@ def test_array_function():
 )
 def test_array_property_data(
     dtype_x,
-    ground_truth_backend,
+    backend_fw,
+    test_flags,
 ):
     _, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ret = helpers.flatten_and_to_np(ret=x.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend=ground_truth_backend,
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ret = helpers.flatten_and_to_np(ret=x.data, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=data, backend=backend_fw)
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
 
 
 @handle_test(
@@ -88,11 +90,15 @@ def test_array_property_data(
 )
 def test_array_property_dtype(
     dtype_x,
+    backend_fw,
 ):
     _, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(x.dtype, ivy.dtype(data), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.dtype, ivy_backend.dtype(data), as_array=False
+        )
 
 
 @handle_test(
@@ -101,11 +107,15 @@ def test_array_property_dtype(
 )
 def test_array_property_device(
     dtype_x,
+    backend_fw,
 ):
     _, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.device, ivy_backend.dev(data), as_array=False
+        )
 
 
 @handle_test(
@@ -117,11 +127,15 @@ def test_array_property_device(
 )
 def test_array_property_ndim(
     dtype_x,
+    backend_fw,
 ):
     _, data, input_shape = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(x.ndim, len(input_shape), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.ndim, len(input_shape), as_array=False
+        )
 
 
 @handle_test(
@@ -133,11 +147,15 @@ def test_array_property_ndim(
 )
 def test_array_property_shape(
     dtype_x,
+    backend_fw,
 ):
     _, data, input_shape = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(input_shape), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.shape, ivy_backend.Shape(input_shape), as_array=False
+        )
 
 
 @handle_test(
@@ -150,14 +168,16 @@ def test_array_property_shape(
 )
 def test_array_property_size(
     dtype_x,
+    backend_fw,
 ):
     _, data, input_shape = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    size_gt = 1
-    for dim in input_shape:
-        size_gt *= dim
-    ivy.utils.assertions.check_equal(x.size, size_gt, as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        size_gt = 1
+        for dim in input_shape:
+            size_gt *= dim
+        ivy_backend.utils.assertions.check_equal(x.size, size_gt, as_array=False)
 
 
 @handle_test(
@@ -168,13 +188,15 @@ def test_array_property_size(
 )
 def test_array_property_itemsize(
     dtype_x,
+    backend_fw,
 ):
     dtype, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(
-        x.itemsize, ivy.to_numpy(x).itemsize, as_array=False
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.itemsize, ivy_backend.to_numpy(x).itemsize, as_array=False
+        )
 
 
 @handle_test(
@@ -183,13 +205,14 @@ def test_array_property_itemsize(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_array_property_strides(
-    dtype_x,
-):
+def test_array_property_strides(dtype_x, backend_fw):
     dtype, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ivy.utils.assertions.check_equal(x.strides, ivy.to_numpy(x).strides, as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ivy_backend.utils.assertions.check_equal(
+            x.strides, ivy_backend.to_numpy(x).strides, as_array=False
+        )
 
 
 @handle_test(
@@ -202,17 +225,22 @@ def test_array_property_strides(
 def test_array_property_mT(
     dtype_x,
     ground_truth_backend,
+    backend_fw,
 ):
     _, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ret = helpers.flatten_and_to_np(ret=x.mT)
-    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend=ground_truth_backend,
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ret = helpers.flatten_and_to_np(ret=x.mT, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(
+            ret=ivy_backend.matrix_transpose(data), backend=ground_truth_backend
+        )
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend=ground_truth_backend,
+        )
 
 
 @handle_test(
@@ -226,17 +254,22 @@ def test_array_property_mT(
 def test_array_property_T(
     dtype_x,
     ground_truth_backend,
+    backend_fw,
 ):
     _, data = dtype_x
-    data = ivy.native_array(data[0])
-    x = Array(data)
-    ret = helpers.flatten_and_to_np(ret=x.T)
-    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend=ground_truth_backend,
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ret = helpers.flatten_and_to_np(ret=x.T, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(
+            ret=ivy.matrix_transpose(data), backend=ground_truth_backend
+        )
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend=ground_truth_backend,
+        )
 
 
 @handle_method(
