@@ -400,6 +400,7 @@ def test_silu(
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
+        min_num_dims=2,
     ),
     method_num_positional_args=helpers.num_positional_args(fn_name="Sigmoid._forward"),
     test_gradients=st.just(True),
