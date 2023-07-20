@@ -10328,3 +10328,37 @@ def test_torch_instance_backward(
         atol=1e-3,
         ground_truth_backend="torch",
     )
+
+
+# angle
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="angle",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_torch_instance_angle(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )

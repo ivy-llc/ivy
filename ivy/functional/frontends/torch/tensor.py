@@ -1566,6 +1566,9 @@ class Tensor:
             else:
                 next_function(_grad_list[idx])
 
+    def angle(self):
+        return torch_frontend.angle(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
