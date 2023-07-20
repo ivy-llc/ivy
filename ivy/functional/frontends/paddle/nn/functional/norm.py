@@ -43,7 +43,6 @@ def instance_norm(x,
         momentum=momentum,
     )
     x_normalized = x_normalized.reshape((*S, N, C))
-
     if data_format == "NCS":
         x_normalized = ivy.permute_dims(
             x_normalized, axes=(n_dims - 2, n_dims - 1, *range(0, n_dims - 2))
@@ -53,10 +52,7 @@ def instance_norm(x,
             x_normalized, axes=(n_dims - 2, *range(0, n_dims - 2), n_dims - 1)
         )
 
-    running_mean = running_mean.reshape((N, C)).mean(axis=0)
-    running_variance = running_variance.reshape((N, C)).mean(axis=0)
-
-    return x_normalized, running_mean, running_variance
+    return x_normalized
 
 
 @to_ivy_arrays_and_back
