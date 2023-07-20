@@ -637,3 +637,62 @@ def test_cov(*, dtype_x1_x2_cov, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-2,
         atol_=1e-2,
     )
+
+
+@st.composite
+def _khatri_rao_data(draw):
+    num_matrices = draw(helpers.ints(min_value=2, max_value=4))
+    m = draw(helpers.ints(min_value=1, max_value=5))
+    input_dtypes, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=num_matrices,
+            min_dim_size=m,
+            max_dim_size=m,
+            min_num_dims=2,
+            max_num_dims=2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    skip_matrix = draw(helpers.ints(min_value=0, max_value=len(input) - 1))
+    _, weights = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"), shape=(m,)
+        )
+    )
+    _, mask = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=1,
+            shape=(m,),
+        )
+    )
+    return input_dtypes, input, skip_matrix, weights[0], mask[0]
+
+
+# TODO fix instance method
+# TODO fix out argument
+@handle_test(
+    fn_tree="functional.ivy.experimental.khatri_rao",
+    data=_khatri_rao_data(),
+)
+def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input, skip_matrix, weights, mask = data
+    test_flags.instance_method = False
+    test_flags.with_out = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        input=input,
+        weights=weights,
+        skip_matrix=skip_matrix,
+        mask=mask,
+    )

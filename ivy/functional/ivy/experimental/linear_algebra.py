@@ -1,4 +1,5 @@
 # global
+import logging
 from typing import Union, Optional, Tuple, List, Sequence
 
 # local
@@ -11,6 +12,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_array_function,
     handle_device_shifting,
+    inputs_to_ivy_arrays,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -559,3 +561,102 @@ def cond(
         ivy.array(21.0)
     """
     return current_backend(x).cond(x, p=p, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def khatri_rao(
+    input: List[Union[ivy.Array, ivy.NativeArray]],
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    skip_matrix: Optional[Sequence[int]] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Khatri-Rao product of a list of matrices.
+
+        This can be seen as a column-wise kronecker product.
+        If one matrix only is given, that matrix is directly returned.
+
+    Parameters
+    ----------
+    input
+        list of input with the same number of columns, i.e.::
+            for i in len(input):
+                input[i].shape = (n_i, m)
+
+    weights
+        array of weights for each rank, of length m, the number of column of the factors
+        (i.e. m == factor[i].shape[1] for any factor)
+
+    skip_matrix
+        if not None, index of a matrix to skip
+
+    mask
+        array of 1s and 0s of length m
+
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    khatri_rao_product: matrix of shape ``(prod(n_i), m)``
+        where ``prod(n_i) = prod([m.shape[0] for m in input])``
+        i.e. the product of the number of rows of all the input in the product.
+    """
+    if skip_matrix is not None:
+        input = [input[i] for i in range(len(input)) if i != skip_matrix]
+
+    # Khatri-rao of only one matrix: just return that matrix
+    if len(input) == 1:
+        return input[0]
+
+    if len(input[0].shape) == 2:
+        n_columns = input[0].shape[1]
+    else:
+        n_columns = 1
+        input = [ivy.reshape(m, (-1, 1)) for m in input]
+        logging.warning(
+            "Khatri-rao of a series of vectors instead of input. "
+            "Considering each as a matrix with 1 column."
+        )
+
+    # Testing whether the input have the proper size
+    for i, matrix in enumerate(input):
+        if len(matrix.shape) != 2:
+            raise ValueError(
+                "All the input must have exactly 2 dimensions!"
+                f"Matrix {i} has dimension {len(matrix.shape)} != 2."
+            )
+        if matrix.shape[1] != n_columns:
+            raise ValueError(
+                "All input must have same number of columns!"
+                f"Matrix {i} has {matrix.shape[1]} columns != {n_columns}."
+            )
+
+    for i, e in enumerate(input[1:]):
+        if not i:
+            if weights is None:
+                res = input[0]
+            else:
+                res = input[0] * ivy.reshape(weights, (1, -1))
+        s1, s2 = ivy.shape(res)
+        s3, s4 = ivy.shape(e)
+
+        a = ivy.reshape(res, (s1, 1, s2))
+        b = ivy.reshape(e, (1, s3, s4))
+        res = ivy.reshape(a * b, (-1, n_columns))
+
+    m = ivy.reshape(mask, (1, -1)) if mask is not None else 1
+
+    res = res * m
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+
+    return res
