@@ -300,3 +300,26 @@ class Hardswish(Module):
             The outputs following the HARDSWISH activation *[batch_shape, d]*
         """
         return ivy.hardswish(x)
+
+
+class Logit(Module):
+    def __init__(self):
+        """Apply the LOGIT activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, eps=None):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        eps
+            The epsilon value for the logit formation. Default: ``None``.
+
+        Returns
+        -------
+        ret
+            The outputs following the LOGIT activation *[batch_shape, d]*
+        """
+        return ivy.logit(x, eps=eps)
