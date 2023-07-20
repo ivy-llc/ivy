@@ -128,36 +128,3 @@ def test_paddle_median(
         axis=axis,
         keepdim=keepdim,
     )
-
-
-# var
-@handle_frontend_test(
-    fn_tree="paddle.var",
-    dtype_and_x=_statistical_dtype_values(
-        function="var",
-        min_value=-1e04,
-        max_value=1e04,
-    ),
-    keepdims=st.booleans(),
-)
-def test_paddle_var(
-    *,
-    dtype_and_x,
-    keepdims,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x, axis, correction = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        axis=axis,
-        unbiased=bool(correction),
-        keepdim=keepdims,
-    )

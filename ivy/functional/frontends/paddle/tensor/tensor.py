@@ -561,9 +561,15 @@ class Tensor:
     def sign(self, name=None):
         return paddle_frontend.Tensor(ivy.sign(self._ivy_array, np_variant=False))
 
-    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    @with_supported_dtypes(
+        {"2.5.0 and below": ("float16", "float32", "float64")}, "paddle"
+    )
     def var(self, axis=None, unbiased=True, keepdim=False, name=None):
-        return paddle_frontend.var(self, axis=axis, unbiased=unbiased, keepdim=keepdim)
+        return paddle_frontend.Tensor(
+            ivy.var(
+                self._ivy_array, axis=axis, correction=int(unbiased), keepdims=keepdim
+            )
+        )
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sgn(self, name=None):
