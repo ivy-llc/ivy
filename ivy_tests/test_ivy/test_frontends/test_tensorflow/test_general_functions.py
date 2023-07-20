@@ -2207,3 +2207,28 @@ def test_unravel_index(*, indices, dims, frontend, test_flags, fn_tree, on_devic
         indices=indices[0],
         dims=dims[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.make_ndarray",
+    input_dtype_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_tensorflow_make_ndarray(
+    *,
+    input_dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_datatype, x = input_dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=x_datatype,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        frontend=frontend,
+        test_flags=test_flags,
+        tensor=x,
+    )
