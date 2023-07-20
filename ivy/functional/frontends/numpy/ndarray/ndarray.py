@@ -260,6 +260,9 @@ class ndarray:
             out=out,
         )
 
+    def dot(self, b, out=None):
+        return np_frontend.dot(self, b, out=out)
+
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
             self,

@@ -21,7 +21,6 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_shapes,
     handle_device_shifting,
-    inputs_to_native_shapes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
