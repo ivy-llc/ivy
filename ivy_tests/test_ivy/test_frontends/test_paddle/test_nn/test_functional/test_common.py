@@ -204,7 +204,7 @@ def test_paddle_zeropad2d(
     ),
     mode=st.sampled_from(["constant", "reflect", "replicate", "circular"]),
     constant_value=st.floats(min_value=-100, max_value=100),
-    )
+)
 def test_paddle_pad(
     *,
     dtype_and_x_paddings,
