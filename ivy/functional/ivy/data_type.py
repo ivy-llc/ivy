@@ -20,7 +20,6 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
-    inputs_to_native_shapes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
