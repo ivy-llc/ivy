@@ -448,7 +448,7 @@ def unstack(
     return ret
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, backend_version)
 def put_along_axis(
     arr: paddle.Tensor,
     indices: paddle.Tensor,
@@ -457,6 +457,7 @@ def put_along_axis(
     /,
     *,
     mode: str = "assign",
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if mode == "sum":
         mode = "add"
@@ -466,6 +467,6 @@ def put_along_axis(
     return ret
 
 
-put_along_axis.partial_mixed_handler = lambda *args, mode, **kwargs: mode in [
+put_along_axis.partial_mixed_handler = lambda *args, mode='assign', **kwargs: mode in [
     "assign",
 ]
