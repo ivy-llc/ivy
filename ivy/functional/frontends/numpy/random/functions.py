@@ -191,8 +191,6 @@ def f(dfn=1.0, dfd=1.0, size=None):
     # Generate samples from the uniform distribution
     x1 = ivy.gamma(dfn / 2, 2, shape=size, dtype="float64")
     x2 = ivy.gamma(dfd / 2, 2, shape=size, dtype="float64")
-
     # Calculate the F-distributed samples
-    samples = (x1 / dfn) / (x2 / dfd)
-
+    samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
     return samples
