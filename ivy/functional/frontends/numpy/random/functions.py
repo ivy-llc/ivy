@@ -188,7 +188,4 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def gamma(shape, scale=1.0, size=None):
-    if scale <= 0:
-        raise ValueError("scale must be greater than 0")
-
-    return ivy.gamma(shape, 1 / scale, shape=size, dtype="float64")
+    return ivy.gamma(shape, scale, shape=size, dtype="float64")

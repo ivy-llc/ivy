@@ -711,36 +711,30 @@ def test_numpy_gumbel(
 
 @handle_frontend_test(
     fn_tree="numpy.random.gamma",
-    shape_dtypes=helpers.get_dtypes("float", full=False),
+    dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(
         allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
-    scale_dtypes=helpers.get_dtypes("float", full=False),
     scale=st.floats(
         allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
-    size_dtypes=helpers.get_dtypes("integer", full=False),
     test_with_out=st.just(False),
 )
 def test_numpy_gamma(
+    dtypes,
     shape,
-    shape_dtypes,
     scale,
-    scale_dtypes,
     size,
-    size_dtypes,
     frontend,
     test_flags,
     fn_tree,
     on_device,
 ):
-    assume("float16" not in shape_dtypes)
-    assume("float16" not in scale_dtypes)
     helpers.test_frontend_function(
-        input_dtypes=shape_dtypes + scale_dtypes + size_dtypes,
+        input_dtypes=dtypes,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
