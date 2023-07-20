@@ -2,33 +2,33 @@
 
 # global
 import numpy as np
-import importlib
 from hypothesis import strategies as st
 import typing
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 
 
 # dtype objects
 @handle_test(fn_tree="functional.ivy.exists")  # dummy fn_tree
-def test_dtype_instances():
-    assert ivy.exists(ivy.int8)
-    assert ivy.exists(ivy.int16)
-    assert ivy.exists(ivy.int32)
-    assert ivy.exists(ivy.int64)
-    assert ivy.exists(ivy.uint8)
-    if ivy.current_backend_str() not in ["torch", "paddle", "mxnet"]:
-        assert ivy.exists(ivy.uint16)
-        assert ivy.exists(ivy.uint32)
-        assert ivy.exists(ivy.uint64)
-    assert ivy.exists(ivy.float32)
-    assert ivy.exists(ivy.float64)
-    assert ivy.exists(ivy.complex64)
-    assert ivy.exists(ivy.complex128)
-    assert ivy.exists(ivy.bool)
+def test_dtype_instances(backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        assert ivy_backend.exists(ivy_backend.int8)
+        assert ivy_backend.exists(ivy_backend.int16)
+        assert ivy_backend.exists(ivy_backend.int32)
+        assert ivy_backend.exists(ivy_backend.int64)
+        assert ivy_backend.exists(ivy_backend.uint8)
+        if backend_fw not in ["torch", "paddle", "mxnet"]:
+            assert ivy_backend.exists(ivy_backend.uint16)
+            assert ivy_backend.exists(ivy_backend.uint32)
+            assert ivy_backend.exists(ivy_backend.uint64)
+        assert ivy_backend.exists(ivy_backend.float32)
+        assert ivy_backend.exists(ivy_backend.float64)
+        assert ivy_backend.exists(ivy_backend.complex64)
+        assert ivy_backend.exists(ivy_backend.complex128)
+        assert ivy_backend.exists(ivy_backend.bool)
 
 
 # for data generation in multiple tests
@@ -119,7 +119,7 @@ def broadcastable_arrays(draw, dtypes):
 def test_broadcast_arrays(
     *, arrays, input_dtypes, test_flags, backend_fw, fn_name, on_device
 ):
-    if backend_fw.current_backend_str() == "torch":
+    if backend_fw == "torch":
         for input_dtype in input_dtypes:
             if input_dtype == "bfloat16" or (
                 "uint" in input_dtype and "uint8" not in input_dtype
@@ -315,10 +315,12 @@ def test_result_type(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 def test_is_hashable_dtype(
     *,
     input_dtype,
+    backend_fw,
 ):
-    input_dtype = input_dtype[0]
-    res = ivy.is_hashable_dtype(input_dtype)
-    assert res
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        res = ivy_backend.is_hashable_dtype(input_dtype)
+        assert res
 
 
 # as_ivy_dtype
@@ -329,17 +331,19 @@ def test_is_hashable_dtype(
 def test_as_ivy_dtype(
     *,
     input_dtype,
+    backend_fw,
 ):
-    input_dtype = input_dtype[0]
-    res = ivy.as_ivy_dtype(input_dtype)
-    if isinstance(input_dtype, str):
-        assert isinstance(res, str)
-        return
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        res = ivy_backend.as_ivy_dtype(input_dtype)
+        if isinstance(input_dtype, str):
+            assert isinstance(res, str)
+            return
 
-    assert isinstance(input_dtype, ivy.Dtype) or isinstance(
-        input_dtype, str
-    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
-    assert isinstance(res, str), f"result={res!r}, but should be str"
+        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
+            input_dtype, str
+        ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+        assert isinstance(res, str), f"result={res!r}, but should be str"
 
 
 # as_native_dtype
@@ -350,19 +354,21 @@ def test_as_ivy_dtype(
 def test_as_native_dtype(
     *,
     input_dtype,
+    backend_fw,
 ):
-    input_dtype = input_dtype[0]
-    res = ivy.as_native_dtype(input_dtype)
-    if isinstance(input_dtype, ivy.NativeDtype):
-        assert isinstance(res, ivy.NativeDtype)
-        return
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        res = ivy_backend.as_native_dtype(input_dtype)
+        if isinstance(input_dtype, ivy_backend.NativeDtype):
+            assert isinstance(res, ivy_backend.NativeDtype)
+            return
 
-    assert isinstance(input_dtype, ivy.Dtype) or isinstance(
-        input_dtype, str
-    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
-    assert isinstance(
-        res, ivy.NativeDtype
-    ), f"result={res!r}, but should be ivy.NativeDtype"
+        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
+            input_dtype, str
+        ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+        assert isinstance(
+            res, ivy_backend.NativeDtype
+        ), f"result={res!r}, but should be ivy.NativeDtype"
 
 
 # closest_valid_dtypes
@@ -373,12 +379,15 @@ def test_as_native_dtype(
 def test_closest_valid_dtype(
     *, input_dtype, test_flags, backend_fw, fn_name, on_device
 ):
-    input_dtype = input_dtype[0]
-    res = ivy.closest_valid_dtype(input_dtype)
-    assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
-    assert isinstance(res, ivy.Dtype) or isinstance(
-        res, str
-    ), f"result={res!r}, but should be str or ivy.Dtype"
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        res = ivy_backend.closest_valid_dtype(input_dtype)
+        assert isinstance(input_dtype, ivy_backend.Dtype) or isinstance(
+            input_dtype, str
+        )
+        assert isinstance(res, ivy_backend.Dtype) or isinstance(
+            res, str
+        ), f"result={res!r}, but should be str or ivy.Dtype"
 
 
 # default_dtype
@@ -391,17 +400,19 @@ def test_default_dtype(
     *,
     input_dtype,
     as_native,
+    backend_fw,
 ):
-    input_dtype = input_dtype[0]
-    res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
-    assert (
-        isinstance(input_dtype, ivy.Dtype)
-        or isinstance(input_dtype, str)
-        or isinstance(input_dtype, ivy.NativeDtype)
-    )
-    assert isinstance(res, ivy.Dtype) or isinstance(
-        input_dtype, str
-    ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        res = ivy_backend.default_dtype(dtype=input_dtype, as_native=as_native)
+        assert (
+            isinstance(input_dtype, ivy_backend.Dtype)
+            or isinstance(input_dtype, str)
+            or isinstance(input_dtype, ivy_backend.NativeDtype)
+        )
+        assert isinstance(res, ivy_backend.Dtype) or isinstance(
+            input_dtype, str
+        ), f"input_dtype={input_dtype!r}, but should be str or ivy.Dtype"
 
 
 # dtype
@@ -426,7 +437,7 @@ def test_default_dtype(
 def test_dtype(
     *, array, input_dtype, as_native, test_flags, backend_fw, fn_name, on_device
 ):
-    if backend_fw.current_backend_str() == "torch":
+    if backend_fw == "torch":
         if input_dtype == "bfloat16" or (
             "uint" in input_dtype and "uint8" not in input_dtype
         ):
@@ -640,25 +651,32 @@ def test_default_float_dtype(
     *,
     dtype_x,
     as_native,
+    backend_fw,
 ):
-    float_dtype, x = dtype_x
-    res = ivy.default_float_dtype(
-        input=input,
-        float_dtype=float_dtype[0],
-        as_native=as_native,
-    )
-    assert (
-        isinstance(res, ivy.Dtype)
-        or isinstance(res, typing.get_args(ivy.NativeDtype))
-        or isinstance(res, ivy.NativeDtype)
-        or isinstance(res, str)
-    )
-    assert (
-        ivy.default_float_dtype(input=None, float_dtype=None, as_native=False)
-        == ivy.float32
-    )
-    assert ivy.default_float_dtype(float_dtype=ivy.float16) == ivy.float16
-    assert ivy.default_float_dtype() == ivy.float32
+    with update_backend(backend_fw) as ivy_backend:
+        float_dtype, x = dtype_x
+        res = ivy_backend.default_float_dtype(
+            input=input,
+            float_dtype=float_dtype[0],
+            as_native=as_native,
+        )
+        assert (
+            isinstance(res, ivy_backend.Dtype)
+            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
+            or isinstance(res, ivy_backend.NativeDtype)
+            or isinstance(res, str)
+        )
+        assert (
+            ivy_backend.default_float_dtype(
+                input=None, float_dtype=None, as_native=False
+            )
+            == ivy_backend.float32
+        )
+        assert (
+            ivy_backend.default_float_dtype(float_dtype=ivy_backend.float16)
+            == ivy_backend.float16
+        )
+        assert ivy_backend.default_float_dtype() == ivy_backend.float32
 
 
 # default_int_dtype
@@ -672,24 +690,30 @@ def test_default_int_dtype(
     *,
     dtype_x,
     as_native,
+    backend_fw,
 ):
     int_dtype, x = dtype_x
-    res = ivy.default_int_dtype(
-        input=input,
-        int_dtype=int_dtype[0],
-        as_native=as_native,
-    )
-    assert (
-        isinstance(res, ivy.Dtype)
-        or isinstance(res, typing.get_args(ivy.NativeDtype))
-        or isinstance(res, ivy.NativeDtype)
-        or isinstance(res, str)
-    )
-    assert (
-        ivy.default_int_dtype(input=None, int_dtype=None, as_native=False) == ivy.int32
-    )
-    assert ivy.default_int_dtype(int_dtype=ivy.int16) == ivy.int16
-    assert ivy.default_int_dtype() == ivy.int32
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.default_int_dtype(
+            input=input,
+            int_dtype=int_dtype[0],
+            as_native=as_native,
+        )
+        assert (
+            isinstance(res, ivy_backend.Dtype)
+            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
+            or isinstance(res, ivy_backend.NativeDtype)
+            or isinstance(res, str)
+        )
+        assert (
+            ivy_backend.default_int_dtype(input=None, int_dtype=None, as_native=False)
+            == ivy_backend.int32
+        )
+        assert (
+            ivy_backend.default_int_dtype(int_dtype=ivy_backend.int16)
+            == ivy_backend.int16
+        )
+        assert ivy_backend.default_int_dtype() == ivy_backend.int32
 
 
 # default_complex_dtype
@@ -703,25 +727,32 @@ def test_default_complex_dtype(
     *,
     dtype_x,
     as_native,
+    backend_fw,
 ):
     complex_dtype, x = dtype_x
-    res = ivy.default_complex_dtype(
-        input=input,
-        complex_dtype=complex_dtype[0],
-        as_native=as_native,
-    )
-    assert (
-        isinstance(res, ivy.Dtype)
-        or isinstance(res, typing.get_args(ivy.NativeDtype))
-        or isinstance(res, ivy.NativeDtype)
-        or isinstance(res, str)
-    )
-    assert (
-        ivy.default_complex_dtype(input=None, complex_dtype=None, as_native=False)
-        == ivy.complex64
-    )
-    assert ivy.default_complex_dtype(complex_dtype=ivy.complex64) == ivy.complex64
-    assert ivy.default_complex_dtype() == ivy.complex64
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.default_complex_dtype(
+            input=input,
+            complex_dtype=complex_dtype[0],
+            as_native=as_native,
+        )
+        assert (
+            isinstance(res, ivy_backend.Dtype)
+            or isinstance(res, typing.get_args(ivy_backend.NativeDtype))
+            or isinstance(res, ivy_backend.NativeDtype)
+            or isinstance(res, str)
+        )
+        assert (
+            ivy_backend.default_complex_dtype(
+                input=None, complex_dtype=None, as_native=False
+            )
+            == ivy_backend.complex64
+        )
+        assert (
+            ivy_backend.default_complex_dtype(complex_dtype=ivy_backend.complex64)
+            == ivy_backend.complex64
+        )
+        assert ivy_backend.default_complex_dtype() == ivy_backend.complex64
 
 
 @st.composite
@@ -788,12 +819,13 @@ _composition_2.test_unsupported_dtypes = {
     fn_tree="functional.ivy.function_supported_dtypes",
     func=st.sampled_from([_composition_1, _composition_2]),
 )
-def test_function_supported_dtypes(*, func):
-    res = ivy.function_supported_dtypes(func)
-    exp = set(ivy.all_dtypes).difference(
-        set(func.test_unsupported_dtypes[ivy.current_backend_str()])
-    )
-    assert set(tuple(exp)) == set(res)
+def test_function_supported_dtypes(*, func, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.function_supported_dtypes(func)
+        exp = set(ivy_backend.all_dtypes).difference(
+            set(func.test_unsupported_dtypes[backend_fw])
+        )
+        assert set(tuple(exp)) == set(res)
 
 
 # function_unsupported_dtypes
@@ -801,10 +833,11 @@ def test_function_supported_dtypes(*, func):
     fn_tree="functional.ivy.function_unsupported_dtypes",
     func=st.sampled_from([_composition_2]),
 )
-def test_function_unsupported_dtypes(*, func):
-    res = ivy.function_unsupported_dtypes(func)
-    exp = func.test_unsupported_dtypes[ivy.current_backend_str()]
-    assert set(tuple(exp)) == set(res)
+def test_function_unsupported_dtypes(*, func, backend_fw):
+    with update_backend(backend_fw) as ivy_backend:
+        res = ivy_backend.function_unsupported_dtypes(func)
+        exp = func.test_unsupported_dtypes[backend_fw]
+        assert set(tuple(exp)) == set(res)
 
 
 # function_dtype_versioning
@@ -828,26 +861,27 @@ def test_function_dtype_versioning(
     func_and_version,
     backend_fw,
 ):
-    for key in func_and_version:
-        if key != backend_fw:
-            continue
-        var = ivy.get_backend().backend_version
+    with update_backend(backend_fw) as ivy_backend:
+        for key in func_and_version:
+            if key != backend_fw:
+                continue
+            var = ivy_backend.backend_version
 
-        # key --> framework
+            # key --> framework
 
-        for key1 in func_and_version[key]:
-            for key2 in func_and_version[key][key1]:
-                var["version"] = key2
-                fn = getattr(ivy.get_backend(), key1)
-                expected = func_and_version[key][key1][key2]
-                res = fn.unsupported_dtypes
-                if res is None:
-                    res = set()
-                else:
-                    res = set(res)
-                if res != expected:
-                    raise Exception
-        return True
+            for key1 in func_and_version[key]:
+                for key2 in func_and_version[key][key1]:
+                    var["version"] = key2
+                    fn = getattr(ivy_backend, key1)
+                    expected = func_and_version[key][key1][key2]
+                    res = fn.unsupported_dtypes
+                    if res is None:
+                        res = set()
+                    else:
+                        res = set(res)
+                    if res != expected:
+                        raise Exception
+            return True
 
 
 # function_dtype_versioning_frontend
@@ -871,28 +905,32 @@ def test_function_dtype_versioning_frontend(
     func_and_version,
     backend_fw,
 ):
-    fw = backend_fw.current_backend_str()
-    for key in func_and_version:
-        if key != fw:
-            continue
-        frontend = importlib.import_module("ivy.functional.frontends")
-        var = frontend.versions
+    with update_backend(backend_fw) as ivy_backend:
+        _import_mod = ivy_backend.utils.dynamic_import
+        for key in func_and_version:
+            if key != backend_fw:
+                continue
+            frontend = _import_mod.import_module("ivy.functional.frontends")
+            var = frontend.versions
 
-        for key1 in func_and_version[key]:
-            for key2 in func_and_version[key][key1]:
-                var[fw] = key2
-                fn = getattr(
-                    importlib.import_module("ivy.functional.frontends." + fw), key1
-                )
-                expected = func_and_version[key][key1][key2]
-                res = fn.unsupported_dtypes
-                if res is None:
-                    res = set()
-                else:
-                    res = set(res)
-                if res != expected:
-                    raise Exception
-        return True
+            for key1 in func_and_version[key]:
+                for key2 in func_and_version[key][key1]:
+                    var[backend_fw] = key2
+                    fn = getattr(
+                        _import_mod.import_module(
+                            "ivy.functional.frontends." + backend_fw
+                        ),
+                        key1,
+                    )
+                    expected = func_and_version[key][key1][key2]
+                    res = fn.unsupported_dtypes
+                    if res is None:
+                        res = set()
+                    else:
+                        res = set(res)
+                    if res != expected:
+                        raise Exception
+            return True
 
 
 # invalid_dtype
@@ -905,18 +943,20 @@ def test_invalid_dtype(
     dtype_in,
     backend_fw,
 ):
-    dtype_in = dtype_in[0]
-    res = ivy.invalid_dtype(dtype_in)
-    fw = backend_fw.current_backend_str()
-    invalid_dtypes = backend_fw.invalid_dtypes
-    if dtype_in in invalid_dtypes:
-        assert (
-            res is True
-        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
-    else:
-        assert (
-            res is False
-        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype_in = dtype_in[0]
+        res = ivy_backend.invalid_dtype(dtype_in)
+        invalid_dtypes = ivy_backend.invalid_dtypes
+        if dtype_in in invalid_dtypes:
+            assert res is True, (
+                f"fDtype = {dtype_in!r} is a valid dtype for {backend_fw}, butresult ="
+                f" {res}"
+            )
+        else:
+            assert res is False, (
+                f"fDtype = {dtype_in!r} is not a valid dtype for {backend_fw},"
+                f" butresult = {res}"
+            )
 
 
 # unset_default_dtype
@@ -927,15 +967,17 @@ def test_invalid_dtype(
 def test_unset_default_dtype(
     *,
     dtype,
+    backend_fw,
 ):
-    dtype = dtype[0]
-    stack_size_before = len(ivy.default_dtype_stack)
-    ivy.set_default_dtype(dtype)
-    ivy.unset_default_dtype()
-    stack_size_after = len(ivy.default_dtype_stack)
-    assert (
-        stack_size_before == stack_size_after
-    ), f"Default dtype not unset. Stack size= {stack_size_after!r}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype = dtype[0]
+        stack_size_before = len(ivy_backend.default_dtype_stack)
+        ivy_backend.set_default_dtype(dtype)
+        ivy_backend.unset_default_dtype()
+        stack_size_after = len(ivy_backend.default_dtype_stack)
+        assert (
+            stack_size_before == stack_size_after
+        ), f"Default dtype not unset. Stack size= {stack_size_after!r}"
 
 
 # unset_default_float_dtype
@@ -946,15 +988,17 @@ def test_unset_default_dtype(
 def test_unset_default_float_dtype(
     *,
     dtype,
+    backend_fw,
 ):
-    dtype = dtype[0]
-    stack_size_before = len(ivy.default_float_dtype_stack)
-    ivy.set_default_float_dtype(dtype)
-    ivy.unset_default_float_dtype()
-    stack_size_after = len(ivy.default_float_dtype_stack)
-    assert (
-        stack_size_before == stack_size_after
-    ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype = dtype[0]
+        stack_size_before = len(ivy_backend.default_float_dtype_stack)
+        ivy_backend.set_default_float_dtype(dtype)
+        ivy_backend.unset_default_float_dtype()
+        stack_size_after = len(ivy_backend.default_float_dtype_stack)
+        assert (
+            stack_size_before == stack_size_after
+        ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
 
 
 # unset_default_int_dtype
@@ -965,15 +1009,17 @@ def test_unset_default_float_dtype(
 def test_unset_default_int_dtype(
     *,
     dtype,
+    backend_fw,
 ):
-    dtype = dtype[0]
-    stack_size_before = len(ivy.default_int_dtype_stack)
-    ivy.set_default_int_dtype(dtype)
-    ivy.unset_default_int_dtype()
-    stack_size_after = len(ivy.default_int_dtype_stack)
-    assert (
-        stack_size_before == stack_size_after
-    ), f"Default int dtype not unset. Stack size= {stack_size_after!r}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype = dtype[0]
+        stack_size_before = len(ivy_backend.default_int_dtype_stack)
+        ivy_backend.set_default_int_dtype(dtype)
+        ivy_backend.unset_default_int_dtype()
+        stack_size_after = len(ivy_backend.default_int_dtype_stack)
+        assert (
+            stack_size_before == stack_size_after
+        ), f"Default int dtype not unset. Stack size= {stack_size_after!r}"
 
 
 # unset_default_complex_dtype
@@ -984,15 +1030,17 @@ def test_unset_default_int_dtype(
 def test_unset_default_complex_dtype(
     *,
     dtype,
+    backend_fw,
 ):
-    dtype = dtype[0]
-    stack_size_before = len(ivy.default_complex_dtype_stack)
-    ivy.set_default_complex_dtype(dtype)
-    ivy.unset_default_complex_dtype()
-    stack_size_after = len(ivy.default_complex_dtype_stack)
-    assert (
-        stack_size_before == stack_size_after
-    ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype = dtype[0]
+        stack_size_before = len(ivy_backend.default_complex_dtype_stack)
+        ivy_backend.set_default_complex_dtype(dtype)
+        ivy_backend.unset_default_complex_dtype()
+        stack_size_after = len(ivy_backend.default_complex_dtype_stack)
+        assert (
+            stack_size_before == stack_size_after
+        ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
 
 
 # valid_dtype
@@ -1005,18 +1053,20 @@ def test_valid_dtype(
     dtype_in,
     backend_fw,
 ):
-    dtype_in = dtype_in[0]
-    res = ivy.valid_dtype(dtype_in)
-    fw = backend_fw.current_backend_str()
-    valid_dtypes = backend_fw.valid_dtypes
-    if dtype_in in valid_dtypes:
-        assert (
-            res is True
-        ), f"fDtype = {dtype_in!r} is not a valid dtype for {fw}, butresult = {res}"
-    else:
-        assert (
-            res is False
-        ), f"fDtype = {dtype_in!r} is a valid dtype for {fw}, butresult = {res}"
+    with update_backend(backend_fw) as ivy_backend:
+        dtype_in = dtype_in[0]
+        res = ivy_backend.valid_dtype(dtype_in)
+        valid_dtypes = ivy_backend.valid_dtypes
+        if dtype_in in valid_dtypes:
+            assert res is True, (
+                f"fDtype = {dtype_in!r} is not a valid dtype for {backend_fw},"
+                f" butresult = {res}"
+            )
+        else:
+            assert res is False, (
+                f"fDtype = {dtype_in!r} is a valid dtype for {backend_fw}, butresult ="
+                f" {res}"
+            )
 
 
 # is_native_dtype
@@ -1026,9 +1076,14 @@ def test_valid_dtype(
 )
 def test_is_native_dtype(
     input_dtype,
+    backend_fw,
 ):
-    input_dtype = input_dtype[0]
-    if isinstance(input_dtype, str):
-        assert ivy.is_native_dtype(input_dtype) is False
+    with update_backend(backend_fw) as ivy_backend:
+        input_dtype = input_dtype[0]
+        if isinstance(input_dtype, str):
+            assert ivy_backend.is_native_dtype(input_dtype) is False
 
-    assert ivy.is_native_dtype(ivy.as_native_dtype(input_dtype)) is True
+        assert (
+            ivy_backend.is_native_dtype(ivy_backend.as_native_dtype(input_dtype))
+            is True
+        )

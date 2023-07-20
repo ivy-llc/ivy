@@ -569,7 +569,8 @@ def test_torch_matmul(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_rank",
-    # aliases=["torch.matrix_rank",], deprecated since 1.9. uncomment with multi-version testing pipeline
+    # aliases=["torch.matrix_rank",], deprecated since 1.9. uncomment with multi-version
+    # testing pipeline
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
 )
 def test_torch_matrix_rank(

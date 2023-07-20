@@ -246,7 +246,12 @@ def test_eigh_tridiagonal(
             )
     # value test
     helpers.assert_all_close(
-        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+        reconstructed_np,
+        reconstructed_from_np,
+        rtol=1e-1,
+        atol=1e-2,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
@@ -623,7 +628,7 @@ def test_cov(*, dtype_x1_x2_cov, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x1,

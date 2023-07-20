@@ -46,6 +46,10 @@ def is_db_available(master=False, credentials=None):
 
 def pytest_terminal_summary(terminalreporter):
     session = terminalreporter._session
+
+    if session.testscollected == 0:
+        return
+
     passed_ratio = 1 - (session.testsfailed / session.testscollected)
     text = " {:.1%} of {} passed ".format(passed_ratio, session.testscollected)
     text = text.center(terminalreporter._screen_width, "=")

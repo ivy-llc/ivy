@@ -83,7 +83,7 @@ def test_expand_dims(*, dtype_value, axis, test_flags, backend_fw, fn_name, on_d
         helpers.test_function(
             input_dtypes=dtype,
             test_flags=test_flags,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             on_device=on_device,
             x=value[0],
