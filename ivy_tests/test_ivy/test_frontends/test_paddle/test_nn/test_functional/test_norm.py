@@ -37,5 +37,7 @@ def test_paddle_layer_norm(
         fn_tree=fn_tree,
         x=x[0],
         normalized_shape=normalized_idxs,
+        weight=scale[0],
+        bias=offset[0],
         epsilon=eps,
     )
