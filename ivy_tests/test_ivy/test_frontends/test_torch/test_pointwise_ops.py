@@ -7,6 +7,10 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
+from ivy_tests.test_ivy.test_functional.test_core.test_searching import (
+    _broadcastable_trio,
+)
+
 
 # add
 @handle_frontend_test(
@@ -128,6 +132,9 @@ def test_torch_tanh(
     aliases=["torch.absolute"],
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=False),
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
 )
 def test_torch_abs(
@@ -2167,7 +2174,7 @@ def test_torch_sigmoid(
 @handle_frontend_test(
     fn_tree="torch.lerp",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", mixed_fn_compos=False),
         num_arrays=3,
         shared_dtype=True,
         large_abs_safety_factor=2.5,
@@ -2452,6 +2459,32 @@ def test_torch_erf(
     )
 
 
+# erfc
+@handle_frontend_test(
+    fn_tree="torch.erfc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_erfc(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.frexp",
     dtype_and_x=helpers.dtype_and_values(
@@ -2553,4 +2586,43 @@ def test_torch_nan_to_num(
         nan=nan,
         posinf=posinf,
         neginf=neginf,
+    )
+
+
+@st.composite
+def _masked_fill_helper(draw):
+    cond, xs, dtypes = draw(_broadcastable_trio())
+    if ivy.is_uint_dtype(dtypes[0]):
+        fill_value = draw(helpers.ints(min_value=0, max_value=5))
+    elif ivy.is_int_dtype(dtypes[0]):
+        fill_value = draw(helpers.ints(min_value=-5, max_value=5))
+    else:
+        fill_value = draw(helpers.floats(min_value=-5, max_value=5))
+    return dtypes[0], xs[0], cond, fill_value
+
+
+# masked_fill
+@handle_frontend_test(
+    fn_tree="torch.masked_fill",
+    x_mask_val=_masked_fill_helper(),
+)
+def test_torch_masked_fill(
+    *,
+    x_mask_val,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, mask, val = x_mask_val
+    helpers.test_frontend_function(
+        input_dtypes=[dtype],
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x,
+        mask=mask,
+        value=val,
     )

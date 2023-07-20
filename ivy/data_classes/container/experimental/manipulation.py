@@ -2940,3 +2940,45 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def _static_fill_diagonal(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        v: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        wrap: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fill_diagonal",
+            a,
+            v,
+            wrap=wrap,
+        )
+
+    def fill_diagonal(
+        self: ivy.Container,
+        v: Union[int, float],
+        /,
+        *,
+        wrap: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return self._static_fill_diagonal(
+            self,
+            v,
+            wrap=wrap,
+        )
