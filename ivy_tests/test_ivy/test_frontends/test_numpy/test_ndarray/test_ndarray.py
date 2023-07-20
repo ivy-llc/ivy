@@ -2896,22 +2896,22 @@ def test_numpy_instance_array_wrap__(
         valid_bounds=False,
     ),
     mode=st.sampled_from(['clip', 'wrap', 'raise']),
-    test_with_out=st.just(False),
+    test_with_out=st.just(True),
 )
 def test_numpy_instance_take(
     dtype_x_indices_axis,
+    test_with_out,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     mode,
-    out,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
-            "object": xs[0],
+            "object": x[0],
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
