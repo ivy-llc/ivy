@@ -318,7 +318,6 @@ class Tensor:
     def bitwise_or(self, y, out=None, name=None):
         return paddle_frontend.bitwise_or(self, y, out=out)
 
-
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
