@@ -9,145 +9,14 @@ from ivy.data_classes.container.base import ContainerBase
 
 class _ContainerWithElementWiseExperimental(ContainerBase):
     @staticmethod
-    def static_lgamma(
-        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.lgamma. This method simply wraps the
-        function, and so the docstring for ivy.lgamma also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        x
-            input container. Should have a real-valued floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a container containing the evaluated result for each element in ``x``.
-            The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
-        >>> y = ivy.Container.static_lgamma(x)
-        >>> print(y)
-        {
-            a: ivy.array([inf, 0., 0.]),
-            b: ivy.array([0.69314718, 1.79175949, 3.32976389])
-        }
-
-
-        >>> x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([ 4., 5.1]))
-        >>> ivy.Container.static_lgamma(x, out = x)
-        >>> print(y)
-        {
-            a: ivy.array([inf, 0.]),
-            b: ivy.array([1.79175949, 3.32976389])
-        }
-        """
-        return ContainerBase.cont_multi_map_in_function(
-            "lgamma",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def lgamma(
-        self: ivy.Container,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.lgamma. This method simply wraps
-        the function, and so the docstring for ivy.lgamma also applies to this method
-        with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input container. Should have a real-valued floating-point data type.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            a container containing the evaluated result for each element in ``self``.
-            The returned array must have a real-valued floating-point data type
-            determined by :ref:`type-promotion`.
-
-        Examples
-        --------
-        >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
-        ...                   b=ivy.array([4.5, 5.3, 2.3]))
-        >>> y = x.lgamma()
-        >>> print(y)
-        {
-            a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
-            b: ivy.array([2.45373821, 3.63963795, 0.15418935])
-        }
-        """
-        return self.static_lgamma(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
     def static_sinc(
         x: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -206,10 +75,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     def sinc(
         self: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -270,10 +139,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -364,10 +233,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -458,10 +327,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -552,10 +421,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -655,13 +524,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -745,13 +614,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[int, Tuple[int, ...]]] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -836,14 +705,14 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[Union[tuple, int]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        axis: Optional[Union[tuple, int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nansum. This method simply wraps the
@@ -911,9 +780,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[Union[tuple, int]] = None,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        keepdims: bool = False,
+        axis: Optional[Union[tuple, int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -970,14 +839,14 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        rtol: float = 1e-05,
-        atol: float = 1e-08,
-        equal_nan: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        rtol: Union[float, ivy.Container] = 1e-05,
+        atol: Union[float, ivy.Container] = 1e-08,
+        equal_nan: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.isclose. This method simply wraps the
@@ -1069,13 +938,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         b: ivy.Container,
         /,
         *,
-        rtol: float = 1e-05,
-        atol: float = 1e-08,
-        equal_nan: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        rtol: Union[float, ivy.Container] = 1e-05,
+        atol: Union[float, ivy.Container] = 1e-08,
+        equal_nan: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1167,10 +1036,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, int, list, tuple],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1251,11 +1120,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.hypot. This method simply wraps the
@@ -1316,10 +1185,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1381,14 +1250,14 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        rtol: float = 1e-05,
-        atol: float = 1e-08,
-        equal_nan: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        rtol: Union[float, ivy.Container] = 1e-05,
+        atol: Union[float, ivy.Container] = 1e-08,
+        equal_nan: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.allclose. This method simply wraps
@@ -1472,13 +1341,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: ivy.Container,
         /,
         *,
-        rtol: float = 1e-05,
-        atol: float = 1e-08,
-        equal_nan: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        rtol: Union[float, ivy.Container] = 1e-05,
+        atol: Union[float, ivy.Container] = 1e-08,
+        equal_nan: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1560,14 +1429,18 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        n: int = 1,
-        axis: int = -1,
-        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
-        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        n: Union[int, ivy.Container] = 1,
+        axis: Union[int, ivy.Container] = -1,
+        prepend: Optional[
+            Union[ivy.Array, ivy.NativeArray, int, list, tuple, ivy.Container]
+        ] = None,
+        append: Optional[
+            Union[ivy.Array, ivy.NativeArray, int, list, tuple, ivy.Container]
+        ] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1637,10 +1510,14 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        n: int = 1,
-        axis: int = -1,
-        prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
-        append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+        n: Union[int, ivy.Container] = 1,
+        axis: Union[int, ivy.Container] = -1,
+        prepend: Optional[
+            Union[ivy.Array, ivy.NativeArray, int, list, tuple, ivy.Container]
+        ] = None,
+        append: Optional[
+            Union[ivy.Array, ivy.NativeArray, int, list, tuple, ivy.Container]
+        ] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1690,10 +1567,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1776,11 +1653,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nextafter. This method simply wraps
@@ -1842,10 +1719,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1908,11 +1785,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         q: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.zeta. This method simply wraps the
@@ -1973,10 +1850,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         q: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2037,13 +1914,13 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        spacing: Union[int, list, tuple] = 1,
-        edge_order: int = 1,
-        axis: Optional[Union[int, list, tuple]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        spacing: Union[int, list, tuple, ivy.Container] = 1,
+        edge_order: Union[int, ivy.Container] = 1,
+        axis: Optional[Union[int, list, tuple, ivy.Container]] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "gradient",
@@ -2061,9 +1938,9 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        spacing: Union[int, list, tuple] = 1,
-        edge_order: int = 1,
-        axis: Optional[Union[int, list, tuple]] = None,
+        spacing: Union[int, list, tuple, ivy.Container] = 1,
+        edge_order: Union[int, ivy.Container] = 1,
+        axis: Optional[Union[int, list, tuple, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         Calculate gradient of x with respect to (w.r.t.) spacing.
@@ -2200,11 +2077,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         y: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.xlogy. This method simply wraps the
@@ -2266,10 +2143,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         y: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2331,11 +2208,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        threshold: float = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        threshold: Union[float, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2383,11 +2260,11 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     def binarizer(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         *,
-        threshold: float = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        threshold: Union[float, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2434,10 +2311,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2497,10 +2374,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
     def conj(
         self: ivy.Container,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2561,10 +2438,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2666,10 +2543,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         weight: Union[ivy.Array, ivy.NativeArray, float, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2788,10 +2665,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2882,10 +2759,10 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2896,8 +2773,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         x
-            The container whose arrays should be split into the fractional and integral
-            parts.
+            The container whose arrays should be split into
+            the fractional and integral parts.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2920,10 +2797,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(
-                a=ivy.array([1.2, 2.7, 3.9]),
-                b=ivy.array([-1.5, 5.3, -10.7])
-            )
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),
+        >>> b = ivy.array([-1.5, 5.3, -10.7]))
         >>> ivy.Container.static_modf(x)
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
@@ -2954,8 +2829,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         self
-            The container whose arrays should be split into the fractional and integral
-            parts.
+            The container whose arrays should be split into
+            the fractional and integral parts.
         out
             optional output container, for writing the result to.
 
@@ -2967,10 +2842,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(
-                a=ivy.array([1.2, 2.7, 3.9]),
-                b=ivy.array([-1.5, 5.3, -10.7])
-            )
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),
+        >>> b = ivy.array([-1.5, 5.3, -10.7]))
         >>> x.modf()
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),

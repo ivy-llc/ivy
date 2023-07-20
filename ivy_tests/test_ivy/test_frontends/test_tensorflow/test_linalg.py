@@ -81,6 +81,50 @@ def test_tensorflow_eigh(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigvals",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_eigvals(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
+    if x[0].dtype == ivy.float32:
+        x[0] = x[0].astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        test_values=False,
+    )
+
+    ret = ivy.to_numpy(ret)
+    ret = ret.round(6)
+    ret = np.sort(ret)
+    frontend_ret = frontend_ret[0].numpy()
+    frontend_ret = frontend_ret.round(6)
+    frontend_ret = np.sort(frontend_ret)
+
+    assert_all_close(
+        ret_np=ret,
+        ret_from_gt_np=frontend_ret,
+        rtol=1e-06,
+        atol=1e-06,
+        ground_truth_backend=frontend,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.eigvalsh",
     dtype_and_input=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
