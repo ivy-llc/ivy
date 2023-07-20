@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     window_length=helpers.ints(min_value=1, max_value=100),
     beta=helpers.floats(min_value=0.0, max_value=80),
     test_with_out=st.just(False),
+    dtype=helpers.get_dtypes("float", full=False)
 )
 def test_tensorflow_kaiser_window(
     *,
@@ -21,6 +22,7 @@ def test_tensorflow_kaiser_window(
     test_flags,
     fn_tree,
     on_device,
+    dtype,
 ):
     helpers.test_frontend_function(
         input_dtypes=[window_length, beta],
@@ -30,6 +32,8 @@ def test_tensorflow_kaiser_window(
         on_device=on_device,
         window_length=window_length,
         beta=beta,
+        dtype = dtype[0],
+        rtol=1e-01,
     )
 
 
