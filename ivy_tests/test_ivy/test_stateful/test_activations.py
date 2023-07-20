@@ -560,3 +560,47 @@ def test_hardswish(
         test_gradients=test_gradients,
         on_device=on_device,
     )
+
+
+# Logit
+@handle_method(
+    method_tree="stateful.activations.Logit.__call__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_num_dims=2,
+    ),
+    method_num_positional_args=helpers.num_positional_args(fn_name="Logit._forward"),
+    eps=st.floats(min_value=1e-6, max_value=1e-2),
+    test_gradients=st.just(True),
+)
+def test_logit(
+    *,
+    dtype_and_x,
+    eps,
+    test_gradients,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={},
+        method_all_as_kwargs_np={"x": x[0], "eps": eps},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
