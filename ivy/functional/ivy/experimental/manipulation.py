@@ -2186,6 +2186,7 @@ def unfold(
     return ivy.reshape(ivy.moveaxis(input, mode, 0), (input.shape[mode], -1), out=out)
 
 
+# TODO add container and array methods
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -2222,3 +2223,60 @@ def fold(
     mode_dim = full_shape.pop(mode)
     full_shape.insert(0, mode_dim)
     return ivy.moveaxis(ivy.reshape(input, full_shape), 0, mode, out=out)
+
+
+# TODO add container and array methods
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_unfold(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    mode: Optional[int] = 0,
+    skip_begin: Optional[int] = 1,
+    skip_end: Optional[int] = 0,
+    ravel_tensors: Optional[bool] = False,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """Partial unfolding of a tensor while ignoring the specified number
+        of dimensions at the beginning and the end.
+        For instance, if the first dimension of the tensor is the number
+        of samples, to unfold each sample, set skip_begin=1.
+        This would, for each i in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+
+    Parameters
+    ----------
+    input
+        tensor of shape n_samples x n_1 x n_2 x ... x n_i
+    mode
+        indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+    skip_begin
+        number of dimensions to leave untouched at the beginning
+    skip_end
+        number of dimensions to leave untouched at the end
+    ravel_tensors
+        if True, the unfolded tensors are also flattened
+
+    Returns
+    -------
+    ret
+        partially unfolded tensor
+    """
+    if ravel_tensors:
+        new_shape = [-1]
+    else:
+        new_shape = [input.shape[mode + skip_begin], -1]
+
+    if skip_begin:
+        new_shape = [input.shape[i] for i in range(skip_begin)] + new_shape
+
+    if skip_end:
+        new_shape += [input.shape[-i] for i in range(1, 1 + skip_end)]
+
+    return ivy.reshape(
+        ivy.moveaxis(input, mode + skip_begin, skip_begin), new_shape, out=out
+    )

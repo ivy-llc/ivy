@@ -1094,3 +1094,54 @@ def test_fold(*, data, test_flags, backend_fw, fn_name, on_device):
         mode=mode,
         shape=shape,
     )
+
+
+@st.composite
+def _partial_unfold_data(draw):
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=1,
+        )
+    )
+    input = input[0]
+    ndims = len(input.shape)
+    if ndims == 1:
+        mode = 0
+        skip_begin = 0
+        skip_end = 0
+    else:
+        mode_and_skip_begin = draw(
+            st.lists(
+                helpers.ints(min_value=0, max_value=ndims - 1), min_size=2, max_size=2
+            ).filter(lambda nums: np.sum(nums) <= ndims - 1)
+        )
+        skip_begin, mode = sorted(mode_and_skip_begin)
+        skip_end = draw(
+            helpers.ints(min_value=0, max_value=ndims - (skip_begin + mode) - 1)
+        )
+    ravel_tensors = draw(st.booleans())
+    return dtype, input, mode, skip_begin, skip_end, ravel_tensors
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_unfold",
+    data=_partial_unfold_data(),
+)
+def test_partial_unfold(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, axis, skip_begin, skip_end, ravel_tensors = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        mode=axis,
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+        ravel_tensors=ravel_tensors,
+    )
