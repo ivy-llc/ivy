@@ -1,5 +1,4 @@
 # global
-import copy
 import inspect
 from typing import Callable, Dict
 import functools
@@ -166,14 +165,13 @@ def _update_kwarg_keys(kwargs: Dict, to_update: Dict) -> Dict:
     ret
         An updated dictionary with new keyword mapping
     """
-    updated_kwargs = copy.deepcopy(kwargs)
-    for key, val in to_update.items():
-        for k in kwargs.keys():
-            if key == k:
-                temp_key = updated_kwargs[k]
-                del updated_kwargs[k]
-                updated_kwargs[val] = temp_key
-    return updated_kwargs
+    new_kwargs = {}
+    for key, value in kwargs.items():
+        if to_update.__contains__(key):
+            new_kwargs.update({to_update[key]: value})
+        else:
+            new_kwargs.update({key: value})
+    return new_kwargs
 
 
 def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callable:
@@ -202,12 +200,29 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         # removing decorators from frontend function
         fn = inspect.unwrap(fn)
 
+        # changing all the params to keyword-only
+        sig = inspect.signature(fn)
+        new_params = []
+        kw_update_rev = (
+            {value: key for key, value in kw_update.items()} if kw_update else {}
+        )
+        for param in sig.parameters.values():
+            # updating the name of the parameter
+            name = (
+                kw_update_rev[param.name]
+                if kw_update and kw_update_rev.__contains__(param.name)
+                else param.name
+            )
+            new_params.append(param.replace(name=name, kind=param.KEYWORD_ONLY))
+        new_signature = sig.replace(parameters=new_params)
+
         def _wraped_fn(**kwargs):
             # update kwargs dictionary keys
             if kw_update:
                 kwargs = _update_kwarg_keys(kwargs, kw_update)
             return fn(**kwargs)
 
+        _wraped_fn.__signature__ = new_signature
         return _wraped_fn
 
     return _wrap_raw_ops_alias(alias, kwargs_to_update)

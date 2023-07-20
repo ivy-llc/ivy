@@ -143,7 +143,6 @@ class Module(ModuleConverters, ModuleHelpers):
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
         _fn_with_var_arg_wrapper = functools.partial(
             self._fn_with_var_arg_wrapper,
             fn=fn,
@@ -737,8 +736,12 @@ class Module(ModuleConverters, ModuleHelpers):
         filename : str
             The name of the file to save the module object to.
         """
+        if ivy.current_backend_str() == "paddle":
+            self._convert_tensors_to_numpy()
         with open(filename, "wb") as f:
             pickle.dump(self, f)
+        if ivy.current_backend_str() == "paddle":
+            self._convert_numpy_to_tensors()
 
     @staticmethod
     def load(filename):
@@ -756,4 +759,7 @@ class Module(ModuleConverters, ModuleHelpers):
             The loaded module object.
         """
         with open(filename, "rb") as f:
-            return pickle.load(f)
+            loaded = pickle.load(f)
+        if ivy.current_backend_str() == "paddle":
+            loaded._convert_numpy_to_tensors()
+        return loaded

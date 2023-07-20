@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
 )
 
 
@@ -22,6 +23,7 @@ from ivy.func_wrapper import (
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -62,6 +64,7 @@ def vorbis_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def hann_window(
     size: int,
     *,
@@ -108,6 +111,7 @@ def hann_window(
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -207,7 +211,6 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
@@ -258,7 +261,18 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
     return result
+
+
+hamming_window.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_out_argument",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
@@ -534,7 +548,7 @@ def ndindex(
 
 @handle_exceptions
 def indices(
-    dimensions: Sequence,
+    dimensions: Sequence[int],
     *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
@@ -585,6 +599,12 @@ def indices(
         return ivy.stack(grid, axis=0).astype(dtype)
 
 
+indices.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
@@ -593,7 +613,7 @@ def unsorted_segment_min(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    r"""
+    """
     Compute the minimum along segments of an array. Segments are defined by an integer
     array of segment IDs.
 

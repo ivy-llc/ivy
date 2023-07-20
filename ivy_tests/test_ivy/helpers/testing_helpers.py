@@ -229,21 +229,41 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
         _fn = _tmp_mod.__dict__[fn_name]
+        # for partial mixed functions we should pass the backend function
+        # to ivy.function_supported_devices_and_dtypes
+        if hasattr(_fn, "mixed_backend_wrappers") and ivy.__dict__[fn_name] != _fn:
+            _fn = ivy.__dict__[fn_name]
         devices_and_dtypes = ivy.function_supported_devices_and_dtypes(_fn)
-        try:
-            # Issue with bfloat16 and tensorflow
-            if "bfloat16" in devices_and_dtypes["gpu"]:
-                tmp = list(devices_and_dtypes["gpu"])
-                tmp.remove("bfloat16")
-                devices_and_dtypes["gpu"] = tuple(tmp)
-        except KeyError:
-            pass
+        devices_and_dtypes = (
+            tuple(devices_and_dtypes.values())
+            if "compositional" in devices_and_dtypes.keys()
+            else (devices_and_dtypes,)
+        )
+        # Issue with bfloat16 and tensorflow
+        for device_and_dtype in devices_and_dtypes:
+            try:
+                if "bfloat16" in device_and_dtype["gpu"]:
+                    tmp = list(device_and_dtype["gpu"])
+                    tmp.remove("bfloat16")
+                    device_and_dtype["gpu"] = tuple(tmp)
+            except KeyError:
+                pass
         organized_dtypes = {}
-        for device in devices_and_dtypes.keys():
-            organized_dtypes[device] = _partition_dtypes_into_kinds(
-                ivy, devices_and_dtypes[device]
-            )
-        supported_device_dtypes[b] = organized_dtypes
+        all_organized_dtypes = []
+        for device_and_dtype in devices_and_dtypes:
+            for device in device_and_dtype.keys():
+                organized_dtypes[device] = _partition_dtypes_into_kinds(
+                    ivy, device_and_dtype[device]
+                )
+            all_organized_dtypes.append(organized_dtypes)
+        supported_device_dtypes[b] = (
+            {
+                "compositional": all_organized_dtypes[0],
+                "primary": all_organized_dtypes[1],
+            }
+            if len(all_organized_dtypes) > 1
+            else all_organized_dtypes[0]
+        )
         ivy.previous_backend()
     return supported_device_dtypes
 
@@ -323,13 +343,14 @@ def handle_test(
         fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    possible_arguments = {"ground_truth_backend": st.just(ground_truth_backend)}
+    possible_arguments = {}
     if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
         possible_arguments["test_flags"] = pf.function_flags(
+            ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
@@ -375,8 +396,8 @@ def handle_test(
                 fn_name=fn_name,
                 supported_device_dtypes=supported_device_dtypes,
             )
-        wrapped_test.ground_truth_backend = ground_truth_backend
         wrapped_test._ivy_test = True
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 

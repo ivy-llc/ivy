@@ -232,3 +232,32 @@ def any(
     }
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
+
+
+# Extra #
+# ----- #
+
+
+def save(item, filepath, format=None):
+    if isinstance(item, ivy.Container):
+        if format is not None:
+            item.cont_save(filepath, format=format)
+        else:
+            item.cont_save(filepath)
+    elif isinstance(item, ivy.Module):
+        item.save(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for saving.")
+
+
+@staticmethod
+def load(filepath, format=None, type="module"):
+    if type == "module":
+        return ivy.Module.load(filepath)
+    elif type == "container":
+        if format is not None:
+            return ivy.Container.cont_load(filepath, format=format)
+        else:
+            return ivy.Container.cont_load(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for loading.")

@@ -490,6 +490,8 @@ from . import matrix
 from .matrix import *
 from . import random
 from .random import *
+from . import broadcast
+from .broadcast import *
 
 from . import ma
 from . import fft
@@ -619,7 +621,10 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
     _logical_xor,
 )
 
-from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _matmul
+from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
+    _matmul,
+    dot,
+)
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,

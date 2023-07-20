@@ -1011,6 +1011,7 @@ def test_module_track_submod_call_order(
         ]
     )
 
+
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -1018,16 +1019,14 @@ def test_module_track_submod_call_order(
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_save_and_load_as_pickled(batch_shape, input_channels, output_channels, on_device):
+def test_module_save_and_load_as_pickled(
+    batch_shape, input_channels, output_channels, on_device
+):
     save_filepath = "module.pickled"
-
 
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
-        return
-    if ivy.current_backend_str() == "paddle":
-        # Paddle does not support pickling
         return
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
