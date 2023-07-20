@@ -2,8 +2,12 @@
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_linear_functions import (
+    x_and_linear,
+)
 
 
 # Cosine Similarity
@@ -185,4 +189,33 @@ def test_paddle_zeropad2d(
         x=x[0],
         padding=padding,
         data_format=dataformat,
+    )
+
+
+# linear
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.linear",
+    dtype_x_weight_bias=x_and_linear(
+        dtypes=helpers.get_dtypes("valid", full=False),
+    ),
+)
+def test_linear(
+    *,
+    dtype_x_weight_bias,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x, weight, bias = dtype_x_weight_bias
+    weight = ivy.swapaxes(weight, -1, -2)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        weight=weight,
+        bias=bias,
     )

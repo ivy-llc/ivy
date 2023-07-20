@@ -1970,6 +1970,7 @@ def _isin_data_generation_helper(draw):
     fn_tree="functional.ivy.isin",
     assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
     invert=st.booleans(),
+    ground_truth_backend="numpy",
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -1989,7 +1990,6 @@ def test_isin(
         on_device=on_device,
         fw=backend_fw,
         fn_name="isin",
-        ground_truth_backend="numpy",
         elements=elements,
         test_elements=test_elements,
         invert=invert,
