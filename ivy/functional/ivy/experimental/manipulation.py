@@ -2325,6 +2325,12 @@ def partial_fold(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
 def partial_tensor_to_vec(
     input: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2362,12 +2368,17 @@ def partial_tensor_to_vec(
     )
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
 def partial_vec_to_tensor(
     input: Union[ivy.Array, ivy.NativeArray],
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     skip_begin: Optional[int] = 1,
-    skip_end: Optional[int] = 0,
     *,
     out: Optional[ivy.Array] = None,
 ):
@@ -2388,3 +2399,60 @@ def partial_vec_to_tensor(
         full tensor
     """
     return partial_fold(input, mode=0, shape=shape, skip_begin=skip_begin, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def matricize(
+    input: Union[ivy.Array, ivy.NativeArray],
+    /,
+    row_modes: Sequence[int],
+    column_modes: Optional[Sequence[int]] = None,
+    *,
+    out: Optional[ivy.Array] = None,
+):
+    """
+    Matricizes the given tensor.
+
+    Parameters
+    ----------
+    input
+        the input tensor
+    row_modes
+        modes to use as row of the matrix (in the desired order)
+    column_modes
+        modes to use as column of the matrix, in the desired order
+        if None, the modes not in `row_modes` will be used in ascending order
+
+    ret
+    -------
+    matrix : tensor of size (ivy.prod(input.shape[i] for i in row_modes), -1)
+    """
+    ndims = len(input.shape)
+    row_indices = list(row_modes)
+
+    if column_modes:
+        column_indices = list(column_modes)
+    else:
+        column_indices = [i for i in range(ndims) if i not in row_indices]
+        if sorted(column_indices + row_indices) != list(range(ndims)):
+            msg = (
+                "If you provide both column and row modes for the matricization then"
+                " column_modes + row_modes must contain all the modes of the tensor."
+                f" Yet, got row_modes={row_modes} and column_modes={column_modes}."
+            )
+            raise ValueError(msg)
+
+    row_size, column_size = 1, 1
+    row_size = int(ivy.prod([input.shape[i] for i in row_indices]))
+    column_size = int(ivy.prod([input.shape[i] for i in column_indices]))
+
+    return ivy.reshape(
+        ivy.permute_dims(input, row_indices + column_indices),
+        (row_size, column_size),
+        out=out,
+    )

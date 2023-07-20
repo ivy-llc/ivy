@@ -1278,3 +1278,39 @@ def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_devi
         shape=shape,
         skip_begin=skip_begin,
     )
+
+
+@st.composite
+def _matricize_data(draw):
+    input_dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, ret_shape=True
+        )
+    )
+    ndims = len(shape)
+    dims = set([*range(ndims)])
+    row_modes = set(draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1))))
+    col_modes = dims - row_modes
+    return input_dtype, input[0], row_modes, col_modes
+
+
+# TODO Add container and instance methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.matricize",
+    data=_matricize_data(),
+)
+def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, row_modes, column_modes = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input,
+        row_modes=row_modes,
+        column_modes=column_modes,
+    )
