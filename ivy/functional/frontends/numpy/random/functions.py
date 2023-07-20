@@ -196,6 +196,3 @@ def f(dfn=1.0, dfd=1.0, size=None):
     samples = (x1 / dfn) / (x2 / dfd)
 
     return samples
-    # u1 = ivy.functional.frontends.numpy.chisquare(dfn,size)
-    # u2 = ivy.functional.frontends.numpy.chisquare(dfd,size)
-    # return (u1 / dfn) / (u2 / dfd)
