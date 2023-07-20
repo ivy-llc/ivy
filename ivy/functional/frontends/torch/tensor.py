@@ -1566,6 +1566,22 @@ class Tensor:
             else:
                 next_function(_grad_list[idx])
 
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "int32",
+            )
+        },
+        "paddle",
+    )
+    def adjoint(self):
+        return torch_frontend.adjoint(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
