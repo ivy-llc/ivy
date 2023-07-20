@@ -1573,18 +1573,18 @@ def test_paddle_heaviside(
     )
 
 
-# any
+# count_nonzero
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.any",
+    fn_tree="paddle.tensor.math.count_nonzero",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=False,
     ),
 )
-def test_paddle_any(
+def test_paddle_count_nonzero(
     *,
     dtype_and_x,
     on_device,

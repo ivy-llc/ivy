@@ -380,6 +380,11 @@ def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
 
 
+@with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
-def any(x, axis=None, keepdim=False, name=None):
-    return ivy.max(x, axis=axis, keepdims=keepdim)
+def count_nonzero(x, axis=None, keepdim=False, name=None):
+    ret = ivy.count_nonzero(x, axis=axis, keepdims=keepdim)
+    return ivy.astype(ret, ivy.int64)
