@@ -472,6 +472,7 @@ def test_jax_average(
         input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=2e-2,

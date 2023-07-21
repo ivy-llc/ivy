@@ -141,7 +141,7 @@ def value_test(
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
-                backend,
+                backend=backend,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
@@ -151,7 +151,7 @@ def value_test(
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
-                backend,
+                backend=backend,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
