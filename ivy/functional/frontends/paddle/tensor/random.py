@@ -93,6 +93,6 @@ def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
 
 @to_ivy_arrays_and_back
-def randint_like(x, low, high, seed=None, dtype=None, name=None):
-    x = ivy.array(x)
-    return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=seed)
+def randint_like(x, low=0, high=None, dtype=None, name=None):
+    # Paddle support following DataTypes: float64, complex128, int32, uint8, float32, complex64, bool, int64, int8.
+    return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
