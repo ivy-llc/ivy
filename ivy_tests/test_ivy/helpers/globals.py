@@ -103,16 +103,17 @@ def setup_api_test(
 ):
     if test_data is not None:
         _set_test_data(test_data)
+    if ground_truth_backend is not None:
+        _set_ground_truth_backend(ground_truth_backend)
     _set_backend(backend)
     _set_device(device)
-    _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
+    _unset_ground_truth_backend()
     _unset_backend()
     _unset_device()
-    _unset_ground_truth_backend()
 
 
 def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
