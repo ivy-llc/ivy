@@ -93,10 +93,6 @@ def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
 
 
-# @with_supported_dtypes(
-#     {"2.5.0 and below": ("int32", "int64", "int8", "float32", "float64")},
-#     "paddle",
-# )
 @with_unsupported_dtypes(
     {"2.5.0 and below": ("int16", "float16", "bfloat16")},
     "paddle",
