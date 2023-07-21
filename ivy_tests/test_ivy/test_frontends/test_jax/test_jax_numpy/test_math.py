@@ -880,7 +880,7 @@ def test_jax_gradient(
         fn_tree=fn_tree,
         on_device=on_device,
         f=x[0],
-        # varargs=varargs,
+        varargs=varargs,
         axis=axis,
         edge_order=edge_order,
     )

@@ -188,7 +188,7 @@ def arcsinh(x, /):
 
 
 @to_ivy_arrays_and_back
-def gradient(f, varargs=1, axis=None, edge_order=None):
+def gradient(f, *varargs, axis=None, edge_order=1):
     return ivy.gradient(f, spacing=varargs, axis=axis, edge_order=edge_order)
 
 
