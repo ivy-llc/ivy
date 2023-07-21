@@ -3755,6 +3755,22 @@ def test_torch_tensor_property_is_cuda(
     )
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_is_meta(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_meta, "meta" in ivy.dev(ivy.array(data[0])), as_array=False
+    )
+
+
 # logical_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,

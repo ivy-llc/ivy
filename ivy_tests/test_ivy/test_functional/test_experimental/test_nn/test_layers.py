@@ -41,9 +41,9 @@ def test_max_pool1d(
 @handle_test(
     fn_tree="functional.ivy.experimental.layers.max_unpool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    indices = st.lists(st.integers(0,1), min_size=1, max_size=4), 
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
     ground_truth_backend="jax",
-    test_gradients=st.just(False),  
+    test_gradients=st.just(False),
 )
 def test_max_unpool1d(
     *,
