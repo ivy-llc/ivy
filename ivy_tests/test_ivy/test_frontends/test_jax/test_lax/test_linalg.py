@@ -4,10 +4,9 @@ import numpy as np
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 
 
 # svd
@@ -58,7 +57,8 @@ def test_jax_svd(
     )
 
     if compute_uv:
-        ret = [ivy.to_numpy(x) for x in ret]
+        with update_backend(backend_fw) as ivy_backend:
+            ret = [ivy_backend.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
 
         u, s, vh = ret
@@ -69,14 +69,18 @@ def test_jax_svd(
             ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
             rtol=1e-2,
             atol=1e-2,
+            backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
+        with update_backend(backend_fw) as ivy_backend:
+            ret = ivy_backend.to_numpy(ret)
         assert_all_close(
-            ret_np=ivy.to_numpy(ret),
+            ret_np=ret,
             ret_from_gt_np=np.asarray(frontend_ret[0]),
             rtol=1e-2,
             atol=1e-2,
+            backend=backend_fw,
             ground_truth_backend=frontend,
         )
 
@@ -175,7 +179,8 @@ def test_jax_eigh(
         lower=lower,
         symmetrize_input=symmetrize_input,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     L, Q = ret
@@ -185,4 +190,6 @@ def test_jax_eigh(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-2,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
     )

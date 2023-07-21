@@ -70,7 +70,8 @@ def test_jax_promote_types(
         type2=type2[0],
         test_values=False,
     )
-    assert str(ret._ivy_dtype) == frontend_ret[0].name
+    assert str(ret._ivy_dtype) == str(frontend_ret)
+    print(frontend_ret)
 
 
 @handle_frontend_test(
@@ -83,7 +84,9 @@ def test_jax_promote_types(
     test_with_out=st.just(False),
 )
 @settings(max_examples=200)
-def test_jax_result_type(*, dtype_and_x, test_flags, on_device, fn_tree, frontend):
+def test_jax_result_type(
+    *, dtype_and_x, test_flags, on_device, fn_tree, frontend, backend_fw
+):
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
     for i, (dtype_, x_) in enumerate(zip(dtype, x)):
@@ -92,6 +95,7 @@ def test_jax_result_type(*, dtype_and_x, test_flags, on_device, fn_tree, fronten
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
