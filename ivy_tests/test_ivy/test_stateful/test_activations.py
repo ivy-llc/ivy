@@ -522,7 +522,7 @@ def test_relu6(
 @handle_method(
     method_tree="stateful.activations.Hardswish.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", prune_function=True),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -566,7 +566,7 @@ def test_hardswish(
 @handle_method(
     method_tree="stateful.activations.Logit.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", prune_function=True),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -616,7 +616,9 @@ def test_logit(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    slope=helpers.array_values(shape=(1, 1, 1, 1), min_value=0.1, max_value=10),
+    slope=helpers.array_values(
+        shape=(1, 1, 1, 1), min_value=0.1, max_value=10, dtype="float"
+    ),
     method_num_positional_args=helpers.num_positional_args(fn_name="PReLU._forward"),
     test_gradients=st.just(True),
 )
