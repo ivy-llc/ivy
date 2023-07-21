@@ -3,7 +3,6 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.func_wrapper import with_supported_dtypes
 import operator
-import numpy as np
 
 _range = range
 
@@ -163,7 +162,7 @@ def _hist_bin_stone(x, range):
 
     def jhat(nbins):
         hh = ptp_x / nbins
-        p_k = ivy.array(np.histogram(np.array(x), bins=nbins, range=range)[0] / n)
+        p_k = ivy.array(histogram(x, bins=nbins, range=range)[0] / n)
         return (2 - (n + 1) * p_k.dot(p_k)) / hh
 
     nbins_upper_bound = max(100, int(ivy.sqrt(n)))
@@ -284,7 +283,7 @@ def histogram(a, bins=10, range=None, density=None, weights=None):
         first_edge, last_edge, n_equal_bins = uniform_bins
 
         # Initialize empty histogram
-        n = np.zeros(n_equal_bins, dtype=ntype)
+        n = ivy.zeros(n_equal_bins, dtype=ntype)
 
         # Pre-compute histogram scaling factor
         norm = n_equal_bins / ivy.subtract(last_edge, first_edge)
@@ -332,14 +331,13 @@ def histogram(a, bins=10, range=None, density=None, weights=None):
             # We now compute the histogram using bincount
             if ivy.is_complex_dtype(ntype):
                 real = bincount(indices, weights=tmp_w.real(), minlength=n_equal_bins)
-                imag = np.bincount(
-                    indices, weights=tmp_w.imag(), minlength=n_equal_bins
-                )
+                imag = bincount(indices, weights=tmp_w.imag(), minlength=n_equal_bins)
                 n += real + ivy.array(imag, dtype=ivy.complex128) * 1j
 
             else:
                 n += ivy.astype(
-                    np.bincount(indices, weights=tmp_w, minlength=n_equal_bins), ntype
+                    bincount(indices, weights=tmp_w, minlength=n_equal_bins).ivy_array,
+                    ntype,
                 )
     else:
         # Compute via cumulative histogram
