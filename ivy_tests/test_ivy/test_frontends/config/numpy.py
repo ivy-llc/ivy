@@ -1,3 +1,5 @@
+import numpy as np
+
 valid_devices = "cpu"
 invalid_devices = ("gpu", "tpu")
 
@@ -68,3 +70,34 @@ valid_complex_dtypes = [
     "complex128",
 ]
 invalid_complex_dtypes = []
+
+
+# Helpers for function testing
+
+
+Dtype = np.dtype
+Device = str
+
+
+def native_array(x):
+    return np.array(x)
+
+
+def is_native_array(x):
+    return isinstance(x, np.ndarray)
+
+
+def to_numpy(x):
+    return x
+
+
+def as_native_dtype(dtype: str):
+    return np.dtype(dtype)
+
+
+def as_native_dev(device: str):
+    return device
+
+
+def isscalar(x):
+    return np.isscalar(x)

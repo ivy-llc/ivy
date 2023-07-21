@@ -23,16 +23,19 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
 )
 def test_tensorflow_tensor_property_ivy_array(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = EagerTensor(data[0])
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=backend_fw)
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -42,11 +45,14 @@ def test_tensorflow_tensor_property_ivy_array(
 )
 def test_tensorflow_tensor_property_device(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
     ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -56,10 +62,13 @@ def test_tensorflow_tensor_property_device(
 )
 def test_tensorflow_tensor_property_dtype(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     dtype, data = dtype_x
     x = EagerTensor(data[0])
     ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -70,12 +79,15 @@ def test_tensorflow_tensor_property_dtype(
 )
 def test_tensorflow_tensor_property_shape(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
     ivy.utils.assertions.check_equal(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
+    ivy.previous_backend()
 
 
 # __add__

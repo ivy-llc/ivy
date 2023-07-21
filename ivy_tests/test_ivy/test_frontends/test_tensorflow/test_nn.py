@@ -868,6 +868,7 @@ def test_tensorflow_batch_normalization(
     x_dtype, x, mean, variance, offset, scale = data
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         rtol=1e-2,
@@ -928,6 +929,7 @@ def test_tensorflow_dropout(
     (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1289,10 +1291,12 @@ def test_tensorflow_normalize_moments(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     counts_dtype, counts, mean, variance, shift = data
     helpers.test_frontend_function(
         input_dtypes=counts_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1339,6 +1343,7 @@ def test_tensorflow_bias_add(
     data_format, dtype, value, bias = data
     helpers.test_frontend_function(
         input_dtypes=dtype * 2,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1694,6 +1699,7 @@ def test_tensorflow_pool(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     (
         (input_dtype, x, ksize, strides, padding, dilation),
@@ -1709,6 +1715,7 @@ def test_tensorflow_pool(
         strides = (strides[0], strides[0], strides[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1760,10 +1767,12 @@ def test_tensorflow_sufficient_statistics(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtypes, x, a = dtypes_x_axes_shift
     return helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1800,11 +1809,13 @@ def test_log_poisson_loss(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, input_values = dtype_target_log_inputs
     targets, log_input = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1837,10 +1848,12 @@ def test_tensorflow_ctc_unique_labels(
     fn_tree,
     test_flags,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1870,11 +1883,13 @@ def test_tensorflow_weighted_moments(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x_and_axis
     fw_dtype, fw = dtype_and_fw
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

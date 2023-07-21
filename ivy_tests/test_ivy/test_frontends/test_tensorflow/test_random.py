@@ -160,6 +160,7 @@ def test_tensorflow_stateless_uniform(
 
     helpers.test_frontend_function(
         input_dtypes=shape_input_dtypes + seed_input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
