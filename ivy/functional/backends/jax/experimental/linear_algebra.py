@@ -140,7 +140,7 @@ def multi_dot(
     return jnp.linalg.multi_dot(x)
 
 
-def dot(x1: JaxArray, x2: JaxArray) -> JaxArray:
+def dot(x1: JaxArray, x2: JaxArray, out: Optional[JaxArray] = None) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.dot(a=x1, b=x2)
 
