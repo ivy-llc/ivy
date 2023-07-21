@@ -366,3 +366,34 @@ def test_unsorted_segment_min(
         segment_ids=segment_ids,
         num_segments=num_segments,
     )
+
+
+# blackman_window
+@handle_test(
+    fn_tree="functional.ivy.experimental.blackman_window",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        max_num_dims=0,
+        min_value=1,
+        max_value=10,
+    ),
+    periodic=st.booleans(),
+    dtype=helpers.get_dtypes("float", full=False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_blackman_window(
+    *, dtype_and_x, periodic, dtype, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        atol_=0.015,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        size=int(x[0]),
+        periodic=periodic,
+        dtype="float64",
+    )
