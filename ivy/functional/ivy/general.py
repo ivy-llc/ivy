@@ -2767,7 +2767,6 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    print(query)
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             if not query:
@@ -3569,7 +3568,6 @@ def gather_nd(
         b: ivy.array([0., 100., 200.])
     }
     """
-    print(indices)
     res = current_backend(params, indices).gather_nd(
         params, indices, batch_dims=batch_dims
     )
