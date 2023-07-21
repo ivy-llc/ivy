@@ -36,6 +36,7 @@ class Tensor:
             self._is_leaf = True
         else:
             self._is_leaf = False
+        self._requires_grad = requires_grad
 
     def __len__(self):
         return len(self._ivy_array)
@@ -725,6 +726,10 @@ class Tensor:
     @property
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
+
+    @property
+    def is_meta(self):
+        return "meta" in ivy.dev(self.ivy_array)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
@@ -1543,6 +1548,10 @@ class Tensor:
         if self.device != "cpu":
             raise Exception("apply_ is only supported on cpu tensors")
         self.ivy_array = callable(self.ivy_array)
+        return self
+
+    def requires_grad_(self, requires_grad=True):
+        self._requires_grad = requires_grad
         return self
 
     def backward(self, gradient=None, retain_graph=None, create_graph=False):

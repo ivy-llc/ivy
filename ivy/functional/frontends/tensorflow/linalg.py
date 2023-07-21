@@ -35,6 +35,15 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
@@ -329,3 +338,27 @@ def qr(input, /, *, full_matrices=False, name=None):
 )
 def inv(input, adjoint=False, name=None):
     return ivy.inv(input, adjoint=adjoint)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def tensor_diag(diagonal, /, *, name=None):
+    diagonal = ivy.array(diagonal)
+    rank = ivy.matrix_rank(diagonal)
+    if rank > 1:
+        raise ValueError("wrong tensor rank, at most 1")
+    return ivy.diag(diagonal)

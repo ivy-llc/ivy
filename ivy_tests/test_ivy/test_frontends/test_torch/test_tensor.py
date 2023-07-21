@@ -233,6 +233,25 @@ def test_torch_tensor_property_grad_fn():
     ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_requires_grad_(
+    dtype_x,
+    requires_grad,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    assert not x._requires_grad
+    x.requires_grad_()
+    assert x._requires_grad
+    x.requires_grad_(requires_grad)
+    assert x._requires_grad == requires_grad
+
+
 # chunk
 @pytest.mark.skip("Testing takes a lot of time")
 @handle_frontend_method(
@@ -3733,6 +3752,22 @@ def test_torch_tensor_property_is_cuda(
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(
         x.is_cuda, "gpu" in ivy.dev(ivy.array(data[0])), as_array=False
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_is_meta(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_meta, "meta" in ivy.dev(ivy.array(data[0])), as_array=False
     )
 
 

@@ -260,7 +260,7 @@ class Array(
             self._size = (
                 functools.reduce(mul, self._data.shape)
                 if len(self._data.shape) > 0
-                else 0
+                else 1
             )
         return self._size
 
@@ -373,7 +373,11 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        rep = (
+            np.array(ivy.vec_sig_fig(arr_np, sig_fig))
+            if self.size > 0
+            else np.array(arr_np)
+        )
         with np.printoptions(precision=dec_vals):
             repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
