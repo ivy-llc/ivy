@@ -1,0 +1,39 @@
+import ivy
+import torch
+
+def normalize(x):
+    mean = torch.mean(x)
+    std = torch.std(x)
+    return torch.div(torch.sub(x, mean), std)
+
+normalize = ivy.unify(normalize, source="torch")
+
+ivy.set_backend("jax")
+
+import jax
+
+key = jax.random.PRNGKey(42)
+x = jax.random.uniform(key, shape=(10,))
+
+result = normalize(x)
+print(result)
+
+ivy.set_backend("jax")
+comp = ivy.compile(normalize)  # compiles to JAX, due to ivy.set_backend
+
+result_compiled = comp(x)
+print(result_compiled)
+
+import time
+
+# Measure runtime for the non-compiled function normalize(x)
+start_time = time.time()
+normalize(x)
+end_time = time.time()
+print("Time taken for non-compiled function: ", end_time - start_time)
+
+# Measure runtime for the compiled function comp(x)
+start_time = time.time()
+comp(x)
+end_time = time.time()
+print("Time taken for compiled function: ", end_time - start_time)
