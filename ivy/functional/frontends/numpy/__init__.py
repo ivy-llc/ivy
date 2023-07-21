@@ -490,6 +490,8 @@ from . import matrix
 from .matrix import *
 from . import random
 from .random import *
+from . import broadcast
+from .broadcast import *
 
 from . import ma
 from . import fft
@@ -542,6 +544,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _mod,
     _modf,
     _multiply,
+    _remainder,
     _negative,
     _positive,
     _power,
@@ -657,6 +660,7 @@ fmod = ufunc("_fmod")
 mod = ufunc("_mod")
 modf = ufunc("_modf")
 multiply = ufunc("_multiply")
+remainder = ufunc("_remainder")
 negative = ufunc("_negative")
 positive = ufunc("_positive")
 power = ufunc("_power")
