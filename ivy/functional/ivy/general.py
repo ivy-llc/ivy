@@ -2922,7 +2922,7 @@ def _parse_query(query, x_shape):
                     else:
                         stop = idx.stop
                         stop = stop + s if stop < 0 and idx.stop is not None else stop
-                print(start, stop, step)
+                
                 query[i] = ivy.arange(start, stop, step)
             elif isinstance(idx, int):
                 query[i] = ivy.array(idx + s if idx < 0 else idx)
