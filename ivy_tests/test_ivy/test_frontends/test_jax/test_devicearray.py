@@ -2010,7 +2010,6 @@ def test_jax_devicearray_round(
     )
 
 
-
 @st.composite
 def _get_input_and_two_swapabble_axes(draw):
     x_dtype, x, x_shape = draw(
@@ -2035,6 +2034,7 @@ def _get_input_and_two_swapabble_axes(draw):
         )
     )
     return x_dtype, x, axis1, axis2
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2067,7 +2067,7 @@ def test_jax_devicearray_swapaxes(
         method_flags=method_flags,
         on_device=on_device,
     )
-  
+
 
 # var
 @handle_frontend_method(
@@ -2086,7 +2086,6 @@ def test_jax_devicearray_swapaxes(
     ddof=st.booleans(),
     keepdims=st.booleans(),
 )
-
 def test_jax_devicearray_var(
     dtype_and_x,
     keepdims,
