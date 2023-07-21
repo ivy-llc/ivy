@@ -610,13 +610,16 @@ def test_logit(
 @handle_method(
     method_tree="stateful.activations.PReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", prune_function=True),
         min_num_dims=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    slope=st.floats(min_value=-1e-4, max_value=1e-4),
+    slope=st.one_of(
+        st.lists(st.floats(min_value=-1e-4, max_value=1e-4), min_size=2),
+        st.floats(min_value=-1e-4, max_value=1e-4),
+    ),
     method_num_positional_args=helpers.num_positional_args(fn_name="PReLU._forward"),
     test_gradients=st.just(True),
 )
