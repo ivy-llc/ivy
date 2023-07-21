@@ -46,6 +46,12 @@ cmd_line_args_lists = (
 )
 
 
+def get_frontend_config(frontend: str):
+    return importlib.import_module(
+        f"ivy_tests.test_ivy.test_frontends.config.{frontend}"
+    )
+
+
 @st.composite
 def num_positional_args_method(draw, *, method):
     """
