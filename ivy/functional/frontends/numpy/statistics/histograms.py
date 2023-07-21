@@ -162,7 +162,7 @@ def _hist_bin_stone(x, range):
 
     def jhat(nbins):
         hh = ptp_x / nbins
-        p_k = ivy.array(histogram(x, bins=nbins, range=range)[0] / n)
+        p_k = (histogram(x, bins=nbins, range=range)[0] / n).ivy_array
         return (2 - (n + 1) * ivy.vecdot(p_k, p_k)) / hh
 
     nbins_upper_bound = max(100, int(ivy.sqrt(ivy.array(n, dtype=ivy.float64))))
@@ -253,6 +253,7 @@ def histogram_bin_edges(a, bins=10, range=None, weights=None):
     return ivy.array(bin_edges)
 
 
+@to_ivy_arrays_and_back
 def histogram(a, bins=10, range=None, density=None, weights=None):
     a, weights = _ravel_and_check_weights(a, weights)
 
