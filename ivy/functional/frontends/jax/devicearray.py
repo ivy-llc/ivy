@@ -275,3 +275,16 @@ class DeviceArray:
 
     def swapaxes(self, axis1, axis2):
         return jax_frontend.numpy.swapaxes(self._ivy_array, axis1, axis2)
+
+    def var(
+        self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
+    ):
+        return jax_frontend.numpy.var(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=int(ddof),
+            keepdims=keepdims,
+            where=where,
+        )
