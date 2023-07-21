@@ -30,8 +30,8 @@ def _cpercentile(N, percent, key=lambda x: x):
     """
     N.sort()
     k = (len(N) - 1) * percent
-    f = ivy.math.floor(k)
-    c = ivy.math.ceil(k)
+    f = ivy.floor(k)
+    c = ivy.ceil(k)
     if f == c:
         return key(N[int(k)])
     d0 = key(N[int(f)]) * (c - k)
@@ -70,12 +70,12 @@ def nanpercentile(
         return []
 
     if axis is None:
+        a = ivy.flatten(a)
         resultarray = []
         nanlessarray = []
         for x in a:
-            for i in x:
-                if not ivy.isnan(i):
-                    nanlessarray.append(i)
+            if not ivy.isnan(x):
+                nanlessarray.append(x)
 
         for i in q:
             resultarray.append(_cpercentile(nanlessarray, i))
