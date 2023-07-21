@@ -28,8 +28,9 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
-        self.grads = None
+        self.jac_fn = None
         self.func_inputs = None
+        self.out_idx = None
         self.requires_grad = requires_grad
 
     def __len__(self):
@@ -84,14 +85,6 @@ class Tensor:
         )
 
     @property
-    def grads(self):
-        return self._grads
-
-    @property
-    def func_inputs(self):
-        return self._func_inputs
-
-    @property
     def requires_grad(self):
         return self._requires_grad
 
@@ -103,14 +96,6 @@ class Tensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
-
-    @grads.setter
-    def grads(self, g):
-        self._grads = g
-
-    @func_inputs.setter
-    def func_inputs(self, i):
-        self._func_inputs = i
 
     @requires_grad.setter
     def requires_grad(self, r):
@@ -198,7 +183,7 @@ class Tensor:
         self.ivy_array = self.asin().ivy_array
         return self
 
-    @numpy_to_torch_style_args
+    # @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def sum(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)

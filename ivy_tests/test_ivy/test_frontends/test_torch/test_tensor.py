@@ -157,22 +157,16 @@ def test_torch_tensor_property_requires_grad(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
-    grads=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", prune_function=False),
-        num_arrays=st.integers(min_value=1, max_value=5),
-    ),
 )
-def test_torch_tensor_property_grads(
+def test_torch_tensor_property_jac_fn(
     dtype_x,
-    grads,
 ):
     _, data = dtype_x
-    grads = list(map(ivy.array, grads[1]))
     x = torch_frontend.tensor(data[0])
-    assert x.grads is None
-    x.grads = grads
-    for x, y in zip(x.grads, grads):
-        assert ivy.all(x == y)
+    assert x.jac_fn is None
+    jac_fn = lambda x: x
+    x.jac_fn = jac_fn
+    assert x.jac_fn is jac_fn
 
 
 @given(

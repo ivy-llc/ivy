@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.torch.func_wrapper import (
     to_ivy_arrays_and_back,
     numpy_to_torch_style_args,
+    handle_gradients,
 )
 
 
@@ -100,6 +101,7 @@ def squeeze(input, dim=None):
     return ivy.squeeze(input, axis=dim)
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)

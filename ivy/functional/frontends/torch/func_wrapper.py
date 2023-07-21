@@ -38,16 +38,37 @@ def _does_input_req_grad(inputs):
     return ivy.nested_any(inputs, fn)
 
 
-def _store_grads(out_tensors, fn, xs):
-    def fn_wrapped(xs):
+def _remove_non_tensors(xs):
+    idx_to_prune = ivy.nested_argwhere(
+        xs,
+        lambda x: not isinstance(x, torch_frontend.Tensor),
+        to_ignore=torch_frontend.Tensor,
+    )
+    xs_pruned = ivy.copy_nest(xs, to_mutable=True)
+    ivy.prune_nest_at_indices(xs_pruned, idx_to_prune)
+    return xs_pruned, idx_to_prune
+
+
+def _add_non_tensors(xs_torch, xs, prune_idxs):
+    for idx in prune_idxs:
+        to_add = ivy.index_nest(xs, idx)
+        ivy.insert_into_nest_at_index(xs_torch, idx, to_add)
+    return xs_torch
+
+
+def _store_data(out_tensors, fn, xs):
+    xs_pruned, prune_idxs = _remove_non_tensors(xs)
+
+    def fn_wrapped(xs_pruned):
         # To frontend
         xs_torch = ivy.nested_map(
-            xs,
+            xs_pruned,
             lambda x: torch_frontend.Tensor(x, _init_overload=True),
             shallow=False,
         )
+        xs_torch_all = _add_non_tensors(xs_torch, xs, prune_idxs)
 
-        ret = fn(*xs_torch[0], **xs_torch[1])
+        ret = fn(*xs_torch_all[0], **xs_torch_all[1])
 
         # To ivy
         ivy_ret = ivy.nested_map(
@@ -60,17 +81,18 @@ def _store_grads(out_tensors, fn, xs):
         return ivy_ret
 
     jac_fn = to_ivy_arrays_and_back(ivy.jac(fn_wrapped))
-    jacs = jac_fn(xs)
-
-    if isinstance(out_tensors, tuple):
-        for o, j in zip(out_tensors, jacs):
-            o.func_inputs = xs
-            o.grads = j
-            o.requires_grad = True
-    else:
-        out_tensors.func_inputs = xs
-        out_tensors.grads = jacs
+    if isinstance(out_tensors, torch_frontend.Tensor):
+        out_tensors.func_inputs = xs_pruned
+        out_tensors.jac_fn = jac_fn
         out_tensors.requires_grad = True
+    else:
+        idxs = ivy.all_nested_indices(out_tensors)
+        for idx in idxs:
+            o = ivy.index_nest(out_tensors, idx)
+            o.func_inputs = xs_pruned
+            o.jac_fn = jac_fn
+            o.requires_grad = True
+            o.out_idx = idx
 
     return out_tensors
 
@@ -86,7 +108,7 @@ def handle_gradients(fn: Callable) -> Callable:
         inputs_req_grad = _does_input_req_grad(xs)
 
         if inputs_req_grad:
-            ret = _store_grads(ret, fn, xs)
+            ret = _store_data(ret, fn, xs)
         if "requires_grad" in kwargs:
             ret.requires_grad = kwargs["requires_grad"]
 

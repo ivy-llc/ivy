@@ -293,6 +293,7 @@ def clamp(input, min=None, max=None, *, out=None):
 clip = clamp
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)

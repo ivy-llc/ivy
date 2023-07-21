@@ -1,6 +1,9 @@
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.functional.frontends.torch.func_wrapper import (
+    handle_gradients,
+)
 
 
 def _add_grad(g_total, g):
@@ -32,15 +35,10 @@ def _grad_out_multiply(grad_out, jacobian_wrt_input):
     input_num_dims = len(jacobian_wrt_input.shape) - len(output_shape)
     expanded_grad_out = grad_out.view(output_shape + (1,) * input_num_dims)
     sum_dims = tuple(range(len(output_shape)))
-    new_grad_out = (expanded_grad_out * jacobian_wrt_input).sum(dim=sum_dims)
+    new_grad_out = torch_frontend.sum(
+        expanded_grad_out * jacobian_wrt_input, dim=sum_dims
+    )
     return new_grad_out
-
-
-def get_elemnt(nest, idx):
-    ret = nest
-    for i in idx:
-        ret = ret[i]
-    return ret
 
 
 def _get_grad(output, input, grad_output):
@@ -61,11 +59,18 @@ def _get_grad(output, input, grad_output):
     # Case #3
     grads = None
     all_indices = ivy.all_nested_indices(func_inputs)
-    for idx in all_indices:
-        func_input = get_elemnt(func_inputs, idx)
-        grad_wrt_input = get_elemnt(output.grads, idx)
+    if output.out_idx is None:
+        jacs = handle_gradients(output.jac_fn)(func_inputs)
+    else:
+        jacs = ivy.index_nest(
+            handle_gradients(output.jac_fn)(func_inputs), output.out_idx
+        )
 
-        new_grad_out = _grad_out_multiply(grad_output, grad_wrt_input)
+    for idx in all_indices:
+        func_input = ivy.index_nest(func_inputs, idx)
+        jac_wrt_input = ivy.index_nest(jacs, idx)
+
+        new_grad_out = _grad_out_multiply(grad_output, jac_wrt_input)
         grad = _get_grad(func_input, input, new_grad_out)
         grads = _add_grad(grads, grad)
 
@@ -78,6 +83,7 @@ def _batched_get_grad(output, input, grad_output, batched):
     return _get_grad(output, input, grad_output)
 
 
+# @handle_gradients
 def grad(
     outputs,
     inputs,

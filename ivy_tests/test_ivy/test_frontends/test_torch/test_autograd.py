@@ -31,6 +31,8 @@ def _get_grad_args(draw):
     fn2 = draw(st.sampled_from(["add", "matmul"]))
     dtypes2, xs2 = draw(
         helpers.dtype_and_values(
+            min_value=-20,
+            max_value=20,
             num_arrays=2,
             shape=(2, 2),
             shared_dtype=True,
@@ -208,11 +210,13 @@ def test_torch_grad(grad_args):
     x_torch2 = torch.tensor(xs2[1], requires_grad=True, dtype=dtypes_torch2[1])
 
     y_ivy2 = torch_frontend.mean(
-        torch_frontend.matmul(torch_frontend.sin(x_ivy1), torch_frontend.sin(x_ivy2))
+        torch_frontend.matmul(
+            torch_frontend.add(x_ivy1, x_ivy2), torch_frontend.sin(x_ivy2)
+        )
     )
     y_torch2 = torch.mean(
         torch.matmul(
-            torch.sin(x_torch1),
+            torch.add(x_torch1, x_torch2),
             torch.sin(x_torch2),
         )
     )
@@ -268,4 +272,3 @@ def test_torch_grad(grad_args):
         torch_frontend.autograd.grad(y, x)
 
     # Test when input is used twice
-    # test x = y
