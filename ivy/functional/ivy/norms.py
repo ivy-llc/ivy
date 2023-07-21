@@ -143,6 +143,7 @@ layer_norm.mixed_backend_wrappers = {
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

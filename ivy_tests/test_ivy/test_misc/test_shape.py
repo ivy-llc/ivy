@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
 
 @handle_method(
     method_tree="Shape.__getitem__",
-    dtypes_x_query=helpers.dtype_array_index(
+    dtypes_x_query=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
@@ -32,10 +32,10 @@ def test_shape__getitem__(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_all_as_kwargs_np={"data": x},
+        init_all_as_kwargs_np={"shape_tup": x},
         init_input_dtypes=[dtypes[0]],
         method_input_dtypes=[dtypes[1]],
-        method_all_as_kwargs_np={"query": query},
+        method_all_as_kwargs_np={"key": query},
         class_name=class_name,
         method_name=method_name,
     )
