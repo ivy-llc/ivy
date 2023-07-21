@@ -616,7 +616,7 @@ def test_logit(
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    slope=st.floats(min_value=-1e-4, max_value=1e-4),
+    slope=helpers.array_values(shape=(1, 1, 1, 1), min_value=0.1, max_value=10),
     method_num_positional_args=helpers.num_positional_args(fn_name="PReLU._forward"),
     test_gradients=st.just(True),
 )
