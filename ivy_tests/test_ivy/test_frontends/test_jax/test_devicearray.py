@@ -2014,7 +2014,7 @@ def test_jax_devicearray_round(
 def _get_input_and_two_swapabble_axes(draw):
     x_dtype, x, x_shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             ret_shape=True,
             min_num_dims=1,
             max_num_dims=10,
