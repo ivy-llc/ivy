@@ -37,39 +37,6 @@ def compiled_if_required(backend: str, fn, test_compile=False, args=None, kwargs
         return fn
 
 
-def empty_func(*args, **kwargs):
-    return None
-
-
-try:
-    from ivy.functional.backends.jax.general import (
-        is_native_array as is_jax_native_array,
-    )
-except ImportError:
-    is_jax_native_array = empty_func
-
-try:
-    from ivy.functional.backends.numpy.general import (
-        is_native_array as is_numpy_native_array,
-    )
-except ImportError:
-    is_numpy_native_array = empty_func
-
-try:
-    from ivy.functional.backends.tensorflow.general import (
-        is_native_array as is_tensorflow_native_array,
-    )
-except ImportError:
-    is_tensorflow_native_array = empty_func
-
-try:
-    from ivy.functional.backends.torch.general import (
-        is_native_array as is_torch_native_array,
-    )
-except ImportError:
-    is_torch_native_array = empty_func
-
-
 # Ivy Function testing ##########################
 
 # Test Function Helpers ###############
