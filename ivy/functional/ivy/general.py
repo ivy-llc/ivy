@@ -2767,6 +2767,7 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
+    print(query)
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             if not query:
@@ -2903,14 +2904,24 @@ def _parse_query(query, x_shape):
                 step = 1 if idx.step is None else idx.step
                 if idx.start is None:
                     start = 0 if step >= 0 else s - 1
+                elif (idx.start >= s and idx.step < 0) or (
+                    idx.start < -s and idx.step >= 0
+                ):  # handle out of bound with negative step
+                    start = s - 1
                 else:
                     start = idx.start
                 start = start + s if start < 0 else start
                 if idx.stop is None:
                     stop = s if step >= 0 else -1
                 else:
-                    stop = idx.stop
-                stop = stop + s if stop < 0 and idx.stop is not None else stop
+                    if idx.stop >= s and idx.step >= 0:
+                        stop = s
+                    elif idx.stop < -s - 1 and idx.step < 0:
+                        stop = -1
+                    else:
+                        stop = idx.stop
+                        stop = stop + s if stop < 0 and idx.stop is not None else stop
+
                 query[i] = ivy.arange(start, stop, step)
             elif isinstance(idx, int):
                 query[i] = ivy.array(idx + s if idx < 0 else idx)
@@ -3558,6 +3569,7 @@ def gather_nd(
         b: ivy.array([0., 100., 200.])
     }
     """
+    print(indices)
     res = current_backend(params, indices).gather_nd(
         params, indices, batch_dims=batch_dims
     )
