@@ -66,9 +66,17 @@ def _histogram_helper(draw):
             max_value=20,
         )
     )
-    # "stone" - histogram function not implemented
-    # "fd". "auto" - percentile function not implemented
-    bin_selectors = ["doane", "rice", "scott", "sqrt", "sturges", bins]
+    bin_selectors = [
+        "stone",
+        "fd",
+        "auto",
+        "doane",
+        "rice",
+        "scott",
+        "sqrt",
+        "sturges",
+        bins,
+    ]
     bins = draw(st.sampled_from(bin_selectors))
     if isinstance(bins, str):
         weights = None
