@@ -2020,34 +2020,6 @@ def lstm_update(
 
 
 def _handle_padding(x, strides, filters, padding):
-    """
-    Calculates the padding value based on the specified parameters.
-
-    Parameters
-    ----------
-    x : int
-        The input size.
-    strides : int
-        The stride value.
-    filters : int
-        The filter size.
-    padding : string
-        The padding mode. Valid options are "SAME" and "VALID".
-
-    Returns
-    -------
-    pad : int
-        The calculated padding value.
-
-    Examples
-    --------
-    >>> _handle_padding(10, 3, 5, "SAME")
-    4
-
-    >>> _handle_padding(10, 3, 5, "VALID")
-    0
-
-    """
     if padding == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
