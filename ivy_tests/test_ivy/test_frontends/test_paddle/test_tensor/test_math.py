@@ -1572,6 +1572,7 @@ def test_paddle_heaviside(
         y=x[1],
     )
 
+
 # rsqrt
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.rsqrt",
