@@ -1135,3 +1135,73 @@ def test_jax_cov(
         fweights=fweights,
         aweights=aweights,
     )
+
+
+@st.composite
+def _get_array_axes_probs(draw):
+    dtypes = draw(helpers.get_dtypes(kind="float"))
+    dtype, array, axes = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=dtypes,
+            small_abs_safety_factor=5,
+            large_abs_safety_factor=5,
+            min_num_dims=1,
+            max_num_dims=5,
+            max_dim_size=7,
+            max_axes_size=5,
+            valid_axis=True,
+            force_int_axis=True,
+        )
+    )
+    q = np.array(
+        draw(
+            helpers.lists(
+                x=helpers.floats(
+                    min_value=0,
+                    max_value=1,
+                    small_abs_safety_factor=50,
+                    abs_smallest_val=1e-1,
+                ),
+                min_size=1,
+                max_size=10,
+            )
+        )
+    )
+
+    return dtype, array, axes, q
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.quantile",
+    dtype_array_axes_q=_get_array_axes_probs(),
+    overwrite_input=st.just(False),
+    method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
+    keepdims=st.just(False),
+    test_with_out=st.just(False),
+)
+def test_jax_quantile(
+    *,
+    dtype_array_axes_q,
+    overwrite_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    method,
+    keepdims,
+):
+    dtype, array, axes, q = dtype_array_axes_q
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=array[0],
+        q=q,
+        axis=axes,
+        out=None,
+        overwrite_input=overwrite_input,
+        method=method,
+        keepdims=keepdims,
+    )
