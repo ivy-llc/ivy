@@ -345,4 +345,4 @@ class PReLU(Module):
         ret
             The outputs following the PRELU activation *[batch_shape, d]*
         """
-        return ivy.prelu(x, slope=slope)
+        return ivy.prelu(x, slope)
