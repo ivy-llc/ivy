@@ -407,7 +407,9 @@ def put_along_axis(
     return ret
 
 
-put_along_axis.partial_mixed_handler = lambda *args, mode, **kwargs: mode in [
+put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "add",
+    "mul",
     "mean",
     "amax",
     "amin",

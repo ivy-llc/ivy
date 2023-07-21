@@ -467,6 +467,8 @@ def put_along_axis(
     return ret
 
 
-put_along_axis.partial_mixed_handler = lambda *args, mode='assign', **kwargs: mode in [
+put_along_axis.partial_mixed_handler = lambda *args, mode="assign", **kwargs: mode in [
     "assign",
+    "add",
+    "mul",
 ]
