@@ -32,7 +32,7 @@ def indices(dimensions, dtype=int, sparse=False):
     else:
         res = ivy.empty((N,) + dimensions, dtype=dtype)
     for i, dim in enumerate(dimensions):
-        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1:])
+        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1 :])
         if sparse:
             res = res + (idx,)
         else:
