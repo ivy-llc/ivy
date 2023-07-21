@@ -163,9 +163,9 @@ def _hist_bin_stone(x, range):
     def jhat(nbins):
         hh = ptp_x / nbins
         p_k = ivy.array(histogram(x, bins=nbins, range=range)[0] / n)
-        return (2 - (n + 1) * p_k.dot(p_k)) / hh
+        return (2 - (n + 1) * ivy.vecdot(p_k, p_k)) / hh
 
-    nbins_upper_bound = max(100, int(ivy.sqrt(n)))
+    nbins_upper_bound = max(100, int(ivy.sqrt(ivy.array(n, dtype=ivy.float64))))
     nbins = min(_range(1, nbins_upper_bound + 1), key=jhat)
     if nbins == nbins_upper_bound:
         ivy.logging.warning(
