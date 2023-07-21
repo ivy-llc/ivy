@@ -885,8 +885,8 @@ class ContainerBase(dict, abc.ABC):
                     if not ivy.all_equal(*values):
                         return False
                 if assert_and_assign:
-                    containers[0].cont_set_at_key_chains(
-                        target_dict=containers[1], inplace=True
+                    containers[0].cont_set_at_key_chain(
+                        key, containers[1][key], inplace=True
                     )
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
@@ -906,13 +906,11 @@ class ContainerBase(dict, abc.ABC):
                 if not ret:
                     return False
                 if assert_and_assign:
-                    try:
-                        containers[0][key].cont_set_at_key_chains(
-                            target_dict=containers[1][key], inplace=True
-                        )
-                    except:
-                        print("why it didn't work")
-                        print(containers)
+                    # TODO optimise this further, such that keys are assigned
+                    # without waiting for more building
+                    containers[0][key].cont_set_at_key_chains(
+                        target_dict=containers[1][key], inplace=True
+                    )
 
         return True
 

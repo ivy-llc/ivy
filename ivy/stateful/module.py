@@ -146,7 +146,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._dynamic_backend = dynamic_backend
         if build_mode != "on_init":
             return
-        if Module._init_var:
+        if hasattr(Module, "_init_var"):
             if "stateful" in self.__module__:
                 # we know we are operating within the
                 # context of another class, and it's a
@@ -166,7 +166,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             # nested scenario, because if it's another custom class initialised
             # within another one, then we have to hold variable initialisation
             # here too, unless `v` or `with_partial_v`
-            if len(Module._init_var) > 1:
+            if len(Module._init_var) > 1 and not v and not with_partial_v:
                 # hold off initialisation, delete key for this class and
                 # move on
                 Module._init_var.pop()
@@ -175,6 +175,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             if Module._init_var[-1] == self.__class__.__name__:
                 # you delete it, only if this is the class that caused it's creation
                 Module._init_var.pop()
+
+            # do a final check if _init_var  becomes empty, then delete it all together
+            del Module._init_var
+
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
