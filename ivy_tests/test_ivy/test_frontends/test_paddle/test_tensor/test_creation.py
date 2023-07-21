@@ -494,8 +494,8 @@ def test_paddle_meshgrid(
 # logspace
 @handle_frontend_test(
     fn_tree="paddle.logspace",
-    start=helpers.ints(min_value=-50, max_value=0),
-    stop=helpers.ints(min_value=1, max_value=50),
+    start=helpers.floats(min_value=-10, max_value=10),
+    stop=helpers.floats(min_value=-10, max_value=10),
     num=helpers.ints(min_value=1, max_value=5),
     base=st.floats(min_value=0.1, max_value=10.0),
     dtype=helpers.get_dtypes("float"),
