@@ -14,18 +14,13 @@ def abs(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
     *,
-    where: Union[bool, tf.Tensor, tf.Variable] = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if not tf.is_tensor(x):
         x = tf.convert_to_tensor(x)
-    x_dtype = ivy.dtype(x)
-    if any(("uint" in x_dtype, "bool" in x_dtype)):
+    if any(("uint" in x.dtype.name, "bool" in x.dtype.name)):
         return x
-    ret = ivy.where(where, tf.abs(x), x)
-    if ivy.is_complex_dtype(x_dtype):
-        return ivy.real(ret)
-    return ret
+    return tf.abs(x)
 
 
 def acos(

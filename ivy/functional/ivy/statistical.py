@@ -377,6 +377,16 @@ def prod(
     """
     Calculate the product of input array x elements.
 
+    **Special Cases**
+
+    Let ``N`` equal the number of elements over which to compute the product.
+
+    -  If ``N`` is ``0``, the product is ``1`` (i.e., the empty product).
+
+    For both both real-valued and complex floating-point operands, special
+    cases must be handled as the operation is implemented by successive application
+    of :func:`ivy.multiply`:
+
     Parameters
     ----------
     x
@@ -647,6 +657,10 @@ def sum(
 
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
+
+    For both real-valued and complex floating-point operands, special cases must
+    be handled as if the operation is implemented by successive application of
+    :func:`ivy.add`:
 
     Parameters
     ----------

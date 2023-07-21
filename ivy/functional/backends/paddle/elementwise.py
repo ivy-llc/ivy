@@ -834,13 +834,10 @@ def abs(
     x: Union[float, paddle.Tensor],
     /,
     *,
-    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(where, paddle.Tensor):
-        where = paddle.to_tensor(where, dtype="bool").squeeze()
     if not isinstance(x, paddle.Tensor):
-        x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
+        x = paddle.to_tensor(x, dtype=ivy.default_dtype(item=x)).squeeze()
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -848,13 +845,8 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle_backend.where(
-            where, paddle.abs(x.astype("float32")).astype(x.dtype), x
-        )
-    ret = paddle_backend.where(where, paddle.abs(x), x)
-    if ivy.is_complex_dtype(x.dtype):
-        return ivy.real(ret)
-    return ret
+        return paddle.abs(x.astype("float32")).astype(x.dtype)
+    return paddle.abs(x)
 
 
 @with_unsupported_device_and_dtypes(
