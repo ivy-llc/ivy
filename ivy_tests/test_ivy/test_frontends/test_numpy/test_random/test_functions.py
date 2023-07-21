@@ -709,7 +709,6 @@ def test_numpy_gumbel(
     )
 
 
-
 @handle_frontend_test(
     fn_tree="numpy.random.gamma",
     input_dtypes=helpers.get_dtypes("float", full=False),
@@ -736,17 +735,17 @@ def test_numpy_gamma(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        frontend=frontend,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        loc=loc,
+        shape=shape,
         scale=scale,
         size=size,
     )
-    
-    
+
+
 # laplace
 @handle_frontend_test(
     fn_tree="numpy.random.laplace",
@@ -788,5 +787,3 @@ def test_numpy_laplace(
         scale=scale,
         size=size,
     )
-
-
