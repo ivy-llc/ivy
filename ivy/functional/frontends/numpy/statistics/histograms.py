@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+import ivy.functional.frontends.numpy as np_frontend
 from ivy.func_wrapper import with_supported_dtypes
 import operator
 import numpy as np
@@ -192,7 +193,7 @@ def _hist_bin_doane(x, range):
 
 def _hist_bin_fd(x, range):
     del range  # unused
-    iqr = ivy.subtract(*np.percentile(x, [75, 25]))
+    iqr = ivy.subtract(*np_frontend.nanpercentile(x, q=[75, 25]))
     return 2.0 * iqr * x.size ** (-1.0 / 3.0)
 
 
@@ -219,6 +220,21 @@ _hist_bin_selectors = {
 }
 
 
+def _search_sorted_inclusive(a, v):
+    """
+    Like `searchsorted`, but where the last item in `v` is placed on the right.
+
+    In the context of a histogram, this makes the last bin edge
+    inclusive
+    """
+    return ivy.concat(
+        (
+            ivy.searchsorted(a, v[:-1], side="left"),
+            ivy.searchsorted(a, v[-1:], side="right"),
+        )
+    )
+
+
 @with_supported_dtypes({"1.25.1 and below": ("int64",)}, "numpy")
 @to_ivy_arrays_and_back
 def bincount(x, /, weights=None, minlength=0):
@@ -236,3 +252,118 @@ def histogram_bin_edges(a, bins=10, range=None, weights=None):
     if ivy.is_complex_dtype(bin_edges) and ivy.is_complex_dtype(a):
         return ivy.array(bin_edges, dtype=a.dtype)
     return ivy.array(bin_edges)
+
+
+def histogram(a, bins=10, range=None, density=None, weights=None):
+    a, weights = _ravel_and_check_weights(a, weights)
+
+    bin_edges, uniform_bins = _get_bin_edges(a, bins, range, weights)
+
+    # Histogram is an integer or a float array depending on the weights.
+    if weights is None:
+        ntype = ivy.int64
+    else:
+        ntype = weights.dtype
+
+    # We set a block size, as this allows us to iterate over chunks when
+    # computing histograms, to minimize memory usage.
+    BLOCK = 65536
+
+    # The fast path uses bincount, but that only works for certain types
+    # of weight
+    simple_weights = (
+        weights is None
+        or ivy.can_cast(weights.dtype, ivy.double)
+        or ivy.can_cast(weights.dtype, ivy.complex128)
+    )
+
+    if uniform_bins is not None and simple_weights:
+        # Fast algorithm for equal bins
+        # We now convert values of a to bin indices, under the assumption of
+        # equal bin widths (which is valid here).
+        first_edge, last_edge, n_equal_bins = uniform_bins
+
+        # Initialize empty histogram
+        n = np.zeros(n_equal_bins, dtype=ntype)
+
+        # Pre-compute histogram scaling factor
+        norm = n_equal_bins / ivy.subtract(last_edge, first_edge)
+
+        # We iterate over blocks here for two reasons: the first is that for
+        # large arrays, it is actually faster (for example for a 10^8 array it
+        # is 2x as fast) and it results in a memory footprint 3x lower in the
+        # limit of large arrays.
+        for i in _range(0, len(a), BLOCK):
+            tmp_a = a[i : i + BLOCK]
+            if weights is None:
+                tmp_w = None
+            else:
+                tmp_w = weights[i : i + BLOCK]
+
+            # Only include values in the right range
+            keep = tmp_a >= first_edge
+            keep &= tmp_a <= last_edge
+            if not ivy.reduce(keep, True, ivy.logical_and):
+                tmp_a = tmp_a[keep]
+                if tmp_w is not None:
+                    tmp_w = tmp_w[keep]
+
+            # This cast ensures no type promotions occur below, which gh-10322
+            # make unpredictable. Getting it wrong leads to precision errors
+            # like gh-8123.
+            tmp_a = ivy.astype(tmp_a, bin_edges.dtype)
+
+            # Compute the bin indices, and for values that lie exactly on
+            # last_edge we need to subtract one
+            f_indices = ivy.subtract(tmp_a, first_edge) * norm
+            indices = ivy.astype(f_indices, ivy.int64)
+            indices[indices == n_equal_bins] -= 1
+
+            # The index computation is not guaranteed to give exactly
+            # consistent results within ~1 ULP of the bin edges.
+            decrement = tmp_a < bin_edges[indices]
+            indices[decrement] -= 1
+            # The last bin includes the right edge. The other bins do not.
+            increment = (tmp_a >= bin_edges[indices + 1]) & (
+                indices != n_equal_bins - 1
+            )
+            indices[increment] += 1
+
+            # We now compute the histogram using bincount
+            if ivy.is_complex_dtype(ntype):
+                real = bincount(indices, weights=tmp_w.real(), minlength=n_equal_bins)
+                imag = np.bincount(
+                    indices, weights=tmp_w.imag(), minlength=n_equal_bins
+                )
+                n += real + ivy.array(imag, dtype=ivy.complex128) * 1j
+
+            else:
+                n += ivy.astype(
+                    np.bincount(indices, weights=tmp_w, minlength=n_equal_bins), ntype
+                )
+    else:
+        # Compute via cumulative histogram
+        cum_n = ivy.zeros(bin_edges.shape, dtype=ntype)
+        if weights is None:
+            for i in _range(0, len(a), BLOCK):
+                sa = ivy.sort(a[i : i + BLOCK])
+                cum_n += _search_sorted_inclusive(sa, bin_edges)
+        else:
+            zero = ivy.zeros(1, dtype=ntype)
+            for i in _range(0, len(a), BLOCK):
+                tmp_a = a[i : i + BLOCK]
+                tmp_w = weights[i : i + BLOCK]
+                sorting_index = ivy.argsort(tmp_a)
+                sa = tmp_a[sorting_index]
+                sw = tmp_w[sorting_index]
+                cw = ivy.concat((zero, ivy.cumsum(sw)))
+                bin_index = _search_sorted_inclusive(sa, bin_edges)
+                cum_n += cw[bin_index]
+
+        n = ivy.diff(cum_n)
+
+    if density:
+        db = ivy.array(ivy.diff(bin_edges), dtype=ivy.float64)
+        return n / db / n.sum(), bin_edges
+
+    return n, bin_edges
