@@ -540,9 +540,6 @@ def test_frontend_function(
             test_flags.native_arrays[0] for _ in range(num_arrays)
         ]
 
-    gt_args_np = copy.deepcopy(args_np)
-    gt_kwargs_np = copy.deepcopy(kwargs_np)
-
     with update_backend(backend_to_test) as ivy_backend:
         # update var flags to be compatible with float dtype and with_out args
         test_flags.as_variable = [
@@ -747,6 +744,24 @@ def test_frontend_function(
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
             )
+
+        def arrays_to_numpy(x):
+            if test_flags.generate_frontend_arrays:
+                return ivy_backend.to_numpy(x.ivy_array) if _is_frontend_array(x) else x
+            return (
+                ivy_backend.to_numpy(x._data) if isinstance(x, ivy_backend.Array) else x
+            )
+
+        gt_args_np = ivy.nested_map(
+            args_for_test,
+            arrays_to_numpy,
+            shallow=False,
+        )
+        gt_kwargs_np = ivy.nested_map(
+            kwargs_for_test,
+            arrays_to_numpy,
+            shallow=False,
+        )
 
     # create frontend framework args
     frontend_config = get_frontend_config(frontend)
