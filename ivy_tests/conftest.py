@@ -67,13 +67,14 @@ def pytest_addoption(parser):
         help="ivy traceback",
     )
     parser.addoption(
-        "-D",
-        "--deterministic",
+        "-R",
+        "--robust",
         action="store_true",
         default=False,
         help=(
-            "Use hash of the test function as a seed, "
-            "disables Redis database if exists."
+            "Disable Hypothesis Shrinking. Allow all Hypothesis HealthChecks."
+            "Disabling the HealthChecks will most likely introduce new failures, "
+            "this mode should be only used during development on the testing pipeline."
         ),
     )
 
@@ -125,6 +126,11 @@ def pytest_configure(config):
     )
 
     settings.register_profile(
+        "robust",
+        phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.target],
+    )
+
+    settings.register_profile(
         "diff",
         database=None,
         derandomize=True,
@@ -134,4 +140,7 @@ def pytest_configure(config):
         suppress_health_check=(HealthCheck(3), HealthCheck(2), HealthCheck(1)),
     )
 
-    settings.load_profile("ivy_profile")
+    if getopt("robust"):
+        settings.load_profile("robust")
+    else:
+        settings.load_profile("ivy_profile")

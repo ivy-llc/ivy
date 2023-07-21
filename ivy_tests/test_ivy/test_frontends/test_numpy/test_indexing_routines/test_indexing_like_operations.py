@@ -139,3 +139,42 @@ def test_numpy_put_along_axis(
         axis=axis,
         values=values,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.compress",
+    dtype_arr_ax=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=10,
+        max_dim_size=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    condition=helpers.array_values(
+        dtype=helpers.get_dtypes("bool"),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+)
+def test_numpy_compress(
+    dtype_arr_ax,
+    condition,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, arr, ax = dtype_arr_ax
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=condition,
+        a=arr[0],
+        axis=ax,
+    )

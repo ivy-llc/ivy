@@ -396,7 +396,7 @@ def _divmod(
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def remainder(
+def _remainder(
     x1,
     x2,
     /,

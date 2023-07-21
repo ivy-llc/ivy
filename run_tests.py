@@ -4,6 +4,7 @@ import sys
 from pymongo import MongoClient
 
 submodules = (
+    "test_paddle",
     "test_functional",
     "test_experimental",
     "test_stateful",
@@ -12,7 +13,6 @@ submodules = (
     "test_jax",
     "test_numpy",
     "test_misc",
-    "test_paddle",
     "test_scipy",
 )
 db_dict = {
@@ -111,7 +111,14 @@ def run_multiversion_testing():
                 ret = os.system(command)
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base /opt/miniconda/envs/multienv/bin/python docker/multiversion_framework_directory.py backend {backend};/opt/miniconda/envs/multienv/bin/python pytest --tb=short {test} --backend={backend.split("/")[0]}'  # noqa
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/multiversion:base'
+                    " /opt/miniconda/envs/multienv/bin/python"
+                    " docker/multiversion_framework_directory.py backend"
+                    f" {backend};/opt/miniconda/envs/multienv/bin/python pytest"
+                    f" --tb=short {test} --backend={backend.split('/')[0]}"
+                    # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
@@ -143,7 +150,7 @@ if __name__ == "__main__":
     version_flag = sys.argv[4]
     gpu_flag = sys.argv[5]
     workflow_id = sys.argv[6]
-    if len(sys.argv) > 7:
+    if len(sys.argv) > 7 and sys.argv[7] != "null":
         run_id = sys.argv[7]
     else:
         run_id = "https://github.com/unifyai/ivy/actions/runs/" + workflow_id
@@ -158,8 +165,8 @@ if __name__ == "__main__":
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
-    db = cluster["Ivy_tests"]
     db_multi = cluster["Ivy_tests_multi"]
+    db_gpu = cluster["Ivy_tests_gpu"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -170,30 +177,36 @@ if __name__ == "__main__":
             sys.stdout.flush()
             if with_gpu:
                 ret = os.system(
-                    f'docker run --rm --gpus all --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/multicuda:base_and_requirements python3 -m pytest --tb=short {test} --device=gpu:0 -B={backend}'  # noqa
+                    f"docker run --rm --gpus all --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis'
+                    " unifyai/multicuda:base_and_requirements python3 -m pytest"
+                    f" --tb=short {test} --device=gpu:0 -B={backend}"
+                    # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --tb=short {test} --backend {backend}'  # noqa
+                    f"docker run --rm --env REDIS_URL={redis_url} --env"
+                    f' REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v'
+                    ' "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m'
+                    f" pytest --tb=short {test} --backend {backend}"
+                    # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
+            frontend_version = None
+            if (
+                coll[0] == "numpy"
+                or coll[0] == "jax"
+                or coll[0] == "tensorflow"
+                or coll[0] == "torch"
+                or coll[0] == "paddle"
+            ):
+                frontend_version = "latest-stable"
             if not with_gpu:
-                update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, res
-                )
-                frontend_version = None
-                if (
-                    coll[0] == "numpy"
-                    or coll[0] == "jax"
-                    or coll[0] == "tensorflow"
-                    or coll[0] == "torch"
-                    or coll[0] == "paddle"
-                ):
-                    frontend_version = "latest-stable"
                 update_individual_test_results(
                     db_multi[coll[0]],
                     coll[1],
@@ -205,16 +218,16 @@ if __name__ == "__main__":
                     frontend_version,
                 )
             else:
-                print("GPU Test: Not Updating DB")
-
-    try:
-        with open("tests_to_remove", "r") as f:
-            for line in f:
-                test, backend = line.split(",")
-                coll, submod, test_fn = get_submodule(test)
-                remove_from_db(db[coll[0]], coll[1], submod, backend, test_fn)
-    except Exception:
-        pass
+                update_individual_test_results(
+                    db_gpu[coll[0]],
+                    coll[1],
+                    submod,
+                    backend,
+                    test_fn,
+                    res,
+                    "latest-stable",
+                    frontend_version,
+                )
 
     if failed:
         exit(1)

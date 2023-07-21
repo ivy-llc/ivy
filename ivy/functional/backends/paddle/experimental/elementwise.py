@@ -89,13 +89,12 @@ def copysign(
     *,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    with ivy.ArrayMode(False):
-        x2 = ivy.where(ivy.equal(x2, paddle.to_tensor(0)), ivy.divide(1, x2), x2)
-        signs = ivy.sign(x2)
-        result = ivy.multiply(ivy.abs(x1), signs)
-        if result.shape == [1]:
-            result = ivy.squeeze(result)
-        return result
+    x2 = paddle_backend.where(
+        paddle_backend.equal(x2, 0.0), paddle_backend.divide(1.0, x2), x2
+    )
+    signs = paddle_backend.sign(x2)
+    result = paddle_backend.multiply(paddle_backend.abs(x1), signs)
+    return result
 
 
 @with_unsupported_device_and_dtypes(
@@ -610,3 +609,10 @@ def count_nonzero(
 )
 def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.conj(x)
+
+
+def modf(
+    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.modf(x, out=out)

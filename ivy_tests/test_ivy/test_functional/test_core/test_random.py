@@ -41,15 +41,13 @@ def test_random_uniform(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=low_dtype + high_dtype,
             test_flags=test_flags,
             on_device=on_device,
@@ -106,14 +104,12 @@ def test_random_normal(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=mean_dtype + std_dtype,
             test_flags=test_flags,
             on_device=on_device,
@@ -167,22 +163,13 @@ def _pop_size_num_samples_replace_n_probs(draw):
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
-def test_multinomial(
-    *,
-    everything,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_multinomial(*, everything, seed, test_flags, backend_fw, fn_name, on_device):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=prob_dtype,
             test_flags=test_flags,
             on_device=on_device,
@@ -246,21 +233,11 @@ def _gen_randint_data(draw):
     seed=helpers.ints(min_value=0, max_value=100),
     test_gradients=st.just(False),
 )
-def test_randint(
-    *,
-    dtype_low_high,
-    seed,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_device):
     dtype, low, high = dtype_low_high
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             test_flags=test_flags,
             on_device=on_device,
@@ -309,21 +286,12 @@ def test_seed(seed_val):
     test_gradients=st.just(False),
 )
 def test_shuffle(
-    *,
-    dtype_and_x,
-    seed,
-    axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, seed, axis, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
 
     def call():
         return helpers.test_function(
-            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             test_flags=test_flags,
             on_device=on_device,

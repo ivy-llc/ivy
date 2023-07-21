@@ -400,18 +400,7 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
-        if ivy.current_backend_str() == "torch":
-            self._data = self._data.detach()
-        if ivy.is_ivy_array(val):
-            val = val.data
-        target = self.__getitem__(query)
-        if not ivy.isscalar(target) and ivy.isscalar(val):
-            val = ivy.ones_like(target) * val
-        try:
-            self._data.__setitem__(query, val)
-        except:
-            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
-            self._dtype = ivy.dtype(self._data)
+        self._data = ivy.set_item(self._data, query, val)._data
 
     def __contains__(self, key):
         return self._data.__contains__(key)
@@ -1145,8 +1134,11 @@ class Array(
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
         except RuntimeError:
-            if ivy.current_backend_str() == "paddle":
-                return to_ivy(copy.deepcopy(self._data.numpy()))
+            from ivy.functional.ivy.gradients import _is_variable
+
+            # paddle and torch don't support the deepcopy protocol on non-leaf tensors
+            if _is_variable(self):
+                return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
             return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):

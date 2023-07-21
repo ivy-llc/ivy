@@ -24,7 +24,7 @@ The devices currently supported by Ivy are as follows:
 
 In a similar manner to the :class:`ivy.Dtype` and :class:`ivy.NativeDtype` classes (see :ref:`Data Types`), there is both an `ivy.Device`_ class and an :class:`ivy.NativeDevice` class, with :class:`ivy.NativeDevice` initially set as an `empty class`_.
 The :class:`ivy.Device` class derives from :code:`str`, and has simple logic in the constructor to verify that the string formatting is correct.
-When a backend is set, the :class:`ivy.NativeDtype` is replaced with the backend-specific `device class`_.
+When a backend is set, the :class:`ivy.NativeDevice` is replaced with the backend-specific `device class`_.
 
 Device Module
 -------------

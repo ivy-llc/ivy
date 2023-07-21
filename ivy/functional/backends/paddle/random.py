@@ -8,14 +8,16 @@ from typing import Optional, Union, Sequence
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 # Extra #
@@ -48,8 +50,9 @@ def random_uniform(
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
 
-    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
-        dtype
+    return to_device(
+        paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(dtype),
+        device,
     )
 
 
@@ -72,13 +75,24 @@ def random_normal(
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return paddle.normal(mean, std, shape).cast(dtype)
+        return to_device(paddle.normal(mean, std, shape).cast(dtype), device)
     if mean.dtype not in [paddle.float32, paddle.float64]:
         mean = mean.cast("float32")
     std = std.cast(mean.dtype)
-    return paddle.normal(mean, std).cast(dtype)
+    return to_device(paddle.normal(mean, std).cast(dtype), device)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -91,7 +105,13 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if probs is None:
+        probs = paddle.ones((batch_size, num_samples)) / population_size
+        probs = paddle.cast(probs, paddle.float32)
+    if seed:
+        paddle.seed(seed)
+    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
+    return to_device(x, device)
 
 
 @with_unsupported_device_and_dtypes(
@@ -144,7 +164,7 @@ def shuffle(
     if seed:
         _ = paddle.seed(seed)
     # Use Paddle's randperm function to generate shuffled indices
-    indices = paddle.randperm(x.shape[0], dtype="int64")
+    indices = paddle.randperm(x.ndim, dtype="int64")
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -155,8 +175,8 @@ def shuffle(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            shuffled_real = paddle.index_select(x.real(), indices)
-            shuffled_imag = paddle.index_select(x.imag(), indices)
+            shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
+            shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
             return paddle.complex(shuffled_real, shuffled_imag)
-        return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
-    return paddle.index_select(x, indices)
+        return paddle.index_select(x.cast("float32"), indices, axis=axis).cast(x.dtype)
+    return paddle.index_select(x, indices, axis=axis)
