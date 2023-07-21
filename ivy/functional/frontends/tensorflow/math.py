@@ -411,6 +411,17 @@ def tan(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def segment_max(data, segment_ids, name=None):
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    x = ivy.zeros_like(data)
+    for i in range((segment_ids).shape[0]):
+        x[segment_ids[i]] = ivy.maximum(x[segment_ids[i]], data[i])
+    return x
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_mean(
     data, segment_ids, num_segments, name="unsorted_segment_mean"
 ):
