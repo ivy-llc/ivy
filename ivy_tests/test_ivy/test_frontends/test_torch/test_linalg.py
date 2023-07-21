@@ -221,6 +221,7 @@ def test_torch_qr(
     on_device,
 ):
     input_dtype, x = dtype_and_input
+    ivy.set_backend(backend_fw)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -244,6 +245,7 @@ def test_torch_qr(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+    ivy.previous_backend()
 
 
 # slogdet

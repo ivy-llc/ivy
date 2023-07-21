@@ -274,6 +274,7 @@ def test_torch_cosine_embedding_loss(
     input1_dtype, input1 = input_dtype[0], x[0]
     input2_dtype, input2 = input_dtype[1], x[1]
 
+    ivy.set_backend(backend_fw)
     if input1.ndim == input2.ndim == 1:
         tar = ivy.array(1.0)
     else:
@@ -298,6 +299,8 @@ def test_torch_cosine_embedding_loss(
         reduce=reduce,
         reduction=reduction,
     )
+
+    ivy.previous_backend()
 
 
 # mse_loss

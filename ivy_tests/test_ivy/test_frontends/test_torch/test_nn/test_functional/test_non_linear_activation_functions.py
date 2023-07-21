@@ -80,6 +80,7 @@ def test_torch_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
+    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -92,6 +93,7 @@ def test_torch_softmax(
         _stacklevel=3,
         dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
+    ivy.previous_backend()
 
 
 # gelu
@@ -243,6 +245,7 @@ def test_torch_softmin(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
+    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -254,6 +257,7 @@ def test_torch_softmin(
         dim=axis,
         dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
+    ivy.previous_backend()
 
 
 # threshold
@@ -863,6 +867,7 @@ def test_torch_log_softmax(
     backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
+    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -875,6 +880,7 @@ def test_torch_log_softmax(
         _stacklevel=3,
         dtype=ivy.as_ivy_dtype(dtypes[0]),
     )
+    ivy.previous_backend()
 
 
 # tanhshrink
@@ -1137,11 +1143,13 @@ def test_torch_local_response_norm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, axis = dtype_x_and_axis
     _filter_dtypes(dtype)
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1377,10 +1385,12 @@ def test_torch_gumbel_softmax(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1419,6 +1429,7 @@ def test_torch_multi_head_attention_forward(
     training,
     need_weights,
     average_attn_weights,
+    backend_fw,
 ):
     (
         dtype,
@@ -1446,6 +1457,7 @@ def test_torch_multi_head_attention_forward(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

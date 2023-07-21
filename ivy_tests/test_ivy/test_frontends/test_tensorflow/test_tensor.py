@@ -1485,6 +1485,7 @@ def test_tensorflow_instance_getitem(
     input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"value": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"slice_spec": index},
@@ -1561,6 +1562,7 @@ def test_tensorflow_instance_set_shape(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"value": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"shape": x[1]},
