@@ -79,6 +79,7 @@ invalid_complex_dtypes = []
 
 
 Dtype = tf.dtypes.DType
+Device = tf.DeviceSpec
 
 
 def native_array(x):
@@ -93,8 +94,12 @@ def to_numpy(x):
     return x.numpy()
 
 
-def as_native_dtype(dtype):
+def as_native_dtype(dtype: str):
     return tf.as_dtype(dtype)
+
+
+def as_native_dev(device: str):
+    return tf.device(device)
 
 
 def isscalar(x):
