@@ -7,6 +7,7 @@ Should not be used inside any of the test functions.
 
 
 from dataclasses import dataclass
+from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
 available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
@@ -16,6 +17,7 @@ _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
+CURRENT_FRONTEND_CONFIG: _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
@@ -140,10 +142,10 @@ def _set_test_data(test_data: TestData):
 
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
-    global CURRENT_FRONTEND_STR
+    global CURRENT_FRONTEND_CONFIG
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_FRONTEND_STR = framework
+    CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
     CURRENT_FRONTEND = framework
 
 
@@ -178,8 +180,9 @@ def _unset_test_data():
 
 
 def _unset_frontend():
-    global CURRENT_FRONTEND
+    global CURRENT_FRONTEND, CURRENT_FRONTEND_CONFIG
     CURRENT_FRONTEND = _Notsetval
+    CURRENT_FRONTEND_CONFIG = _Notsetval
 
 
 def _unset_backend():

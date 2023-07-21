@@ -15,10 +15,9 @@ except ImportError:
     tf.TensorShape = None
 
 # local
-from .pipeline_helper import update_backend
+from .pipeline_helper import update_backend, get_frontend_config
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
-from ivy_tests.test_ivy.helpers.testing_helpers import get_frontend_config
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
