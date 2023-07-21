@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
 
@@ -71,3 +73,29 @@ valid_complex_dtypes = [
     "complex128",
 ]
 invalid_complex_dtypes = []
+
+
+# Helpers for function testing
+
+
+Dtype = tf.dtypes.DType
+
+
+def native_array(x):
+    return tf.constant(x)
+
+
+def is_native_array(x):
+    return isinstance(x, (tf.Tensor, tf.Variable))
+
+
+def to_numpy(x):
+    return x.numpy()
+
+
+def as_native_dtype(dtype):
+    return tf.as_dtype(dtype)
+
+
+def isscalar(x):
+    return tf.experimental.numpy.isscalar(x)
