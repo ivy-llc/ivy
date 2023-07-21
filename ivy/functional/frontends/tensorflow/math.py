@@ -714,5 +714,5 @@ def atanh(x, name="atanh"):
 
 
 @to_ivy_arrays_and_back
-def erf(value, name=None):
-    return ivy.erf(value)
+def erf(x, name=None):
+    return ivy.erf(x)
