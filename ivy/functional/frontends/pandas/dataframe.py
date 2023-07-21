@@ -15,29 +15,25 @@ class DataFrame(NDFrame):
         *args,
         **kwargs,
     ):
-        if isinstance(data, Series):
-            self.orig_data = data
-            self.array = data.array.expand_dims()
-            self.index = data.index
-            self.dtype = data.dtype
-            self.copy = data.copy
-        else:
-            super().__init__(
-                data,
-                index=index,
-                dtype=dtype,
-                copy=copy,
-                name=None,
-                columns=None,
-                *args,
-                **kwargs,
-            )
+        super().__init__(
+            data,
+            index=index,
+            dtype=dtype,
+            copy=copy,
+            name=None,
+            columns=None,
+            *args,
+            **kwargs,
+        )
         if isinstance(self.orig_data, dict):
             # if data is a dict the underlying array needs to be extended to match the
             # index as a 2d array
             self.columns = list(self.orig_data.keys()) if columns is None else columns
             array_data = list(self.orig_data.values())
             self.array = ivy.array([array_data for _ in range(len(self.index))])
+        elif isinstance(self.orig_data, Series):
+            self.array = self.array.expand_dims()
+            self.columns = [0]
         elif columns is None:
             self.columns = ivy.arange(self.array.shape[1]).tolist()
         else:
