@@ -273,7 +273,7 @@ def conj(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ret = np.conj(x, out=out)
-    if x.dtype == np.bool:
+    if x.dtype == bool:
         return ret.astype("bool")
     return ret
 
