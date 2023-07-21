@@ -1295,7 +1295,7 @@ def test_jax_ball(
             shape=shape,
             dtype=dtype[0],
         )
-    
+
     ret = call()
 
     if not ivy.exists(ret):
