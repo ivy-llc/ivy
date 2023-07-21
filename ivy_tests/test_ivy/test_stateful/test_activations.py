@@ -573,7 +573,7 @@ def test_hardswish(
         min_num_dims=2,
     ),
     method_num_positional_args=helpers.num_positional_args(fn_name="Logit._forward"),
-    eps=None,
+    eps=helpers.floats(min_value=1e-4, max_value=1e-2),
     test_gradients=st.just(True),
 )
 def test_logit(
