@@ -76,8 +76,6 @@ invalid_complex_dtypes = []
 
 
 # Helpers for function testing
-
-
 Dtype = tf.dtypes.DType
 Device = tf.DeviceSpec
 

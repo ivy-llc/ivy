@@ -1,3 +1,5 @@
+import torch
+
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
 
@@ -75,3 +77,32 @@ valid_complex_dtypes = [
     "complex128",
 ]
 invalid_complex_dtypes = []
+
+
+# Helpers for function testing
+Dtype = torch.dtype
+Device = torch.device
+
+
+def native_array(x):
+    return torch.tensor(x)
+
+
+def is_native_array(x):
+    return isinstance(x, (torch.Tensor, torch.nn.Parameter))
+
+
+def to_numpy(x):
+    return x.numpy()
+
+
+def as_native_dtype(dtype: str):
+    return torch.tensor([], dtype=dtype).dtype
+
+
+def as_native_dev(device: str):
+    return torch.device(device)
+
+
+def isscalar(x):
+    return torch.is_tensor(x) and x.dim() == 0
