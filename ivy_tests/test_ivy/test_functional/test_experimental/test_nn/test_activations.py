@@ -16,18 +16,9 @@ from ivy_tests.test_ivy.helpers import handle_test
         safety_factor_scale="log",
     ),
 )
-def test_logit(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_logit(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -51,18 +42,10 @@ def test_logit(
     ),
 )
 def test_thresholded_relu(
-    *,
-    dtype_and_x,
-    threshold,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, threshold, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -88,19 +71,9 @@ def test_thresholded_relu(
         shape=st.shared(helpers.get_shape(), key="prelu"),
     ),
 )
-def test_prelu(
-    *,
-    dtype_and_x,
-    slope,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -121,18 +94,9 @@ def test_prelu(
         safety_factor_scale="log",
     ),
 )
-def test_relu6(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -152,19 +116,10 @@ def test_relu6(
     ),
     test_with_out=st.just(False),
 )
-def test_logsigmoid(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     test_flags.num_positional_args = len(x)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -184,19 +139,10 @@ def test_logsigmoid(
     ),
     test_with_out=st.just(False),
 )
-def test_selu(
-    *,
-    dtype_and_input,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_selu(*, dtype_and_input, test_flags, backend_fw, fn_name, on_device):
     input_dtype, input = dtype_and_input
     test_flags.num_positional_args = len(input)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -217,18 +163,9 @@ def test_selu(
         safety_factor_scale="log",
     ),
 )
-def test_silu(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_silu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
@@ -237,4 +174,38 @@ def test_silu(
         rtol_=1e-02,
         atol_=1e-02,
         x=x[0],
+    )
+
+
+# elu
+@handle_test(
+    fn_tree="functional.ivy.experimental.elu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+    ),
+    alpha=st.one_of(
+        st.floats(min_value=0.10, max_value=1.0),
+    ),
+)
+def test_elu(
+    *,
+    dtype_and_x,
+    alpha,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+        alpha=alpha,
     )

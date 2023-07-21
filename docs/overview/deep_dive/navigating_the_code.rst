@@ -8,7 +8,7 @@ Navigating the Code
 .. _`navigating the code forum`: https://discord.com/channels/799879767196958751/1028295746807660574
 .. _`Array API Standard convention`: https://data-apis.org/array-api/2021.12/API_specification/array_object.html#api-specification-array-object--page-root
 .. _`flake8`: https://flake8.pycqa.org/en/latest/index.html
-.. _`pre-commit guide`: https://unify.ai/docs/ivy/contributing/setting_up.html#pre-commit
+.. _`pre-commit guide`: https://unify.ai/docs/ivy/overview/contributing/setting_up.html#pre-commit
 
 Categorization
 --------------
@@ -34,7 +34,6 @@ In addition to these, we also add the following categories, used for additional 
 * `device <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/device.py>`_
 * `general <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/general.py>`_
 * `gradients <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/gradients.py>`_
-* `image <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/image.py>`_
 * `layers <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/layers.py>`_
 * `losses <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/losses.py>`_
 * `meta <https://github.com/unifyai/ivy/blob/40836963a8edfe23f00a375b63bbb5c878bfbaac/ivy/functional/ivy/meta.py>`_
@@ -85,7 +84,7 @@ Functions written here look something like the following, (explained in much mor
         out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
-        My function does something cool.
+        Explanation of the function.
 
         .. note::
             This is an important note.
@@ -115,12 +114,12 @@ Functions written here look something like the following, (explained in much mor
         Returns
         -------
         ret
-            a cooler array.
+            an array.
 
         Examples
         --------
 
-        Some cool examples go here
+        Some examples go here
         """
         return ivy.current_backend(x).my_func(x, axes, dtype=dtype, device=device, out=out)
 
@@ -157,7 +156,7 @@ Code in the backend submodules such as :mod:`ivy.functional.backends.torch` shou
         device: torch.device,
         out: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
-        return torch.something_cool(x, axes, dtype, device, out)
+        return torch.function_name(x, axes, dtype, device, out)
 
 The :code:`dtype`, :code:`device` and :code:`out` arguments are again all keyword-only, but :code:`dtype` and :code:`device` are now required arguments, rather than optional as they were in the Ivy API.
 All arrays also now have the same type hint :class:`torch.Tensor`, rather than :code:`Union[ivy.Array, ivy.NativeArray]` in the input and :class:`ivy.Array` in the output.
@@ -178,16 +177,28 @@ To have a better idea on this, let's look at an example!
 
 .. code-block:: python
 
-    # in ivy/functional/ivy/creation.py
-    def _assert_fill_value_and_dtype_are_compatible(dtype, fill_value):
-        assert (
-            (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
-        ) or (
-            ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
-            or (isinstance(fill_value, bool))
-        ), "the fill_value and data type are not compatible"
+    # in ivy/utils/assertions.py
+    def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
+        if (
+            not (
+                (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
+                and isinstance(fill_value, int)
+            )
+            and not (
+                ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
+            )
+            and not (
+                ivy.is_float_dtype(dtype)
+                and isinstance(fill_value, (float, np.float32))
+                or isinstance(fill_value, bool)
+            )
+        ):
+            raise ivy.utils.exceptions.IvyException(
+                "the fill_value: {} and data type: {} are not compatible".format(
+                    fill_value, dtype
+                )
+            )
+
 
 In the :func:`full_like` function in :mod:`creation.py`, the types of :code:`fill_value` and :code:`dtype` has to be verified to avoid errors.
 This check has to be applied to all backends, which means the related code is common and identical.
@@ -201,18 +212,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/jax/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: JaxArray,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: jnp.dtype,
         device: jaxlib.xla_extension.Device,
-        out: Optional[JaxArray] = None
+        out: Optional[JaxArray] = None,
     ) -> JaxArray:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return _to_device(
             jnp.full_like(x, fill_value, dtype=dtype),
             device=device,
@@ -223,18 +233,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/numpy/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: np.ndarray,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: np.dtype,
         device: str,
-        out: Optional[np.ndarray] = None
+        out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return _to_device(np.full_like(x, fill_value, dtype=dtype), device=device)
 
 **TensorFlow**
@@ -242,18 +251,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/tensorflow/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: Union[tf.Tensor, tf.Variable],
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: tf.DType,
         device: str,
-        out: Union[tf.Tensor, tf.Variable] = None
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     ) -> Union[tf.Tensor, tf.Variable]:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         with tf.device(device):
             return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
@@ -267,18 +275,17 @@ Then, we import this submodule-specific helper function to the respective backen
 .. code-block:: python
 
     # in ivy/functional/backends/torch/creation.py
-    from ivy.functional.ivy.creation import _assert_fill_value_and_dtype_are_compatible
 
     def full_like(
         x: torch.Tensor,
         /,
-        fill_value: Union[int, float],
+        fill_value: Number,
         *,
         dtype: torch.dtype,
         device: torch.device,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        _assert_fill_value_and_dtype_are_compatible(dtype, fill_value)
+        ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 Version Pinning

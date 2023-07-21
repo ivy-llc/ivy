@@ -4,7 +4,6 @@ from typing import Optional, Dict, List
 import re  # noqa
 import inspect
 from collections import OrderedDict
-import importlib
 
 # local
 import ivy
@@ -111,18 +110,21 @@ class ModuleConverters:
         ret
             The new trainable torch module instance.
         """
-        hk_spec = importlib.util.find_spec("hk")
-        flat_mapping_spec = importlib.util.find_spec(
-            "FlatMapping", "haiku._src.data_structures"
-        )
-        if not hk_spec:
+        try:
             import haiku as hk
-        else:
-            hk = importlib.util.module_from_spec(hk_spec)
-        if not flat_mapping_spec:
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "`haiku` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            )
+
+        try:
             from haiku._src.data_structures import FlatMapping
-        else:
-            FlatMapping = importlib.util.module_from_spec(flat_mapping_spec)
+        except (ImportError, AttributeError):
+            raise ImportError(
+                "Unable to import `FlatMapping` from `haiku`. Please check if the "
+                "requested attribute exists."
+            )
 
         def _hk_flat_map_to_dict(hk_flat_map):
             ret_dict = dict()
@@ -261,19 +263,21 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-        flax_spec = importlib.util.find_spec("flax")
-        if not flax_spec:
+        try:
             import flax
-        else:
-            flax = importlib.util.module_from_spec(flax_spec)
-            flax_spec.loader.exec_module(flax)
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "`flax` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            )
 
-        jax_spec = importlib.util.find_spec("jax")
-        if not jax_spec:
+        try:
             import jax
-        else:
-            jax = importlib.util.module_from_spec(jax_spec)
-            jax_spec.loader.exec_module(jax)
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "`jax` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            )
 
         class FlaxIvyModule(ivy.Module):
             def __init__(
@@ -570,11 +574,13 @@ class ModuleConverters:
         ret
             The new trainable ivy.Module instance.
         """
-        torch_spec = importlib.util.find_spec("torch")
-        if not torch_spec:
+        try:
             import torch
-        else:
-            torch = importlib.util.module_from_spec(torch_spec)
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "`torch` was not found installed on your system. Please proceed "
+                "to install it and restart your interpreter to see the changes."
+            )
 
         class TorchIvyModule(ivy.Module):
             def __init__(

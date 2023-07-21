@@ -509,30 +509,43 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.acos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x1):
-            return paddle.logical_xor(
-                paddle.logical_xor(x1.real(), x2.real()),
-                paddle.logical_xor(x1.imag(), x2.imag()),
-            )
+        # this logic works well when both inputs are complex but when one of them
+        # is casted from real to complex, the imaginary part is zero which messes
+        # with the XOR logic
+        # if paddle.is_complex(x1):
+        #     return paddle.logical_xor(
+        #         paddle.logical_xor(x1.real(), x2.real()),
+        #         paddle.logical_xor(x1.imag(), x2.imag()),
+        #     )
         return paddle.logical_xor(x1.astype("float32"), x2.astype("float32"))
     return paddle.logical_xor(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x1):
-            return paddle.logical_and(
-                paddle.logical_and(x1.real(), x2.real()),
-                paddle.logical_and(x1.imag(), x2.imag()),
-            )
+        # this logic works well when both inputs are complex but when one of them
+        # is casted from real to complex, the imaginary part is zero which messes
+        # if paddle.is_complex(x1):
+        #     return paddle.logical_and(
+        #         paddle.logical_and(x1.real(), x2.real()),
+        #         paddle.logical_and(x1.imag(), x2.imag()),
+        #     )
         return paddle.logical_and(x1.astype("float32"), x2.astype("float32"))
     return paddle.logical_and(x1, x2)
 
@@ -821,13 +834,10 @@ def abs(
     x: Union[float, paddle.Tensor],
     /,
     *,
-    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(where, paddle.Tensor):
-        where = paddle.to_tensor(where, dtype="bool").squeeze()
     if not isinstance(x, paddle.Tensor):
-        x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
+        x = paddle.to_tensor(x, dtype=ivy.default_dtype(item=x)).squeeze()
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -835,13 +845,8 @@ def abs(
         paddle.float16,
         paddle.bool,
     ]:
-        return paddle_backend.where(
-            where, paddle.abs(x.astype("float32")).astype(x.dtype), x
-        )
-    ret = paddle_backend.where(where, paddle.abs(x), x)
-    if ivy.is_complex_dtype(x.dtype):
-        return ivy.real(ret)
-    return ret
+        return paddle.abs(x.astype("float32")).astype(x.dtype)
+    return paddle.abs(x)
 
 
 @with_unsupported_device_and_dtypes(

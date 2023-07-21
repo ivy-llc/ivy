@@ -35,6 +35,15 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
@@ -42,7 +51,7 @@ def eigvalsh(tensor, name=None):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "float32",
             "float64",
@@ -86,7 +95,7 @@ def matmul(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def solve(matrix, rhs):
     matrix, rhs = check_tensorflow_casting(matrix, rhs)
     return ivy.solve(matrix, rhs)
@@ -94,7 +103,7 @@ def solve(matrix, rhs):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 def logdet(matrix, name=None):
@@ -107,7 +116,7 @@ def slogdet(input, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def cholesky_solve(chol, rhs, name=None):
     chol, rhs = check_tensorflow_casting(chol, rhs)
     y = ivy.solve(chol, rhs)
@@ -121,7 +130,7 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float32", "float64", "int32")}, "tensorflow"
+    {"2.13.0 and below": ("float32", "float64", "int32")}, "tensorflow"
 )
 def tensordot(a, b, axes, name=None):
     a, b = check_tensorflow_casting(a, b)
@@ -133,7 +142,7 @@ def tensordot(a, b, axes, name=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "float16",
             "bfloat16",
             "int8",
@@ -154,7 +163,7 @@ def tensorsolve(a, b, axes):
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
@@ -177,7 +186,7 @@ norm.supported_dtypes = (
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
     tensor = tf_frontend.convert_to_tensor(
         tensor, dtype=ivy.dtype(tensor), dtype_hint="Any"
@@ -188,7 +197,7 @@ def normalize(tensor, ord="euclidean", axis=None, name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.12.0 and below": ("float32", "float64")}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
@@ -308,3 +317,24 @@ def band_part(input, num_lower, num_upper, name=None):
         (num_upper < 0) | ((n - m) <= num_upper)
     )
     return ivy.where(mask, input, ivy.zeros_like(input))
+
+
+@to_ivy_arrays_and_back
+def qr(input, /, *, full_matrices=False, name=None):
+    return ivy.qr(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def inv(input, adjoint=False, name=None):
+    return ivy.inv(input, adjoint=adjoint)

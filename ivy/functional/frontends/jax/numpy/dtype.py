@@ -77,3 +77,8 @@ def promote_types(type1, type2, /):
     if isinstance(type2, np_dtype):
         type2 = type2._ivy_dtype
     return np_dtype(promote_types_jax(type1, type2))
+
+
+@to_ivy_arrays_and_back
+def result_type(*args):
+    return ivy.result_type(*args)

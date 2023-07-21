@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from .tensor import Tensor
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -76,3 +76,58 @@ def eye(num_rows, num_columns=None, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def empty_like(x, dtype=None, name=None):
     return ivy.empty_like(x, dtype=dtype)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.5.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def tril(x, diagonal=0, name=None):
+    return ivy.tril(x, k=diagonal)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.5.0 and below": (
+            "uint8",
+            "int8",
+            "int16",
+            "float16",
+            "complex64",
+            "complex128",
+            "bool",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def triu(x, diagonal=0, name=None):
+    return ivy.triu(x, k=diagonal)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def diagflat(x, offset=0, name=None):
+    arr = ivy.diagflat(x, offset=offset)
+    return arr
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    return ivy.meshgrid(*args, indexing="ij")
