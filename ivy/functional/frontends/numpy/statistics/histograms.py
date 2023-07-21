@@ -331,8 +331,8 @@ def histogram(a, bins=10, range=None, density=None, weights=None):
 
             # We now compute the histogram using bincount
             if ivy.is_complex_dtype(ntype):
-                real = bincount(indices, weights=tmp_w.real(), minlength=n_equal_bins)
-                imag = bincount(indices, weights=tmp_w.imag(), minlength=n_equal_bins)
+                real = bincount(indices, weights=tmp_w.real(), minlength=n_equal_bins).ivy_array
+                imag = bincount(indices, weights=tmp_w.imag(), minlength=n_equal_bins).ivy_array
                 n += real + ivy.array(imag, dtype=ivy.complex128) * 1j
 
             else:
