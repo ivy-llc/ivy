@@ -1,7 +1,10 @@
 # local
 import ivy
 import ivy.functional.frontends.paddle as paddle_frontend
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+    with_unsupported_dtypes,
+)
 from ivy.functional.frontends.paddle.func_wrapper import _to_ivy_array
 
 
@@ -318,7 +321,6 @@ class Tensor:
     def bitwise_or(self, y, out=None, name=None):
         return paddle_frontend.bitwise_or(self, y, out=out)
 
-
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
@@ -460,6 +462,10 @@ class Tensor:
             ivy.array_equal(self._ivy_array, _to_ivy_array(y))
         )
 
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def maximum(self, other, name=None):
+        return ivy.maximum(self._ivy_array, other)
+
     @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
     def fmax(self, y, name=None):
         return paddle_frontend.Tensor(ivy.fmax(self._ivy_array, _to_ivy_array(y)))
@@ -561,7 +567,6 @@ class Tensor:
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sign(self, name=None):
         return ivy.sign(self._ivy_array)
-        return paddle_frontend.Tensor(ivy.sign(self._ivy_array, np_variant=False))
 
     @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
     def sgn(self, name=None):
@@ -576,6 +581,10 @@ class Tensor:
     )
     def min(self, axis=None, keepdim=False, name=None):
         return ivy.min(self._ivy_array, axis=axis, keepdims=keepdim)
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def atanh(self, name=None):
+        return ivy.atanh(self._ivy_array)
 
     @with_unsupported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
     def std(self, axis=None, unbiased=True, keepdim=False, name=None):
