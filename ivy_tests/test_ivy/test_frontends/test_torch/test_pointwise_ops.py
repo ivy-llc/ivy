@@ -1325,6 +1325,7 @@ def test_torch_clamp(
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1352,6 +1353,7 @@ def test_torch_clip(
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -2639,10 +2641,12 @@ def test_torch_erfc(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -2779,16 +2783,12 @@ def _masked_fill_helper(draw):
     x_mask_val=_masked_fill_helper(),
 )
 def test_torch_masked_fill(
-    *,
-    x_mask_val,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
+    *, x_mask_val, on_device, fn_tree, frontend, test_flags, backend_fw
 ):
     dtype, x, mask, val = x_mask_val
     helpers.test_frontend_function(
         input_dtypes=[dtype],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

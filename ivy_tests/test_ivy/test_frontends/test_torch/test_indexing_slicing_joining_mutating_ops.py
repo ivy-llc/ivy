@@ -1245,6 +1245,7 @@ def test_torch_where(
     if only_cond:
         helpers.test_frontend_function(
             input_dtypes=[dtypes[0]],
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -1371,6 +1372,7 @@ def test_torch_index_add(
         input, source = xs
     helpers.test_frontend_function(
         input_dtypes=[input_dtypes[0], "int64", input_dtypes[1]],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1405,6 +1407,7 @@ def test_torch_index_copy(
         input, source = xs
     helpers.test_frontend_function(
         input_dtypes=[input_dtypes[0], "int64", input_dtypes[1]],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1452,6 +1455,7 @@ def test_torch_masked_select(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype + ["bool"],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1574,11 +1578,13 @@ def test_torch_select(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, idx, axis = dtype_x_idx_axis
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

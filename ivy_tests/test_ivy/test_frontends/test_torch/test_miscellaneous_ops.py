@@ -585,6 +585,7 @@ def test_torch_tril_indices(
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -615,6 +616,7 @@ def test_torch_triu_indices(
 ):
     helpers.test_frontend_function(
         input_dtypes=["int32"],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -806,6 +808,7 @@ def test_torch_repeat_interleave(
 
     helpers.test_frontend_function(
         input_dtypes=dtype[0],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1246,6 +1249,7 @@ def test_torch_broadcast_shapes(
     test_flags.num_positional_args = len(shapes)
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=["int64"],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1325,6 +1329,7 @@ def test_torch_searchsorted(
         sorter = None
     helpers.test_frontend_function(
         input_dtypes=input_dtypes + ["int64"],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1535,10 +1540,12 @@ def test_torch_cov(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x1, correction, fweights, aweights = dtype_x1_corr_cov
     helpers.test_frontend_function(
         input_dtypes=["float64", "int64", "float64"],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

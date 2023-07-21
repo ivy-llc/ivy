@@ -467,6 +467,7 @@ def test_torch_prod(
     #  this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
     if ivy.current_backend_str() == "torch":
         test_flags.as_variable = [False]
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,

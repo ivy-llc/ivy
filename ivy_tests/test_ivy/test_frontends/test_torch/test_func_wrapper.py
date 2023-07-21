@@ -34,10 +34,12 @@ def _fn(*args, dtype=None, check_default=False):
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
-    ).filter(lambda x: "bfloat16" not in x[0]),
+    ).filter(lambda x: "bfloat16" not in x[0])
 )
-def test_inputs_to_ivy_arrays(dtype_and_x):
+def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
+
+    ivy.set_backend(backend=backend_fw)
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
@@ -60,6 +62,8 @@ def test_inputs_to_ivy_arrays(dtype_and_x):
     assert isinstance(output, ivy.Array)
     assert str(input_frontend.dtype) == str(output.dtype)
     assert ivy.all(input_frontend.ivy_array == output)
+
+    ivy.previous_backend()
 
 
 @given(
