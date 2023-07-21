@@ -1,22 +1,8 @@
 import paddle
 
-
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
 
-
-native_int8 = paddle.int8
-native_int16 = paddle.int16
-native_int32 = paddle.int32
-native_int64 = paddle.int64
-native_uint8 = paddle.uint8
-native_float16 = paddle.float16
-native_float32 = paddle.float32
-native_float64 = paddle.float64
-native_complex64 = paddle.complex64
-native_complex128 = paddle.complex128
-native_double = native_float64
-native_bool = paddle.bool
 
 valid_dtypes = [
     "int8",
