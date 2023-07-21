@@ -1,10 +1,13 @@
 # global
 from hypothesis import strategies as st
+import numpy as np
+
+import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import numpy as np
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @st.composite
@@ -81,12 +84,8 @@ def _histogram_helper(draw):
     if isinstance(bins, str):
         weights = None
     weights = draw(st.sampled_from([weights, None]))
-    return (
-        a,
-        bins,
-        range,
-        weights,
-    )
+    density = draw(st.booleans())
+    return (a, bins, range, weights, density)
 
 
 # bincount
@@ -136,15 +135,17 @@ def test_numpy_histogram_bin_edges(
     frontend,
     test_flags,
 ):
-    a, bins, range, weights = data
-    helpers.test_frontend_function(
-        frontend=frontend,
-        input_dtypes=[a.dtype],
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
+    a, bins, range, weights, density = data
+    ret = np_frontend.histogram_bin_edges(
         a=a,
         bins=bins,
         range=range,
         weights=weights,
     )
+    ret_gt = np.histogram_bin_edges(
+        a=a,
+        bins=bins,
+        range=range,
+        weights=weights,
+    )
+    assert ivy.allclose(ret, ret_gt)
