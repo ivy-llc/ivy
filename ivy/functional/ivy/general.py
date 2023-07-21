@@ -2904,10 +2904,10 @@ def _parse_query(query, x_shape):
                 if idx.start is None:
                     start = 0 if step >= 0 else s - 1
                 elif (
-                    idx.start >= s and idx.step < 0
+                    idx.start >= s and step < 0
                 ):  # handle out of bound with negative step
                     start = s - 1
-                elif idx.start < -s and idx.step >= 0:
+                elif idx.start < -s and step >= 0:
                     start = 0
                 else:
                     start = idx.start
@@ -2915,14 +2915,14 @@ def _parse_query(query, x_shape):
                 if idx.stop is None:
                     stop = s if step >= 0 else -1
                 else:
-                    if idx.stop >= s and idx.step >= 0:
+                    if idx.stop >= s and step >= 0:
                         stop = s
-                    elif idx.stop < -s - 1 and idx.step < 0:
+                    elif idx.stop < -s - 1 and step < 0:
                         stop = -1
                     else:
                         stop = idx.stop
                         stop = stop + s if stop < 0 and idx.stop is not None else stop
-                print(start, stop, step)
+
                 query[i] = ivy.arange(start, stop, step)
             elif isinstance(idx, int):
                 query[i] = ivy.array(idx + s if idx < 0 else idx)
