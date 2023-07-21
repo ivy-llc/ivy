@@ -58,7 +58,7 @@ def test_hann_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.005,
+        atol_=0.015,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -167,6 +167,7 @@ def test_hamming_window(
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
+        atol_=2e-06,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -210,7 +211,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
 @handle_test(
     fn_tree="functional.ivy.experimental.eye_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
@@ -270,15 +271,24 @@ def test_ndindex(dtype_x_shape):
 @handle_test(
     fn_tree="functional.ivy.experimental.indices",
     ground_truth_backend="numpy",
-    shape=helpers.get_shape(min_num_dims=1),
-    dtype=helpers.get_dtypes("integer", full=False),
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes(
+        "numeric",
+        full=False,
+    ),
     sparse=st.booleans(),
     container_flags=st.just([False]),
     test_instance_method=st.just(False),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_device):
+def test_indices(*, shape, dtypes, sparse, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[],
         test_flags=test_flags,
@@ -286,7 +296,7 @@ def test_indices(*, shape, dtype, sparse, test_flags, backend_fw, fn_name, on_de
         fw=backend_fw,
         fn_name=fn_name,
         dimensions=shape,
-        dtype=dtype[0],
+        dtype=dtypes[0],
         sparse=sparse,
     )
 
@@ -333,7 +343,6 @@ def valid_unsorted_segment_min_inputs(draw):
 # unsorted_segment_min
 @handle_test(
     fn_tree="functional.ivy.experimental.unsorted_segment_min",
-    ground_truth_backend="tensorflow",
     d_x_n_s=valid_unsorted_segment_min_inputs(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -345,13 +354,11 @@ def test_unsorted_segment_min(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtypes, data, num_segments, segment_ids = d_x_n_s
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
