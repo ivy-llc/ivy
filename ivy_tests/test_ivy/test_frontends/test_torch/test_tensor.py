@@ -10356,7 +10356,7 @@ def test_torch_instance_backward(
         min_value= 0,
         max_value= 4,
         allow_inf=False,
-
+        shared_dtype=True,
     )
 )
 def test_torch_instance_index_put_(

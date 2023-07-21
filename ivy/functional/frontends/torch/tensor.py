@@ -1572,7 +1572,6 @@ class Tensor:
 
     @with_supported_dtypes({"2.0.1 and below": ("int32", "int64")}, "torch")
     def index_put_(self, indices, values, accumulate=False):
-        print("input", indices, values, self, accumulate)
         num_indices = None
         for index in indices:
             if num_indices == None:
@@ -1583,7 +1582,6 @@ class Tensor:
         if len(values) != num_indices:
             raise ValueError(f"Number of values {len(values)} does not match the number of indices {num_indices}")
         self._ivy_array = torch_frontend.index_put(indices, values, self, accumulate)
-        print("out", self._ivy_array)
         return self.ivy_array
 
 
