@@ -141,7 +141,7 @@ def test_numpy_histogram_bin_edges(data):
         range=range,
         weights=weights,
     )
-    assert ivy.allclose(ret.ivy_array, ret_gt)
+    assert np.allclose(ret.ivy_array, ret_gt)
 
 
 @handle_frontend_test(fn_tree="numpy.histogram", data=_histogram_helper())
@@ -151,5 +151,5 @@ def test_numpy_histogram(data):
         a=a, bins=bins, range=range, weights=weights, density=density
     )
     ret_gt = np.histogram(a=a, bins=bins, range=range, weights=weights, density=density)
-    assert ivy.allclose(ret[0].ivy_array, ret_gt[0])
-    assert ivy.allclose(ret[1].ivy_array, ret_gt[1])
+    assert np.allclose(ret[0].ivy_array, ret_gt[0])
+    assert np.allclose(ret[1].ivy_array, ret_gt[1])
