@@ -2916,15 +2916,15 @@ def _parse_query(query, x_shape):
                 query[i] = ivy.array(idx + s if idx < 0 else idx)
             elif isinstance(idx, (tuple, list)):
                 # ToDo: add handling for case of nested tuple/lists
-                def _reduce(elem):
+                def handle_nested_structure(elem):
                     """" O (N) recursive operation on nested arrays of arbitrary depth"""
                     if isinstance(elem, int):
                         res = ivy.array(elem + s if elem < 0 else elem)
                         return res
                     elif isinstance(elem, (tuple, list)):
-                        res = ivy.array(_reduce(sub_arr) for sub_arr in elem)
+                        res = ivy.array(handle_nested_structure(sub_arr) for sub_arr in elem)
                         return res
-                query[i] = _reduce(idx)
+                query[i] = handle_nested_structure(idx)
             elif ivy.is_array(idx):
                 query[i] = ivy.where(idx < 0, idx + s, idx)
             else:
