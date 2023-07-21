@@ -228,14 +228,12 @@ def test_paddle_standard_normal(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=helpers.get_shape(
         allow_none=False, min_num_dims=2, max_num_dims=7, min_dim_size=2
-    ),
+        ),
     ),
 
     low=st.integers(min_value=0, max_value=10),
     high=st.integers(min_value=11, max_value=20),
     dtype=helpers.get_dtypes("integer"),
-    # dtype=st.sampled_from(["int8", "int32", "int64"]),
-    #test_with_out=st.just(False),
 )
 def test_paddle_randint_like(
     input_dtype_and_x,
