@@ -410,3 +410,29 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+@to_ivy_arrays_and_back
+def index_put(indices,values,array_to_fill,accumulate):
+    number_indices = len(indices[0])
+    dimensions = len(indices)
+    if dimensions > 1:
+        for e in range(0,dimensions):
+            #indexing_tuple = [0] * dimensions
+            indexing_arr = []
+
+            for i in range(0,number_indices):
+                indexing_arr.append(int(indices[i][e].item()))
+
+            if accumulate:
+                array_to_fill[tuple(indexing_arr)] += values[e]
+            else:
+                array_to_fill[tuple(indexing_arr)] = values[e]
+    else:
+        for i in range(0,number_indices):
+            index = indices[0][i]
+            value = values[i]
+            if accumulate:
+                array_to_fill[index] += value
+            else:
+                array_to_fill[index] = value
+    return array_to_fill
