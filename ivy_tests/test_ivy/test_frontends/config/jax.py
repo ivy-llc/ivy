@@ -105,4 +105,4 @@ def as_native_dev(device: str):
 
 
 def isscalar(x):
-    return x.ndim == 0
+    return len(jnp.shape(x)) == 0
