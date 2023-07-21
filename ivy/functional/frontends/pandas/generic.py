@@ -1,6 +1,7 @@
 import ivy
 import numpy as np
 import copy as py_copy
+from ivy.functional.frontends.pandas.pandas_func_wrappers import outputs_to_self_class
 
 
 class NDFrame:
@@ -61,10 +62,9 @@ class NDFrame:
             ret = dict(zip(self.orig_data.keys(), ret))
         return ret
 
+    @outputs_to_self_class
     def abs(self):
-        return self.__class__(
-            ivy.abs(self.array), index=self.index, name=self.name, columns=self.columns
-        )
+        return ivy.abs(self.array)
 
     def to_numpy(self, dtype=None, copy=False, na_value=None):
         ret = self.array.to_numpy()
@@ -75,3 +75,10 @@ class NDFrame:
         if copy:
             return ret.copy()
         return ret
+
+    def __array__(self):
+        return self.array.to_numpy()
+
+    @outputs_to_self_class
+    def __array_wrap__(self, array):
+        return array
