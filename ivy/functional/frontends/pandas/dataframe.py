@@ -1,5 +1,6 @@
 from .generic import NDFrame
 import ivy
+from .series import Series
 
 
 class DataFrame(NDFrame):
@@ -14,16 +15,23 @@ class DataFrame(NDFrame):
         *args,
         **kwargs,
     ):
-        super().__init__(
-            data,
-            index=index,
-            dtype=dtype,
-            copy=copy,
-            name=None,
-            columns=None,
-            *args,
-            **kwargs,
-        )
+        if isinstance(data, Series):
+            self.orig_data = data
+            self.array = data.array.expand_dims()
+            self.index = data.index
+            self.dtype = data.dtype
+            self.copy = data.copy
+        else:
+            super().__init__(
+                data,
+                index=index,
+                dtype=dtype,
+                copy=copy,
+                name=None,
+                columns=None,
+                *args,
+                **kwargs,
+            )
         if isinstance(self.orig_data, dict):
             # if data is a dict the underlying array needs to be extended to match the
             # index as a 2d array
