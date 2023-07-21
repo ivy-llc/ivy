@@ -379,6 +379,7 @@ def heaviside(x, y, name=None):
 def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
 
+
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def rsqrt(x, name=None):
