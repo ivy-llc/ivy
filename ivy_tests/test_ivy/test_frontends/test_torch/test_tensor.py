@@ -43,7 +43,6 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
     dtype_value1_value2_axis,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
-    _get_dtype_and_square_matrix,
     _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
@@ -182,6 +181,75 @@ def test_torch_tensor_property_ndim(
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
+
+
+def test_torch_tensor_property_grad():
+    x = Tensor(ivy.array([1.0, 2.0, 3.0]))
+    grads = ivy.array([1.0, 2.0, 3.0])
+    x._grads = grads
+    assert ivy.array_equal(x.grad, grads)
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_property_requires_grad(
+    dtype_x,
+    requires_grad,
+):
+    _, data = dtype_x
+    x = Tensor(data[0], requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
+    x.requires_grad = not requires_grad
+    ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
+
+
+@given(
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_property_is_leaf(
+    requires_grad,
+):
+    x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
+    y = x.pow(2)
+    ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
+    z = y.detach()
+    ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
+
+
+def test_torch_tensor_property_grad_fn():
+    x = Tensor(ivy.array([3.0]), requires_grad=True)
+    ivy.utils.assertions.check_equal(x.grad_fn, None, as_array=False)
+    y = x.pow(2)
+    ivy.utils.assertions.check_equal(y.grad_fn, "PowBackward", as_array=False)
+    ivy.utils.assertions.check_equal(
+        y.grad_fn.next_functions[0], "AccumulateGrad", as_array=False
+    )
+    z = y.detach()
+    ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_requires_grad_(
+    dtype_x,
+    requires_grad,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    assert not x._requires_grad
+    x.requires_grad_()
+    assert x._requires_grad
+    x.requires_grad_(requires_grad)
+    assert x._requires_grad == requires_grad
 
 
 # chunk
@@ -1727,6 +1795,38 @@ def test_torch_instance_aminmax(
     )
 
 
+# bernoulli
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bernoulli",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_with_out=st.just(True),
+)
+def test_torch_instance_bernoulli(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "input": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"generator": x[1], "out": x[2]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # contiguous
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2278,6 +2378,46 @@ def test_torch_special_truediv(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__floordiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch_special_floordiv(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        atol_=1,
     )
 
 
@@ -3615,6 +3755,22 @@ def test_torch_tensor_property_is_cuda(
     )
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_property_is_meta(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_meta, "meta" in ivy.dev(ivy.array(data[0])), as_array=False
+    )
+
+
 # logical_and
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -4932,7 +5088,6 @@ def _array_idxes_n_dtype(draw, **kwargs):
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    unpack_dims=st.booleans(),
 )
 def test_torch_instance_permute(
     dtype_values_axis,
@@ -6107,6 +6262,44 @@ def test_torch_instance_fliplr(
     diagonal=st.integers(min_value=-100, max_value=100),
 )
 def test_torch_instance_tril(
+    dtype_and_values,
+    diagonal,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "diagonal": diagonal,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# tril_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tril_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_torch_instance_tril_(
     dtype_and_values,
     diagonal,
     frontend_method_data,
@@ -7713,7 +7906,7 @@ def test_torch_instance_cross(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="det",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_det(
     dtype_and_x,
@@ -8329,6 +8522,37 @@ def test_torch_instance_sign(
     )
 
 
+# sign_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sign_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_instance_sign_(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=[input_dtype],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        frontend=frontend,
+    )
+
+
 # std
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8520,7 +8744,7 @@ def test_torch_instance_bitwise_right_shift(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logdet",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
 def test_torch_instance_logdet(
     dtype_and_x,
@@ -8946,6 +9170,39 @@ def test_torch_instance_equal(
         frontend=frontend,
         atol_=1e-04,
         rtol_=1e-04,
+        on_device=on_device,
+    )
+
+
+# erf
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="erf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_erf(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
         on_device=on_device,
     )
 
@@ -9458,6 +9715,39 @@ def test_torch_instance_as_strided(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="stride",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_torch_instance_stride(
+    dtype_value_axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, axis = dtype_value_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"dim": axis},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="log1p",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -9803,7 +10093,7 @@ def test_torch_instance_addcdiv_(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="cholesky",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
 def test_torch_instance_cholesky(
@@ -9950,4 +10240,107 @@ def test_torch_instance_tile(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+# write test for torch instance apply_
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="apply_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+)
+def test_torch_instance_apply_(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    def func(x):
+        return x + 1
+
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "callable": func,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+        num_arrays=3,
+        min_value=-1e3,
+        max_value=1e3,
+    ).filter(lambda x: all(dt == "float32" for dt in x[0])),
+)
+def test_torch_instance_backward(
+    dtype_x,
+):
+    if ivy.current_backend_str() == "numpy":
+        ivy.warnings.warn("Gradient calculation unavailable for numpy backend")
+        return
+    if ivy.current_backend_str() == "paddle":
+        ivy.warnings.warn("torch.Tensor.backward() unavailable for paddle backend")
+        return
+    _, values = dtype_x
+    x = Tensor(values[0], requires_grad=True)
+    y = Tensor(values[1], requires_grad=True)
+    z = Tensor(values[2], requires_grad=True)
+    a = x + y.pow(2)
+    b = z * a
+    c = b.sum()
+    c.backward()
+    x_torch = torch.tensor(values[0], requires_grad=True, dtype=torch.float32)
+    y_torch = torch.tensor(values[1], requires_grad=True, dtype=torch.float32)
+    z_torch = torch.tensor(values[2], requires_grad=True, dtype=torch.float32)
+    a_torch = x_torch + y_torch.pow(2)
+    b_torch = z_torch * a_torch
+    c_torch = b_torch.sum()
+    c_torch.backward()
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=x._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(x_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=y._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(y_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(ret=z._grads.ivy_array),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(z_torch.grad.numpy())
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        ground_truth_backend="torch",
     )

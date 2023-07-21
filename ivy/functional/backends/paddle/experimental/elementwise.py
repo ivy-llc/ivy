@@ -18,6 +18,16 @@ from .. import backend_version
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    backend_version,
+)
+def lgamma(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return paddle.lgamma(x)
+
+
+@with_supported_dtypes(
     {"2.5.0 and below": ("float64", "float32", "int32", "int64")},
     backend_version,
 )
@@ -609,3 +619,10 @@ def count_nonzero(
 )
 def conj(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     return paddle.conj(x)
+
+
+def modf(
+    x: paddle.Tensor, /, *, out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.modf(x, out=out)

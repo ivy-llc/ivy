@@ -336,7 +336,9 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"2.0.1": ("bool", "float16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bool", "float16", "complex")}, backend_version
+)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
