@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+import ivy
 
 
 @handle_test(
@@ -12,18 +13,9 @@ from ivy_tests.test_ivy.helpers import handle_test
         available_dtypes=helpers.get_dtypes("valid"), valid_axis=True
     ),
 )
-def test_l1_normalize(
-    *,
-    dtype_values_axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -38,6 +30,8 @@ def test_l1_normalize(
 
 @st.composite
 def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance_norm"):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
     data_format = draw(st.sampled_from(["NSC", "NCS"]))
     shape1, shape2, shape3, shape4 = draw(
         helpers.mutually_broadcastable_shapes(
@@ -45,7 +39,8 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         )
     )
     shape = helpers.broadcast_shapes(shape1, shape2, shape3, shape4)
-    if test_function == "instance_norm":
+
+    if (test_function == "instance_norm") or (is_torch_backend and not mixed_fn_compos):
         shape1 = shape2 = shape3 = shape4 = (shape[-1],)
 
     if data_format == "NCS":
@@ -55,6 +50,7 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(
                 "float",
+                mixed_fn_compos=mixed_fn_compos,
             ),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
@@ -109,8 +105,12 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
             safety_factor_scale="log",
         )
     )
-    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
-    momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
+    eps = draw(
+        helpers.floats(min_value=1e-5, max_value=0.1, mixed_fn_compos=mixed_fn_compos)
+    )
+    momentum = draw(
+        helpers.floats(min_value=0.0, max_value=1.0, mixed_fn_compos=mixed_fn_compos)
+    )
     return (
         x_dtype,
         x[0],
@@ -129,19 +129,9 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
     data=_instance_and_batch_norm_helper(min_dims=3),
     training=st.booleans(),
 )
-def test_instance_norm(
-    *,
-    data,
-    training,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -168,19 +158,9 @@ def test_instance_norm(
     data=_instance_and_batch_norm_helper(min_dims=2, test_function="batch_norm"),
     training=st.booleans(),
 )
-def test_batch_norm(
-    *,
-    data,
-    training,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -197,5 +177,85 @@ def test_batch_norm(
         eps=eps,
         training=training,
         momentum=momentum,
+        data_format=data_format,
+    )
+
+
+@st.composite
+def _group_norm_helper(draw):
+    data_format = draw(st.sampled_from(["NSC", "NCS"]))
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=4, min_dim_size=2, max_dim_size=4
+        )
+    )
+    channel_size = shape[-1]
+    group_list = [*range(1, 4)]
+    group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
+    num_groups = draw(st.sampled_from(group_list))
+    if data_format == "NCS":
+        shape = (shape[0], shape[-1], *shape[1:-1])
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "float",
+            ),
+            shape=shape,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    _, offset = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(channel_size,),
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+
+    _, scale = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=(channel_size,),
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
+    return x_dtype, x[0], num_groups, data_format, scale[0], offset[0], eps
+
+
+# group_norm
+@handle_test(
+    fn_tree="functional.ivy.experimental.group_norm",
+    data=_group_norm_helper(),
+)
+def test_group_norm(
+    *,
+    data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    x_dtype, x, num_groups, data_format, scale, offset, eps = data
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        xs_grad_idxs=[[0, 0]],
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        num_groups=num_groups,
+        scale=scale,
+        offset=offset,
+        eps=eps,
         data_format=data_format,
     )

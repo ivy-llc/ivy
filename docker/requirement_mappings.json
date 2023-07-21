@@ -1,5 +1,5 @@
 {
-  "tensorflow": ["tensorflow-cpu","tensorflow-addons", "tensorflow-probability"],
+  "tensorflow": ["tensorflow-cpu", "tensorflow-probability"],
   "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
   "numpy": ["numpy"],
   "paddle": ["paddlepaddle"],
