@@ -52,3 +52,19 @@ def nonzero(input, /, *, as_tuple=False):
     if as_tuple is False:
         ret = ivy.matrix_transpose(ivy.stack(ret))
     return ret
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=None):
+    if right:
+        side = "right"
+    else:
+        side = "left"
+    ret = ivy.searchsorted(sorted_sequence, values, side=side)
+    if out_int32:
+        ret = ivy.astype(ret, "int32")
+    return ret

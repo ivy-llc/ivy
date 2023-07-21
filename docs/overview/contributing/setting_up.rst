@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then add Ivy original repository as upstream, to easily sync with latest changes.
+Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
 
 .. code-block:: none
 
@@ -89,7 +89,7 @@ Virtual environments - No Docker
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
 The stable version of Ivy from PyPI maybe used for personal projects and experiments but avoided in development, for now.
-If you want to use the stable version, you are welcome to use the docker container or pip install ivy-core.
+If you want to use the stable version, you are welcome to use the docker container or pip install ivy.
 
 Below is a guide to creating your own virtual environment.
 The benefit of creating a python environment is the ability to install certain packages for a project and then other packages (perhaps different versions) in a new environment for another project.
@@ -140,11 +140,11 @@ Using miniconda
 
 #. Installing the development dependencies.
 
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -209,11 +209,11 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -783,6 +783,7 @@ The steps are as following to setup testing on VS Code when using a new Codespac
       {
          "python.testing.pytestArgs": [
             "./ivy_tests/test_ivy/",
+            "./ivy_tests/array_api_testing/test_array_api/",
          ],
          "python.testing.unittestEnabled": false,
          "python.testing.pytestEnabled": true

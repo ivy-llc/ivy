@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import inspect
 import os
+from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
@@ -194,7 +195,7 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape:
+class Shape(Sequence):
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
@@ -921,6 +922,7 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
+        "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
             general.show_func_wrapper_trace_mode_stack
@@ -985,7 +987,9 @@ def vec_sig_fig(x, sig_fig=3):
     return x
 
 
-ivy.array_significant_figures = 10
+ivy.array_significant_figures = (
+    array_significant_figures_stack[-1] if array_significant_figures_stack else 10
+)
 
 
 def set_array_significant_figures(sig_figs):
@@ -1024,7 +1028,9 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
-ivy.array_decimal_values = 8
+ivy.array_decimal_values = (
+    array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+)
 
 
 def set_array_decimal_values(dec_vals):
@@ -1051,7 +1057,7 @@ def unset_array_decimal_values():
         ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-ivy.warning_level = "ivy_only"
+ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -1084,7 +1090,7 @@ def warn(warning_message, stacklevel=0):
 
 
 # nan policy #
-ivy.nan_policy = "nothing"
+ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -1118,7 +1124,7 @@ def unset_nan_policy():
 # Dynamic Backend
 
 
-ivy.dynamic_backend = True
+ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
 def set_dynamic_backend(flag):
@@ -1405,6 +1411,7 @@ GLOBAL_PROPS = [
     "shape_array_mode",
     "dynamic_backend",
     "precise_mode",
+    "soft_device_mode",
 ]
 
 
@@ -1437,4 +1444,13 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-sys.modules[__name__].__class__ = IvyWithGlobalProps
+if (
+    "ivy" in sys.modules.keys()
+    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
+):
+    # Required for ivy.with_backend internal compilation
+    sys.modules["ivy"].utils._importlib.import_cache[
+        __name__
+    ].__class__ = IvyWithGlobalProps
+else:
+    sys.modules[__name__].__class__ = IvyWithGlobalProps

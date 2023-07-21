@@ -2174,7 +2174,7 @@ def test_torch_sigmoid(
 @handle_frontend_test(
     fn_tree="torch.lerp",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", mixed_fn_compos=False),
         num_arrays=3,
         shared_dtype=True,
         large_abs_safety_factor=2.5,
@@ -2441,6 +2441,32 @@ def test_torch_logit(
     ),
 )
 def test_torch_erf(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# erfc
+@handle_frontend_test(
+    fn_tree="torch.erfc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_erfc(
     *,
     dtype_and_x,
     on_device,

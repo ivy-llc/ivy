@@ -14,6 +14,7 @@ ivy_dtype_dict = {
     paddle.int32: "int32",
     paddle.int64: "int64",
     paddle.uint8: "uint8",
+    paddle.bfloat16: "bfloat16",
     paddle.float16: "float16",
     paddle.float32: "float32",
     paddle.float64: "float64",
@@ -28,6 +29,7 @@ native_dtype_dict = {
     "int32": paddle.int32,
     "int64": paddle.int64,
     "uint8": paddle.uint8,
+    "bfloat16": paddle.bfloat16,
     "float16": paddle.float16,
     "float32": paddle.float32,
     "float64": paddle.float64,
@@ -144,10 +146,8 @@ def broadcast_to(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_shapes_broadcastable(x.shape, shape)
-    shape = list(shape)
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape[i]
+    # paddle doesn't accept 0 in shape and uses -1 instead
+    shape = [-1 if dim == 0 else dim for dim in shape]
     if x.ndim == 0:
         if len(shape) == 0:
             return x
