@@ -501,7 +501,6 @@ def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name):
         min_num_dims=1,
         max_num_dims=1,
     ),
-    ground_truth_backend="numpy",
 )
 def test_dot(
     *,
