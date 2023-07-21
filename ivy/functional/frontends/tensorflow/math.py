@@ -712,6 +712,7 @@ def real(input, name=None):
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
+
 @to_ivy_arrays_and_back
-def erf(x, name=None):
-    return ivy.erf(x)
+def erf(value, name=None):
+    return ivy.erf(value)
