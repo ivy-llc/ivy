@@ -573,7 +573,7 @@ def test_hardswish(
         min_num_dims=2,
     ),
     method_num_positional_args=helpers.num_positional_args(fn_name="Logit._forward"),
-    eps=st.floats(min_value=1e-6, max_value=1e-2),
+    eps=None,
     test_gradients=st.just(True),
 )
 def test_logit(
@@ -611,21 +611,19 @@ def test_logit(
     method_tree="stateful.activations.PReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
         min_num_dims=2,
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
     ),
-    # slope=helpers.array_values(
-    #     shape=(1, 1, 1, 1), min_value=0.1, max_value=10, dtype="float"
-    # ),
     method_num_positional_args=helpers.num_positional_args(fn_name="PReLU._forward"),
     test_gradients=st.just(True),
 )
 def test_prelu(
     *,
     dtype_and_x,
-    slope=None,
     test_gradients,
     class_name,
     method_name,
@@ -642,7 +640,7 @@ def test_prelu(
         init_input_dtypes=input_dtype,
         method_input_dtypes=input_dtype,
         init_all_as_kwargs_np={},
-        method_all_as_kwargs_np={"x": x[0], "slope": slope},
+        method_all_as_kwargs_np={"x": x[0], "slope": x[1]},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
