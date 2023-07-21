@@ -19,6 +19,8 @@ def not_too_close_to_zero(x):
     return f(x)
 
 
+# this is not used yet and will be used when ``where`` argument is added
+# back to elementwise functions
 @st.composite
 def _array_with_mask(draw):
     dtype, x, shape = draw(
@@ -35,10 +37,10 @@ def _array_with_mask(draw):
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
-    dtype_and_x_and_where=_array_with_mask(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_abs(*, dtype_and_x_and_where, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x, where = dtype_and_x_and_where
+def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -46,7 +48,6 @@ def test_abs(*, dtype_and_x_and_where, test_flags, backend_fw, fn_name, on_devic
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        where=where[0],
     )
 
 

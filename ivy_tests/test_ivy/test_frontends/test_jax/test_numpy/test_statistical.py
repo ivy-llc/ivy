@@ -481,7 +481,7 @@ def test_jax_average(
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
-def test_numpy_nanmax(
+def test_jax_nanmax(
     dtype_x_axis,
     frontend,
     test_flags,
@@ -532,7 +532,7 @@ def test_numpy_nanmax(
     keepdims=st.booleans(),
     where=np_helpers.where(),
 )
-def test_numpy_nanmin(
+def test_jax_nanmin(
     dtype_x_axis,
     frontend,
     test_flags,
@@ -970,8 +970,8 @@ def test_jax_nanmedian(
     test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
-    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does not
-    #  support overwrite_input=True.
+    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does
+    # not support overwrite_input=True.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

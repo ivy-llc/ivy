@@ -61,6 +61,14 @@ class DeviceArray:
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
         )
 
+    def astype(self, dtype):
+        try:
+            return jax_frontend.numpy.asarray(self, dtype=dtype)
+        except:  # noqa: E722
+            raise ivy.utils.exceptions.IvyException(
+                f"Dtype {self.dtype} is not castable to {dtype}"
+            )
+
     def argmax(
         self,
         /,
@@ -276,3 +284,16 @@ class DeviceArray:
         fill_value=None,
     ):
         return jax_frontend.numpy.take(self, indices, axis=axis, out=out)
+
+    def var(
+        self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
+    ):
+        return jax_frontend.numpy.var(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=int(ddof),
+            keepdims=keepdims,
+            where=where,
+        )
