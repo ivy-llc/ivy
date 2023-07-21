@@ -509,11 +509,9 @@ def test_dot(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     types, arrays = dtype_xy
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
         test_flags=test_flags,
         fw=backend_fw,
