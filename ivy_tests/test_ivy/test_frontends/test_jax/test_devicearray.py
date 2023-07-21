@@ -185,12 +185,14 @@ def test_jax_devicearray_diagonal(
     dtype_and_x,
     on_device,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
+        backend_to_test=backend_fw,
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "object": x[0],
@@ -257,6 +259,7 @@ def test_jax_devicearray_astype(
     dtype_and_x,
     on_device,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -264,6 +267,7 @@ def test_jax_devicearray_astype(
     input_dtype, x, _, castable_dtype = dtype_and_x
 
     helpers.test_frontend_method(
+        backend_to_test=backend_fw,
         init_input_dtypes=[input_dtype],
         init_all_as_kwargs_np={
             "object": x[0],
@@ -695,6 +699,7 @@ def test_jax_devicearray_any(
     keepdims,
     on_device,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -711,6 +716,7 @@ def test_jax_devicearray_any(
             "keepdims": keepdims,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
