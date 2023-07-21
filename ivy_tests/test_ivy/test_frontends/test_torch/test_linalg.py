@@ -497,6 +497,31 @@ def test_torch_matrix_power(
     )
 
 
+# matrix_exp
+@handle_frontend_test(
+    fn_tree="torch.linalg.matrix_exp",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_torch_matrix_exp(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    test_flags.num_positional_args = len(x)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=x,
+    )
+
+
 # matrix_norm
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_norm",
@@ -1248,7 +1273,48 @@ def test_torch_multi_dot(
     )
 
 
-# solve_ex
+@st.composite
+def _generate_characteristic_equation_solver_dtype_and_arrays(draw):
+    input_dtype = [draw(st.sampled_from(draw(helpers.get_dtypes("numeric"))))]
+    matrices_dims = draw(
+        st.lists(st.integers(min_value=2, max_value=10), min_size=2, max_size=2)
+    )
+
+    matrix = draw(
+        helpers.dtype_and_values(
+            shape=(matrices_dims[0], matrices_dims[1]),
+            dtype=input_dtype,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+    return input_dtype, matrix
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.characteristic_equation_solver",
+    dtype_x=_generate_characteristic_equation_solver_dtype_and_arrays(),
+)
+def test_torch_characteristic_equation_solver(
+    dtype_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_values=True,
+        tensors=x,
+    )
+
+
 @handle_frontend_test(
     fn_tree="torch.linalg.solve_ex",
     dtype_and_data=helpers.dtype_and_values(

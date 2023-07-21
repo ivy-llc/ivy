@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then add Ivy original repository as upstream, to easily sync with latest changes.
+Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
 
 .. code-block:: none
 
@@ -108,7 +108,7 @@ Using miniconda
 
    .. code-block:: none
       
-      conda create --name ivy_dev python=3.8.10
+      conda create --name ivy_dev python=3.10.0
 
 #. Activate the environment by:
 
@@ -140,11 +140,11 @@ Using miniconda
 
 #. Installing the development dependencies.
 
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -209,11 +209,11 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -274,6 +274,19 @@ Windows
    a. In the left panel select "System Interpreter".
    b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
 #. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+#. Everyone using PyCharm with the latest docker image and facing issues after setting up everything. All you need to do is add the paths here once, and then go to :code:`File--> Save all` for this configuration to persist. Just as shown in the image below, The paths would be:
+
+   .. code-block:: none
+
+       /opt/fw/numpy
+       /opt/fw/jax
+       /opt/fw/tensorflow
+       /opt/fw/torch
+       /opt/fw/paddle
+       /opt/fw/mxnet
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/pycharm_with_docker/docker_newimage_fix.png?raw=true
+  :width: 420
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -284,7 +297,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
@@ -324,7 +337,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
@@ -408,7 +421,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
@@ -634,10 +647,9 @@ GitHub Codespaces
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
-Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P).
+Since it's a VM, we no longer have to worry about installing the right packages, modules etc.
 We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too.
 With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have Visual Studio code or a browser installed.
-How cool is that ?!
 
 **Important Note**
 
@@ -771,6 +783,7 @@ The steps are as following to setup testing on VS Code when using a new Codespac
       {
          "python.testing.pytestArgs": [
             "./ivy_tests/test_ivy/",
+            "./ivy_tests/array_api_testing/test_array_api/",
          ],
          "python.testing.unittestEnabled": false,
          "python.testing.pytestEnabled": true
@@ -782,7 +795,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 

@@ -327,6 +327,8 @@ def expand(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)
+    if len(shape) > len(x.shape):
+        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]

@@ -5,8 +5,8 @@ Superset Behaviour
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`superset behavior channel`: https://discord.com/channels/799879767196958751/1018954266322419732
 .. _`superset behavior forum`: https://discord.com/channels/799879767196958751/1028296822386610196
-.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/functional/backends/torch/experimental/layers.py#L735
-.. _`handle_mixed_function`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L980
+.. _`partial_mixed_handler`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/functional/backends/tensorflow/experimental/layers.py#L817
+.. _`handle_partial_mixed_function`: https://github.com/unifyai/ivy/blob/a07919ebf64181852a3564c4d994bc1c25bd9a6f/ivy/func_wrapper.py#L981
 
 When implementing functions in Ivy, whether they are primary, compositional or mixed, we are constantly faced with the question: which backend implementation should Ivy most closely follow?
 
@@ -249,8 +249,8 @@ Ivy allows this using the `partial_mixed_handler`_ attribute on the backend-spec
         "gaussian",
     ]
 
-When the backend is set, we use this attribute to apply the `handle_mixed_function`_ decorator to the function.
-The :code:`@handle_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
+When the backend is set, we use this attribute to apply the `handle_partial_mixed_function`_ decorator to the function.
+The :code:`@handle_partial_mixed_function` accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
 The input function is expected to be a boolean function where we'd use the backend-specific implementation if :code:`True` and the compositional implementation if :code:`False`.
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.
 
@@ -274,6 +274,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `s
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
     </iframe>

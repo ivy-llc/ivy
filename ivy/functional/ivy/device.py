@@ -862,7 +862,7 @@ def to_device(
     >>> print(x.device)
     cpu
     """
-    return ivy.current_backend(x).to_device(x, device)
+    return ivy.current_backend(x).to_device(x, device, stream=stream, out=out)
 
 
 # Function Splitting #

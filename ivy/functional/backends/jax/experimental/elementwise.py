@@ -434,3 +434,12 @@ def frexp(
     x: JaxArray, /, *, out: Optional[Tuple[JaxArray, JaxArray]] = None
 ) -> Tuple[JaxArray, JaxArray]:
     return jnp.frexp(x)
+
+
+def modf(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.modf(x)

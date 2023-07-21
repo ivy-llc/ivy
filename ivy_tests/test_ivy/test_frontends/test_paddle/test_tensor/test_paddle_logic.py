@@ -468,3 +468,58 @@ def test_paddle_isclose(
         y=x[1],
         equal_nan=equal_nan,
     )
+
+
+# logical_and
+@handle_frontend_test(
+    fn_tree="paddle.logical_and",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_logical_and(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.is_empty",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        safety_factor_scale="log",
+        small_abs_safety_factor=32,
+    ),
+)
+def test_paddle_is_empty(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+    )

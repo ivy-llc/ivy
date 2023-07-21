@@ -11,7 +11,7 @@ from .. import backend_version
 
 
 @with_unsupported_dtypes(
-    {"2.12.0 and below": ("int", "float16", "bfloat16")}, backend_version
+    {"2.13.0 and below": ("int", "float16", "bfloat16")}, backend_version
 )
 def eigh_tridiagonal(
     alpha: Union[tf.Tensor, tf.Variable],
@@ -125,7 +125,7 @@ def adjoint(
 
 @with_supported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0": (
             "bfloat16",
             "float16",
             "float32",
@@ -189,105 +189,3 @@ def cond(
             tf.linalg.inv(x), ord=p, axis=[-2, -1]
         )
     return k
-
-
-@with_unsupported_dtypes({"2.12.0 and below": ("float16", "bfloat16")}, backend_version)
-def cov(
-    x1: tf.Tensor,
-    x2: tf.Tensor = None,
-    /,
-    *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[tf.Tensor] = None,
-    aweights: Optional[tf.Tensor] = None,
-    dtype: Optional[type] = None,
-) -> tf.Tensor:
-    if ddof is not None and ddof != int(ddof):
-        raise ValueError("ddof must be integer")
-
-    if len(tf.shape(x1)) > 2:
-        raise ValueError("x1 has more than 2 dimensions")
-
-    if x2 is not None:
-        if len(tf.shape(x2)) > 2:
-            raise ValueError("x2 has more than 2 dimensions")
-
-    if dtype is None:
-        if x2 is None:
-            dtype = tf.experimental.numpy.result_type(x1, tf.float64)
-        else:
-            dtype = tf.experimental.numpy.result_type(x1, x2, tf.float64)
-
-    if ddof is None:
-        if bias == 0:
-            ddof = 1
-        else:
-            ddof = 0
-
-    X = tf.experimental.numpy.array(x1, ndmin=2, dtype=dtype)
-    if not rowVar and tf.shape(X)[0] != 1:
-        X = tf.transpose(X)
-
-    if x2 is not None:
-        x2 = tf.experimental.numpy.array(x2, copy=False, ndmin=2, dtype=dtype)
-        if not rowVar and tf.shape(x2)[0] != 1:
-            x2 = tf.transpose(x2)
-
-        X = tf.concat([X, x2], axis=0)
-
-    w = None
-    if fweights is not None:
-        fweights = tf.cast(fweights, dtype=tf.float64)
-
-        if not tf.reduce_all(fweights == tf.round(fweights)):
-            raise TypeError("fweights must be integer")
-        if len(tf.shape(fweights)) > 1:
-            raise RuntimeError("fweights must be 1 dimensional")
-        if fweights.shape[0] != X.shape[1]:
-            raise RuntimeError("incompatible numbers of samples and fweights")
-        if tf.experimental.numpy.any(fweights < 0):
-            raise ValueError("fweights cannot be negative")
-
-        w = fweights
-
-    if aweights is not None:
-        aweights = tf.cast(aweights, dtype=tf.float64)
-
-        if len(tf.shape(aweights)) > 1:
-            raise RuntimeError("aweights must be 1 dimensional")
-        if aweights.shape[0] != X.shape[1]:
-            raise RuntimeError("incompatible numbers of samples and aweights")
-        if tf.experimental.numpy.any(aweights < 0):
-            raise ValueError("aweights cannot be negative")
-
-        if w is None:
-            w = aweights
-        else:
-            w = w * aweights
-
-    avg, w_sum = tf.experimental.numpy.average(X, axis=1, weights=w, returned=True)
-    w_sum = w_sum[0]
-
-    if w is None:
-        fact = tf.shape(X)[1] - ddof
-    elif ddof == 0:
-        fact = w_sum
-    elif aweights is None:
-        fact = w_sum - ddof
-    else:
-        fact = w_sum - ddof * sum(w * aweights) / w_sum
-
-    if fact <= 0:
-        fact = 0.0
-
-    X -= avg[:, None]
-    if w is None:
-        X_T = tf.transpose(X)
-    else:
-        X_T = tf.transpose(X * w)
-
-    fact = tf.cast(fact, tf.as_dtype(dtype))
-    c = tf.matmul(X, tf.math.conj(X_T))
-    return tf.math.truediv(c, fact)

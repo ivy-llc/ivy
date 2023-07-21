@@ -261,29 +261,34 @@ def size(a, axis=None):
 
 
 @to_ivy_arrays_and_back
-def array_str(a, max_line_width=None, precision=None, suppress_small=False):
-    # handles if precision is none or if invalid
-    precision = ivy.array_significant_figures(precision)
+def array_str(a, max_line_width=None, precision=None, suppress_small=None):
+    a = ivy.reshape(a, (-1,))
+    if precision is not None and ivy.dtype(a) != "bool":
+        # handles if precision is none or if invalid
+        ivy.set_array_significant_figures(precision)
+        arr_str = str(ivy.round(a, decimals=ivy.array_significant_figures_stack[-1]))
 
-    def round_suppress(ele, precision_):
-        count_after_decimal = str(ele)[::-1].find(".")
-        if suppress_small and (count_after_decimal > precision_):
-            # supress to zero
-            return 0
-        else:
-            return round(ele, precision_)
+    arr_str = str(a)
+    arr_str = arr_str.replace("inf", "infj").replace("nan", "nanj")
 
-    a = list(map(round_suppress, a, precision))
-    a = str(a)
-    if max_line_width is None:
-        # TODO: max_line_width handler func
-        max_line_width = 75
+    if suppress_small is not None:
+        arr_str_lines = arr_str.splitlines()
+        for i, line in enumerate(arr_str_lines):
+            if suppress_small and line.startswith(" " * 5 + "."):
+                arr_str_lines[i] = " " * 5 + "0"
+        arr_str = "\n".join(arr_str_lines)
 
-    def chop_string(string, chunk_size):
-        chopped_string = ""
-        for i in range(0, len(string), chunk_size):
-            chopped_string += string[i : i + chunk_size] + "\n"
-        return chopped_string
+    def break_lines(text, max_line_width):
+        broken_lines = []
+        line_start = 0
+        line_end = max_line_width
+        while line_start < len(text):
+            broken_lines.append(text[line_start:line_end])
+            line_start = line_end
+            line_end += max_line_width
+        return "\n".join(broken_lines)
 
-    a = chop_string(a, max_line_width)
-    return a
+    if max_line_width is not None:
+        arr_str = break_lines(arr_str, max_line_width)
+
+    return arr_str

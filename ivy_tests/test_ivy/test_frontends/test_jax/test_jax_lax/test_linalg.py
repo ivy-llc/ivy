@@ -28,7 +28,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     compute_uv=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_svd(
+def test_jax_svd(
     *,
     dtype_and_x,
     full_matrices,
@@ -96,7 +96,7 @@ def test_jax_lax_svd(
     symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cholesky(
+def test_jax_cholesky(
     *,
     dtype_and_x,
     symmetrize_input,
@@ -143,7 +143,7 @@ def test_jax_lax_cholesky(
     symmetrize_input=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_eigh(
+def test_jax_eigh(
     *,
     dtype_and_x,
     lower,

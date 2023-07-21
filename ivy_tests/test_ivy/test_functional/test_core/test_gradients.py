@@ -81,18 +81,10 @@ def get_gradient_arguments_with_lr(
     test_gradients=st.just(False),
 )
 def test_stop_gradient(
-    *,
-    dtype_and_x,
-    preserve_type,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, preserve_type, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -119,14 +111,7 @@ def test_stop_gradient(
     test_gradients=st.just(False),
 )
 def test_execute_with_gradients(
-    *,
-    dtype_and_xs,
-    retain_grads,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_xs, retain_grads, test_flags, backend_fw, fn_name, on_device
 ):
     def func(xs):
         if isinstance(xs, ivy.Container):
@@ -143,7 +128,6 @@ def test_execute_with_gradients(
 
     dtype, xs = dtype_and_xs
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -307,7 +291,6 @@ def test_adam_step(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
     (
@@ -316,7 +299,6 @@ def test_adam_step(
         epsilon,
     ) = beta1_n_beta2_n_epsilon
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -348,11 +330,9 @@ def test_optimizer_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         fw=backend_fw,
         test_flags=test_flags,
@@ -381,11 +361,9 @@ def test_gradient_descent_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -418,14 +396,12 @@ def test_lars_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
     if "bfloat16" in input_dtypes:
         return
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -468,13 +444,11 @@ def test_adam_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     stop_gradients = stopgrad
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,
@@ -528,7 +502,6 @@ def test_lamb_update(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     (
@@ -542,7 +515,6 @@ def test_lamb_update(
     if "jax" in backend_fw.__name__:
         test_flags.test_gradients = False
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         fw=backend_fw,

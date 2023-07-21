@@ -29,6 +29,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
     _get_dtype_input_and_matrices,
+    _get_dtype_input_and_mat_vec,
 )
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
@@ -43,6 +44,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
     _get_dtype_and_square_matrix,
+    _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
@@ -452,6 +454,59 @@ def test_torch_instance_addmm_(
         method_all_as_kwargs_np={
             "mat1": mat1,
             "mat2": mat2,
+            "beta": beta,
+            "alpha": alpha,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+# addmv
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="addmv",
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_instance_addmv(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x, mat, vec = dtype_and_matrices
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "mat": mat,
+            "vec": vec,
             "beta": beta,
             "alpha": alpha,
         },
@@ -2572,7 +2627,7 @@ def test_torch_instance_new_tensor(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
@@ -2589,7 +2644,7 @@ def test_torch_instance_getitem(
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"query": index},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -2599,32 +2654,15 @@ def test_torch_instance_getitem(
     )
 
 
-@st.composite
-def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
-    input_dtype, x, index = draw(
-        helpers.dtype_array_index(
-            available_dtypes=available_dtypes,
-            allow_neg_step=allow_neg_step,
-        )
-    )
-    val_dtype, val = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=x[index].shape,
-        )
-    )
-    return input_dtype + val_dtype, x, index, val[0]
-
-
 # __setitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__setitem__",
-    dtypes_x_index_val=_setitem_helper(
+    dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
-    ),
+    ).filter(lambda x: x[0][0] == x[0][-1]),
 )
 def test_torch_instance_setitem(
     dtypes_x_index_val,
@@ -3545,89 +3583,35 @@ def test_torch_instance_max(
     )
 
 
-# is_quantized
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_quantized",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("qint8"),
-    ),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_quantized(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
+def test_torch_tensor_property_is_quantized(
+    dtype_x,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_quantized, "q" in ivy.dtype(ivy.array(data[0])), as_array=False
     )
 
 
-# is_cuda
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_cuda",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-    ),
-    size=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    device=st.booleans(),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_cuda(
-    dtype_and_x,
-    size,
-    dtypes,
-    requires_grad,
-    device,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
+def test_torch_tensor_property_is_cuda(
+    dtype_x,
 ):
-    input_dtype, x = dtype_and_x
-    device = "cpu" if device is False else "gpu:0"
-    x = Tensor(x[0]).new_ones(
-        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
-    )
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_cuda, "gpu" in ivy.dev(ivy.array(data[0])), as_array=False
     )
 
 
@@ -4991,28 +4975,33 @@ def test_torch_instance_permute(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="mean",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=_statistical_dtype_values(
+        function="mean",
         min_value=-1e04,
         max_value=1e04,
     ),
+    keepdims=st.booleans(),
 )
 def test_torch_instance_mean(
-    dtype_x,
+    dtype_and_x,
+    keepdims,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdims,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -6003,22 +5992,23 @@ def test_torch_instance_ne(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="squeeze",
-    dtype_value=helpers.dtype_and_values(
+    dtype_value_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
-    dim=helpers.get_shape(min_num_dims=1),
 )
 def test_torch_instance_squeeze(
-    dtype_value,
-    dim,
+    dtype_value_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
 ):
-    input_dtype, x = dtype_value
+    input_dtype, x, axis = dtype_value_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -6026,7 +6016,7 @@ def test_torch_instance_squeeze(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dim": dim,
+            "dim": axis,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -8339,6 +8329,37 @@ def test_torch_instance_sign(
     )
 
 
+# sign_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sign_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_instance_sign_(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=[input_dtype],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        frontend=frontend,
+    )
+
+
 # std
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9116,6 +9137,162 @@ def test_torch_instance_greater_equal_(
     )
 
 
+# less
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_less(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_less_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_equal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_less_equal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_equal_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_equal_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_less_equal_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # addr_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9656,6 +9833,45 @@ def test_torch_instance_addcdiv_(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="cholesky",
+    dtype_and_x=_get_dtype_and_matrix(),
+    upper=st.booleans(),
+)
+def test_torch_instance_cholesky(
+    dtype_and_x,
+    upper,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    # make symmetric positive-definite
+    x = np.matmul(x.swapaxes(-1, -2), x) + np.identity(x.shape[-1]) * 1e-3
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "upper": upper,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        rtol_=1e-2,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="heaviside",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -9679,6 +9895,86 @@ def test_torch_instance_heaviside(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "values": values[1],
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="dot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shape=(1,),
+    ),
+)
+def test_torch_instance_dot(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "tensor": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tile",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    reps=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False,
+    ),
+)
+def test_torch_instance_tile(
+    dtype_and_values,
+    reps,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+    if isinstance(reps, tuple):
+        method_flags.num_positional_args = len(reps)
+    else:
+        method_flags.num_positional_args = 1
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "reps": reps,
         },
         init_flags=init_flags,
         method_flags=method_flags,

@@ -24,7 +24,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ndmin=helpers.ints(min_value=0, max_value=9),
     test_with_out=st.just(True),
 )
-def test_jax_numpy_array(
+def test_jax_array(
     *,
     dtype_and_x,
     as_list,
@@ -76,7 +76,7 @@ def test_jax_numpy_array(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_zeros_like(
+def test_jax_zeros_like(
     dtype_and_x,
     dtype,
     shape,
@@ -107,7 +107,7 @@ def test_jax_numpy_zeros_like(
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_arange(
+def test_jax_arange(
     *,
     start,
     stop,
@@ -144,7 +144,7 @@ def test_jax_numpy_arange(
     dtypes=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_zeros(
+def test_jax_zeros(
     *,
     dtypes,
     shape,
@@ -177,7 +177,7 @@ def test_jax_numpy_zeros(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_ones(
+def test_jax_ones(
     shape,
     dtype,
     test_flags,
@@ -212,7 +212,7 @@ def test_jax_numpy_ones(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_ones_like(
+def test_jax_ones_like(
     dtype_and_x,
     shape,
     dtype,
@@ -247,7 +247,7 @@ def test_jax_numpy_ones_like(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_asarray(
+def test_jax_asarray(
     dtype_and_a,
     test_flags,
     frontend,
@@ -279,7 +279,7 @@ def test_jax_numpy_asarray(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_hstack(
+def test_jax_hstack(
     dtype_and_tup,
     test_flags,
     frontend,
@@ -304,7 +304,7 @@ def test_jax_numpy_hstack(
     dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_eye(
+def test_jax_eye(
     *,
     n,
     m,
@@ -375,7 +375,7 @@ def test_numpy_triu(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_empty(
+def test_jax_empty(
     shape,
     dtype,
     test_flags,
@@ -407,7 +407,7 @@ def test_jax_numpy_empty(
     N=st.integers(min_value=0, max_value=5),
     increasing=st.booleans(),
 )
-def test_jax_numpy_vander(
+def test_jax_vander(
     *,
     dtype_and_x,
     N,
@@ -436,7 +436,7 @@ def test_jax_numpy_vander(
     input_fill_dtype=_input_fill_and_dtype(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_full_like(
+def test_jax_full_like(
     input_fill_dtype,
     frontend,
     test_flags,
@@ -463,7 +463,7 @@ def test_jax_numpy_full_like(
     dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_identity(
+def test_jax_identity(
     *,
     n,
     dtypes,
@@ -488,7 +488,7 @@ def test_jax_numpy_identity(
     fn_tree="jax.numpy.ndim",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_jax_numpy_ndim(
+def test_jax_ndim(
     dtype_and_x,
     test_flags,
     frontend,
@@ -522,7 +522,7 @@ def test_jax_numpy_ndim(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_empty_like(
+def test_jax_empty_like(
     dtype_and_x,
     shape,
     dtype,
@@ -556,7 +556,7 @@ def test_jax_numpy_empty_like(
     input_fill_dtype=_input_fill_and_dtype(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_full(
+def test_jax_full(
     shape,
     input_fill_dtype,
     frontend,
@@ -599,7 +599,7 @@ def _get_dtype_and_range(draw):
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_logspace(
+def test_jax_logspace(
     dtype_start_stop,
     num,
     base,
@@ -641,7 +641,7 @@ def test_jax_numpy_logspace(
     indexing=st.sampled_from(["xy", "ij"]),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_meshgrid(
+def test_jax_meshgrid(
     dtype_and_arrays,
     sparse,
     indexing,
@@ -677,7 +677,7 @@ def test_jax_numpy_meshgrid(
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_linspace(
+def test_jax_linspace(
     dtype_start_stop,
     num,
     axis,
@@ -716,7 +716,7 @@ def test_jax_numpy_linspace(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_copy(
+def test_jax_copy(
     dtype_and_a,
     frontend,
     test_flags,
@@ -739,7 +739,7 @@ def test_jax_numpy_copy(
     fn_tree="jax.numpy.single",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-def test_jax_numpy_single(
+def test_jax_single(
     dtype_and_x,
     test_flags,
     frontend,
@@ -762,7 +762,7 @@ def test_jax_numpy_single(
     fn_tree="jax.numpy.double",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-def test_jax_numpy_double(
+def test_jax_double(
     dtype_and_x,
     test_flags,
     frontend,
@@ -785,7 +785,7 @@ def test_jax_numpy_double(
     fn_tree="jax.numpy.bool_",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("bool")),
 )
-def test_jax_numpy_bool_(
+def test_jax_bool_(
     dtype_and_x,
     test_flags,
     frontend,
@@ -842,7 +842,7 @@ def test_geomspace(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
 )
-def test_jax_numpy_csingle(
+def test_jax_csingle(
     dtype_and_x,
     test_flags,
     frontend,
@@ -866,7 +866,7 @@ def test_jax_numpy_csingle(
         available_dtypes=helpers.get_dtypes("complex")
     ),
 )
-def test_jax_numpy_cdouble(
+def test_jax_cdouble(
     dtype_and_x,
     test_flags,
     frontend,
@@ -903,7 +903,7 @@ def test_jax_numpy_cdouble(
     ),
     test_with_out=st.just(True),
 )
-def test_jax_numpy_compress(
+def test_jax_compress(
     *,
     dtype_arr_ax,
     condition,
@@ -931,7 +931,7 @@ def test_jax_numpy_compress(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_numpy_iterable(
+def test_jax_iterable(
     dtype_and_x,
     test_flags,
     frontend,
@@ -964,7 +964,7 @@ def test_jax_numpy_iterable(
         force_int_axis=True,
     ),
 )
-def test_jax_numpy_size(
+def test_jax_size(
     dtype_x_axis,
     test_flags,
     frontend,
@@ -987,14 +987,18 @@ def test_jax_numpy_size(
 # array_str
 @handle_frontend_test(
     fn_tree="jax.numpy.array_str",
-    shape=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=0,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        shape=helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
     ),
     max_line_width=st.integers(min_value=1, max_value=100),
     precision=st.integers(min_value=1, max_value=50),
@@ -1014,12 +1018,12 @@ def test_jax_numpy_array_str(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        max_line_width=max_line_width,
-        precision=precision,
-        suppress_small=suppress_small,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        max_line_width=max_line_width,
+        precision=precision,
+        suppress_small=suppress_small,
     )

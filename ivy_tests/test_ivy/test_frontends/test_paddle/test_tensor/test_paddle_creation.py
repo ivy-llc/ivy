@@ -360,3 +360,132 @@ def test_paddle_empty_like(
         x=x[0],
         dtype=dtype[0],
     )
+
+
+# tril
+@handle_frontend_test(
+    fn_tree="paddle.tril",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_paddle_tril(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=values[0],
+        diagonal=diagonal,
+    )
+
+
+# triu
+@handle_frontend_test(
+    fn_tree="paddle.triu",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_paddle_triu(
+    *,
+    dtype_and_values,
+    diagonal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, values = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=values[0],
+        diagonal=diagonal,
+    )
+
+
+# diagflat
+@handle_frontend_test(
+    fn_tree="paddle.diagflat",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_paddle_diagflat(
+    dtype_and_values,
+    offset,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+        offset=offset,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.meshgrid",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=st.integers(min_value=2, max_value=5),
+        min_num_dims=1,
+        max_num_dims=1,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_meshgrid(
+    dtype_and_arrays,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, arrays = dtype_and_arrays
+    args = {}
+    i = 0
+    for x_ in arrays:
+        args["x{}".format(i)] = x_
+        i += 1
+    test_flags.num_positional_args = len(arrays)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        **args,
+    )

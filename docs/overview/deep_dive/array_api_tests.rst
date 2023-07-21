@@ -13,7 +13,7 @@ Array API Tests
 .. _`array-api test repository`: https://github.com/data-apis/array-api/tree/main
 .. _`issue`: https://github.com/numpy/numpy/issues/21213
 .. _`ivy_tests/array_api_testing/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
-.. _`here`: https://unify.ai/docs/ivy/contributing/setting_up.html#setting-up-testing
+.. _`here`: https://unify.ai/docs/ivy/overview/contributing/the_basics.html#running-tests-locally
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`ivy tests`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html
@@ -205,6 +205,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `a
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
     </iframe>

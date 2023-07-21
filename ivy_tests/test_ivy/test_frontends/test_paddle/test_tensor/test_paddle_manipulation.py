@@ -246,3 +246,207 @@ def test_paddle_tile(
         x=x[0],
         repeat_times=repeats,
     )
+
+
+# split
+@st.composite
+def _split_helper(draw):
+    dtypes, values, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=4,
+            ret_shape=True,
+        )
+    )
+    axis = draw(st.sampled_from(range(len(shape))))
+    num_eles = shape[axis]
+    splits = [i for i in range(1, num_eles + 1) if num_eles % i == 0]
+    num_splits = draw(st.sampled_from(splits))
+    return dtypes, values, num_splits, axis
+
+
+@handle_frontend_test(
+    fn_tree="paddle.split",
+    dt_x_num_splits_axis=_split_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_split(
+    *,
+    dt_x_num_splits_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, num_splits, axis = dt_x_num_splits_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        num_or_sections=num_splits,
+        axis=axis,
+    )
+
+
+# squeeze
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    valid_axes.insert(0, None)
+
+    return draw(st.sampled_from(valid_axes))
+
+
+@handle_frontend_test(
+    fn_tree="paddle.squeeze",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    axis=_squeeze_helper(),
+)
+def test_paddle_squeeze(
+    *,
+    dtype_and_x,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
+
+
+# expand
+@st.composite
+def _expand_helper(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+
+    dtype, x = dtype_and_x
+    input_shape = x[0].shape
+
+    max_num_dims = 6 - len(input_shape)
+    shape = draw(helpers.get_shape(max_num_dims=max_num_dims)) + input_shape
+
+    return dtype, x, shape
+
+
+@handle_frontend_test(
+    fn_tree="paddle.expand",
+    dtype_x_and_shape=_expand_helper(),
+)
+def test_paddle_expand(
+    *,
+    dtype_x_and_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, shape = dtype_x_and_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+    )
+
+
+# cast
+@handle_frontend_test(
+    fn_tree="paddle.cast",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_paddle_cast(
+    *,
+    dtype_and_x,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        dtype=dtype[0],
+    )
+
+
+@st.composite
+def _broadcast_to_helper(draw):
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+
+    dtype, x = dtype_and_x
+    input_shape = x[0].shape
+
+    max_num_dims = 6 - len(input_shape)
+    shape = draw(helpers.get_shape(max_num_dims=max_num_dims)) + input_shape
+
+    return dtype, x, shape
+
+
+@handle_frontend_test(
+    fn_tree="paddle.broadcast_to",
+    dtype_x_and_shape=_broadcast_to_helper(),
+)
+def test_paddle_broadcast_to(
+    *,
+    dtype_x_and_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, shape = dtype_x_and_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shape=shape,
+    )

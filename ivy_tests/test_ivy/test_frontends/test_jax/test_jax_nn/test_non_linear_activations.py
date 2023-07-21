@@ -16,7 +16,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_relu(
+def test_relu(
     *,
     dtype_and_x,
     test_flags,
@@ -45,7 +45,7 @@ def test_jax_nn_relu(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_relu6(
+def test_relu6(
     *,
     dtype_and_x,
     test_flags,
@@ -74,7 +74,7 @@ def test_jax_nn_relu6(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_soft_sign(
+def test_soft_sign(
     *,
     dtype_and_x,
     test_flags,
@@ -103,7 +103,7 @@ def test_jax_nn_soft_sign(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_silu(
+def test_silu(
     *,
     dtype_and_x,
     test_flags,
@@ -133,7 +133,7 @@ def test_jax_nn_silu(
     negative_slope=helpers.floats(min_value=0.0, max_value=1.0),
     test_with_out=st.just(False),
 )
-def test_jax_nn_leaky_relu(
+def test_leaky_relu(
     *,
     dtype_and_x,
     negative_slope,
@@ -167,7 +167,7 @@ def test_jax_nn_leaky_relu(
     approximate=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_nn_gelu(
+def test_gelu(
     *,
     dtype_and_x,
     approximate,
@@ -200,7 +200,7 @@ def test_jax_nn_gelu(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_sigmoid(
+def test_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -243,7 +243,7 @@ def _dtype_indices_classes_axis(draw):
     dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_nn_one_hot(
+def test_one_hot(
     *,
     dtype_indices_classes_axis,
     dtype,
@@ -278,7 +278,7 @@ def test_jax_nn_one_hot(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_softmax(
+def test_softmax(
     *,
     dtype_x_axis,
     test_flags,
@@ -311,7 +311,7 @@ def test_jax_nn_softmax(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_softplus(
+def test_softplus(
     *,
     dtype_and_x,
     test_flags,
@@ -342,7 +342,7 @@ def test_jax_nn_softplus(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_log_sigmoid(
+def test_log_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -376,7 +376,7 @@ def test_jax_nn_log_sigmoid(
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_jax_nn_log_softmax(
+def test_log_softmax(
     *,
     dtype_and_x,
     axis,
@@ -415,7 +415,7 @@ def test_jax_nn_log_softmax(
     axis=helpers.ints(min_value=-1, max_value=0),
     test_with_out=st.just(False),
 )
-def test_jax_nn_glu(
+def test_glu(
     *,
     dtype_and_x,
     axis,
@@ -456,7 +456,7 @@ def test_jax_nn_glu(
     where=st.none(),
     test_with_out=st.just(False),
 )
-def test_jax_nn_normalize(
+def test_normalize(
     *,
     dtype_and_x,
     axis,
@@ -496,7 +496,7 @@ def test_jax_nn_normalize(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_hard_tanh(
+def test_hard_tanh(
     *,
     dtype_and_x,
     test_flags,
@@ -527,7 +527,7 @@ def test_jax_nn_hard_tanh(
     alpha=helpers.floats(min_value=0.01, max_value=1),
     test_with_out=st.just(False),
 )
-def test_jax_nn_celu(
+def test_celu(
     *,
     dtype_and_x,
     alpha,
@@ -561,7 +561,7 @@ def test_jax_nn_celu(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_elu(
+def test_elu(
     *,
     dtype_and_x,
     test_flags,
@@ -596,7 +596,7 @@ def test_jax_nn_elu(
     return_sign=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_nn_logsumexp(
+def test_logsumexp(
     *,
     dtype_and_x,
     axis,
@@ -632,7 +632,7 @@ def test_jax_nn_logsumexp(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_swish(
+def test_swish(
     *,
     dtype_and_x,
     test_flags,
@@ -661,7 +661,7 @@ def test_jax_nn_swish(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_hard_swish(
+def test_hard_swish(
     *,
     dtype_and_x,
     test_flags,
@@ -691,7 +691,7 @@ def test_jax_nn_hard_swish(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_hard_silu(
+def test_hard_silu(
     *,
     dtype_and_x,
     test_flags,
@@ -719,7 +719,7 @@ def test_jax_nn_hard_silu(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_hard_sigmoid(
+def test_hard_sigmoid(
     *,
     dtype_and_x,
     test_flags,
@@ -748,7 +748,7 @@ def test_jax_nn_hard_sigmoid(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_nn_selu(
+def test_selu(
     *,
     dtype_and_x,
     test_flags,

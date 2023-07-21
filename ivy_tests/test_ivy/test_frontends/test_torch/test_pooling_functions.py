@@ -5,6 +5,38 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import math
+
+
+def is_same_padding(padding, stride, kernel_size, input_shape):
+    output_shape = tuple(
+        [
+            (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+            for i in range(len(padding))
+        ]
+    )
+    return all(
+        [
+            output_shape[i] == math.ceil(input_shape[i] / stride[i])
+            for i in range(len(padding))
+        ]
+    )
+
+
+def calculate_same_padding(kernel_size, stride, shape):
+    padding = tuple(
+        [
+            max(
+                0,
+                math.ceil(((shape[i] - 1) * stride[i] + kernel_size[i] - shape[i]) / 2),
+            )
+            for i in range(len(kernel_size))
+        ]
+    )
+    if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+        if is_same_padding(padding, stride, kernel_size, shape):
+            return padding
+    return (0, 0)
 
 
 # avg_pool1d
@@ -66,31 +98,31 @@ def test_torch_avg_pool1d(
         min_side=1,
         max_side=4,
     ),
+    ceil_mode=st.booleans(),
+    count_include_pad=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_avg_pool2d(
     dtype_x_k_s,
+    count_include_pad,
+    ceil_mode,
     *,
     test_flags,
     frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+    input_dtype, x, kernel_size, stride, pad_name = dtype_x_k_s
 
-    # Torch ground truth func expects input to be consistent
-    # with a channels first format i.e. NCHW
+    if len(stride) == 1:
+        stride = (stride[0], stride[0])
+
+    if pad_name == "SAME":
+        padding = calculate_same_padding(kernel_size, stride, x[0].shape[2:])
+    else:
+        padding = (0, 0)
+
     x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
-    x_shape = list(x[0].shape[2:])
-
-    # Torch ground truth func also takes padding input as an integer
-    # or a tuple of integers, not a string
-    padding = tuple(
-        [
-            ivy.handle_padding(x_shape[i], stride[0], kernel_size[i], padding)
-            for i in range(len(x_shape))
-        ]
-    )
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -102,8 +134,8 @@ def test_torch_avg_pool2d(
         kernel_size=kernel_size,
         stride=stride,
         padding=padding,
-        ceil_mode=False,
-        count_include_pad=True,
+        ceil_mode=ceil_mode,
+        count_include_pad=count_include_pad,
         divisor_override=None,
     )
 

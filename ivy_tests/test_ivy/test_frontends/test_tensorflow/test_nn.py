@@ -1167,6 +1167,82 @@ def test_tensorflow_moments(
     )
 
 
+# Normalize Moments
+@st.composite
+def _normalize_moments_helper(draw):
+    shape1, shape2, shape3 = draw(helpers.mutually_broadcastable_shapes(3))
+    counts_dtype, counts = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            max_value=999,
+            min_value=-1001,
+            max_num_dims=1,
+            max_dim_size=1,
+            min_dim_size=1,
+        )
+    )
+    _, mean = draw(
+        helpers.dtype_and_values(
+            available_dtypes=counts_dtype,
+            shape=shape1,
+            min_value=1,
+            max_num_dims=1,
+            max_dim_size=1,
+            min_dim_size=1,
+        )
+    )
+    _, variance = draw(
+        helpers.dtype_and_values(
+            available_dtypes=counts_dtype,
+            shape=shape2,
+            min_value=1,
+            max_num_dims=1,
+            max_dim_size=1,
+            min_dim_size=1,
+        )
+    )
+    _, shift = draw(
+        helpers.dtype_and_values(
+            available_dtypes=counts_dtype,
+            shape=shape3,
+            min_value=1,
+            max_num_dims=1,
+            max_dim_size=1,
+            min_dim_size=1,
+        )
+    )
+
+    return counts_dtype, counts[0], mean[0], variance[0], shift[0]
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.normalize_moments",
+    data=_normalize_moments_helper(),
+)
+def test_tensorflow_normalize_moments(
+    *,
+    data,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    counts_dtype, counts, mean, variance, shift = data
+    helpers.test_frontend_function(
+        input_dtypes=counts_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        counts=counts,
+        mean_ss=mean,
+        variance_ss=variance,
+        shift=shift,
+    )
+
+
 @st.composite
 def _generate_bias_data(draw):
     data_format = draw(st.sampled_from(["NC...", "N...C", None]))
@@ -1565,6 +1641,59 @@ def test_tensorflow_pool(
     )
 
 
+# sufficient_statistics
+@st.composite
+def _axes_value(draw):
+    s = draw(
+        helpers.get_shape(
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+        )
+    )
+    dtype_and_x = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=s,
+            valid_axis=True,
+            force_tuple_axis=True,
+        )
+    )
+    return dtype_and_x
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.sufficient_statistics",
+    dtypes_x_axes_shift=_axes_value(),
+    sh=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float"), shape=()),
+    keepdims=st.booleans(),
+)
+def test_tensorflow_sufficient_statistics(
+    *,
+    dtypes_x_axes_shift,
+    sh,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, x, a = dtypes_x_axes_shift
+    return helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axes=a,
+        shift=sh[1][0],
+        keepdims=keepdims,
+        name=None,
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.nn.log_poisson_loss",
     dtype_target_log_inputs=helpers.dtype_and_values(
@@ -1602,4 +1731,76 @@ def test_log_poisson_loss(
         log_input=log_input,
         compute_full_loss=compute_full_loss,
         atol=1e-2,
+    )
+
+
+# ctc_unique_labels
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.ctc_unique_labels",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["int64", "int32"],
+        min_value=1,
+        max_value=100,
+        min_dim_size=1,
+        max_dim_size=10,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    test_with_out=st.just([False]),
+)
+def test_tensorflow_ctc_unique_labels(
+    *,
+    dtype_x,
+    frontend,
+    fn_tree,
+    test_flags,
+    on_device,
+):
+    dtype, x = dtype_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        labels=x[0],
+    )
+
+
+# weighted moments
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.weighted_moments",
+    dtype_and_x_and_axis=_statistical_dtype_values(function="mean"),
+    dtype_and_fw=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0.00001,
+    ),
+    keepdims=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_weighted_moments(
+    *,
+    dtype_and_x_and_axis,
+    dtype_and_fw,
+    keepdims,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_and_x_and_axis
+    fw_dtype, fw = dtype_and_fw
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-1,
+        atol=1e-1,
+        x=x[0],
+        axes=axis,
+        frequency_weights=fw[0],
+        keepdims=keepdims,
     )

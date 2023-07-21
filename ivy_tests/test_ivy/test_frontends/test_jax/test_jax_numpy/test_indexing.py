@@ -31,7 +31,7 @@ def dims_and_offset(draw, shape):
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
     ),
 )
-def test_jax_numpy_diagonal(
+def test_jax_diagonal(
     *,
     dtype_and_values,
     dims_and_offset,
@@ -90,7 +90,7 @@ def _diag_helper(draw):
     dtype_x_k=_diag_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_diag(
+def test_jax_diag(
     *,
     dtype_x_k,
     test_flags,
@@ -117,7 +117,7 @@ def test_jax_numpy_diag(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_diag_indices(
+def test_jax_diag_indices(
     n,
     ndim,
     dtype,
@@ -153,7 +153,7 @@ def test_jax_numpy_diag_indices(
     mode=st.sampled_from(["clip", "fill", "drop"]),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_take_along_axis(
+def test_jax_take_along_axis(
     *,
     dtype_x_indices_axis,
     mode,
@@ -184,7 +184,7 @@ def test_jax_numpy_take_along_axis(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tril_indices(
+def test_jax_tril_indices(
     n_rows,
     k,
     dtype,
@@ -212,7 +212,7 @@ def test_jax_numpy_tril_indices(
     input_dtypes=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_triu_indices(
+def test_jax_triu_indices(
     n,
     k,
     input_dtypes,
@@ -244,7 +244,7 @@ def test_jax_numpy_triu_indices(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_triu_indices_from(
+def test_jax_triu_indices_from(
     dtype_and_x,
     k,
     test_flags,
@@ -276,7 +276,7 @@ def test_jax_numpy_triu_indices_from(
     k=helpers.ints(min_value=-5, max_value=5),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tril_indices_from(
+def test_jax_tril_indices_from(
     dtype_and_x,
     k,
     test_flags,
@@ -322,7 +322,7 @@ def max_value_as_shape_prod(draw):
     dtype_x_shape=max_value_as_shape_prod(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_unravel_index(
+def test_jax_unravel_index(
     *,
     dtype_x_shape,
     test_flags,
@@ -352,7 +352,7 @@ def test_jax_numpy_unravel_index(
     test_with_out=st.just(False),
     number_positional_args=st.just(2),
 )
-def test_jax_numpy_mask_indices(
+def test_jax_mask_indices(
     n,
     mask_func,
     k,
@@ -390,7 +390,7 @@ def _get_dtype_square_x(draw):
     fn_tree="jax.numpy.diag_indices_from",
     test_with_out=st.just(False),
 )
-def test_jax_numpy_diag_indices_from(
+def test_jax_diag_indices_from(
     dtype_x,
     test_flags,
     frontend,

@@ -471,6 +471,12 @@ def reshape(
         Note that the ‘C’ and ‘F’ options take no account of the memory layout
         of the underlying array, and only refer to the order of indexing.
         Default order is 'C'
+    allowzero
+        When ``allowzero=True``, any value in the ``shape`` argument that is equal to
+        zero, the zero value is honored. When ``allowzero=False``, any value in the
+        ``shape`` argument that is equal to zero the corresponding dimension value is
+        copied from the input tensor dynamically.
+        Default value is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -748,7 +754,7 @@ def squeeze(
         b: ivy.array([3., 4., 5.])
     }
     """
-    return current_backend(x).squeeze(x, axis, copy=copy, out=out)
+    return current_backend(x).squeeze(x, axis=axis, copy=copy, out=out)
 
 
 @handle_exceptions

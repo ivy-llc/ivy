@@ -548,6 +548,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.arithmetic_operations
     _reciprocal,
     _subtract,
     _divmod,
+    _remainder,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.trigonometric_functions import (  # noqa
@@ -618,7 +619,10 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
     _logical_xor,
 )
 
-from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import _matmul
+from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
+    _matmul,
+    dot,
+)
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
     _maximum,
@@ -715,6 +719,7 @@ lcm = ufunc("_lcm")
 gcd = ufunc("_gcd")
 spacing = ufunc("_spacing")
 clip = ufunc("_clip")
+remainder = ufunc("_remainder")
 
 # setting to specific version #
 # --------------------------- #

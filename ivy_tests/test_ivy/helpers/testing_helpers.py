@@ -323,13 +323,14 @@ def handle_test(
         fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    possible_arguments = {"ground_truth_backend": st.just(ground_truth_backend)}
+    possible_arguments = {}
     if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
         possible_arguments["test_flags"] = pf.function_flags(
+            ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
@@ -375,8 +376,8 @@ def handle_test(
                 fn_name=fn_name,
                 supported_device_dtypes=supported_device_dtypes,
             )
-        wrapped_test.ground_truth_backend = ground_truth_backend
         wrapped_test._ivy_test = True
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 

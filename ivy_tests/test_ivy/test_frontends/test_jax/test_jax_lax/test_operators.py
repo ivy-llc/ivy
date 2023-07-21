@@ -33,7 +33,7 @@ from ivy.functional.frontends.jax.lax.operators import (
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_add(
+def test_jax_add(
     *,
     dtype_and_x,
     on_device,
@@ -59,7 +59,7 @@ def test_jax_lax_add(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_tan(
+def test_jax_tan(
     *,
     dtype_and_x,
     on_device,
@@ -88,7 +88,7 @@ def test_jax_lax_tan(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_max(
+def test_jax_max(
     *,
     dtype_and_x,
     on_device,
@@ -153,7 +153,7 @@ def _arrays_idx_n_dtypes(draw):
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_concat(
+def test_jax_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
     on_device,
@@ -195,7 +195,7 @@ def _fill_value(draw):
     fill_value=_fill_value(),
     dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
 )
-def test_jax_lax_full(
+def test_jax_full(
     *,
     shape,
     fill_value,
@@ -225,7 +225,7 @@ def test_jax_lax_full(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_abs(
+def test_jax_abs(
     *,
     dtype_and_x,
     on_device,
@@ -250,7 +250,7 @@ def test_jax_lax_abs(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sqrt(
+def test_jax_sqrt(
     *,
     dtype_and_x,
     on_device,
@@ -275,7 +275,7 @@ def test_jax_lax_sqrt(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_acos(
+def test_jax_acos(
     *,
     dtype_and_x,
     on_device,
@@ -300,7 +300,7 @@ def test_jax_lax_acos(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sin(
+def test_jax_sin(
     *,
     dtype_and_x,
     on_device,
@@ -327,7 +327,7 @@ def test_jax_lax_sin(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sign(
+def test_jax_sign(
     *,
     dtype_and_x,
     on_device,
@@ -352,7 +352,7 @@ def test_jax_lax_sign(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_asin(
+def test_jax_asin(
     *,
     dtype_and_x,
     on_device,
@@ -377,7 +377,7 @@ def test_jax_lax_asin(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sinh(
+def test_jax_sinh(
     *,
     dtype_and_x,
     on_device,
@@ -406,7 +406,7 @@ def test_jax_lax_sinh(
         shared_dtype=True,
     ),
 )
-def test_jax_lax_atan2(
+def test_jax_atan2(
     *,
     dtype_and_x,
     on_device,
@@ -435,7 +435,7 @@ def test_jax_lax_atan2(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_min(
+def test_jax_min(
     *,
     dtypes_and_xs,
     on_device,
@@ -464,7 +464,7 @@ def test_jax_lax_min(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_eq(
+def test_jax_eq(
     *,
     dtypes_and_xs,
     on_device,
@@ -496,7 +496,7 @@ def test_jax_lax_eq(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_mul(
+def test_jax_mul(
     *,
     dtypes_and_xs,
     on_device,
@@ -522,7 +522,7 @@ def test_jax_lax_mul(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_atan(
+def test_jax_atan(
     *,
     dtype_and_x,
     on_device,
@@ -548,7 +548,7 @@ def test_jax_lax_atan(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_ceil(
+def test_jax_ceil(
     *,
     dtype_and_x,
     on_device,
@@ -577,7 +577,7 @@ def test_jax_lax_ceil(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_bitwise_and(
+def test_jax_bitwise_and(
     *,
     dtype_and_x,
     on_device,
@@ -607,7 +607,7 @@ def test_jax_lax_bitwise_and(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_bitwise_or(
+def test_jax_bitwise_or(
     *,
     dtype_and_x,
     on_device,
@@ -636,7 +636,7 @@ def test_jax_lax_bitwise_or(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_bitwise_not(
+def test_jax_bitwise_not(
     *,
     dtype_and_x,
     on_device,
@@ -663,7 +663,7 @@ def test_jax_lax_bitwise_not(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_neg(
+def test_jax_neg(
     *,
     dtype_and_x,
     on_device,
@@ -695,7 +695,7 @@ def test_jax_lax_neg(
     index_dtype=helpers.get_dtypes("integer", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_lax_argmax(
+def test_jax_argmax(
     *,
     dtype_x_axis,
     index_dtype,
@@ -729,7 +729,7 @@ def test_jax_lax_argmax(
     index_dtype=helpers.get_dtypes("integer", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_lax_argmin(
+def test_jax_argmin(
     *,
     dtype_x_axis,
     index_dtype,
@@ -761,7 +761,7 @@ def test_jax_lax_argmin(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_bitwise_xor(
+def test_jax_bitwise_xor(
     *,
     dtype_and_x,
     on_device,
@@ -791,7 +791,7 @@ def test_jax_lax_bitwise_xor(
     dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
     test_with_out=st.just(False),
 )
-def test_jax_lax_full_like(
+def test_jax_full_like(
     *,
     dtype_and_x,
     fill_val,
@@ -824,7 +824,7 @@ def test_jax_lax_full_like(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_exp(
+def test_jax_exp(
     *,
     dtype_and_x,
     on_device,
@@ -851,7 +851,7 @@ def test_jax_lax_exp(
     new_dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_lax_convert_element_type(
+def test_jax_convert_element_type(
     *,
     dtype_and_x,
     new_dtype,
@@ -889,7 +889,7 @@ def test_jax_lax_convert_element_type(
     reverse=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cumprod(
+def test_jax_cumprod(
     *,
     dtype_x_axis,
     reverse,
@@ -927,7 +927,7 @@ def test_jax_lax_cumprod(
     reverse=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cumsum(
+def test_jax_cumsum(
     *,
     dtype_x_axis,
     reverse,
@@ -958,7 +958,7 @@ def test_jax_lax_cumsum(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_ge(
+def test_jax_ge(
     *,
     dtypes_and_xs,
     on_device,
@@ -1013,7 +1013,7 @@ def _reshape_helper(draw):
     x_reshape_permut=_reshape_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_reshape(
+def test_jax_reshape(
     *,
     x_reshape_permut,
     on_device,
@@ -1042,7 +1042,7 @@ def test_jax_lax_reshape(
     sizes=helpers.get_shape(min_num_dims=1),
     test_with_out=st.just(False),
 )
-def test_jax_lax_broadcast(
+def test_jax_broadcast(
     *,
     dtype_and_x,
     sizes,
@@ -1070,7 +1070,7 @@ def test_jax_lax_broadcast(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_reciprocal(
+def test_jax_reciprocal(
     *,
     dtype_and_x,
     on_device,
@@ -1100,7 +1100,7 @@ def test_jax_lax_reciprocal(
     is_stable=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sort(
+def test_jax_sort(
     *,
     dtype_x_bounded_axis,
     is_stable,
@@ -1131,7 +1131,7 @@ def test_jax_lax_sort(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_le(
+def test_jax_le(
     *,
     dtypes_and_xs,
     on_device,
@@ -1160,7 +1160,7 @@ def test_jax_lax_le(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_ne(
+def test_jax_ne(
     *,
     dtypes_and_xs,
     on_device,
@@ -1186,7 +1186,7 @@ def test_jax_lax_ne(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cosh(
+def test_jax_cosh(
     *,
     dtype_and_x,
     on_device,
@@ -1214,7 +1214,7 @@ def test_jax_lax_cosh(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_lt(
+def test_jax_lt(
     *,
     dtypes_and_xs,
     on_device,
@@ -1241,7 +1241,7 @@ def test_jax_lax_lt(
     rounding_method=st.sampled_from([0, 1]),
     test_with_out=st.just(False),
 )
-def test_jax_lax_round(
+def test_jax_round(
     *,
     dtype_and_x,
     rounding_method,
@@ -1271,7 +1271,7 @@ def test_jax_lax_round(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_pow(
+def test_jax_pow(
     *,
     dtypes_and_values,
     on_device,
@@ -1325,7 +1325,7 @@ def _pad_helper(draw):
     dtype_x_params=_pad_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_pad(
+def test_jax_pad(
     *,
     dtype_x_params,
     on_device,
@@ -1355,7 +1355,7 @@ def test_jax_lax_pad(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_gt(
+def test_jax_gt(
     *,
     dtypes_and_xs,
     on_device,
@@ -1381,7 +1381,7 @@ def test_jax_lax_gt(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_cos(
+def test_jax_cos(
     *,
     dtype_and_x,
     on_device,
@@ -1428,7 +1428,7 @@ def _get_clamp_inputs(draw):
     dtype_x_min_max=_get_clamp_inputs(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_clamp(
+def test_jax_clamp(
     *,
     dtype_x_min_max,
     on_device,
@@ -1457,7 +1457,7 @@ def test_jax_lax_clamp(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_log(
+def test_jax_log(
     *,
     dtype_and_x,
     on_device,
@@ -1488,7 +1488,7 @@ def test_jax_lax_log(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_rev(
+def test_jax_rev(
     *,
     dtype_x_axis,
     on_device,
@@ -1526,7 +1526,7 @@ def _div_dtypes_and_xs(draw):
     dtypes_and_xs=_div_dtypes_and_xs(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_div(
+def test_jax_div(
     *,
     dtypes_and_xs,
     on_device,
@@ -1554,7 +1554,7 @@ def test_jax_lax_div(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_rsqrt(
+def test_jax_rsqrt(
     *,
     dtype_and_x,
     on_device,
@@ -1581,7 +1581,7 @@ def test_jax_lax_rsqrt(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_expm1(
+def test_jax_expm1(
     *,
     dtype_and_x,
     on_device,
@@ -1610,7 +1610,7 @@ def test_jax_lax_expm1(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_log1p(
+def test_jax_log1p(
     *,
     dtype_and_x,
     on_device,
@@ -1655,7 +1655,7 @@ def _dtype_values_dims(draw):
     dtype_x_dims=_dtype_values_dims(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_transpose(
+def test_jax_transpose(
     *,
     dtype_x_dims,
     on_device,
@@ -1719,7 +1719,7 @@ def _get_dtype_inputs_for_dot(draw):
     dtypes_and_xs=_get_dtype_inputs_for_dot(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_dot(
+def test_jax_dot(
     *,
     dtypes_and_xs,
     on_device,
@@ -1740,6 +1740,60 @@ def test_jax_lax_dot(
         rhs=rhs,
         precision=None,
         preferred_element_type=dtype,
+    )
+
+
+@st.composite
+def _get_dtype_inputs_for_batch_matmul(draw):
+    dtype, lhs = draw(
+        helpers.dtype_and_values(
+            min_num_dims=2,
+            max_num_dims=6,
+            min_value=2,
+            max_value=5,
+        )
+    )
+    lhs_shape = lhs[0].shape
+    rhs_shape = list(lhs_shape)
+    rhs_shape[-1], rhs_shape[-2] = rhs_shape[-2], rhs_shape[-1]
+    rhs_shape = tuple(rhs_shape)
+    rhs = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=rhs_shape,
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    return dtype, lhs[0], rhs
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.batch_matmul",
+    dtypes_and_xs=_get_dtype_inputs_for_batch_matmul(),
+    test_with_out=st.just(False),
+)
+def test_jax_batch_matmul(
+    *,
+    dtypes_and_xs,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, lhs, rhs = dtypes_and_xs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
+        precision=None,
     )
 
 
@@ -1813,7 +1867,7 @@ def _general_dot_helper(draw):
     dtypes_lr_dims=_general_dot_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_dot_general(
+def test_jax_dot_general(
     *,
     dtypes_lr_dims,
     on_device,
@@ -1964,7 +2018,7 @@ def x_and_filters(draw, dim=2, transpose=False, general=False):
     x_f_d_other=x_and_filters(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_conv(
+def test_jax_conv(
     *,
     x_f_d_other,
     on_device,
@@ -1994,7 +2048,7 @@ def test_jax_lax_conv(
     x_f_d_other=x_and_filters(general=True, transpose=True),
     test_with_out=st.just(False),
 )
-def test_jax_lax_conv_transpose(
+def test_jax_conv_transpose(
     *,
     x_f_d_other,
     on_device,
@@ -2027,7 +2081,7 @@ def test_jax_lax_conv_transpose(
     x_f_d_other=x_and_filters(general=True),
     test_with_out=st.just(False),
 )
-def test_jax_lax_conv_general_dilated(
+def test_jax_conv_general_dilated(
     *,
     x_f_d_other,
     on_device,
@@ -2069,7 +2123,7 @@ def test_jax_lax_conv_general_dilated(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_sub(
+def test_jax_sub(
     *,
     dtype_and_x,
     on_device,
@@ -2099,7 +2153,7 @@ def test_jax_lax_sub(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_rem(
+def test_jax_rem(
     *,
     dtype_and_x,
     on_device,
@@ -2131,7 +2185,7 @@ def test_jax_lax_rem(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_square(
+def test_jax_square(
     *,
     dtype_and_x,
     on_device,
@@ -2155,7 +2209,7 @@ def test_jax_lax_square(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_erf(
+def test_jax_erf(
     *,
     dtype_and_x,
     on_device,
@@ -2185,7 +2239,7 @@ def test_jax_lax_erf(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_shift_left(
+def test_jax_shift_left(
     *,
     dtype_and_x,
     on_device,
@@ -2221,7 +2275,7 @@ def test_jax_lax_shift_left(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_shift_right_logical(
+def test_jax_shift_right_logical(
     *,
     dtype_and_x,
     on_device,
@@ -2275,7 +2329,7 @@ def _slice_helper(draw):
     dtype_x_params=_slice_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_slice(
+def test_jax_slice(
     *,
     dtype_x_params,
     on_device,
@@ -2333,7 +2387,7 @@ def _slice_in_dim_helper(draw):
     dtype_x_params=_slice_in_dim_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_slice_in_dim(
+def test_jax_slice_in_dim(
     *,
     dtype_x_params,
     on_device,
@@ -2370,7 +2424,7 @@ def test_jax_lax_slice_in_dim(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_expand_dims(
+def test_jax_expand_dims(
     *,
     dtype_x_axis,
     on_device,
@@ -2396,7 +2450,7 @@ def test_jax_lax_expand_dims(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_asinh(
+def test_jax_asinh(
     *,
     dtype_and_x,
     on_device,
@@ -2421,7 +2475,7 @@ def test_jax_lax_asinh(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_atanh(
+def test_jax_atanh(
     *,
     dtype_and_x,
     on_device,
@@ -2464,7 +2518,7 @@ def _dtype_pred_ontrue_on_false(draw):
     dtype_pred_ontrue_on_false=_dtype_pred_ontrue_on_false(),
     test_with_out=st.just(False),
 )
-def test_jax_lax_select(
+def test_jax_select(
     *,
     dtype_pred_ontrue_on_false,
     on_device,
@@ -2500,7 +2554,7 @@ def test_jax_lax_select(
     k=helpers.ints(min_value=1, max_value=4),
     test_with_out=st.just(False),
 )
-def test_jax_lax_top_k(
+def test_jax_top_k(
     *,
     dtype_and_x,
     k,
@@ -2534,7 +2588,7 @@ def _get_reduce_func(dtype):
     all_args=_reduce_window_helper(_get_reduce_func),
     test_with_out=st.just(False),
 )
-def test_jax_lax_reduce_window(
+def test_jax_reduce_window(
     *,
     all_args,
     on_device,
@@ -2567,7 +2621,7 @@ def test_jax_lax_reduce_window(
         available_dtypes=helpers.get_dtypes("complex")
     ),
 )
-def test_jax_lax_real(
+def test_jax_real(
     *,
     dtype_and_x,
     on_device,
@@ -2615,7 +2669,7 @@ def _squeeze_helper(draw):
     ),
     dim=_squeeze_helper(),
 )
-def test_jax_lax_squeeze(
+def test_jax_squeeze(
     *,
     dtype_and_values,
     dim,
@@ -2652,7 +2706,7 @@ def test_jax_lax_squeeze(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_nextafter(
+def test_jax_nextafter(
     *,
     dtype_and_x,
     on_device,
@@ -2679,7 +2733,7 @@ def test_jax_lax_nextafter(
         available_dtypes=["complex64"],
     ),
 )
-def test_jax_lax_conj(
+def test_jax_conj(
     *,
     dtype_and_x,
     test_flags,
@@ -2704,7 +2758,7 @@ def test_jax_lax_conj(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_lax_is_finite(
+def test_jax_is_finite(
     *,
     dtype_and_x,
     on_device,

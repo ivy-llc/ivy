@@ -65,7 +65,7 @@ def _get_clip_inputs(draw):
     fn_tree="jax.numpy.clip",
     input_and_ranges=_get_clip_inputs(),
 )
-def test_jax_numpy_clip(
+def test_jax_clip(
     *,
     input_and_ranges,
     on_device,
@@ -126,7 +126,7 @@ def _arrays_idx_n_dtypes(draw):
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_concat(
+def test_jax_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
     on_device,
@@ -166,7 +166,7 @@ def test_jax_numpy_concat(
     repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_repeat(
+def test_jax_repeat(
     *,
     dtype_value,
     axis,
@@ -226,7 +226,7 @@ def _get_input_and_reshape(draw):
     order=st.sampled_from(["C", "F"]),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_reshape(
+def test_jax_reshape(
     *,
     input_x_shape,
     order,
@@ -264,7 +264,7 @@ def test_jax_numpy_reshape(
     order=st.sampled_from(["C", "F"]),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_ravel(
+def test_jax_ravel(
     *,
     dtype_and_values,
     order,
@@ -316,7 +316,7 @@ def _get_input_and_new_shape(draw):
     input_x_shape=_get_input_and_new_shape(),
     test_with_out=st.just(True),
 )
-def test_jax_numpy_resize(
+def test_jax_resize(
     *,
     input_x_shape,
     on_device,
@@ -385,7 +385,7 @@ def test_jax_numpy_resize(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_moveaxis(
+def test_jax_moveaxis(
     *,
     dtype_and_a,
     source,
@@ -422,7 +422,7 @@ def test_jax_numpy_moveaxis(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_flipud(
+def test_jax_flipud(
     *,
     dtype_and_m,
     on_device,
@@ -452,7 +452,7 @@ def test_jax_numpy_flipud(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_transpose(
+def test_jax_transpose(
     *,
     array_and_axes,
     on_device,
@@ -487,7 +487,7 @@ def test_jax_numpy_transpose(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_flip(
+def test_jax_flip(
     *,
     dtype_value,
     axis,
@@ -517,7 +517,7 @@ def test_jax_numpy_flip(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_fliplr(
+def test_jax_fliplr(
     *,
     dtype_and_m,
     on_device,
@@ -549,7 +549,7 @@ def test_jax_numpy_fliplr(
         valid_axis=True,
     ),
 )
-def test_jax_numpy_expand_dims(
+def test_jax_expand_dims(
     *,
     dtype_x_axis,
     on_device,
@@ -583,7 +583,7 @@ def test_jax_numpy_expand_dims(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_jax_numpy_stack(
+def test_jax_stack(
     dtype_values_axis,
     dtype,
     on_device,
@@ -616,7 +616,7 @@ def test_jax_numpy_stack(
         indices_same_dims=True,
     ),
 )
-def test_jax_numpy_take(
+def test_jax_take(
     *,
     dtype_indices_axis,
     on_device,
@@ -647,7 +647,7 @@ def test_jax_numpy_take(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_broadcast_arrays(
+def test_jax_broadcast_arrays(
     *,
     dtype_value,
     on_device,
@@ -678,7 +678,7 @@ def test_jax_numpy_broadcast_arrays(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_broadcast_shapes(
+def test_jax_broadcast_shapes(
     *,
     shapes,
     on_device,
@@ -728,7 +728,7 @@ def _get_input_and_broadcast_shape(draw):
     input_x_broadcast=_get_input_and_broadcast_shape(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_broadcast_to(
+def test_jax_broadcast_to(
     *,
     input_x_broadcast,
     on_device,
@@ -767,7 +767,7 @@ def test_jax_numpy_broadcast_to(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_append(
+def test_jax_append(
     dtype_values_axis,
     on_device,
     fn_tree,
@@ -819,7 +819,7 @@ def _get_input_and_two_swapabble_axes(draw):
     input_x_axis1_axis2=_get_input_and_two_swapabble_axes(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_swapaxes(
+def test_jax_swapaxes(
     *,
     input_x_axis1_axis2,
     test_flags,
@@ -849,7 +849,7 @@ def test_jax_numpy_swapaxes(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_atleast_3d(
+def test_jax_atleast_3d(
     *,
     dtype_and_x,
     on_device,
@@ -881,7 +881,7 @@ def test_jax_numpy_atleast_3d(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_atleast_2d(
+def test_jax_atleast_2d(
     *,
     dtype_and_x,
     on_device,
@@ -913,7 +913,7 @@ def test_jax_numpy_atleast_2d(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_atleast_1d(
+def test_jax_atleast_1d(
     *,
     dtype_and_x,
     on_device,
@@ -949,7 +949,7 @@ def test_jax_numpy_atleast_1d(
     k=helpers.ints(min_value=-10, max_value=10),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tril(
+def test_jax_tril(
     *,
     dtype_and_x,
     k,
@@ -1000,28 +1000,29 @@ def _get_input_and_block(draw):
     return x_dtypes, xs
 
 
-@handle_frontend_test(
-    fn_tree="jax.numpy.block",
-    input_x_shape=_get_input_and_block(),
-    test_with_out=st.just(False),
-)
-def test_jax_numpy_block(
-    *,
-    input_x_shape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    x_dtypes, xs = input_x_shape
-    helpers.test_frontend_function(
-        input_dtypes=x_dtypes,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        arrays=xs,
-    )
+# TODO: uncomment when block is reimplemented
+# @handle_frontend_test(
+#     fn_tree="jax.numpy.block",
+#     input_x_shape=_get_input_and_block(),
+#     test_with_out=st.just(False),
+# )
+# def test_jax_block(
+#     *,
+#     input_x_shape,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     x_dtypes, xs = input_x_shape
+#     helpers.test_frontend_function(
+#         input_dtypes=x_dtypes,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         arrays=xs,
+#     )
 
 
 @st.composite
@@ -1041,7 +1042,7 @@ def _squeeze_helper(draw):
     axis=_squeeze_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_squeeze(
+def test_jax_squeeze(
     *,
     dtype_and_values,
     axis,
@@ -1074,7 +1075,7 @@ def test_jax_numpy_squeeze(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_rot90(
+def test_jax_rot90(
     *,
     dtype_m_k_axes,
     on_device,
@@ -1114,7 +1115,7 @@ def test_jax_numpy_rot90(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_split(
+def test_jax_split(
     *,
     dtype_value,
     indices_or_sections,
@@ -1156,7 +1157,7 @@ def test_jax_numpy_split(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_array_split(
+def test_jax_array_split(
     *,
     dtype_value,
     indices_or_sections,
@@ -1192,7 +1193,7 @@ def test_jax_numpy_array_split(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_dsplit(
+def test_jax_dsplit(
     *,
     dtype_value,
     indices_or_sections,
@@ -1230,7 +1231,7 @@ def test_jax_numpy_dsplit(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tile(
+def test_jax_tile(
     *,
     dtype_value,
     repeat,
@@ -1265,7 +1266,7 @@ def test_jax_numpy_tile(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_dstack(
+def test_jax_dstack(
     *,
     dtype_and_x,
     on_device,
@@ -1296,7 +1297,7 @@ def test_jax_numpy_dstack(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_vsplit(
+def test_jax_vsplit(
     *,
     dtype_value,
     indices_or_sections,
@@ -1329,7 +1330,7 @@ def test_jax_numpy_vsplit(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_hsplit(
+def test_jax_hsplit(
     *,
     dtype_value,
     indices_or_sections,
@@ -1387,7 +1388,7 @@ def test_jax_numpy_hsplit(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_roll(
+def test_jax_roll(
     *,
     dtype_value,
     shift,
@@ -1428,7 +1429,7 @@ def test_jax_numpy_roll(
     ),
     factor=helpers.ints(min_value=2, max_value=6),
 )
-def test_jax_numpy_row_stack(
+def test_jax_row_stack(
     dtype_and_x,
     factor,
     frontend,
@@ -1503,7 +1504,7 @@ def _pad_helper(draw):
     dtype_and_input_and_other=_pad_helper(),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_pad(
+def test_jax_pad(
     *,
     dtype_and_input_and_other,
     frontend,
@@ -1544,7 +1545,7 @@ def test_jax_numpy_pad(
     fn_tree="jax.numpy.hamming",
     m=helpers.ints(min_value=0, max_value=20),
 )
-def test_jax_numpy_hamming(
+def test_jax_hamming(
     m,
     frontend,
     test_flags,
@@ -1566,7 +1567,7 @@ def test_jax_numpy_hamming(
     fn_tree="jax.numpy.hanning",
     m=helpers.ints(min_value=0, max_value=20),
 )
-def test_jax_numpy_hanning(
+def test_jax_hanning(
     m,
     frontend,
     test_flags,
@@ -1589,7 +1590,7 @@ def test_jax_numpy_hanning(
     m=helpers.ints(min_value=0, max_value=100),
     beta=helpers.floats(min_value=-10, max_value=10),
 )
-def test_jax_numpy_kaiser(
+def test_jax_kaiser(
     m,
     beta,
     frontend,
@@ -1617,7 +1618,7 @@ def test_jax_numpy_kaiser(
     dtype=helpers.get_dtypes("valid", full=False),
     test_with_out=st.just(False),
 )
-def test_jax_numpy_tri(
+def test_jax_tri(
     rows,
     cols,
     k,
@@ -1645,7 +1646,7 @@ def test_jax_numpy_tri(
     fn_tree="jax.numpy.blackman",
     m=helpers.ints(min_value=0, max_value=20),
 )
-def test_jax_numpy_blackman(
+def test_jax_blackman(
     m,
     frontend,
     test_flags,

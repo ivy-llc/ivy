@@ -195,7 +195,7 @@ def square(x, name=None):
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def sign(x, name=None):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
@@ -210,7 +210,131 @@ def exp(x, name=None):
     return ivy.exp(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def expm1(x, name=None):
+    return ivy.expm1(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def erf(x, name=None):
+    return ivy.erf(x)
+
+
+@with_supported_dtypes(
+    {
+        "2.4.2 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cumprod(x, dim=None, dtype=None, name=None):
+    return ivy.cumprod(x, axis=dim, dtype=dtype)
+
+
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def reciprocal(x, name=None):
     return ivy.reciprocal(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def lcm(x, y, name=None):
+    return ivy.lcm(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isnan(x, name=None):
+    return ivy.isnan(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isfinite(x, name=None):
+    return ivy.isfinite(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def isinf(x, name=None):
+    return ivy.isinf(x)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128", "float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def angle(x, name=None):
+    return ivy.angle(x)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+@to_ivy_arrays_and_back
+def fmin(x, y, name=None):
+    return ivy.fmin(x, y)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def logit(x, eps=None, name=None):
+    return ivy.logit(x, eps=eps)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
+@to_ivy_arrays_and_back
+def fmax(x, y, name=None):
+    return ivy.fmax(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def minimum(x, y, name=None):
+    return ivy.minimum(x, y)
+
+
+@with_supported_dtypes(
+    {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def trunc(x, name=None):
+    return ivy.trunc(x)
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def sgn(x, name=None):
+    return ivy.sign(x, np_variant=True)
+
+
+# maximum
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@to_ivy_arrays_and_back
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def frac(x, name=None):
+    return x - ivy.sign(x) * ivy.floor(ivy.abs(x))

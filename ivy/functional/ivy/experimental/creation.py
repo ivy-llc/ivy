@@ -207,7 +207,6 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
@@ -258,7 +257,15 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
     return result
+
+
+hamming_window.mixed_backend_wrappers = {
+    "to_add": ("handle_out_argument",),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
@@ -583,3 +590,43 @@ def indices(
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_min(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    r"""
+    Compute the minimum along segments of an array. Segments are defined by an integer
+    array of segment IDs.
+
+    Note
+    ----
+    If the given segment ID `i` is negative, then the corresponding
+    value is dropped, and will not be included in the result.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented min operation.
+        For each segment, it computes the min value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)

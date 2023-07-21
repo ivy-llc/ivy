@@ -845,6 +845,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode not in [
     "tf_area",
+    "nd",
     "bicubic_tensorflow",
     "mitchellcubic",
     "lanczos3",

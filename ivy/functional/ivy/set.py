@@ -318,13 +318,17 @@ def unique_values(
 
     Examples
     --------
+    With :class:`ivy.Array` inputs:
+
     >>> import ivy
     >>> a = ivy.array([1, 1, 2, 2, 3, 4, 4, 5])
     >>> ivy.unique_values(a)
     array([1, 2, 3, 4, 5])
+
     >>> b = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.unique_values(b)
     array([1, 2, 3, 4, 5])
+
     >>> c = ivy.array([1.0, 1.0, 2.0, 2.0, 3.0, 4.0, 4.0, 5.0, -0.0, 0.0, float('nan'),
     ...                float('nan')])
     >>> ivy.unique_values(c)
