@@ -335,14 +335,14 @@ def inv(input, adjoint=False, name=None):
 @with_supported_dtypes(
     {
         "2.13.0 and below": (
-                "bfloat16",
-                "half",
-                "float32",
-                "float64",
-                "int32",
-                "int64",
-                "complex64",
-                "complex128",
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
         )
     },
     "tensorflow",
