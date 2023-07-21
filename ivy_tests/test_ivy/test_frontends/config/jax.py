@@ -1,3 +1,6 @@
+import jax.numpy as jnp
+import jax
+
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
 
@@ -71,3 +74,34 @@ valid_complex_dtypes = [
     "complex128",
 ]
 invalid_complex_dtypes = []
+
+
+# Helpers for function testing
+
+
+Dtype = jax.dtypes.DType
+Device = jax.devices.Device
+
+
+def native_array(x):
+    return jnp.array(x)
+
+
+def is_native_array(x):
+    return isinstance(x, (jnp.ndarray, jnp.DeviceArray))
+
+
+def to_numpy(x):
+    return x
+
+
+def as_native_dtype(dtype: str):
+    return jnp.array([], dtype=dtype).dtype
+
+
+def as_native_dev(device: str):
+    return jax.devices(device)[0]
+
+
+def isscalar(x):
+    return x.ndim == 0

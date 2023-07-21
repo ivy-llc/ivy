@@ -1,3 +1,5 @@
+import mxnet as mx
+
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
 
@@ -71,3 +73,34 @@ valid_complex_dtypes = [
     "complex128",
 ]
 invalid_complex_dtypes = []
+
+
+# Helpers for function testing
+
+
+Dtype = mx.numpy.dtype
+Device = mx.Context
+
+
+def native_array(x):
+    return mx.np.array(x)
+
+
+def is_native_array(x):
+    return isinstance(x, (mx.np.ndarray, mx.gluon.Parameter))
+
+
+def to_numpy(x):
+    return x.asnumpy()
+
+
+def as_native_dtype(dtype: str):
+    return mx.np.array([], dtype=dtype).dtype
+
+
+def as_native_dev(device: str):
+    return mx.Context(device)
+
+
+def isscalar(x):
+    return x.ndim == 0

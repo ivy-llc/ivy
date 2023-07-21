@@ -1,7 +1,22 @@
-import torch
+import paddle
+
 
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
+
+
+native_int8 = paddle.int8
+native_int16 = paddle.int16
+native_int32 = paddle.int32
+native_int64 = paddle.int64
+native_uint8 = paddle.uint8
+native_float16 = paddle.float16
+native_float32 = paddle.float32
+native_float64 = paddle.float64
+native_complex64 = paddle.complex64
+native_complex128 = paddle.complex128
+native_double = native_float64
+native_bool = paddle.bool
 
 valid_dtypes = [
     "int8",
@@ -9,7 +24,6 @@ valid_dtypes = [
     "int32",
     "int64",
     "uint8",
-    "bfloat16",
     "float16",
     "float32",
     "float64",
@@ -21,6 +35,7 @@ invalid_dtypes = [
     "uint16",
     "uint32",
     "uint64",
+    "bfloat16",
 ]
 
 valid_numeric_dtypes = [
@@ -29,7 +44,6 @@ valid_numeric_dtypes = [
     "int32",
     "int64",
     "uint8",
-    "bfloat16",
     "float16",
     "float32",
     "float64",
@@ -40,6 +54,7 @@ invalid_numeric_dtypes = [
     "uint16",
     "uint32",
     "uint64",
+    "bfloat16",
 ]
 
 valid_int_dtypes = [
@@ -65,12 +80,13 @@ invalid_uint_dtypes = [
 ]
 
 valid_float_dtypes = [
-    "bfloat16",
     "float16",
     "float32",
     "float64",
 ]
-invalid_float_dtypes = []
+invalid_float_dtypes = [
+    "bfloat16",
+]
 
 valid_complex_dtypes = [
     "complex64",
@@ -82,16 +98,16 @@ invalid_complex_dtypes = []
 # Helpers for function testing
 
 
-Dtype = torch.dtype
-Device = torch.device
+Dtype = paddle.dtype
+Device = paddle.device
 
 
 def native_array(x):
-    return torch.tensor(x)
+    return paddle.to_tensor(x)
 
 
 def is_native_array(x):
-    return isinstance(x, (torch.Tensor, torch.nn.Parameter))
+    return isinstance(x, (paddle.Tensor, paddle.fluid.dygraph.ParamBase))
 
 
 def to_numpy(x):
@@ -99,12 +115,12 @@ def to_numpy(x):
 
 
 def as_native_dtype(dtype: str):
-    return torch.tensor([], dtype=dtype).dtype
+    return paddle.to_tensor([], dtype=dtype).dtype
 
 
 def as_native_dev(device: str):
-    return torch.device(device)
+    return paddle.device(device)
 
 
 def isscalar(x):
-    return x.dim() == 0
+    return x.ndim == 0
