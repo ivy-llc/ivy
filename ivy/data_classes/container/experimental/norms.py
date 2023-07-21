@@ -7,12 +7,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_l1_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out=None,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.l1_normalize. This method simply
@@ -70,13 +70,13 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def l1_normalize(
-        self,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out=None,
+        self: ivy.Container,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.l1_normalize. This method simply
@@ -122,12 +122,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_l2_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out=None,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.l2_normalize. This method simply
@@ -185,13 +185,13 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def l2_normalize(
-        self,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out=None,
+        self: ivy.Container,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.l2_normalize. This method simply
@@ -256,10 +256,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-        momentum: float = 1e-1,
-        data_format: str = "NSC",
+        training: Union[bool, ivy.Container] = False,
+        eps: Union[float, ivy.Container] = 1e-5,
+        momentum: Union[float, ivy.Container] = 1e-1,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -267,10 +267,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
                 Union[ivy.Array, ivy.Container],
             ]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.batch_norm. This method simply wraps
@@ -353,10 +353,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-        momentum: float = 1e-1,
-        data_format: str = "NSC",
+        training: Union[bool, ivy.Container] = False,
+        eps: Union[float, ivy.Container] = 1e-5,
+        momentum: Union[float, ivy.Container] = 1e-1,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -364,10 +364,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
                 Union[ivy.Array, ivy.Container],
             ]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container instance method variant of ivy.batch_norm. This method simply
@@ -450,10 +450,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-        momentum: float = 1e-1,
-        data_format: str = "NSC",
+        training: Union[bool, ivy.Container] = False,
+        eps: Union[float, ivy.Container] = 1e-5,
+        momentum: Union[float, ivy.Container] = 1e-1,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -461,10 +461,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
                 Union[ivy.Array, ivy.Container],
             ]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.instance_norm. This method simply
@@ -545,10 +545,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        training: bool = False,
-        eps: float = 1e-5,
-        momentum: float = 1e-1,
-        data_format: str = "NSC",
+        training: Union[bool, ivy.Container] = False,
+        eps: Union[float, ivy.Container] = 1e-5,
+        momentum: Union[float, ivy.Container] = 1e-1,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[
             Tuple[
                 Union[ivy.Array, ivy.Container],
@@ -556,10 +556,10 @@ class _ContainerWithNormsExperimental(ContainerBase):
                 Union[ivy.Array, ivy.Container],
             ]
         ] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> Tuple[ivy.Container, ivy.Container, ivy.Container]:
         """
         ivy.Container instance method variant of ivy.instance_norm. This method simply
@@ -634,18 +634,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_group_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        num_groups: int = 1,
+        num_groups: Union[int, ivy.Container] = 1,
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        eps: float = 1e-5,
-        data_format: str = "NSC",
+        eps: Union[float, ivy.Container] = 1e-5,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.group_norm. This method simply wraps
@@ -697,18 +697,18 @@ class _ContainerWithNormsExperimental(ContainerBase):
 
     def group_norm(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        num_groups: int = 1,
+        num_groups: Union[int, ivy.Container] = 1,
         /,
         *,
         offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
         scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
-        eps: float = 1e-5,
-        data_format: str = "NSC",
+        eps: Union[float, ivy.Container] = 1e-5,
+        data_format: Union[str, ivy.Container] = "NSC",
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.group_norm. This method simply wraps
@@ -760,12 +760,12 @@ class _ContainerWithNormsExperimental(ContainerBase):
     @staticmethod
     def static_lp_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        p: float = 2,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        p: Union[float, ivy.Container] = 2,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -827,13 +827,13 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     def lp_normalize(
-        self,
-        p: float = 2,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        self: ivy.Container,
+        p: Union[float, ivy.Container] = 2,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
