@@ -33,6 +33,7 @@ def test_tensorflow_kaiser_window(
     beta_dtype, beta = dtype_and_beta
     helpers.test_frontend_function(
         input_dtypes=[window_length_dtype[0], beta_dtype[0]],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

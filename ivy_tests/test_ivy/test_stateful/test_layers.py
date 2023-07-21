@@ -1336,10 +1336,12 @@ def test_adaptive_avg_pool2d_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, out_size = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -1370,10 +1372,12 @@ def test_adaptive_avg_pool1d_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, out_size = dt_arr_size
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -1405,10 +1409,12 @@ def test_fft_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     dtype, x, dim, norm, n = x_and_fft
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -1442,10 +1448,12 @@ def test_avgpool1d_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -1476,10 +1484,12 @@ def test_dct(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
@@ -1518,12 +1528,14 @@ def test_embedding_layer(
     ground_truth_backend,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     dtypes, indices, weights = dtypes_indices_weights
     dtypes = [dtypes[1], dtypes[0]]
 
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={

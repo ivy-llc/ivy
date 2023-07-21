@@ -234,6 +234,7 @@ def test_tensorflow_BroadcastTo(  # NOQA
     x, to_shape = array_and_shape
     helpers.test_frontend_function(
         input_dtypes=[x.dtype],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -674,12 +675,14 @@ def test_tensorflow_Atan2(  # NOQA
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, xs = dtype_and_x
 
     # Assuming x and y have the same shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1739,10 +1742,12 @@ def test_tensorflow_Reverse(
     fn_tree,
     test_flags,
     on_device,
+    backend_fw,
 ):
     dtype, x, axis_dtype, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype + axis_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1795,10 +1800,12 @@ def test_tensorflow_LogSoftmax(  # NOQA
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -3389,6 +3396,7 @@ def test_tensorflow_Pad(  # NOQA
     dtype, x, padding_dtype, paddings = dtype_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype + padding_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -3616,6 +3624,7 @@ def test_tensorflow_PadV2(
     dtype, x, padding_dtype, paddings, constant_values = dtype_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype + padding_dtype + dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -4228,6 +4237,7 @@ def test_tensorflow_Imag(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, xs = dtype_and_xs
     if input_dtype[0] == "complex128":
@@ -4237,6 +4247,7 @@ def test_tensorflow_Imag(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
