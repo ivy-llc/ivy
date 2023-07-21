@@ -179,3 +179,27 @@ def l1_loss(
     if out.shape == ():
         out = out.expand_dims()
     return paddle.to_tensor(out)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def sigmoid_focal_loss(
+    input,
+    target,
+    alpha=0.25,
+    gamma=2.0,
+    reduction="mean",
+):
+    reduction = _get_reduction_func(reduction)
+
+    p = ivy.sigmoid(input)
+    pt = p * target + (1 - p) * (1 - target)
+    weight = alpha * target + (1 - alpha) * (1 - target)
+    fl = weight * ivy.pow(1.0 - pt, gamma) * ivy.log(pt + 1e-14)
+
+    loss = reduction(-fl)
+
+    if loss.shape == ():
+        loss = loss.expand_dims()
+
+    return paddle.to_tensor(loss)
