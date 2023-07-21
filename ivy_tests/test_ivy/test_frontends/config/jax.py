@@ -80,8 +80,8 @@ invalid_complex_dtypes = []
 # Helpers for function testing
 
 
-Dtype = jax.dtypes.DType
-Device = jax.devices.Device
+Dtype = jax.numpy.dtype
+Device = jax.Device
 
 
 def native_array(x):

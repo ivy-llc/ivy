@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import WithBackendContext, update_backend
+from ..pipeline_helper import update_backend, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -28,7 +28,7 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework, kind="valid", mixed_fn_dtypes="compositional"):
+def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"):
     all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
         framework
     ]
@@ -37,50 +37,56 @@ def _get_fn_dtypes(framework, kind="valid", mixed_fn_dtypes="compositional"):
     return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
-def _get_type_dict(framework: str, kind: str):
-    with WithBackendContext(framework) as ivy_backend:
-        if kind == "valid":
-            return ivy_backend.valid_dtypes
-        if kind == "numeric":
-            return ivy_backend.valid_numeric_dtypes
-        if kind == "integer":
-            return ivy_backend.valid_int_dtypes
-        if kind == "float":
-            return ivy_backend.valid_float_dtypes
-        if kind == "unsigned":
-            return ivy_backend.valid_uint_dtypes
-        if kind == "signed_integer":
-            return tuple(
-                set(ivy_backend.valid_int_dtypes).difference(
-                    ivy_backend.valid_uint_dtypes
-                )
-            )
-        if kind == "complex":
-            return ivy_backend.valid_complex_dtypes
-        if kind == "real_and_complex":
-            return tuple(
-                set(ivy_backend.valid_numeric_dtypes).union(
-                    ivy_backend.valid_complex_dtypes
-                )
-            )
-        if kind == "float_and_complex":
-            return tuple(
-                set(ivy_backend.valid_float_dtypes).union(
-                    ivy_backend.valid_complex_dtypes
-                )
-            )
-        if kind == "float_and_integer":
-            return tuple(
-                set(ivy_backend.valid_float_dtypes).union(ivy_backend.valid_int_dtypes)
-            )
-        if kind == "bool":
-            return tuple(
-                set(ivy_backend.valid_dtypes).difference(
-                    ivy_backend.valid_numeric_dtypes
-                )
-            )
+def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    if is_frontend_test:
+        framework_module = get_frontend_config(framework)
+    else:
+        framework_module = ivy.with_backend(framework, cached=True)
 
-        raise RuntimeError("{} is an unknown kind!".format(kind))
+    if kind == "valid":
+        return framework_module.valid_dtypes
+    if kind == "numeric":
+        return framework_module.valid_numeric_dtypes
+    if kind == "integer":
+        return framework_module.valid_int_dtypes
+    if kind == "float":
+        return framework_module.valid_float_dtypes
+    if kind == "unsigned":
+        return framework_module.valid_uint_dtypes
+    if kind == "signed_integer":
+        return tuple(
+            set(framework_module.valid_int_dtypes).difference(
+                framework_module.valid_uint_dtypes
+            )
+        )
+    if kind == "complex":
+        return framework_module.valid_complex_dtypes
+    if kind == "real_and_complex":
+        return tuple(
+            set(framework_module.valid_numeric_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_complex":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_integer":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_int_dtypes
+            )
+        )
+    if kind == "bool":
+        return tuple(
+            set(framework_module.valid_dtypes).difference(
+                framework_module.valid_numeric_dtypes
+            )
+        )
+
+    raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
 @st.composite
@@ -210,10 +216,8 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
-        test_globals.CURRENT_FRONTEND_STR, list
-    ):
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind)
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True)
         valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend

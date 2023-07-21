@@ -15,10 +15,9 @@ except ImportError:
     tf.TensorShape = None
 
 # local
-from .pipeline_helper import update_backend
+from .pipeline_helper import update_backend, get_frontend_config
 import ivy
 from ivy_tests.test_ivy.helpers.test_parameter_flags import FunctionTestFlags
-from ivy_tests.test_ivy.helpers.testing_helpers import get_frontend_config
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 import ivy_tests.test_ivy.helpers.globals as t_globals
 from ivy.functional.ivy.data_type import _get_function_list, _get_functions_from_string
@@ -1553,11 +1552,12 @@ def test_frontend_method(
             shallow=False,
         )
 
-        # TODO, pretty bad hack, please do it this in proper way.
-        frontend_fw = ivy_backend.utils.dynamic_import.import_module(
-            f"ivy.functional.frontends.{frontend}"
+        frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
+            frontend_method_data.ivy_init_module
         )
-        ivy_frontend_creation_fn = getattr(frontend_fw, frontend_method_data.init_name)
+        ivy_frontend_creation_fn = getattr(
+            frontend_fw_module, frontend_method_data.init_name
+        )
 
         # Run testing
         ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
