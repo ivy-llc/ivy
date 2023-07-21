@@ -1569,75 +1569,74 @@ def test_frontend_method(
         )
 
     # Compute the return with the native frontend framework
-    with update_backend(frontend) as gt_backend:
-        args_constructor_frontend = gt_backend.nested_map(
-            args_constructor_np,
-            lambda x: gt_backend.native_array(x) if isinstance(x, np.ndarray) else x,
-            shallow=False,
-        )
-        kwargs_constructor_frontend = gt_backend.nested_map(
-            kwargs_constructor_np,
-            lambda x: gt_backend.native_array(x) if isinstance(x, np.ndarray) else x,
-            shallow=False,
-        )
-        args_method_frontend = gt_backend.nested_map(
-            args_method_np,
-            lambda x: (
-                gt_backend.native_array(x)
-                if isinstance(x, np.ndarray)
+    frontend_config = get_frontend_config(frontend)
+    args_constructor_frontend = ivy.nested_map(
+        args_constructor_np,
+        lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
+    )
+    kwargs_constructor_frontend = ivy.nested_map(
+        kwargs_constructor_np,
+        lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
+    )
+    args_method_frontend = ivy.nested_map(
+        args_method_np,
+        lambda x: (
+            frontend_config.native_array(x)
+            if isinstance(x, np.ndarray)
+            else (
+                frontend_config.as_native_dtype(x)
+                if isinstance(x, frontend_config.Dtype)
                 else (
-                    gt_backend.as_native_dtype(x)
-                    if isinstance(x, gt_backend.Dtype)
-                    else (
-                        gt_backend.as_native_dev(x)
-                        if isinstance(x, gt_backend.Device)
-                        else x
-                    )
+                    frontend_config.as_native_dev(x)
+                    if isinstance(x, frontend_config.Device)
+                    else x
                 )
-            ),
-            shallow=False,
-        )
-        kwargs_method_frontend = gt_backend.nested_map(
-            kwargs_method_np,
-            lambda x: gt_backend.native_array(x) if isinstance(x, np.ndarray) else x,
-            shallow=False,
+            )
+        ),
+        shallow=False,
+    )
+    kwargs_method_frontend = ivy.nested_map(
+        kwargs_method_np,
+        lambda x: frontend_config.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
+    )
+
+    # change ivy dtypes to native dtypes
+    if "dtype" in kwargs_method_frontend:
+        kwargs_method_frontend["dtype"] = frontend_config.as_native_dtype(
+            kwargs_method_frontend["dtype"]
         )
 
-        # change ivy dtypes to native dtypes
-        if "dtype" in kwargs_method_frontend:
-            kwargs_method_frontend["dtype"] = gt_backend.as_native_dtype(
-                kwargs_method_frontend["dtype"]
-            )
-
-        # change ivy device to native devices
-        if "device" in kwargs_method_frontend:
-            kwargs_method_frontend["device"] = gt_backend.as_native_dev(
-                kwargs_method_frontend["device"]
-            )
-        frontend_creation_fn = getattr(
-            frontend_method_data.framework_init_module, frontend_method_data.init_name
+    # change ivy device to native devices
+    if "device" in kwargs_method_frontend:
+        kwargs_method_frontend["device"] = frontend_config.as_native_dev(
+            kwargs_method_frontend["device"]
         )
-        ins_gt = frontend_creation_fn(
-            *args_constructor_frontend, **kwargs_constructor_frontend
+    frontend_creation_fn = getattr(
+        importlib.import_module(frontend_method_data.framework_init_module),
+        frontend_method_data.init_name,
+    )
+    ins_gt = frontend_creation_fn(
+        *args_constructor_frontend, **kwargs_constructor_frontend
+    )
+    frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
+        *args_method_frontend, **kwargs_method_frontend
+    )
+    if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
+        frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+    elif frontend_config.isscalar(frontend_ret):
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    else:
+        # tuplify the frontend return
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(
+            frontend_ret, frontend_config.is_native_array
         )
-        frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
-            *args_method_frontend, **kwargs_method_frontend
-        )
-        if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
-            frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
-        elif gt_backend.isscalar(frontend_ret):
-            frontend_ret_np_flat = [np.asarray(frontend_ret)]
-        else:
-            # tuplify the frontend return
-            if not isinstance(frontend_ret, tuple):
-                frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = gt_backend.nested_argwhere(
-                frontend_ret, gt_backend.is_native_array
-            )
-            frontend_ret_flat = gt_backend.multi_index_nest(
-                frontend_ret, frontend_ret_idxs
-            )
-            frontend_ret_np_flat = [gt_backend.to_numpy(x) for x in frontend_ret_flat]
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
