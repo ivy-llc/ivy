@@ -1,6 +1,6 @@
 # global
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.func_wrapper import with_supported_device_and_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -92,6 +92,15 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
 def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
 
+
+# @with_supported_dtypes(
+#     {"2.5.0 and below": ("int32", "int64", "int8", "float32", "float64")},
+#     "paddle",
+# )
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("int16", "float16", "bfloat16")},
+    "paddle",
+)
 @to_ivy_arrays_and_back
 def randint_like(x, low=0, high=None, dtype=None, name=None):
     return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)

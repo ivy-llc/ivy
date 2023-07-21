@@ -230,7 +230,6 @@ def test_paddle_standard_normal(
         allow_none=False, min_num_dims=2, max_num_dims=7, min_dim_size=2
         ),
     ),
-
     low=st.integers(min_value=0, max_value=10),
     high=st.integers(min_value=11, max_value=20),
     dtype=helpers.get_dtypes("integer"),
@@ -252,6 +251,7 @@ def test_paddle_randint_like(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         x=x[0],
         low=low,
         high=high,
