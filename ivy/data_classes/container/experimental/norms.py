@@ -632,6 +632,132 @@ class _ContainerWithNormsExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_group_norm(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        num_groups: int = 1,
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        eps: float = 1e-5,
+        data_format: str = "NSC",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.group_norm. This method simply wraps
+        the function, and so the docstring for ivy.group_norm also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array of default shape (N, *S, C), where N is the batch dimension,
+            *S corresponds to any number of spatial dimensions and
+            C corresponds to the channel dimension.
+        num_groups
+            number of groups to separate the channels into
+        offset
+            An offset array of size C. If present, will be added
+            to the normalized input.
+        scale
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
+        eps
+            A small float number to avoid dividing by 0.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
+        out
+            optional output arrays, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The normalized array.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "group_norm",
+            x,
+            num_groups,
+            scale=scale,
+            offset=offset,
+            eps=eps,
+            out=out,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def group_norm(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        num_groups: int = 1,
+        /,
+        *,
+        offset: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        scale: Optional[Union[ivy.NativeArray, ivy.Array, ivy.Container]] = None,
+        eps: float = 1e-5,
+        data_format: str = "NSC",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.group_norm. This method simply wraps
+        the function, and so the docstring for ivy.group_norm also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array of default shape (N, *S, C), where N is the batch dimension,
+            *S corresponds to any number of spatial dimensions and
+            C corresponds to the channel dimension.
+        num_groups
+            number of groups to separate the channels into
+        offset
+            An offset array of size C. If present, will be added
+            to the normalized input.
+        scale
+            A scale array of size C. If present, the scale is
+            applied to the normalized input.
+        eps
+            A small float number to avoid dividing by 0.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
+        out
+            optional output arrays, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The normalized array.
+        """
+        return self.static_group_norm(
+            self,
+            num_groups,
+            scale=scale,
+            offset=offset,
+            eps=eps,
+            out=out,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_lp_normalize(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         p: float = 2,

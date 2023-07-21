@@ -28,17 +28,9 @@ def _invert_permutation_helper(draw):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_invert_permutation(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_invert_permutation(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
