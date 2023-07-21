@@ -12,6 +12,7 @@ from typing import (
 )
 from numbers import Number
 from functools import partial
+import itertools
 import math
 
 # local
@@ -964,6 +965,41 @@ def _check_arguments(
     )
 
 
+def _ndindex(shape):
+    # Create a range for each dimension based on the given shape
+    ranges = [range(dim_size) for dim_size in shape]
+    # Create a cartesian product of the ranges
+    return itertools.product(*ranges)
+
+
+def _infer_broadcast_shape(arr, indices, axis):
+    # This function is used in put_along_axis
+    broadcast_shape_list = list(arr.shape)
+    broadcast_shape_list[axis] = list(indices.shape)[axis]
+    broadcast_shape = tuple(broadcast_shape_list)
+    for i in range(len(arr.shape)):
+        if arr.shape[i] < indices.shape[i]:
+            # if indices matrix has larger size than arr matrix, do not broadcast.
+            return None
+    return broadcast_shape
+
+
+def _handle_reduction_op(reduction, arr, indices, values):
+    if reduction == "assign":
+        arr[indices] = values
+    elif reduction == "add":
+        arr[indices] += values
+    elif reduction == "mul":
+        arr[indices] *= values
+    elif reduction == "mean":
+        arr[indices] = (arr[indices] + values) // 2
+    elif reduction == "amax":
+        arr[indices] = max(values, arr[indices])
+    elif reduction == "amin":
+        arr[indices] = min(values, arr[indices])
+    return arr
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1756,38 +1792,40 @@ def put_along_axis(
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
-    >>> put_along_axis(arr, indices, values, 1, mode='clip')
+    >>> put_along_axis(arr, indices, values, 1, mode='assign')
     >>> print(arr)
-    ivy.array([[3, 7, 5],
-               [6, 4, 1]])
+    ivy.array([[9, 7, 5],
+               [4, 2, 6]])
+
+    >>> arr = ivy.array([[10, 30, 20], [60, 40, 50]])
+    >>> axis = 1
+    >>> indices = ivy.argmax(arr, axis=axis)
+    >>> value = 100
+    >>> put_along_axis(arr, indices, value, axis, mode='add')
+    >>> print(arr)
+    ivy.array([[ 10, 130, 20],
+               [ 160, 40, 50]])
     """
-    if out is None:
-        out = ivy.zeros_like(arr)
+    if len(arr.shape) != len(indices.shape):
+        raise ivy.ValueError("indices and arr must have the same number of dimensions")
+    broadcast_shape = _infer_broadcast_shape(arr, indices, axis)
+    values = ivy.asarray(values) if not isinstance(values, ivy.Array) else values
+    if broadcast_shape:
+        indices = ivy.broadcast_to(indices, broadcast_shape)
+    values = ivy.broadcast_to(values, broadcast_shape)
 
-    indices = ivy.expand_dims(indices, axis=axis)
-    values = ivy.expand_dims(values, axis=axis)
+    Ni, Nk = arr.shape[:axis], arr.shape[axis + 1 :]
+    ret = []
 
-    stacked = ivy.concat((arr, values), axis=axis)
+    for ii in _ndindex(Ni):
+        for kk in _ndindex(Nk):
+            arr_1d = arr[ii + (slice(None),) + kk]
+            indices_1d = indices[ii + (slice(None),) + kk]
+            values_1d = values[ii + (slice(None),) + kk]
+            a = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d)
+            ret.append(a)
 
-    sorted_indices = ivy.argsort(indices, axis=axis)
-    sorted_stacked = ivy.take_along_axis(stacked, sorted_indices, axis=axis)
-
-    arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis),
-        sorted_stacked,
-        arr,
-    )
-
-    if mode == "clip":
-        indices = ivy.clip(indices, 0, arr.shape[axis] - 1)
-    elif mode == "wrap":
-        indices = ivy.mod(indices, arr.shape[axis])
-
-    arr = ivy.where(
-        ivy.expand_dims(sorted_indices < arr.shape[axis], axis=axis), arr, values
-    )
-
-    ivy.assign(out, arr)
+    return ivy.asarray(ret)
 
 
 put_along_axis.mixed_backend_wrappers = {
