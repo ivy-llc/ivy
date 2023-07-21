@@ -657,6 +657,7 @@ def interpolate(
         "linear",
         "bilinear",
         "trilinear",
+        "nd",
         "nearest",
         "area",
         "nearest_exact",
@@ -725,7 +726,7 @@ def reduce_window(
         padding = _to_nested_tuple(padding)
     return jlax.reduce_window(
         operand,
-        init_value,
+        jnp.array(init_value).astype(operand.dtype),
         computation,
         window_dimensions,
         window_strides,
@@ -799,3 +800,36 @@ def embedding(
             norms < -max_norm, embeddings * -max_norm / norms, embeddings
         )
     return embeddings
+
+
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
+def rfftn(
+    x: JaxArray,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}"
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)

@@ -344,6 +344,7 @@ def lerp(
 lerp.partial_mixed_handler = lambda input, end, weight, **kwargs: (
     _are_suitable_types_for_torch_lerp(input, end, weight)
 )
+lerp.support_native_out = True
 
 
 def frexp(
@@ -357,7 +358,10 @@ def frexp(
 
 
 def modf(
-    x: torch.Tensor,/,*,out: Optional[torch.Tensor] = None,
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     modf_x = torch.modf(x)
     return torch.resolve_modf(input=modf_x)

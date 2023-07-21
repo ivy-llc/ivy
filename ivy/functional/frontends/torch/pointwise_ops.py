@@ -2,7 +2,6 @@
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    integer_arrays_to_float,
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
@@ -325,7 +324,6 @@ def flipud(input):
     return ivy.flipud(input)
 
 
-@integer_arrays_to_float
 @to_ivy_arrays_and_back
 def deg2rad(input, *, out=None):
     return ivy.array(input * 3.1416 / 180, out=out)

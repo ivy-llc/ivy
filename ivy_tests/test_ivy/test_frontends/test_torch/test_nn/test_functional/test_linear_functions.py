@@ -41,7 +41,7 @@ def x_and_linear(draw, dtypes):
         dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
-def test_linear(
+def test_torch_linear(
     *,
     dtype_x_weight_bias,
     on_device,
