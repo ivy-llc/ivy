@@ -13,6 +13,7 @@ valid_dtypes = [
     "float16",
     "float32",
     "float64",
+    # complex32 is available
     "complex64",
     "complex128",
     "bool",
@@ -78,6 +79,21 @@ valid_complex_dtypes = [
 ]
 invalid_complex_dtypes = []
 
+dtype_dict = {
+    "bool": torch.bool,
+    "uint8": torch.uint8,
+    "int8": torch.int8,
+    "int16": torch.int16,
+    "int32": torch.int32,
+    "int64": torch.int64,
+    "bfloat16": torch.bfloat16,
+    "float16": torch.float16,
+    "float32": torch.float32,
+    "float64": torch.float64,
+    "complex32": torch.complex32,
+    "complex64": torch.complex64,
+    "complex128": torch.complex128,
+}
 
 # Helpers for function testing
 
@@ -99,7 +115,7 @@ def to_numpy(x):
 
 
 def as_native_dtype(dtype: str):
-    return torch.tensor([], dtype=dtype).dtype
+    return dtype_dict[dtype]
 
 
 def as_native_dev(device: str):
