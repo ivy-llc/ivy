@@ -40,60 +40,6 @@ class InterruptedTest(BaseException):
         super.__init__(f"{test_interruped} was interruped during execution.")
 
 
-def _get_ivy_numpy(version=None):
-    """Import Numpy module from ivy."""
-    try:
-        import ivy.functional.backends.numpy
-    except ImportError:
-        return None
-    return ivy.functional.backends.numpy
-
-
-def _get_ivy_jax(version=None):
-    """Import JAX module from ivy."""
-    try:
-        import ivy.functional.backends.jax
-    except ImportError:
-        return None
-    return ivy.functional.backends.jax
-
-
-def _get_ivy_tensorflow(version=None):
-    """Import Tensorflow module from ivy."""
-    try:
-        import ivy.functional.backends.tensorflow
-    except ImportError:
-        return None
-    return ivy.functional.backends.tensorflow
-
-
-def _get_ivy_torch(version=None):
-    """Import Torch module from ivy."""
-    try:
-        import ivy.functional.backends.torch
-    except ImportError:
-        return None
-    return ivy.functional.backends.torch
-
-
-def _get_ivy_paddle(version=None):
-    """Import Paddle module from ivy."""
-    try:
-        import ivy.functional.backends.paddle
-    except ImportError:
-        return None
-    return ivy.functional.backends.paddle
-
-
-def _get_ivy_mxnet(version=None):
-    """Import mxnet module from ivy."""
-    try:
-        import ivy.functional.backends.mxnet
-    except ImportError:
-        return None
-    return ivy.functional.backends.mxnet
-
-
 # Setup
 
 
