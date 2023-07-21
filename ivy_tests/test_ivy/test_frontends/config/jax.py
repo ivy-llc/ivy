@@ -1,5 +1,6 @@
 import jax.numpy as jnp
 import jax
+import numpy as np
 
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
@@ -92,11 +93,11 @@ def is_native_array(x):
 
 
 def to_numpy(x):
-    return x
+    return np.asarray(x)
 
 
 def as_native_dtype(dtype: str):
-    return jnp.array([], dtype=dtype).dtype
+    return jnp.dtype(dtype)
 
 
 def as_native_dev(device: str):
