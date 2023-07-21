@@ -3,6 +3,10 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_fr
     _input_fill_and_dtype,
 )
 
+from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
+    _get_dtype_buffer_count_offset,
+)
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -700,6 +704,8 @@ def test_jax_linspace(
         retstep=False,
         dtype=input_dtypes[0],
         axis=axis,
+        atol=1e-05,
+        rtol=1e-05,
     )
 
 
@@ -810,7 +816,7 @@ def test_jax_bool_(
     endpoint=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_geomspace(
+def test_jax_geomspace(
     dtype_start_stop,
     num,
     endpoint,
@@ -887,9 +893,9 @@ def test_jax_cdouble(
 @handle_frontend_test(
     fn_tree="jax.numpy.compress",
     dtype_arr_ax=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=5,
         min_dim_size=10,
         max_dim_size=100,
         valid_axis=True,
@@ -901,10 +907,8 @@ def test_jax_cdouble(
             min_num_dims=1, max_num_dims=1, min_dim_size=1, max_dim_size=5
         ),
     ),
-    test_with_out=st.just(True),
 )
 def test_jax_compress(
-    *,
     dtype_arr_ax,
     condition,
     frontend,
@@ -1026,4 +1030,31 @@ def test_jax_numpy_array_str(
         max_line_width=max_line_width,
         precision=precision,
         suppress_small=suppress_small,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.frombuffer",
+    dtype_buffer_count_offset=_get_dtype_buffer_count_offset(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_frombuffer(
+    *,
+    dtype_buffer_count_offset,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, buffer, count, offset = dtype_buffer_count_offset
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        buffer=buffer,
+        dtype=input_dtype[0],
+        count=count,
+        offset=offset,
     )

@@ -223,13 +223,11 @@ def test_set_item(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtypes, x, query, val = dtypes_x_query_val
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,

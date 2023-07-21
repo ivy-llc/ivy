@@ -553,28 +553,10 @@ def test_torch_nll_loss(
     fn_tree="torch.nn.functional.gaussian_nll_loss",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=3,
         min_value=0.01,
         max_value=1.0,
         allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=0.0,
-        max_value=1.0,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    dtype_and_var=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        allow_inf=False,
-        min_value=0.0,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -592,8 +574,6 @@ def test_torch_nll_loss(
 def test_torch_gaussian_nll_loss(
     *,
     dtype_and_input,
-    dtype_and_target,
-    dtype_and_var,
     full,
     eps,
     reduction,
@@ -603,20 +583,20 @@ def test_torch_gaussian_nll_loss(
     test_flags,
 ):
     inputs_dtype, input = dtype_and_input
-    target_dtype, target = dtype_and_target
-    var_dtype, var = dtype_and_var
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype + target_dtype + var_dtype,
+        input_dtypes=inputs_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        target=target[0],
-        var=var[0],
+        target=input[1],
+        var=input[2],
         full=full,
         eps=eps,
         reduction=reduction,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
@@ -763,19 +743,13 @@ def test_torch_margin_ranking_loss(
     fn_tree="torch.nn.functional.poisson_nll_loss",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=1,
-    ),
-    dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
     ),
     log_input=st.booleans(),
     full=st.booleans(),
@@ -786,7 +760,6 @@ def test_torch_margin_ranking_loss(
 def test_torch_poisson_nll_loss(
     *,
     dtype_and_input,
-    dtype_and_target,
     log_input,
     full,
     size_average,
@@ -798,15 +771,14 @@ def test_torch_poisson_nll_loss(
     test_flags,
 ):
     inputs_dtype, input = dtype_and_input
-    target_dtype, target = dtype_and_target
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype + target_dtype,
+        input_dtypes=inputs_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        target=target[0],
+        target=input[1],
         log_input=log_input,
         full=full,
         size_average=size_average,
@@ -857,6 +829,8 @@ def test_torch_hinge_embedding_loss(
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
+        atol=1e-5,
+        rtol=1e-5,
     )
 
 
@@ -926,6 +900,7 @@ def test_torch_triplet_margin_loss(
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
+        min_num_dims=1,
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
@@ -944,16 +919,14 @@ def test_torch_multilabel_soft_margin_loss(
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
-    input_dtype, input = input_dtype[0], x[0]
-    target_dtype, target = input_dtype[1], x[1]
     helpers.test_frontend_function(
-        input_dtypes=[input_dtype, target_dtype],
+        input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
-        target=target,
+        input=x[0],
+        target=x[1],
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,

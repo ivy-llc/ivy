@@ -327,8 +327,12 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and ensure the order
-    array_list = [arr for arr in array_list if arr.__dict__]
+    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    array_list = [
+        arr
+        for arr in array_list
+        if arr.__dict__ and arr.backend == ivy.current_backend_str()
+    ]
     arr_ids = [id(item.data) for item in array_list]
     new_objs = {k: v for k, v in zip(arr_ids, array_list)}
     new_objs = list(new_objs.values())

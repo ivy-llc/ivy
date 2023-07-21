@@ -1,5 +1,6 @@
 # global
 from typing import Iterable
+import math
 
 # local
 import ivy
@@ -1438,6 +1439,15 @@ class Tensor:
         return torch_frontend.as_strided(
             self, size=size, stride=stride, storage_offset=storage_offset
         )
+
+    def stride(self, dim=None):
+        strides = [
+            stride // math.ceil(ivy.dtype_bits(self.dtype) / 8)
+            for stride in self.ivy_array.strides
+        ]
+        if dim is not None:
+            return strides[dim]
+        return strides
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log1p(self):

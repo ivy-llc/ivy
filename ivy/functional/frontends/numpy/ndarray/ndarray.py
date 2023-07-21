@@ -500,6 +500,9 @@ class ndarray:
     def __imod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
 
+    def __invert__(self, /):
+        return ivy.bitwise_invert(self.ivy_array)
+
     def __abs__(self):
         return np_frontend.absolute(self)
 
