@@ -198,7 +198,6 @@ def sigmoid_focal_loss(
     fl = weight * ivy.pow(1.0 - pt, gamma) * ivy.log(pt + 1e-14)
 
     loss = reduction(-fl)
-
     if loss.shape == ():
         loss = loss.expand_dims()
 
