@@ -44,7 +44,7 @@ def binary_cross_entropy_with_logits(
     if weight is not None:
         ret = ivy.multiply(weight, ret)
     ret = reduction(ret).astype(label.dtype)
-    return paddle.to_tensor(ret.reshape([-1]))
+    return paddle.to_tensor(ivy.atleast_1d(ret))
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
@@ -164,3 +164,18 @@ def smooth_l1_loss(
     elif reduction == "sum":
         out = ivy.sum(out)
     return out.astype(label.dtype)
+
+
+@inputs_to_ivy_arrays
+def l1_loss(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    sum_diff = ivy.abs(input - label)
+    reduction = _get_reduction_func(reduction)
+    out = reduction(sum_diff)
+    if out.shape == ():
+        out = out.expand_dims()
+    return paddle.to_tensor(out)

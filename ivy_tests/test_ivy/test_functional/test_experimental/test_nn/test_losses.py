@@ -42,12 +42,10 @@ def test_log_poisson_loss(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     targets_dtype, targets = dtype_and_targets
     log_input_dtype, log_input = dtype_and_log_input
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=targets_dtype + log_input_dtype,
         test_flags=test_flags,
         fw=backend_fw,

@@ -517,11 +517,9 @@ def test_cov(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
         fw=backend_fw,
@@ -555,11 +553,9 @@ def test_cummax(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
         fw=backend_fw,
@@ -592,11 +588,9 @@ def test_cummin(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
         fw=backend_fw,
@@ -631,11 +625,9 @@ def test_nanmedian(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
