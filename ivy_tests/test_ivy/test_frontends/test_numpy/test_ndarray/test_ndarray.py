@@ -149,6 +149,65 @@ def test_numpy_ndarray_property_flat(dtype_x):
     ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
 
 
+# Testing function for ndarray.byteswap()
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="byteswap",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=st.one_of(
+            helpers.get_dtypes("float_and_integer")
+        ),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_numpy_ndarray_byteswap(
+    dtypes_x_byteswap,
+    order,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x = dtypes_x_byteswap
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={
+            "inplace": False,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+    # Additional testing for inplace=True
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={
+            "inplace": True,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+    
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
