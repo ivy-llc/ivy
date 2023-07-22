@@ -155,13 +155,8 @@ def test_numpy_ndarray_property_flat(dtype_x):
     init_tree="numpy.array",
     method_name="byteswap",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(
-            helpers.get_dtypes("float_and_integer")
+        available_dtypes=st.one_of(helpers.get_dtypes("float_and_integer")
         ),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
     ),
     keep_dims=st.booleans(),
 )
