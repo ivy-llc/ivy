@@ -559,8 +559,8 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
