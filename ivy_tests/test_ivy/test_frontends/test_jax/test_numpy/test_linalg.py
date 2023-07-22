@@ -841,7 +841,7 @@ def test_jax_cond(
     )
 
 
-#multi_dot
+# multi_dot
 @handle_frontend_test(
     fn_tree="jax.lax.linalg.multi_dot",
     dtype_and_x=helpers.dtype_and_values(
