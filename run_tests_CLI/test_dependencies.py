@@ -41,6 +41,7 @@ def test_imports(fname, assert_version, update_versions):
     WARN_MSG += msg
     with open(fname, "r") as f:
         file_lines = f.readlines()
+    file_lines = list(filter(lambda x: not x.startswith('-f'), file_lines))
     mod_names_n_versions = [parse(req) for req in file_lines]
     for line_num, (mod_name, expected_version) in enumerate(mod_names_n_versions):
         # noinspection PyBroadException
