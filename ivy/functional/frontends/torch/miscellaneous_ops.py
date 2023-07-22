@@ -410,3 +410,17 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@to_ivy_arrays_and_back
+def resolve_neg(input):
+    if ivy.is_array(input):
+        if ivy.is_complex_dtype(input):
+            neg_bit = ivy.imag(input) < 0
+        else:
+            neg_bit = input < 0
+        if not ivy.is_array(input):
+            input = ivy.array(input)
+        if ivy.any(neg_bit):
+            return input
+    return input
