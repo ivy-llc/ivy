@@ -55,13 +55,14 @@ def _property_helper(draw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_A(matrices):
+def test_numpy_matrix_property_A(matrices, backend_fw):
     data, data_gt = matrices
     ret = np.ravel(data.A)
     ret_gt = np.ravel(data_gt.A)
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
+        backend=backend_fw,
         ground_truth_backend="numpy",
     )
 
@@ -70,11 +71,12 @@ def test_numpy_matrix_property_A(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_A1(matrices):
+def test_numpy_matrix_property_A1(matrices, backend_fw):
     data, data_gt = matrices
     helpers.value_test(
         ret_np_flat=data.A1,
         ret_np_from_gt_flat=data_gt.A1,
+        backend=backend_fw,
         ground_truth_backend="numpy",
     )
 
@@ -83,7 +85,7 @@ def test_numpy_matrix_property_A1(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_I(matrices):
+def test_numpy_matrix_property_I(matrices, backend_fw):
     data, data_gt = matrices
     assume(
         np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
@@ -94,6 +96,7 @@ def test_numpy_matrix_property_I(matrices):
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
+        backend=backend_fw,
         ground_truth_backend="numpy",
     )
 
@@ -102,13 +105,14 @@ def test_numpy_matrix_property_I(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_T(matrices):
+def test_numpy_matrix_property_T(matrices, backend_fw):
     data, data_gt = matrices
     ret = np.ravel(data.T)
     ret_gt = np.ravel(data_gt.T)
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
+        backend=backend_fw,
         ground_truth_backend="numpy",
     )
 

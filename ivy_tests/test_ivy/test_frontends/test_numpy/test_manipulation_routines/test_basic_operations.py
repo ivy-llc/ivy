@@ -1,13 +1,11 @@
 # global
 from hypothesis import strategies as st
-import ivy
-import ivy.functional.frontends.numpy as ivy_np
 import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 
 
 @st.composite
@@ -36,24 +34,31 @@ def generate_copyto_args(draw):
 )
 def test_numpy_copyto(
     copyto_args,
+    backend_fw,
+    frontend,
 ):
     _, xs, casting, where = copyto_args
     if isinstance(where, list) or isinstance(where, tuple):
         where = where[0]
 
-    src_ivy = ivy_np.array(xs[0])
-    dst_ivy = ivy_np.array(xs[1])
-    ivy_np.copyto(dst_ivy, src_ivy, where=where, casting=casting)
+    with update_backend(backend_fw) as ivy_backend:
+        src_ivy = ivy_backend.functional.frontends.numpy.array(xs[0])
+        dst_ivy = ivy_backend.functional.frontends.numpy.array(xs[1])
+        ivy_backend.functional.frontends.numpy.copyto(
+            dst_ivy, src_ivy, where=where, casting=casting
+        )
 
-    src_np = np.array(xs[0])
-    dst_np = np.array(xs[1])
-    np.copyto(dst_np, src_np, where=where, casting=casting)
+        src_np = np.array(xs[0])
+        dst_np = np.array(xs[1])
+        np.copyto(dst_np, src_np, where=where, casting=casting)
 
-    assert dst_np.shape == dst_ivy.shape
-    # value test
-    dst_ = ivy.to_numpy(dst_ivy.ivy_array)
-    helpers.assert_all_close(dst_, dst_np)
-    assert id(src_ivy) != id(dst_ivy)
+        assert dst_np.shape == dst_ivy.shape
+        # value test
+        dst_ = ivy_backend.to_numpy(dst_ivy.ivy_array)
+        helpers.assert_all_close(
+            dst_, dst_np, backend=backend_fw, ground_truth_backend=frontend
+        )
+        assert id(src_ivy) != id(dst_ivy)
 
 
 # shape

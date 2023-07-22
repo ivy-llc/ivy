@@ -37,6 +37,7 @@ def test_numpy_tile(
     repeats_dtype, repeats = dtype_and_repeats
     helpers.test_frontend_function(
         input_dtypes=input_dtype + repeats_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

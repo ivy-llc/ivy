@@ -314,12 +314,14 @@ def test_numpy_require(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
