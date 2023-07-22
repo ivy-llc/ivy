@@ -88,7 +88,11 @@ def _get_bin_edges(a, bins, range, weights):
             # Do not call selectors on empty arrays
             width = _hist_bin_selectors[bin_name](a, (first_edge, last_edge))
             if width:
-                n_equal_bins = int(ivy.ceil((last_edge - first_edge) / width))
+                n_equal_bins = int(
+                    ivy.ceil(
+                        ivy.array((last_edge - first_edge) / width, dtype=ivy.float64)
+                    )
+                )
             else:
                 # Width can be zero for some estimators, e.g. FD when
                 # the IQR of the data is zero.
@@ -136,7 +140,7 @@ def _ptp(x):
 
 def _hist_bin_sqrt(x, range):
     del range  # unused
-    return _ptp(x) / ivy.sqrt(x.size)
+    return _ptp(x) / ivy.sqrt(ivy.array(x.size, dtype=ivy.float64))
 
 
 def _hist_bin_sturges(x, range):
@@ -331,8 +335,12 @@ def histogram(a, bins=10, range=None, density=None, weights=None):
 
             # We now compute the histogram using bincount
             if ivy.is_complex_dtype(ntype):
-                real = bincount(indices, weights=tmp_w.real(), minlength=n_equal_bins).ivy_array
-                imag = bincount(indices, weights=tmp_w.imag(), minlength=n_equal_bins).ivy_array
+                real = bincount(
+                    indices, weights=tmp_w.real(), minlength=n_equal_bins
+                ).ivy_array
+                imag = bincount(
+                    indices, weights=tmp_w.imag(), minlength=n_equal_bins
+                ).ivy_array
                 n += real + ivy.array(imag, dtype=ivy.complex128) * 1j
 
             else:
