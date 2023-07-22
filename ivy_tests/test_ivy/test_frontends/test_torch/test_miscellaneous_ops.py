@@ -1491,7 +1491,7 @@ def test_torch_cov(
 @handle_frontend_test(
     fn_tree="torch.view_as_real",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
     ),
 )
