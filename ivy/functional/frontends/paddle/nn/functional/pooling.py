@@ -32,14 +32,13 @@ def avg_pool1d(
 def avg_pool3d(
     x,
     kernel_size,
-    stride=(1, 1, 1),
-    padding=(0, 0, 0),
+    stride=None,
+    padding=0,
     /,
     *,
-    data_format="NDHWC",
-    count_include_pad=False,
     ceil_mode=False,
     divisor_override=None,
+    data_format="NDHWC",
     out=None,
 ):
     # Dilation must always follows the formuala
@@ -53,9 +52,8 @@ def avg_pool3d(
         kernel_size,
         stride,
         padding,
-        data_format=data_format,
-        count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
         divisor_override=divisor_override,
+        data_format=data_format,
         out=out,
     )

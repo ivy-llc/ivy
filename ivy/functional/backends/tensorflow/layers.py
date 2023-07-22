@@ -300,6 +300,8 @@ def conv_general_dilated(
     x = _pad_before_conv(x, filters, strides, padding, dims, dilations)
     df = _get_x_data_format(dims, "channel_last")
     if dims == 3:
+        if isinstance(strides, tuple):
+            strides = list(strides)
         strides = [1] + ([strides] * 3 if isinstance(strides, int) else strides) + [1]
         dilations = (
             [1] + ([dilations] * 3 if isinstance(dilations, int) else dilations) + [1]

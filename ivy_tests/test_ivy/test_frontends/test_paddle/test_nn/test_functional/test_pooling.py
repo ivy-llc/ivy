@@ -55,11 +55,13 @@ def test_paddle_avg_pool1d(
         max_side=5,
     ),
     ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=5)),
     data_format=st.sampled_from(["NCDHW", "NDHWC"]),
 )
 def test_paddle_avg_pool3d(
     dtype_x_k_s,
     ceil_mode,
+    divisor_override,
     data_format,
     *,
     test_flags,
@@ -91,5 +93,6 @@ def test_paddle_avg_pool3d(
         stride=stride,
         padding=padding,
         ceil_mode=ceil_mode,
+        # divisor_override=divisor_override,
         data_format=data_format,
     )
