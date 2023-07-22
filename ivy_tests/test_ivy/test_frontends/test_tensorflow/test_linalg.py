@@ -1043,3 +1043,36 @@ def test_qr(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+
+
+# tensor_diag
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tensor_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=5,
+        max_dim_size=10,
+        min_value=1,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_diag(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        diagonal=x[0],
+    )
