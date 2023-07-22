@@ -344,7 +344,6 @@ def test_einsum(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
