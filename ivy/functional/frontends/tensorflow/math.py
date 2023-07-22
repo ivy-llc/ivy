@@ -711,3 +711,14 @@ def real(input, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": "int64",
+    },
+    "tensorflow",
+)
+def invert_permutation(x, name=None):
+    return ivy.invert_permutation(x)

@@ -2669,3 +2669,34 @@ def test_tensorflow_atanh(
         on_device=on_device,
         x=x[0],
     )
+
+
+# invert_permutation
+@handle_frontend_test(
+    fn_tree="tensorflow.math.invert_permutation",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_value=0,
+        max_value=5,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_invert_permutation(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        on_device=on_device,
+    )
