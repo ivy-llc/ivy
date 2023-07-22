@@ -77,6 +77,8 @@ class ndarray:
 
     # Instance Methods #
     # ---------------- #
+    def trace(self, offset=0, axis1=0, axis2=1, dtype=None, out=None):
+        return ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2, dtype=dtype, out=out)
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
         ivy.utils.assertions.check_elem_in_list(
