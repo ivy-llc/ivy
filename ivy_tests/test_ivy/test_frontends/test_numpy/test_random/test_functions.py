@@ -778,4 +778,3 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
-    
