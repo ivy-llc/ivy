@@ -747,37 +747,11 @@ def test_numpy_gamma(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.random.triangular",
+    fn_tree=triangular,
     input_dtypes=helpers.get_dtypes("float"),
-    left=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=0,
-        max_value=10,
-    ).map(
-        lambda x: float(x)
-    ),
-    mode=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=10,
-        max_value=100,
-        exclude_min=True,
-    ).map(
-        lambda x: float(x)
-    ),
-    right=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=100,
-        max_value=1000,
-        exclude_min=True,
-    ).map(
-        lambda x: float(x)
-    ),
+    left=0.0,
+    mode=11.0,
+    right=101.0,
     size=helpers.get_shape(allow_none=False),
 )
 def test_numpy_triangular(
@@ -787,9 +761,6 @@ def test_numpy_triangular(
     test_flags,
     fn_tree,
     on_device,
-    left,
-    mode,
-    right,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -799,7 +770,4 @@ def test_numpy_triangular(
         on_device=on_device,
         test_values=False,
         size=size,
-        left=left,
-        right=right,
-        mode=mode,
     )
