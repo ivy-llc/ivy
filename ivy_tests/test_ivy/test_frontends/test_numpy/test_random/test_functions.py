@@ -5,6 +5,10 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy.functional.frontends.numpy.random import triangular  # Add this import
+
+# Rest of the test code remains the same
+
 
 
 # random_sample
