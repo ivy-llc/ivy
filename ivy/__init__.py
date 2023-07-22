@@ -732,6 +732,7 @@ invalid_complex_dtypes = ()
 locks = {"backend_setter": threading.Lock()}
 
 
+# ivy/__init__.py
 from .func_wrapper import *
 from .data_classes.array import Array, add_ivy_array_instance_methods
 from .data_classes.array.conversions import *
@@ -772,9 +773,9 @@ add_array_specs()
 
 _imported_frameworks_before_compiler = list(sys.modules.keys())
 try:
-    from .compiler.compiler import transpile, compile, unify
-except:  # noqa: E722
-    pass  # Added for the finally statment
+    from ivy.compiler.compiler import transpile, compile, unify
+except ImportError:  # noqa: E722
+    pass  # Added for the finally statement
 finally:
     # Skip framework imports done by Ivy compiler for now
     for backend_framework in _not_imported_backends.copy():
