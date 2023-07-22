@@ -3,7 +3,6 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.tensor import Tensor
 
 
 def norm(input, axis):
@@ -618,7 +617,8 @@ def triplet_margin_with_distance_loss(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
-def multi_label_margin_loss(output, target: Tensor, reduction: str = "mean"):
+def multi_label_margin_loss(output, target, reduction: str = "mean"):
+    output, target = torch_frontend.promote_types_of_torch_inputs(output, target)
     loss = ivy.maximum(0, 1 - (output[target == 1] - output[target != 1]))
     loss = ivy.sum(loss, dim=1)
     reduction = _get_reduction(reduction)
