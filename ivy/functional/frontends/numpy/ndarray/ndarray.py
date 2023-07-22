@@ -1,6 +1,7 @@
 # global
 
 # local
+import tensorflow as tf
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
@@ -78,11 +79,13 @@ class ndarray:
     # Instance Methods #
     # ---------------- #
     def trace(self, offset=0, axis1=0, axis2=1, dtype=None, out=None):
-        #return ivy.trace(self._ivy_array, offset=offset, axis1=axis1, axis2=axis2, dtype=dtype, out=out)
-        if isinstance(a, np.matrix):
-            return asarray(a).trace(offset=offset, axis1=axis1, axis2=axis2, dtype=dtype, out=out)
-        else:
-            return asanyarray(a).trace(offset=offset, axis1=axis1, axis2=axis2, dtype=dtype, out=out)
+        tf_array = tf.constant(self._ivy_array)
+
+    # Calculate the trace using TensorFlow's built-in trace function
+        tf_trace = tf.linalg.trace(tf_array, offset=offset, axis1=axis1, axis2=axis2)
+
+    # Convert the TensorFlow tensor back to a numpy array and return
+        return tf_trace.numpy()
 
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
