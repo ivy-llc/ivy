@@ -412,6 +412,10 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+@with_supported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")},
+    "torch",
+)
 @to_ivy_arrays_and_back
 def view_as_real(input):
     if not ivy.is_complex_dtype(input):
