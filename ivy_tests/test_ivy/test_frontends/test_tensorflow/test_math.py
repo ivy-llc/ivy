@@ -2671,7 +2671,7 @@ def test_tensorflow_atanh(
     )
 
 
-#xdivy
+# xdivy
 @handle_frontend_test(
     fn_tree="tensorflow.math.xdivy",
     dtype_and_x=helpers.dtype_and_values(
