@@ -2678,6 +2678,8 @@ def test_tensorflow_atanh(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
         shared_dtype=True,
+        allow_inf=False,
+        allow_nan=False,
     ),
     test_with_out=st.just(False),
 )
