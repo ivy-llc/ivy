@@ -194,14 +194,17 @@ def test_numpy_slogdet(
     for ret_f, ret_gtt in zip(ret, ret_gt):
         frontend_ret = ret_f
         frontend_ret_gt = ret_gtt
-        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
-        ret_gt_flattened = helpers.flatten_and_to_np(ret=frontend_ret_gt)
+        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret, backend=backend_fw)
+        ret_gt_flattened = helpers.flatten_and_to_np(
+            ret=frontend_ret_gt, backend=frontend
+        )
         helpers.value_test(
             ret_np_flat=ret_flattened,
             ret_np_from_gt_flat=ret_gt_flattened,
             rtol=1e-1,
             atol=1e-1,
-            ground_truth_backend="numpy",
+            backend=backend_fw,
+            ground_truth_backend=frontend,
         )
 
 

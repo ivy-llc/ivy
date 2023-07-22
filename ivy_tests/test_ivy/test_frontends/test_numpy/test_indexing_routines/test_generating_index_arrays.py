@@ -137,6 +137,7 @@ def test_tril_indices(
     helpers.test_frontend_function(
         input_dtypes=["int32"],
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,

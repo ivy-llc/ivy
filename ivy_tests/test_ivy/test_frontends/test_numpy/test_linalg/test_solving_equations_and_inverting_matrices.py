@@ -4,7 +4,6 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -159,7 +158,7 @@ def test_numpy_tensorinv(
     backend_fw,
 ):
     dtype, x, ind = params
-    if ivy.current_backend_str() == "paddle":
+    if backend_fw == "paddle":
         # Paddle only supports ndim from 0 to 9
         assume(x.ndim <= 9)
     helpers.test_frontend_function(
@@ -198,6 +197,7 @@ def test_numpy_lstsq(
         input_dtypes=[dtype1, dtype2],
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,

@@ -67,6 +67,7 @@ def test_numpy_arange(
     helpers.test_frontend_function(
         input_dtypes=[ivy.as_ivy_dtype("int8")],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -213,6 +214,8 @@ def test_numpy_mgrid(
     range,
     class_,
     method_name,
+    backend_fw,
+    frontend,
 ):
     start, stop, step = range
     if start and stop and step:
@@ -233,9 +236,15 @@ def test_numpy_mgrid(
     else:
         ret = mgrid[:stop]
         ret_np = np_mgrid[:stop]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_np,
+        rtol=1e-03,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
+    )
 
 
 # ogrid
@@ -245,7 +254,7 @@ def test_numpy_mgrid(
     method_name="__getitem__",
     range=_get_range_for_grid(),
 )
-def test_numpy_ogrid(range, class_, method_name):
+def test_numpy_ogrid(range, class_, method_name, backend_fw, frontend):
     start, stop, step = range
     if start and stop and step:
         ret = ogrid[start:stop:step]
@@ -265,9 +274,15 @@ def test_numpy_ogrid(range, class_, method_name):
     else:
         ret = ogrid[:stop]
         ret_np = np_ogrid[:stop]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    helpers.value_test(ret_np_flat=ret, ret_np_from_gt_flat=ret_np, rtol=1e-03)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_np,
+        rtol=1e-03,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
+    )
 
 
 @handle_frontend_test(

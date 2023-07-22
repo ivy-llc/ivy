@@ -33,6 +33,7 @@ def test_numpy_fill_diagonal(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         on_device=on_device,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

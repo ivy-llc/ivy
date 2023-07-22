@@ -4,9 +4,8 @@ import numpy as np
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
@@ -121,7 +120,15 @@ def test_numpy_svd(
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
-    for u, v in zip(ret, ret_gt):
-        u = ivy.to_numpy(ivy.abs(u))
-        v = ivy.to_numpy(ivy.abs(v))
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v, rtol=1e-04, atol=1e-04)
+    with update_backend(backend_fw) as ivy_backend:
+        for u, v in zip(ret, ret_gt):
+            u = ivy_backend.to_numpy(ivy_backend.abs(u))
+            v = ivy_backend.to_numpy(ivy_backend.abs(v))
+            helpers.value_test(
+                ret_np_flat=u,
+                ret_np_from_gt_flat=v,
+                rtol=1e-04,
+                atol=1e-04,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )

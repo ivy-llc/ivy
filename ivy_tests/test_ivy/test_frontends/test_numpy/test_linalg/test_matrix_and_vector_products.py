@@ -351,6 +351,7 @@ def test_numpy_multi_dot(
 def test_numpy_dot(
     dtype_a_b,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -359,6 +360,7 @@ def test_numpy_dot(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         test_flags=test_flags,
