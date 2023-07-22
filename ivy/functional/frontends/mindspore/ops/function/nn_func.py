@@ -9,13 +9,13 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "2.0.0 and below": (
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "float16",
-                "float32",
-                "float64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
         )
     },
     "mindspore",
