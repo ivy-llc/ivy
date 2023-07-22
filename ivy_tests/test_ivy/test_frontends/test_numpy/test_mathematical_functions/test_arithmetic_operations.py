@@ -785,6 +785,7 @@ def test_numpy_remainder(
     where,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -799,6 +800,7 @@ def test_numpy_remainder(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x1=xs[0],

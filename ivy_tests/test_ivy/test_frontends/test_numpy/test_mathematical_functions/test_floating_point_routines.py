@@ -75,6 +75,7 @@ def test_numpy_spacing(
     where,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -88,6 +89,7 @@ def test_numpy_spacing(
         input_dtypes=input_dtypes,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,

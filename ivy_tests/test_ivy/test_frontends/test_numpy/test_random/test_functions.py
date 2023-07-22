@@ -399,6 +399,7 @@ def test_numpy_standard_gamma(
     assume("float16" not in shape_dtypes)
     helpers.test_frontend_function(
         input_dtypes=shape_dtypes + size_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -426,6 +427,7 @@ def test_numpy_binomial(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
     n,
@@ -434,6 +436,7 @@ def test_numpy_binomial(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -617,6 +620,7 @@ def test_numpy_weibull(
     input_dtypes,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     a,
@@ -624,6 +628,7 @@ def test_numpy_weibull(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -645,12 +650,14 @@ def test_numpy_standard_cauchy(
     input_dtypes,
     size,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -679,12 +686,14 @@ def test_numpy_rayleigh(
     size,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -719,6 +728,7 @@ def test_numpy_gumbel(
     input_dtypes,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     loc,
@@ -727,6 +737,7 @@ def test_numpy_gumbel(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

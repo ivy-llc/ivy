@@ -191,6 +191,7 @@ def test_numpy_partition(
     dtype_x_axis,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -198,6 +199,7 @@ def test_numpy_partition(
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

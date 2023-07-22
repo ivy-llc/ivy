@@ -8,13 +8,15 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
     assert_all_close,
+    update_backend,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
-from ivy.functional.frontends.numpy import ndarray
+
+# from ivy.functional.frontends.numpy import ndarray
 from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.test_miscellaneous import (  # noqa
     _get_clip_inputs,
 )
@@ -34,17 +36,21 @@ CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 )
 def test_numpy_ndarray_property_ivy_array(
     dtype_x,
+    frontend,
+    backend_fw,
 ):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="numpy",
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=frontend)
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend="numpy",
+        )
 
 
 @given(
@@ -53,13 +59,14 @@ def test_numpy_ndarray_property_ivy_array(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_dtype(
-    dtype_x,
-):
+def test_numpy_ndarray_property_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ivy_backend.utils.assertions.check_equal(
+            x.dtype, ivy.Dtype(dtype[0]), as_array=False
+        )
 
 
 @given(
@@ -70,11 +77,15 @@ def test_numpy_ndarray_property_dtype(
 )
 def test_numpy_ndarray_property_shape(
     dtype_x,
+    backend_fw,
 ):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.shape, ivy.Shape(shape), as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ivy_backend.utils.assertions.check_equal(
+            x.shape, ivy.Shape(shape), as_array=False
+        )
 
 
 @given(
@@ -83,13 +94,12 @@ def test_numpy_ndarray_property_shape(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_ndim(
-    dtype_x,
-):
+def test_numpy_ndarray_property_ndim(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ivy_backend.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
 
 
 @given(
@@ -100,19 +110,26 @@ def test_numpy_ndarray_property_ndim(
 )
 def test_numpy_ndarray_property_T(
     dtype_x,
+    backend_fw,
+    frontend,
 ):
     dtype, data, shape = dtype_x
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.T.ivy_array)
-    ret_gt = helpers.flatten_and_to_np(
-        ret=ivy.permute_dims(ivy.native_array(data[0]), list(range(len(shape)))[::-1])
-    )
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="numpy",
-    )
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ret = helpers.flatten_and_to_np(ret=x.T.ivy_array, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(
+            ret=ivy_backend.permute_dims(
+                ivy_backend.native_array(data[0]), list(range(len(shape)))[::-1]
+            ),
+            backend=backend_fw,
+        )
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend="numpy",
+        )
 
 
 @given(
@@ -122,16 +139,19 @@ def test_numpy_ndarray_property_T(
         ret_shape=True,
     )
 )
-def test_numpy_ndarray_property_flat(dtype_x):
+def test_numpy_ndarray_property_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
-    x = ndarray(shape, dtype[0])
-    x.ivy_array = data[0]
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
 
-    flat_ivy = x.flat
-    flat_ivy = flat_ivy.ivy_array.to_numpy()
-    flat_generated = ivy.to_numpy(data[0]).flatten()
-    ivy.utils.assertions.check_equal(flat_ivy, flat_generated, as_array=True)
+        flat_ivy = x.flat
+        flat_ivy = flat_ivy.ivy_array.to_numpy()
+        flat_generated = ivy_backend.to_numpy(data[0]).flatten()
+        ivy_backend.utils.assertions.check_equal(
+            flat_ivy, flat_generated, as_array=True
+        )
 
 
 @handle_frontend_method(
@@ -785,6 +805,7 @@ def test_numpy_ndarray_compress(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, arr, ax = dtype_arr_ax
@@ -800,6 +821,7 @@ def test_numpy_ndarray_compress(
             "out": None,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -977,12 +999,14 @@ def test_numpy_instance_dot(
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x, other = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x,
         },
@@ -1088,6 +1112,7 @@ def test_numpy_instance_sort(
         ret_from_gt_np=frontend_ret,
         rtol=1e-2,
         atol=1e-2,
+        backend=backend_fw,
         ground_truth_backend="numpy",
     )
 
@@ -1153,6 +1178,7 @@ def test_numpy_instance_nonzero(
             "object": a[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1187,6 +1213,7 @@ def test_numpy_instance_ravel(
             "object": a[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1270,6 +1297,7 @@ def test_numpy_instance_searchsorted(
             "object": xs[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "v": xs[1],
             "side": side,
@@ -1439,6 +1467,7 @@ def test_numpy_instance_add__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1475,6 +1504,7 @@ def test_numpy_instance_radd__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1510,6 +1540,7 @@ def test_numpy_instance_sub__(
     input_dtypes, xs = dtype_and_x
 
     helpers.test_frontend_method(
+        backend_to_test=backend_fw,
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": xs[0],
@@ -1548,6 +1579,7 @@ def test_numpy_instance_mul__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1585,6 +1617,7 @@ def test_numpy_instance_rmul__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1627,6 +1660,7 @@ def test_numpy_instance_floordiv__(
     assume(not np.any(np.isclose(xs[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1666,6 +1700,7 @@ def test_numpy_instance_truediv__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1704,6 +1739,7 @@ def test_numpy_instance_rtruediv__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1742,6 +1778,7 @@ def test_numpy_instance_pow__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1779,6 +1816,7 @@ def test_numpy_instance_and__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1816,6 +1854,7 @@ def test_numpy_instance_or__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1853,6 +1892,7 @@ def test_numpy_instance_xor__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -1891,6 +1931,7 @@ def test_numpy_instance_matmul__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x1,
         },
@@ -2078,6 +2119,7 @@ def test_numpy_instance_ifloordiv__(
     assume(not np.any(np.isclose(xs[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2152,6 +2194,7 @@ def test_numpy_instance_ne__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2189,6 +2232,7 @@ def test_numpy_instance_eq__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2226,6 +2270,7 @@ def test_numpy_instance_ge__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2263,6 +2308,7 @@ def test_numpy_instance_gt__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2300,6 +2346,7 @@ def test_numpy_instance_le__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2337,6 +2384,7 @@ def test_numpy_instance_lt__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -2635,6 +2683,7 @@ def test_numpy_instance_itruediv__(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
@@ -3132,6 +3181,7 @@ def test_numpy_instance_getitem(
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"key": index},
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3164,6 +3214,7 @@ def test_numpy_instance_setitem(
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"key": index, "value": val},
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -3300,6 +3351,7 @@ def test_numpy_instance_rshift__(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x = dtype_and_x
@@ -3312,6 +3364,7 @@ def test_numpy_instance_rshift__(
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "value": x[1],
         },
@@ -3338,6 +3391,7 @@ def test_numpy_instance_tostring__(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x = dtype_and_x
@@ -3348,6 +3402,7 @@ def test_numpy_instance_tostring__(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={},
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
@@ -3371,6 +3426,7 @@ def test_numpy_instance_invert__(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
@@ -3381,6 +3437,7 @@ def test_numpy_instance_invert__(
             "object": xs[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,

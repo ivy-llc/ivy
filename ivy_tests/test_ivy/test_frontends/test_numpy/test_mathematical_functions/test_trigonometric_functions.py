@@ -266,6 +266,7 @@ def test_numpy_arccosh(
     dtypes_values_casting,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -279,6 +280,7 @@ def test_numpy_arccosh(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

@@ -37,6 +37,7 @@ def test_numpy_where(
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
         input_dtypes=["bool", dtype],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -251,6 +252,7 @@ def test_numpy_searchsorted(
     helpers.test_frontend_function(
         input_dtypes=input_dtypes + ["int64"],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -395,6 +397,7 @@ def test_numpy_extract(
 
     helpers.test_frontend_function(
         input_dtypes=dtype_cond + dtype_arr,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
