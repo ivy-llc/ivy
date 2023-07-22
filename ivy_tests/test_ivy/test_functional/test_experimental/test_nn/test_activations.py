@@ -198,11 +198,9 @@ def test_elu(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         fw=backend_fw,
         test_flags=test_flags,
