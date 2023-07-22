@@ -1952,9 +1952,7 @@ def dtype_array_query_val(
     )
     val_dtype = draw(
         helpers.get_castable_dtype(
-            draw(available_dtypes),
-            input_dtype[0],
-            x if 0 not in x.shape else None
+            draw(available_dtypes), input_dtype[0], x if 0 not in x.shape else None
         )
     )[-1]
     val = val[0].astype(val_dtype)
