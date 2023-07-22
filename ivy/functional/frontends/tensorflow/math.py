@@ -714,11 +714,5 @@ def atanh(x, name="atanh"):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {
-        "2.11.0 and below": ("float32", "float64"),
-    },
-    "tensorflow",
-)
 def rint(x, name=None):
     return ivy.round(x)
