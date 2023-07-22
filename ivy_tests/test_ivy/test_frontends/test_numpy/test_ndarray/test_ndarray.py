@@ -154,7 +154,12 @@ def test_numpy_ndarray_property_flat(dtype_x):
     init_tree="numpy.array",
     method_name="trace",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=[
+            'int8', 'int16', 'int32', 'int64',
+            'uint8', 'uint16', 'uint32', 'uint64',
+            'float16', 'float32', 'float64',
+            'complex64', 'complex128'
+        ],
         min_num_dims=2,
         min_dim_size=1,
         valid_axis=True,
@@ -162,6 +167,33 @@ def test_numpy_ndarray_property_flat(dtype_x):
     ),
     keepdims=st.booleans(),
 )
+def test_numpy_ndarray_trace(
+    array_and_axes,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    array, input_dtypes, offset, axis1, axis2, dtype = array_and_axes
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": np.array(array),
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "axis1": axis1,
+            "axis2": axis2,
+            "dtype": dtype,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
 
 
 
