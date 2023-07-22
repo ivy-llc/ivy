@@ -1356,6 +1356,36 @@ def test_torch_solve_ex(
         check_errors=check,
     )
 
+
+@st.composite
+def _lu_factor_helper(draw):
+    ip_dtype = draw(helpers.get_dtypes("float"))
+
+    dim1 = draw(helpers.ints(min_value=2, max_value=3))
+    dim2 = draw(helpers.ints(min_value=2, max_value=3))
+    batch_dim = 0
+
+    if batch_dim == 0:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=ip_dtype[0],
+                shape=(dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+    else:
+        input_matrix = draw(
+            helpers.array_values(
+                dtype=ip_dtype[0],
+                shape=(batch_dim, dim1, dim2),
+                min_value=-1,
+                max_value=1,
+            )
+        )
+
+    return input_dtype, input_matrix
+
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor", input_dtype_and_input=_lu_factor_helper()
 )
