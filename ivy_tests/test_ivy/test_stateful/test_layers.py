@@ -12,9 +12,9 @@ from ivy.data_classes.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
 from ivy_tests.test_ivy.helpers import handle_method
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import valid_dct
-
-
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    valid_dct,
+)
 
 # Helpers #
 # --------#
@@ -339,20 +339,11 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
         x_dim.append(draw(st.integers(min_x, 20)))
     if dim == 2:
-        filter_shape = draw(
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
-        )
+        data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
-        filter_shape = draw(st.integers(min_value=1, max_value=5))
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
-        filter_shape = draw(
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
-        )
-    data_format = draw(st.sampled_from(["NHWC", "NWC", "NDHWC"]))  # Assign a value to data_format
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = [batch_size] + x_dim + [input_channels]
     else:

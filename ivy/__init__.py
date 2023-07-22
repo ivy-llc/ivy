@@ -7,8 +7,9 @@ import numpy as np
 import sys
 import inspect
 import os
-import ivy.utils.backend.handler
 
+
+import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
 
 _not_imported_backends = list(ivy.utils.backend.handler._backend_dict.keys())
@@ -421,8 +422,6 @@ class Shape:
         if self.rank not in (None, rank):
             raise ValueError("Shape %s must have rank %d" % (self, rank))
 
-    
-
     def unknown_shape(rank=None, **kwargs):
         if rank is None and "ndims" in kwargs:
             rank = kwargs.pop("ndims")
@@ -433,13 +432,11 @@ class Shape:
         else:
             return Shape([Shape(None)] * rank)
 
-
     def with_rank(self, rank):
         try:
             return self.merge_with(unknown_shape(rank=rank))
         except ValueError:
             raise ValueError("Shape %s must have rank %d" % (self, rank))
-
 
     def with_rank_at_least(self, rank):
         if self.rank is not None and self.rank < rank:
