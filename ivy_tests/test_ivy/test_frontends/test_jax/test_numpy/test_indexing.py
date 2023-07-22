@@ -236,6 +236,7 @@ def test_jax_triu_indices(
         n=n,
         k=k,
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,

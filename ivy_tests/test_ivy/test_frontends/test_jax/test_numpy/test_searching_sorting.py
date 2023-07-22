@@ -28,6 +28,7 @@ def test_jax_argmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
@@ -55,6 +56,7 @@ def test_jax_argmax(
 def test_jax_argwhere(
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -88,6 +90,7 @@ def test_jax_argsort(
     *,
     dtype_x_axis,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -143,6 +146,7 @@ def test_jax_argsort(
 def test_jax_nonzero(
     dtype_and_a,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -174,6 +178,7 @@ def test_jax_nonzero(
 def test_jax_nanargmax(
     dtype_x_axis,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -208,6 +213,7 @@ def test_jax_nanargmax(
 def test_jax_nanargmin(
     dtype_x_axis,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -234,6 +240,7 @@ def test_jax_nanargmin(
 def test_jax_extract(
     broadcastables,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -266,6 +273,7 @@ def test_jax_sort(
     *,
     dtype_x_axis,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
     test_flags,
@@ -293,6 +301,7 @@ def test_jax_sort(
 def test_jax_flatnonzero(
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -324,6 +333,7 @@ def test_jax_sort_complex(
     *,
     dtype_x_axis,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -377,6 +387,7 @@ def _searchsorted(draw):
 def test_numpy_searchsorted(
     dtype_x_v_side_sorter,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -407,6 +418,7 @@ def test_jax_where(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
     test_flags,
@@ -455,7 +467,7 @@ def _unique_helper(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.unique", fn_inputs=_unique_helper(), test_with_out=st.just(False)
 )
-def test_jax_unique(fn_inputs, frontend, test_flags, fn_tree, on_device):
+def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_device):
     arr_dtype, arr, return_index, return_inverse, return_counts, axis = fn_inputs
     helpers.test_frontend_function(
         input_dtypes=arr_dtype,

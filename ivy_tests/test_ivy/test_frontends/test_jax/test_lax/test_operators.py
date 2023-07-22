@@ -9,7 +9,8 @@ from jax.lax import ConvDimensionNumbers
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _reduce_window_helper,
 )
@@ -184,10 +185,11 @@ def test_jax_concat(
 @st.composite
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype):
+            return draw(helpers.ints(min_value=0, max_value=5))
+        elif ivy_backend.is_int_dtype(dtype):
+            return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -920,6 +922,7 @@ def test_jax_convert_element_type(
     helpers.test_frontend_function(
         input_dtypes=input_dtype + new_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1886,11 +1889,13 @@ def test_jax_batch_matmul(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, lhs, rhs = dtypes_and_xs
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2135,7 +2140,7 @@ def test_jax_conv(
     backend_fw,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -2566,6 +2571,7 @@ def test_jax_expand_dims(
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
+        bakcend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -2665,6 +2671,7 @@ def test_jax_select(
     helpers.test_frontend_function(
         input_dtypes=["bool"] + input_dtype,
         frontend=frontend,
+        bakcend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

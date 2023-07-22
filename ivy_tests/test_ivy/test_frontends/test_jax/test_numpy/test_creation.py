@@ -1059,6 +1059,7 @@ def test_jax_numpy_frombuffer(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
@@ -1066,6 +1067,7 @@ def test_jax_numpy_frombuffer(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         buffer=buffer,

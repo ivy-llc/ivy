@@ -610,6 +610,7 @@ def test_jax_logical_and(
     np_helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -637,6 +638,7 @@ def test_jax_invert(
     np_helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -756,6 +758,7 @@ def test_jax_logical_not(
     np_helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -804,13 +807,14 @@ def test_jax_isscalar(
     on_device,
     fn_tree,
     frontend,
-    test_flags,
     backend_fw,
+    test_flags,
 ):
     x_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -903,6 +907,7 @@ def test_jax_logical_xor(
     np_helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
