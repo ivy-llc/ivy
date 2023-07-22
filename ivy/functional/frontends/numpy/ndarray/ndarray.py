@@ -77,6 +77,21 @@ class ndarray:
 
     # Instance Methods #
     # ---------------- #
+    def byteswap(self, inplace=False):
+        """
+        Swap the bytes of the array elements.
+        Parameters:
+            inplace : bool, optional
+                If True, swap bytes in-place, default is False.
+        Returns:
+            ndarray
+                The byteswapped array. If inplace is True, this is a view to self.
+        """
+        if inplace:
+            ivy.byteswap_inplace(self._ivy_array)
+            return self
+        else:
+            return ivy.byteswap(self._ivy_array)
 
     def astype(self, dtype, order="K", casting="unsafe", subok=True, copy=True):
         ivy.utils.assertions.check_elem_in_list(
