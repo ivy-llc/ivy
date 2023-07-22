@@ -921,7 +921,6 @@ globals_vars = GlobalsDict(
         "warning_level_stack": warning_level_stack,
         "queue_timeout_stack": general.queue_timeout_stack,
         "array_mode_stack": general.array_mode_stack,
-        "soft_device_mode_stack": device.soft_device_mode_stack,
         "shape_array_mode_stack": general.shape_array_mode_stack,
         "show_func_wrapper_trace_mode_stack": (
             general.show_func_wrapper_trace_mode_stack
@@ -1406,7 +1405,6 @@ GLOBAL_PROPS = [
     "shape_array_mode",
     "dynamic_backend",
     "precise_mode",
-    "soft_device_mode",
 ]
 
 
@@ -1439,16 +1437,4 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-if (
-    "ivy" in sys.modules.keys()
-    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
-):
-    # Updated logic for ivy.with_backend internal compilation
-    # Additional code for the ivy_tests-Docs branch
-    print("Additional code for ivy_tests-Docs branch")
-else:
-    sys.modules[__name__].__class__ = IvyWithGlobalProps
-    # Required for ivy.with_backend internal compilation
-    sys.modules["ivy"].utils._importlib.import_cache[
-        __name__
-    ].__class__ = IvyWithGlobalProps
+sys.modules[__name__].__class__ = IvyWithGlobalProps

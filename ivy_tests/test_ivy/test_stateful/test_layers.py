@@ -2,26 +2,19 @@
 
 # global
 import numpy as np
-from hypothesis import assume
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy
-import ivy_tests.test_ivy.helpers as helpers
-from ivy.data_classes.container import Container
-from ivy.functional.ivy.gradients import _variable
 from ivy.functional.ivy.layers import _deconv_length
-from ivy_tests.test_ivy.helpers import handle_method
+from ivy.functional.ivy.gradients import _variable
+from ivy.data_classes.container import Container
+import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
-from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
-    test_layers as exp_layers_tests,
-)
+from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     valid_dct,
 )
-
-
-
 
 # Helpers #
 # --------#
@@ -346,20 +339,11 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
         min_x = filter_shape[i] + (filter_shape[i] - 1) * (dilations - 1)
         x_dim.append(draw(st.integers(min_x, 20)))
     if dim == 2:
-        filter_shape = draw(
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
-        )
+        data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
-        filter_shape = draw(st.integers(min_value=1, max_value=5))
+        data_format = draw(st.sampled_from(["NWC", "NCW"]))
     else:
-        filter_shape = draw(
-            helpers.get_shape(
-                min_num_dims=dim, max_num_dims=dim, min_dim_size=1, max_dim_size=5
-            )
-        )
-    data_format = draw(st.sampled_from(["NHWC", "NWC", "NDHWC"]))  # Assign a value to data_format
+        data_format = draw(st.sampled_from(["NDHWC", "NCDHW"]))
     if data_format == "NHWC" or data_format == "NWC" or data_format == "NDHWC":
         x_shape = [batch_size] + x_dim + [input_channels]
     else:
@@ -1391,43 +1375,6 @@ def test_adaptive_avg_pool1d_layer(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"x": x[0]},
-        class_name=class_name,
-        method_name=method_name,
-        test_gradients=test_gradients,
-        on_device=on_device,
-    )
-
-
-# FFT
-@handle_method(
-    method_tree="FFT.__call__",
-    x_and_fft=exp_layers_tests.x_and_fft(),
-)
-def test_fft_layer(
-    *,
-    x_and_fft,
-    test_gradients,
-    on_device,
-    class_name,
-    method_name,
-    ground_truth_backend,
-    init_flags,
-    method_flags,
-):
-    dtype, x, dim, norm, n = x_and_fft
-    helpers.test_method(
-        ground_truth_backend=ground_truth_backend,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_all_as_kwargs_np={
-            "dim": dim,
-            "norm": norm,
-            "n": n,
-            "device": on_device,
-            "dtype": dtype[0],
-        },
-        method_input_dtypes=dtype,
-        method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
         test_gradients=test_gradients,
