@@ -1860,8 +1860,8 @@ def solve(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the solution to the system of linear equations represented by the well-
-    determined (i.e., full rank) linear matrix equation AX = B.
+    Return the solution x to the system of linear equations represented by the well-
+    determined (i.e., full rank) linear matrix equation Ax = B.
 
     Parameters
     ----------
@@ -1870,7 +1870,7 @@ def solve(
         form square matrices. Must be of full rank (i.e., all rows or, equivalently,
         columns must be linearly independent). Should have a floating-point data type.
     x2
-        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is
+        ordinate (or “dependent variable”) array B. If x2 has shape (M,1), x2 is
         equivalent to an array having shape (..., M, 1). If x2 has shape (..., M, K),
         each column k defines a set of ordinate values for which to compute a solution,
         and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
@@ -1898,6 +1898,68 @@ def solve(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+
+  - Function Examples:
+
+  - I. With :class:`ivy.Array` input:
+
+  - I.1. for shape(A) = (3,3) and shape(B) = (3,1):
+    
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array( [1.1,
+                        2.1,
+                        3.1]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([1,0,0])
+
+  - I.2. for shape(A) = (2,3,3) and shape(B) = (2,3,1):
+    
+    >>> A = ivy.array([[[11.1, 11.2, 11.3],
+                        [12.1, 12.2, 12.3],
+                        [13.1, 13.2, 13.3]],
+                       [[21.1, 21.2, 21.3],
+                        [22.1, 22.2, 22.3],
+                        [23.1, 23.2, 23.3]]
+                        ]),
+    >>> B = ivy.array([ [11.1,
+                         12.1,
+                         13.1],
+                        [21.1,
+                         22.1,
+                         23.1] 
+                        ]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([[1,0,0],[1,0,0]])
+
+  - I.3. for shape(A) = (3,3) and shape(B) = (3,2):
+    
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.array([[1.1, 2.2],
+                       [2.1, 4.2],
+                       [3.1, 6.2]]),
+    >>> x = solve(A,B);
+    >>> print(x)
+    ivy.array([[1,2],[0,0],[0,0]])
+
+  - II. With class:`ivy.Container` input:
+
+    >>> A = ivy.array([[1.1, 1.2, 1.3],
+                       [2.1, 2.2, 2.3],
+                       [3.1, 3.2, 3.3]]),
+    >>> B = ivy.container(B1 = ivy.array([1.1, 2.1, 3.1]), \
+                          B2 = ivy.array([2.2, 4.2, 6.2]))
+    >>> x = solve(A,B);
+    >>> print(x)
+    {
+    B1:ivy.array([1,0,0]),
+    B2:ivy.array([2,0,0])
+    }
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
 
