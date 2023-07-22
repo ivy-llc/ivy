@@ -517,32 +517,6 @@ def test_paddle_mish(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.softplus",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-    ),
-)
-def test_paddle_softplus(
-    *,
-    dtype_and_input,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
-@handle_frontend_test(
     fn_tree="paddle.nn.functional.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
@@ -621,4 +595,38 @@ def test_paddle_silu(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# softplus
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.softplus",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    beta=st.floats(min_value=1e-3, max_value=10),  # strategy for the beta argument
+    threshold=st.floats(
+        min_value=1e-3, max_value=10
+    ),  # strategy for the threshold argument
+)
+def test_paddle_softplus(
+    *,
+    dtype_and_input,
+    beta,
+    threshold,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        beta=beta,
+        threshold=threshold,
     )
