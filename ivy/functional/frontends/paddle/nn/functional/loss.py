@@ -202,3 +202,14 @@ def sigmoid_focal_loss(
         loss = loss.expand_dims()
 
     return paddle.to_tensor(loss)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@inputs_to_ivy_arrays
+def margin_cross_entropy(input, target, margin=0.4, reduction="mean"):
+    adjusted_input = ivy.maximum(input - margin, 0)
+    loss = ivy.binary_cross_entropy(target, adjusted_input, reduction="none")
+    reduction = _get_reduction_func(reduction)
+    loss = reduction(loss)
+
+    return paddle.to_tensor(loss)
