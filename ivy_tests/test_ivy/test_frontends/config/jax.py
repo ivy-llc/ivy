@@ -105,4 +105,4 @@ def as_native_dev(device: str):
 
 
 def isscalar(x):
-    return len(jnp.shape(x)) == 0
+    return is_native_array(x) and len(jnp.shape(x)) == 0
