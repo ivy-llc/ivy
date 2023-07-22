@@ -19,6 +19,8 @@ def not_too_close_to_zero(x):
     return f(x)
 
 
+# this is not used yet and will be used when ``where`` argument is added
+# back to elementwise functions
 @st.composite
 def _array_with_mask(draw):
     dtype, x, shape = draw(
@@ -35,10 +37,10 @@ def _array_with_mask(draw):
 # abs
 @handle_test(
     fn_tree="functional.ivy.abs",
-    dtype_and_x_and_where=_array_with_mask(),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
-def test_abs(*, dtype_and_x_and_where, test_flags, backend_fw, fn_name, on_device):
-    input_dtype, x, where = dtype_and_x_and_where
+def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -46,7 +48,6 @@ def test_abs(*, dtype_and_x_and_where, test_flags, backend_fw, fn_name, on_devic
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
-        where=where[0],
     )
 
 
@@ -269,6 +270,7 @@ def test_bitwise_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
         num_arrays=2,
         array_api_dtypes=True,
     ),
+    ground_truth_backend="numpy",  # tensorflow gt has maximum shift that is equal
     test_gradients=st.just(False),
 )
 def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -291,7 +293,6 @@ def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_
         )
     )
     helpers.test_function(
-        ground_truth_backend="numpy",  # tensorflow gt has maximum shift that is equal
         # to dtype bits - 1 while other backends overflow to zero
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -1317,11 +1318,11 @@ def test_remainder(*, dtype_and_x, modulus, test_flags, backend_fw, fn_name, on_
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     decimals=st.integers(min_value=0, max_value=5),
+    ground_truth_backend="numpy",
 )
 def test_round(*, dtype_and_x, decimals, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend="numpy",
         input_dtypes=input_dtype,
         test_flags=test_flags,
         fw=backend_fw,
