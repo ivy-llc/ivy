@@ -128,7 +128,6 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 alltrue = all
 
-
 sometrue = any
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
@@ -154,6 +153,11 @@ def invert(x, /):
 @to_ivy_arrays_and_back
 def isfinite(x, /):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
 
 
 @to_ivy_arrays_and_back
