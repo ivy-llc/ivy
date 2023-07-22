@@ -635,8 +635,6 @@ def x_and_filters(
 
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
-    if not isinstance(backend_fw, str):
-        backend_fw = backend_fw.current_backend_str()
     if backend_fw == "tensorflow":
         assume(
             not (

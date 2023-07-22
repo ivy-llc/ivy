@@ -6,7 +6,10 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.frontends.numpy as np_frontend
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
+from ivy_tests.test_ivy.helpers.pipeline_helper import (
+    update_backend,
+    get_frontend_config,
+)
 import ivy_tests.test_ivy.helpers.globals as test_globals
 
 
@@ -93,65 +96,61 @@ def _test_frontend_function_ignoring_uninitialized(*args, **kwargs):
         return
     ret, frontend_ret = values
     # set backend to frontend to flatten the frontend array
-    with update_backend("numpy") as ivy_backend:
-        # get flattened arrays from returned value
-        if ivy_backend.isscalar(frontend_ret):
-            frontend_ret_np_flat = [np.asarray(frontend_ret)]
-        else:
-            if not isinstance(frontend_ret, tuple):
-                frontend_ret = (frontend_ret,)
-            frontend_ret_idxs = ivy_backend.nested_argwhere(
-                frontend_ret, ivy_backend.is_native_array
-            )
-            frontend_ret_flat = ivy_backend.multi_index_nest(
-                frontend_ret, frontend_ret_idxs
-            )
-            frontend_ret_np_flat = [ivy_backend.to_numpy(x) for x in frontend_ret_flat]
+    frontend_config = get_frontend_config(kwargs["frontend"])
 
-    with update_backend(kwargs["backend_to_test"]) as ivy_backend:
-        # get flattened arrays from returned value
-        ret_np_flat = _flatten_frontend_return(
-            ret=ret, backend=kwargs["backend_to_test"]
+    # get flattened arrays from returned value
+    if frontend_config.isscalar(frontend_ret):
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
+    else:
+        if not isinstance(frontend_ret, tuple):
+            frontend_ret = (frontend_ret,)
+        frontend_ret_idxs = ivy.nested_argwhere(
+            frontend_ret, frontend_config.is_native_array
         )
+        frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
-        # handling where size
-        where = np.asarray(where)
-        if where.ndim == 0:
-            where = np.array([where])
-        elif where.ndim > 1:
-            where = where.flatten()
-        # handling ret size
+    # get flattened arrays from returned value
+    ret_np_flat = _flatten_frontend_return(ret=ret, backend=kwargs["backend_to_test"])
 
-        first_el = ret_np_flat[0]
-        # change where to match the shape of the first element of ret_np_flat
-        if first_el.size == 1:
-            where = where[:1]
-        else:
-            where = np.repeat(where, first_el.size)
-            where = where[: first_el.size]
-            where = where.reshape(first_el.shape)
+    # handling where size
+    where = np.asarray(where)
+    if where.ndim == 0:
+        where = np.array([where])
+    elif where.ndim > 1:
+        where = where.flatten()
+    # handling ret size
 
-        ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
-        frontend_ret_flat = [
-            np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
-        ]
-        if "rtol" in kwargs.keys():
-            rtol = kwargs["rtol"]
-        else:
-            rtol = 1e-4
-        if "atol" in kwargs.keys():
-            atol = kwargs["atol"]
-        else:
-            atol = 1e-6
+    first_el = ret_np_flat[0]
+    # change where to match the shape of the first element of ret_np_flat
+    if first_el.size == 1:
+        where = where[:1]
+    else:
+        where = np.repeat(where, first_el.size)
+        where = where[: first_el.size]
+        where = where.reshape(first_el.shape)
 
-        helpers.value_test(
-            ret_np_flat=ret_flat,
-            ret_np_from_gt_flat=frontend_ret_flat,
-            rtol=rtol,
-            atol=atol,
-            backend=kwargs["backend_to_test"],
-            ground_truth_backend=kwargs["frontend"],
-        )
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
+    frontend_ret_flat = [
+        np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
+    ]
+    if "rtol" in kwargs.keys():
+        rtol = kwargs["rtol"]
+    else:
+        rtol = 1e-4
+    if "atol" in kwargs.keys():
+        atol = kwargs["atol"]
+    else:
+        atol = 1e-6
+
+    helpers.value_test(
+        ret_np_flat=ret_flat,
+        ret_np_from_gt_flat=frontend_ret_flat,
+        rtol=rtol,
+        atol=atol,
+        backend=kwargs["backend_to_test"],
+        ground_truth_backend=kwargs["frontend"],
+    )
 
 
 def _flatten_fw_return(ret, backend):

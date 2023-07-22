@@ -1163,12 +1163,14 @@ def test_jax_cov(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, value1, value2, rowvar, bias, ddof, fweights, aweights = dtypes_args
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         rtol=1e-3,

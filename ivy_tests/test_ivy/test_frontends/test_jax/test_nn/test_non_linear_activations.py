@@ -308,6 +308,7 @@ def test_jax_softmax(
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
