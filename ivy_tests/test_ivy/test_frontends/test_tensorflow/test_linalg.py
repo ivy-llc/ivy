@@ -81,6 +81,50 @@ def test_tensorflow_eigh(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigvals",
+    dtype_and_input=_get_dtype_and_matrix(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_eigvals(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    assume(matrix_is_stable(x[0]))
+    if x[0].dtype == ivy.float32:
+        x[0] = x[0].astype("float64")
+        input_dtype = [ivy.float64]
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+        test_values=False,
+    )
+
+    ret = ivy.to_numpy(ret)
+    ret = ret.round(6)
+    ret = np.sort(ret)
+    frontend_ret = frontend_ret[0].numpy()
+    frontend_ret = frontend_ret.round(6)
+    frontend_ret = np.sort(frontend_ret)
+
+    assert_all_close(
+        ret_np=ret,
+        ret_from_gt_np=frontend_ret,
+        rtol=1e-06,
+        atol=1e-06,
+        ground_truth_backend=frontend,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.linalg.eigvalsh",
     dtype_and_input=_get_dtype_and_matrix(),
     test_with_out=st.just(False),
@@ -954,4 +998,81 @@ def test_tensorflow_inv(
         on_device=on_device,
         input=x[0],
         adjoint=adjoint,
+    )
+
+
+# qr
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.qr",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+)
+def test_qr(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        atol=1e-03,
+        rtol=1e-05,
+        input=x,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    assert_all_close(
+        ret_np=ret[0],
+        ret_from_gt_np=frontend_ret[0],
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
+    )
+
+
+# tensor_diag
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tensor_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=5,
+        max_dim_size=10,
+        min_value=1,
+        max_value=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_diag(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        diagonal=x[0],
     )

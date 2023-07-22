@@ -186,6 +186,7 @@ def _generate_eigh_tridiagonal_args(draw):
 @handle_test(
     fn_tree="eigh_tridiagonal",
     args_packet=_generate_eigh_tridiagonal_args(),
+    ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
 def test_eigh_tridiagonal(
@@ -199,7 +200,6 @@ def test_eigh_tridiagonal(
     dtype, alpha, beta, eigvals_only, select, select_range, tol = args_packet
     test_flags.with_out = False
     results = helpers.test_function(
-        ground_truth_backend="numpy",
         test_flags=test_flags,
         fw=backend_fw,
         fn_name=fn_name,
