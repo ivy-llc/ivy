@@ -715,4 +715,4 @@ def atanh(x, name="atanh"):
 
 @to_ivy_arrays_and_back
 def xlog1py(x, y, name=None):
-    return x * ivy.log1p(y)
+    return ivy.multiply(x, ivy.log1p(y))
