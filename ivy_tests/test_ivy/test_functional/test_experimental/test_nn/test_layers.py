@@ -1092,7 +1092,7 @@ def x_and_rfftn(draw):
     dtype = draw(helpers.get_dtypes("float"))
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=3
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=3
         )
     )
     x = draw(
