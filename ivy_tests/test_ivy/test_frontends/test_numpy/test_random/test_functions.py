@@ -745,6 +745,7 @@ def test_numpy_gamma(
         size=size,
     )
 
+#logistic
 @handle_frontend_test(
     fn_tree="numpy.random.logistic",
     input_dtypes=helpers.get_dtypes("float", full=False),
