@@ -1,5 +1,6 @@
 from .generic import NDFrame
 import ivy
+from .series import Series
 
 
 class DataFrame(NDFrame):
@@ -30,6 +31,9 @@ class DataFrame(NDFrame):
             self.columns = list(self.orig_data.keys()) if columns is None else columns
             array_data = list(self.orig_data.values())
             self.array = ivy.array([array_data for _ in range(len(self.index))])
+        elif isinstance(self.orig_data, Series):
+            self.array = self.array.expand_dims()
+            self.columns = [0]
         elif columns is None:
             self.columns = ivy.arange(self.array.shape[1]).tolist()
         else:
