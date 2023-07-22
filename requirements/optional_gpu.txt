@@ -14,7 +14,7 @@ tensorflow-probability # unpinned, we test for latest version now, mod_name=tens
 -f https://data.pyg.org/whl/torch-2.0.1%2Bcu117.html
 -f https://data.pyg.org/whl/torch-2.0.1%2Bcu118.html
 torch==2.0.1
-torch-scatter==2.1.1
+torch-scatter==2.1.1 # mod_name=torch_scatter
 functorch # unpinned, we test for latest version now
 scipy # unpinned
 dm-haiku # unpinned mod_name=haiku
