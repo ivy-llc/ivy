@@ -15,6 +15,17 @@ def fft(x, n=None, axis=-1.0, norm="backward", name=None):
     ret = ivy.fft(ivy.astype(x, "complex128"), axis, norm=norm, n=n)
     return ivy.astype(ret, x.dtype)
 
+@with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def ihfft(a, n=None, axis=-1, norm=None):
+    if n is None:
+        n = a.shape[axis]
+    norm = _swap_direction(norm)
+    return ivy.conj(rfft(a, n, axis, norm=norm).ivy_array)
+    
 
 @with_supported_dtypes(
     {
