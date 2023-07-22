@@ -44,7 +44,7 @@ def binary_cross_entropy_with_logits(
     if weight is not None:
         ret = ivy.multiply(weight, ret)
     ret = reduction(ret).astype(label.dtype)
-    return paddle.to_tensor(ret.reshape([-1]))
+    return paddle.to_tensor(ivy.atleast_1d(ret))
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
