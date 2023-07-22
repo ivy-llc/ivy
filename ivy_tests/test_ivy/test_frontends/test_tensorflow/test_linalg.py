@@ -797,7 +797,7 @@ def test_tensorflow_svd(
         test_values=False,
         atol=1e-03,
         rtol=1e-05,
-        a=x,
+        tensor=x,
         full_matrices=full_matrices,
         compute_uv=compute_uv,
     )
