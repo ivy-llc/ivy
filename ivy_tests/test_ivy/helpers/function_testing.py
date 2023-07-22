@@ -785,7 +785,7 @@ def test_frontend_function(
     )
 
     # change ivy dtypes to native dtypes
-    if "dtype" in kwargs_frontend:
+    if "dtype" in kwargs_frontend and kwargs_frontend["dtype"] is not None:
         kwargs_frontend["dtype"] = frontend_config.as_native_dtype(
             kwargs_frontend["dtype"]
         )
