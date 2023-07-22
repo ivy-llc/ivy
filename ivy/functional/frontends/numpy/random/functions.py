@@ -187,6 +187,12 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def gamma(shape, scale=1.0, size=None):
+    return ivy.gamma(shape, scale, shape=size, dtype="float64")
+  
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def triangular(left, mode, right, size=None):
     if left > mode or mode > right or left == right:
         raise ivy.utils.exceptions.IvyValueError(
