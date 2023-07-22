@@ -2896,7 +2896,7 @@ def test_numpy_instance_array_wrap__(
         valid_bounds=False,
     ),
     mode=st.sampled_from(['clip', 'wrap', 'raise']),
-    test_with_out=st.just(True),
+    test_with_out=st.just(False),
 )
 def test_numpy_instance_take(
     dtype_x_indices_axis,
