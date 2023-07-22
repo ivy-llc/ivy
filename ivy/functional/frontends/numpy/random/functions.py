@@ -195,9 +195,8 @@ def f(dfn=1.0, dfd=1.0, size=None):
     samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
     return samples
 
-  
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def gamma(shape, scale=1.0, size=None):
     return ivy.gamma(shape, scale, shape=size, dtype="float64")
-

@@ -744,8 +744,8 @@ def test_numpy_gamma(
         scale=scale,
         size=size,
     )
-    
-  
+
+
 @handle_frontend_test(
     fn_tree="numpy.random.f",
     input_dtypes=helpers.get_dtypes("float", full=False),
