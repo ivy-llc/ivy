@@ -745,17 +745,16 @@ def test_numpy_gamma(
         size=size,
     )
 
-#logistic
+# logistic
 @handle_frontend_test(
     fn_tree="numpy.random.logistic",
     input_dtypes=helpers.get_dtypes("float", full=False),
     loc=st.floats(
-        allow_nan=False, 
-        allow_infinity=False, 
-        width=32, 
-        min_value=0, 
-        exclude_min=True, 
-        max_value=1000,
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
     ),
     scale=st.floats(
         allow_nan=False, 
