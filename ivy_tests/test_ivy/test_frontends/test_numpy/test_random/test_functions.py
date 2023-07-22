@@ -755,7 +755,9 @@ def test_numpy_gamma(
         width=32,
         min_value=0,
         max_value=10,
-    ).map(lambda x: [x]),  # Convert the float to a list with a single value,
+    ).map(
+        lambda x: [x]
+    ),  # Convert the float to a list with a single value,
     mode=st.floats(
         allow_nan=False,
         allow_infinity=False,
