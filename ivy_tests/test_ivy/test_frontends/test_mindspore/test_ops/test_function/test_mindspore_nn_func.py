@@ -1,5 +1,5 @@
 # global
-# from hypothesis import strategies as st
+from hypothesis import strategies as st
 
 # local
 # TODO: uncomment after frontend is not required
