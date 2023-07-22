@@ -755,7 +755,7 @@ def test_numpy_gamma(
         allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True, max_value=1000
     ),
     size=helpers.get_shape(allow_none=True),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_numpy_logistic(
     input_dtypes,
@@ -778,3 +778,4 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
+

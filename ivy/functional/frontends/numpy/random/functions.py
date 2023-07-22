@@ -197,3 +197,4 @@ def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale*ivy.log(u/(1-u))
     return x
+
