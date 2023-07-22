@@ -1,14 +1,15 @@
+# flake8: noqa
 # global
 import numpy as np
-from hypothesis import assume, given
-from hypothesis import strategies as st
-
 import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    _statistical_dtype_values,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
@@ -2721,21 +2722,51 @@ def test_paddle_instance_min(
     )
 
 
+# maximum
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="maximum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_paddle_instance_maximum(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # std
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="std",
-    dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(helpers.get_dtypes("float")),
-        min_axis=-1,
-        max_axis=0,
-    ),
+    dtypes_and_x=_statistical_dtype_values(function="std"),
     keep_dims=st.booleans(),
-    unbiased=st.booleans(),
 )
 def test_paddle_instance_std(
-    dtype_x_axis,
+    dtypes_and_x,
     keep_dims,
     frontend_method_data,
     init_flags,
@@ -2743,7 +2774,7 @@ def test_paddle_instance_std(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis, _ = dtypes_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -2754,6 +2785,39 @@ def test_paddle_instance_std(
             "axis": axis,
             "keepdim": keep_dims,
         },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# atanh
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="atanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_paddle_atanh(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
