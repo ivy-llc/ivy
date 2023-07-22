@@ -749,10 +749,20 @@ def test_numpy_gamma(
     fn_tree="numpy.random.logistic",
     input_dtypes=helpers.get_dtypes("float", full=False),
     loc=st.floats(
-        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True, max_value=1000,
+        allow_nan=False, 
+        allow_infinity=False, 
+        width=32, 
+        min_value=0, 
+        exclude_min=True, 
+        max_value=1000,
     ),
     scale=st.floats(
-        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True, max_value=1000,
+        allow_nan=False, 
+        allow_infinity=False, 
+        width=32, 
+        min_value=0, 
+        exclude_min=True, 
+        max_value=1000,
     ),
     size=helpers.get_shape(allow_none=True),
     test_with_out=st.just(False),
@@ -778,4 +788,3 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
-
