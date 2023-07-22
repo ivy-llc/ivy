@@ -1,0 +1,3 @@
+import jax_numpy as jnp
+x = jnp.pi / 4  # Set the value of x
+cos_x = jnp.cos(x)  # Compute the cosine of x
