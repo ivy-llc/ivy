@@ -33,42 +33,6 @@ def _is_package_updated(updates: dict, package_name: str) -> bool:
     return updates[package_name][0]["updated"]
 
 
-def _get_pyg_urls(updates: dict, device: Device) -> list[str]:
-    def _scrape_pyg_org() -> str:
-        url = "https://data.pyg.org/whl/"
-        page = urlopen(url)
-        html_bytes = page.read()
-        return html_bytes.decode("utf-8")
-
-    decoded_html = _scrape_pyg_org()
-    latest_version = _get_latest_version_from_updates(updates, package_name="torch")
-
-    def _extract_latest_torch_hyperlinks_from_html(
-        decoded_html: str, torch_version: str
-    ) -> list[str]:
-        pattern = (
-            f'<a href="torch-{torch_version}.*?.html">torch-{torch_version}.*?</a><br/>'
-        )
-        return re.findall(pattern, decoded_html, re.IGNORECASE)
-
-    hyperlinks = _extract_latest_torch_hyperlinks_from_html(
-        decoded_html, latest_version
-    )
-
-    def _get_urls_from_hyperlinks(hyperlinks: list[str]) -> list[str]:
-        urls: list[str] = []
-        for hyperlink in hyperlinks:
-            match = re.search(r'href="([^"]+)"', hyperlink)
-            if match:
-                href = match.group(1)
-                converted_string = f"https://data.pyg.org/whl/{href}"
-                urls.append(converted_string)
-        return urls
-
-    urls = _get_urls_from_hyperlinks(hyperlinks)
-    return _filter_urls_by_device(urls, device)
-
-
 def _update_torch(updates: dict, device: Device):
     input_file_name: str = _input_file_name_from_device(device)
 
@@ -92,7 +56,39 @@ def _update_torch(updates: dict, device: Device):
             (i for i, line in enumerate(lines) if re.search("torch==", line)), -1
         )
 
-    torch_line_index: int = _get_torch_line_index_from_lines(lines)
+    def _get_pyg_urls(updates: dict, device: Device) -> list[str]:
+        def _scrape_pyg_org() -> str:
+            url = "https://data.pyg.org/whl/"
+            page = urlopen(url)
+            html_bytes = page.read()
+            return html_bytes.decode("utf-8")
+
+        decoded_html = _scrape_pyg_org()
+        latest_version = _get_latest_version_from_updates(updates, package_name="torch")
+
+        def _extract_latest_torch_hyperlinks_from_html(
+            decoded_html: str, torch_version: str
+        ) -> list[str]:
+            pattern = f'<a href="torch-{torch_version}.*?.html">torch-{torch_version}.*?</a><br/>'  # noqa: E501
+            return re.findall(pattern, decoded_html, re.IGNORECASE)
+
+        hyperlinks = _extract_latest_torch_hyperlinks_from_html(
+            decoded_html, latest_version
+        )
+
+        def _get_urls_from_hyperlinks(hyperlinks: list[str]) -> list[str]:
+            urls: list[str] = []
+            for hyperlink in hyperlinks:
+                match = re.search(r'href="([^"]+)"', hyperlink)
+                if match:
+                    href = match.group(1)
+                    converted_string = f"https://data.pyg.org/whl/{href}"
+                    urls.append(converted_string)
+            return urls
+
+        urls = _get_urls_from_hyperlinks(hyperlinks)
+        return _filter_urls_by_device(urls, device)
+
     new_urls = _get_pyg_urls(updates, device)
 
     def _prepare_urls_for_requirements_file(urls: list[str]) -> list[str]:
@@ -101,6 +97,7 @@ def _update_torch(updates: dict, device: Device):
     new_urls = _prepare_urls_for_requirements_file(new_urls)
 
     # Insert new urls above the torch definition
+    torch_line_index: int = _get_torch_line_index_from_lines(lines)
     lines[torch_line_index:torch_line_index] = new_urls
 
     with open(input_file_name, "w") as file:
