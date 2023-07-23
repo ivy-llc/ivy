@@ -1300,7 +1300,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> z = x.cov(y)
         >>> print(z)
 
-         {
+        {
             a: ivy.array([[1., -1.],
                           [-1., 1.]]),
             b: ivy.array([[1., -1.],

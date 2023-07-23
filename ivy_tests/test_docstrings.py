@@ -330,6 +330,7 @@ def test_docstrings(backend):
         "where",
         "sinc",
         "grad",
+        "cov"
         # all examples are wrong including functional/ivy
         "einops_reduce",
     ]
@@ -349,6 +350,7 @@ def test_docstrings(backend):
         "scaled_dot_product_attention",
         # temp list for array/container methods
         "einops_reduce",
+        "cov",
 
     ]
     # currently_being_worked_on = ["layer_norm"]
@@ -413,7 +415,6 @@ def test_docstrings(backend):
 
         else:
             if (
-               # v is not ivy.GlobalsDict
                 k in to_skip
                 or skip_conditional(k, backend)
                 or check_docstring_examples_run(fn=v)

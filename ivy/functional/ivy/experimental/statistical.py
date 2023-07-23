@@ -609,10 +609,10 @@ def cov(
     >>> z = ivy.Container.static_cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1., -1., -1.]
-                     [ 1.,  1., -1., -1.]),
-        b: ivy.array([-1., -1.,  1.,  1.]
-                     [-1.,  1.,  1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -621,10 +621,10 @@ def cov(
     >>> z = ivy.cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1.]
-                     [-1.,  1.]),
-        b: ivy.array([ 1., -1.]
-                     [-1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
