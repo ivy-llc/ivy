@@ -1133,3 +1133,35 @@ def test_tensorflow_tensor_diag(
         on_device=on_device,
         diagonal=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.expm",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, x])),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_expm(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )

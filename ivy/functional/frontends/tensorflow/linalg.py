@@ -378,4 +378,14 @@ def tensor_diag(diagonal, /, *, name=None):
     "tensorflow",
 )
 def expm(input, name=None):
-    return ivy.expm(input)
+    dtype = ivy.dtype(input)
+    shape = ivy.shape(input)
+    dim = shape[0]
+    # Initialize the result with the identity matrix
+    result = ivy.eye(dim, dtype=dtype)
+    matrix_power = ivy.eye(dim, dtype=dtype)
+    num_turns = 1000
+    for k in range(1, num_turns + 1):
+        matrix_power = ivy.matmul(matrix_power, input) / k
+        result = result + matrix_power
+    return result
