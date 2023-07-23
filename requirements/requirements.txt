@@ -1,4 +1,4 @@
-numpy # unpinned we test with latest version now
+numpy==1.25.1
 einops==0.6.1
 psutil==5.9.1
 termcolor==1.1.0
@@ -7,5 +7,9 @@ packaging==21.3
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
 diskcache
 google-auth # mod_name=google.auth
-requests
+requests==2.31.0
 pyvis
+
+ivy==1.1.9
+setuptools==65.5.1
+jsonpickle==3.0.1

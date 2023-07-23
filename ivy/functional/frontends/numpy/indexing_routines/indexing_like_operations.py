@@ -98,3 +98,8 @@ def compress(condition, a, axis=None, out=None):
         )
     arr = arr[: condition_arr.shape[0]]
     return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@to_ivy_arrays_and_back
+def take(a, indices, axis=None, out=None, mode='raise'):
+    return ivy.take(a, indices, axis, out, mode)

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Remote Python 3.10.0 Docker (unifyai/ivy:latest)" jdkType="Python SDK" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
+    </content>
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="G:\IVY\ivy\requirements\requirements.txt" />
+    <option name="versionSpecifier" value="Strong equality (==x.y.z)" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="format" value="NUMPY" />
