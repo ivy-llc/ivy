@@ -175,7 +175,7 @@ def _hist_bin_stone(x, range):
         ivy.logging.warning(
             "The number of bins estimated may be suboptimal.", stacklevel=3
         )
-    return ptp_x / nbins
+    return float(ptp_x / nbins)
 
 
 def _hist_bin_doane(x, range):
