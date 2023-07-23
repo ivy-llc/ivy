@@ -163,3 +163,35 @@ def test_paddle_searchsorted(
         out_int32=out_int32,
         right=right,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.topk",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
+    k=st.integers(min_value=0, max_value=5),
+    sorted=st.booleans(),
+    largest=st.booleans(),
+)
+def test_paddle_topk(
+    *,
+    dtype_x_and_axis,
+    k,
+    sorted,
+    largest,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        k=k,
+        sorted=sorted,
+        largest=largest,
+        # test_with_out=test_with_out
+    )
