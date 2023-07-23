@@ -479,3 +479,48 @@ def test_torch_randperm(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.randint_like",
+    dtype=helpers.get_dtypes("integer", full=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+)
+def test_torch_randint_like(
+    dtype_and_x, low, high, *, dtype, frontend, fn_tree, test_flags, backend_fw
+):
+    input_dtype, input = dtype_and_x
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input=input[0],
+            low=low,
+            high=high,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

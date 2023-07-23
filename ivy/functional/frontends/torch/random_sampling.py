@@ -230,3 +230,28 @@ def randperm(
     arr = ivy.arange(n, device=device, dtype=dtype)
     ret = ivy.shuffle(arr, seed=seed, out=out)
     return ret
+
+
+@to_ivy_arrays_and_back
+def randint_like(
+    input,
+    low,
+    high,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    shape = input.shape
+    if not dtype:
+        dtype = input.dtype
+
+    return ivy.randint(
+        low=low,
+        high=high,
+        shape=shape,
+        dtype=dtype,
+        device=device,
+    )
