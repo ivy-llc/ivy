@@ -426,6 +426,7 @@ def simple_test_two_function(
         atol=atol_,
         ground_truth_backend=frontend,
     )
+    ivy.previous_backend()
 
 
 # Helper function for deserialize.

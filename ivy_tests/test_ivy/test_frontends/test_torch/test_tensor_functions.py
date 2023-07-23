@@ -74,6 +74,7 @@ def test_torch_is_floating_point(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    ivy.set_backend(backend_fw)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -83,6 +84,7 @@ def test_torch_is_floating_point(
         on_device=on_device,
         input=ivy.asarray(x[0]),
     )
+    ivy.previous_backend()
 
 
 @handle_frontend_test(
