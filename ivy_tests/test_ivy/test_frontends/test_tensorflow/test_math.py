@@ -111,7 +111,7 @@ def test_tensorflow_add(
         shape=st.shared(
             helpers.get_shape(
                 min_num_dims=1,
-                max_num_dims=1,
+                max_num_dims=2,
             ),
             key="a_s_d",
         ),
