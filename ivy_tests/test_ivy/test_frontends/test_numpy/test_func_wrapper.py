@@ -44,7 +44,8 @@ def _fn(*args, check_default=False, dtype=None):
         ret_shape=True,
     ),
 )
-def test_numpy_inputs_to_ivy_arrays(dtype_x_shape):
+def test_numpy_inputs_to_ivy_arrays(dtype_x_shape, backend_fw):
+    ivy.set_backend(backend_fw)
     x_dtype, x, shape = dtype_x_shape
 
     # check for ivy array
@@ -68,6 +69,7 @@ def test_numpy_inputs_to_ivy_arrays(dtype_x_shape):
     assert isinstance(output, ivy.Array)
     assert input_frontend.ivy_array.dtype == str(output.dtype)
     assert ivy.all(input_frontend.ivy_array == output)
+    ivy.previous_backend()
 
 
 @given(
@@ -76,7 +78,8 @@ def test_numpy_inputs_to_ivy_arrays(dtype_x_shape):
     ),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_numpy_outputs_to_frontend_arrays(dtype_and_x, dtype):
+def test_numpy_outputs_to_frontend_arrays(dtype_and_x, dtype, backend_fw):
+    ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -95,6 +98,7 @@ def test_numpy_outputs_to_frontend_arrays(dtype_and_x, dtype):
     assert ivy.all(input_ivy == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+    ivy.previous_backend()
 
 
 @given(
@@ -104,7 +108,8 @@ def test_numpy_outputs_to_frontend_arrays(dtype_and_x, dtype):
     ),
     dtype=helpers.get_dtypes("valid", none=True, full=False, prune_function=False),
 )
-def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype):
+def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype, backend_fw):
+    ivy.set_backend(backend_fw)
     x_dtype, x, shape = dtype_x_shape
 
     # check for ivy array
@@ -156,6 +161,7 @@ def test_numpy_to_ivy_arrays_and_back(dtype_x_shape, dtype):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
+    ivy.previous_backend()
 
 
 @st.composite
@@ -185,7 +191,8 @@ def _zero_dim_to_scalar_checks(x, ret_x):
 
 
 @given(x=_zero_dim_to_scalar_helper())
-def test_numpy_from_zero_dim_arrays_to_scalar(x):
+def test_numpy_from_zero_dim_arrays_to_scalar(x, backend_fw):
+    ivy.set_backend(backend_fw)
     ret_x = from_zero_dim_arrays_to_scalar(_fn)(x)
     if isinstance(x, tuple):
         assert isinstance(ret_x, tuple)
@@ -193,6 +200,7 @@ def test_numpy_from_zero_dim_arrays_to_scalar(x):
             _zero_dim_to_scalar_checks(x_i, ret_x_i)
     else:
         _zero_dim_to_scalar_checks(x, ret_x)
+    ivy.previous_backend()
 
 
 @st.composite
@@ -221,6 +229,8 @@ def _dtype_helper(draw):
 @given(
     dtype=_dtype_helper(),
 )
-def test_handle_numpy_dtype(dtype):
+def test_handle_numpy_dtype(dtype, backend_fw):
+    ivy.set_backend(backend_fw)
     ret_dtype = handle_numpy_dtype(_fn)(None, dtype=dtype)
     assert isinstance(ret_dtype, ivy.Dtype)
+    ivy.previous_backend()

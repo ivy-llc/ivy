@@ -272,3 +272,16 @@ class DeviceArray:
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def var(
+        self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
+    ):
+        return jax_frontend.numpy.var(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=int(ddof),
+            keepdims=keepdims,
+            where=where,
+        )
