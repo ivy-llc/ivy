@@ -210,4 +210,3 @@ def kl_div(
     else:
         pass
     return out.astype(label.dtype)
-
