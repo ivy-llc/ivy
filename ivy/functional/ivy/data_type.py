@@ -552,8 +552,8 @@ def can_cast(
     ...                   b=ivy.array([3, 4, 5]))
     >>> print(ivy.can_cast(x, 'int64'))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
