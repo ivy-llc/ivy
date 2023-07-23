@@ -38,11 +38,13 @@ def test_tensorflow_leaky_relu(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     return helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -366,11 +368,13 @@ def test_tensorflow_atrous_conv2d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -403,6 +407,7 @@ def test_tensorflow_atrous_conv2d_transpose(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (
@@ -418,6 +423,7 @@ def test_tensorflow_atrous_conv2d_transpose(
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -448,11 +454,13 @@ def test_tensorflow_conv1d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -486,6 +494,7 @@ def test_tensorflow_conv1d_transpose(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (
@@ -501,6 +510,7 @@ def test_tensorflow_conv1d_transpose(
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -531,11 +541,13 @@ def test_tensorflow_gelu(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -560,11 +572,13 @@ def test_tensorflow_conv2d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -595,6 +609,7 @@ def test_tensorflow_conv2d_transpose(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (
@@ -610,6 +625,7 @@ def test_tensorflow_conv2d_transpose(
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -641,11 +657,13 @@ def test_tensorflow_conv3d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -676,6 +694,7 @@ def test_tensorflow_conv3d_transpose(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (
@@ -691,6 +710,7 @@ def test_tensorflow_conv3d_transpose(
     _assume_tf_dilation_gt_1("tensorflow", on_device, dilation)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -721,11 +741,13 @@ def test_tensorflow_depthwise_conv2d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -755,11 +777,13 @@ def test_tensorflow_separable_conv2d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -838,11 +862,13 @@ def test_tensorflow_batch_normalization(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     x_dtype, x, mean, variance, offset, scale = data
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         rtol=1e-2,
@@ -897,11 +923,13 @@ def test_tensorflow_dropout(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -944,11 +972,13 @@ def test_tensorflow_silu(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, features = dtype_features
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -981,12 +1011,14 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1025,12 +1057,14 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1070,11 +1104,13 @@ def test_tensorflow_local_response_normalization(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1109,12 +1145,14 @@ def test_tensorflow_max_pool1d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, ksize, strides, padding = x_k_s_p
     data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1141,12 +1179,14 @@ def test_tensorflow_max_pool2d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, ksize, strides, padding = x_k_s_p
     data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1173,11 +1213,13 @@ def test_tensorflow_moments(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1249,10 +1291,12 @@ def test_tensorflow_normalize_moments(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     counts_dtype, counts, mean, variance, shift = data
     helpers.test_frontend_function(
         input_dtypes=counts_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1293,11 +1337,13 @@ def test_tensorflow_bias_add(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     data_format, dtype, value, bias = data
     helpers.test_frontend_function(
         input_dtypes=dtype * 2,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1326,11 +1372,13 @@ def test_tensorflow_convolution(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1360,12 +1408,14 @@ def test_tensorflow_relu(
     dtype_and_x,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1390,12 +1440,14 @@ def test_tensorflow_relu6(
     dtype_and_x,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1422,10 +1474,12 @@ def test_tensorflow_softmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1449,11 +1503,13 @@ def test_tensorflow_embedding_lookup(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtypes, indices, weight, _ = dtypes_indices_weights
     dtypes.reverse()
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1482,12 +1538,14 @@ def test_tensorflow_crelu(
     dtype_x_and_axis,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1524,11 +1582,13 @@ def test_tensorflow_avg_pool(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (input_dtype, x, ksize, strides, padding), data_format = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1554,11 +1614,13 @@ def test_tensorflow_avg_pool3d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, ksize, strides, padding = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1584,11 +1646,13 @@ def test_tensorflow_avg_pool1d(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     (input_dtype, x, ksize, strides, padding) = x_k_s_p_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1635,6 +1699,7 @@ def test_tensorflow_pool(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     (
         (input_dtype, x, ksize, strides, padding, dilation),
@@ -1650,6 +1715,7 @@ def test_tensorflow_pool(
         strides = (strides[0], strides[0], strides[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1701,10 +1767,12 @@ def test_tensorflow_sufficient_statistics(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtypes, x, a = dtypes_x_axes_shift
     return helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1726,11 +1794,9 @@ def test_tensorflow_sufficient_statistics(
         max_value=1,
         min_num_dims=1,
         max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
         shared_dtype=True,
     ),
-    compute_full_loss=st.sampled_from([True, False]),
+    compute_full_loss=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_log_poisson_loss(
@@ -1741,11 +1807,13 @@ def test_log_poisson_loss(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, input_values = dtype_target_log_inputs
     targets, log_input = input_values
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -1778,10 +1846,12 @@ def test_tensorflow_ctc_unique_labels(
     fn_tree,
     test_flags,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1811,11 +1881,13 @@ def test_tensorflow_weighted_moments(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x_and_axis
     fw_dtype, fw = dtype_and_fw
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
