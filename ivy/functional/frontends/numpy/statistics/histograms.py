@@ -86,7 +86,7 @@ def _get_bin_edges(a, bins, range, weights):
             n_equal_bins = 1
         else:
             # Do not call selectors on empty arrays
-            width = _hist_bin_selectors[bin_name](a, (first_edge, last_edge))
+            width = float(_hist_bin_selectors[bin_name](a, (first_edge, last_edge)))
             if width:
                 n_equal_bins = int(
                     ivy.ceil(
