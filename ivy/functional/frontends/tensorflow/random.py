@@ -1,4 +1,5 @@
 import ivy
+
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
@@ -83,3 +84,14 @@ def stateless_poisson(shape, seed, lam, dtype=ivy.int32, name=None):
 @to_ivy_arrays_and_back
 def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
+
+
+# Implement create_rng_state function
+def create_rng_state(
+    seed=None,
+    algorithm="auto_select",
+    dtype=ivy.int32,
+    name=None,
+):
+    seed_value = seed if seed is not None else 0  # Default seed to 0 if None
+    return ivy.array([seed_value, 0], dtype=dtype)
