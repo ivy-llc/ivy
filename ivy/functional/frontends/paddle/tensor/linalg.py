@@ -176,3 +176,9 @@ def transpose(x, perm, name=None):
 @to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0, name=None):
     return ivy.bincount(x, weights=weights, minlength=minlength)
+
+
+# @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def corrcoef(x, rowvar=True, name=None):
+    return ivy.corrcoef(x, rowvar=rowvar)
