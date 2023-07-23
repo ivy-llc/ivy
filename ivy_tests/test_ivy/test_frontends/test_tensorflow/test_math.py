@@ -132,10 +132,10 @@ def test_tensorflow_bincount(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        on_device=on_device
-        x=x[0]
+        on_device=on_device,
+        x=x[0],
         weights=None,
-        minlength=0,
+        minlength=0
     )
 
 
