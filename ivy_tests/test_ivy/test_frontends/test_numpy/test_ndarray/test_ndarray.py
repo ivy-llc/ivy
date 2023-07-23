@@ -811,7 +811,7 @@ def test_numpy_instance_max(
     init_tree="numpy.array",
     method_name="put",
     dtypes_x_index_value_mode=helpers.dtype_array_index_value_mode(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
 def test_numpy_instance_put(
@@ -823,15 +823,14 @@ def test_numpy_instance_put(
     on_device,
 ):
     input_dtype, x, ind, v, mode = dtypes_x_index_value_mode
-    print(ind)
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={
-            "ind": ind,
-            "v": v,
-            "mode": mode,
+            "indices": ind,
+            "values": v,
+            "mode": "clip",
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

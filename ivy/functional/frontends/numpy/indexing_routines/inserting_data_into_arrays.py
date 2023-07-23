@@ -31,36 +31,42 @@ def fill_diagonal(a, val, wrap=False):
 
 
 @to_ivy_arrays_and_back
-def put(a, ind, v, mode="raise"):
+def put(a, indices, values, mode="raise"):
+    if type(a) == tuple:
+        print("flag a")
+    if type(indices) == tuple:
+        print("flag ind")
+    if type(values) == tuple:
+        print("flag v")
     a_shape = ivy.shape(a)
     a_length = int(ivy.prod(a_shape))
     a = ivy.flatten(a)
-    ind_length = int(ivy.prod(ivy.shape(ind)))
-    ind = ivy.flatten(ind)
-    v_length = int(ivy.prod(ivy.shape(v)))
-    v = ivy.flatten(v)
+    indices = ivy.flatten(indices)
+    ind_length = int(ivy.shape(indices)[0])
+    values = ivy.flatten(values)
+    v_length = int(ivy.shape(values)[0])
 
     if mode == "raise":
         for i in range(ind_length):
-            if int(ind[i]) >= a_length:
+            if int(indices[i]) >= a_length:
                 raise IndexError(
                     "index "
-                    + str(int(ind[i]))
+                    + str(int(indices[i]))
                     + " is out of bounds for axis 0 with size "
                     + str(a_length)
                 )
             else:
-                a[int(ind[i])] = v[i % v_length]
+                a[int(indices[i])] = values[i % v_length]
 
     if mode == "wrap":
         for i in range(ind_length):
-            a[int(ind[i]) % a_length] = v[i % v_length]
+            a[int(indices[i]) % a_length] = values[i % v_length]
 
     if mode == "clip":
         for i in range(ind_length):
-            if int(ind[i]) < a_length:
-                a[int(max(0, int(ind[i])))] = v[i % v_length]
+            if int(indices[i]) < a_length:
+                a[int(max(0, int(indices[i])))] = values[i % v_length]
             else:
-                a[int(min((a_length - 1), int(ind[i])))] = v[i % v_length]
+                a[int(min((a_length - 1), int(indices[i])))] = values[i % v_length]
 
     a.reshape(a_shape)

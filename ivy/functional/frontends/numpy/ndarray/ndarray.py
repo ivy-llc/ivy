@@ -266,8 +266,8 @@ class ndarray:
     def copy(self, order="C"):
         return np_frontend.copy(self, order=order)
 
-    def put(self, ind, v, mode="raise"):
-        return np_frontend.put(self, ind, v, mode=mode)
+    def put(self, indices, values, mode="raise"):
+        return np_frontend.put(self, indices, values, mode=mode)
 
     def nonzero(
         self,

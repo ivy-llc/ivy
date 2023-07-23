@@ -1812,6 +1812,7 @@ def dtype_array_query(
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
+    supported_index_types=["int", "slice", "list", "array"],
 ):
     dtype = draw(
         helpers.array_dtypes(
@@ -1844,7 +1845,7 @@ def dtype_array_query(
             ).filter(lambda x: np.sum(x) > 0)
         )
         return dtype + ["bool"], array, index
-    supported_index_types = ["int", "slice", "list", "array"]
+    supported_index_types = supported_index_types
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
@@ -1956,7 +1957,7 @@ def dtype_array_query_val(
     return input_dtype + [val_dtype], x, query, val
 
 
-# change so that it suits with the mode
+# fix this to make sure that there's always an index being provided
 @st.composite
 def dtype_array_index_value_mode(
     draw,
@@ -1968,8 +1969,9 @@ def dtype_array_index_value_mode(
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
+    supported_index_types=["int"],
 ):
-    mode = st.sampled_from(["raise", "clip", "wrap"])
+    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
 
     input_dtype, x, index = draw(
         helpers.dtype_array_query(
@@ -1980,6 +1982,7 @@ def dtype_array_index_value_mode(
             max_dim_size=max_dim_size,
             allow_mask=allow_mask,
             allow_neg_step=allow_neg_step,
+            supported_index_types=supported_index_types,
         )
     )
 
