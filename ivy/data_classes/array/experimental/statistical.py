@@ -598,15 +598,15 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> x = ivy.array([1, 2, 5, 4, 3])
         >>> y = x.cummax()
         >>> print(y)
-        ivy.array([1, 2, 5, 5, 5])
+        (ivy.array([1, 2, 5, 5, 5]), ivy.array([0, 1, 2, 2, 2]))
 
         >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cummax(axis=1, reverse=True, out=y)
         >>> print(y)
-        ivy.array([[ 3,  3],
-                  [ 7,  7],
-                  [13, 13]])
+        ivy.array([[0, 0],
+               [0, 0],
+               [0, 0]])
         """
         return ivy.cummax(
             self._data,

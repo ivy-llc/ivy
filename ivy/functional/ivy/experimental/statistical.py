@@ -728,19 +728,19 @@ def cummax(
     >>> x = ivy.array([-86, -19, 41, 88, -5, 80, 32, 87, -90, -12])
     >>> y = ivy.cummax(x, exclusive=False, reverse=False)
     >>> print(y)
-    [ivy.array([-86, -19, 41, 88, 88, 88, 88, 88, 88, 88]),
-      ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3])]
+    (ivy.array([-86, -19,  41,  88,  88,  88,  88,  88,  88,  88]),
+    ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3]))
 
     >>> x = ivy.array([ 14,  15,  49, -24, -39])
     >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
     >>> print(y)
-    [ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2])]
+    (ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2]))
 
     >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
     >>> ivy.cummax(x, axis=0, reverse=False, dtype='int64', out=x)
     >>> print(x)
-    [ivy.array([[ 63,  43, -16,  -4], [ 63,  82,  59,  33]]),
-    ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
+    ivy.array([[0, 0, 0, 0],
+           [0, 1, 1, 1]])
 
     >>> x = ivy.array([[-36,  83, -81],
     ...                [ 23,  29,  63],
@@ -751,29 +751,29 @@ def cummax(
     ...                [ 33,  54, -16]])
     >>> y = ivy.cummax(x, axis=1, exclusive=True, reverse=False)
     >>> print(y)
-    [ivy.array([[ 0,  0, 83],
-                [ 0, 23, 29],
-                [ 0,  0, 85],
-                [ 0, 31, 31],
-                [ 0,  0,  0],
-                [ 0, 22, 38],
-                [ 0, 33, 54]]), ivy.array([[0, 0, 2],
-                [0, 1, 2],
-                [0, 0, 2],
-                [0, 1, 1],
-                [0, 0, 0],
-                [0, 1, 2],
-                [0, 1, 2]])]
+    (ivy.array([[ 0,  0, 83],
+           [ 0, 23, 29],
+           [ 0,  0, 85],
+           [ 0, 31, 31],
+           [ 0,  0,  0],
+           [ 0, 22, 38],
+           [ 0, 33, 54]]), ivy.array([[0, 0, 2],
+           [0, 1, 2],
+           [0, 0, 2],
+           [0, 1, 1],
+           [0, 0, 0],
+           [0, 1, 2],
+           [0, 1, 2]]))
 
     >>> x = ivy.array([73, 15, 47])
-    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=True)
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=True)
     >>> print(y)
-    [ivy.array([47, 47,  0]), ivy.array([0, 0, 0])]
+    (ivy.array([47, 47,  0]), ivy.array([0, 0, 0]))
 
     >>> x = ivy.array([-47, -14, -67, 15, -23, -45])
-    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=False)
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=False)
     >>> print(y)
-    [ivy.array([ 15, 15, 15, 15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0])]
+    (ivy.array([ 15,  15,  15,  15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0]))
     """
     return ivy.current_backend(x).cummax(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out

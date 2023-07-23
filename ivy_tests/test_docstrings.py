@@ -246,6 +246,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "where": "torch",
         "conv2d_transpose": "tensorflow",
         "max_pool2d": "torch",
+        "cummax": "torch",
 
     }
     # second dict to keep if a function fails in two backends

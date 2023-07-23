@@ -1378,22 +1378,26 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cummax(axis=0)
         >>> print(y)
-        {
+        [{
             a: ivy.array([1, 2, 3]),
             b: ivy.array([4, 5, 6])
-        }
+        }, {
+            a: ivy.array([0, 1, 2]),
+            b: ivy.array([0, 1, 2])
+        }]
 
         >>> x = ivy.Container(a=ivy.array([[2, 3], [5, 7], [11, 13]]),
-                              b=ivy.array([[3, 4], [4, 5], [5, 6]]))
+        ...                   b=ivy.array([[3, 4], [4, 5], [5, 6]]))
         >>> y = ivy.Container(a = ivy.zeros((3, 2)), b = ivy.zeros((3, 2)))
         >>> x.cummax(axis=1, exclusive=True, out=y)
+        >>> print(y)
         {
-            a: ivy.array([[2., 3.],
-                          [5., 7.],
-                          [11., 13.]]),
-            b: ivy.array([[3., 4.],
-                          [4., 5.],
-                          [5., 6.]])
+            a: ivy.array([[0., 1.],
+                          [0., 1.],
+                          [0., 1.]]),
+            b: ivy.array([[0., 1.],
+                          [0., 1.],
+                          [0., 1.]])
         }
         """
         return self._static_cummax(
