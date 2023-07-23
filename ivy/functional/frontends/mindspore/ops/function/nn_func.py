@@ -138,7 +138,7 @@ def conv1d(
     padding=0,
     dilation=1,
     groups=1,
-    ):
+):
     if pad_mode == "valid" or pad_mode == "same":
         padding = pad_mode
     elif pad_mode == "pad":
@@ -159,7 +159,7 @@ def conv3d(
     padding=0,
     dilation=1,
     groups=1,
-    ):
+):
     if pad_mode == "valid" or pad_mode == "same":
         padding = pad_mode
     elif pad_mode == "pad":
