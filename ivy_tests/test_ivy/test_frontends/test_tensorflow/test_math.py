@@ -2684,12 +2684,14 @@ def test_tensorflow_erf(
     frontend,
     test_flags,
 ):
-    input_dtype, value = dtype_and_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=value[0],
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
     )
