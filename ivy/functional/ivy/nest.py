@@ -1068,6 +1068,15 @@ def nested_map(
     if ivy.exists(max_depth) and _depth > max_depth:
         return x
     class_instance = type(x)
+    # TODO: Fixes iterating over tracked instances from the graph
+    # during transpilation. However, there might be a better fix
+    # than this. Remove the check below if that's the case
+    if (
+        hasattr(x, "is_tracked_proxy")
+        and hasattr(class_instance, "__bases__")
+        and not set(class_instance.__bases__).intersection(set(to_ignore))
+    ):
+        to_ignore += (class_instance,)
     tuple_check_fn = ivy.default(
         _tuple_check_fn,
         (

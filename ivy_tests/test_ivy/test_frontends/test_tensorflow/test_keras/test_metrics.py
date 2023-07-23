@@ -131,10 +131,12 @@ def test_tensorflow_binary_accuracy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -167,6 +169,7 @@ def test_sparse_categorical_crossentropy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -177,6 +180,7 @@ def test_sparse_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.int32] + dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -207,10 +211,12 @@ def test_tensorflow_log_cosh(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -243,10 +249,12 @@ def test_binary_crossentropy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype[::-1],
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -286,6 +294,7 @@ def test_categorical_crossentropy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     y_true = ivy.array(y_true, dtype=ivy.float32)
     dtype, y_pred = dtype_y_pred
@@ -296,6 +305,7 @@ def test_categorical_crossentropy(
 
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, dtype],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -407,10 +417,12 @@ def test_binary_focal_crossentropy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtypes, values = binary_focal_args
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -445,10 +457,12 @@ def test_sparse_top_k_categorical_accuracy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -480,10 +494,12 @@ def test_categorical_accuracy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, y = dtype_and_y
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -511,10 +527,12 @@ def test_tensorflow_kl_divergence(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -545,10 +563,12 @@ def test_tensorflow_mean_absolute_error(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -576,10 +596,12 @@ def test_tensorflow_poisson(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -609,10 +631,12 @@ def test_tensorflow_mean_squared_error(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -642,10 +666,12 @@ def test_tensorflow_mean_absolute_percentage_error(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -673,10 +699,12 @@ def test_tensorflow_hinge(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -704,10 +732,12 @@ def test_tensorflow_squared_hinge(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -736,10 +766,12 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -772,9 +804,11 @@ def test_tensorflow_cosine_similarity(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=d_type[0],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
