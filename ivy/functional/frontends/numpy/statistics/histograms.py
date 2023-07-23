@@ -86,11 +86,13 @@ def _get_bin_edges(a, bins, range, weights):
             n_equal_bins = 1
         else:
             # Do not call selectors on empty arrays
-            width = _hist_bin_selectors[bin_name](a, (first_edge, last_edge))
+            width = float(_hist_bin_selectors[bin_name](a, (first_edge, last_edge)))
             if width:
                 n_equal_bins = int(
                     ivy.ceil(
-                        ivy.array((last_edge - first_edge) / width, dtype=ivy.float64)
+                        ivy.array(
+                            float(last_edge - first_edge) / width, dtype=ivy.float64
+                        )
                     )
                 )
             else:
@@ -160,7 +162,7 @@ def _hist_bin_scott(x, range):
 
 def _hist_bin_stone(x, range):
     n = x.size
-    ptp_x = _ptp(x)
+    ptp_x = float(_ptp(x))
     if n <= 1 or ptp_x == 0:
         return 0
 
