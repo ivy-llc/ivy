@@ -257,7 +257,6 @@ def multi_dot(tensors, *, out=None):
 def ldl_factor_ex(A, hermitian=False, check_errors=False):
     if hermitian:
         A = A.conj()
-
     n = A.shape[0]
     LD = ivy.zeros_like(A)
     pivots = ivy.zeros(n, dtype=ivy.int32)
