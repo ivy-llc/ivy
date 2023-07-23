@@ -2908,9 +2908,9 @@ def _parse_query(query, x_shape):
                 else:
                     start = idx.start
                 if start > 0 and step < 0:
-                    start = min(start, s-1)
+                    start = min(start, s - 1)
                 if start < 0:
-                    start = max(0, start+s)
+                    start = max(0, start + s)
                 if idx.stop is None:
                     stop = s if step >= 0 else -1
                 else:
@@ -2918,10 +2918,14 @@ def _parse_query(query, x_shape):
                     if stop > 0 and step > 0:
                         stop = min(stop, s)
                     if stop < 0:
-                        stop = max(-1, stop+s)
+                        stop = max(-1, stop + s)
                 q_i = ivy.arange(start, stop, step).to_list()
                 q_i = [q for q in q_i if 0 <= q < s]
-                q_i = ivy.array(q_i) if len(q_i) or start == stop or idx.stop is not None else ivy.arange(0, s, 1)
+                q_i = (
+                    ivy.array(q_i)
+                    if len(q_i) or start == stop or idx.stop is not None
+                    else ivy.arange(0, s, 1)
+                )
             elif isinstance(idx, int):
                 q_i = ivy.array(idx + s if idx < 0 else idx)
             elif isinstance(idx, (tuple, list)):
