@@ -550,6 +550,9 @@ class ndarray:
     def __mod__(self, value, /):
         return np_frontend.mod(self, value, out=self)
 
+    def __divmod__(self, value, /):
+        return np_frontend.divmod(self, value, out=self)
+
     def ptp(self, *, axis=None, out=None, keepdims=False):
         xmax = self.max(axis=axis, out=out, keepdims=keepdims)
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
@@ -569,6 +572,3 @@ class ndarray:
 
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
-
-    def __divmod__(self, value, /):
-        return np_frontend.divmod(self, value, out=self)
