@@ -2,16 +2,20 @@
 
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _deconv_length
-from ivy.functional.ivy.gradients import _variable
-from ivy.data_classes.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
+from ivy.data_classes.container import Container
+from ivy.functional.ivy.gradients import _variable
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_method
+from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
+    test_layers as exp_layers_tests,
+)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     valid_dct,
 )
@@ -1382,6 +1386,43 @@ def test_adaptive_avg_pool1d_layer(
     )
 
 
+# FFT
+@handle_method(
+    method_tree="FFT.__call__",
+    x_and_fft=exp_layers_tests.x_and_fft(),
+)
+def test_fft_layer(
+    *,
+    x_and_fft,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtype, x, dim, norm, n = x_and_fft
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dim": dim,
+            "norm": norm,
+            "n": n,
+            "device": on_device,
+            "dtype": dtype[0],
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
 # AvgPool1D
 @handle_method(
     method_tree="AvgPool1D.__call__",
@@ -1451,4 +1492,47 @@ def test_dct(
         method_name=method_name,
         test_gradients=test_gradients,
         on_device=on_device,
+    )
+
+
+# Embedding
+@handle_method(
+    method_tree="Embedding.__call__",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    number_positional_args=st.just(2),
+)
+def test_embedding_layer(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    number_positional_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    dtypes, indices, weights = dtypes_indices_weights
+    dtypes = [dtypes[1], dtypes[0]]
+
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "indices": indices,
+            "max_norm": max_norm,
+            "device": on_device,
+            "dtype": dtypes[0],
+        },
+        method_input_dtypes=dtypes,
+        method_all_as_kwargs_np={"inputs": weights},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+        number_positional_args=number_positional_args,
     )
