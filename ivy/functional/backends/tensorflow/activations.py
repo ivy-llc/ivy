@@ -25,6 +25,11 @@ def gelu(
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def selu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.selu(x)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def leaky_relu(
     x: Tensor, /, *, alpha: float = 0.2, out: Optional[Tensor] = None
 ) -> Tensor:
@@ -91,3 +96,8 @@ def mish(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def softsign(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+    return tf.nn.softsign(x)
