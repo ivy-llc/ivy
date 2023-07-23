@@ -489,3 +489,38 @@ def test_paddle_meshgrid(
         on_device=on_device,
         **args,
     )
+
+
+# logspace
+@handle_frontend_test(
+    fn_tree="paddle.logspace",
+    start=helpers.floats(min_value=-10, max_value=10),
+    stop=helpers.floats(min_value=-10, max_value=10),
+    num=helpers.ints(min_value=1, max_value=5),
+    base=st.floats(min_value=0.1, max_value=10.0),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
+)
+def test_paddle_logspace(
+    start,
+    stop,
+    num,
+    base,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        start=start,
+        stop=stop,
+        num=num,
+        base=base,
+        dtype=dtype[0],
+    )

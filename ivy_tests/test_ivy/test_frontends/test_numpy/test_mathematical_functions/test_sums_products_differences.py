@@ -438,4 +438,3 @@ def test_numpy_trapz(
         dx=dx,
         axis=axis,
     )
-

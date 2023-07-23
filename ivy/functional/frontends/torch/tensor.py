@@ -727,6 +727,10 @@ class Tensor:
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
+    @property
+    def is_meta(self):
+        return "meta" in ivy.dev(self.ivy_array)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
