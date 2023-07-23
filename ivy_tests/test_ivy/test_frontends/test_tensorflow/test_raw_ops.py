@@ -9,7 +9,7 @@ import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
 
 
 # Acos
@@ -4254,4 +4254,55 @@ def test_tensorflow_Imag(
         on_device=on_device,
         input=xs[0],
         Tout=send_Tout,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    full_matrices=st.booleans(),
+    compute_uv=st.just(True),
+)
+def test_tensorflow_Svd(
+    *,
+    dtype_and_x,
+    full_matrices,
+    compute_uv,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    # make symmetric positive definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        input=x,
+        full_matrices=full_matrices,
+        compute_uv=compute_uv,
+    )
+    ret = [ivy.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, vh = ret
+    frontend_s, frontend_u, frontend_vh = frontend_ret
+
+    assert_all_close(
+        ret_np=u @ np.diag(s) @ vh,
+        ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
     )

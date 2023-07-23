@@ -1803,7 +1803,7 @@ def dtype_array_query(
     available_dtypes,
     min_num_dims=1,
     max_num_dims=3,
-    min_dim_size=1,
+    min_dim_size=0,
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
@@ -1847,6 +1847,7 @@ def dtype_array_query(
             max_size=len(shape),
         )
     )
+    index_types = [v if shape[i] > 0 else "slice" for i, v in enumerate(index_types)]
     index = []
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
@@ -1872,22 +1873,22 @@ def dtype_array_query(
             new_index = slice(
                 start := draw(
                     st.one_of(
-                        st.integers(min_value=-s + 1, max_value=s - 1),
+                        st.integers(min_value=-s - 5, max_value=s + 5),
                         st.just(None),
                     )
                 ),
                 end := draw(
                     st.one_of(
-                        st.integers(min_value=-s + 1, max_value=s - 1),
+                        st.integers(min_value=-s - 5, max_value=s + 5),
                         st.just(None),
                     )
                 ),
                 (
-                    draw(st.integers(min_value=1, max_value=s))
+                    draw(st.integers(min_value=1, max_value=s + 5))
                     if (0 if start is None else s + start if start < 0 else start)
                     < (s - 1 if end is None else s + end if end < 0 else end)
                     else (
-                        draw(st.integers(max_value=-1, min_value=-s))
+                        draw(st.integers(max_value=-1, min_value=-s - 5))
                         if allow_neg_step
                         else assume(False)
                     )
@@ -1916,7 +1917,7 @@ def dtype_array_query_val(
     available_dtypes,
     min_num_dims=1,
     max_num_dims=3,
-    min_dim_size=1,
+    min_dim_size=0,
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
@@ -1946,7 +1947,9 @@ def dtype_array_query_val(
         )
     )
     val_dtype = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+        helpers.get_castable_dtype(
+            draw(available_dtypes), input_dtype[0], x if 0 not in x.shape else None
+        )
     )[-1]
     val = val[0].astype(val_dtype)
     return input_dtype + [val_dtype], x, query, val
