@@ -1017,6 +1017,9 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
+    def fmax(self, other):
+        return torch_frontend.fmax(self, other)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
     def trunc(self):
         return torch_frontend.trunc(self)
