@@ -9568,7 +9568,7 @@ def test_torch_addr_(
         allow_inf=False,
     ),
 )
-def test_torch___eq___(
+def test_torch_eq_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
