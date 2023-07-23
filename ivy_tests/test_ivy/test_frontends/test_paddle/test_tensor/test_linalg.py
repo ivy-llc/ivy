@@ -326,6 +326,7 @@ def test_paddle_eig(
         ret_from_gt_np=front_v @ np.diag(front_l) @ front_v.T,
         rtol=1e-2,
         atol=1e-2,
+        backend=backend_fw,
         ground_truth_backend=frontend,
     )
 
@@ -442,6 +443,7 @@ def test_paddle_eigh(
         ret_from_gt_np=front_v @ np.diag(front_l) @ front_v.T,
         rtol=1e-2,
         atol=1e-2,
+        backend=backend_fw,
         ground_truth_backend=frontend,
     )
 
@@ -509,6 +511,7 @@ def test_paddle_solve(
     dtype_x,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -516,6 +519,7 @@ def test_paddle_solve(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -579,6 +583,7 @@ def test_paddle_bmm(
     dtype_x,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -586,6 +591,7 @@ def test_paddle_bmm(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -610,6 +616,7 @@ def test_paddle_matrix_power(
     dtype_and_x,
     n,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -619,6 +626,7 @@ def test_paddle_matrix_power(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -658,7 +666,9 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
 )
-def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
+def test_paddle_cond(
+    *, dtype_and_x, p, on_device, fn_tree, frontend, test_flags, backend_fw
+):
     dtype, x = dtype_and_x
 
     assume(matrix_is_stable(x[0]))
@@ -667,6 +677,7 @@ def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=True,
@@ -695,6 +706,7 @@ def test_paddle_dot(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_x
@@ -702,6 +714,7 @@ def test_paddle_dot(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -735,6 +748,7 @@ def test_paddle_transpose(
     dtype_and_x_perm,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -743,6 +757,7 @@ def test_paddle_transpose(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -772,6 +787,7 @@ def test_paddle_bincount(
     dtype_and_x,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -780,6 +796,7 @@ def test_paddle_bincount(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],

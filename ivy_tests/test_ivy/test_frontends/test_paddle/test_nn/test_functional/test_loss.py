@@ -35,6 +35,7 @@ def test_paddle_binary_cross_entropy_with_logits(
     reduction,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -48,6 +49,7 @@ def test_paddle_binary_cross_entropy_with_logits(
             weight_dtype[0],
         ],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -76,6 +78,7 @@ def test_paddle_mse_loss(
     dtype_and_x,
     reduction,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -84,6 +87,7 @@ def test_paddle_mse_loss(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -136,6 +140,7 @@ def test_paddle_cosine_embedding_loss(
     reduction,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -146,6 +151,7 @@ def test_paddle_cosine_embedding_loss(
     helpers.test_frontend_function(
         input_dtypes=[input1_dtype, input2_dtype],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -176,6 +182,7 @@ def test_paddle_hinge_embedding_loss(
     margin,
     reduction,
     test_flags,
+    backend_fw,
     fn_tree,
     frontend,
     on_device,
@@ -184,6 +191,7 @@ def test_paddle_hinge_embedding_loss(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -219,6 +227,7 @@ def test_paddle_log_loss(
     epsilon,
     fn_tree,
     test_flags,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -226,6 +235,7 @@ def test_paddle_log_loss(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -254,12 +264,20 @@ def test_paddle_log_loss(
     reduction=st.sampled_from(["mean", "sum", "none"]),
 )
 def test_paddle_smooth_l1_loss(
-    dtype_and_x, delta, reduction, on_device, fn_tree, frontend, test_flags
+    dtype_and_x,
+    delta,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -284,11 +302,18 @@ def test_paddle_smooth_l1_loss(
     reduction=st.sampled_from(["mean", "sum", "none"]),
 )
 def test_paddle_l1_loss(
-    dtype_and_x, reduction, on_device, fn_tree, frontend, test_flags
+    dtype_and_x,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
