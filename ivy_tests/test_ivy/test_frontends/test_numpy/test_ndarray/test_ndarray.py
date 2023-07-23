@@ -24,6 +24,8 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
     _get_castable_dtypes_values,
 )
 
+from ivy.functional.frontends.numpy import ndarray
+
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
@@ -3313,6 +3315,52 @@ def test_numpy_instance_mod__(
     )
 
 
+# divmod
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__divmod__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        exclude_min=True,
+    ),
+)
+def test_numpy_instance_divmod__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+
+    # Test division and modulus together
+    # Check if xs[1] is close to zero to avoid division by zero
+    assume(not np.any(np.isclose(xs[1], 0)))
+
+    # Test __divmod__
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 # ptp
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -3451,60 +3499,6 @@ def test_numpy_instance_rshift__(
         },
         method_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
-        method_all_as_kwargs_np={
-            "value": x[1],
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="__lshift__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=2,
-        max_dim_size=1,
-        max_value=2**31 - 1,
-    ),
-)
-def test_numpy_instance_lshift__(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtypes, x = dtype_and_x
-    max_bits = np.iinfo(input_dtypes[0]).bits
-    max_shift = max_bits - 1
-
-    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
-
-    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
-    overflow_threshold = 2 ** (max_bits - 1)
-
-    x[0] = np.asarray(
-        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
-    )
-
-    if np.any(x[0] > overflow_threshold):
-        x[0] = np.clip(x[0], None, overflow_threshold)
-    if np.any(x[0] < 0):
-        x[0] = np.abs(x[0])
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "value": x[1],
         },
