@@ -613,3 +613,27 @@ def triplet_margin_with_distance_loss(
     loss = ivy.maximum(dist_pos - dist_neg + ivy.array(margin), ivy.array(0.0))
 
     return reduction(loss).astype(anchor.dtype)
+
+
+# multi_margin_loss
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def multi_margin_loss(input, target, p=1, margin=1, weight=None, reduction="mean"):
+    diff = margin - input[target] + input
+    loss = (
+        ivy.maximum(0, weight[target] * diff)
+        if weight is not None
+        else ivy.maximum(0, diff)
+    )
+    loss = ivy.sum(loss**p)
+    reduction = _get_reduction(reduction)
+    ivy.assertions.check_true(
+        input.shape[0] == target.shape[0],
+        (
+            "The size of input and target must be same but got : input"
+            f" {input.shape[0]} output {target.shape[0]}"
+        ),
+    )
+    return reduction(loss)
