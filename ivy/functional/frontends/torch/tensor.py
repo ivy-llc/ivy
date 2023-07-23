@@ -842,6 +842,11 @@ class Tensor:
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
+    @numpy_to_torch_style_args
+    def squeeze_(self, dim=None):
+        self.ivy_array = self.squeeze(dim).ivy_array
+        return self
+
     def flip(self, dims):
         return torch_frontend.flip(self, dims)
 
@@ -1457,6 +1462,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log1p(self):
         return torch_frontend.log1p(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log1p_(self):
+        self.ivy_array = self.log1p().ivy_array
+        return self
 
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.baddbmm(
