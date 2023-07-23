@@ -614,6 +614,17 @@ class _ContainerWithLayers(ContainerBase):
         -------
         ret
             Result container of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+        ...                   b=ivy.array([[400, 500, 600]]))
+        >>> y = x.dropout2d(0.5)
+        >>> print(y)
+        {
+            a: ivy.array([[200., 0., 600.]]),
+            b: ivy.array([[0., 0., 0.]])
+        }
         """
         return self._static_dropout2d(
             self,

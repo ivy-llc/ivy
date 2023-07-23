@@ -234,7 +234,8 @@ class _ArrayWithLayers(abc.ABC):
         >>> x = ivy.array([[1, 1, 1], [2, 2, 2]])
         >>> y = x.dropout2d(0.5)
         >>> print(y)
-        ivy.array([[2., 0., 2.], [0., 0., 4.]])
+        ivy.array([[0., 0., 2.],
+               [4., 4., 4.]])
         """
         return ivy.dropout2d(
             self._data,

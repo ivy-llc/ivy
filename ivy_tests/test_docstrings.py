@@ -318,6 +318,7 @@ def test_docstrings(backend):
         "deserialize",
         "dropout",
         "dropout1d",
+        "dropout2d",
         "dropout3d",
     ]
     # the temp skip list consists of functions which have an issue with their
@@ -338,13 +339,14 @@ def test_docstrings(backend):
 
     # skip list for array and container docstrings
     skip_arr_cont = [
+        # generates different results due to randomization
         "cumprod",
         "supports_inplace_updates",
         "slogdet",
         "dropout",
         "dropout1d",
+        "dropout2d",
         "dropout3",
-        # generates different results due to randomization
         "svd",
         # exec and self run generates diff results
         "dev",

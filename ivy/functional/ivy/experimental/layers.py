@@ -1055,16 +1055,6 @@ def dropout2d(
     >>> y = ivy.dropout2d(x, 1, training=False, data_format="NCW")
     >>> print(y)
     ivy.array([[1, 1, 1]])
-
-    With one :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
-                          b=ivy.array([[400, 500, 600]]))
-    >>> y = ivy.dropout2d(x, 0.5)
-    >>> print(y)
-    {
-        a: ivy.array([[200., 0., 600.]]),
-        b: ivy.array([[0., 0., 1200.]])
-    }
     """
     return ivy.current_backend(x).dropout2d(
         x, prob, training=training, data_format=data_format, out=out
