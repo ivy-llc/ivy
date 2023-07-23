@@ -81,6 +81,12 @@ def _update_torch(updates: dict, device: Device):
 
     lines = _remove_old_pyg_urls_from_lines(lines)
 
+    def _remove_device_specific_versioning(lines: list[str]) -> list[str]:
+        pattern = re.compile(r"(torch(?:-scatter)?==\d+\.\d+\.\d+)\S*(.*)")
+        return [re.sub(pattern, r"\1\2", line) for line in lines]
+
+    lines = _remove_device_specific_versioning(lines)
+
     def _get_torch_line_index_from_lines(lines: list[str]) -> int:
         return next(
             (i for i, line in enumerate(lines) if re.search("torch==", line)), -1
