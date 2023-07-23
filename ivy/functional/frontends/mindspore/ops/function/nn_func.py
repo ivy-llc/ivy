@@ -109,7 +109,13 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
 @with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
 def conv2d(
-    input, weight, bias=None, stride=1, pad_mode="valid", padding=0, dilation=1,
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode="valid",
+    padding=0,
+    dilation=1,
     groups=1
 ):
     if pad_mode == "valid" or pad_mode == "same":
@@ -123,9 +129,16 @@ def conv2d(
 
 @with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
-def conv1d(input, weight, bias=None, stride=1, pad_mode='valid', padding=0, dilation=1,
-           groups=1
-           ):
+def conv1d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode='valid',
+    padding=0,
+    dilation=1,
+    groups=1
+    ):
     if pad_mode == "valid" or pad_mode == "same":
         padding = pad_mode
     elif pad_mode == "pad":
@@ -137,9 +150,16 @@ def conv1d(input, weight, bias=None, stride=1, pad_mode='valid', padding=0, dila
 
 @with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
-def conv3d(input, weight, bias=None, stride=1, pad_mode='valid', padding=0, dilation=1,
-           groups=1
-           ):
+def conv3d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode='valid',
+    padding=0,
+    dilation=1,
+    groups=1
+    ):
     if pad_mode == "valid" or pad_mode == "same":
         padding = pad_mode
     elif pad_mode == "pad":
