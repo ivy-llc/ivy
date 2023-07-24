@@ -160,7 +160,7 @@ def test_tensorflow_eigvalsh(
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
-def test_matrix_rank(
+def test_tensorflow_matrix_rank(
     *,
     dtype_x_hermitian_atol_rtol,
     frontend,
