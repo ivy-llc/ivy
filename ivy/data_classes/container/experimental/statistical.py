@@ -629,7 +629,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         --------
         With one :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),\
+        >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
         ...                   b=ivy.array([1., 2., 3., 4.]))
         >>> z = 0.5
         >>> y = x.quantile(z)
