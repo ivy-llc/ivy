@@ -21,11 +21,13 @@ def test_numpy_indices(
     sparse,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -67,6 +69,7 @@ def test_numpy_unravel_index(
     dtype_x_shape,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -74,6 +77,7 @@ def test_numpy_unravel_index(
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -96,11 +100,13 @@ def test_numpy_diag_indices(
     dtype,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -124,12 +130,14 @@ def test_tril_indices(
     k,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=["int32"],
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
