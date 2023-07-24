@@ -3,6 +3,5 @@
   "jax": ["jax[cpu]","dm-haiku", "flax", "jaxlib"],
   "numpy": ["numpy"],
   "paddle": ["paddlepaddle"],
-  "mxnet": ["mxnet"],
-  "torch": ["torch", "torch-scatter"]
+  "mxnet": ["mxnet"]
 }
