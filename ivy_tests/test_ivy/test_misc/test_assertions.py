@@ -2,7 +2,13 @@ import sys
 import os
 import contextlib
 import pytest
-from ivy.utils.assertions import check_equal, check_greater, check_less
+from ivy.utils.assertions import (
+    check_equal,
+    check_greater,
+    check_isinstance,
+    check_less,
+)
+import ivy
 
 
 @pytest.mark.parametrize(
@@ -119,6 +125,36 @@ def test_check_equal(x1, x2, inverse):
 
         if x1 == x2:
             assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "x, allowed_types",
+    [(5.0, float), (ivy.array(5), type(ivy.array(8))), (5, float), ([5, 10], tuple)],
+)
+def test_check_isinstance(x, allowed_types):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_isinstance(x, allowed_types)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not isinstance(x, allowed_types):
+        assert "must be one of the" in lines.strip()
+
+    if isinstance(x, allowed_types):
+        assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
