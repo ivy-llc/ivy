@@ -632,7 +632,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),
         ...                   b=ivy.array([[1,2,3,4],[7,8,9,10]]))
         >>> n = m.rot90()
         >>> print(n)
