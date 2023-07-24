@@ -67,18 +67,6 @@ def asinh(x, name="asinh"):
     {"2.13.0 and below": ("int32",)}, 
     "tensorflow"
 )
-@to_ivy_arrays_and_back
-def bincount(
-    x, 
-    weights=None, 
-    minlength=None, 
-    maxlength=None, 
-    dtype=ivy.int32, 
-    name="bincount", 
-    axis=None, 
-    binary_output=False,
-):
-    return ivy.bincount(x, weights=weights, minlength=minlength)
 
 
 @handle_tf_dtype

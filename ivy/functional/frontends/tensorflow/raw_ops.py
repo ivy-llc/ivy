@@ -125,17 +125,6 @@ def BroadcastTo(*, input, shape, name="BroadcastTo"):
     return ivy.broadcast_to(input, shape=shape)
 
 
-Bincount = to_ivy_arrays_and_back(with_supported_dtypes(
-        {"2.13.0 and below": ("int64",)},
-        "tensorflow",
-    )(
-        map_raw_ops_alias(
-            tf_frontend.math.bincount
-        )
-    )
-)
-
-
 @to_ivy_arrays_and_back
 def Cholesky(*, input, name="Cholesky"):
     return ivy.astype(ivy.cholesky(input), input.dtype)
