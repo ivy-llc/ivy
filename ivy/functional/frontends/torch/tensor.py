@@ -727,6 +727,10 @@ class Tensor:
     def is_cuda(self):
         return "gpu" in ivy.dev(self.ivy_array)
 
+    @property
+    def is_meta(self):
+        return "meta" in ivy.dev(self.ivy_array)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def pow(self, exponent):
         return torch_frontend.pow(self, exponent)
@@ -1569,6 +1573,22 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "int32",
+            )
+        },
+        "paddle",
+    )
+    def adjoint(self):
+        return torch_frontend.adjoint(self)
 
 
 class Size(tuple):
