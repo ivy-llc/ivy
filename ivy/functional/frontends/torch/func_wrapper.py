@@ -112,10 +112,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_torch(*args, **kwargs):
         """
-        Convert `Tensor` into `ivy.Array` instances.
-
         Convert all `Tensor` instances in both the positional and
-        keyword arguments into `ivy.Array` instances, and then calls the
+        keyword arguments into `ivy.Array` instances, and then call the
         function with the updated arguments.
         """
         # Remove out argument if present in kwargs
@@ -141,9 +139,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def outputs_to_frontend_arrays_torch(*args, **kwargs):
         """
-        Convert `ivy.Array` into `Tensor` instances.
-
-        Call the function, and then converts all `ivy.Array` instances
+        Call the function, and then convert all `ivy.Array` instances
         returned by the function into `Tensor` instances.
         """
         # call unmodified function
@@ -224,8 +220,6 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
-
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `Tensor` instances.
     """
@@ -241,6 +235,39 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return outputs_to_native_arrays_torch
+
+
+def to_ivy_shape(fn: Callable) -> Callable:
+    """
+    Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
+    `ivy.Shape` instances.
+    """
+
+    @functools.wraps(fn)
+    def to_ivy_shape_torch(*args, **kwargs):
+        new_kwargs = {
+            key: (
+                ivy.to_ivy_shape(tuple(value))
+                if key in ["shape", "size"]
+                and isinstance(value, ivy.functional.frontends.torch.Size)
+                else value
+            )
+            for key, value in kwargs.items()
+        }
+        # if any of the args are instance of torch_frontend.Size,
+        # convert them to ivy.Shape.
+        new_args = ivy.nested_map(
+            args,
+            lambda x: (
+                ivy.to_ivy_shape(tuple(x))
+                if isinstance(x, ivy.functional.frontends.torch.Size)
+                else x
+            ),
+            shallow=False,
+        )
+        return fn(*new_args, **new_kwargs)
+
+    return to_ivy_shape_torch
 
 
 numpy_compatible_args = {

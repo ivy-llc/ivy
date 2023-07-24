@@ -80,7 +80,7 @@ def test_torch_result_type(
     ),
     test_with_out=st.just(False),
 )
-def test_torch_utilities_bincount(
+def test_torch_bincount(
     *,
     dtype_and_x,
     on_device,
