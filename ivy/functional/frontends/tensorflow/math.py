@@ -717,3 +717,22 @@ def atanh(x, name="atanh"):
 def xdivy(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
+
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("int32",)},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def bincount(
+    arr,
+    weights=None,
+    minlength=None,
+    maxlength=None,
+    dtype=ivy.int32,
+    name=None,
+    axis=None,
+    binary_output=False,
+):
+    return ivy.bincount(arr, weights=weights, minlength=minlength)
+
