@@ -3038,13 +3038,13 @@ def test_jax_conjugate(
         x=x[0],
     )
 
-#sin
+#cos
 @handle_frontend_test(
-    fn_tree="jax.numpy.sin",
+    fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     test_with_out=st.just(False),
 )
-def test_jax_sin(
+def test_jax_cos(
     *,
     dtype_and_x,
     on_device,
