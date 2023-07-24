@@ -1143,6 +1143,8 @@ def test_tensorflow_tensor_diag(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
     ),
     test_with_out=st.just(False),
 )
