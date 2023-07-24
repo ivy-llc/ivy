@@ -278,6 +278,11 @@ class IvyBackendException(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
+class InvalidBackendException(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 class IvyNotImplementedException(NotImplementedError):
     def __init__(self, message=""):
         super().__init__(message)
@@ -367,6 +372,9 @@ def handle_exceptions(fn: Callable) -> Callable:
             raise ivy.utils.exceptions.IvyValueError(
                 fn.__name__, str(e), include_backend=True
             )
+        except InvalidBackendException as e:
+            _configure_stack_trace(e.__traceback__)
+            raise e
         except (Exception, IvyBackendException) as e:
             _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyBackendException(
