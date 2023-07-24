@@ -749,40 +749,34 @@ def test_numpy_gamma(
 @handle_frontend_test(
     fn_tree="numpy.random.f",
     input_dtypes=helpers.get_dtypes("float", full=False),
-    dfn=st.one_of(
-        st.floats(
-            min_value=0,
-            max_value=1000,
-            exclude_min=True,
-            width=32,
-        ),
+    dfn=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
-    dfd=st.one_of(
-        st.floats(
-            min_value=0,
-            max_value=1000,
-            exclude_min=True,
-            width=32,
-        ),
+    dfd=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
-    size=helpers.get_shape(allow_none=True),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    test_with_out=st.just(False),
 )
 def test_numpy_f(
     input_dtypes,
+    dfn,
+    dfd,
     size,
     frontend,
     test_flags,
     fn_tree,
     on_device,
-    dfn,
-    dfd,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        frontend=frontend,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        test_values=False,
         dfn=dfn,
         dfd=dfd,
         size=size,
