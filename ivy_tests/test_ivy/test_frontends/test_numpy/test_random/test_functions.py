@@ -819,6 +819,7 @@ def test_numpy_triangular(
     size,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     left,
@@ -827,6 +828,7 @@ def test_numpy_triangular(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
