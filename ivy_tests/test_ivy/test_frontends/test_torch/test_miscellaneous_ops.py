@@ -1200,7 +1200,7 @@ def test_torch_tensordot(
         max_num_dims=1,
     ),
 )
-def test_diff(
+def test_torch_diff(
     *,
     dtype_n_x_n_axis,
     n,
