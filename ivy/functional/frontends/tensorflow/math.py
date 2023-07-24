@@ -715,4 +715,5 @@ def atanh(x, name="atanh"):
 
 @to_ivy_arrays_and_back
 def xdivy(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
     return ivy.divide(x, y)
