@@ -363,7 +363,7 @@ def test_function(
         ret_device = None
         if isinstance(ret_from_target, ivy_backend.Array):
             ret_device = ivy_backend.dev(ret_from_target)
-    
+
     # compute the return with a Ground Truth backend
     with update_backend(test_flags.ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
