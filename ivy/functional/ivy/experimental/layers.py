@@ -1236,8 +1236,8 @@ def embedding(
     >>> weights = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
     >>> indices = ivy.array([0, 2])
     >>> print(ivy.embedding(weights, indices, max_norm=5))
-    ivy.array([[1., 2., 3.],
-                [7., 8., 9.]])
+    ivy.array([[1.        , 2.        , 3.        ],
+           [2.51285338, 2.87183261, 3.2308116 ]])
     """
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
