@@ -1106,7 +1106,7 @@ def nested_map(
     [[2, 4], [6, [4, 5]], [[6], [14, 16, [9, 10]]]]
 
     >>> nest = ([23, 25, 1337], [63, 98, 6])
-    >>> function = lamba a :  a + 1
+    >>> function = lambda a :  a + 1
     >>> ivy.nested_map(nest, function, to_mutable = True)
     >>> print(nest)
     [[24, 25, 1338], [64, 99, 7]]
