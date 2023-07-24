@@ -380,6 +380,12 @@ def lerp(x, y, weight, name=None):
     return ivy.lerp(x, y, weight)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rsqrt(x, name=None):
+    return 1 / ivy.sqrt(x)
+
+
 @to_ivy_arrays_and_back
 def any(x, axis=None, keepdim=False, name=None):
     return ivy.max(x, axis=axis, keepdims=keepdim)
