@@ -96,3 +96,8 @@ def max_unpool1d(
     name=None,
 ):
     return ivy.max_unpool1d(x, indices, kernel_size, stride, padding, data_format)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def adaptive_max_pool1d(output_size, return_mask=False, name=None):
+    return ivy.adaptive_avg_pool1d( output_size, return_mask=return_mask, name=name)
