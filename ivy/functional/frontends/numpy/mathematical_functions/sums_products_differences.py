@@ -154,3 +154,8 @@ def ediff1d(ary, to_end=None, to_begin=None):
         to_end = ivy.array(to_end)
         diffs = ivy.concat((diffs, to_end))
     return diffs
+
+
+@to_ivy_arrays_and_back
+def trapz(y, x=None, dx=1.0, axis=-1):
+    return ivy.trapz(y, x=x, dx=dx, axis=axis)
