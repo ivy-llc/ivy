@@ -175,7 +175,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
 
         >>> x = ivy.array([-2.5, 1., 0, 4.5])
-        >>> z = x.logsigmoid())
+        >>> z = x.logsigmoid()
         >>> print(z)
         ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
         """
