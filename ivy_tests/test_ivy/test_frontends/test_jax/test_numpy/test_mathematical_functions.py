@@ -2657,7 +2657,7 @@ def test_jax_frexp(
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
-        on_device=as_ivy_dev(on_device),
+        on_device=on_device,
         x=x[0],
     )
 
