@@ -50,6 +50,10 @@ class ndarray:
         return self.ivy_array.shape
 
     @property
+    def size(self):
+        return self.ivy_array.size
+
+    @property
     def dtype(self):
         return self.ivy_array.dtype
 
@@ -215,6 +219,14 @@ class ndarray:
             subok=subok,
         )
 
+    def compress(self, condition, axis=None, out=None):
+        return np_frontend.compress(
+            condition=condition,
+            a=self,
+            axis=axis,
+            out=out,
+        )
+
     def conj(
         self,
         /,
@@ -251,6 +263,9 @@ class ndarray:
             dtype=dtype,
             out=out,
         )
+
+    def dot(self, b, out=None):
+        return np_frontend.dot(self, b, out=out)
 
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
@@ -540,6 +555,18 @@ class ndarray:
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
 
+    def item(self, *args):
+        if len(args) == 0:
+            return self[0].ivy_array.to_scalar()
+        elif len(args) == 1 and type(args[0]) == int:
+            index = args[0]
+            return self.ivy_array.flatten()[index].to_scalar()
+        else:
+            out = self
+            for index in args:
+                out = out[index]
+            return out.ivy_array.to_scalar()
+
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
 
@@ -558,3 +585,6 @@ class ndarray:
             axis2=axis2,
             out=out,
         )
+
+    def __lshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value)
