@@ -59,8 +59,8 @@ def _get_seed(key):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -75,8 +75,8 @@ def beta(key, a, b, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -111,8 +111,8 @@ def poisson(key, lam, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -127,8 +127,8 @@ def gamma(key, a, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -163,8 +163,8 @@ def rademacher(key, shape, dtype="int64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -231,8 +231,8 @@ def permutation(key, x, axis=0, independent=False):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -254,8 +254,8 @@ def shuffle(key, x, axis=0):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -272,8 +272,8 @@ def exponential(key, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -291,8 +291,8 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -313,8 +313,8 @@ def pareto(key, b, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.3.14 and below": (
-                "float16",
-                "bfloat16",
+            "float16",
+            "bfloat16",
         )
     },
     "jax",
@@ -333,8 +333,8 @@ def maxwell(key, shape=None, dtype="float64"):
 @with_supported_dtypes(
     {
         "0.4.13 and below": (
-                "float32",
-                "float64",
+            "float32",
+            "float64",
         )
     },
     "jax",
