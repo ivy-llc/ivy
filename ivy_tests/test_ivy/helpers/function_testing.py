@@ -619,14 +619,9 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        ret = frontend_fn(*args_for_test, **kwargs_for_test)
-
         assert ivy.nested_map(
             ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True
         ), "Frontend function returned non-frontend arrays: {}".format(ret)
-
-        if not test_flags.generate_frontend_arrays:
-            ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
 
         if test_flags.with_out:
             if not inspect.isclass(ret):
