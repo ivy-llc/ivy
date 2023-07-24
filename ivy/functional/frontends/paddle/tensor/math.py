@@ -355,7 +355,16 @@ def frac(x, name=None):
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def logcumsumexp(x, axis=None, dtype=None, name=None):
-    return ivy.logcumsumexp(x, axis=axis, dtype=dtype)
+    if len(x.shape) == 0:
+        ret = 0
+    else:
+        original_dtype = dtype
+        exponentiated_x = ivy.exp(x.astype("float64"))
+        summated_exponentiated_x = ivy.cumsum(exponentiated_x, axis=axis)
+        ret = ivy.log(summated_exponentiated_x).astype(original_dtype)
+    if ivy.exists(name):
+        ivy.inplace_update(name, ret)
+    return ret
 
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
