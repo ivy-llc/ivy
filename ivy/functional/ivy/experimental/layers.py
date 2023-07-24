@@ -2698,15 +2698,19 @@ def rfftn(
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
-    >>> result = ivy.rfftn(x)
+    >>> result = ivy.rfftn(x, s=(4,))
     >>> print(result)
-    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+    ivy.array([10.+0.j, -2.+2.j, -2.+0.j])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
     >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
     >>> print(result)
-    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
-     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
+    ivy.array([[21.         +0.j        , -4.         -7.j        ,
+             7.         +0.j        ],
+           [-1.5       -12.99038106j, -5.33012702 +2.23205081j,
+            -0.5        -4.33012702j],
+           [-1.5       +12.99038106j,  3.33012702 -1.23205081j,
+            -0.5        +4.33012702j]])
     """
     if norm is None:
         norm = "backward"

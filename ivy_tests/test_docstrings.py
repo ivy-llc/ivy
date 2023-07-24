@@ -345,6 +345,8 @@ def test_docstrings(backend):
         "einops_reduce",
         "max_unpool1d",
         "pool",
+        # works only if no backend set
+        "rfftn"
     ]
 
     # skip list for array and container docstrings
