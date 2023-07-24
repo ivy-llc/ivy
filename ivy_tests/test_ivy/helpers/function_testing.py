@@ -280,21 +280,6 @@ def test_function(
             **kwargs,
         )
 
-    assert ivy.nested_map(
-        ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
-    ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
-
-    # Assert indices of return if the indices of the out array provided
-    if test_flags.with_out and not test_flags.test_compile:
-        test_ret = (
-            ret_from_target[getattr(ivy.__dict__[fn_name], "out_index")]
-            if hasattr(ivy.__dict__[fn_name], "out_index")
-            else ret_from_target
-        )
-        out = ivy.nested_map(
-            test_ret, ivy.zeros_like, to_mutable=True, include_derived=True
-        )
-
         # Assert indices of return if the indices of the out array provided
         if test_flags.with_out and not test_flags.test_compile:
             test_ret = (
@@ -374,7 +359,11 @@ def test_function(
         ret_device = None
         if isinstance(ret_from_target, ivy_backend.Array):
             ret_device = ivy_backend.dev(ret_from_target)
-
+            
+    assert ivy.nested_map(
+        ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+    ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
+    
     # compute the return with a Ground Truth backend
     with update_backend(test_flags.ground_truth_backend) as gt_backend:
         gt_backend.set_default_device(on_device)  # TODO remove
