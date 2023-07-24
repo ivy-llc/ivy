@@ -567,8 +567,9 @@ def top_k(
     >>> x = ivy.array([[-2., 3., 4., 0.], [-8., 0., -1., 2.]])
     >>> y = ivy.top_k(x, 2, axis=1, largest=False)
     >>> print(y)
-    top_k(values=ivy.array([[-2.,  0.],[-8., -1.]]),
-    ...   indices=ivy.array([[0, 3],[0, 2]]))
+    top_k(values=ivy.array([[-2.,  0.],
+           [-8., -1.]]), indices=ivy.array([[0, 3],
+           [0, 2]]))
 
     With :class:`ivy.NativeArray` input:
 
@@ -580,18 +581,16 @@ def top_k(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
-    >>> y = ivy.top_k(2)
+    >>> y = x.top_k(2)
     >>> print(y)
-    {
-        a: [
-            values = ivy.array([ 2, -1]),
-            indices = ivy.array([1, 0])
-        ],
-        b: [
-            values = ivy.array([5., 4.]),
-            indices = ivy.array([1, 0])
-        ]
-    }
+    [{
+        a: ivy.array([2, -1]),
+        b: ivy.array([5., 4.])
+    }, {
+        a: ivy.array([1, 0]),
+        b: ivy.array([1, 0])
+    }]
+
     """
     return current_backend(x).top_k(
         x, k, axis=axis, largest=largest, sorted=sorted, out=out
