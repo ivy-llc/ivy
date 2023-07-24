@@ -748,18 +748,19 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     test_with_out=st.just(False),
 )
 def test_modf(
+    *,
     dtype_and_x,
-    frontend,
+    backend_fw,
     test_flags,
-    fn_tree,
+    fn_name,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
-        frontend=frontend,
+        fw=backend_fw,
         test_flags=test_flags,
-        fn_tree=fn_tree,
+        fn_name=fn_name,
         on_device=on_device,
         x=x[0],
     )

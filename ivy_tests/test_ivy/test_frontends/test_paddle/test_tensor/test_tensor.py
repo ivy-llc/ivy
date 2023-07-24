@@ -2719,3 +2719,44 @@ def test_paddle_instance_min(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+# std
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="paddle.to_tensor",
+    method_name="std",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=st.one_of(helpers.get_dtypes("float")),
+        min_axis=-1,
+        max_axis=0,
+    ),
+    keep_dims=st.booleans(),
+    unbiased=st.booleans(),
+)
+def test_paddle_instance_std(
+    dtype_x_axis,
+    keep_dims,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdim": keep_dims,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )

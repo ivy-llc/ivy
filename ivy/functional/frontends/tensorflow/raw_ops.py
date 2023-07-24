@@ -40,11 +40,10 @@ AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 Atan2 = to_ivy_arrays_and_back(
     with_unsupported_dtypes(
-        {
-            "2.13.0 and below": ("float16")
-        }, 
+        {"2.13.0 and below": "float16"},
         "tensorflow",
-    )(map_raw_ops_alias(tf_frontend.math.atan2)))
+    )(map_raw_ops_alias(tf_frontend.math.atan2))
+)
 
 
 @with_unsupported_dtypes(
