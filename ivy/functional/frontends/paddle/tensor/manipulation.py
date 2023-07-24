@@ -103,5 +103,14 @@ def broadcast_to(x, shape, name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
+def gather(params, indices, axis=-1, batch_dims=0, name=None):
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
 def roll(x, shift, axis=None, name=None):
     return ivy.roll(x, shift, axis=axis)
