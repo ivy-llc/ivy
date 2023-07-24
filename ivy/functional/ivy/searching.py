@@ -203,15 +203,15 @@ def argmin(
     >>> y = ivy.argmin(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[2],
-              [0]])
+           [0]])
 
     >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
-    >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> y= ivy.zeros((3,1), dtype=ivy.int64)
     >>> ivy.argmin(x, axis=1, keepdims=True, out=y)
     >>> print(y)
     ivy.array([[2],
-               [0],
-               [1]])
+           [0],
+           [1]])
 
     With :class:`ivy.Container` input:
 
@@ -219,8 +219,8 @@ def argmin(
     >>> y = ivy.argmin(x)
     >>> print(y)
     {
-        a:ivy.array(1),
-        b:ivy.array(0)
+        a: ivy.array(1),
+        b: ivy.array(0)
     }
     """
     return current_backend(x).argmin(

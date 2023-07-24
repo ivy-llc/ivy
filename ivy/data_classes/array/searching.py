@@ -138,12 +138,12 @@ class _ArrayWithSearching(abc.ABC):
         ivy.array(2)
 
         >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
-        >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> y= ivy.zeros((3,1), dtype=ivy.int64)
         >>> x.argmin(axis=1, keepdims=True, out=y)
         >>> print(y)
         ivy.array([[2],
-                   [0],
-                   [1]])
+               [0],
+               [1]])
         """
         return ivy.argmin(
             self._data,

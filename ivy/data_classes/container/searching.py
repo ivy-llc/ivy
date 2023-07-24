@@ -242,11 +242,11 @@ class _ContainerWithSearching(ContainerBase):
         >>> y = x.argmin()
         >>> print(y)
         {
-            a:ivy.array(1),
-            b:ivy.array(0)
+            a: ivy.array(1),
+            b: ivy.array(0)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),
         ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]]))
         >>> y = x.argmin(axis=1, keepdims=True)
         >>> print(y)
