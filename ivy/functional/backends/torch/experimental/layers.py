@@ -950,6 +950,7 @@ def stft(
         pad_mode,
         normalized,
         onesided,
+        return_complex,
     )
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
