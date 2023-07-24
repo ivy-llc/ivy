@@ -28,6 +28,7 @@ def test_numpy_ceil(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -38,6 +39,7 @@ def test_numpy_ceil(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -73,6 +75,7 @@ def test_numpy_floor(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -83,6 +86,7 @@ def test_numpy_floor(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -109,11 +113,13 @@ def test_numpy_fix(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -144,6 +150,7 @@ def test_numpy_trunc(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -154,6 +161,7 @@ def test_numpy_trunc(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -189,6 +197,7 @@ def test_numpy_rint(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, casting, dtype = dtypes_values_casting
@@ -199,6 +208,7 @@ def test_numpy_rint(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -229,10 +239,12 @@ def test_numpy_around(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -257,6 +269,7 @@ def test_numpy_round(
     dtype_and_x,
     decimals,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -264,6 +277,7 @@ def test_numpy_round(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
