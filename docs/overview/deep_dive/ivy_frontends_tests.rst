@@ -72,23 +72,25 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_lax/test_operators.py
     @handle_frontend_test(
         fn_tree="jax.lax.tan",
         dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
         test_with_out=st.just(False),
     )
-    def test_jax_lax_tan(
+    def test_jax_tan(
         *,
         dtype_and_x,
         on_device,
         fn_tree,
+        backend_fw,
         frontend,
         test_flags,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -109,8 +111,8 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_np_trigonometric_functions.py
-        @handle_frontend_test(
+    # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_trigonometric_functions.py
+    @handle_frontend_test(
         fn_tree="numpy.tan",
         dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
             arr_func=[
@@ -121,37 +123,42 @@ ivy.tan()
         ),
         where=np_frontend_helpers.where(),
         number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
-                fn_name="tan"
-            ),
+            fn_name="tan"
+        ),
+    )
+    def test_numpy_tan(
+        dtypes_values_casting,
+        where,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+    ):
+        input_dtypes, x, casting, dtype = dtypes_values_casting
+        where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=test_flags,
         )
-        def test_numpy_tan(
-            dtypes_values_casting,
-            where,
-            frontend,
-            test_flags,
-            fn_tree,
-            on_device,
-        ):
-            input_dtypes, x, casting, dtype = dtypes_values_casting
-            where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-                where=where,
-                input_dtype=input_dtypes,
-                test_flags=test_flags,
-            )
-            np_frontend_helpers.test_frontend_function(
-                input_dtypes=input_dtypes,
-                frontend=frontend,
-                test_flags=test_flags,
-                fn_tree=fn_tree,
-                on_device=on_device,
-                x=x[0],
-                out=None,
-                where=where,
-                casting=casting,
-                order="K",
-                dtype=dtype,
-                subok=True,
-            )
+        np_frontend_helpers.test_frontend_function(
+            input_dtypes=input_dtypes,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            rtol=1e-02,
+            atol=1e-02,
+            x=x[0],
+            out=None,
+            where=where,
+            casting=casting,
+            order="K",
+            dtype=dtype,
+            subok=True,
+        )
+
 * We set :code:`fn_tree` to :code:`numpy.tan` which is the path to the function in the NumPy namespace.
 * Here we use :code:`helpers.get_dtypes("numeric")` to generate :code:`available_dtypes`, these are valid :code:`numeric` data types specifically for NumPy.
 * NumPy has an optional argument :code:`where` which is generated using :func:`np_frontend_helpers.where`.
@@ -163,30 +170,32 @@ ivy.tan()
 
 .. code-block:: python
         
-        # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
-        # tan
-        @handle_frontend_test(
-            fn_tree="tensorflow.math.tan",
-            dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-            test_with_out=st.just(False),
+    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
+    @handle_frontend_test(
+        fn_tree="tensorflow.math.tan",
+        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+        test_with_out=st.just(False),
+    )
+    def test_tensorflow_tan(
+        *,
+        dtype_and_x,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+    ):
+        input_dtype, x = dtype_and_x
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
         )
-        def test_tensorflow_tan(
-            *,
-            dtype_and_x,
-            frontend,
-            test_flags,
-            fn_tree,
-            on_device,
-        ):
-            input_dtype, x = dtype_and_x
-            helpers.test_frontend_function(
-                input_dtypes=input_dtype,
-                frontend=frontend,
-                test_flags=test_flags,
-                fn_tree=fn_tree,
-                on_device=on_device,
-                x=x[0],
-            )
+
 * We set :code:`fn_tree` to :code:`tensorflow.math.tan` which is the path to the function in the TensorFlow namespace.
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for the function.
 
@@ -196,32 +205,27 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
-    # tan
     @handle_frontend_test(
-    fn_tree="torch.tan",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-            ),
+        fn_tree="torch.tan",
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+        ),
     )
     def test_torch_tan(
         *,
         dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
+        test_flags,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
             frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             input=x[0],
