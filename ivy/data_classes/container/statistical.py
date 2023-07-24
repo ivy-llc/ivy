@@ -949,11 +949,11 @@ class _ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[-1., 1., 2.], [2., 2., 2.]]),
         ...                   b=ivy.array([[3., 0., -3.], [4., 1., 4.]]))
-        >>> y = ivy.std(x, axis=1)
+        >>> y = x.std(axis=1)
         >>> print(y)
         {
-        a: ivy.array([1.2472192, 0.]),
-        b: ivy.array([2.44948983, 1.41421354])
+            a: ivy.array([1.2472192, 0.]),
+            b: ivy.array([2.44948983, 1.41421354])
         }
         """
         return self.cont_handle_inplace(

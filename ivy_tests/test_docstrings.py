@@ -237,7 +237,6 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "fourier_encode": "torch",
         "frombuffer": "torch",
         "max_pool3d": "torch",
-        "std": "torch",
         "eigh_tridiagonal": "tensorflow",
         "isreal": "tensorflow",
         "reciprocal": "tensorflow",
@@ -252,6 +251,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "conv2d_transpose": "tensorflow",
         "max_pool2d": "torch",
         "cummax": "torch",
+        "std": "tensorflow",
 
     }
     # second dict to keep if a function fails in two backends
@@ -264,7 +264,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "fourier_encode": "tensorflow",
         "frombuffer": "tensorflow",
         "max_pool3d": "tensorflow",
-        "std": "tensorflow",
+        "std": "torch",
     }
     try:
         if (

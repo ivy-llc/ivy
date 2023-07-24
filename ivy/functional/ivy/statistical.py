@@ -581,7 +581,7 @@ def std(
     >>> x = ivy.array([-1., 0., 1.])
     >>> y = ivy.std(x)
     >>> print(y)
-    ivy.array(0.8164966)
+    ivy.array(0.81649661)
 
     >>> x = ivy.array([-1., 0., 1.])
     >>> z = ivy.std(x, correction=1)
@@ -602,21 +602,21 @@ def std(
     >>> x = ivy.array([[-1., -2.], [3., 3.]])
     >>> y = ivy.std(x, axis=1)
     >>> print(y)
-    ivy.array([1.5, 1. ])
+    ivy.array([0.5, 0. ])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
-    >>> y = ivy.std(x)
+    >>> y = x.std()
     >>> print(y)
     {
-        a: ivy.array(0.8164966),
+        a: ivy.array(0.81649661),
         b: ivy.array(0.509902)
     }
 
     >>> x = ivy.Container(a=ivy.array([[1., 3.], [3., 6.]]),
     ...                   b=ivy.array([[ 4., 2.], [2., 1.]]))
-    >>> y = ivy.std(x, axis=1, keepdims=True)
+    >>> y = x.std(axis=1, keepdims=True)
     >>> print(y)
     {
         a: ivy.array([[1.],
