@@ -832,8 +832,8 @@ def test_numpy_triangular(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        size=size,
         left=left,
-        right=right,
         mode=mode,
+        right=right,
+        size=size,
     )
