@@ -173,7 +173,7 @@ def test_histogram(
         density=density,
         input_dtypes=[dtype_input],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
     )
@@ -192,7 +192,7 @@ def test_median(*, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         input=x[0],
         axis=axis,
@@ -216,7 +216,7 @@ def test_nanmean(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         a=x[0],
@@ -281,7 +281,7 @@ def test_quantile(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         a=x[0],
@@ -316,7 +316,7 @@ def test_corrcoef(*, dtype_and_x, rowvar, test_flags, backend_fw, fn_name, on_de
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -361,7 +361,7 @@ def test_bincount(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -374,7 +374,7 @@ def test_bincount(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.igamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
         abs_smallest_val=1e-5,
@@ -389,13 +389,20 @@ def test_bincount(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
-def test_igamma(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+def test_igamma(
+    *,
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device
+):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-04,
         a=x[0],
@@ -517,14 +524,12 @@ def test_cov(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x1, x2, rowVar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x1,
@@ -555,14 +560,12 @@ def test_cummax(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -592,14 +595,12 @@ def test_cummin(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -631,11 +632,9 @@ def test_nanmedian(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,

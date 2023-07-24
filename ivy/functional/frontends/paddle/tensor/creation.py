@@ -140,3 +140,11 @@ def meshgrid(*args, **kwargs):
 @to_ivy_arrays_and_back
 def assign(x, output=None):
     return ivy.copy_array(x, out=output)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def logspace(start, stop, num, base=10.0, dtype=None, name=None):
+    return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)

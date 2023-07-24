@@ -5,7 +5,10 @@
 
 	"build": {
 		"dockerfile": "../../docker/Dockerfile",
-		"context": "../.."
+		"context": "../..",
+		"args": {
+      "pycon": ["3.10"]
+    }
 	},
 
 	"customizations": {
