@@ -810,13 +810,10 @@ def test_frontend_function(
     frontend_fw = importlib.import_module(module_name)
     frontend_ret = frontend_fw.__dict__[fn_name](*args_frontend, **kwargs_frontend)
 
-    if frontend_config.isscalar(frontend_ret):
-        frontend_ret_np_flat = [frontend_config.to_numpy(frontend_ret)]
-    else:
-        frontend_ret_flat = flatten_frontend(
-            ret=ret, backend=backend_to_test, frontend_array_fn=create_frontend_array
-        )
-        frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
+    frontend_ret_flat = flatten_frontend(
+        ret=ret, backend=backend_to_test, frontend_config=frontend_config
+    )
+    frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1642,11 +1639,9 @@ def test_frontend_method(
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
-    elif frontend_config.isscalar(frontend_ret):
-        frontend_ret_np_flat = [np.asarray(frontend_ret)]
     else:
         frontend_ret_flat = flatten_frontend(
-            ret=ret, backend=ivy_backend, frontend_array_fn=create_frontend_array
+            ret=ret, backend=ivy_backend, frontend_config=frontend_config
         )
         frontend_ret_np_flat = [frontend_config.to_numpy(x) for x in frontend_ret_flat]
 
@@ -1824,8 +1819,11 @@ def flatten(*, backend: str, ret):
     return ret_flat
 
 
-def flatten_frontend(*, ret, backend: str, frontend_array_fn=None):
+def flatten_frontend(*, ret, backend: str, frontend_array_fn=None, frontend_config=None):
     """Return a flattened numpy version of the frontend arrays in ret."""
+    if frontend_array_fn is None:
+        frontend_array_fn = frontend_config.native_array
+        
     if not isinstance(ret, tuple):
         ret = (ret,)
 
