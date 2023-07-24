@@ -630,9 +630,6 @@ def multilabel_margin_loss(
     input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     pos = input[ivy.astype(target, bool)]
     neg = input[ivy.astype(1 - target, bool)]
-    loss = 0
+    loss = ivy.maximum(0, 1 - (torch_frontend.unsqueeze(pos, dim=1) - neg))
     reduct = _get_reduction(reduction, size_average, reduce)
-    for i in range(target.shape[0]):
-        loss_ = ivy.maximum(0, 1 - (ivy.matrix_transpose([pos[i]]) - neg[i]))
-        loss += reduct(loss_)
-    return loss
+    return reduct(loss)
