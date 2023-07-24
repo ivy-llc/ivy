@@ -161,6 +161,7 @@ def broadcast_to(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
     ]:
         return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:
