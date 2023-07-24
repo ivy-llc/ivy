@@ -1799,7 +1799,7 @@ def test_tensorflow_sufficient_statistics(
     compute_full_loss=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_log_poisson_loss(
+def test_tensorflow_log_poisson_loss(
     *,
     dtype_target_log_inputs,
     compute_full_loss,
