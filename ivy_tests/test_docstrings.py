@@ -354,6 +354,7 @@ def test_docstrings(backend):
         "dropout2d",
         "dropout3",
         "svd",
+        "unique_all",
         # exec and self run generates diff results
         "dev",
         "scaled_dot_product_attention",

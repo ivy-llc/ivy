@@ -136,7 +136,7 @@ class _ContainerWithSet(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([0., 1., 3. , 2. , 1. , 0.]),
         ...                   b=ivy.array([1,2,1,3,4,1,3]))
-        >>> y = x.static_unique_all()
+        >>> y = x.unique_all()
         >>> print(y)
         [{
             a: ivy.array([0., 1., 2., 3.]),
