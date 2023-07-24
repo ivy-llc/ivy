@@ -422,25 +422,25 @@ def elu(
     >>> x = ivy.array([0.39, -0.85])
     >>> y = ivy.elu(x)
     >>> print(y)
-    ivy.array([ 0.39, -0.57])
+    ivy.array([ 0.38999999, -0.57258511])
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
     >>> ivy.elu(x, out=y)
     >>> print(y)
-    ivy.array([ 1.5 ,  0.7 , -0.91])
+    ivy.array([ 1.5, 0.69999999, -0.90928203])
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
     >>> ivy.elu(x, out=x)
     >>> print(x)
-    ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
-       [-0.98, -0.99 , -0.73]])
+    ivy.array([[ 1.10000002,  2.20000005,  3.29999995],
+           [-0.98772264, -0.99591321, -0.99863964]])
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
     >>> x = ivy.elu(x, out=x)
     >>> print(x)
     {
-        a: ivy.array([0., -0.6988]),
-        b: ivy.array([0.40000001, -0.181269])
+        a: ivy.array([0., -0.69880581]),
+        b: ivy.array([0.40000001, -0.18126924])
     }
     """
     return current_backend(x).elu(x, alpha=alpha, out=out)
