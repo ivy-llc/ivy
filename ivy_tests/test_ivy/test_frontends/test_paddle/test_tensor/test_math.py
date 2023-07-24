@@ -19,10 +19,12 @@ def test_paddle_sin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -45,10 +47,12 @@ def test_paddle_cos(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -71,10 +75,12 @@ def test_paddle_acos(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -98,10 +104,12 @@ def test_paddle_cosh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -126,10 +134,12 @@ def test_paddle_tanh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -153,10 +163,12 @@ def test_paddle_acosh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -179,11 +191,13 @@ def test_paddle_asin(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -206,10 +220,12 @@ def test_paddle_log(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -238,10 +254,12 @@ def test_paddle_divide(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -271,10 +289,12 @@ def test_paddle_multiply(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -304,10 +324,12 @@ def test_paddle_add(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
@@ -337,10 +359,12 @@ def test_paddle_subtract(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
@@ -363,11 +387,13 @@ def test_paddle_sqrt(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -390,10 +416,12 @@ def test_paddle_atanh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -415,11 +443,13 @@ def test_paddle_atan(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -442,11 +472,13 @@ def test_paddle_round(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -468,11 +500,13 @@ def test_paddle_ceil(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -495,10 +529,12 @@ def test_paddle_sinh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -524,10 +560,12 @@ def test_paddle_pow(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -549,10 +587,12 @@ def test_paddle_abs(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -572,6 +612,7 @@ def test_paddle_conj(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -579,6 +620,7 @@ def test_paddle_conj(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -598,6 +640,7 @@ def test_paddle_floor(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -606,6 +649,7 @@ def test_paddle_floor(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -632,12 +676,14 @@ def test_paddle_remainder(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -659,12 +705,14 @@ def test_paddle_log2(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -686,12 +734,14 @@ def test_paddle_log1p(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -712,12 +762,14 @@ def test_paddle_rad2deg(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -738,12 +790,14 @@ def test_paddle_deg2rad(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -764,12 +818,14 @@ def test_paddle_tan(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -797,12 +853,14 @@ def test_paddle_atan2(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -824,12 +882,14 @@ def test_paddle_sign(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -850,12 +910,14 @@ def test_paddle_neg(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -902,12 +964,14 @@ def test_paddle_exp(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -928,12 +992,14 @@ def test_paddle_expm1(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -954,12 +1020,14 @@ def test_paddle_square(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -980,12 +1048,14 @@ def test_paddle_reciprocal(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1011,12 +1081,14 @@ def test_paddle_lcm(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -1043,12 +1115,14 @@ def test_paddle_cumprod(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1076,12 +1150,14 @@ def test_paddle_gcd(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -1102,12 +1178,14 @@ def test_paddle_fmin(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1129,12 +1207,14 @@ def test_paddle_logit(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1154,6 +1234,7 @@ def test_paddle_isnan(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1162,6 +1243,7 @@ def test_paddle_isnan(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1180,6 +1262,7 @@ def test_paddle_isfinite(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1188,6 +1271,7 @@ def test_paddle_isfinite(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1206,6 +1290,7 @@ def test_paddle_isinf(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1214,6 +1299,7 @@ def test_paddle_isinf(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1233,12 +1319,14 @@ def test_paddle_angle(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1258,12 +1346,14 @@ def test_paddle_fmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtypes_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1286,12 +1376,14 @@ def test_paddle_minimum(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -1311,6 +1403,7 @@ def test_paddle_erf(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1319,6 +1412,7 @@ def test_paddle_erf(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1339,12 +1433,14 @@ def test_paddle_trunc(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1371,12 +1467,14 @@ def test_paddle_sgn(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1399,12 +1497,14 @@ def test_paddle_maximum(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1427,6 +1527,7 @@ def test_paddle_frac(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1435,6 +1536,7 @@ def test_paddle_frac(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1455,12 +1557,14 @@ def test_paddle_asinh(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1486,12 +1590,14 @@ def test_paddle_max(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1520,12 +1626,14 @@ def test_paddle_lerp(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -1552,12 +1660,14 @@ def test_paddle_outer(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -1585,12 +1695,14 @@ def test_paddle_heaviside(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
