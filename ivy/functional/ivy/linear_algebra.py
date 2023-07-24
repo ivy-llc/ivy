@@ -29,6 +29,111 @@ inf = float("inf")
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+def ldl_factor(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, hermitian=False, out=None
+) -> ivy.Array:
+    """
+    Compute the LDL factorization of the x matrix.
+
+    Parameters
+    ----------
+    x
+        input array having shape (..., M, M) and whose innermost two dimensions form
+        square symmetric positive-definite matrices. Should have a floating-point data
+        type.
+    hermitian
+        If True, the input matrix is assumed to be Hermitian (complex symmetric).
+        Default: ``False``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the LDL factors for each square matrix. The returned array
+        must have a floating-point data type determined by Type Promotion Rules and must
+        have the same shape as x.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.ldl_factor.html>`_
+    in the standard.
+
+    Both the description and the type hints above assume an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[4.0, 1.0, 2.0],
+    ...                [1.0, 5.0, 0.0],
+    ...                [2.0, 0.0, 3.0]])
+    >>> matrix = ivy.ldl_factor(x)
+    >>> print(matrix)
+    ivy.array([[ 4.  ,  0.  ,  0.  ],
+               [ 1.  ,  5.  ,  0.  ],
+               [ 2.  ,  0.  ,  3.  ]])
+
+    >>> x = ivy.array([[4.0, 1.0, 2.0],
+    ...                [1.0, 5.0, 0.0],
+    ...                [2.0, 0.0, 3.0]])
+    >>> y = ivy.zeros([3, 3])
+    >>> ivy.ldl_factor(x, out=y)
+    >>> print(y)
+    ivy.array([[ 4.  ,  0.  ,  0.  ],
+               [ 1.  ,  5.  ,  0.  ],
+               [ 2.  ,  0.  ,  3.  ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[3., 0.],[0., 1.]]),
+    ...                   b=ivy.array([[4., 1.],[1., 4.]]))
+    >>> matrix = ivy.ldl_factor(x)
+    >>> print(matrix)
+    {
+        a: ivy.array([[3., 0.],
+                      [0., 1.]]),
+        b: ivy.array([[4., 1.],
+                      [1., 4.]])
+    }
+
+    With multiple :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[3., 0.],[0., 1.]]),
+    ...                   b=ivy.array([[4., 1.],[1., 4.]]))
+    >>> matrix = ivy.ldl_factor(x)
+    >>> print(matrix)
+    {
+        a: ivy.array([[3., 0.],
+                      [0., 1.]]),
+        b: ivy.array([[4., 1.],
+                      [1., 4.]])
+    }
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[4.0, 1.0],
+    ...                [1.0, 5.0]])
+    >>> matrix = ivy.ldl_factor(x)
+    >>> print(matrix)
+    ivy.array([[4.0, 1.0],
+               [1.0, 5.0]])
+    """
+    # Perform LDL factorization using the current_backend function
+    return current_backend(x).ldl_factor(x, hermitian=hermitian, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
