@@ -305,3 +305,31 @@
 #         norm=norm,
 #         workers=workers,
 #     )
+
+
+# # rfftn
+# @handle_frontend_test(
+#     fn_tree="scipy.fft.rfftn",
+#     d_x_d_s_n_workers=x_and_ifftn(),
+#     test_with_out=st.just(False),
+# )
+# def test_scipy_rfftn(
+#     d_x_d_s_n_workers,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     dtype, x, s, ax, norm, workers = d_x_d_s_n_workers
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#         s=s,
+#         axes=ax,
+#         norm=norm,
+#         workers=workers,
+#     )
