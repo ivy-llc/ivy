@@ -104,13 +104,16 @@ def test_torch_tensor_property_ivy_array(
 )
 def test_torch_tensor_property_device(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(
         x.device, ivy.dev(ivy.array(data[0])), as_array=False
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -118,13 +121,13 @@ def test_torch_tensor_property_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_dtype(
-    dtype_x,
-):
+def test_torch_tensor_property_dtype(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -133,12 +136,14 @@ def test_torch_tensor_property_dtype(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_shape(dtype_x):
+def test_torch_tensor_property_shape(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -146,13 +151,13 @@ def test_torch_tensor_property_shape(dtype_x):
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_real(
-    dtype_x,
-):
+def test_torch_tensor_property_real(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.real, ivy.real(data[0]))
+    ivy.previous_backend()
 
 
 @given(
@@ -160,13 +165,13 @@ def test_torch_tensor_property_real(
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ),
 )
-def test_torch_tensor_property_imag(
-    dtype_x,
-):
+def test_torch_tensor_property_imag(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
+    ivy.previous_backend()
 
 
 @given(
@@ -175,19 +180,21 @@ def test_torch_tensor_property_imag(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_ndim(
-    dtype_x,
-):
+def test_torch_tensor_property_ndim(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
+    ivy.previous_backend()
 
 
-def test_torch_tensor_property_grad():
+def test_torch_tensor_property_grad(backend_fw):
+    ivy.set_backend(backend_fw)
     x = Tensor(ivy.array([1.0, 2.0, 3.0]))
     grads = ivy.array([1.0, 2.0, 3.0])
     x._grads = grads
     assert ivy.array_equal(x.grad, grads)
+    ivy.previous_backend()
 
 
 @given(
@@ -196,32 +203,32 @@ def test_torch_tensor_property_grad():
     ),
     requires_grad=st.booleans(),
 )
-def test_torch_tensor_property_requires_grad(
-    dtype_x,
-    requires_grad,
-):
+def test_torch_tensor_property_requires_grad(dtype_x, requires_grad, backend_fw):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0], requires_grad=requires_grad)
     ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
     x.requires_grad = not requires_grad
     ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
+    ivy.previous_backend()
 
 
 @given(
     requires_grad=st.booleans(),
 )
-def test_torch_tensor_property_is_leaf(
-    requires_grad,
-):
+def test_torch_tensor_property_is_leaf(requires_grad, backend_fw):
+    ivy.set_backend(backend_fw)
     x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
     ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
     y = x.pow(2)
     ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
     z = y.detach()
     ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
+    ivy.previous_backend()
 
 
-def test_torch_tensor_property_grad_fn():
+def test_torch_tensor_property_grad_fn(backend_fw):
+    ivy.set_backend(backend_fw)
     x = Tensor(ivy.array([3.0]), requires_grad=True)
     ivy.utils.assertions.check_equal(x.grad_fn, None, as_array=False)
     y = x.pow(2)
@@ -231,6 +238,7 @@ def test_torch_tensor_property_grad_fn():
     )
     z = y.detach()
     ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -242,7 +250,9 @@ def test_torch_tensor_property_grad_fn():
 def test_torch_tensor_requires_grad_(
     dtype_x,
     requires_grad,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     assert not x._requires_grad
@@ -250,6 +260,7 @@ def test_torch_tensor_requires_grad_(
     assert x._requires_grad
     x.requires_grad_(requires_grad)
     assert x._requires_grad == requires_grad
+    ivy.previous_backend()
 
 
 # chunk
@@ -10373,6 +10384,41 @@ def test_torch_instance_conj(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    ) 
+    
+    
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="adjoint",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_torch_instance_adjoint(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
         on_device=on_device,
     )

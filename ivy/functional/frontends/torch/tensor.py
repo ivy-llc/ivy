@@ -1570,11 +1570,29 @@ class Tensor:
             else:
                 next_function(_grad_list[idx])
 
+
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("int16", "float16", "bfloat16")}, "torch"
     )
     def conj(self):
         return torch_frontend.conj(self)
+
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "int32",
+            )
+        },
+        "paddle",
+    )
+    def adjoint(self):
+        return torch_frontend.adjoint(self)
+
 
 
 class Size(tuple):
