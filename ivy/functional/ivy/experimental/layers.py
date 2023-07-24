@@ -2705,3 +2705,97 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def adaptive_avg_pool3d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
+) -> ivy.Array:
+    """
+    Apply a 3D adaptive average pooling over an input signal composed of several input
+    planes.
+
+    Parameters
+    ----------
+    input
+        Input array. Must have shape (N, C, D_in, H_in, W_in) or (C, D_in, H_in, W_in) where N is
+        the batch dimension, C is the feature dimension, and D_in, H_in and W_in are the 3
+        spatial dimensions.
+    output_size
+        Spatial output size.
+
+    Returns
+    -------
+        The result of the pooling operation. Will have shape (N, C, S_0, S_1, S_2) or
+        (C, S_0, S_1, S_2), where S = `output_size`
+    """
+    squeeze = False
+    if input.ndim == 3:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif input.ndim != 5:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 3D and 5D inputs are supported.",
+        )
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size, output_size)
+
+    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-3:], output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-3:], output_size))
+        kernel_size = tuple(
+            i_s - (o_s - 1) * st
+            for i_s, o_s, st in zip(input.shape[-3:], output_size, stride)
+        )
+        pooled_output = ivy.avg_pool3d(
+            input, kernel_size, stride, "VALID", data_format="NCHW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxd, length_d, range_max_d, adaptive_d = _compute_idx(
+        input.shape[-3], output_size[-3], input.device
+    )
+    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
+        input.shape[-2], output_size[-2], input.device
+    )
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size[-1], input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(input.to_numpy()[..., _expand_to_dim(idxd, 5), _expand_to_dim(idxh, 5), idxw])
+
+    if not adaptive_d and not adaptive_h and not adaptive_w:
+        ret = ivy.mean(vals, axis=(-3, -2, -1))
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
+
+    vals, length_d = _mask(vals, length_d, range_max_d, dim=-3)
+    vals, length_h = _mask(vals, length_h, range_max_h, dim=-2)
+    vals, length_w = _mask(vals, length_w, range_max_w, dim=-1)
+    ret = None
+    for i, j, k in itertools.product(range(vals.shape[-4]), range(vals.shape[-2]), range(vals.shape[-1])):
+        if ret is None:
+            ret = vals[..., i, j, k]
+        else:
+            ret = ret + vals[..., i, j, k]
+    pooled_output = ret / (length_d * length_h * length_w).astype(vals.dtype)
+
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
+    return pooled_output
+
+adaptive_avg_pool3d.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
