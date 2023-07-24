@@ -7,6 +7,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -220,6 +221,10 @@ def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("int32", "int64", "float64", "float32")}, "torch"
+)
 @to_ivy_arrays_and_back
 def setxor1d(ar1, ar2, assume_unique=False):
     common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
