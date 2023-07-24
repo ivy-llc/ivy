@@ -537,7 +537,7 @@ def test_paddle_roll(
     test_flags,
 ):
     input_dtype, x = dtype_and_x
-    shift = 1
+    shifts = 1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -545,5 +545,5 @@ def test_paddle_roll(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        shift=shift,
+        shifts=shifts,
     )
