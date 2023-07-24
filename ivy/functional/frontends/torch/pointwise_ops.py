@@ -250,7 +250,9 @@ def logical_xor(input, other, *, out=None):
     return ivy.logical_xor(input, other, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float16", "float32", "float64", "int32")}, "torch"
+)
 @to_ivy_arrays_and_back
 def round(input, *, decimals=0, out=None):
     m = ivy.full(input.shape, 10.0**decimals)

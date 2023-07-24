@@ -1243,7 +1243,7 @@ def test_torch_ceil(
 @handle_frontend_test(
     fn_tree="torch.round",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
