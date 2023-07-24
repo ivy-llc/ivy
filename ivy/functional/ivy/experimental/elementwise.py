@@ -1116,20 +1116,26 @@ def lerp(
     >>> input = ivy.array([1, 2, 3])
     >>> end = ivy.array([10, 10, 10])
     >>> weight = 0.5
-    >>> ivy.lerp(input, end, weight)
+    >>> y = ivy.lerp(input, end, weight)
+    >>> print(y)
     ivy.array([5.5, 6. , 6.5])
+
     >>> input = ivy.array([1.1, 1.2, 1.3])
     >>> end = ivy.array([20])
     >>> weight = ivy.array([0.4, 0.5, 0.6])
     >>> y = ivy.zeros(3)
     >>> ivy.lerp(input, end, weight, out=y)
-    ivy.array([ 8.65999985, 10.59999943, 12.52000141])
+    >>> print(y)
+    ivy.array([ 8.65999985, 10.60000038, 12.52000046])
+
     >>> input = ivy.array([[4, 5, 6],[4.1, 4.2, 4.3]])
     >>> end = ivy.array([10])
     >>> weight = ivy.array([0.5])
     >>> ivy.lerp(input, end, weight, out=input)
+    >>> print(input)
     ivy.array([[7.        , 7.5       , 8.        ],
-    ...       [7.05000019, 7.0999999 , 7.1500001 ]])
+           [7.05000019, 7.0999999 , 7.1500001 ]])
+
     With :class:`ivy.Container` input:
     >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> end = ivy.array([10.])
@@ -1140,17 +1146,17 @@ def lerp(
         a: ivy.array([11., 10.90000057, 10.80000019]),
         b: ivy.array([10.70000076, 10.60000038, 10.5])
     }
+
     >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
     >>> end = ivy.Container(a=ivy.array([5]), b=ivy.array([0]))
-    >>> weight = ivy.Container(a=0.5)
+    >>> weight = 0.5
     >>> y = input.lerp(end, weight)
     >>> print(y)
     {
         a: ivy.array([7.55000019, 8.05000019]),
-        b: {
-            a: ivy.array([5., 5.5])
-        }
+        b: ivy.array([5., 5.5])
     }
+
     """
     input_end_allowed_types = [
         "int8",
