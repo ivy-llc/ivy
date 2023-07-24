@@ -340,7 +340,10 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("bool", "integer")}, "torch")
 def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"):
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
+    target, var = torch_frontend.promote_types_of_torch_inputs(target, var)
     if var.shape != input.shape:
         if input.shape[:-1] == var.shape:
             var = torch_frontend.unsqueeze(var, dim=2)
@@ -365,7 +368,7 @@ def gaussian_nll_loss(input, target, var, full=False, eps=1e-6, reduction="mean"
     reduction = _get_reduction_func(reduction)
     ret = reduction(loss)
 
-    return ret
+    return ret.astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -428,10 +431,12 @@ def margin_ranking_loss(
     reduce=None,
     reduction="mean",
 ):
+    input1, input2 = torch_frontend.promote_types_of_torch_inputs(input1, input2)
+    input2, target = torch_frontend.promote_types_of_torch_inputs(input2, target)
     loss = -1 * target * (input1 - input2) + margin
     loss = ivy.where(loss < 0, 0, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
-    return reduction(loss)
+    return reduction(loss).astype(input1.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -446,6 +451,7 @@ def poisson_nll_loss(
     reduce=None,
     reduction="mean",
 ):
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
     if log_input:
         loss = ivy.exp(input) - target * input
     else:
@@ -457,7 +463,7 @@ def poisson_nll_loss(
         loss += ivy.where(target > 1, approximation, 0)
 
     reduction = _get_reduction(reduction, size_average, reduce)
-    return reduction(loss)
+    return reduction(loss).astype(input.dtype)
 
 
 @to_ivy_arrays_and_back
