@@ -693,38 +693,48 @@ def dct(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
-    >>> ivy.dct(x, type=2, n=None, norm='ortho')
-    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
+    >>> y = ivy.dct(x, type=2, n=None, norm='ortho')
+    >>> print(y)
+    ivy.array([ 1.01823380e+02, -5.15385818e+01,  1.36371466e-06, -5.38763905e+00,
+            0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01])
 
     >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],
     ...                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])
-    >>> ivy.dct(x, type=1, n=None, axis=0, norm=None)
+    >>> y = ivy.dct(x, type=1, n=None, axis=0, norm=None)
+    >>> print(y)
     ivy.array([[[ 9., 18., 27., 36.],
-                [45., 54., 63., 72.]],
-               [[ 7., 14., 21., 28.],
-                [35., 42., 49., 56.]]])
+            [45., 54., 63., 72.]],
+
+           [[ 7., 14., 21., 28.],
+            [35., 42., 49., 56.]]])
 
     >>> x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],
     ...                [40.5, 48.6, 56.7, 64.8]])
     >>> y = ivy.zeros((2, 4), dtype=ivy.float32)
     >>> ivy.dct(x, type=1, n=None, norm=None, out=y)
     >>> print(y)
-    ivy.array([[ 1.22e+02, -3.24e+01,  1.91e-06, -8.10e+00],
-               [ 3.16e+02, -3.24e+01,  3.81e-06, -8.10e+00]])
+    ivy.array([[ 1.21500000e+02, -3.24000015e+01,  1.90734863e-06,
+            -8.10000420e+00],
+           [ 3.15899994e+02, -3.24000053e+01,  3.81469727e-06,
+            -8.09999847e+00]])
 
     >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
     >>> ivy.dct(x, type=4, n=None, norm=None, out=x)
     >>> print(x)
-    ivy.array([ 279. , -280. ,  128. , -115. ,   83.7,  -79.5,   69.8,  -68.7])
+    ivy.array([ 279.4135742 , -279.6779785 ,  128.3770599 , -114.8719864 ,
+             83.72109985,  -79.52869415,   69.79182434,  -68.72489166])
 
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
     ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
-    >>> ivy.dct(x, type=3, n=None, norm='ortho')
+    >>> y = ivy.dct(x, type=3, n=None, norm='ortho')
+    >>> print(y)
     {
-        a: ivy.array([79.5, -70.4, 30., -23.6, 13.9, -10.1, 5.2, -1.95]),
-        b: ivy.array([9.94, -8.8, 3.75, -2.95, 1.74, -1.26, 0.65, -0.244])
+        a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                      13.92713165, -10.078475, 5.19664812, -1.95411837]),
+        b: ivy.array([9.93732834, -8.79711437, 3.75048852, -2.94867325, 1.74089146,
+                      -1.25980937, 0.64958102, -0.2442648])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -734,11 +744,13 @@ def dct(
     >>> container_n = ivy.Container(a=9, b=4)
     >>> container_type = ivy.Container(a=2, b=1)
     >>> container_norm = ivy.Container(a="ortho", b=None)
-    >>> ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> y = ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> print(y)
     {
-        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
-                    -5.89]),
-        b: ivy.array([15., -4., 0., -1.])
+        a: ivy.array([96., -28.1580677, -31.89422607, 22.86190414,
+                      -26.00041008, 19.75149155, -16.97056389, 10.87819386,
+                      -5.89381361]),
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
