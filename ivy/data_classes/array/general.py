@@ -1288,7 +1288,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> size = 8
         >>> out = indices.scatter_flat(updates, size=size)
         >>> print(out)
-        ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+        ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
 
 
         With :class:`ivy.Array` input:
