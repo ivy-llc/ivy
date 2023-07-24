@@ -2766,8 +2766,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         x
-            The container whose arrays should be split into 
-            the fractional and integral parts.
+            The container whose arrays should be split into the fractional and integral parts.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -2790,8 +2789,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),\
-        ...                         b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
         >>> ivy.Container.static_modf(x)
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
@@ -2822,8 +2820,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         self
-            The container whose arrays should be split into
-            the fractional and integral parts.
+            The container whose arrays should be split into the fractional and integral parts.
         out
             optional output container, for writing the result to.
 
@@ -2835,8 +2832,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]),\
-        ...                         b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
         >>> x.modf()
         {
             a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
@@ -2952,8 +2948,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             container including the digamma function computed element-wise
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 0.5]),\
-        ...                         b=ivy.array([2.0, 3.0])
+        >>> x = ivy.Container(a=ivy.array([1, 0.5]), b=ivy.array([2.0, 3.0])
         >>> x.digamma()
         {
             a: ivy.array([-0.5772, -1.9635]),
