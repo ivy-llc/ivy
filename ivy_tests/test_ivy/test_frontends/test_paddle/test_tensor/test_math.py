@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1444,7 +1444,6 @@ def test_paddle_max(
     )
 
 
-#all
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.all",
     dtype_input_axis=helpers.dtype_values_axis(
@@ -1456,7 +1455,7 @@ def test_paddle_max(
     ),
     keepdims=st.booleans(),
 )
-def test_paddle_all(
+def test_torch_all(
     *,
     dtype_input_axis,
     keepdims,
@@ -1472,7 +1471,7 @@ def test_paddle_all(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        input=x[0],
         axis=axis,
         keepdim=keepdims,
     )
