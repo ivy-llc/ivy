@@ -2178,6 +2178,7 @@ def test_jax_devicearray_swapaxes(
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, axis1, axis2 = dtype_and_x
     helpers.test_frontend_method(
@@ -2191,6 +2192,7 @@ def test_jax_devicearray_swapaxes(
             "axis2": axis2,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -2224,6 +2226,7 @@ def test_jax_devicearray_var(
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
@@ -2238,6 +2241,7 @@ def test_jax_devicearray_var(
             "keepdims": keepdims,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

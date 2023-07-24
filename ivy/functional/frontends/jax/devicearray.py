@@ -3,6 +3,8 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 
 
 class DeviceArray:
@@ -270,12 +272,26 @@ class DeviceArray:
         for i in range(self.shape[0]):
             yield self[i]
 
+    @with_supported_dtypes(
+        {
+            "2.5.0 and below": (
+                "int64",
+                "float64",
+                "complex128",
+                "float32",
+                "complex64",
+                "int32",
+            )
+        },
+        "paddle",
+    )
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
 
     def swapaxes(self, axis1, axis2):
         return jax_frontend.numpy.swapaxes(self._ivy_array, axis1, axis2)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "jax")
     def var(
         self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
     ):
