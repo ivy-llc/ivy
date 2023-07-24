@@ -1570,7 +1570,6 @@ class Tensor:
             else:
                 next_function(_grad_list[idx])
 
-
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("int16", "float16", "bfloat16")}, "torch"
     )
@@ -1592,7 +1591,6 @@ class Tensor:
     )
     def adjoint(self):
         return torch_frontend.adjoint(self)
-
 
 
 class Size(tuple):
