@@ -1612,10 +1612,6 @@ def test_frontend_method(
         shallow=False,
     )
 
-    create_frontend_array = importlib.import_module(
-        f"ivy.functional.frontends.{frontend}"
-    )._frontend_array
-
     # change ivy dtypes to native dtypes
     if "dtype" in kwargs_method_frontend:
         kwargs_method_frontend["dtype"] = frontend_config.as_native_dtype(
