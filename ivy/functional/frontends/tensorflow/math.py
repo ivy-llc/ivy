@@ -10,7 +10,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -364,7 +364,7 @@ def subtract(x, y, name=None):
 
 @with_supported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -389,7 +389,7 @@ def squared_difference(x, y, name=None):
 
 @with_supported_dtypes(
     {
-        "2.12.0 and below": (
+        "2.13.0 and below": (
             "bfloat16",
             "float16",
             "float32",
@@ -516,7 +516,7 @@ def sigmoid(x, name=None):
 
 
 @with_supported_dtypes(
-    {"2.12.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    {"2.13.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
     "tensorflow",
 )
 @to_ivy_arrays_and_back
@@ -538,7 +538,7 @@ def nextafter(x1, x2, name=None):
     {
         "1.2.0": ("float16", "complex64", "complex128"),
         "1.8.0 and below": ("float16",),
-        "2.12.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
+        "2.13.0 and below": ("int8", "int16", "uint8", "uint16", "uint32", "uint64"),
     },
     "tensorflow",
 )
@@ -701,3 +701,31 @@ def conj(x, name=None):
 @to_ivy_arrays_and_back
 def top_k(input, k=1, sorted=True, name=None):
     return ivy.top_k(input, k, sorted=sorted)
+
+
+@to_ivy_arrays_and_back
+def real(input, name=None):
+    return ivy.real(input)
+
+
+@to_ivy_arrays_and_back
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("int32",)},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def bincount(
+    arr,
+    weights=None,
+    minlength=None,
+    maxlength=None,
+    dtype=ivy.int32,
+    name=None,
+    axis=None,
+    binary_output=False,
+):
+    return ivy.bincount(arr, weights=weights, minlength=minlength)

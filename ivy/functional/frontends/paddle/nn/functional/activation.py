@@ -195,5 +195,69 @@ def relu_(x, name=None):
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
+def elu(
+    x,
+    /,
+    *,
+    alpha=1.0,
+    name=None,
+):
+    return ivy.elu(x, alpha=alpha)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def mish(x, name=None):
     return ivy.mish(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softplus(x, beta=1, threshold=20, name=None):
+    return ivy.softplus(x, beta=beta, threshold=threshold)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def leaky_relu(x, negative_slope=0.01, name=None):
+    return ivy.leaky_relu(x)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def log_sigmoid(x, name=None):
+    return -ivy.softplus(-x)
+
+
+def silu(x, name=None):
+    return ivy.silu(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softmax_(x, axis=-1, dtype=None, name=None):
+    ret = ivy.softmax(x, axis=axis)
+    ivy.inplace_update(x, ret)
+    return x
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def tanh_(x, name=None):
+    ret = ivy.tanh(x)
+    ivy.inplace_update(x, ret)
+    return x
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def gumbel_softmax(x, temperature=1.0, hard=False, axis=-1, name=None):
+    gumbel_noice = -ivy.log(-ivy.log(ivy.random_uniform(ivy.shape(x) + 1e-20) + 1e-20))
+    gumbel_logits = (x + gumbel_noice) / temperature
+    y_soft = ivy.softmax(gumbel_logits, axis=axis)
+
+    if hard:
+        y_hard = ivy.one_hot(ivy.argmax(y_soft, axis=axis), ivy.shape(y_soft)[axis])
+        return y_hard
+    else:
+        return y_soft

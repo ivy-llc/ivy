@@ -29,7 +29,7 @@ def ifft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, "numpy")
 def ifftshift(x, axes=None):
     x = ivy.asarray(x)
 
@@ -55,7 +55,7 @@ def fft(a, n=None, axis=-1, norm=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, "numpy")
 def fftshift(x, axes=None):
     x = ivy.asarray(x)
 
@@ -75,7 +75,7 @@ def fftshift(x, axes=None):
     return roll
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def rfft(a, n=None, axis=-1, norm=None):
     if norm is None:
@@ -84,7 +84,7 @@ def rfft(a, n=None, axis=-1, norm=None):
     return ivy.dft(a, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def ihfft(a, n=None, axis=-1, norm=None):
     if n is None:
@@ -94,7 +94,7 @@ def ihfft(a, n=None, axis=-1, norm=None):
     return output
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("int",)}, "numpy")
+@with_unsupported_dtypes({"1.25.1 and below": ("int",)}, "numpy")
 @to_ivy_arrays_and_back
 def fftfreq(n, d=1.0):
     if not isinstance(
@@ -125,3 +125,11 @@ def rfftfreq(n, d=1.0):
     N = n // 2 + 1
     results = ivy.arange(0, N, dtype=int)
     return results * val
+
+
+@with_unsupported_dtypes({"1.24.3 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def ifftn(a, s=None, axes=None, norm=None):
+    a = ivy.asarray(a, dtype=ivy.complex128)
+    a = ivy.ifftn(a, s=s, axes=axes, norm=norm)
+    return a

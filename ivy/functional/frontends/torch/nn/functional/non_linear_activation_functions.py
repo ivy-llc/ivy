@@ -130,6 +130,7 @@ def threshold_(input, threshold, value):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("complex",)}, "torch")
 def relu6(input, inplace=False):
     return ivy.relu6(input)
 
@@ -280,6 +281,40 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
     pnorm_res = ivy.pow(sum_, 1.0 / p)
     max_ = ivy.maximum(pnorm_res, eps)
     return ivy.divide(input, max_, out=out)
+
+
+@to_ivy_arrays_and_back
+def local_response_norm(input, size, alpha=0.0001, beta=0.75, k=1.0):
+    dim = len(ivy.shape(input))
+    if dim < 3:
+        raise ValueError(
+            "Expected 3D or higher dimensionality input (got {} dimensions)".format(dim)
+        )
+    if input.size == 0:
+        return input
+    div = ivy.multiply(input, input)
+
+    if dim == 3:
+        div = ivy.expand_dims(div, axis=1)
+        div = ivy.zero_pad(div, ((0, 0), (0, 0), (size // 2, (size - 1) // 2), (0, 0)))
+        div = ivy.avg_pool2d(
+            div, (size, 1), 1, "VALID", count_include_pad=True, data_format="NCHW"
+        )
+        div = ivy.squeeze(div, axis=1)
+    else:
+        sizes = ivy.shape(input)
+        div = ivy.reshape(div, (sizes[0], 1, sizes[1], sizes[2], -1))
+        div = ivy.zero_pad(
+            div, ((0, 0), (0, 0), (size // 2, (size - 1) // 2), (0, 0), (0, 0))
+        )
+        div = ivy.avg_pool3d(
+            div, (size, 1, 1), 1, "VALID", count_include_pad=True, data_format="NCDHW"
+        )
+        div = ivy.squeeze(div, axis=1)
+        div = ivy.reshape(div, sizes)
+
+    div = ivy.pow(ivy.add(ivy.multiply(div, alpha), k), beta)
+    return ivy.divide(input, div)
 
 
 @to_ivy_arrays_and_back

@@ -290,7 +290,7 @@ Array API Tests
 ---------------
 The `array-api-intelligent-tests.yml (Push) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests.yml>`_ and the `array-api-intelligent-tests-pr.yml (Pull Request) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests-pr.yml>`_ workflows run the Array API Tests. Similar to Ivy Tests, The Array API tests are also determined intelligently and only relevant tests are triggered on each commit.
 
-More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/deep_dive/array_api_tests.rst.html>`_.
+More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/overview/deep_dive/array_api_tests.html>`_.
 
 Periodic Testing
 ----------------
@@ -397,7 +397,7 @@ You can filter tests by selecting choices from the various dropdowns. The link c
 
 **Round Up**
 
-This should have hopefully given you a good feel for how Continous Integration works in Ivy.
+This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
 or in the `continuous integration forum`_!

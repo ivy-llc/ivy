@@ -3,6 +3,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence, Iterable
 import jax.numpy as jnp
+import numpy as np
 
 # local
 import ivy
@@ -179,7 +180,7 @@ def split(
                 int(remainder * num_or_size_splits)
             ]
     if isinstance(num_or_size_splits, (list, tuple)):
-        num_or_size_splits = jnp.cumsum(jnp.array(num_or_size_splits[:-1]))
+        num_or_size_splits = np.cumsum(np.array(num_or_size_splits[:-1]))
     return jnp.split(x, num_or_size_splits, axis)
 
 

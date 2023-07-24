@@ -331,10 +331,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_np(*args, **kwargs):
         """
-        Convert `ndarray` into `ivy.Array` instances.
-
         Convert all `ndarray` instances in both the positional and keyword arguments
-        into `ivy.Array` instances, and then calls the function with the updated
+        into `ivy.Array` instances, and then call the function with the updated
         arguments.
 
         Parameters
@@ -359,16 +357,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     return _inputs_to_ivy_arrays_np
 
 
-def outputs_to_numpy_arrays(fn: Callable) -> Callable:
+def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def _outputs_to_numpy_arrays(*args, order="K", **kwargs):
+    def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
         """
-        Convert `ivy.Array` into `ndarray` instances.
-
-        Call the function, and then converts all `ivy.Array` instances
+        Call the function, and then convert all `ivy.Array` instances
         returned by the function into `ndarray` instances.
 
-        The return of the function, with ivy arrays as numpy arrays.
+        Returns
+        -------
+            The return of the function, with ivy arrays as numpy arrays.
         """
         # handle order and call unmodified function
         # ToDo: Remove this default dtype setting
@@ -421,28 +419,24 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
-    _outputs_to_numpy_arrays.outputs_to_numpy_arrays = True
-    return _outputs_to_numpy_arrays
+    _outputs_to_frontend_arrays.outputs_to_frontend_arrays = True
+    return _outputs_to_frontend_arrays
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
-
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `ndarray`
     instances.
     """
-    return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
+    return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
 def from_zero_dim_arrays_to_scalar(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _from_zero_dim_arrays_to_scalar(*args, **kwargs):
         """
-        Convert 0 dimensional arrays to float numbers.
-
-        Call the function, and then converts all 0 dimensional array instances in the
+        Call the function, and then convert all 0 dimensional array instances in the
         function to float numbers if out argument is not provided.
 
         Parameters
