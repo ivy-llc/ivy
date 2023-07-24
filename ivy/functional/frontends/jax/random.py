@@ -324,7 +324,7 @@ def maxwell(key, shape=None, dtype="float64"):
     # generate uniform random numbers between 0 and 1
     z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     # applying inverse transform sampling
-    x = (z ** 2) * ivy.exp(-(z ** 2) / 2)
+    x = (z**2) * ivy.exp(-(z**2) / 2)
     return x
 
 
