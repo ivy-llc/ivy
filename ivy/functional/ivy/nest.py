@@ -1087,8 +1087,8 @@ def nested_map(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(
-      a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
-    )
+    ...   a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
+    ... )
     >>> function = lambda a : a  + 1
     >>> ivy.nested_map(x, function)
     >>> print(x)
