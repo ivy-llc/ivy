@@ -1557,3 +1557,46 @@ def test_torch_cov(
         fweights=fweights,
         aweights=aweights,
     )
+
+
+# bucketize
+@handle_frontend_test(
+    fn_tree="torch.bucketize",
+    dtypes_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=0,
+    ),
+    dtypes_and_boundaries=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1,
+    ),
+    out_int32=st.booleans(),
+    right=st.booleans(),
+)
+def test_torch_bucketize(
+    dtypes_and_input,
+    dtypes_and_boundaries,
+    out_int32,
+    right,
+    test_flags,
+    backend_fw,
+    on_device,
+    frontend,
+    fn_tree,
+):
+    dtypes_input, input = dtypes_and_input
+    dtypes_boundaries, boundaries = dtypes_and_boundaries
+    boundaries[0] = np.sort(boundaries[0])
+    helpers.test_frontend_function(
+        input_dtypes=dtypes_input + dtypes_boundaries,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=input[0],
+        boundaries=boundaries[0],
+        out_int32=out_int32,
+        right=right,
+    )

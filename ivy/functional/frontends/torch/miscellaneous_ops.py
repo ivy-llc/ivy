@@ -1,3 +1,4 @@
+import math
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
@@ -410,3 +411,46 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@to_ivy_arrays_and_back
+def bucketize(input, boundaries, *, out_int32=False, right=False, out=None):
+    ivy.utils.assertions.check_equal(
+        boundaries.ndim,
+        1,
+        message=f"boundaries tensor must be 1 dimension but got dim({boundaries.ndim})",
+    )
+
+    out_dtype = ivy.int32 if out_int32 else ivy.int64
+    n_boundaries = boundaries.shape[-1]
+    if n_boundaries == 1:
+        return ivy.zeros_like(input)
+
+    start = ivy.zeros(input.shape, device=input.device)
+    end = start + n_boundaries
+
+    mid = start + (end - start) // 2
+    mid_val = boundaries[mid]
+    if right:
+        cond_mid = mid_val > input
+    else:
+        cond_mid = mid_val >= input
+    start = ivy.where(cond_mid, start, mid + 1)
+
+    if n_boundaries > 1:
+        cond_update = ivy.ones_like(input, dtype=ivy.bool)
+        niters = int(math.log2(n_boundaries))
+        for _ in range(niters):
+            end = ivy.where(cond_mid & cond_update, mid, end)
+            cond_update = start < end
+
+            mid = ivy.where(cond_update, start + (end - start) // 2, 0)
+            mid_val = boundaries[mid]
+
+            if right:
+                cond_mid = mid_val > input
+            else:
+                cond_mid = mid_val >= input
+            start = ivy.where((~cond_mid) & cond_update, mid + 1, start)
+
+    return start.to(dtype=out_dtype)
