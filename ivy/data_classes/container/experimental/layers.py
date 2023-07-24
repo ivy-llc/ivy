@@ -2049,7 +2049,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Compute the discrete Fourier transform of input.
+        Compute the Short-time Fourier transform  of input.
+        
         Parameters
         ----------
         signal
@@ -2124,16 +2125,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         Returns
         -------
         ret
-            The Fourier Transform of the input vector.If onesided is False,
-            the following shape is expected: [batch_idx][signal_dim1][signal_dim2]
-            …[signal_dimN][2]. If axis=0 and onesided is True, the following shape
-            is expected: [batch_idx][floor(signal_dim1/2)+1][signal_dim2]
-            …[signal_dimN][2]. If axis=1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1] [floor(signal_dim2/2)+1]
-            …[signal_dimN][2]. If axis=N-1 and onesided is True, the following
-            shape is expected: [batch_idx][signal_dim1][signal_dim2]…
-            [floor(signal_dimN/2)+1][2]. The signal_dim at the specified axis
-            is equal to the dft_length.
+            The Short-time Fourier Transform of the signals.If onesided is 1, the 
+            output has the shape: [batch_size][frames][dft_unique_bins][2], where 
+            dft_unique_bins is frame_length // 2 + 1 (the unique components of 
+            the DFT) If onesided is 0, the output has the shape: [batch_size]
+            [frames][frame_length][2], where frame_length is the length of 
+            the DFT.
         """
         return self.static_stft(
             signal,
@@ -2143,7 +2140,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             onesided=onesided,
             fs=fs,
             window=window,
-            frame_length=frame_length,
+            win_length=win_length,
             nperseg=nperseg,
             noverlap=noverlap,
             center=center,
