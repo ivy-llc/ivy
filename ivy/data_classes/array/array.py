@@ -396,7 +396,11 @@ class Array(
     def __getattr__(self, item):
         if ivy.current_backend() != _determine_backend_from_args(self._data):
             raise ivy.utils.exceptions.InvalidBackendException(
-                "This operation is only allowed when dynamic_backend = True"
+                f"The current backend is {ivy.current_backend()} while the ivy.Array"
+                " used is based on the"
+                f" {_determine_backend_from_args(self._data)} backend. Please set"
+                " dynamic_backend=True for the array if you want to convert it to the"
+                " target backend"
             )
         try:
             attr = self._data.__getattribute__(item)
