@@ -405,7 +405,7 @@ def stft(
          signal,
          n_fft,
          frame_step,
-         frame_length,
+         win_length,
          window,
          center,
          pad_mode,
