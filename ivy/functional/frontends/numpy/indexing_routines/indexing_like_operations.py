@@ -17,12 +17,6 @@ def tril_indices(n, k=0, m=None):
 
 
 @to_ivy_arrays_and_back
-def tril_indices_from(arr, k=0):
-    n, m = arr.shape[:2]
-    return ivy.tril_indices(n, m, k)
-
-
-@to_ivy_arrays_and_back
 def indices(dimensions, dtype=int, sparse=False):
     dimensions = tuple(dimensions)
     N = len(dimensions)

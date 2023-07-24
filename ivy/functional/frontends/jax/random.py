@@ -29,6 +29,26 @@ def normal(key, shape=(), dtype=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def orthogonal(key, n, shape=(), dtype=None):
+    flat_shape = (n, n)
+    if shape:
+        flat_shape = shape + flat_shape
+
+    # Generate a random matrix with the given shape and dtype
+    random_matrix = ivy.random_uniform(key, shape=flat_shape, dtype=dtype)
+
+    # Compute the QR decomposition of the random matrix
+    q, _ = ivy.linalg.qr(random_matrix)
+
+    # Reshape the resulting orthogonal matrix to the desired shape
+    if shape:
+        q = ivy.reshape(q, shape + (n, n))
+
+    return q
+
+
 def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
@@ -39,8 +59,8 @@ def _get_seed(key):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -55,8 +75,8 @@ def beta(key, a, b, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -91,8 +111,8 @@ def poisson(key, lam, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -107,8 +127,8 @@ def gamma(key, a, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -143,8 +163,8 @@ def rademacher(key, shape, dtype="int64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -211,8 +231,8 @@ def permutation(key, x, axis=0, independent=False):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -234,8 +254,8 @@ def shuffle(key, x, axis=0):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -252,8 +272,8 @@ def exponential(key, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -271,8 +291,8 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -293,8 +313,8 @@ def pareto(key, b, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.3.14 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -304,7 +324,7 @@ def maxwell(key, shape=None, dtype="float64"):
     # generate uniform random numbers between 0 and 1
     z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     # applying inverse transform sampling
-    x = (z**2) * ivy.exp(-(z**2) / 2)
+    x = (z ** 2) * ivy.exp(-(z ** 2) / 2)
     return x
 
 
@@ -313,8 +333,8 @@ def maxwell(key, shape=None, dtype="float64"):
 @with_supported_dtypes(
     {
         "0.4.13 and below": (
-            "float32",
-            "float64",
+                "float32",
+                "float64",
         )
     },
     "jax",
