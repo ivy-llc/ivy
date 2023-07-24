@@ -1794,11 +1794,9 @@ def test_tensorflow_sufficient_statistics(
         max_value=1,
         min_num_dims=1,
         max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
         shared_dtype=True,
     ),
-    compute_full_loss=st.sampled_from([True, False]),
+    compute_full_loss=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_log_poisson_loss(
