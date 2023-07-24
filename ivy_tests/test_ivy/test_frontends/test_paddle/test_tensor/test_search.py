@@ -173,3 +173,50 @@ def test_paddle_searchsorted(
         out_int32=out_int32,
         right=right,
     )
+
+
+# masked_select
+@st.composite
+def _dtypes_input_mask(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=_shape))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=1,
+            shape=_shape,
+        )
+    )
+
+    return _dtype, _x, _mask
+
+
+@handle_frontend_test(
+    fn_tree="paddle.masked_select",
+    dtype_input_mask=_dtypes_input_mask(),
+)
+def test_paddle_masked_select(
+    *,
+    dtype_input_mask,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    (
+        input_dtype,
+        x,
+        mask,
+    ) = dtype_input_mask
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + ["bool"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        mask=mask,
+    )

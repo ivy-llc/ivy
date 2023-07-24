@@ -59,3 +59,12 @@ def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=Non
     if out_int32:
         ret = ivy.astype(ret, "int32")
     return ret
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float16", "float32", "float64", "int32", "int64", "uint16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def masked_select(x, mask, name=None):
+    return ivy.flatten(x[mask])
