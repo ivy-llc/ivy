@@ -386,6 +386,7 @@ def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
 
 
+@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
 @to_ivy_arrays_and_back
 def any(x, axis=None, keepdim=False, name=None):
-    return ivy.max(x, axis=axis, keepdims=keepdim)
+    return ivy.any(x, axis=axis, keepdims=keepdim)

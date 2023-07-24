@@ -1716,7 +1716,7 @@ def test_paddle_rsqrt(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.any",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
         allow_neg_axes=True,
         min_num_dims=1,
