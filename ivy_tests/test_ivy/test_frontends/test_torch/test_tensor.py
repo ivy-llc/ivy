@@ -9849,10 +9849,10 @@ def test_torch_instance_bmm(
     method_flags,
     on_device,
 ):
-    input_dtype, x, mat2 = dtype_and_matrices
+    input_dtype, _, x, mat2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"data": x},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"mat2": mat2},
         frontend=frontend,
@@ -9860,6 +9860,7 @@ def test_torch_instance_bmm(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        backend_to_test="torch",
     )
 
 
