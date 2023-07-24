@@ -78,7 +78,7 @@ def test_torch_promote_types(
     fn_tree="torch.set_default_dtype",
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_set_default_dtype(
+def test_torch_set_default_dtype(
     *,
     dtype,
 ):
