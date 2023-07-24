@@ -388,7 +388,7 @@ def test_function(
         )
         assert ivy.nested_map(
             ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
-        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_target)
+        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
@@ -1283,7 +1283,7 @@ def test_method(
         )
         assert ivy.nested_map(
             ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
-        ), "Ground-truth method returned non-ivy arrays: {}".format(ret)
+        ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
         
         # TODO optimize or cache
         # Exhuastive replication for all examples
