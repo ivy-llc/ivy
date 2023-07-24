@@ -108,9 +108,9 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64", "complex64", "complex128")},
     "paddle",
 )
 @to_ivy_arrays_and_back
-def roll(x, shift, axis=None, name=None):
-    return ivy.roll(x, shift, axis=axis)
+def roll(x, shifts, axis=None, name=None):
+    return ivy.roll(x, shifts, axis=axis)
