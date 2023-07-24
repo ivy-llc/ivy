@@ -48,19 +48,15 @@ def lgamma(
 
     Examples
     --------
-    >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
-    ...                   b=ivy.array([4.5, 5.3, 2.3]))
+    >>> x = ivy.array([1.6, 2.6, 3.5])
     >>> y = x.lgamma()
     >>> print(y)
-    {
-        a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
-        b: ivy.array([2.45373821, 3.63963795, 0.15418935])
-    }
+    ivy.array([-0.11259177,  0.3574118 ,  1.20097363])
 
-    >>> x = ivy.array([1 , 2 , 3 ])
+    >>> x = ivy.array([1., 2., 3. ])
     >>> y = x.lgamma()
     >>> print(y)
-    ivy.array([0., 0., 0.69314718])
+    ivy.array([0. ,0. ,0.69314718])
 
     >>> x = ivy.array([4.5, -4, -5.6])
     >>> x.lgamma(out = x)

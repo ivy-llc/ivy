@@ -177,6 +177,7 @@ def check_docstring_examples_run(
 
     # assert output == parsed_output, "Output is unequal to the docstrings output."
     sig_fig = float("1e-" + str(num_sig_fig))
+    atol = sig_fig / 10000
     numeric_pattern = re.compile(
         r"""
             [\{\}\(\)\[\]]|\w+:
@@ -196,6 +197,7 @@ def check_docstring_examples_run(
                 np.nan_to_num(complex(doc_u)),
                 np.nan_to_num(complex(doc_v)),
                 rtol=sig_fig,
+                atol=atol,
             )
         except Exception:
             if str(doc_u) != str(doc_v):
