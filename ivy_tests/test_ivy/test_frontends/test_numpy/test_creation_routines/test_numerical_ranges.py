@@ -292,7 +292,7 @@ def test_numpy_ogrid(range, class_, method_name, backend_fw, frontend):
     endpoint=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_geomspace(
+def test_numpy_geomspace(
     dtype_start_stop,
     num,
     endpoint,
