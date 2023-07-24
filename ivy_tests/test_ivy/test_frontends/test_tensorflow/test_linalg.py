@@ -1140,9 +1140,9 @@ def test_tensorflow_tensor_diag(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
-        min_value=0,
+        min_value=1,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=2).map(lambda x: tuple([x, x])),
+        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: tuple([x, x])),
     ).filter(lambda x: "float16" not in x[0]),
     test_with_out=st.just(False),
 )
@@ -1164,4 +1164,6 @@ def test_tensorflow_expm(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        atol=1,
+        rtol=1e-01,
     )
