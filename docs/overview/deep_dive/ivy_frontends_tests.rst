@@ -245,14 +245,15 @@ This function requires us to create extra functions for generating :code:`shape`
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
+    # ivy_tests/test_ivy/test_frontends/test_jax/test_lax/test_operators.py
     @st.composite
     def _fill_value(draw):
         dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        elif ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                return draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                return draw(helpers.ints(min_value=-5, max_value=5))
         return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -268,7 +269,7 @@ This function requires us to create extra functions for generating :code:`shape`
         fill_value=_fill_value(),
         dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
     )
-    def test_jax_lax_full(
+    def test_jax_full(
         *,
         shape,
         fill_value,
@@ -276,11 +277,13 @@ This function requires us to create extra functions for generating :code:`shape`
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtypes,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -306,14 +309,24 @@ This function requires us to create extra functions for generating :code:`shape`
     def _input_fill_and_dtype(draw):
         dtype = draw(helpers.get_dtypes("float", full=False))
         dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-        if ivy.is_uint_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=0, max_value=5))
-        elif ivy.is_int_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=-5, max_value=5))
-        else:
-            fill_values = draw(st.floats(min_value=-5, max_value=5))
-        dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype[0]):
+                fill_values = draw(st.integers(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype[0]):
+                fill_values = draw(st.integers(min_value=-5, max_value=5))
+            else:
+                fill_values = draw(
+                    helpers.floats(
+                        min_value=-5,
+                        max_value=5,
+                        large_abs_safety_factor=10,
+                        small_abs_safety_factor=10,
+                        safety_factor_scale="log",
+                    )
+                )
+            dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
         return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
+
 
     # full
     @handle_frontend_test(
@@ -332,6 +345,7 @@ This function requires us to create extra functions for generating :code:`shape`
         shape,
         input_fill_dtype,
         frontend,
+        backend_fw,
         test_flags,
         fn_tree,
         on_device,
@@ -340,6 +354,7 @@ This function requires us to create extra functions for generating :code:`shape`
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -355,15 +370,17 @@ This function requires us to create extra functions for generating :code:`shape`
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tf_functions.py
+    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_raw_ops.py
     @st.composite
     def _fill_value(draw):
-        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        if ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(helpers.floats(min_value=-5, max_value=5))
+        dtype = draw(_dtypes())[0]
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                return draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                return draw(helpers.ints(min_value=-5, max_value=5))
+            return draw(helpers.floats(min_value=-5, max_value=5))
+
 
     # fill
     @handle_frontend_test(
@@ -383,6 +400,7 @@ This function requires us to create extra functions for generating :code:`shape`
         fill_value,
         dtypes,
         frontend,
+        backend_fw,
         test_flags,
         fn_tree,
         on_device,
@@ -390,6 +408,7 @@ This function requires us to create extra functions for generating :code:`shape`
         helpers.test_frontend_function(
             input_dtypes=dtypes,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -411,12 +430,20 @@ This function requires us to create extra functions for generating :code:`shape`
     # ivy_tests/test_ivy/test_frontends/test_torch/test_creation_ops.py
     @st.composite
     def _fill_value(draw):
-        dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-        if ivy.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        if ivy.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
-        return draw(helpers.floats(min_value=-5, max_value=5))
+        with_array = draw(st.sampled_from([True, False]))
+        dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
+        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+            if ivy_backend.is_uint_dtype(dtype):
+                ret = draw(helpers.ints(min_value=0, max_value=5))
+            elif ivy_backend.is_int_dtype(dtype):
+                ret = draw(helpers.ints(min_value=-5, max_value=5))
+            else:
+                ret = draw(helpers.floats(min_value=-5, max_value=5))
+            if with_array:
+                return np.array(ret, dtype=dtype)
+            else:
+                return ret
+
 
     @handle_frontend_test(
         fn_tree="torch.full",
@@ -438,12 +465,14 @@ This function requires us to create extra functions for generating :code:`shape`
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         helpers.test_frontend_function(
             input_dtypes=dtype,
             on_device=on_device,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             size=shape,
