@@ -549,7 +549,6 @@ class ndarray:
         offset=0,
         axis1=0,
         axis2=1,
-        dtype=None,
         out=None
     ):
         return np_frontend.trace(
@@ -557,6 +556,5 @@ class ndarray:
             offset=offset,
             axis1=axis1,
             axis2=axis2,
-            dtype=dtype,
             out=out,
         )

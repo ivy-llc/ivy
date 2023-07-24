@@ -3179,3 +3179,51 @@ def test_numpy_instance_invert__(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+# trace
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="trace",
+    dtype_and_x_axes=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        valid_axis=True,
+        min_axes_size=2,
+        max_axes_size=2,
+        min_num_dims=2,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+    ),
+    offset=st.integers(min_value=-4, max_value=4),
+)
+def test_numpy_ndarray_trace(
+    dtype_and_x_axes,
+    offset,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtypes, x, axes = dtype_and_x_axes
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "axis1": axes[0],
+            "axis2": axes[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
