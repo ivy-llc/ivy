@@ -1108,7 +1108,6 @@ def nested_map(
     >>> nest = ([23, 25, 1337], [63, 98, 6])
     >>> function = lambda a :  a + 1
     >>> ivy.nested_map(nest, function, to_mutable = True)
-    >>> print(nest)
     [[24, 25, 1338], [64, 99, 7]]
     """
     to_ignore = ivy.default(to_ignore, ())
