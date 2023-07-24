@@ -11,9 +11,6 @@ Containers
 .. _`ivy.Container.cont_diff`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L427
 .. _`ivy.Container.cont_common_key_chains`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L741
 .. _`ivy.Container.cont_multi_map_in_function`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
-.. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L324
-.. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7285
-.. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L835
 .. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
 .. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
 .. _`static method is added`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L709
@@ -51,7 +48,6 @@ Overall, this results in the following five mutually exclusive groups of :class:
 Each of these are explained in the following sub-sections.
 
 #. Container instance methods
-#. Container static methods
 #. API instance methods
 #. API special methods
 #. API static methods
@@ -61,16 +57,6 @@ Container Instance Methods
 
 Container instance methods are methods which are specific to the container itself.
 A few examples include `ivy.Container.cont_map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.cont_all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.cont_to_iterator`_ which returns an iterator for traversing the leaves of the container.
-
-There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
-
-Container Static Methods
-------------------------
-
-Container static methods are also methods which are specific to containers, but which generally operate across *multiple* containers rather than a single container.
-This underpins the decision to not bind these method to a single container instance, and instead implement them as *static* methods.
-
-A few examples include `ivy.Container.cont_multi_map`_ which is used for mapping a function to all leaves of *multiple* containers with the same nested structure, `ivy.Container.cont_diff`_ which displays the difference in nested structure between multiple containers, and `ivy.Container.cont_common_key_chains`_ which returns the nested structure that is common to all containers.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
@@ -110,9 +96,6 @@ However, as with the :class:`ivy.Array` class, it's important to bear in mind th
 We also **do not** set the :code:`out` argument to :code:`self` for instance methods.
 If the only array argument is the :code:`out` argument, then we do not implement this instance method.
 For example, we do not implement an instance method for `ivy.zeros <https://github.com/unifyai/ivy/blob/1dba30aae5c087cd8b9ffe7c4b42db1904160873/ivy/functional/ivy/creation.py#L116>`_.
-
-Under the hood, every *instance* method calls the corresponding *static* method.
-For example, `ivy.Container.add <https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L92>`_ calls :meth:`ivy.Container.static_add`, `ivy.Container.tan`_ calls :meth:`ivy.Container.static_tan`, and `ivy.Container.roll`_ calls :meth:`ivy.Container.static_roll`.
 
 As is the case for :class:`ivy.Array`, the organization of these instance methods follows the same organizational structure as the files in the functional API.
 The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
