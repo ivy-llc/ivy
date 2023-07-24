@@ -1603,12 +1603,11 @@ def test_paddle_rsqrt(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.prod",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=False,
-        allow_inf=False,
         allow_nan=False,
     ),
 )
