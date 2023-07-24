@@ -1,5 +1,8 @@
 import ivy
 import numpy as np
+import copy as py_copy
+from ivy.functional.frontends.pandas.pandas_func_wrappers import outputs_to_self_class
+import ivy.functional.frontends.pandas.series as series
 
 
 class NDFrame:
@@ -8,7 +11,7 @@ class NDFrame:
         self.columns = columns
         self.dtype = dtype
         self.copy = copy
-        self.orig_data = data
+        self.orig_data = py_copy.deepcopy(data)
 
         if ivy.is_native_array(data):
             self.array = ivy.array(data)
@@ -18,16 +21,18 @@ class NDFrame:
         data_is_array_or_like = data_is_array or isinstance(data, (list, tuple))
 
         # setup a default index if none provided
+        orig_data_len = len(self.orig_data)
         if index is None:
             if data_is_array_or_like:
-                index = ivy.arange(len(data)).tolist()
-                if len(data) != len(index):
-                    raise ValueError(
-                        f"Length of values {len(data)} does not match length of index"
-                        f" {len(index)}"
-                    )
+                index = ivy.arange(orig_data_len).tolist()
             elif isinstance(data, dict):
                 index = list(data.keys())
+            elif isinstance(data, series.Series):
+                index = data.index
+        elif isinstance(data, dict) and len(index) > orig_data_len:
+            for i in index:
+                if i not in data:
+                    data[i] = ivy.nan
 
         if data_is_array_or_like:
             self.index = index
@@ -42,10 +47,17 @@ class NDFrame:
                 data = [data] * len(index)
             self.index = index
             self.array = ivy.array(data)
+        elif isinstance(data, series.Series):
+            self.array = data.array
+            self.index = index
         elif isinstance(data, str):
-            pass # TODO: implement string series
+            pass  # TODO: implement string series
         else:
-            raise TypeError(f"Data must be one of array, dict, iterables or scalar value, got {type(data)}")
+            raise TypeError(
+                "Data must be one of array, dict, iterables, scalar value or Series."
+                f" Got {type(data)}"
+            )
+
     @property
     def data(self):
         # return underlying data in the original format
@@ -56,5 +68,23 @@ class NDFrame:
             ret = dict(zip(self.orig_data.keys(), ret))
         return ret
 
+    @outputs_to_self_class
     def abs(self):
-        return self.__class__(ivy.abs(self.array), index=self.index, name=self.name)
+        return ivy.abs(self.array)
+
+    def to_numpy(self, dtype=None, copy=False, na_value=None):
+        ret = self.array.to_numpy()
+        if na_value is not None:
+            ret = np.where(ret == np.nan, na_value, ret)
+        if dtype is not None:
+            ret = ret.astype(dtype)
+        if copy:
+            return ret.copy()
+        return ret
+
+    def __array__(self):
+        return self.array.to_numpy()
+
+    @outputs_to_self_class
+    def __array_wrap__(self, array):
+        return array
