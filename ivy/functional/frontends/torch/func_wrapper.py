@@ -237,6 +237,39 @@ def outputs_to_native_arrays(fn: Callable):
     return outputs_to_native_arrays_torch
 
 
+def to_ivy_shape(fn: Callable) -> Callable:
+    """
+    Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
+    `ivy.Shape` instances.
+    """
+
+    @functools.wraps(fn)
+    def to_ivy_shape_torch(*args, **kwargs):
+        new_kwargs = {
+            key: (
+                ivy.to_ivy_shape(tuple(value))
+                if key in ["shape", "size"]
+                and isinstance(value, ivy.functional.frontends.torch.Size)
+                else value
+            )
+            for key, value in kwargs.items()
+        }
+        # if any of the args are instance of torch_frontend.Size,
+        # convert them to ivy.Shape.
+        new_args = ivy.nested_map(
+            args,
+            lambda x: (
+                ivy.to_ivy_shape(tuple(x))
+                if isinstance(x, ivy.functional.frontends.torch.Size)
+                else x
+            ),
+            shallow=False,
+        )
+        return fn(*new_args, **new_kwargs)
+
+    return to_ivy_shape_torch
+
+
 numpy_compatible_args = {
     "axis": "dim",
     "keepdims": "keepdim",
