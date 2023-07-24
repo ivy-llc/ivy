@@ -872,7 +872,7 @@ def stft(
     onesided:Optional[bool] = True,
     fs: Optional[float] = 1.0,
     window: Optional[Union[np.ndarray, list, str, Tuple[int]]] = None,
-    frame_length: Optional[Union[int, Tuple[int]]] = None,
+    win_length: Optional[int] = None,
     nperseg: Optional[int] = 256,
     noverlap: Optional[int] = None,
     center: Optional[bool] = True,
