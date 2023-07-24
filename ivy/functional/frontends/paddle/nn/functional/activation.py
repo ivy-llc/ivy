@@ -231,3 +231,11 @@ def log_sigmoid(x, name=None):
 
 def silu(x, name=None):
     return ivy.silu(x)
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def softmax_(x, axis=-1, dtype=None, name=None):
+    ret = ivy.softmax(x, axis=axis)
+    ivy.inplace_update(x, ret)
+    return x
