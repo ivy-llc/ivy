@@ -283,7 +283,7 @@ def test_function(
         assert ivy.nested_map(
             ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
-        
+
         # Assert indices of return if the indices of the out array provided
         if test_flags.with_out and not test_flags.test_compile:
             test_ret = (
