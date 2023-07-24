@@ -386,6 +386,9 @@ def test_function(
             test_compile=test_flags.test_compile,
             **kwargs,
         )
+        assert ivy.nested_map(
+            ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+        ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_target)
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
                 ret_from_gt[getattr(gt_backend.__dict__[fn_name], "out_index")]
@@ -1278,7 +1281,10 @@ def test_method(
             test_compile=test_compile,
             **kwargs_gt_method,
         )
-
+        assert ivy.nested_map(
+            ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+        ), "Ground-truth method returned non-ivy arrays: {}".format(ret)
+        
         # TODO optimize or cache
         # Exhuastive replication for all examples
         fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
