@@ -4196,20 +4196,16 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    _to_numpy = current_backend(x).general.to_numpy
-    if ivy.is_ivy_array(x) and x.base is None:
-        return _to_numpy(x.data)
-    if ivy.is_native_array(x):
-        return _to_numpy(x)
+    if ivy.is_native_array(x) or (ivy.is_ivy_array(x) and x.base is None):
+        return ivy.to_numpy(x).strides
     # if x is an ivy array with a base,
     # convert it to a numpy array with the same base:
-    ret = _to_numpy(x.base.data)
-    ivy.set_numpy_backend()
-    ivy.previous_backend()
+    ret = ivy.to_numpy(x.base)
+    ivy_numpy = ivy.with_backend('numpy')
     for fn, args, kwargs, index in x._manipulation_stack:
-        ret = ivy.functional.backends.numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ivy_numpy.__dict__[fn](ret, *args, **kwargs)
         ret = ret[index] if ivy.exists(index) else ret
-    return ret.strides
+    return ret.to_native().strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:
