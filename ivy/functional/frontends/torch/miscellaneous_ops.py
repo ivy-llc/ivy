@@ -2,7 +2,6 @@ import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.torch import promote_types_of_torch_inputs
-import numpy as np
 
 
 @to_ivy_arrays_and_back
@@ -425,7 +424,7 @@ def view_as_complex(input):
         axis=ivy.get_num_dims(input) - 1,
     )
     dtype = ivy.complex64 if input.dtype == ivy.float32 else ivy.complex128
-    complex_ = np.empty(ivy.shape(input)[:-1], dtype=dtype)
-    complex_.real = ivy.squeeze(real, axis=ivy.get_num_dims(real) - 1)
-    complex_.imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1)
+    real = ivy.squeeze(real, axis=ivy.get_num_dims(real) - 1).astype(dtype)
+    imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1).astype(dtype)
+    complex_ = real + imag * 1j
     return ivy.array(complex_, dtype=dtype)
