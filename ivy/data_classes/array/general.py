@@ -41,11 +41,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_native_array()
         >>> print(ret)
         False
-
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_native_array(exclusive=True)
-        >>> print(ret)
-        True
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
@@ -75,10 +70,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(ret)
         True
 
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_ivy_array(exclusive=True)
-        >>> print(ret)
-        False
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
