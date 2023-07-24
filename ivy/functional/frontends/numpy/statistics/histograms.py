@@ -123,14 +123,14 @@ def _get_bin_edges(a, bins, range, weights):
         raise ivy.utils.exceptions.IvyValueError("`bins` must be 1d, when an array")
 
     if n_equal_bins is not None:
-        bin_type = ivy.result_type(ivy.array([first_edge, last_edge]), a)
+        bin_type = ivy.result_type(a, first_edge, last_edge)
         if ivy.is_int_dtype(bin_type):
             bin_type = ivy.result_type(bin_type, float)
 
         # bin edges must be computed
-        bin_edges = ivy.linspace(
+        bin_edges = np_frontend.linspace(
             first_edge, last_edge, n_equal_bins + 1, endpoint=True, dtype=bin_type
-        )
+        ).ivy_array
         return bin_edges, (first_edge, last_edge, n_equal_bins)
     else:
         return bin_edges, None
@@ -293,7 +293,7 @@ def histogram(a, bins=10, range=None, density=None, weights=None):
         n = ivy.zeros(n_equal_bins, dtype=ntype)
 
         # Pre-compute histogram scaling factor
-        norm = n_equal_bins / ivy.subtract(last_edge, first_edge)
+        norm = n_equal_bins / float(ivy.subtract(last_edge, first_edge))
 
         # We iterate over blocks here for two reasons: the first is that for
         # large arrays, it is actually faster (for example for a 10^8 array it
