@@ -40,6 +40,8 @@ class LayerNorm(Module):
             the variables for each submodule in the sequence,
             constructed internally by default.
         """
+        if isinstance(normalized_shape, int):
+            normalized_shape = (normalized_shape,)
         self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
         self._epsilon = eps
         self._elementwise_affine = elementwise_affine

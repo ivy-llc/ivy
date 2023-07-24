@@ -7,13 +7,90 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
 
-def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
+class AccumulateGrad:
+    def __init__(self) -> None:
+        self.next_functions = ()
+        self.__name__ = "AccumulateGrad"
+
+    def __repr__(self):
+        return self.__name__
+
+    def __eq__(self, __value: object) -> bool:
+        return self.__name__ == __value
+
+    def __call__(self, grads):
+        for i in range(self.__self__.ndim):
+            grads = grads.sum(-1)
+        self.__self__._grads = grads
+        return None
+
+
+class GradFn:
+    def __init__(self, fn, inputs) -> None:
+        self._inputs = []
+        self._fns = []
+        self.next_functions = []
+        assert len(inputs) <= 2
+        if len(inputs) == 1 and isinstance(inputs[0], torch_frontend.Tensor):
+            self._inputs.append(inputs[0].detach())
+            d_fn = lambda x: fn(x)
+            self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
+            if inputs[0].grad_fn is not None:
+                self.next_functions.append(inputs[0].grad_fn)
+            elif inputs[0].requires_grad and inputs[0].is_leaf:
+                acc_grad = AccumulateGrad()
+                acc_grad.__self__ = inputs[0]
+                self.next_functions.append(acc_grad)
+        elif len(inputs) == 2:
+            if isinstance(inputs[0], torch_frontend.Tensor):
+                self._inputs.append(inputs[0].detach())
+                d_fn = lambda x: fn(x, inputs[1])
+                self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
+                if inputs[0].grad_fn is not None:
+                    self.next_functions.append(inputs[0].grad_fn)
+                elif inputs[0].requires_grad and inputs[0].is_leaf:
+                    acc_grad = AccumulateGrad()
+                    acc_grad.__self__ = inputs[0]
+                    self.next_functions.append(acc_grad)
+            if isinstance(inputs[1], torch_frontend.Tensor):
+                self._inputs.append(inputs[1].detach())
+                d_fn = lambda x: fn(inputs[0], x)
+                self._fns.append(to_ivy_arrays_and_back(ivy.jac(d_fn)))
+                if inputs[1].grad_fn is not None:
+                    self.next_functions.append(inputs[1].grad_fn)
+                elif inputs[1].requires_grad and inputs[1].is_leaf:
+                    acc_grad = AccumulateGrad()
+                    acc_grad.__self__ = inputs[1]
+                    self.next_functions.append(acc_grad)
+        self.__name__ = fn.__name__.capitalize() + "Backward"
+
+    def __call__(self, prev_grads):
+        return [
+            jac_fn(input_tensor) * prev_grads
+            for input_tensor, jac_fn in zip(self._inputs, self._fns)
+        ]
+
+    def __repr__(self):
+        return self.__name__
+
+    def __eq__(self, __value: object) -> bool:
+        return self.__name__ == __value
+
+
+def _from_ivy_array_to_torch_frontend_tensor(
+    x, nested=False, include_derived=None, requires_grad=False
+):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_torch_frontend_tensor, include_derived, shallow=False
+            x,
+            functools.partial(
+                _from_ivy_array_to_torch_frontend_tensor, requires_grad=requires_grad
+            ),
+            include_derived,
+            shallow=False,
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        a = torch_frontend.Tensor(x, _init_overload=True)
+        a = torch_frontend.Tensor(x, _init_overload=True, requires_grad=requires_grad)
         return a
     return x
 
@@ -35,10 +112,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _inputs_to_ivy_arrays_torch(*args, **kwargs):
         """
-        Convert `Tensor` into `ivy.Array` instances.
-
         Convert all `Tensor` instances in both the positional and
-        keyword arguments into `ivy.Array` instances, and then calls the
+        keyword arguments into `ivy.Array` instances, and then call the
         function with the updated arguments.
         """
         # Remove out argument if present in kwargs
@@ -64,9 +139,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def outputs_to_frontend_arrays_torch(*args, **kwargs):
         """
-        Convert `ivy.Array` into `Tensor` instances.
-
-        Call the function, and then converts all `ivy.Array` instances
+        Call the function, and then convert all `ivy.Array` instances
         returned by the function into `Tensor` instances.
         """
         # call unmodified function
@@ -91,7 +164,18 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_float_dtype()
         # convert all arrays in the return to `torch_frontend.Tensor` instances
         ret = _from_ivy_array_to_torch_frontend_tensor(
-            ret, nested=True, include_derived={tuple: True}
+            ret,
+            nested=True,
+            include_derived={tuple: True},
+            requires_grad=kwargs.get(
+                "requires_grad",
+                any(
+                    [
+                        isinstance(i, torch_frontend.Tensor) and i.requires_grad
+                        for i in args
+                    ]
+                ),
+            ),
         )
         array_fn = lambda x: ivy.is_array(x) or hasattr(x, "ivy_array")
         if "inplace" in kwargs and kwargs["inplace"]:
@@ -104,17 +188,38 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 first_array._data = ret.ivy_array._data
             else:
                 first_array.ivy_array._data = ret.ivy_array._data
-            return first_array
-        else:
-            return ret
+            ret = first_array
+
+        # logic for setting is_leaf
+        if ret is not None and isinstance(ret, torch_frontend.Tensor):
+            if fn.__name__ in dir(torch_frontend.creation_ops):
+                ret.is_leaf = True
+            elif all(
+                [
+                    not isinstance(i, torch_frontend.Tensor)
+                    or (not i.requires_grad and not i.grad_fn)
+                    for i in args
+                ]
+            ):
+                ret.is_leaf = True
+            else:
+                ret.is_leaf = False
+        # set grad_fn
+        if any(
+            [isinstance(i, torch_frontend.Tensor) and i.requires_grad for i in args]
+        ):
+            # ToDo: Implement for unbind
+            grad_fn = GradFn(fn, args)
+            grad_fn.__self__ = ret
+            ret.grad_fn = grad_fn
+
+        return ret
 
     return outputs_to_frontend_arrays_torch
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     """
-    Wrap `fn` so it receives and returns `ivy.Array` instances.
-
     Wrap `fn` so that input arrays are all converted to `ivy.Array`
     instances and return arrays are all converted to `Tensor` instances.
     """
@@ -130,6 +235,39 @@ def outputs_to_native_arrays(fn: Callable):
         return ret
 
     return outputs_to_native_arrays_torch
+
+
+def to_ivy_shape(fn: Callable) -> Callable:
+    """
+    Wrap `fn` so that any `torch_frontend.Size` arguments are converted to
+    `ivy.Shape` instances.
+    """
+
+    @functools.wraps(fn)
+    def to_ivy_shape_torch(*args, **kwargs):
+        new_kwargs = {
+            key: (
+                ivy.to_ivy_shape(tuple(value))
+                if key in ["shape", "size"]
+                and isinstance(value, ivy.functional.frontends.torch.Size)
+                else value
+            )
+            for key, value in kwargs.items()
+        }
+        # if any of the args are instance of torch_frontend.Size,
+        # convert them to ivy.Shape.
+        new_args = ivy.nested_map(
+            args,
+            lambda x: (
+                ivy.to_ivy_shape(tuple(x))
+                if isinstance(x, ivy.functional.frontends.torch.Size)
+                else x
+            ),
+            shallow=False,
+        )
+        return fn(*new_args, **new_kwargs)
+
+    return to_ivy_shape_torch
 
 
 numpy_compatible_args = {
