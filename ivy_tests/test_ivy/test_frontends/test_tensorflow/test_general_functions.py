@@ -1577,7 +1577,6 @@ def test_tensorflow_realdiv(
     fn_tree,
     on_device,
 ):
-    # todo: test for complex numbers
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -1588,6 +1587,15 @@ def test_tensorflow_realdiv(
         on_device=on_device,
         x=x[0],
         y=x[1],
+
+    if "complex" in input_dtype:
+        x = complex(x[0], x[1])
+        y = complex(x[2], x[3])
+        
+        result = fn_tree.tensorflow_realdiv(x, y)
+        
+        expected = x / y
+        assert result == expected, f"For {x} and {y}, expected {expected} but got {result}"
     )
 
 
