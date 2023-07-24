@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     keepdims=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_count_nonzero(
+def test_numpy_count_nonzero(
     dtype_and_x,
     keepdims,
     frontend,
