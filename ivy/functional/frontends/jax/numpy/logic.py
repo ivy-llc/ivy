@@ -8,6 +8,14 @@ from ivy.functional.frontends.jax.numpy import (
 )
 from ivy.utils.exceptions import IvyNotImplementedException
 
+def _packbits_nested_list_padding(arr, pad_length):
+    if arr.ndim > 1:
+        nested_list = []
+        for sub_arr in arr:
+            nested_list.append(_packbits_nested_list_padding(sub_arr, pad_length))
+        return nested_list
+    else:
+        return arr.zero_pad(pad_width=[[0, pad_length]])
 
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
@@ -220,16 +228,6 @@ def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
 
 
-def create_nested_list(arr, pad_length):
-    if arr.ndim > 1:
-        nested_list = []
-        for sub_arr in arr:
-            nested_list.append(create_nested_list(sub_arr, pad_length))
-        return nested_list
-    else:
-        return arr.zero_pad(pad_width=[[0, pad_length]])
-
-
 @to_ivy_arrays_and_back
 def packbits(x, /, *, axis=None, bitorder="big"):
     x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
@@ -243,7 +241,7 @@ def packbits(x, /, *, axis=None, bitorder="big"):
 
     remainder = x.shape[-1] % 8
     if remainder:
-        x = create_nested_list(x, 8 - remainder)
+        x = _packbits_nested_list_padding(x, 8 - remainder)
         x = ivy.array(x)
 
     x = ivy.reshape(x, list(x.shape[:-1]) + [x.shape[-1] // 8, 8])
