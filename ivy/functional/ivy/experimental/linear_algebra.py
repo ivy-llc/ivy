@@ -90,7 +90,7 @@ def eigh_tridiagonal(
     >>> beta = ivy.array([0., 1.])
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
-    ivy.array([0., 0.38196, 2.61803])
+    ivy.array([0., 0.38196602, 2.61803389])
 
     >>> alpha = ivy.array([0., 1., 2.])
     >>> beta = ivy.array([0., 1.])
@@ -98,22 +98,21 @@ def eigh_tridiagonal(
     ...     beta, select='v',
     ...     select_range=[0.2,3.0])
     >>> print(y)
-    ivy.array([0.38196, 2.61803])
+    ivy.array([0.38196602, 2.61803389])
 
-    >>> ivy.set_backend("tensorflow")
     >>> alpha = ivy.array([0., 1., 2., 3.])
     >>> beta = ivy.array([2., 1., 2.])
     >>> y = ivy.eigh_tridiagonal(alpha,
     ...     beta,
     ...     eigvals_only=False,
     ...     select='i',
-    ...     select_range=[1,2]
+    ...     select_range=[1,2],
     ...     tol=1.)
-    >>> print(y)
-    (ivy.array([0.18749806, 2.81250191]), ivy.array([[ 0.350609  , -0.56713122],
-        [ 0.06563006, -0.74146169],
-        [-0.74215561, -0.0636413 ],
-        [ 0.56742489,  0.35291126]]))
+    >>> print(y)F
+    (ivy.array([0.38196602, 2.61803389]), ivy.array([[ 0.35048741, -0.56710052],
+           [ 0.06693714, -0.74234426],
+           [-0.74234426, -0.06693714],
+           [ 0.56710052,  0.35048741]]))
 
     With :class:`ivy.Container` input:
 
@@ -122,7 +121,7 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
         b: ivy.array([0., 2., 4.])
     }
 
@@ -131,8 +130,8 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
-        b: ivy.array([-0.82842, 2., 4.82842])
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
+        b: ivy.array([-0.82842714, 2., 4.82842731])
     }
     """
     x = ivy.diag(alpha)
