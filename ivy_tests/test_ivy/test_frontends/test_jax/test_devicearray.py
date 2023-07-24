@@ -4,10 +4,7 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, 
-
-
-_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
