@@ -387,7 +387,7 @@ def test_function(
             **kwargs,
         )
         assert ivy.nested_map(
-            ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+            ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
         ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
@@ -1282,7 +1282,7 @@ def test_method(
             **kwargs_gt_method,
         )
         assert ivy.nested_map(
-            ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+            ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
         ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
         
         # TODO optimize or cache
