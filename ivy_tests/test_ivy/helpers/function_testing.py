@@ -1642,6 +1642,8 @@ def test_frontend_method(
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
         frontend_ret_np_flat = [np.asarray(frontend_ret, dtype=np.int32)]
+    elif frontend_config.isscalar(frontend_ret):
+        frontend_ret_np_flat = [np.asarray(frontend_ret)]
     else:
         frontend_ret_flat = flatten_frontend(
             ret=ret, backend=ivy_backend, frontend_array_fn=create_frontend_array
