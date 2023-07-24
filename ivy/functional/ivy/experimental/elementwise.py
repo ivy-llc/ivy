@@ -1016,16 +1016,16 @@ def conj(
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.conj(x)
     >>> print(z)
-    ivy.array([4.2+0j, -3j, 7+5j])
+    ivy.array([4.2-0.j, 0. -3.j, 7. -5.j])
 
     With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),
+    ...                   b=ivy.array([5j, 5.32-6.55j, 3.001]))
     >>> z = ivy.conj(x)
     >>> print(z)
     {
-        a: ivy.array([-6.7+7j, 0.314-0.355j, 1.23]),
-        b: ivy.array([-5j, 5.32+6.55j, 3.001])
+        a: ivy.array([-6.7+7.j, 0.314-0.355j, 1.23-0.j]),
+        b: ivy.array([0.-5.j, 5.32+6.55j, 3.001-0.j])
     }
     """
     return ivy.current_backend(x).conj(x, out=out)
