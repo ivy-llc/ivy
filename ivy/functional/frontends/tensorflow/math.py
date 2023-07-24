@@ -63,12 +63,6 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
-@with_supported_dtypes(
-    {"2.13.0 and below": ("int32",)}, 
-    "tensorflow"
-)
-
-
 @handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
