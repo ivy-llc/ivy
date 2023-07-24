@@ -1,14 +1,12 @@
 import abc
 from hypothesis import strategies as st
 from . import globals as test_globals
-
-import ivy
-from ivy.functional.ivy.gradients import _variable
+from .pipeline_helper import update_backend
 
 
 @st.composite
 def _gradient_strategy(draw):
-    if test_globals.CURRENT_BACKEND().backend == "numpy":
+    if test_globals.CURRENT_BACKEND == "numpy":
         draw(st.just(False))
     draw(st.booleans())
 
@@ -17,13 +15,13 @@ def _gradient_strategy(draw):
 def _as_varaible_strategy(draw):
     if (
         test_globals.CURRENT_BACKEND is not test_globals._Notsetval
-        and test_globals.CURRENT_BACKEND().backend == "numpy"
+        and test_globals.CURRENT_BACKEND == "numpy"
     ):
         return draw(st.just([False]))
     if not test_globals.CURRENT_FRONTEND_STR:
         if (
             test_globals.CURRENT_FRONTEND is not test_globals._Notsetval
-            and test_globals.CURRENT_FRONTEND().backend == "numpy"
+            and test_globals.CURRENT_FRONTEND == "numpy"
         ):
             return draw(st.just([False]))
     return draw(st.lists(st.booleans(), min_size=1, max_size=1))
@@ -31,7 +29,7 @@ def _as_varaible_strategy(draw):
 
 @st.composite
 def _compile_strategy(draw):  # TODO remove later when paddle is supported
-    if test_globals.CURRENT_BACKEND().backend == "paddle":
+    if test_globals.CURRENT_BACKEND == "paddle":
         draw(st.just(False))
     draw(st.booleans())
 
@@ -72,19 +70,15 @@ def build_flag(key: str, value: bool):
 # Strategy Helpers #
 
 
-def as_cont(*, x):
-    """Return x as an Ivy Container, containing x at all its leaves."""
-    return ivy.Container({"a": x, "b": {"c": x, "d": x}})
-
-
 class TestFlags(metaclass=abc.ABCMeta):
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         pass
 
 
 class FunctionTestFlags(TestFlags):
     def __init__(
         self,
+        ground_truth_backend,
         num_positional_args,
         with_out,
         instance_method,
@@ -94,6 +88,7 @@ class FunctionTestFlags(TestFlags):
         test_gradients,
         test_compile,
     ):
+        self.ground_truth_backend = ground_truth_backend
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.instance_method = instance_method
@@ -103,21 +98,23 @@ class FunctionTestFlags(TestFlags):
         self.test_gradients = test_gradients
         self.test_compile = test_compile
 
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
-            if self.as_variable[i]:
-                x = _variable(x)
-            if self.native_arrays[i]:
-                x = ivy.to_native(x)
-            if self.container[i]:
-                x = as_cont(x=x)
-            ret.append(x)
+        with update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                if self.container[i]:
+                    x = backend.Container({"a": x, "b": {"c": x, "d": x}})
+                ret.append(x)
         return ret
 
     def __str__(self):
         return (
+            f"ground_truth_backend={self.ground_truth_backend}"
             f"num_positional_args={self.num_positional_args}. "
             f"with_out={self.with_out}. "
             f"instance_method={self.instance_method}. "
@@ -136,6 +133,7 @@ class FunctionTestFlags(TestFlags):
 def function_flags(
     draw,
     *,
+    ground_truth_backend,
     num_positional_args,
     instance_method,
     with_out,
@@ -148,6 +146,7 @@ def function_flags(
     return draw(
         st.builds(
             FunctionTestFlags,
+            ground_truth_backend=ground_truth_backend,
             num_positional_args=num_positional_args,
             with_out=with_out,
             instance_method=instance_method,
@@ -177,15 +176,16 @@ class FrontendFunctionTestFlags(TestFlags):
         self.as_variable = as_variable
         self.generate_frontend_arrays = generate_frontend_arrays
 
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
-            if self.as_variable[i]:
-                x = _variable(x)
-            if self.native_arrays[i]:
-                x = ivy.to_native(x)
-            ret.append(x)
+        with update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                ret.append(x)
         return ret
 
     def __str__(self):
@@ -239,15 +239,16 @@ class InitMethodTestFlags(TestFlags):
         self.as_variable = as_variable
         self.generate_frontend_arrays = generate_frontend_arrays
 
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
-            if self.as_variable[i]:
-                x = _variable(x)
-            if self.native_arrays[i]:
-                x = ivy.to_native(x)
-            ret.append(x)
+        with update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                ret.append(x)
         return ret
 
     def __str__(self):
@@ -297,17 +298,18 @@ class MethodTestFlags(TestFlags):
         self.container = container_flags
         self.generate_frontend_arrays = generate_frontend_arrays
 
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
-            if self.as_variable[i]:
-                x = _variable(x)
-            if self.native_arrays[i]:
-                x = ivy.to_native(x)
-            if self.container[i]:
-                x = as_cont(x=x)
-            ret.append(x)
+        with update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                if self.container[i]:
+                    x = backend.Container({"a": x, "b": {"c": x, "d": x}})
+                ret.append(x)
         return ret
 
     def __str__(self):
@@ -358,15 +360,16 @@ class FrontendMethodTestFlags(TestFlags):
         self.as_variable = as_variable
         self.generate_frontend_arrays = (generate_frontend_arrays,)
 
-    def apply_flags(self, args_to_iterate, input_dtypes, on_device, offset):
+    def apply_flags(self, args_to_iterate, input_dtypes, offset, *, backend, on_device):
         ret = []
-        for i, entry in enumerate(args_to_iterate, start=offset):
-            x = ivy.array(entry, dtype=input_dtypes[i], device=on_device)
-            if self.as_variable[i]:
-                x = _variable(x)
-            if self.native_arrays[i]:
-                x = ivy.to_native(x)
-            ret.append(x)
+        with update_backend(backend) as backend:
+            for i, entry in enumerate(args_to_iterate, start=offset):
+                x = backend.array(entry, dtype=input_dtypes[i], device=on_device)
+                if self.as_variable[i]:
+                    x = backend.gradients._variable(x)
+                if self.native_arrays[i]:
+                    x = backend.to_native(x)
+                ret.append(x)
         return ret
 
     def __str__(self):

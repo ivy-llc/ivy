@@ -123,3 +123,19 @@ def triu(x, diagonal=0, name=None):
 def diagflat(x, offset=0, name=None):
     arr = ivy.diagflat(x, offset=offset)
     return arr
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def meshgrid(*args, **kwargs):
+    return ivy.meshgrid(*args, indexing="ij")
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def logspace(start, stop, num, base=10.0, dtype=None, name=None):
+    return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)

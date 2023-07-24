@@ -10,8 +10,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -21,8 +21,8 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -83,6 +83,7 @@ def gelu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -149,6 +150,7 @@ def leaky_relu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -221,6 +223,7 @@ def log_softmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -274,8 +277,8 @@ def relu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -295,6 +298,7 @@ def sigmoid(
     -------
     ret
         an array containing the sigmoid activation of each element in ``x``.
+        sigmoid activation of x is defined as 1/(1+exp(-x)).
 
     Examples
     --------
@@ -306,15 +310,41 @@ def sigmoid(
     ivy.array([0.269, 0.731, 0.881])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = x.sigmoid()
+    >>> y = ivy.zeros(3)
+    >>> ivy.sigmoid(x,out=y)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.])))
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.]))))
+    >>> y = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([0.]),
+                                          d=ivy.array([0.]))))
+    >>> ivy.sigmoid(x,out=y)
+    >>> print(y)
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
     """
     return current_backend(x).sigmoid(x, out=out)
 
@@ -325,6 +355,7 @@ def sigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -375,6 +406,7 @@ def softmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -432,6 +464,7 @@ def softplus(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -478,3 +511,50 @@ def mish(
     }
     """
     return current_backend(x).mish(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def hardswish(
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.Array:
+    """
+    Apply the hardswish activation function element-wise.
+
+    Parameters
+    ----------
+    x
+        input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the hardswish activation of each element in ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([0., 0., 4.])
+    >>> y = ivy.hardswish(x)
+    >>> y
+    ivy.array([0., 0., 4.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-3., 4., 5.]), b=ivy.array([0., 5.]))
+    >>> x = ivy.hardswish(x, out=x)
+    >>> x
+    {
+        a: ivy.array([-0.,  4.,  5.]),
+        b: ivy.array([0., 5.])
+    }
+    """
+    return current_backend(x).hardswish(x, out=out)
