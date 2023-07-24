@@ -253,6 +253,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "std": "tensorflow",
         "where": "torch",
         "dct": "jax",
+        "idct": "jax",
 
     }
     # second dict to keep if a function fails in two backends
@@ -267,6 +268,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "max_pool3d": "tensorflow",
         "std": "torch",
         "dct": "tensorflow",
+        "idct": "tensorflow",
     }
     try:
         if (
