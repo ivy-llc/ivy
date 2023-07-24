@@ -5,7 +5,7 @@ from hypothesis import strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_linear_functions import (
+from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_linear_functions import (  # noqa: E501
     x_and_linear,
 )
 
@@ -32,10 +32,12 @@ def test_paddle_cosine_similarity(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,6 +76,7 @@ def test_paddle_dropout2d(
     p,
     training,
     data_format,
+    backend_fw,
     on_device,
     fn_tree,
     frontend,
@@ -83,6 +86,7 @@ def test_paddle_dropout2d(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -119,6 +123,7 @@ def test_paddle_dropout(
     p,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
     training,
@@ -130,6 +135,7 @@ def test_paddle_dropout(
         input_dtypes=dtype,
         p=p,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -177,11 +183,13 @@ def test_paddle_zeropad2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     dataformat,
 ):
     dtype, x, padding = d_type_and_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -204,6 +212,7 @@ def test_linear(
     dtype_x_weight_bias,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -212,6 +221,7 @@ def test_linear(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
