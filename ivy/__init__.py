@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import inspect
 import os
+from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
@@ -194,7 +195,7 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape:
+class Shape(Sequence):
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
