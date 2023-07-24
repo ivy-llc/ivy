@@ -247,3 +247,17 @@ def tanh_(x, name=None):
     ret = ivy.tanh(x)
     ivy.inplace_update(x, ret)
     return x
+
+
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def gumbel_softmax(x, temperature=1.0, hard=False, axis=-1, name=None):
+    gumbel_noice = -ivy.log(-ivy.log(ivy.random_uniform(ivy.shape(x) + 1e-20) + 1e-20))
+    gumbel_logits = (x + gumbel_noice) / temperature
+    y_soft = ivy.softmax(gumbel_logits, axis=axis)
+
+    if hard:
+        y_hard = ivy.one_hot(ivy.argmax(y_soft, axis=axis), ivy.shape(y_soft)[axis])
+        return y_hard
+    else:
+        return y_soft
