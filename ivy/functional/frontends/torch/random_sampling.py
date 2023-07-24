@@ -245,13 +245,11 @@ def randint_like(
     memory_format=None,
 ):
     shape = input.shape
-    if not dtype:
-        dtype = input.dtype
 
     return ivy.randint(
-        low=low,
-        high=high,
+        low,
+        high,
         shape=shape,
-        dtype=dtype,
         device=device,
+        dtype=dtype,
     )

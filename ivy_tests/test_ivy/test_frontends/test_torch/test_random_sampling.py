@@ -483,9 +483,9 @@ def test_torch_randperm(
 
 @handle_frontend_test(
     fn_tree="torch.randint_like",
-    dtype=helpers.get_dtypes("integer", full=False),
+    dtype=helpers.get_dtypes("signed_integer", full=False),
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
