@@ -1002,7 +1002,15 @@ def test_torch_triplet_margin_with_distance_loss(
     test_with_out=st.just(False),
 )
 def test_torch_multilabel_margin_loss(
-    *, dtype_and_inputs, reduction, test_flags, fn_tree, frontend, on_device
+    *,
+    dtype_and_inputs,
+    reduction,
+    size_average,
+    reduce,
+    test_flags,
+    fn_tree,
+    frontend,
+    on_device,
 ):
     input_dtype, x = dtype_and_inputs
     helpers.test_frontend_function(
@@ -1014,4 +1022,6 @@ def test_torch_multilabel_margin_loss(
         input=x[0],
         target=x[1],
         reduction=reduction,
+        size_average=size_average,
+        reduce=reduce,
     )

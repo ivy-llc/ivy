@@ -617,11 +617,9 @@ def triplet_margin_with_distance_loss(
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
-def multilabel_margin_loss(input, target, reduction="mean"):
-    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
-    loss = ivy.maximum(0, 1 - (input[target == 1] - input[target != 1]))
-    loss = ivy.sum(loss, dim=1)
-    reduction = _get_reduction(reduction)
+def multilabel_margin_loss(
+    input, target, reduction="mean", size_average=None, reduce=None
+):
     ivy.assertions.check_true(
         input.shape == target.shape,
         lambda: (
@@ -629,4 +627,12 @@ def multilabel_margin_loss(input, target, reduction="mean"):
             f" output {input.shape} and target : {target.shape}"
         ),
     )
-    return reduction(loss)
+    input, target = torch_frontend.promote_types_of_torch_inputs(input, target)
+    pos = input[ivy.astype(target, bool)]
+    neg = input[ivy.astype(1 - target, bool)]
+    loss = 0
+    reduct = _get_reduction(reduction, size_average, reduce)
+    for i in range(target.shape[0]):
+        loss_ = ivy.maximum(0, 1 - (ivy.matrix_transpose([pos[i]]) - neg[i]))
+        loss += reduct(loss_)
+    return loss
