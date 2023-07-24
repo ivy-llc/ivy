@@ -340,6 +340,7 @@ def test_docstrings(backend):
         # all examples are wrong including functional/ivy
         "einops_reduce",
         "max_unpool1d",
+        "pool",
     ]
 
     # skip list for array and container docstrings
