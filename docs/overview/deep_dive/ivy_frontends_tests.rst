@@ -497,8 +497,7 @@ we can not and we have to reconstruct the output as shown in the example below.
     # ivy_tests/test_ivy/test_frontends/test_torch/test_linalg.py
     @handle_frontend_test(
         fn_tree="torch.linalg.qr",
-        dtype_and_input=_get_dtype_and_matrix(),
-        test_with_out=st.just(False),
+        dtype_and_input=_get_dtype_and_matrix(batch=True),
     )
     def test_torch_qr(
         *,
@@ -506,31 +505,36 @@ we can not and we have to reconstruct the output as shown in the example below.
         frontend,
         test_flags,
         fn_tree,
+        backend_fw,
         on_device,
     ):
         input_dtype, x = dtype_and_input
         ret, frontend_ret = helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
-            input=x[0],
+            A=x[0],
             test_values=False,
         )
-        ret = [ivy.to_numpy(x) for x in ret]
-        frontend_ret = [np.asarray(x) for x in frontend_ret]
 
+        with update_backend(backend_fw) as ivy_backend:
+            ret = [ivy_backend.to_numpy(x) for x in ret]
+
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
         q, r = ret
         frontend_q, frontend_r = frontend_ret
 
-        assert_all_close(
-            ret_np=q @ r,
-            ret_from_gt_np=frontend_q @ frontend_r,
-            rtol=1e-2,
-            atol=1e-2,
-            ground_truth_backend=frontend,
-        )
+            assert_all_close(
+                ret_np=q @ r,
+                ret_from_gt_np=frontend_q @ frontend_r,
+                rtol=1e-2,
+                atol=1e-2,
+                backend=backend_fw,
+                ground_truth_backend=frontend,
+            )
 
 * The parameter :code:`test_values=False` is explicitly set to "False" as there can be multiple solutions for this and those multiple solutions can all be correct, so we have to test with reconstructing the output.
 
@@ -594,12 +598,14 @@ Code example for alias function:
         on_device,
         fn_tree,
         frontend,
+        backend_fw,
         test_flags,
     ):
         input_dtype, inputs = dtype_and_inputs
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
+            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -651,6 +657,7 @@ ivy.add()
         init_flags,
         method_flags,
         frontend,
+        backend_fw,
     ):
         input_dtypes, xs = dtype_and_x
 
@@ -664,6 +671,7 @@ ivy.add()
                 "value": xs[1],
             },
             frontend=frontend,
+            backend_to_test=backend_fw,
             frontend_method_data=frontend_method_data,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -692,6 +700,7 @@ ivy.add()
     def test_tensorflow_instance_add(
         dtype_and_x,
         frontend,
+        backend_fw,
         frontend_method_data,
         init_flags,
         method_flags,
@@ -707,6 +716,7 @@ ivy.add()
                 "y": x[1],
             },
             frontend=frontend,
+            backend_to_test=backend_fw,
             frontend_method_data=frontend_method_data,
             init_flags=init_flags,
             method_flags=method_flags,
@@ -738,6 +748,7 @@ ivy.add()
         dtype_and_x,
         alpha,
         frontend,
+        backend_fw,
         frontend_method_data,
         init_flags,
         method_flags,
@@ -757,6 +768,7 @@ ivy.add()
             init_flags=init_flags,
             method_flags=method_flags,
             frontend=frontend,
+            backend_to_test=backend_fw,
             atol_=1e-02,
         )
 
