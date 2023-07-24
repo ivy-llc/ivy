@@ -74,23 +74,30 @@ def _to_device(x, device=None):
 
 
 def as_ivy_dev(device, /):
+    device_object = device
     if isinstance(device, str):
-        device_object = ivy.Device(device)
-    elif device is None:
-        return None
+        devs = device.split(":")
+        device_kind = devs[0]
+        device_id = 0
+        if len(devs)>1:
+            device_id = int(devs[1])            
     else:
-        p, dev_id = (device.platform, device.id)
-        if p == "cpu":
-            device_object = ivy.Device(p)
-        else:
-            device_object = ivy.Device(p + ":" + str(dev_id))
-    
+        device_kind, device_id = (device.platform, device.id)
+
     # Verify if the device exists on the host
     available_devices = jax.local_devices()
-    if str(device_object) not in available_devices:
-        raise ValueError(f"The device '{device_object}' does not exist on this host.")
+    devices = {}
+    for i in available_devices:
+        if i.device_kind not in devices:
+            devices[i.device_kind] = []
+        devices[i.device_kind].append(i.id)
 
-    return device_object
+    if device_kind in devices:
+        if device_id not in devices[device_kind]:
+            ivy.logging.warning(f"The device '{device_object}' does not exist on this host. Falling back to {device_kind}:{devices[device_kind][0]}")
+            device_object = ivy.Device(device_kind + ":" + str(devices[device_kind][0]))
+        return device_object
+    raise ivy.utils.exceptions.IvyValueError(f"The device '{device}' does not exist on this host.")
 
 
 def as_native_dev(device, /):
