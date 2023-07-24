@@ -1487,6 +1487,7 @@ def test_tensorflow_unsorted_segment_sum(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        data=data,
         segment_ids=segment_ids,
         num_segments=np.max(segment_ids) + 1,
     )
