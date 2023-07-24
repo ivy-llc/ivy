@@ -507,6 +507,22 @@ def fill_diagonal(
     return a
 
 
+def _handle_reduction_op_np(x, val, reduction):
+    if reduction == "assign":
+        x = val
+    elif reduction == "add":
+        x += val
+    elif reduction == "mul":
+        x *= val
+    elif reduction == "mean":
+        x = (x + val) // 2
+    elif reduction == "amax":
+        x = max(val, x)
+    elif reduction == "amin":
+        x = min(val, x)
+    return x
+
+
 def put_along_axis(
     arr: np.ndarray,
     indices: np.ndarray,
@@ -517,4 +533,6 @@ def put_along_axis(
     mode: str = None,
     out: Optional[np.ndarray] = None,
 ):
-    raise NotImplementedError
+    x = np.take_along_axis(arr, indices, axis)
+    x = _handle_reduction_op_np(x, values, mode)
+    np.put_along_axis(arr, indices, x, axis)

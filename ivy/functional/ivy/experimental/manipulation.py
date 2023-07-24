@@ -1799,7 +1799,7 @@ def put_along_axis(
 
     >>> arr = ivy.array([[10, 30, 20], [60, 40, 50]])
     >>> axis = 1
-    >>> indices = ivy.argmax(arr, axis=axis)
+    >>> indices = ivy.argmax(arr, axis=axis, keepdims=True)
     >>> value = 100
     >>> put_along_axis(arr, indices, value, axis, mode='add')
     >>> print(arr)
@@ -1825,7 +1825,12 @@ def put_along_axis(
             a = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d)
             ret.append(a)
 
-    return ivy.asarray(ret)
+    ret = (
+        ivy.asarray(ret).T
+        if ivy.asarray(ret).shape == arr.shape[::-1]
+        else ivy.asarray(ret)
+    )
+    return ret
 
 
 put_along_axis.mixed_backend_wrappers = {
