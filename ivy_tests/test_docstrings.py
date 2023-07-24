@@ -347,6 +347,7 @@ def test_docstrings(backend):
         # generates different results due to randomization
         "cumprod",
         "supports_inplace_updates",
+        "shuffle",
         "slogdet",
         "dropout",
         "dropout1d",
