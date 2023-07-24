@@ -247,11 +247,11 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "linear": "torch",
         "outer": "torch",
         "quantile": "torch",
-        "where": "torch",
         "conv2d_transpose": "tensorflow",
         "max_pool2d": "torch",
         "cummax": "torch",
         "std": "tensorflow",
+        "where": "torch",
 
     }
     # second dict to keep if a function fails in two backends
@@ -334,7 +334,6 @@ def test_docstrings(backend):
         "split",
         "det",
         "cumprod",
-        "where",
         "sinc",
         "grad",
         "cov"

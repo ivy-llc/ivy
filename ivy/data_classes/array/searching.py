@@ -232,7 +232,8 @@ class _ArrayWithSearching(abc.ABC):
         >>> x2 = ivy.array([[5, 6], [7, 8]])
         >>> res = x1.where(condition,x2)
         >>> print(res)
-        ivy.array([[1, 6], [3, 4]])
+        ivy.array([[1, 0],
+               [1, 1]])
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
