@@ -1464,6 +1464,7 @@ def test_jax_column_stack(
     dtype_and_x,
     factor,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -1475,6 +1476,7 @@ def test_jax_column_stack(
     helpers.test_frontend_function(
         input_dtypes=[dtype[0]] * (factor + 1),
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
