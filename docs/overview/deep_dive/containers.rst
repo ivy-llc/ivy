@@ -43,7 +43,7 @@ The methods of the :class:`ivy.Container` class are more varied than those of th
 All methods of the :class:`ivy.Array` are instance methods, and almost all of them directly wrap a function in the functional API.
 
 For the :class:`ivy.Container`, there are also methods which are specific to the container itself, for performing nested operations on the leaves of the container for example.
-In addition, there are also static methods.
+
 Overall, this results in the following five mutually exclusive groups of :class:`ivy.Container` methods.
 Each of these are explained in the following sub-sections.
 
@@ -74,8 +74,6 @@ Under the hood, `ivy.Container.cont_multi_map_in_function`_ enables us to pass i
 Internally, :meth:`ivy.Container.cont_multi_map_in_function` calls `ivy.Container.multi_map`_.
 In cases where there are no containers passed, `ivy.Container.cont_multi_map_in_function`_ will simply call the function once on the non-container arguments provided.
 
-A few examples of :class:`ivy.Container` API static methods are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
-
 As with :class:`ivy.Array`, given the simple set of rules which underpin how these static methods should all be implemented, if a source-code implementation is not found, then this `static method is added`_ programmatically.
 This serves as a helpful backup in cases where some static methods are accidentally missed out.
 
@@ -100,8 +98,7 @@ For example, we do not implement an instance method for `ivy.zeros <https://gith
 As is the case for :class:`ivy.Array`, the organization of these instance methods follows the same organizational structure as the files in the functional API.
 The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
 
-Again, as with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically.
-Again, this serves as a helpful backup in cases where some static methods are accidentally missed out.
+As with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically. This serves as a helpful backup in cases where some static methods are accidentally missed out.
 
 Again, the benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
