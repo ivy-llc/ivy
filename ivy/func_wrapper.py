@@ -813,21 +813,20 @@ def handle_device_shifting(fn: Callable) -> Callable:
         """
         if ivy.soft_device_mode:
             return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
-        else:
-            inputs = args + tuple(kwargs.values())
-            devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
-            unique_devices = set(devices)
-            # check if arrays are on the same device
-            if len(unique_devices) == 1:
-                with ivy.DefaultDevice(next(iter(unique_devices))):
-                    return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
-            # raise when arrays are on different devices
-            elif len(unique_devices) > 1:
-                raise ivy.utils.exceptions.IvyException(
-                    "Expected all input arrays to be on the same device, "
-                    f"but found atleast two devices - {devices}, "
-                    "set `ivy.set_soft_device_mode(True)` to handle this problem."
-                )
+        inputs = args + tuple(kwargs.values())
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        unique_devices = set(devices)
+        # check if arrays are on the same device
+        if len(unique_devices) == 1:
+            with ivy.DefaultDevice(next(iter(unique_devices))):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        # raise when arrays are on different devices
+        elif len(unique_devices) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                "Expected all input arrays to be on the same device, "
+                f"but found atleast two devices - {devices}, "
+                "set `ivy.set_soft_device_mode(True)` to handle this problem."
+            )
         return fn(*args, **kwargs)
 
     _handle_device_shifting.handle_device_shifting = True
