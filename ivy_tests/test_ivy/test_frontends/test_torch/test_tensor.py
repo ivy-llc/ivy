@@ -10396,6 +10396,7 @@ def test_torch_instance_logaddexp(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
