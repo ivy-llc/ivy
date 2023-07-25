@@ -37,9 +37,9 @@ fn_path_cache
 .venv
 env/
 venv/
-ivy_dev/
-*venv/
-venv*
 ENV/
 env.bak/
 venv.bak/
+ivy_dev/
+*venv/
+venv*
