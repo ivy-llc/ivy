@@ -1413,6 +1413,43 @@ def handle_nans(fn: Callable) -> Callable:
     return _handle_nans
 
 
+# Complex number handling #
+# ----------------------- #
+def handle_complex_input(fn: Callable, jax_like: Callable | str) -> Callable:
+    @functools.wraps(fn)
+    def _handle_complex_input(inp, *args, complex_mode="jax", **kwargs):
+        # do nothing if the input is real-valued
+        if not ivy.is_complex_dtype(inp):
+            return fn(inp, *args, **kwargs)
+
+        if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
+            real_inp = ivy.real(inp)
+            imag_inp = ivy.imag(inp)
+            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
+
+        elif complex_mode == "magnitude" or (
+            complex_mode == "jax" and jax_like == "magnitude"
+        ):
+            mag_inp = ivy.abs(
+                inp
+            )  # ivy.abs currently throws an error so this won't work just yet
+            angle_inp = ivy.angle(inp)
+            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+
+        elif complex_mode == "jax" and jax_like == "entire":
+            return fn(inp, *args, **kwargs)
+
+        elif complex_mode == "jax":
+            return jax_like(
+                fn, *args, **kwargs
+            )  # TODO: might need to be more (or less) complicated, we'll see
+
+        else:
+            pass  # TODO: raise an argumenterror or something similar
+
+    return _handle_complex_input
+
+
 attribute_dict = {
     "unsupported_dtypes",
     "supported_dtypes",
