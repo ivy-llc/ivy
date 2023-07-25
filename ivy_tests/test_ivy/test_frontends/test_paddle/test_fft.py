@@ -151,8 +151,9 @@ def test_paddle_irfft(
         norm=norm,
         valid_axis=True,
         force_int_axis=True,
-    ),
-)
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.fft.ifftshift",
     dtype_x_axis=helpers.dtype_values_axis(
