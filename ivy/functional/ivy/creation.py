@@ -594,35 +594,38 @@ def ones(
     >>> x = ivy.ones(shape)
     >>> print(x)
     ivy.array([[1., 1.],
-               [1., 1.]])
+           [1., 1.]])
 
     With :class:`ivy.Dtype` input:
 
     >>> shape = (3,2)
-    >>> d_type = object.__new__(Dtype, "int64")
+    >>> d_type = ivy.int64
     >>> y = ivy.ones(shape, dtype=d_type)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-               [1, 1]])
+    ivy.array([[1, 1],
+           [1, 1],
+           [1, 1]])
 
     With :class:`ivy.Device` input:
 
     >>> shape = (3,2)
-    >>> dev = object.__new__(Device, "cpu")
-    >>> y = ivy.ones(shape, device=dev)
+    >>> y = ivy.ones(shape, device="cpu")
     >>> print(y)
-    ivy.array([[1, 1, 1],
-               [1, 1]])
+    ivy.array([[1., 1.],
+           [1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Array` input:
 
-    >>> shape = (1,5,2)
-    >>> array = ivy.array(shape)
-    >>> ivy.ones(shape, out=array)
-    >>> print(array)
-    ivy.array([[1.],
-               [1., 1., 1., 1., 1.],
-               [1., 1.]])
+    >>> shape = (1, 5, 2)
+    >>> x = ivy.zeros(shape)
+    >>> ivy.ones(shape, out=x)
+    >>> print(x)
+    ivy.array([[[1., 1.],
+            [1., 1.],
+            [1., 1.],
+            [1., 1.],
+            [1., 1.]]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
