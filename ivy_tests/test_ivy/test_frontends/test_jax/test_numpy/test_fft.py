@@ -39,7 +39,6 @@ def test_jax_numpy_fft(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=True,
         a=values[0],
         n=n,
         axis=axis,
