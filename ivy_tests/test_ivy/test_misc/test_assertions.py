@@ -6,6 +6,7 @@ from ivy.utils.assertions import (
     check_elem_in_list,
     check_equal,
     check_exists,
+    check_false,
     check_greater,
     check_isinstance,
     check_less,
@@ -274,6 +275,41 @@ def test_check_true(expression):
 
     if expression:
         assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        (True),
+        "a",
+        (None),
+        (False),
+    ],
+)
+def test_check_false(expression):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_false(expression)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not expression:
+        assert not lines.strip()
+
+    if expression:
+        assert "False" in lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
