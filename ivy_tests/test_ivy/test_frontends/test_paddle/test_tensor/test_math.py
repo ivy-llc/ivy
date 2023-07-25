@@ -1743,4 +1743,5 @@ def test_paddle_prod(
         x=x[0],
         axis=axis,
         keepdim=False,
+        backend_to_test="paddle",
     )
