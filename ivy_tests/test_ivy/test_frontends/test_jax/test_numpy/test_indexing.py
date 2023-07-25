@@ -429,6 +429,7 @@ def test_jax_diag_indices_from(
         arr=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.numpy.apply_along_axis",
     dtype_x_axis=helpers.dtype_values_axis(
