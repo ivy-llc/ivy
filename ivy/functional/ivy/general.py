@@ -4191,7 +4191,6 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@to_native_arrays_and_back
 @handle_device_shifting
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -4216,7 +4215,16 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend(x).strides(x)
+    if ivy.is_native_array(x) or (ivy.is_ivy_array(x) and x.base is None):
+        return ivy.to_numpy(x).strides
+    # if x is an ivy array with a base,
+    # convert it to a numpy array with the same base:
+    ret = ivy.to_numpy(x.base)
+    ivy_numpy = ivy.with_backend('numpy')
+    for fn, args, kwargs, index in x._manipulation_stack:
+        ret = ivy_numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ret[index] if ivy.exists(index) else ret
+    return ret.to_native().strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:

@@ -515,7 +515,3 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
-
-
-def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
-    return x.numpy().strides
