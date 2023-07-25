@@ -4,6 +4,7 @@ import contextlib
 import pytest
 from ivy.utils.assertions import (
     check_all,
+    check_any,
     check_elem_in_list,
     check_equal,
     check_exists,
@@ -342,6 +343,36 @@ def test_check_all(results):
 
     if not all(results):
         assert "one" in lines.strip()
+
+    if all(results):
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "results",
+    [([0, 1, 2]), ([False, False]), ([True, False]), ([0, False])],
+)
+def test_check_any(results):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_any(results)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not any(results):
+        assert "all" in lines.strip()
 
     if all(results):
         assert not lines.strip()
