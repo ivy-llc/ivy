@@ -231,9 +231,10 @@ def test_paddle_pad(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        paddings=paddings,
+        pad=paddings,
         mode=mode,
-        constant_value=constant_value,
+        value=constant_value,
+        backend_to_test="paddle",
     )
 
 
