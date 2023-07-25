@@ -6,60 +6,10 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 @to_ivy_arrays_and_back
-#ToDo: There is no Ivy implementation, so take() is implemented with Ivy functions
-# and Python. This will be simplified when ivy.take() is added to the API
+# ToDo: mode argument (default 'raise') is ignored until 
+# ivy.gather functionality supports mode arguments
 def take(a, indices, axis=None, out=None, mode='raise'):
-    a = ivy.array(a)
-
-    # Default: axis None flattens array
-    if axis is None:
-        a = a.flatten()
-
-    # Handle invalid mode input
-    if mode not in ('raise', 'wrap', 'clip'):
-        raise ValueError(f"clipmode must be one of 'clip', 'raise', or 'wrap' (got '{mode}')")
-
-    # Returns axis of input array, can be None if axis is too large
-    inp_axis = a.shape[axis]
-
-    result = []
-    for index in indices:
-        # Handles error where axis is larger than highest dimension of array
-        if inp_axis is None:
-          raise ValueError(f"axis {axis} is out of bounds for array of dimension {len(a.shape)}")
-        
-        # Raise error for invalid values
-        if mode == 'raise':
-            if index < 0 or (inp_axis is not None and index >= inp_axis):
-                raise IndexError(f"index {index} is out of bounds for axis {axis} of size {inp_axis}")
-
-        # Clips index at last valid index for input index
-        if mode == 'clip':
-            index = min(max(index, 0), inp_axis - 1)
-
-        # Returns value indexed with remainder of index and axis
-        if mode == 'wrap':
-            index = index % inp_axis
-
-        if axis is None:
-            # Adds to result  from indexed flattened array
-            result.append(a[index])
-        else:
-            slicer = [slice(None)] * len(a.shape)
-
-            # Indexes input array to include values from same axis
-            # in slice object
-            slicer[axis] = index
-
-            # Adds slice object to output
-            result.append(a[tuple(slicer)])
-
-    # Note: Since output is an ivy array, out if not None should be set to ivy array
-    if out is not None and out.shape == a.shape and type(out) == type(a):
-        out[:] = result
-        return out
-
-    return ivy.array(result)
+    return ivy.gather(a, indices, axis, out)
 
 
 @to_ivy_arrays_and_back
