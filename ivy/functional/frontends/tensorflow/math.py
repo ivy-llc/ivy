@@ -431,6 +431,8 @@ def unsorted_segment_mean(
 def unsorted_segment_sum(
     data, segment_ids, num_segments, name="unsorted_segment_sum"
 ):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
     ivy.utils.assertions.check_equal(
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
