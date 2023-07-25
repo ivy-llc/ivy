@@ -107,6 +107,3 @@ def randint_like(x, low=0, high=None, dtype=None, name=None):
                 "If high is None, low must be greater than 0, but received low = 0."
             )
     return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
-
-
-
