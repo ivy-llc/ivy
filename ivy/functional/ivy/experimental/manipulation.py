@@ -1658,10 +1658,10 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     Examples
     --------
     >>> x = [(3, 3), (3, 1)]
-    >>> print(ivy.broadcast_shapes(x))
+    >>> print(ivy.broadcast_shapes(*x))
     (3, 3)
 
-    >>> print(ivy.broadcast_shapes([(3, 3),(3, 1),(1, 3)]))
+    >>> print(ivy.broadcast_shapes(*[(3, 3),(3, 1),(1, 3)]))
     (3, 3)
     """
     return ivy.current_backend().broadcast_shapes(*shapes)
