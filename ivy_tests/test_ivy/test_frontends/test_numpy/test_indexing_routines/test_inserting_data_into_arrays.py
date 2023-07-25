@@ -96,6 +96,7 @@ def _helper_r_(draw):
                 )
             )
             ret.append(elem)
+    return ret
 
 
 @handle_frontend_test(fn_tree="numpy.r_", inputs=_helper_r_())
