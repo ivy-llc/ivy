@@ -597,12 +597,12 @@ def cov(
     Examples
     --------
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-    >>> y = x.cov()
+    >>> x = ivy.array([[1, 2, 3],
+    ...                [4, 5, 6]])
+    >>> y = x[0].cov(x[1])
     >>> print(y)
-    ivy.array([[ 1.,  1.  ],
-    ...        [ 1.,  1.  ]]
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Container` inputs:
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
@@ -631,43 +631,28 @@ def cov(
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(rowVar=False)
+    >>> y = x[0].cov(x[1], rowVar=False)
     >>> print(y)
-    ivy.array([[ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ]])
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Array` input and bias flag set to True (False by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(bias=True)
+    >>> y = x[0].cov(x[1], bias=True)
     >>> print(y)
-    ivy.array([[ 0.6667,  0.6667  ],
-    ...        [ 0.6667,  0.6667  ]]
+    ivy.array([[0.66666667, 0.66666667],
+           [0.66666667, 0.66666667]])
 
     With :class:`ivy.Array` input with both fweights and aweights given:
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-
     >>> fw = ivy.array([1,2,3])
     >>> aw = ivy.array([ 1.2, 2.3, 3.4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw)
+    >>> y = x[0].cov(x[1], fweights=fw, aweights=aw)
     >>> print(y)
-    ivy.array([[ 0.48447205,  0.48447205  ],
-    ...        [ 0.48447205,  0.48447205  ]]
-
-    With :class:`ivy.Array` input with both fweights and aweights given,
-    and rowVar set to False:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-
-    >>> fw = ivy.array([1,3])
-    >>> aw = ivy.array([ 1.5, 4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw, rowVar=False)
-    >>> print(y)
-    ivy.array([[ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ]])
+    ivy.array([[0.48447205, 0.48447205],
+           [0.48447205, 0.48447205]])
     """
     return ivy.current_backend(x1).cov(
         x1,

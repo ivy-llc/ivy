@@ -522,19 +522,19 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[1,2,3],
-        ...                [4,5,6]])
-        >>> y = x.cov()
+        >>> x = ivy.array([[1, 2, 3],
+        ...                [4, 5, 6]])
+        >>> y = x[0].cov(x[1])
         >>> print(y)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ]])
+        ivy.array([[1., 1.],
+               [1., 1.]])
 
         >>> x = ivy.array([1,2,3])
         >>> y = ivy.array([4,5,6])
         >>> z = x.cov(y)
         >>> print(z)
-        ivy.array([[ 1.,  1.  ],
-        ...        [ 1.,  1.  ])
+        ivy.array([[1., 1.],
+               [1., 1.]])
         """
         return ivy.cov(
             self._data,

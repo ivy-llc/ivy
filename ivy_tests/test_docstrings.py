@@ -341,7 +341,6 @@ def test_docstrings(backend):
         "cumprod",
         "sinc",
         "grad",
-        "cov"
         # all examples are wrong including functional/ivy
         "einops_reduce",
         "max_unpool1d",
@@ -369,8 +368,6 @@ def test_docstrings(backend):
         "scaled_dot_product_attention",
         # temp list for array/container methods
         "einops_reduce",
-        "cov",
-
     ]
     # currently_being_worked_on = ["layer_norm"]
 
