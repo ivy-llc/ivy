@@ -495,9 +495,3 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
-
-
-def strides(x: torch.tensor) -> Tuple[int]:
-    return tuple(
-        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
-    )
