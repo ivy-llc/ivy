@@ -179,6 +179,7 @@ def test_numpy_compress(
         axis=ax,
     )
 
+
 # take
 @handle_frontend_test(
     fn_tree="numpy.take",
@@ -193,7 +194,7 @@ def test_numpy_compress(
         valid_bounds=False,
     ),
     mode=st.sampled_from(["clip", "wrap", "raise"]),
-    test_with_out=st.just(False),
+    test_with_out=st.just(False)
 )
 def test_numpy_take(
     *,
@@ -204,6 +205,7 @@ def test_numpy_take(
     frontend,
     fn_tree,
     on_device,
+    test_with_out
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
