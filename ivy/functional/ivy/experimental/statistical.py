@@ -91,7 +91,7 @@ def histogram(
     >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
     >>> z = ivy.histogram(x, bins=y)
     >>> print(z)
-    (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+    ivy.array([1., 0., 1., 1.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [4.4, 5.5, .6]])
@@ -100,7 +100,7 @@ def histogram(
     >>> dtype = ivy.int32
     >>> y = ivy.histogram(x, bins=bins, range=range, dtype=dtype)
     >>> print(y)
-    (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+    ivy.array([2, 1, 1, 1])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
@@ -111,28 +111,29 @@ def histogram(
     >>> dtype = ivy.float32
     >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
     >>> z = ivy.histogram(
-    >>>                     x,
-    >>>                     bins=y,
-    >>>                     axis=axis,
-    >>>                     extend_lower_interval=extend_lower_interval,
-    >>>                     extend_upper_interval=extend_upper_interval,
-    >>>                     dtype=dtype,
-    >>>                     weights=weights)
+    ...                     x,
+    ...                     bins=y,
+    ...                     axis=axis,
+    ...                     extend_lower_interval=extend_lower_interval,
+    ...                     extend_upper_interval=extend_upper_interval,
+    ...                     dtype=dtype,
+    ...                     weights=weights)
     >>> print(z)
-    (ivy.array([[0., 3.],
-    [1., 0.],
-    [1., 0.],
-    [1., 0.],
-    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    ivy.array([[0., 3.],
+           [1., 0.],
+           [1., 0.],
+           [1., 0.],
+           [0., 0.]])
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
     >>> dtype = ivy.int32
     >>> z = ivy.histogram(x, bins=y, dtype=dtype)
-    >>> print(z.a)
-    >>> print(z.b)
-    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    >>> print(z)
+    {
+        a: ivy.array([1, 1, 1, 0, 0]),
+        b: ivy.array([0, 0, 0, 1, 2])
+    }
     """
     return ivy.current_backend(a).histogram(
         a,

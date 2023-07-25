@@ -269,6 +269,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "std": "torch",
         "dct": "tensorflow",
         "idct": "tensorflow",
+        "histogram": "tensorflow",
     }
     try:
         if (

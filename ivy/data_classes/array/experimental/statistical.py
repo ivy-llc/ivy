@@ -74,7 +74,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
         >>> z = ivy.histogram(x, bins=y)
         >>> print(z)
-        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        ivy.array([1., 0., 1., 1.])
         """
         return ivy.histogram(
             self._data,
