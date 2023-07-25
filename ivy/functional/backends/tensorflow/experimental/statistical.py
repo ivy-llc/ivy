@@ -377,7 +377,7 @@ def bincount(
     {
         "2.13.0 and below": {
             "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64")
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,

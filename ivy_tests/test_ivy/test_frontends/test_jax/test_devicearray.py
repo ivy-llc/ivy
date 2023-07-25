@@ -123,7 +123,6 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-
 def test_jax_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
