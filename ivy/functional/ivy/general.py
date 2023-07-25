@@ -2920,7 +2920,7 @@ def _parse_query(query, x_shape):
                         elif stop < 0:
                             stop = stop + s
                 else:
-                    start = s-1 if idx.start is None else idx.start
+                    start = s - 1 if idx.start is None else idx.start
                     if start <= -s:
                         stop = start
                     else:
