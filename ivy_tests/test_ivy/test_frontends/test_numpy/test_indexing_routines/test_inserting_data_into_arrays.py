@@ -9,42 +9,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 import ivy.functional.frontends.numpy as np_frontend
 
 
-@handle_frontend_test(
-    fn_tree="numpy.fill_diagonal",
-    dtype_x_axis=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=2,
-        min_dim_size=2,
-        max_num_dims=2,
-    ),
-    val=helpers.floats(min_value=-10, max_value=10),
-    wrap=helpers.get_dtypes(kind="bool"),
-    test_with_out=st.just(False),
-)
-def test_numpy_fill_diagonal(
-    dtype_x_axis,
-    wrap,
-    val,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
-):
-    input_dtype, x = dtype_x_axis
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        a=x[0],
-        val=val,
-        wrap=wrap,
-    )
-
-
 @st.composite
 def _helper_r_(draw):
     elems_in_last_dim = draw(st.integers(min_value=2, max_value=8))
@@ -56,6 +20,8 @@ def _helper_r_(draw):
         to_mat = draw(st.booleans())
         if to_mat:
             elem = draw(st.sampled_from(["c", "r"]))
+            if dim > 2:
+                dim = 2
         else:
             num = draw(st.integers(1, 3))
             elem = ""
@@ -69,7 +35,7 @@ def _helper_r_(draw):
             if num == 3:
                 elem += "," + str(draw(st.integers(-1, ndmin - 1)))
         ret.append(elem)
-    if not "ndmin" in locals():
+    if "ndmin" not in locals():
         ndmin = False
 
     if dim == 1:
@@ -118,6 +84,69 @@ def _helper_r_(draw):
     return ret, elems_in_last_dim, dim
 
 
+@st.composite
+def _helper_c_(draw):
+    dim = draw(st.integers(1, 3))
+    num_of_elems = draw(st.integers(1, 5))
+    elem_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
+    ret = []
+    if dim == 1:
+        start = draw(st.integers(min_value=-100, max_value=100))
+        step = draw(st.integers(1, 3))
+        stop = start + 1 + (tuple(elem_shape)[0] - 1) * step
+        elem = slice(start, stop, step)
+        ret.append(elem)
+    input_dtypes, x, casting, dtype = draw(
+        np_frontend_helpers.dtypes_values_casting_dtype(
+            arr_func=[
+                lambda: helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("numeric"),
+                    shape=elem_shape,
+                    num_arrays=num_of_elems,
+                    shared_dtype=True,
+                )
+            ],
+        ),
+    )
+    return x + ret
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fill_diagonal",
+    dtype_x_axis=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        min_dim_size=2,
+        max_num_dims=2,
+    ),
+    val=helpers.floats(min_value=-10, max_value=10),
+    wrap=helpers.get_dtypes(kind="bool"),
+    test_with_out=st.just(False),
+)
+def test_numpy_fill_diagonal(
+    dtype_x_axis,
+    wrap,
+    val,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_x_axis
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        a=x[0],
+        val=val,
+        wrap=wrap,
+    )
+
+
 @handle_frontend_test(fn_tree="numpy.add", inputs=_helper_r_())  # dummy fn_tree
 def test_numpy_r_(inputs):
     inputs, elems_in_last_dim, dim = inputs
@@ -127,4 +156,15 @@ def test_numpy_r_(inputs):
         ret = ret._data
     else:
         ret = ret.ivy_array
-    assert np.allclose(ret, ret_gt), f"{ret=} {ret_gt=}"
+    assert np.allclose(ret, ret_gt)
+
+
+@handle_frontend_test(fn_tree="numpy.add", inputs=_helper_c_())  # dummy fn_tree
+def test_numpy_c_(inputs):
+    ret_gt = np.c_.__getitem__(tuple(inputs))
+    ret = np_frontend.c_.__getitem__(tuple(inputs))
+    if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
+        ret = ret._data
+    else:
+        ret = ret.ivy_array
+    assert np.allclose(ret, ret_gt)
