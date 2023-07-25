@@ -649,8 +649,8 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
@@ -1422,6 +1422,8 @@ def default_int_dtype(
     if ivy.exists(input):
         if ivy.is_array(input):
             ret = ivy.dtype(input)
+        elif isinstance(input, ivy.Shape):
+            ret = ivy.default_int_dtype()
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
@@ -1876,6 +1878,8 @@ def is_int_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "int" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -1951,6 +1955,8 @@ def is_float_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "float" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2001,6 +2007,8 @@ def is_uint_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "uint" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
@@ -2047,6 +2055,8 @@ def is_complex_dtype(
     """
     if ivy.is_array(dtype_in):
         dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, ivy.Shape):
+        dtype_in = ivy.default_int_dtype()
     elif isinstance(dtype_in, np.ndarray):
         return "complex" in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
