@@ -9843,6 +9843,7 @@ def test_torch_baddbmm(
 )
 def test_torch_instance_bmm(
     dtype_and_matrices,
+    backend_fw,
     frontend,
     frontend_method_data,
     init_flags,
@@ -9860,7 +9861,7 @@ def test_torch_instance_bmm(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
-        backend_to_test="torch",
+        backend_to_test=backend_fw,
     )
 
 
