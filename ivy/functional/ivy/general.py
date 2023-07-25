@@ -2842,6 +2842,8 @@ def set_item(
     >>> print(y)
     ivy.array([[0, -1, 20], [10, 10, -8]])
     """
+    if 0 in x.shape:
+        return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
@@ -2901,27 +2903,58 @@ def _parse_query(query, x_shape):
             s = x_shape[i]
             if isinstance(idx, slice):
                 step = 1 if idx.step is None else idx.step
-                if idx.start is None:
-                    start = 0 if step >= 0 else s - 1
+                if step > 0:
+                    start = 0 if idx.start is None else idx.start
+                    if start >= s:
+                        stop = start
+                    else:
+                        if start <= -s:
+                            start = 0
+                        elif start < 0:
+                            start = start + s
+                        stop = s if idx.stop is None else idx.stop
+                        if stop > s:
+                            stop = s
+                        elif start <= -s:
+                            stop = 0
+                        elif stop < 0:
+                            stop = stop + s
                 else:
-                    start = idx.start
-                start = start + s if start < 0 else start
-                if idx.stop is None:
-                    stop = s if step >= 0 else -1
-                else:
-                    stop = idx.stop
-                stop = stop + s if stop < 0 and idx.stop is not None else stop
-                query[i] = ivy.arange(start, stop, step)
+                    start = s-1 if idx.start is None else idx.start
+                    if start <= -s:
+                        stop = start
+                    else:
+                        if start >= s:
+                            start = s
+                        elif start < 0:
+                            start = start + s
+                        if idx.stop is None:
+                            stop = -1
+                        else:
+                            stop = idx.stop
+                            if stop > s:
+                                stop = s
+                            elif stop <= -s:
+                                stop = 0
+                            elif stop < 0:
+                                stop = stop + s
+                q_i = ivy.arange(start, stop, step).to_list()
+                q_i = [q for q in q_i if 0 <= q < s]
+                q_i = (
+                    ivy.array(q_i)
+                    if len(q_i) or start == stop or idx.stop is not None
+                    else ivy.arange(0, s, 1)
+                )
             elif isinstance(idx, int):
-                query[i] = ivy.array(idx + s if idx < 0 else idx)
+                q_i = ivy.array(idx + s if idx < 0 else idx)
             elif isinstance(idx, (tuple, list)):
                 # ToDo: add handling for case of nested tuple/lists
-                query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
+                q_i = ivy.array([ii + s if ii < 0 else ii for ii in idx])
             elif ivy.is_array(idx):
-                query[i] = ivy.where(idx < 0, idx + s, idx)
+                q_i = ivy.where(idx < 0, idx + s, idx)
             else:
                 raise ivy.exceptions.IvyException("unsupported query format")
-            query[i] = ivy.astype(query[i], ivy.int64)
+            query[i] = ivy.astype(q_i, ivy.int64)
         target_shape = [list(q.shape) for q in query]
     if ellipsis_inds is not None:
         target_shape = (
