@@ -675,6 +675,47 @@ def test_jax_isfinite(
     )
 
 
+# isin
+@st.composite
+def _isin_data_generation_helper(draw):
+    dtype_and_x = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    )
+    return draw(dtype_and_x)
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.isin",
+    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
+    invert=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_isin(
+    *,
+    assume_unique_and_dtype_and_x,
+    invert,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_and_dtype = assume_unique_and_dtype_and_x
+    dtypes, values = x_and_dtype
+    elements, test_elements = values
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        element=elements,
+        test_elements=test_elements,
+        invert=invert,
+    )
+
+
 # isinf
 @handle_frontend_test(
     fn_tree="jax.numpy.isinf",
@@ -1058,11 +1099,48 @@ def test_jax_numpy_setxor1d(
     helpers.test_frontend_function(
         input_dtypes=x_dtypes,
         backend_to_test=backend_fw,
-        frontend=frontend,
+		frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        ar1=x[0],
+		ar1=x[0],
         ar2=x[1],
         assume_unique=assume_unique,
-    )
+		)
+    
+
+# packbits
+@handle_frontend_test(
+    fn_tree="jax.numpy.packbits",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        min_dim_size=1,
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(False),
+    bitorder=st.sampled_from(["big", "little"]),
+)
+def test_jax_numpy_packbits(
+    dtype_x_axis,
+    bitorder,
+    frontend,
+    on_device,
+    *,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+		frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+		x=x[0],
+        axis=axis,
+        bitorder=bitorder,
+		)
+    
