@@ -156,7 +156,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = ivy.current_backend_str()
+        self._backend = ivy.backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -188,7 +188,7 @@ class Array(
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
-            self._backend = _determine_backend_from_args(self)
+            self._backend = _determine_backend_from_args(self).backend
 
         else:
             ivy_backend = ivy.with_backend(self._backend)
@@ -204,7 +204,7 @@ class Array(
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
 
-            self._backend = ivy.current_backend_str()
+            self._backend = ivy.backend
 
         self._dynamic_backend = value
 
