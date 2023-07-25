@@ -1096,7 +1096,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         n_fft
            Size of Fourier transform.   
         frame_step
-           An integer scalar Tensor. The window length in samples.          
+           An integer scalar Tensor. The number of samples to step.          
         axis
             The axis on which to perform the DFT. By default this
             value is  set to 1, which corresponds to the first dimension
@@ -1120,7 +1120,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             will be used directly as the window and its length must be 
             nperseg. Defaults to a Hann window.
         win_length
-            An integer scalar Tensor. The window length in samples.   
+             The size of window frame and STFT filter. Defaults to None.   
         noverlap
             Number of points to overlap between segments. If None, 
             noverlap = nperseg // 2. Defaults to None.
@@ -1155,16 +1155,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
             Optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
             Input array.
-        s
-            Shape (length of each transformed axis) of the output.
-        axes
-            Axes over which to compute the RFFT. If not given, the last len(s) axes are
-            used.
-        norm
-            Normalization mode: "backward", "ortho", or "forward".
-        out
-            Optional output array for writing the result.
-
         Returns
         -------
         ret
