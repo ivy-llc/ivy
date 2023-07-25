@@ -3,6 +3,7 @@ import os
 import contextlib
 import pytest
 from ivy.utils.assertions import (
+    check_elem_in_list,
     check_equal,
     check_exists,
     check_greater,
@@ -194,6 +195,49 @@ def test_check_exists(x, inverse):
 
         if x:
             assert "must be None" in lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "elem, list, inverse",
+    [
+        (1, [1, 2], False),
+        ("a", [1, 2], False),
+        (1, [2, 3], True),
+        (0, ["a", "b", "c"], True),
+    ],
+)
+def test_check_elem_in_list(elem, list, inverse):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_elem_in_list(elem, list, inverse)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not inverse:
+        if elem not in list:
+            assert "must be one" in lines.strip()
+
+        if elem in list:
+            assert not lines.strip()
+
+    if inverse:
+        if elem not in list:
+            assert not lines.strip()
+
+        if elem in list:
+            assert "must not be one" in lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
