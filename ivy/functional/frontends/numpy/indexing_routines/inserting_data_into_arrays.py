@@ -75,7 +75,7 @@ class AxisConcatenator:
                 if ndmin > 1:
                     newobj = np_frontend.array(
                         newobj, copy=False, ndmin=ndmin
-                    ).ivy_array  # TODO
+                    ).ivy_array
                     if trans1d != -1:
                         newobj = ivy.swapaxes(newobj, -1, trans1d)
             elif isinstance(item, str):
@@ -131,7 +131,6 @@ class AxisConcatenator:
             else:
                 final_dtype = ivy.result_type(result_type_objs[0], result_type_objs[0])
             # concatenate could do cast, but that can be overridden:
-            print(final_dtype)
             objs = [
                 np_frontend.array(
                     obj, copy=False, ndmin=ndmin, dtype=final_dtype

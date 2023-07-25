@@ -3,6 +3,7 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -47,6 +48,7 @@ def test_numpy_fill_diagonal(
 
 @st.composite
 def _helper_r_(draw):
+    elems_in_last_dim = draw(st.integers(min_value=2, max_value=8))
     num_of_elems = draw(st.integers(min_value=1, max_value=4))
     dim = draw(st.one_of(st.just(1), st.integers(2, 4)))
     first_elem_str = draw(st.booleans())
@@ -75,13 +77,14 @@ def _helper_r_(draw):
             if elem_type == "array":
                 elem = draw(
                     helpers.array_values(
-                        dtype=helpers.get_dtypes("valid"), shape=draw(st.integers(1, 5))
+                        dtype=helpers.get_dtypes("valid"),
+                        shape=(draw(st.integers(1, 5)),),
                     )
                 )
                 if len(elem) == 1 and draw(st.booleans()):
                     elem = elem[0]
             else:
-                start = draw(st.integers())
+                start = draw(st.integers(min_value=-100, max_value=100))
                 stop = draw(st.integers(start + 1, start + 10))
                 step = draw(st.integers(1, 3))
                 elem = slice(start, stop, step)
@@ -89,18 +92,30 @@ def _helper_r_(draw):
     else:
         while num_of_elems > 0:
             num_of_elems -= 1
-            elem_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
+            elem_shape = list(
+                draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
+            )
+            elem_shape[-1] = elems_in_last_dim
+            elem_shape = ivy.Shape(elem_shape)
             elem = draw(
                 helpers.array_values(
                     dtype=helpers.get_dtypes("valid"), shape=elem_shape
                 )
             )
             ret.append(elem)
-    return ret
+    return ret, elems_in_last_dim, dim
 
 
-@handle_frontend_test(fn_tree="numpy.r_", inputs=_helper_r_())
+@handle_frontend_test(fn_tree="numpy.add", inputs=_helper_r_())  # dummy fn_tree
 def test_numpy_r_(inputs):
-    ret = np_frontend.r_.__getitem__(tuple(inputs)).ivy_array
-    ret_gt = np_frontend.r_.__getitem__(tuple(inputs))
+    inputs, elems_in_last_dim, dim = inputs
+    try:
+        ret_gt = np.r_.__getitem__(tuple(inputs))
+    except:
+        return
+    ret = np_frontend.r_.__getitem__(tuple(inputs))
+    if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
+        ret = ret._data
+    else:
+        ret = ret.ivy_array
     assert np.allclose(ret, ret_gt), f"{ret=} {ret_gt=}"
