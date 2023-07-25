@@ -13,7 +13,6 @@ Containers
 .. _`ivy.Container.cont_multi_map_in_function`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/base.py#L162
 .. _`ivy.Container.tan`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L7347
 .. _`ivy.Container.roll`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/manipulation.py#L927
-.. _`static method is added`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L709
 .. _`instance method is added`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/__init__.py#L683
 .. _`inherits`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/container.py#L52
 .. _`ContainerWithElementwise`: https://github.com/unifyai/ivy/blob/b725ed10bca15f6f10a0e5154af10231ca842da2/ivy/container/elementwise.py#L9
@@ -48,9 +47,9 @@ Overall, this results in the following five mutually exclusive groups of :class:
 Each of these are explained in the following sub-sections.
 
 #. Container instance methods
+#. API static methods
 #. API instance methods
 #. API special methods
-#. API static methods
 
 Container Instance Methods
 --------------------------
@@ -69,13 +68,9 @@ The main reason for this is to support the *nestable* property of all functions 
 To recap, what this means is that every function can arbitrarily accept :class:`ivy.Container` instances for **any** of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
 When multiple containers are passed, this mapping is only applied to their shared nested structure, with the mapping applied to each of these leaves.
 
-In such cases, the function in the functional API defers to this *static* :class:`ivy.Container` implementation.
 Under the hood, `ivy.Container.cont_multi_map_in_function`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
 Internally, :meth:`ivy.Container.cont_multi_map_in_function` calls `ivy.Container.multi_map`_.
 In cases where there are no containers passed, `ivy.Container.cont_multi_map_in_function`_ will simply call the function once on the non-container arguments provided.
-
-As with :class:`ivy.Array`, given the simple set of rules which underpin how these static methods should all be implemented, if a source-code implementation is not found, then this `static method is added`_ programmatically.
-This serves as a helpful backup in cases where some static methods are accidentally missed out.
 
 The benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
