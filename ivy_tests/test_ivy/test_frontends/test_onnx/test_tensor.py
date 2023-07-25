@@ -18,12 +18,12 @@ def test_onnx_tensor_property_ivy_array(
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend="torch")
+    ret_gt = helpers.flatten_and_to_np(ret=data[0], backend="torch")
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="torch",
+        backend="torch",
     )
 
 
