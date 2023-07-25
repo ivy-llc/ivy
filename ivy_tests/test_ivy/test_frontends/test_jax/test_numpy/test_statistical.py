@@ -78,6 +78,7 @@ def test_jax_histogram_bin_edges(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     (
         a,
@@ -89,6 +90,7 @@ def test_jax_histogram_bin_edges(
     ) = values
     helpers.test_frontend_function(
         input_dtypes=[dtype_input],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
