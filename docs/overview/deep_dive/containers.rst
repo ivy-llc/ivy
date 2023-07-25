@@ -47,7 +47,6 @@ Overall, this results in the following four mutually exclusive groups of :class:
 Each of these are explained in the following sub-sections.
 
 #. Container instance methods
-#. API static methods
 #. API instance methods
 #. API special methods
 
@@ -58,22 +57,6 @@ Container instance methods are methods which are specific to the container itsel
 A few examples include `ivy.Container.cont_map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.cont_all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.cont_to_iterator`_ which returns an iterator for traversing the leaves of the container.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
-
-API Static Methods
-------------------
-
-Unlike the :class:`ivy.Array` class, the :class:`ivy.Container` also implements **all nestable functions** in the functional API as *static* methods.
-The main reason for this is to support the *nestable* property of all functions in the API, which is explained in detail in the :ref:`Function Types` section.
-
-To recap, what this means is that every function can arbitrarily accept :class:`ivy.Container` instances for **any** of the arguments, and in such cases the function will automatically be mapped to the leaves of this container.
-When multiple containers are passed, this mapping is only applied to their shared nested structure, with the mapping applied to each of these leaves.
-
-Under the hood, `ivy.Container.cont_multi_map_in_function`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
-Internally, :meth:`ivy.Container.cont_multi_map_in_function` calls `ivy.Container.multi_map`_.
-In cases where there are no containers passed, `ivy.Container.cont_multi_map_in_function`_ will simply call the function once on the non-container arguments provided.
-
-The benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
-It also enables other helpful perks, such as auto-completions in the IDE etc.
 
 API Instance Methods
 --------------------
@@ -93,7 +76,7 @@ For example, we do not implement an instance method for `ivy.zeros <https://gith
 As is the case for :class:`ivy.Array`, the organization of these instance methods follows the same organizational structure as the files in the functional API.
 The :class:`ivy.Container` class `inherits`_ from many category-specific array classes, such as `ContainerWithElementwise`_, each of which implement the category-specific instance methods.
 
-As with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically. This serves as a helpful backup in cases where some static methods are accidentally missed out.
+As with :class:`ivy.Array`, given the simple set of rules which underpin how these instance methods should all be implemented, if a source-code implementation is not found, then this `instance method is added`_ programmatically. This serves as a helpful backup in cases where some instance methods are accidentally missed out.
 
 Again, the benefit of the source code implementations is that this makes the code much more readable, with important methods not being entirely absent from the code.
 It also enables other helpful perks, such as auto-completions in the IDE etc.
