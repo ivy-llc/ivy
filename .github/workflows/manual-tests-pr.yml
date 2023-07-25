@@ -4,7 +4,7 @@ on:
     inputs:
       test:
         description: 'Test:'
-        default: 'ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow'
+        default: 'ivy_tests/test_ivy/test_functional/test_nn/test_activations.py::test_thresholded_relu,tensorflow'
         required: true
 permissions:
   actions: read
