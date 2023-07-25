@@ -388,7 +388,7 @@ def igamma(
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
 
-    return paddle.to_tensor(results, dtype="float32").reshape(a.shape)
+    return paddle.to_tensor(results, dtype=a.dtype).reshape(a.shape)
 
 
 def cov(
