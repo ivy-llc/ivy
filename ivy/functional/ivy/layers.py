@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
 )
 from ivy.utils.exceptions import handle_exceptions
-
+import pdb
 
 # Extra #
 # ------#
@@ -818,7 +818,10 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -894,7 +897,10 @@ def conv1d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -915,7 +921,10 @@ def conv1d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1029,7 +1038,10 @@ def conv1d_transpose(
         padding,
         output_shape=output_shape,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1047,7 +1059,10 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int,Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1156,7 +1171,10 @@ def conv2d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1177,7 +1195,10 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int,Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1200,8 +1221,12 @@ def conv2d_transpose(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+    x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1220,20 +1245,20 @@ def conv2d_transpose(
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     (1, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
-    >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
+    >>> ivy.conv2d_transpose(x,filters,1,'VALID',out=x)
     >>> print(x.shape)
     (1, 128, 128, 64)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros_like(x)
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
-    >>> ivy.conv2d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> ivy.conv2d_transpose(x,filters,[1, 1, 1],'VALID',out=y)
     >>> print(y.shape)
     (1, 258, 258, 32)
 
@@ -1242,7 +1267,7 @@ def conv2d_transpose(
     >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
     >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=2)
+    >>> y = ivy.conv2d_transpose(x,filters,1,'VALID',dilations=2)
     >>> print(y.shape)
     {
         a: [1,10,10,1],
@@ -1256,7 +1281,7 @@ def conv2d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1269,16 +1294,10 @@ def conv2d_transpose(
         }
     }
     """
-    return current_backend(x).conv2d_transpose(
-        x,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-        out=out,
-    )
+    pdb.set_trace()
+    return current_backend(x).conv2d_transpose(x, filters, strides, padding, output_shape=output_shape,
+                                               data_format=data_format,filter_format=filter_format, x_dilations=x_dilations, dilations=dilations,
+                                               bias=bias, out=out)
 
 
 @handle_exceptions
@@ -1433,8 +1452,12 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int,Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
+
 ) -> ivy.Array:
     """
     Compute a 3-D convolution given 5-D input x and filters arrays.
@@ -1530,7 +1553,10 @@ def conv3d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1551,7 +1577,10 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int,Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1640,7 +1669,10 @@ def conv3d_transpose(
         padding,
         output_shape=output_shape,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 

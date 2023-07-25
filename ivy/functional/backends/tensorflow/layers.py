@@ -75,7 +75,10 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
@@ -97,7 +100,10 @@ def conv1d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if ivy.dev(x) == "cpu" and (
@@ -129,7 +135,10 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
@@ -151,7 +160,10 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
     if ivy.dev(x) == "cpu" and (
@@ -166,9 +178,7 @@ def conv2d_transpose(
     output_shape = _output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 2, dilations
     )
-    res = tf.nn.conv2d_transpose(
-        x, filters, output_shape, strides, padding, "NHWC", dilations
-    )
+    res = tf.nn.conv2d_transpose(x, filters, output_shape, strides)
     if data_format == "NCHW":
         return tf.transpose(res, (0, 3, 1, 2))
     return res
@@ -209,6 +219,8 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ):
@@ -235,7 +247,10 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[Union[tf.Tensor, tf.Variable]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tensor:
     if ivy.dev(x) == "cpu" and (

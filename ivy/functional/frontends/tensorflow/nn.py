@@ -27,9 +27,7 @@ def atrous_conv2d(value, filters, rate, padding):
 @to_ivy_arrays_and_back
 def atrous_conv2d_transpose(value, filters, output_shape, rate, padding):
     filters = filters.swapaxes(-2, -1)
-    return ivy.conv2d_transpose(
-        value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2
-    )
+    return ivy.conv2d_transpose(value, filters, 1, padding, output_shape=output_shape, dilations=[rate] * 2)
 
 
 @to_ivy_arrays_and_back
@@ -98,15 +96,8 @@ def conv2d_transpose(
     dilations = 1 if dilations is None else dilations
     strides, dilations = _reduce_strides_dilations(2, strides, dilations)
     filters = filters.swapaxes(-2, -1)
-    return ivy.conv2d_transpose(
-        input,
-        filters,
-        strides,
-        padding,
-        output_shape=output_shape,
-        data_format=data_format,
-        dilations=dilations,
-    )
+    return ivy.conv2d_transpose(input, filters, strides, padding, output_shape=output_shape, data_format=data_format,
+                                dilations=dilations)
 
 
 @to_ivy_arrays_and_back

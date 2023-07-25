@@ -1085,11 +1085,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int]] = 1,
         dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1153,11 +1156,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1169,11 +1175,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int]] = 1,
         dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1236,11 +1245,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1253,11 +1265,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1321,11 +1336,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1337,11 +1355,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1404,11 +1425,13 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
-            dilations=dilations,
+            dilations=dilations,filter_format=filter_format,
+            x_dilations=x_dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1422,11 +1445,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int]] = 1,
         dilations: Union[int, Tuple[int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1494,11 +1520,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1511,11 +1540,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: int = 1,
         dilations: int = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         """
@@ -1582,11 +1614,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1600,11 +1635,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1678,11 +1716,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1695,11 +1736,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1752,7 +1796,7 @@ class _ContainerWithLayers(ContainerBase):
         >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x, filters, 2, 'SAME')
+        >>> y = x.conv2d_transpose(x,filters,2,'SAME')
         >>> print(y.shape)
         {
             a: {
@@ -1772,11 +1816,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1931,11 +1978,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int, int]] = 1,
         dilations: Union[int, Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1988,11 +2038,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2004,11 +2057,14 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int, int]] = 1,
         dilations: Union[int, Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2060,11 +2116,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2078,11 +2137,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int],Tuple[int, int, int]] = 1,
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2148,11 +2210,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2165,11 +2230,14 @@ class _ContainerWithLayers(ContainerBase):
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int],Tuple[int, int, int]] = 1,
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2234,11 +2302,14 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             output_shape=output_shape,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 

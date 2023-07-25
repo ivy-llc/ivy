@@ -964,15 +964,8 @@ class Conv2DTranspose(Module):
         ret
             The outputs following the conv1d layer *[batch_size,new_h,new_w,d_out]*
         """
-        return ivy.conv2d_transpose(
-            inputs,
-            self.v.w,
-            self._strides,
-            self._padding,
-            output_shape=self._output_shape,
-            data_format=self._data_format,
-            dilations=self._dilations,
-        ) + (self.v.b if self._with_bias else 0)
+        return ivy.conv2d_transpose(inputs, self.v.w, self._strides, self._padding, output_shape=self._output_shape,
+                                    data_format=self._data_format, dilations=self._dilations) + (self.v.b if self._with_bias else 0)
 
 
 class DepthwiseConv2D(Module):
