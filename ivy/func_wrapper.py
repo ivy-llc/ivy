@@ -30,6 +30,7 @@ FN_DECORATORS = [
     "handle_partial_mixed_function",
     "handle_nestable",
     "handle_ragged",
+    "handle_backend_invalid",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -554,6 +555,26 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
     _outputs_to_ivy_arrays.outputs_to_ivy_arrays = True
     return _outputs_to_ivy_arrays
+
+
+def handle_backend_invalid(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_backend_invalid(*args, **kwargs):
+        from ivy.utils.backend.handler import _determine_backend_from_args
+
+        for arg in args:
+            if ivy.current_backend() != _determine_backend_from_args(arg):
+                raise ivy.utils.exceptions.InvalidBackendException(
+                    f"The current backend is {ivy.current_backend()} while the"
+                    " ivy.Array used is based on the"
+                    f" {_determine_backend_from_args(arg)} backend."
+                    " Please set dynamic_backend=True for the array if you want to"
+                    " convert it to the target backend"
+                )
+        return fn(*args, **kwargs)
+
+    _handle_backend_invalid.handle_backend_invalid = True
+    return _handle_backend_invalid
 
 
 def output_to_native_arrays(fn: Callable) -> Callable:
