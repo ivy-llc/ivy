@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
@@ -1872,7 +1872,7 @@ def dtype_array_query(
         else:
             start = draw(
                 st.one_of(
-                    st.integers(min_value=-2*s, max_value=2*s),
+                    st.integers(min_value=-2 * s, max_value=2 * s),
                     st.just(None),
                 )
             )
@@ -1884,9 +1884,13 @@ def dtype_array_query(
             )
             step = draw(
                 st.one_of(
-                    st.integers(min_value=1, max_value=1 + 2 * s)
-                    if not allow_neg_step
-                    else st.integers(min_value=-1 - 2 * s, max_value=1 + 2 * s).filter(lambda x: x != 0),
+                    (
+                        st.integers(min_value=1, max_value=1 + 2 * s)
+                        if not allow_neg_step
+                        else st.integers(
+                            min_value=-1 - 2 * s, max_value=1 + 2 * s
+                        ).filter(lambda x: x != 0)
+                    ),
                     st.just(None),
                 )
             )
