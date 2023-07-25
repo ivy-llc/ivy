@@ -1607,6 +1607,8 @@ def test_paddle_rsqrt(
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
+        min_value=-10,
+        max_value=10,
         force_int_axis=False,
         allow_nan=False,
     ),
