@@ -474,8 +474,7 @@ from . import creation_routines
 from .creation_routines import *
 from . import data_type_routines
 from .data_type_routines import *
-from . import indexing_routines
-from .indexing_routines import *
+
 from . import logic
 from .logic import *
 from . import manipulation_routines
@@ -490,6 +489,8 @@ from . import matrix
 from .matrix import *
 from . import random
 from .random import *
+from . import indexing_routines
+from .indexing_routines import *
 from . import broadcast
 from .broadcast import *
 
