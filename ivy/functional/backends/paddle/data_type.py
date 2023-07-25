@@ -14,6 +14,7 @@ ivy_dtype_dict = {
     paddle.int32: "int32",
     paddle.int64: "int64",
     paddle.uint8: "uint8",
+    paddle.bfloat16: "bfloat16",
     paddle.float16: "float16",
     paddle.float32: "float32",
     paddle.float64: "float64",
@@ -28,6 +29,7 @@ native_dtype_dict = {
     "int32": paddle.int32,
     "int64": paddle.int64,
     "uint8": paddle.uint8,
+    "bfloat16": paddle.bfloat16,
     "float16": paddle.float16,
     "float32": paddle.float32,
     "float64": paddle.float64,
@@ -159,6 +161,7 @@ def broadcast_to(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
     ]:
         return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:
