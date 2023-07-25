@@ -4,6 +4,7 @@ import contextlib
 import pytest
 from ivy.utils.assertions import (
     check_equal,
+    check_exists,
     check_greater,
     check_isinstance,
     check_less,
@@ -155,6 +156,44 @@ def test_check_isinstance(x, allowed_types):
 
     if isinstance(x, allowed_types):
         assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "x, inverse",
+    [(None, False), ([], False), (None, True), ("abc", True)],
+)
+def test_check_exists(x, inverse):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_exists(x, inverse)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not inverse:
+        if x is None:
+            assert "must not be" in lines.strip()
+
+        if x:
+            assert not lines.strip()
+
+    if inverse:
+        if x is None:
+            assert not lines.strip()
+
+        if x:
+            assert "must be None" in lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
