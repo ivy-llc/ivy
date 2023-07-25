@@ -2992,6 +2992,7 @@ def test_paddle_log1p(
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     frontend,
     on_device,
 ):
@@ -3004,6 +3005,7 @@ def test_paddle_log1p(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
+        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
