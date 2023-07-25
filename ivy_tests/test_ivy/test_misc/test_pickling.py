@@ -23,7 +23,8 @@ import ivy_tests.test_ivy.helpers as helpers
         max_dim_size=5,
     ),
 )
-def test_pickle_to_string(dtype_and_x, on_device):
+def test_pickle_to_string(dtype_and_x, on_device, backend_fw):
+    ivy.set_backend(backend_fw)
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
@@ -37,6 +38,7 @@ def test_pickle_to_string(dtype_and_x, on_device):
 
     # check for equality
     assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(unpickled_arr))
+    ivy.previous_backend()
 
 
 # pickling array test to disk
@@ -49,7 +51,8 @@ def test_pickle_to_string(dtype_and_x, on_device):
         max_dim_size=5,
     ),
 )
-def test_pickle_to_and_from_disk(dtype_and_x, on_device):
+def test_pickle_to_and_from_disk(dtype_and_x, on_device, backend_fw):
+    ivy.set_backend(backend_fw)
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     x = ivy.array(x[0], dtype=input_dtype[0], device=on_device)
@@ -70,3 +73,4 @@ def test_pickle_to_and_from_disk(dtype_and_x, on_device):
 
     # check for equality
     assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(unpickled_arr))
+    ivy.previous_backend()
