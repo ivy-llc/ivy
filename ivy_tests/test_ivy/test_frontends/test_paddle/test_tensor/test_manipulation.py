@@ -470,7 +470,7 @@ def test_paddle_broadcast_to(
         x=x[0],
         shape=shape,
     )
-
+    
 
 @st.composite
 def _gather_helper(draw):
@@ -517,4 +517,48 @@ def test_paddle_gather(
         on_device=on_device,
         param=param[0],
         indices=indices[0],
+    )
+    
+    
+# flip
+@st.composite
+def _dtype_x_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=len(shape) - 1),
+            min_size=len(shape),
+            max_size=len(shape),
+            unique=True,
+        )
+    )
+    return dtype, x, axis
+
+
+@handle_frontend_test(
+    fn_tree="paddle.flip",
+    dtype_x_axis=_dtype_x_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_flip(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
     )

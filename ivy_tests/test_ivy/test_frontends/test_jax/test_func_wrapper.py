@@ -29,7 +29,7 @@ def _fn(x, check_default=False):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
+def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
@@ -61,7 +61,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
+def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
@@ -81,7 +81,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
+def test_jax_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
