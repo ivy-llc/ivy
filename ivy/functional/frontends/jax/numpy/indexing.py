@@ -1,6 +1,7 @@
 # global
 import inspect
 from typing import Callable
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -81,15 +82,16 @@ def diag_indices_from(arr):
     idx = ivy.arange(n, dtype=int)
     return (idx,) * ndim
 
+
 @to_ivy_arrays_and_back
 def apply_along_axis(func1d: Callable, axis: int, arr, *args, **kwargs):
-  ndim = ivy.get_num_dims(arr)
-  func = lambda elem: func1d(elem, *args, **kwargs)
-  # apply from the back (out_axes=-1)
-  for i in range(1, ndim - axis):
-    func = ivy.vmap(func, in_axes=i, out_axes=-1)
-  # apply from the front (out_axes=0)
-  for i in range(axis):
-    func = ivy.vmap(func, in_axes=0, out_axes=0)
+    ndim = ivy.get_num_dims(arr)
+    func = lambda elem: func1d(elem, *args, **kwargs)
+    # apply from the back (out_axes=-1)
+    for i in range(1, ndim - axis):
+        func = ivy.vmap(func, in_axes=i, out_axes=-1)
+    # apply from the front (out_axes=0)
+    for i in range(axis):
+        func = ivy.vmap(func, in_axes=0, out_axes=0)
 
-  return ivy.asarray(func(arr))
+    return ivy.asarray(func(arr))
