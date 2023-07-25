@@ -666,7 +666,6 @@ def test_prelu(
         test_gradients=test_gradients,
         on_device=on_device,
     )
-    
 
 
 # SeLU
@@ -711,8 +710,6 @@ def test_selu(
     )
 
 
-
-
 # ELU
 @handle_method(
     method_tree="stateful.activations.ELU.__call__",
@@ -742,7 +739,6 @@ def test_elu(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    print(x,alpha)
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
