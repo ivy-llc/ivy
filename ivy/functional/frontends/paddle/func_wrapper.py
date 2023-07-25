@@ -33,10 +33,8 @@ def _to_ivy_array(x):
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        """
-        Call the function, and then convert all `ivy.Array` instances
-        returned by the function into `Tensor` instances.
-        """
+        """Call the function, and then convert all `ivy.Array` instances returned by the
+        function into `Tensor` instances."""
         # call unmodified function
         # ToDo: Remove this default dtype setting
         #  once frontend specific backend setting is added
@@ -58,11 +56,9 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        """
-        Convert all `Tensor` instances in both the positional and
-        keyword arguments into `ivy.Array` instances, and then call the
-        function with the updated arguments.
-        """
+        """Convert all `Tensor` instances in both the positional and keyword arguments
+        into `ivy.Array` instances, and then call the function with the updated
+        arguments."""
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
             args, _to_ivy_array, include_derived={tuple: True}, shallow=False
@@ -77,8 +73,6 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so that input arrays are all converted to `ivy.Array`
-    instances and return arrays are all converted to `Tensor` instances.
-    """
+    """Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
+    return arrays are all converted to `Tensor` instances."""
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
