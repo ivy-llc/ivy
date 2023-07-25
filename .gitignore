@@ -42,4 +42,4 @@ env.bak/
 venv.bak/
 ivy_dev/
 *venv/
-venv*
+venv
