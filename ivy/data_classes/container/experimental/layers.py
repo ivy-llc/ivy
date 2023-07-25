@@ -2064,7 +2064,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         n_fft
            Size of Fourier transform.
         frame_step
-           An integer scalar Tensor. The window length in samples.             
+           An integer scalar Tensor. The number of samples to step.             
         axis
             The axis on which to perform the DFT. By default this
             value is  set to 1, which corresponds to the first dimension
@@ -2088,7 +2088,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             will be used directly as the window and its length must be 
             nperseg. Defaults to a Hann window.
         win_length
-            An integer scalar Tensor. The window length in samples.   
+            The size of window frame and STFT filter. Defaults to None.    
         noverlap
             Number of points to overlap between segments. If None, 
             noverlap = nperseg // 2. Defaults to None.
