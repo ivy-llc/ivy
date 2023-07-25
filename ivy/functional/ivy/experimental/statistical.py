@@ -836,7 +836,7 @@ def cummin(
     >>> ivy.cummin(x, axis=0, reverse=True, out=y)
     >>> print(y)
     ivy.array([[1., 3., 0.],
-        [1., 3., 0.]])
+           [1., 3., 0.]])
 
     >>> x = ivy.array([[2, 4, 5],
     ...                [3, 6, 5],
@@ -844,8 +844,8 @@ def cummin(
     >>> ivy.cummin(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
     ivy.array([[ 2,  4,  5],
-        [ 3,  5,  5],
-        [ 1,  3, 10]])
+           [ 3,  5,  5],
+           [ 1,  3, 10]])
 
     With :class:`ivy.Container` input:
 
@@ -870,16 +870,15 @@ def cummin(
     >>> ivy.cummin(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
-    a: ivy.array([[1., 3., 4.]]),
-    b: ivy.array([[3., 5., 8.],
-                    [5., 5., 5.]]),
-    c: ivy.array([[1., 1., 1.],
-                    [3., 6., 9.],
-                    [0., 2., 3.]])
+        a: ivy.array([[1., 3., 4.]]),
+        b: ivy.array([[3., 5., 8.],
+                      [5., 5., 5.]]),
+        c: ivy.array([[1., 1., 1.],
+                      [3., 6., 9.],
+                      [0., 2., 3.]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0],[5]]),
-    ...                                [5]]),
     ...                   b=ivy.array([[6, 8, 7],
     ...                                [4, 2, 3]]),
     ...                   c=ivy.array([[1, 2],
@@ -888,13 +887,13 @@ def cummin(
     >>> ivy.cummin(x,axis=0,out=x)
     >>> print(x)
     {
-    a: ivy.array([[0],
-                    [0]]),
-    b: ivy.array([[6, 8, 7],
-                    [4, 2, 3]]),
-    c: ivy.array([[1, 2],
-                    [1, 2],
-                    [1, 2]])
+        a: ivy.array([[0],
+                      [0]]),
+        b: ivy.array([[6, 8, 7],
+                      [4, 2, 3]]),
+        c: ivy.array([[1, 2],
+                      [1, 2],
+                      [1, 2]])
     }
     """
     return ivy.current_backend(x).cummin(
