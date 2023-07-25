@@ -139,7 +139,7 @@ class DeviceArray:
         )
     
     def imag(self, /):
-        return jax_frontend.numpy.imag(self._ivy_array)
+        return jax_frontend.numpy.imag(self)
 
 
     def argsort(self, axis=-1, kind="stable", order=None):
