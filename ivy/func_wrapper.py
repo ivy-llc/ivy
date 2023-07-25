@@ -29,6 +29,7 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_partial_mixed_function",
     "handle_nestable",
+    "handle_ragged",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -976,6 +977,44 @@ def handle_nestable(fn: Callable) -> Callable:
 
     _handle_nestable.handle_nestable = True
     return _handle_nestable
+
+
+def handle_ragged(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_ragged(*args, **kwargs):
+        """
+        Call `fn` with the *ragged* property of the function correctly handled. This
+        means mapping the function to the RaggedArray arrays if any RaggedArrays are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the ragged property handled correctly.
+        """
+        nested_fn = (
+            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
+                fn, *args, **kwargs
+            )
+        )
+        if ivy.nested_any(
+            args, ivy.is_ivy_nested_array, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
+            return nested_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    _handle_ragged.handle_ragged = True
+    return _handle_ragged
 
 
 # Partial Mixed Function Handling #

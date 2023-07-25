@@ -2903,22 +2903,41 @@ def _parse_query(query, x_shape):
             s = x_shape[i]
             if isinstance(idx, slice):
                 step = 1 if idx.step is None else idx.step
-                if idx.start is None:
-                    start = 0 if step >= 0 else s - 1
+                if step > 0:
+                    start = 0 if idx.start is None else idx.start
+                    if start >= s:
+                        stop = start
+                    else:
+                        if start <= -s:
+                            start = 0
+                        elif start < 0:
+                            start = start + s
+                        stop = s if idx.stop is None else idx.stop
+                        if stop > s:
+                            stop = s
+                        elif start <= -s:
+                            stop = 0
+                        elif stop < 0:
+                            stop = stop + s
                 else:
-                    start = idx.start
-                if start > 0 and step < 0:
-                    start = min(start, s - 1)
-                if start < 0:
-                    start = max(0, start + s)
-                if idx.stop is None:
-                    stop = s if step >= 0 else -1
-                else:
-                    stop = idx.stop
-                    if stop > 0 and step > 0:
-                        stop = min(stop, s)
-                    if stop < 0:
-                        stop = max(-1, stop + s)
+                    start = s - 1 if idx.start is None else idx.start
+                    if start <= -s:
+                        stop = start
+                    else:
+                        if start >= s:
+                            start = s
+                        elif start < 0:
+                            start = start + s
+                        if idx.stop is None:
+                            stop = -1
+                        else:
+                            stop = idx.stop
+                            if stop > s:
+                                stop = s
+                            elif stop <= -s:
+                                stop = 0
+                            elif stop < 0:
+                                stop = stop + s
                 q_i = ivy.arange(start, stop, step).to_list()
                 q_i = [q for q in q_i if 0 <= q < s]
                 q_i = (
@@ -4172,7 +4191,6 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@to_native_arrays_and_back
 @handle_device_shifting
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -4197,7 +4215,16 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend(x).strides(x)
+    if ivy.is_native_array(x) or (ivy.is_ivy_array(x) and x.base is None):
+        return ivy.to_numpy(x).strides
+    # if x is an ivy array with a base,
+    # convert it to a numpy array with the same base:
+    ret = ivy.to_numpy(x.base)
+    ivy_numpy = ivy.with_backend('numpy')
+    for fn, args, kwargs, index in x._manipulation_stack:
+        ret = ivy_numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ret[index] if ivy.exists(index) else ret
+    return ret.to_native().strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:
