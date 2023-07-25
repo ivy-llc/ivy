@@ -262,7 +262,8 @@ def setxor1d(ar1, ar2, assume_unique=False):
     else:
         ret = aux[mask]
     return ret
-  
+
+
 @to_ivy_arrays_and_back
 def packbits(x, /, *, axis=None, bitorder="big"):
     x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
@@ -283,4 +284,3 @@ def packbits(x, /, *, axis=None, bitorder="big"):
     bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
     packed = (x << bits).sum(axis=-1).astype("uint8")
     return ivy.swapaxes(packed, axis, -1)
-  
