@@ -367,3 +367,24 @@ class SeLU(Module):
             The outputs following the SELU activation *[batch_shape, d]*
         """
         return ivy.selu(x)
+
+
+class ELU(Module):
+    def __init__(self):
+        """Apply the ELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, alpha=1.0):
+        """
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        Returns
+        -------
+        ret
+            The outputs following the ELU activation *[batch_shape, d]*
+        """
+        return ivy.elu(x, alpha=alpha)
