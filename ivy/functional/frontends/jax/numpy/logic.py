@@ -9,6 +9,16 @@ from ivy.functional.frontends.jax.numpy import (
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
+def _packbits_nested_list_padding(arr, pad_length):
+    if arr.ndim > 1:
+        nested_list = []
+        for sub_arr in arr:
+            nested_list.append(_packbits_nested_list_padding(sub_arr, pad_length))
+        return nested_list
+    else:
+        return arr.zero_pad(pad_width=[[0, pad_length]])
+
+
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     a, b = promote_jax_arrays(a, b)
@@ -128,7 +138,6 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 alltrue = all
 
-
 sometrue = any
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
@@ -154,6 +163,11 @@ def invert(x, /):
 @to_ivy_arrays_and_back
 def isfinite(x, /):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
 
 
 @to_ivy_arrays_and_back
@@ -218,3 +232,25 @@ def iscomplex(x: any):
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
+
+
+@to_ivy_arrays_and_back
+def packbits(x, /, *, axis=None, bitorder="big"):
+    x = ivy.greater(x, ivy.zeros_like(x)).astype("uint8")
+    bits = ivy.arange(8, dtype="uint8")
+    if bitorder == "big":
+        bits = bits[::-1]
+    if axis is None:
+        x = ivy.flatten(x)
+        axis = 0
+    x = ivy.swapaxes(x, axis, -1)
+
+    remainder = x.shape[-1] % 8
+    if remainder:
+        x = _packbits_nested_list_padding(x, 8 - remainder)
+        x = ivy.array(x)
+
+    x = ivy.reshape(x, list(x.shape[:-1]) + [x.shape[-1] // 8, 8])
+    bits = ivy.expand_dims(bits, axis=tuple(range(x.ndim - 1)))
+    packed = (x << bits).sum(axis=-1).astype("uint8")
+    return ivy.swapaxes(packed, axis, -1)

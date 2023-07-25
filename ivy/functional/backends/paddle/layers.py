@@ -7,7 +7,11 @@ import paddle
 import ivy
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.functional.ivy.layers import _handle_padding, _get_x_data_format
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _get_x_data_format,
+    _deconv_length,
+)
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -77,6 +81,47 @@ def _pad_before_conv(x, filters, strides, padding, dims, dilations, data_format)
     )
 
 
+def _pad_before_conv_tranpose(
+    x, filters, strides, padding, dims, dilations, output_shape, filter_shape
+):
+    if output_shape is None:
+        out_shape = [
+            _deconv_length(
+                x.shape[i + 2], strides[i], filter_shape[i], padding, dilations[i]
+            )
+            for i in range(dims)
+        ]
+        output_shape = [x.shape[0], *out_shape, filters.shape[1]]
+    elif len(output_shape) == dims:
+        output_shape = [x.shape[0]] + output_shape + [filters.shape[1]]
+    not_valid_pad = [False] * dims
+    filter_shape = [
+        filter_shape[i] + (filter_shape[i] - 1) * (dilations[i] - 1)
+        for i in range(dims)
+    ]
+    pad_specific = [
+        _handle_padding(output_shape[i + 1], strides[i], filter_shape[i], padding)
+        for i in range(dims)
+    ]
+    if padding == "VALID":
+        padding_list = [0] * dims
+    else:
+        for i in range(dims):
+            if pad_specific[i] % 2 != 0:
+                pad_specific[i] -= 1
+                not_valid_pad[i] = True
+        padding_list = [pad_specific[i] // 2 for i in range(dims)]
+    out_shape = [
+        (x.shape[i + 2] - 1) * strides[i]
+        - 2 * padding_list[i]
+        + dilations[i] * (filters.shape[i + 2] - 1)
+        + 1
+        for i in range(dims)
+    ]
+    output_padding = [max(output_shape[i + 1] - out_shape[i], 0) for i in range(dims)]
+    return not_valid_pad, padding_list, output_padding
+
+
 def conv1d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -122,7 +167,10 @@ def conv2d(
     raise IvyNotImplementedException()
 
 
-# noinspection PyUnresolvedReferences
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def conv2d_transpose(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -135,7 +183,30 @@ def conv2d_transpose(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if data_format == "NHWC":
+        x = x.transpose([0, 3, 1, 2])
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    filters = filters.transpose([2, 3, 0, 1])
+    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+        x, filters, strides, padding, 2, dilations, output_shape, filters.shape[2:]
+    )
+    res = paddle.nn.functional.conv2d_transpose(
+        x,
+        filters,
+        stride=strides,
+        padding=padding_list,
+        output_padding=output_padding,
+        dilation=dilations,
+        data_format="NCHW",
+    )
+    if not_valid_pad[0]:
+        res = res[:, :, 0:-1, :]
+    if not_valid_pad[1]:
+        res = res[:, :, :, 0:-1]
+    if data_format == "NHWC":
+        res = res.transpose([0, 2, 3, 1])
+    return res
 
 
 # noinspection PyUnresolvedReferences
