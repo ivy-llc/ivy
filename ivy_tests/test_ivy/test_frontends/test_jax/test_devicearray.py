@@ -123,7 +123,6 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-
 def test_jax_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
@@ -2209,6 +2208,7 @@ def test_jax_devicearray_take(
     frontend,
     frontend_method_data,
     init_flags,
+    backend_fw,
     method_flags,
     on_device,
 ):
@@ -2223,6 +2223,7 @@ def test_jax_devicearray_take(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
+        backend_to_test=backend_fw,
         method_flags=method_flags,
         on_device=on_device,
     )
