@@ -428,3 +428,45 @@ def test_jax_diag_indices_from(
         on_device=on_device,
         arr=x[0],
     )
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.apply_along_axis",
+    dtype_x_axis=helpers.dtype_values_axis(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("numeric"),  
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(True),
+    number_positional_args=st.just(3),
+)
+def test_jax_apply_along_axis(
+    dtype_x_axis,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    x_dtype, x, axis = dtype_x_axis
+    def _test_apply_along_axis_fn(elem):
+        return elem[0] + elem[-1]
+    
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        test_flags = test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        func1d=_test_apply_along_axis_fn,
+        axis=axis,
+        arr=x[0],
+    )
+    
