@@ -7463,6 +7463,7 @@ def test_torch_instance_fmax(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -7477,6 +7478,7 @@ def test_torch_instance_fmax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
