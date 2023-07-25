@@ -1,6 +1,7 @@
 # global
 from hypothesis import given, strategies as st, assume
 import numpy as np
+import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -123,7 +124,6 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-
 def test_jax_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
@@ -2247,6 +2247,7 @@ def test_jax_repeat(
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
@@ -2256,6 +2257,10 @@ def test_jax_repeat(
         repeat_dtype, repeat_list = repeat
         repeat = repeat_list[0]
         input_dtype += repeat_dtype
+
+    # Skip the test if the backend is torch and the input data type is 'Float' or 'bool'
+    if backend_fw == "torch" and ("float" in input_dtype or "bool" in input_dtype):
+        pytest.skip("repeat_interleave not implemented for 'Float' in torch backend")
 
     if not isinstance(axis, int) and axis is not None:
         axis = axis[0]
@@ -2268,6 +2273,7 @@ def test_jax_repeat(
             method_input_dtypes=[input_dtype[0]],
             method_all_as_kwargs_np={"repeats": repeat, "axis": axis},
             frontend=frontend,
+            backend_to_test=backend_fw,
             frontend_method_data=frontend_method_data,
             init_flags=init_flags,
             method_flags=method_flags,
