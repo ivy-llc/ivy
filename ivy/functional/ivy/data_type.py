@@ -203,13 +203,26 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
+
+    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
             v = getattr(fn, key)
             # only einops allowed to be a dictionary
             if isinstance(v, dict):
                 v = v.get(ivy.current_backend_str(), base)
-
+            for i, d in enumerate(v):
+                if d in typesets:
+                    v = v[:i] + typesets[d] + v[i + 1 :]
             ivy.utils.assertions.check_isinstance(v, tuple)
             supported = merge_fn(supported, set(v))
 
