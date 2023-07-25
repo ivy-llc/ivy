@@ -775,6 +775,7 @@ def test_paddle_gumbel_softmax(
         hard=hard,
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.sigmoid",
     dtype_and_input=helpers.dtype_and_values(
