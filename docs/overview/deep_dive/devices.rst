@@ -224,7 +224,7 @@ The example below runs without issues since both the input arrays are on 'gpu:0'
     ivy.add(x, y)
 
 The code to handle all these cases are present inside `@handle_device_shifting`_ decorator, which is wrapped around
-all the functions except mixed and compositional functions in `ivy.functional.ivy`_ submodule. The decorator calls
+all the functions that accept at least one array as input(except mixed and compositional functions) in `ivy.functional.ivy`_ submodule. The decorator calls
 :code:`ivy.handle_soft_device_variable` function under the hood to handle device shifting for each backend.
 
 **Soft Device Handling Function**
