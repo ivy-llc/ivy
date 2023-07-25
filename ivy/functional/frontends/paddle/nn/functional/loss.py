@@ -1,12 +1,12 @@
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
 import ivy.functional.frontends.paddle as paddle
-from ivy.utils.exceptions import handle_exceptions
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     inputs_to_ivy_arrays,
     to_ivy_arrays_and_back,
 )
+from ivy.utils.exceptions import handle_exceptions
 
 
 # helpers
@@ -105,24 +105,39 @@ def cosine_embedding_loss(
 
 @handle_exceptions
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
-def dice_loss(input, label, epsilon=0.00001, name=None):
-    if len(label.shape) < 2:
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle")
+def dice_loss(input,
+              label,
+              epsilon=0.00001,
+              name=None
+):
+    if len(input.shape) < 2:
         raise ValueError("The rank of input should be greater than or equal to 2.")
 
-    if input.shape != label.shape:
+    if len(input.shape) != len(label.shape):
         raise ValueError(
-            "the shape of input tensor 1 should be equal to input tensor 2, but found"
-            " inputs with different sizes"
+            "The rank of input and label should be equal, "
+            "but received input: %d, label: %d."
+            % (len(input.shape), len(label.shape))
         )
 
-    intersection = ivy.sum(input * label)
-    union = ivy.sum(input) + ivy.sum(label)
-    dice = epsilon + (2 * intersection) / union + epsilon
+    if label.shape[-1] != 1:
+        raise ValueError("The last dimension of label should be 1, "
+        "but received %d." % label.shape[-1])
 
-    loss = 1.0 - dice
+    if input.shape[-1] == label.shape[-1]:
+        raise ValueError("All dimensions should be equal except the last one")
 
-    return loss
+    label = ivy.squeeze(label, axis=[-1])
+    label = ivy.one_hot(label, input.shape[-1])
+    reduce_dim = list(range(1, len(input.shape)))
+    inse = ivy.sum(input * label, axis=reduce_dim)
+
+    dice_denominator = ivy.sum(input, axis=reduce_dim) + ivy.sum(
+        label, axis=reduce_dim
+    )
+    dice_score = 1 - inse * 2 / (dice_denominator + epsilon)
+    return ivy.mean(dice_score)
 
 
 @with_supported_dtypes(

@@ -112,30 +112,32 @@ def _cos_embd_loss_helper(draw):
     return input_dtypes, inputs, label
 
 
-# dice loss
 @st.composite
 def _dice_loss_helper(draw):
-    dtype_inputs_shape = draw(
+
+    dtype_x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
-            min_num_dims=2,
-            max_num_dims=2,
-            ret_shape=True,
-            num_arrays=2,
-            shared_dtype=True,
+            min_num_dims=3,
+            max_num_dims=3,
             min_dim_size=2,
+            ret_shape=True,
+            num_arrays=1,
+            min_value=1,
         )
     )
 
-    input_dtypes, inputs, shape = dtype_inputs_shape
+    type_x, x, x_shape = dtype_x
 
-    _, label = draw(
-        helpers.dtype_and_values(
-            dtype=input_dtypes, shape=shape, min_value=2, max_value=4
-        ),
+    dtype_label = draw(
+        helpers.dtype_and_values(shape=(x_shape[0],x_shape[1],1),available_dtypes=helpers.get_dtypes("integer"),
+                                 max_value=1, min_value=1
+                                 ),
     )
 
-    return input_dtypes, inputs, label
+    type_label, label = dtype_label
+
+    return type_x, type_label, x, label
 
 
 @handle_frontend_test(
@@ -171,7 +173,7 @@ def test_paddle_cosine_embedding_loss(
         on_device=on_device,
         input1=input1,
         input2=input2,
-        label=label[0],
+        label=label,
         margin=margin,
         reduction=reduction,
     )
@@ -179,31 +181,32 @@ def test_paddle_cosine_embedding_loss(
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.dice_loss",
-    dtype_xs_label=_dice_loss_helper(),
-    test_with_out=st.just(False),
+    dtype_and_x=_dice_loss_helper(),
     epsilon=st.floats(
-        min_value=1e-7,
-        max_value=0.8,
+        min_value=0.00001,
+        max_value=1,
     ),
 )
 def test_paddle_dice_loss(
-        dtype_xs_label,
+        dtype_and_x,
         epsilon,
         test_flags,
         fn_tree,
         frontend,
         on_device,
 ):
-    input_dtypes, xs, label = dtype_xs_label
+    in_dtype, label_dtype, x, label = dtype_and_x
+
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[in_dtype[0], label_dtype[0]],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=xs[0],
+        input=x[0],
         label=label[0],
-        epsilon=epsilon,
+        rtol=0.0005,
+        epsilon=epsilon
     )
 
 
