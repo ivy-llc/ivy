@@ -801,6 +801,14 @@ If a test fails on the CI, you can see details about the failure under `Details 
 
 You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
 
+Frontend Framework Testing Configuration
+----------------------------------------
+To effectively test a frontend within our pipeline, it is essential to provide specific information about the framework we're trying to test.
+This information includes how to create an array, return type checking, supported devices, and data types, etc.
+
+All the required information for a frontend is stored in a configuration file, which serves as a reference for our testing pipeline.
+The process of incorporating a new frontend into our testing procedure involves simply writing a new config file for that framework.
+The configuration files are located at: :code:`ivy_tests/test_ivy/test_frontends/config/`
 
 **Round Up**
 
