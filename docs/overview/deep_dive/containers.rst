@@ -43,7 +43,7 @@ All methods of the :class:`ivy.Array` are instance methods, and almost all of th
 
 For the :class:`ivy.Container`, there are also methods which are specific to the container itself, for performing nested operations on the leaves of the container for example.
 
-Overall, this results in the following five mutually exclusive groups of :class:`ivy.Container` methods.
+Overall, this results in the following four mutually exclusive groups of :class:`ivy.Container` methods.
 Each of these are explained in the following sub-sections.
 
 #. Container instance methods
