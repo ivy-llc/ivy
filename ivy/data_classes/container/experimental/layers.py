@@ -2141,7 +2141,6 @@ class _ContainerWithLayersExperimental(ContainerBase):
             fs=fs,
             window=window,
             win_length=win_length,
-            nperseg=nperseg,
             noverlap=noverlap,
             center=center,
             pad_mode=pad_mode,
