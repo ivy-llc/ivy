@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_complex_input,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -82,6 +83,7 @@ def gelu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_complex_input(jax_like="split")
 @handle_array_function
 @handle_device_shifting
 def leaky_relu(

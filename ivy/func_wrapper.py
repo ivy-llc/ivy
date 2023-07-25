@@ -6,9 +6,11 @@ import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable
+from typing import Callable, Literal, Union
 import inspect
 import numpy as np
+
+from ivy.utils.exceptions import IvyValueError
 
 
 # for wrapping (sequence matters)
@@ -1415,39 +1417,48 @@ def handle_nans(fn: Callable) -> Callable:
 
 # Complex number handling #
 # ----------------------- #
-def handle_complex_input(fn: Callable, jax_like: Callable | str) -> Callable:
-    @functools.wraps(fn)
-    def _handle_complex_input(inp, *args, complex_mode="jax", **kwargs):
-        # do nothing if the input is real-valued
-        if not ivy.is_complex_dtype(inp):
-            return fn(inp, *args, **kwargs)
-
-        if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
-            real_inp = ivy.real(inp)
-            imag_inp = ivy.imag(inp)
-            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
-
-        elif complex_mode == "magnitude" or (
-            complex_mode == "jax" and jax_like == "magnitude"
+def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
+    def _handle_complex_input_decorator(fn: Callable) -> Callable:
+        @functools.wraps(fn)
+        def _handle_complex_input(
+            inp,
+            *args,
+            complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+            **kwargs,
         ):
-            mag_inp = ivy.abs(
-                inp
-            )  # ivy.abs currently throws an error so this won't work just yet
-            angle_inp = ivy.angle(inp)
-            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+            print("AAAAA")
+            # do nothing if the input is real-valued
+            if not ivy.is_complex_dtype(inp):
+                return fn(inp, *args, **kwargs)
 
-        elif complex_mode == "jax" and jax_like == "entire":
-            return fn(inp, *args, **kwargs)
+            if complex_mode == "split" or (
+                complex_mode == "jax" and jax_like == "split"
+            ):
+                real_inp = ivy.real(inp)
+                imag_inp = ivy.imag(inp)
+                return fn(real_inp, *args, **kwargs) + 1j * fn(
+                    imag_inp, *args, **kwargs
+                )
 
-        elif complex_mode == "jax":
-            return jax_like(
-                fn, *args, **kwargs
-            )  # TODO: might need to be more (or less) complicated, we'll see
+            elif complex_mode == "magnitude" or (
+                complex_mode == "jax" and jax_like == "magnitude"
+            ):
+                mag_inp = ivy.abs(inp)
+                angle_inp = ivy.angle(inp)
+                return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
 
-        else:
-            pass  # TODO: raise an argumenterror or something similar
+            elif complex_mode == "jax" and jax_like == "entire":
+                return fn(inp, *args, **kwargs)
 
-    return _handle_complex_input
+            elif complex_mode == "jax":
+                return jax_like(inp, *args, **kwargs)
+
+            else:
+                raise IvyValueError(f"complex_mode {complex_mode} is not recognised.")
+
+        return _handle_complex_input
+
+    return _handle_complex_input_decorator
 
 
 attribute_dict = {
