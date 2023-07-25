@@ -92,4 +92,4 @@ def apply_along_axis(func1d: Callable, axis: int, arr, *args, **kwargs):
   for i in range(axis):
     func = ivy.vmap(func, in_axes=0, out_axes=0)
 
-  return func(arr)
+  return ivy.asarray(func(arr))
