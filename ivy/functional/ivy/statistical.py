@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -38,6 +39,7 @@ def _get_promoted_type_of_operands(operands):
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+@handle_device_shifting
 def min(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -144,6 +146,7 @@ def min(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def max(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -252,6 +255,7 @@ def max(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def mean(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -360,6 +364,7 @@ def mean(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def prod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -371,6 +376,16 @@ def prod(
 ) -> ivy.Array:
     """
     Calculate the product of input array x elements.
+
+    **Special Cases**
+
+    Let ``N`` equal the number of elements over which to compute the product.
+
+    -  If ``N`` is ``0``, the product is ``1`` (i.e., the empty product).
+
+    For both both real-valued and complex floating-point operands, special
+    cases must be handled as the operation is implemented by successive application
+    of :func:`ivy.multiply`:
 
     Parameters
     ----------
@@ -484,6 +499,7 @@ def prod(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -621,6 +637,7 @@ def std(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def sum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -640,6 +657,10 @@ def sum(
 
     For floating-point operands,
     -   If ``x_i`` is ``NaN``, the sum is ``NaN`` (i.e., ``NaN`` values propagate).
+
+    For both real-valued and complex floating-point operands, special cases must
+    be handled as if the operation is implemented by successive application of
+    :func:`ivy.add`:
 
     Parameters
     ----------
@@ -756,6 +777,7 @@ def sum(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def var(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -871,6 +893,7 @@ def var(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def cumsum(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = 0,
@@ -1014,6 +1037,7 @@ def cumsum(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1155,6 +1179,7 @@ def cumprod(
 @handle_array_like_without_promotion
 @handle_nestable
 @handle_exceptions
+@handle_device_shifting
 def einsum(
     equation: str,
     *operands: Union[ivy.Array, ivy.NativeArray],

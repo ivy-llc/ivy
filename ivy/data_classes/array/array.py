@@ -156,7 +156,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self.backend = ivy.current_backend_str()
+        self._backend = ivy.backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -175,27 +175,27 @@ class Array(
     # ---------- #
 
     @property
+    def backend(self):
+        return self._backend
+
+    @property
     def dynamic_backend(self):
         return self._dynamic_backend
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable
+        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
-            self._backend = _determine_backend_from_args(self)
+            self._backend = _determine_backend_from_args(self).backend
 
         else:
-            is_variable = self._backend.is_variable
-            to_numpy = self._backend.to_numpy
-            variable_data = self._backend.variable_data
+            ivy_backend = ivy.with_backend(self._backend)
+            to_numpy = ivy_backend.to_numpy
 
-            if is_variable(self.data) and not (
-                str(self._backend).__contains__("jax")
-                or str(self._backend).__contains__("numpy")
-            ):
-                native_data = variable_data(self.data)
+            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+                native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
                 self._data = _variable(new_arr).data
@@ -203,6 +203,8 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
+
+            self._backend = ivy.backend
 
         self._dynamic_backend = value
 
@@ -260,7 +262,7 @@ class Array(
             self._size = (
                 functools.reduce(mul, self._data.shape)
                 if len(self._data.shape) > 0
-                else 0
+                else 1
             )
         return self._size
 
@@ -373,7 +375,11 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        rep = (
+            np.array(ivy.vec_sig_fig(arr_np, sig_fig))
+            if self.size > 0
+            else np.array(arr_np)
+        )
         with np.printoptions(precision=dec_vals):
             repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (

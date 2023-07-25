@@ -1,7 +1,10 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.func_wrapper import (
+    to_ivy_arrays_and_back,
+    to_ivy_shape,
+)
 
 
 @to_ivy_arrays_and_back
@@ -39,14 +42,13 @@ def full(
     return ret
 
 
+@to_ivy_shape
 @to_ivy_arrays_and_back
 def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is None:
         size = args[0] if isinstance(args[0], (tuple, list)) else args
-    if isinstance(size, ivy.functional.frontends.torch.Size):
-        size = tuple(size)
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -74,14 +76,13 @@ def ones_like_v_0p4p0_and_above(
     return ret
 
 
+@to_ivy_shape
 @to_ivy_arrays_and_back
 def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=False):
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
         size = args[0] if isinstance(args[0], (tuple, list)) else args
-    if isinstance(size, ivy.functional.frontends.torch.Size):
-        size = tuple(size)
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -260,6 +261,17 @@ def as_strided(input, size, stride, storage_offset=None):
         ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
     if storage_offset:
         ind = ind + storage_offset
+    base = (
+        input._base
+        if input._base is not None
+        else (
+            input.data._base
+            if hasattr(input.data, "_base")
+            else input.data.base if hasattr(input.data, "base") else None
+        )
+    )
+    if base is not None:
+        return ivy.gather(ivy.flatten(base), ind)
     return ivy.gather(ivy.flatten(input), ind)
 
 

@@ -1,4 +1,5 @@
 # global
+import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
@@ -10,6 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_max_pool1d(
@@ -22,7 +24,38 @@ def test_max_pool1d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x[0],
+        kernel=kernel,
+        strides=stride,
+        padding=pad,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.layers.max_unpool1d",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    indices=st.lists(st.integers(0, 1), min_size=1, max_size=4),
+    ground_truth_backend="jax",
+    test_gradients=st.just(False),
+)
+def test_max_unpool1d(
+    *,
+    x_k_s_p,
+    indices,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, kernel, stride, pad = x_k_s_p
+    helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -34,6 +67,7 @@ def test_max_pool1d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        indices=indices,
     )
 
 
@@ -66,7 +100,7 @@ def test_max_pool2d(
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
     assume(
         not (
-            backend_fw.current_backend_str() == "tensorflow"
+            backend_fw == "tensorflow"
             and (
                 (stride[0] > kernel[0] or stride[0] > kernel[1])
                 or (
@@ -79,7 +113,7 @@ def test_max_pool2d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -96,6 +130,7 @@ def test_max_pool2d(
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_max_pool3d(
@@ -108,10 +143,9 @@ def test_max_pool3d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -128,6 +162,7 @@ def test_max_pool3d(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool1d(
@@ -141,10 +176,9 @@ def test_avg_pool1d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name="avg_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -166,6 +200,7 @@ def test_avg_pool1d(
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool2d(
@@ -188,10 +223,9 @@ def test_avg_pool2d(
         )
 
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -213,6 +247,7 @@ def test_avg_pool2d(
     count_include_pad=st.booleans(),
     ceil_mode=st.booleans(),
     divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_avg_pool3d(
@@ -228,10 +263,9 @@ def test_avg_pool3d(
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -284,7 +318,7 @@ def test_dct(*, dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -307,7 +341,7 @@ def test_idct(dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         type=type,
@@ -322,28 +356,71 @@ def test_idct(dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
 
 @st.composite
 def _interp_args(draw, mode=None, mode_list=None):
+    mixed_fn_compos = draw(st.booleans())
+    curr_backend = ivy.current_backend_str()
+    torch_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "nearest-exact",
+        "area",
+    ]
+
+    tf_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest-exact",
+        "tf_area",
+        "bicubic_tensorflow",
+        "lanczos3",
+        "lanczos5",
+        "mitchellcubic",
+        "gaussian",
+    ]
+
+    jax_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest-exact",
+        "bicubic_tensorflow",
+        "lanczos3",
+        "lanczos5",
+    ]
+
     if not mode and not mode_list:
-        mode = draw(
-            st.sampled_from(
-                [
-                    "linear",
-                    "bilinear",
-                    "trilinear",
-                    "nearest",
-                    "nearest-exact",
-                    "area",
-                    "tf_area",
-                    "bicubic_tensorflow",
-                    "lanczos3",
-                    "lanczos5",
-                    "mitchellcubic",
-                    "gaussian",
-                ]
+        if curr_backend == "torch" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(torch_modes))
+        elif curr_backend == "tensorflow" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(tf_modes))
+        elif curr_backend == "jax" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(jax_modes))
+        else:
+            mode = draw(
+                st.sampled_from(
+                    [
+                        "linear",
+                        "bilinear",
+                        "trilinear",
+                        "nearest",
+                        "nearest-exact",
+                        "area",
+                        "tf_area",
+                        "bicubic_tensorflow",
+                        "lanczos3",
+                        "lanczos5",
+                        "mitchellcubic",
+                        "gaussian",
+                    ]
+                )
             )
-        )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
     align_corners = draw(st.one_of(st.booleans(), st.none()))
+    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+        align_corners = False
     if mode == "linear":
         num_dims = 3
     elif mode in [
@@ -364,11 +441,20 @@ def _interp_args(draw, mode=None, mode_list=None):
         "lanczos5",
         "nearest-exact",
     ]:
-        num_dims = draw(helpers.ints(min_value=1, max_value=3)) + 2
+        num_dims = (
+            draw(
+                helpers.ints(min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos)
+            )
+            + 2
+        )
         align_corners = None
+    if curr_backend == "tensorflow" and not mixed_fn_compos:
+        num_dims = 3
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes(
+                "float", mixed_fn_compos=mixed_fn_compos
+            ),
             min_num_dims=num_dims,
             max_num_dims=num_dims,
             min_dim_size=2,
@@ -382,11 +468,15 @@ def _interp_args(draw, mode=None, mode_list=None):
         scale_factor = draw(
             st.one_of(
                 helpers.lists(
-                    x=st.floats(min_value=1.0, max_value=2.0),
+                    x=helpers.floats(
+                        min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
+                    ),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
-                st.floats(min_value=1.0, max_value=2.0),
+                helpers.floats(
+                    min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
+                ),
             )
         )
         recompute_scale_factor = draw(st.booleans())
@@ -395,7 +485,9 @@ def _interp_args(draw, mode=None, mode_list=None):
         size = draw(
             st.one_of(
                 helpers.lists(
-                    x=helpers.ints(min_value=1, max_value=3),
+                    x=helpers.ints(
+                        min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos
+                    ),
                     min_size=num_dims - 2,
                     max_size=num_dims - 2,
                 ),
@@ -404,6 +496,10 @@ def _interp_args(draw, mode=None, mode_list=None):
         )
         recompute_scale_factor = False
         scale_factor = None
+    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+        if not recompute_scale_factor:
+            recompute_scale_factor = True
+
     return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
 
 
@@ -429,7 +525,7 @@ def test_interpolate(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
@@ -482,7 +578,7 @@ def test_fft(*, d_x_d_n_n, test_flags, backend_fw, on_device, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -529,7 +625,7 @@ def test_dropout1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         x=x[0],
@@ -538,8 +634,10 @@ def test_dropout1d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -580,7 +678,7 @@ def test_dropout2d(
         test_flags=test_flags,
         test_values=False,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         prob=prob,
@@ -588,8 +686,10 @@ def test_dropout2d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -631,7 +731,7 @@ def test_dropout3d(
         test_flags=test_flags,
         test_values=False,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         prob=prob,
@@ -639,8 +739,10 @@ def test_dropout3d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -680,7 +782,7 @@ def test_ifft(*, d_x_d_n_n, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -708,7 +810,7 @@ def test_embedding(
         input_dtypes=dtypes,
         test_flags=test_flags,
         xs_grad_idxs=[[0, 0]],
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         weights=weights,
@@ -743,7 +845,7 @@ def test_dft(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -776,7 +878,7 @@ def test_adaptive_avg_pool1d(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
@@ -811,7 +913,7 @@ def test_adaptive_avg_pool2d(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         input=x[0],
@@ -867,6 +969,9 @@ def _reduce_window_helper(draw, get_func_st):
             st.sampled_from(["SAME", "VALID"]),
         )
     )
+    for i, arg in enumerate(others):
+        if len(np.unique(arg)) == 1 and draw(st.booleans()):
+            others[i] = arg[0]
     return dtype * 2, operand, init_value, py_func, others, padding
 
 
@@ -888,7 +993,7 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         operand=operand[0],
@@ -944,7 +1049,7 @@ def test_fft2(*, d_x_d_s_n, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         # rtol_=1e-2,
@@ -989,7 +1094,7 @@ def x_and_ifftn(draw):
         )
     )
 
-    return dtype, x, axes, norm, s
+    return dtype, x, s, axes, norm
 
 
 @handle_test(
@@ -1005,16 +1110,78 @@ def test_ifftn(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtype, x, axes, norm, s = d_x_d_s_n
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x,
+        s=s,
+        axes=axes,
+        norm=norm,
+    )
+
+
+@st.composite
+def x_and_rfftn(draw):
+    min_rfftn_points = 2
+    dtype = draw(helpers.get_dtypes("float"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=3
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e10,
+            max_value=1e10,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    s = draw(
+        st.lists(
+            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    return dtype, x, s, axes, norm
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.rfftn",
+    d_x_d_s_n=x_and_rfftn(),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+)
+def test_rfftn(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, s, axes, norm = d_x_d_s_n
+    helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
+        rtol_=0.8,
+        atol_=0.8,
         x=x,
         s=s,
         axes=axes,

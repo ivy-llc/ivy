@@ -1,11 +1,10 @@
 """Collection of Ivy neural network layers as stateful classes."""
-
+# flake8: noqa
 # local
 import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
-
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -1926,6 +1925,61 @@ class AdaptiveAvgPool1d(Module):
         )
 
 
+class FFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying FFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the FFT.
+        norm : str
+            Normalization mode. Default: 'backward'
+        n : int
+            Size of the FFT. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the FFT of.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.fft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
+
+
 class AvgPool1D(Module):
     def __init__(
         self,
@@ -2033,4 +2087,44 @@ class Dct(Module):
             n=self.n,
             axis=self.axis,
             norm=self.norm,
+        )
+
+
+class Embedding(Module):
+    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+        """
+        Class for embedding indices into a dense representation.
+
+        Parameters
+        ----------
+        indices
+            The indices to embed.
+        max_norm
+            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
+        out
+            If given, the result will be inserted into this tensor. Default: None
+        """
+        self._indices = indices
+        self._max_norm = max_norm
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.embedding(
+            inputs,
+            self._indices,
+            max_norm=self._max_norm,
+            out=self._out,
         )

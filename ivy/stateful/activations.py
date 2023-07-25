@@ -216,3 +216,154 @@ class SiLU(Module):
             The outputs following the SiLU activation *[batch_shape, d]*
         """
         return ivy.silu(x)
+
+
+class Sigmoid(Module):
+    def __init__(self):
+        """Apply the SIGMOID activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the SIGMOID activation *[batch_shape, d]*
+        """
+        return ivy.sigmoid(x)
+
+
+class Tanh(Module):
+    def __init__(self):
+        """Apply the TANH activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the TANH activation *[batch_shape, d]*
+        """
+        return ivy.tanh(x)
+
+
+class ReLU6(Module):
+    def __init__(self):
+        """Apply the RELU6 activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the RELU6 activation *[batch_shape, d]*
+        """
+        return ivy.relu6(x)
+
+
+class Hardswish(Module):
+    def __init__(self):
+        """Apply the HARDSWISH activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the HARDSWISH activation *[batch_shape, d]*
+        """
+        return ivy.hardswish(x)
+
+
+class Logit(Module):
+    def __init__(self):
+        """Apply the LOGIT activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, eps=None):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        eps
+            The epsilon value for the logit formation. Default: ``None``.
+
+        Returns
+        -------
+        ret
+            The outputs following the LOGIT activation *[batch_shape, d]*
+        """
+        return ivy.logit(x, eps=eps)
+
+
+class PReLU(Module):
+    def __init__(self):
+        """Apply the PRELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, slope):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        slope
+            The slope value for the prelu formation.
+
+        Returns
+        -------
+        ret
+            The outputs following the PRELU activation *[batch_shape, d]*
+        """
+        return ivy.prelu(x, slope)
+
+
+class SeLU(Module):
+    def __init__(self):
+        """Apply the SELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the SELU activation *[batch_shape, d]*
+        """
+        return ivy.selu(x)

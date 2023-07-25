@@ -270,7 +270,6 @@ def conv2d_transpose(
 ):
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
