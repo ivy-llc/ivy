@@ -1133,3 +1133,39 @@ def test_tensorflow_tensor_diag(
         on_device=on_device,
         diagonal=x[0],
     )
+    
+
+
+# Tests for tensorflow.linalg.set_diag function's frontend
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.set_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=6,
+        min_value=-10.,
+        max_value=10.,
+    )
+)
+def test_tensorflow_set_diag(
+        dtype_and_x,
+        frontend,
+        backend_fw,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    dtype, x = dtype_and_x
+    x = ivy.squeeze(x)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        diagonal=x[0]
+    )

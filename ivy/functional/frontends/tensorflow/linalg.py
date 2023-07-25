@@ -362,3 +362,57 @@ def tensor_diag(diagonal, /, *, name=None):
     if rank > 1:
         raise ValueError("wrong tensor rank, at most 1")
     return ivy.diag(diagonal)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+                "bfloat16",
+                "half",
+                "float32",
+                "float64",
+                "int32",
+                "int64",
+                "complex64",
+                "complex128",
+        )
+    },
+    "tensorflow",
+)
+def set_diag(input, diagonal, /, *, k=0, align='RIGHT_LEFT', name=None):
+    # TODO:
+    #  1. Add support for different k values and align options
+    #  2. Use Ivy's built-in functions/APIs instead of for loops
+    #  3. Add support for input tensors with ranks larger than 3
+
+    # Convert input and diagonal to Ivy array format
+    input, diagonal = map(ivy.array, (input, diagonal))
+
+    # Check if the input tensor has a rank larger than 3
+    if input.ndim > 3:
+        raise ivy.utils.exceptions.IvyNotImplementedException(
+            f"Input tensor must have rank less than or equal to 3.\nInput shape: {input.shape}")
+
+    # Check if the first dimension of the input and diagonal match
+    if input.shape[0] != diagonal.shape[0]:
+        raise ivy.utils.exceptions.IvyValueError(
+            f"Number of diagonal vectors must match the number of matrices in the input.\n"
+            f"Input shape: {input.shape}, Diagonal shape: {diagonal.shape}")
+
+    # Handle the case where input is a 2D matrix
+    matrix_diagonal_pairs = ((input, diagonal),) if input.ndim < 3 else zip(input, diagonal)
+
+    # Replace the diagonal of each matrix with the corresponding new diagonal
+    for matrix, new_diagonal in matrix_diagonal_pairs:
+        # Check the diagonal length matches the first dimension of the matrix
+        if matrix.shape[0] != new_diagonal.shape[0]:
+            raise ivy.utils.exceptions.IvyValueError(
+                f"Length of the diagonal vector must match the first dimension of the matrix.\n"
+                f"Matrix shape: {matrix.shape}, Diagonal shape: {new_diagonal.shape}")
+
+        # Replace the diagonal of the matrix with the new diagonal vector
+        for i in range(matrix.shape[0]):
+            matrix[i, i] = new_diagonal[i]
+
+    return input
