@@ -12,6 +12,7 @@ from ivy.utils.assertions import (
     check_greater,
     check_isinstance,
     check_less,
+    check_same_dtype,
     check_true,
 )
 import ivy
@@ -379,3 +380,41 @@ def test_check_any(results):
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "x1, x2",
+    [
+        (ivy.array([1, 2, 3]), ivy.array([4, 5, 6])),
+        (ivy.array([1.0, 2.0, 3.0]), ivy.array([4, 5, 6])),
+        (ivy.array([1, 2, 3]), ivy.array([4j, 5 + 1j, 6])),
+        (ivy.array([1j]), ivy.array([2, 3 + 4j])),
+    ],
+)
+def test_check_same_dtype(x1, x2):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_same_dtype(x1, x2)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "same dtype" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    # with contextlib.suppress(FileNotFoundError):
+    #     os.remove(filename)
