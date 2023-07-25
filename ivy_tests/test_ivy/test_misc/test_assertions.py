@@ -9,6 +9,7 @@ from ivy.utils.assertions import (
     check_greater,
     check_isinstance,
     check_less,
+    check_true,
 )
 import ivy
 
@@ -238,6 +239,41 @@ def test_check_elem_in_list(elem, list, inverse):
 
         if elem in list:
             assert "must not be one" in lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        (True),
+        "a",
+        (None),
+        (False),
+    ],
+)
+def test_check_true(expression):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_true(expression)
+    except Exception as e:
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if not expression:
+        assert "True" in lines.strip()
+
+    if expression:
+        assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
