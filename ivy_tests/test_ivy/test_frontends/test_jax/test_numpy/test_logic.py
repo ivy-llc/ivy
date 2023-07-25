@@ -1034,3 +1034,39 @@ def test_jax_iscomplexobj(
         on_device=on_device,
         x=x[0],
     )
+
+
+# packbits
+@handle_frontend_test(
+    fn_tree="jax.numpy.packbits",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        min_dim_size=1,
+        valid_axis=True,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(False),
+    bitorder=st.sampled_from(["big", "little"]),
+)
+def test_jax_numpy_packbits(
+    dtype_x_axis,
+    bitorder,
+    frontend,
+    on_device,
+    *,
+    fn_tree,
+    test_flags,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        bitorder=bitorder,
+    )

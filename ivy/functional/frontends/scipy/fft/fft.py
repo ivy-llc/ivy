@@ -40,3 +40,10 @@ def ifftn(
     x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
 ):
     return ivy.ifftn(x, s=s, dim=axes, norm=norm)
+
+
+@to_ivy_arrays_and_back
+def rfftn(
+    x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
+):
+    return ivy.rfftn(x, s=s, dim=axes, norm=norm)
