@@ -91,3 +91,9 @@ def mish(
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def hardswish(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return x * tf.nn.relu6(x + 3) / 6
+
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
+def thresholded_relu(x: Tensor, /, *, theta: float = 1.0, out: Optional[Tensor] = None) -> Tensor:
+    output = tf.zeros_like(x)
+    output = tf.where(x > theta, x, 0)
+    return output
