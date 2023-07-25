@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -66,53 +65,63 @@ def _helper_r_(draw):
                 ndmin = draw(st.integers(1, 6))
                 elem += str(draw(st.integers(-1, ndmin - 1)))
                 elem += "," + str(ndmin)
+
             if num == 3:
                 elem += "," + str(draw(st.integers(-1, ndmin - 1)))
         ret.append(elem)
+    if not "ndmin" in locals():
+        ndmin = False
 
     if dim == 1:
         while num_of_elems > 0:
             num_of_elems -= 1
             elem_type = draw(st.sampled_from(["array", "slice"]))
+
             if elem_type == "array":
+                if not ndmin:
+                    shape = (draw(st.integers(1, 5)),)
+                else:
+                    shape = (elems_in_last_dim,)
                 elem = draw(
                     helpers.array_values(
                         dtype=helpers.get_dtypes("valid"),
-                        shape=(draw(st.integers(1, 5)),),
+                        shape=shape,
                     )
                 )
                 if len(elem) == 1 and draw(st.booleans()):
                     elem = elem[0]
             else:
                 start = draw(st.integers(min_value=-100, max_value=100))
-                stop = draw(st.integers(start + 1, start + 10))
                 step = draw(st.integers(1, 3))
+                if not ndmin:
+                    stop = draw(st.integers(start + 1, start + 10))
+                else:
+                    stop = start + 1 + (elems_in_last_dim - 1) * step
+
                 elem = slice(start, stop, step)
             ret.append(elem)
     else:
-        while num_of_elems > 0:
-            num_of_elems -= 1
-            elem_shape = list(
-                draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
-            )
-            elem_shape[-1] = elems_in_last_dim
-            elem_shape = ivy.Shape(elem_shape)
-            elem = draw(
-                helpers.array_values(
-                    dtype=helpers.get_dtypes("valid"), shape=elem_shape
-                )
-            )
-            ret.append(elem)
+        elem_shape = draw(helpers.get_shape(min_num_dims=dim, max_num_dims=dim))
+        input_dtypes, x, casting, dtype = draw(
+            np_frontend_helpers.dtypes_values_casting_dtype(
+                arr_func=[
+                    lambda: helpers.dtype_and_values(
+                        available_dtypes=helpers.get_dtypes("numeric"),
+                        shape=elem_shape,
+                        num_arrays=num_of_elems,
+                        shared_dtype=True,
+                    )
+                ],
+            ),
+        )
+        ret += x
     return ret, elems_in_last_dim, dim
 
 
 @handle_frontend_test(fn_tree="numpy.add", inputs=_helper_r_())  # dummy fn_tree
 def test_numpy_r_(inputs):
     inputs, elems_in_last_dim, dim = inputs
-    try:
-        ret_gt = np.r_.__getitem__(tuple(inputs))
-    except:
-        return
+    ret_gt = np.r_.__getitem__(tuple(inputs))
     ret = np_frontend.r_.__getitem__(tuple(inputs))
     if isinstance(inputs[0], str) and inputs[0] in ["r", "c"]:
         ret = ret._data
