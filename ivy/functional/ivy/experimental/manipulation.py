@@ -1760,7 +1760,7 @@ def put_along_axis(
     >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
     >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
     >>> values = ivy.array([[9, 8, 7], [6, 5, 4]])
-    >>> put_along_axis(arr, indices, values, 1, mode='clip')
+    >>> ivy.put_along_axis(arr, indices, values, 1, mode='clip')
     >>> print(arr)
     ivy.array([[3, 7, 5],
                [6, 4, 1]])

@@ -345,6 +345,7 @@ def test_docstrings(backend):
         "einops_reduce",
         "max_unpool1d",
         "pool",
+        "put_along_axis",
         # works only if no backend set
         "rfftn"
     ]
