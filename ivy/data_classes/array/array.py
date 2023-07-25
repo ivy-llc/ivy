@@ -8,7 +8,6 @@ from typing import Optional
 
 # local
 import ivy
-from ivy.utils.backend.handler import _determine_backend_from_args
 from .conversions import args_to_native, to_ivy
 from .activations import _ArrayWithActivations
 from .creation import _ArrayWithCreation
@@ -394,14 +393,6 @@ class Array(
         return super().__getattribute__(item)
 
     def __getattr__(self, item):
-        if ivy.current_backend() != _determine_backend_from_args(self._data):
-            raise ivy.utils.exceptions.InvalidBackendException(
-                f"The current backend is {ivy.current_backend()} while the ivy.Array"
-                " used is based on the"
-                f" {_determine_backend_from_args(self._data)} backend. Please set"
-                " dynamic_backend=True for the array if you want to convert it to the"
-                " target backend"
-            )
         try:
             attr = self._data.__getattribute__(item)
         except AttributeError:
