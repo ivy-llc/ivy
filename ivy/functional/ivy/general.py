@@ -2757,6 +2757,7 @@ get_item.mixed_backend_wrappers = {
 
 @handle_nestable
 @handle_view_indexing
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
