@@ -214,16 +214,9 @@ def kl_div(
 
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def margin_ranking_loss(
-    input,
-    other,
-    label,
-    margin=0.0,
-    reduction="mean",
-    name=None
-):
+def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
-    
+
     out = ivy.subtract(input, other)
     neg_label = ivy.negative(label)
     out = ivy.multiply(neg_label, out)
