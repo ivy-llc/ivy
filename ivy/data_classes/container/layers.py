@@ -1141,6 +1141,10 @@ class _ContainerWithLayers(ContainerBase):
             per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         key_chains
@@ -1154,6 +1158,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+        Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1202,7 +1208,6 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-
         data_format: str = "NWC",
         filter_format: str = "channel_last",
         x_dilations: Union[int, Tuple[int]] = 1,
@@ -1232,6 +1237,10 @@ class _ContainerWithLayers(ContainerBase):
             per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         key_chains
@@ -1245,6 +1254,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1383,7 +1394,6 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-
         data_format: str = "NHWC",
         filter_format: str = "channel_last",
         x_dilations: Union[int, Tuple[int, int]] = 1,
@@ -1455,7 +1465,8 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
-            dilations=dilations,filter_format=filter_format,
+            dilations=dilations,
+            filter_format=filter_format,
             x_dilations=x_dilations,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -1519,6 +1530,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1610,6 +1623,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1698,6 +1713,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1753,7 +1770,6 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-
         data_format: str = "NHWC",
         dilations: Union[int, Tuple[int, int]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1796,6 +1812,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2021,8 +2039,14 @@ class _ContainerWithLayers(ContainerBase):
             the per-dimension paddings.
         data_format
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)    
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2100,8 +2124,14 @@ class _ContainerWithLayers(ContainerBase):
             the per-dimension paddings.
         data_format
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)    
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2160,7 +2190,6 @@ class _ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         bias: Optional[ivy.Container] = None,
-
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2190,6 +2219,8 @@ class _ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -2281,6 +2312,8 @@ class _ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.

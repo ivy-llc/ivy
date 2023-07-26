@@ -846,8 +846,15 @@ def conv1d(
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
         corresponds to input with shape (batch_size, channels, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIW",
+         input data formats, while "channel_last" corresponds to "WIO", "HWIO", "DHWIO".
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -951,6 +958,8 @@ def conv1d_transpose(
         corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1061,7 +1070,7 @@ def conv2d(
     *,
     data_format: str = "NHWC",
     filter_format: str = "channel_last",
-    x_dilations: Union[int,Tuple[int, int]] = 1,
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
@@ -1085,8 +1094,15 @@ def conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIHW",
+         input data formats, while "channel_last" corresponds to "HWIO".
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1221,6 +1237,9 @@ def conv2d_transpose(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to
+        "OIDHW" input data formats, while "channel_last" corresponds to "DHWIO" .
     x_dilations
         The dilation factor for each dimension of input. (Default value = 1)
     dilations
@@ -1295,9 +1314,17 @@ def conv2d_transpose(
     }
     """
     pdb.set_trace()
-    return current_backend(x).conv2d_transpose(x, filters, strides, padding, output_shape=output_shape,
-                                               data_format=data_format, dilations=dilations,
-                                               bias=bias, out=out)
+    return current_backend(x).conv2d_transpose(
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        bias=bias,
+        out=out,
+    )
 
 
 @handle_exceptions
@@ -1455,11 +1482,10 @@ def conv3d(
     *,
     data_format: str = "NDHWC",
     filter_format: str = "channel_last",
-    x_dilations: Union[int,Tuple[int, int, int]] = 1,
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
-
 ) -> ivy.Array:
     """
     Compute a 3-D convolution given 5-D input x and filters arrays.
@@ -1482,10 +1508,10 @@ def conv3d(
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
         height, width).
     filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds to  "OIDHW" input data formats for 1-D, 2-D, 3-D convolution respectively,
-        while "channel_last" corresponds to "WIO", "HWIO", "DHWIO" respectively.
+        Either "channel_first" or "channel_last". "channel_first" corresponds 
+        to "OIDHW",input data formats, while "channel_last" corresponds to "DHWIO".
      x_dilations
-        The dilation factor for each dimension of input. (Default value = 1)
+        The dilation factor for each dimension of input. (Default value = 1)    
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     bias
