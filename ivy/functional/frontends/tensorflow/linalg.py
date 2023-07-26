@@ -374,6 +374,9 @@ def tensor_diag(diagonal, /, *, name=None):
             "float64",
             "int32",
             "int64",
+            "float16",
+            "float32",
+            "float64",
             "complex64",
             "complex128",
         )
@@ -419,3 +422,7 @@ def set_diag(input, diagonal, /, *, k=0, align='RIGHT_LEFT', name=None):
             matrix[range(matrix.shape[0]), range(matrix.shape[0])] = new_diagonal
 
     return input
+  
+  
+def expm(input, name=None):
+    return ivy.matrix_exp(input)

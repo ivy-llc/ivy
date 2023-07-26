@@ -277,7 +277,9 @@ class Array(
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
         if self._strides is None:
-            self._strides = ivy.strides(self._data)
+            # for this to work consistently for non-contiguous arrays
+            # we must pass self to ivy.strides, not self.data
+            self._strides = ivy.strides(self)
         return self._strides
 
     @property
