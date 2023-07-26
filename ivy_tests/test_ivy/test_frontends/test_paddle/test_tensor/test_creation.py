@@ -536,6 +536,7 @@ def test_paddle_meshgrid(
 )
 def test_paddle_triu_indices(
     dtype_and_x,
+    backend_fw,
     row,
     col,
     offset,
@@ -548,6 +549,7 @@ def test_paddle_triu_indices(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
