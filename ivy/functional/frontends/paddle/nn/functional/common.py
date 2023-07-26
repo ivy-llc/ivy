@@ -100,7 +100,7 @@ def interpolate(
     name=None,
 ):
     return ivy.interpolate(
-        x, size=size, mode=mode, scale_factor=scale_factor, align_corners=align_corners
+        x, size, mode=mode, scale_factor=scale_factor, align_corners=align_corners
     )
 
 
