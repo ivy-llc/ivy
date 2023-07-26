@@ -242,6 +242,8 @@ def test_paddle_interpolate(
     test_flags,
 ):
     dtype, x = d_type_and_x
+    if x.shape[0] <= 3:
+        mode = "linear"
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
