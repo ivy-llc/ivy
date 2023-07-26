@@ -510,7 +510,7 @@ def Square(*, x, name="Square"):
 SquaredDifference = to_ivy_arrays_and_back(
     with_supported_dtypes(
         {
-            "2.12.0 and below": (
+            "2.13.0 and below": (
                 "complex",
                 "bfloat16",
                 "float16",
