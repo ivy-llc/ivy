@@ -146,6 +146,7 @@ def log2(input, *, out=None):
     return ivy.log2(input, out=out)
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def square(input, *, out=None):
     return ivy.square(input, out=out)

@@ -208,6 +208,7 @@ def test_jac(x, dtype, func, backend_fw):
     # Test nested input
     func = lambda xs: (2 * xs[1]["x2"], xs[0])
 
+    ivy.previous_backend()
     ivy.set_backend(fw)
     var1 = _variable(ivy.array(x[0], dtype=dtype))
     var2 = _variable(ivy.array(x[1], dtype=dtype))

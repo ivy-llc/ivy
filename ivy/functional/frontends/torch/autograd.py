@@ -35,8 +35,10 @@ def _grad_out_multiply(grad_out, jacobian_wrt_input):
     input_num_dims = len(jacobian_wrt_input.shape) - len(output_shape)
     expanded_grad_out = grad_out.view(output_shape + (1,) * input_num_dims)
     sum_dims = tuple(range(len(output_shape)))
-    new_grad_out = torch_frontend.sum(
-        expanded_grad_out * jacobian_wrt_input, dim=sum_dims
+    new_grad_out = (
+        torch_frontend.sum(expanded_grad_out * jacobian_wrt_input, dim=sum_dims)
+        if sum_dims
+        else expanded_grad_out * jacobian_wrt_input
     )
     return new_grad_out
 

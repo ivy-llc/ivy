@@ -14,7 +14,7 @@ import ivy.functional.frontends.torch as torch_frontend
 def _get_grad_args(draw):
     # Case 1: functions with one input
     # Sample a function
-    fn = draw(st.sampled_from(["sin", "cos", "exp", "mean", "sum"]))
+    fn = draw(st.sampled_from(["sin", "cos", "square", "mean", "sum"]))
 
     # Generate function input
     dtypes, xs = draw(
@@ -69,7 +69,7 @@ def _get_grad_args(draw):
 @given(grad_args=_get_grad_args())
 def test_torch_grad(grad_args):
     fw = ivy.current_backend_str()
-    if fw == "paddle" or fw == "numpy":
+    if fw == "numpy":
         return
     if fw == "jax":
         import jax
