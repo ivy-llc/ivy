@@ -2227,7 +2227,6 @@ def test_jax_devicearray_var(
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
