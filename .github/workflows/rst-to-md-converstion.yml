@@ -1,0 +1,41 @@
+name: Convert RST to MD
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  frontend_pr_opened:
+    name: Frontend PR opened
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Check if Readme.rst was modified
+        id: check_file
+        run: |
+          PR_NUM=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+          URL="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/$PR_NUM/files"
+          IS_MODIFIED=$(curl -s -X GET -G $URL | jq -r '[.[] | select(.filename=="readme.rst")] | length')
+          echo ::set-output name=is_modified::$IS_MODIFIED
+
+      - name: Convert RST to MD
+        if: steps.check_file.outputs.is_modified == '1'
+        run: |
+          sudo apt-get install -y pandoc
+          if [ -f readme.rst ]; then
+            pandoc -s readme.rst -t markdown -o readme.md
+            echo "Converted readme.rst to readme.md"
+          fi
+
+      - name: Commit changes
+        if: steps.check_file.outputs.is_modified == '1'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Action"
+          git add readme.md
+          git commit -m "Converted readme.rst to readme.md" || exit 0
+          git push
