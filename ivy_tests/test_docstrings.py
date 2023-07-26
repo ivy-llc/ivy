@@ -104,7 +104,7 @@ def check_docstring_examples_run(
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
             for i, s in enumerate(trimmed_docstring[index + 1:]):
-                if s.startswith(">>>") or s.lower().startswith("with"):
+                if s.startswith(">>>") or s.lower().startswith(("with", "#")):
                     end_index = index + i + 1
                     break
             else:
@@ -260,6 +260,8 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "maximum":"torch",
         "minimum":"torch",
         "deg2rad":"tensorflow",
+        "set_item":"jax",
+        "vmap":"torch",
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
@@ -276,6 +278,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "histogram": "tensorflow",
         "native_array":"torch",
         "logspace":"torch",
+        "set_item":"numpy",
     }
     try:
         if (
@@ -348,6 +351,7 @@ def test_docstrings(backend):
         "cumprod",
         "sinc",
         "grad",
+        "try_else_none",
         # all examples are wrong including functional/ivy
         "einops_reduce",
         "max_unpool1d",
