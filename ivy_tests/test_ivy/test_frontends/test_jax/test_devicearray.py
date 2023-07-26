@@ -2242,7 +2242,6 @@ def test_jax_devicearray_var(
             "keepdims": keepdims,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
