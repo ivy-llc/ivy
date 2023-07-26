@@ -506,12 +506,14 @@ def test_paddle_tril_indices(
     offset,
     dtype,
     test_flags,
+    backend_fw,
     frontend,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
