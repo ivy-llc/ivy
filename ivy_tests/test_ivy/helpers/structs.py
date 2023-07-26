@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable
 from dataclasses import dataclass
 
 
@@ -14,7 +14,6 @@ class FrontendMethodData:
 class FrontendTestData:
     fw_function: Callable
     ivy_function: Callable
-    ivy_function_args: List[str]
     fn_tree: str
     fn_name: str
     supported_device_dtypes: dict = None
