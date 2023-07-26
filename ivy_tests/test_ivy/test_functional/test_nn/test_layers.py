@@ -71,7 +71,7 @@ def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_devi
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -140,7 +140,7 @@ def test_dropout(
     ret, gt_ret = helpers.test_function(
         input_dtypes=x_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         test_values=False,
@@ -152,8 +152,10 @@ def test_dropout(
         training=training,
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    gt_ret = helpers.flatten_and_to_np(
+        ret=gt_ret, backend=test_flags.ground_truth_backend
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -213,7 +215,7 @@ def test_scaled_dot_product_attention(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -440,7 +442,7 @@ def test_multi_head_attention(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         atol_=1e-02,
@@ -633,8 +635,6 @@ def x_and_filters(
 
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
-    if not isinstance(backend_fw, str):
-        backend_fw = backend_fw.current_backend_str()
     if backend_fw == "tensorflow":
         assume(
             not (
@@ -658,7 +658,7 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -684,7 +684,7 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -713,7 +713,7 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -743,7 +743,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -772,16 +772,12 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     # tensorflow only supports equal length strides in row and column
-    if (
-        "tensorflow" in backend_fw.__name__
-        and isinstance(stride, list)
-        and len(stride) > 1
-    ):
+    if backend_fw == "tensorflow" and isinstance(stride, list) and len(stride) > 1:
         assume(stride[0] == stride[1])
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -807,7 +803,7 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -836,7 +832,7 @@ def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -882,7 +878,7 @@ def test_conv_general_dilated(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -931,7 +927,7 @@ def test_conv_general_transpose(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1037,7 +1033,7 @@ def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
