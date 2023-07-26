@@ -520,7 +520,6 @@ def test_paddle_gather(
     )
 
 
-
 # flip
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
