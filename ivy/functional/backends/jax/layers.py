@@ -55,8 +55,8 @@ def _get_tranpose_padding(
 def conv1d(
     x: JaxArray,
     filters: JaxArray,
-    strides: Union[int, Tuple[int]],
-    padding: Union[str, int, Sequence[Tuple[int, int]]],
+    strides: Union[int, Tuple[int]] = 1,
+    padding: Union[str, int, Sequence[Tuple[int, int]]] = "valid",
     /,
     *,
     data_format: str = "NWC",
