@@ -3,6 +3,7 @@ import math
 from hypothesis import strategies as st
 import numpy as np
 import pytest
+import itertools
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -872,3 +873,34 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         modes=modes,
         skip=skip,
     )
+
+
+@pytest.mark.parametrize(
+    "X, U, true_res",
+    [
+        ([[1, 2], [0, -1]], [[2, 1], [-1, 1]], [1]),
+    ],
+)
+def test_multi_mode_dot_tensorly_1(X, U, true_res):
+    X, U, true_res = ivy.array(X), ivy.array(U), ivy.array(true_res)
+    res = ivy.multi_mode_dot(X, U, [0, 1])
+    assert np.allclose(true_res, res)
+
+
+@pytest.mark.parametrize("shape", ((3, 5, 4, 2),))
+def test_multi_mode_dot_tensorly_2(shape):
+    print(shape)
+    X = ivy.ones(shape)
+    vecs = [ivy.ones(s) for s in shape]
+    res = ivy.multi_mode_dot(X, vecs)
+    # result should be a scalar
+    assert ivy.shape(res) == ()
+    assert np.allclose(res, np.prod(shape))
+
+    # Average pooling each mode
+    # Order should not matter
+    vecs = [vecs[i] / s for i, s in enumerate(shape)]
+    for modes in itertools.permutations(range(len(shape))):
+        res = ivy.multi_mode_dot(X, [vecs[i] for i in modes], modes=modes)
+        assert ivy.shape(res) == ()
+        assert np.allclose(res, 1)
