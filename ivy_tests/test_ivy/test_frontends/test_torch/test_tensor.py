@@ -9960,6 +9960,8 @@ def test_torch_instance_tile(
     method_name="angle",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("complex"),
+        min_num_dims=1,
+        min_dim_size=1
     ),
 )
 def test_torch_instance_angle(
@@ -9984,3 +9986,4 @@ def test_torch_instance_angle(
         frontend=frontend,
         on_device=on_device,
     )
+

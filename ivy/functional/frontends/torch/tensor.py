@@ -1480,9 +1480,9 @@ class Tensor:
             reps = reps[0]
         return torch_frontend.tile(self, reps)
 
-    @with_supported_dtypes({"2.0.1 and below": ("complex64", "complex128")}, "torch")
-    def angle(self):
-        return ivy.angle(self)
+@with_supported_dtypes({"2.0.1 and below": ("complex64", "complex128")}, "torch")
+def angle(self):
+    return torch_frontend.angle(self)
 
 
 class Size(tuple):
