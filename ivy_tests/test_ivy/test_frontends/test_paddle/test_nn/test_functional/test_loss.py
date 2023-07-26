@@ -346,3 +346,49 @@ def test_paddle_kl_div(
         label=x[1],
         reduction=reduction,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.nll_loss",
+    dtype_and_x_label=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        ret_shape=True,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+    ignore_index=st.integers(min_value=-1, max_value=10),
+)
+def test_paddle_nll_loss(
+    dtype_and_x_label,
+    reduction,
+    ignore_index,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, xs, label = dtype_and_x_label
+    input_dtype, logit = input_dtypes[0], xs[0]
+    label_dtype, label = input_dtypes[1], label[0]
+
+    # Add a safety factor for ignore_index, making sure it's within valid range.
+    ignore_index = max(min(ignore_index, logit.shape[-1] - 1), -logit.shape[-1])
+
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype, label_dtype],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=logit,
+        label=label,
+        reduction=reduction,
+        ignore_index=ignore_index,
+    )
