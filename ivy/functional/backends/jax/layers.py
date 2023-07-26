@@ -117,22 +117,17 @@ def conv1d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = (strides,) if isinstance(strides, int) else strides
     dilations = (dilations,) if isinstance(dilations, int) else dilations
-    x_dilations = (x_dilations,) if isinstance(x_dilations, int) else dilations
-    filters = jnp.swapaxes(filters, -1, -2)
-    filter_df = _get_filter_dataformat(1, filter_format)
     if data_format == "NWC":
         x_shape = list(x.shape[1:2])
     else:
         x_shape = list(x.shape[2:])
-    padding = _get_new_padding_before_conv(x,filters,strides,padding,1,data_format,filter_format,dilations,x_dilations)
+    filters = jnp.swapaxes(filters, -1, -2)
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 1, dilations, output_shape
     )
@@ -142,12 +137,13 @@ def conv1d_transpose(
         strides,
         padding,
         dilations,
-        (data_format, filter_df, data_format),
+        (data_format, "WIO", data_format),
         True,
     )
-    res = jnp.add(res, bias) if bias is not None else res
-    if data_format == "CHW":
-        return jnp.transpose(res, (0, 2, *range(1, 2)))
+    if bias is not None:
+        if data_format == "NWC":
+            return jnp.add(res, bias)
+        return jnp.add(res, bias[(None,) + (...,) + (None,) * 1])
     return res
 
 def conv2d(
@@ -187,8 +183,6 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[JaxArray] = None,
     out: Optional[JaxArray] = None,
@@ -196,15 +190,13 @@ def conv2d_transpose(
 ) -> JaxArray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    x_dilations = [x_dilations] * 2 if isinstance(x_dilations, int) else x_dilations
-    filter_df = _get_filter_dataformat(2, filter_format)
-    if data_format == "NCHW":
-        x = jnp.transpose(x, (0,2,3, 1))
-
+    if data_format == "NHWC":
+        x_shape = list(x.shape[1:3])
+    else:
+        x_shape = list(x.shape[2:])
     filters = jnp.swapaxes(filters, -1, -2)
-    padding=_get_new_padding_before_conv(x, filters, strides, padding, 2, data_format, filter_format, dilations, x_dilations)
     padding = _get_tranpose_padding(
-        x.shape[1:], filters.shape, strides, padding, 2, dilations, output_shape
+        x_shape, filters.shape, strides, padding, 2, dilations, output_shape
     )
 
 
@@ -214,12 +206,13 @@ def conv2d_transpose(
         strides,
         padding,
         dilations,
-        (data_format, filter_df, data_format),
+        (data_format, "HWIO", data_format),
         True,
     )
-    res = jnp.add(res, bias) if bias is not None else res
-    if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, *range(1, 3)))
+    if bias is not None:
+        if data_format == "NHWC":
+            return jnp.add(res, bias)
+        return jnp.add(res, bias[(None,) + (...,) + (None,) * 2])
     return res
 
 def depthwise_conv2d(
@@ -289,8 +282,6 @@ def conv3d_transpose(
     /,
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int,int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     data_format: str = "NDHWC",
     bias: Optional[JaxArray] = None,
@@ -303,8 +294,6 @@ def conv3d_transpose(
         x_shape = list(x.shape[1:4])
     else:
         x_shape = list(x.shape[2:])
-    filter_df = _get_filter_dataformat(3, filter_format)
-    padding = _get_new_padding_before_conv(x,filters,strides,padding,3,data_format,filter_format,dilations,x_dilations)
     padding = _get_tranpose_padding(
         x_shape, filters.shape, strides, padding, 3, dilations, output_shape
     )
@@ -314,12 +303,13 @@ def conv3d_transpose(
         strides,
         padding,
         dilations,
-        (data_format, filter_df, data_format),
+        (data_format, "DHWIO", data_format),
         True,
     )
-    res = jnp.add(res, bias) if bias is not None else res
-    if data_format == "NCDHW":
-        return jnp.transpose(res, (0, 4, *range(1, 4)))
+    if bias is not None:
+        if data_format == "NDHWC":
+            return jnp.add(res, bias)
+        return jnp.add(res, bias[(None,) + (...,) + (None,) * 3])
     return res
 
 

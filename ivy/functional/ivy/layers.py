@@ -925,8 +925,6 @@ def conv1d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
@@ -1042,8 +1040,6 @@ def conv1d_transpose(
         padding,
         output_shape=output_shape,
         data_format=data_format,
-        filter_format=filter_format,
-        x_dilations=x_dilations,
         dilations=dilations,
         bias=bias,
         out=out,
@@ -1201,8 +1197,6 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int,Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
@@ -1302,7 +1296,7 @@ def conv2d_transpose(
     """
     pdb.set_trace()
     return current_backend(x).conv2d_transpose(x, filters, strides, padding, output_shape=output_shape,
-                                               data_format=data_format,filter_format=filter_format, x_dilations=x_dilations, dilations=dilations,
+                                               data_format=data_format, dilations=dilations,
                                                bias=bias, out=out)
 
 
@@ -1487,8 +1481,15 @@ def conv3d(
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
         height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to  "OIDHW" input data formats for 1-D, 2-D, 3-D convolution respectively,
+        while "channel_last" corresponds to "WIO", "HWIO", "DHWIO" respectively.
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1586,8 +1587,6 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int,Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
@@ -1615,6 +1614,8 @@ def conv3d_transpose(
         height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1678,8 +1679,6 @@ def conv3d_transpose(
         padding,
         output_shape=output_shape,
         data_format=data_format,
-        filter_format=filter_format,
-        x_dilations=x_dilations,
         dilations=dilations,
         bias=bias,
         out=out,

@@ -181,15 +181,13 @@ def conv1d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
+    filters = filters.permute(1, 2, 0)
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
@@ -262,8 +260,6 @@ def conv2d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None
@@ -272,13 +268,10 @@ def conv2d_transpose(
         x = x.permute(0, 3, 1, 2)
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
-    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
+    filters = filters.permute(2, 3, 0, 1)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 2, dilations, output_shape, filters.shape[2:]
     )
-
-
-
 
     res = torch.nn.functional.conv_transpose2d(
         x,
@@ -385,8 +378,6 @@ def conv3d_transpose(
     *,
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int,int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
@@ -395,7 +386,7 @@ def conv3d_transpose(
         x = x.permute(0, 4, 1, 2, 3)
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
-    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
+    filters = filters.permute(3, 4, 0, 1, 2)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 3, dilations, output_shape, filters.shape[2:]
     )

@@ -489,8 +489,6 @@ class _ArrayWithLayers(abc.ABC):
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int]] = 1,
         dilations: Union[int, Tuple[int]] = 1,
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
@@ -547,8 +545,6 @@ class _ArrayWithLayers(abc.ABC):
             padding,
             output_shape=output_shape,
             data_format=data_format,
-            filter_format=filter_format,
-            x_dilations=x_dilations,
             dilations=dilations,
             bias=bias,
             out=out,
@@ -694,8 +690,6 @@ class _ArrayWithLayers(abc.ABC):
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NHWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
         bias: Optional[ivy.Array] = None
@@ -743,7 +737,7 @@ class _ArrayWithLayers(abc.ABC):
         (1, 56, 56, 6)
         """
         return ivy.conv2d_transpose(self._data, filters, strides, padding, output_shape=output_shape,
-                                    data_format=data_format,filter_format=filter_format,x_dilations=x_dilations, dilations=dilations, out=out,bias=bias)
+                                    data_format=data_format, dilations=dilations, out=out,bias=bias)
 
     def conv3d(
         self: ivy.Array,
@@ -820,8 +814,6 @@ class _ArrayWithLayers(abc.ABC):
         *,
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NDHWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int, int,int]] = 1,
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
         bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
@@ -876,8 +868,6 @@ class _ArrayWithLayers(abc.ABC):
             padding,
             output_shape=output_shape,
             data_format=data_format,
-            filter_format=filter_format,
-            x_dilations=x_dilations,
             dilations=dilations,
             bias=bias,
             out=out,
