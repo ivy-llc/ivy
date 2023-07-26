@@ -124,7 +124,6 @@ def mean(
         ret = ret.squeeze()
     return ret.astype(ret_dtype)
 
-
 def prod(
     x: paddle.Tensor,
     /,
@@ -134,9 +133,18 @@ def prod(
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
-    # TODO:prod causes segmentation fault
-    return paddle.prod(x, axis=axis, keepdim=keepdims, dtype=dtype)
+    if axis is not None:
+        result = paddle.fluid.layers.reduce_prod(x, dim=axis, keep_dim=keepdims)
+    else:
+        result = paddle.fluid.layers.reduce_prod(paddle.flatten(x), keep_dim=keepdims)
+    
+    if dtype is not None:
+        result = paddle.cast(result, dtype)
+
+    if out is not None:
+        out.assign(result)
+        return out
+    return result
 
 
 def _std(x, axis, correction, keepdim):
