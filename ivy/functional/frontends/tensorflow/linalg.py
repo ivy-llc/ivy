@@ -362,3 +362,20 @@ def tensor_diag(diagonal, /, *, name=None):
     if rank > 1:
         raise ValueError("wrong tensor rank, at most 1")
     return ivy.diag(diagonal)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def expm(input, name=None):
+    return ivy.matrix_exp(input)
