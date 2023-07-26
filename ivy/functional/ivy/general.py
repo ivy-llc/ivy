@@ -39,6 +39,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view_indexing,
     handle_device_shifting,
+    handle_partial_mixed_function,
 )
 from ivy.functional.ivy.device import dev
 
@@ -2675,6 +2676,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 @handle_nestable
 @handle_view_indexing
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
