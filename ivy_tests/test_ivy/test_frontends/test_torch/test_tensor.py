@@ -7457,7 +7457,7 @@ def test_torch_fmin(
         num_arrays=2,
     ),
 )
-def test_torch_instance_fmax(
+def test_torch_fmax(
     dtype_and_x,
     frontend_method_data,
     init_flags,
