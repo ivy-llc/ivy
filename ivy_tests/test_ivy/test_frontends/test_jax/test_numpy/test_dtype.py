@@ -106,17 +106,17 @@ def test_jax_result_type(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.iinfo",
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
 @settings(max_examples=200)
-def test_jax_iinfo(*, dtype, test_flags, on_device, fn_tree, frontend):
+def test_jax_iinfo(*, dtype, test_flags, on_device, fn_tree, frontend, backend_fw):
     helpers.test_frontend_function(
         input_dtypes=[],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        dtype=dtype[0],
-        test_values=False,
+        int_type=dtype[0],
+        backend_to_test=backend_fw,
     )
