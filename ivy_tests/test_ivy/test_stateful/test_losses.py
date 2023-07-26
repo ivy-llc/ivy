@@ -34,9 +34,6 @@ from ivy_tests.test_ivy.helpers import handle_method
         min_dim_size=3,
     ),
     compute_full_loss=st.sampled_from([True, False]),
-    method_num_positional_args=helpers.num_positional_args(
-        fn_name="LogPoissonLoss._forward"
-    ),
 )
 def test_log_poisson_loss(
     dtype_and_targets,
@@ -56,14 +53,13 @@ def test_log_poisson_loss(
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
-        init_input_dtypes=targets_dtype,
-        method_input_dtypes=log_input_dtype,
+        method_input_dtypes=targets_dtype + log_input_dtype,
         init_all_as_kwargs_np={
             "compute_full_loss": compute_full_loss,
             "axis": -1,
             "reduction": "none",
         },
-        method_all_as_kwargs_np={"true": targets, "pred": log_input},
+        method_all_as_kwargs_np={"true": targets[0], "pred": log_input[0]},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
