@@ -235,7 +235,6 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "avg_pool2d": "torch",
         "avg_pool3d": "torch",
         "fourier_encode": "torch",
-        "frombuffer": "torch",
         "max_pool3d": "torch",
         "eigh_tridiagonal": "tensorflow",
         "isreal": "tensorflow",
@@ -255,6 +254,8 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "dct": "jax",
         "idct": "jax",
         "linspace": "jax",
+        "native_array":"tensorflow",
+        "logspace": "jax",
 
     }
     # second dict to keep if a function fails in two backends
@@ -265,12 +266,13 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "avg_pool2d": "tensorflow",
         "avg_pool3d": "tensorflow",
         "fourier_encode": "tensorflow",
-        "frombuffer": "tensorflow",
         "max_pool3d": "tensorflow",
         "std": "torch",
         "dct": "tensorflow",
         "idct": "tensorflow",
         "histogram": "tensorflow",
+        "native_array":"torch",
+        "logspace":"torch",
     }
     try:
         if (

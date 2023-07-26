@@ -1868,21 +1868,21 @@ def native_array(
     With :class:`List[Number]` input:
 
     >>> x = [1, 2, 3]
-    >>> x_native = native_array(x)
+    >>> x_native = ivy.native_array(x)
     >>> print(x_native)
-    [1. 2. 3.]
+    [1 2 3]
 
     With :class:`np.ndarray` input:
     >>> y = np.array([4, 5, 6])
-    >>> y_native = native_array(y)
+    >>> y_native = ivy.native_array(y)
     >>> print(y_native)
-    [4. 5. 6.]
+    [4 5 6]
 
     With :class:`ivy.Array` input:
     >>> z = ivy.array([7, 8, 9])
-    >>> z_native = native_array(z)
+    >>> z_native = ivy.native_array(z)
     >>> print(z_native)
-    [7. 8. 9.]
+    [7 8 9]
     """
     # ToDo: Make this more efficient,
     # ideally without first converting to ivy.Array with ivy.asarray and then
@@ -2077,13 +2077,13 @@ def logspace(
     >>> print(ivy.logspace(1, 2, 4, endpoint=False))
     ivy.array([10., 17.7827941, 31.6227766, 56.23413252])
 
-    >>> print(ivy.logspace(1, 2, 4, dtype = int))
-    ivy.array([10, 21, 46, 100])
+    >>> print(ivy.logspace(1, 2, 4, dtype= int))
+    ivy.array([ 10.,  10.,  10., 100.])
 
     >>> out = ivy.array([0,0,0,0])
     >>> ivy.logspace(1, 2, 4, out = out)
     >>> print(out)
-    ivy.array([ 10., 21.5443469, 46.41588834, 100.])
+    ivy.array([ 10,  21,  46, 100])
 
     With :class:`ivy.Array` input:
     >>> x = ivy.array([1, 2])
@@ -2094,17 +2094,19 @@ def logspace(
                [1.e+03, 1.e+04],
                [1.e+04, 1.e+05])
 
+    >>> x = ivy.array([1, 2])
+    >>> y = ivy.array([4, 5])
     >>> print(ivy.logspace(x, y, 4, axis = 1))
     ivy.array([[[1.e+01, 1.e+02, 1.e+03, 1.e+04],
                [1.e+02, 1.e+03, 1.e+04, 1.e+05]]])
 
     >>> x = ivy.array([1, 2])
-    >>> y = ivy.array([4])      # Broadcasting example
+    >>> y = ivy.array([4])
     >>> print(ivy.logspace(x, y, 4))
-    ivy.array([[10., 100.]
-               [100., 464.15888336]
-               [1000., 2154.43469003]
-               [10000., 10000.]])
+    ivy.array([[   10.,   100.],
+           [  100.,   100.],
+           [ 1000.,  1000.],
+           [10000., 10000.]])
     """
     result = base ** linspace(
         start,
@@ -2160,19 +2162,19 @@ def frombuffer(
     With :class:`bytes` inputs:
 
     >>> x = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
-    >>> y = ivy.frombuffer(x)
+    >>> y = ivy.frombuffer(x, dtype=ivy.float64)
     >>> print(y)
-    (ivy.array([1., 2.]))
+    ivy.array([1., 2.])
 
     >>> x = b'\x01\x02\x03\x04'
     >>> y = ivy.frombuffer(x, dtype='int8', count=-2, offset=1)
     >>> print(y)
-    (ivy.array([2, 3, 4]))
+    ivy.array([2, 3, 4])
 
     >>> x = b'\x00<\x00@\x00B\x00D\x00E'
     >>> y = ivy.frombuffer(x, dtype='float16', count=4, offset=2)
     >>> print(y)
-    (ivy.array([2., 3., 4., 5.]))
+    ivy.array([2., 3., 4., 5.])
     """
     return current_backend().frombuffer(
         buffer,
