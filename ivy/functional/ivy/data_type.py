@@ -21,6 +21,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     inputs_to_native_shapes,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -226,6 +227,7 @@ Finfo = None
 Iinfo = None
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -411,6 +413,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -485,6 +488,7 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape, out=out)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
@@ -565,6 +569,7 @@ def can_cast(
         return False
 
 
+@handle_backend_invalid
 @handle_exceptions
 @inputs_to_native_arrays
 @handle_device_shifting
@@ -652,6 +657,7 @@ def finfo(
     return current_backend(None).finfo(type)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @inputs_to_native_arrays
 @handle_device_shifting
@@ -728,6 +734,7 @@ def iinfo(
     return current_backend(None).iinfo(type)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
@@ -1592,6 +1599,7 @@ def default_complex_dtype(
     return ivy.ComplexDtype(ivy.as_ivy_dtype(ret))
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
@@ -1826,6 +1834,7 @@ def is_bool_dtype(
     return "bool" in ivy.as_ivy_dtype(dtype_in)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
@@ -1938,6 +1947,7 @@ def check_float(x: Any) -> bool:
     return isinstance(x, (int, np.float)) and not type(x) == bool
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
@@ -1989,6 +1999,7 @@ def is_float_dtype(
     return "float" in as_ivy_dtype(dtype_in)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
@@ -2037,6 +2048,7 @@ def is_uint_dtype(
     return "uint" in as_ivy_dtype(dtype_in)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @inputs_to_ivy_arrays
