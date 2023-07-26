@@ -570,14 +570,14 @@ def cond(
 @handle_array_function
 @handle_device_shifting
 def khatri_rao(
-    input: List[Union[ivy.Array, ivy.NativeArray]],
+    input: Sequence[Union[ivy.Array, ivy.NativeArray]],
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     skip_matrix: Optional[Sequence[int]] = None,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Khatri-Rao product of a list of matrices.
+    Khatri-Rao product of a sequence of matrices.
 
         This can be seen as a column-wise kronecker product.
         If one matrix only is given, that matrix is directly returned.
@@ -660,3 +660,89 @@ def khatri_rao(
         return ivy.inplace_update(out, res)
 
     return res
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def mode_dot(
+    tensor: Union[ivy.Array, ivy.NativeArray],
+    matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
+    mode: int,
+    transpose: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    N-mode product of a tensor and a matrix or vector at the specified mode.
+
+    Parameters
+    ----------
+    tensor
+        tensor of shape ``(i_1, ..., i_k, ..., i_N)``
+    matrix_or_vector
+        1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
+        matrix or vectors to which to n-mode multiply the tensor
+    mode
+        int in the range(1, N)
+    transpose
+        If True, the matrix is transposed.
+        For complex tensors, the conjugate transpose is used.
+
+    Returns
+    -------
+    ivy.Array
+        `mode`-mode product of `tensor` by `matrix_or_vector`
+        * of shape :math:`(i_1, ..., i_{k-1}, J, i_{k+1}, ..., i_N)`
+          if matrix_or_vector is a matrix
+        * of shape :math:`(i_1, ..., i_{k-1}, i_{k+1}, ..., i_N)`
+          if matrix_or_vector is a vector
+    """
+    # the mode along which to fold might decrease if we take product with a vector
+    fold_mode = mode
+    new_shape = list(tensor.shape)
+    ndims = len(matrix_or_vector.shape)
+
+    if ndims == 2:  # Tensor times matrix
+        # Test for the validity of the operation
+        dim = 0 if transpose else 1
+        if matrix_or_vector.shape[dim] != tensor.shape[mode]:
+            raise ValueError(
+                f"shapes {tensor.shape} and {matrix_or_vector.shape} not aligned in"
+                f" mode-{mode} multiplication: {tensor.shape[mode]} (mode {mode}) !="
+                f" {matrix_or_vector.shape[dim]} (dim 1 of matrix)"
+            )
+
+        if transpose:
+            matrix_or_vector = ivy.conj(ivy.permute_dims(matrix_or_vector, (1, 0)))
+
+        new_shape[mode] = matrix_or_vector.shape[0]
+        vec = False
+
+    elif ndims == 1:  # Tensor times vector
+        if matrix_or_vector.shape[0] != tensor.shape[mode]:
+            raise ValueError(
+                f"shapes {tensor.shape} and {matrix_or_vector.shape} not aligned for"
+                f" mode-{mode} multiplication: {tensor.shape[mode]} (mode {mode}) !="
+                f" {matrix_or_vector.shape[0]} (vector size)"
+            )
+        if len(new_shape) > 1:
+            new_shape.pop(mode)
+        else:
+            new_shape = []
+        vec = True
+
+    else:
+        raise ValueError(
+            "Can only take n_mode_product with a vector or a matrix."
+            f"Provided array of dimension {ndims} not in [1, 2]."
+        )
+
+    res = ivy.matmul(matrix_or_vector, ivy.unfold(tensor, mode))
+
+    if vec:  # We contracted with a vector, leading to a vector
+        return ivy.reshape(res, new_shape, out=out)
+    else:  # tensor times vec: refold the unfolding
+        return ivy.fold(res, fold_mode, new_shape, out=out)

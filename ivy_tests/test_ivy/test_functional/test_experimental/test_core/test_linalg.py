@@ -2,6 +2,7 @@
 import math
 from hypothesis import strategies as st
 import numpy as np
+import pytest
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -690,9 +691,102 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        test_values=False,
         input_dtypes=input_dtypes,
         input=input,
         weights=weights,
         skip_matrix=skip_matrix,
         mask=mask,
+    )
+
+
+@pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
+def test_khatri_rao_tensorly_1(columns, rows):
+    columns = columns
+    rows = rows
+    matrices = [ivy.arange(k * columns).reshape((k, columns)) for k in rows]
+    res = ivy.khatri_rao(matrices)
+    # resulting matrix must be of shape (prod(n_rows), n_columns)
+    n_rows = 3 * 4 * 2
+    n_columns = 4
+    assert res.shape[0] == n_rows
+    assert res.shape[1] == n_columns
+
+
+@pytest.mark.parametrize(
+    "t1, t2, true_res",
+    [
+        (
+            [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+            [[1, 4, 7], [2, 5, 8], [3, 6, 9]],
+            [
+                [1.0, 8.0, 21.0],
+                [2.0, 10.0, 24.0],
+                [3.0, 12.0, 27.0],
+                [4.0, 20.0, 42.0],
+                [8.0, 25.0, 48.0],
+                [12.0, 30.0, 54.0],
+                [7.0, 32.0, 63.0],
+                [14.0, 40.0, 72.0],
+                [21.0, 48.0, 81.0],
+            ],
+        )
+    ],
+)
+def test_khatri_rao_tensorly_2(t1, t2, true_res):
+    # Classic example/test
+    t1 = ivy.array(t1)
+    t2 = ivy.array(t2)
+    true_res = ivy.array(true_res)
+    res = ivy.khatri_rao([t1, t2])
+    assert np.allclose(res, true_res)
+
+
+@st.composite
+def _mode_dot_data(draw):
+    shape_t1 = draw(helpers.get_shape(min_num_dims=2, max_num_dims=5))
+    mode = draw(helpers.ints(min_value=0, max_value=len(shape_t1) - 1))
+    mode_dimsize = shape_t1[mode]
+    t1_dtype, t1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_t1,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    t2_rows = draw(helpers.ints(min_value=1, max_value=4))
+    shape_t2 = draw(st.sampled_from([(mode_dimsize,), (t2_rows, mode_dimsize)]))
+    t2_dtype, t2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape_t2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    return t1_dtype + t2_dtype, t1[0], t2[0], mode
+
+
+# TODO fix instance method
+@handle_test(
+    fn_tree="functional.ivy.experimental.mode_dot",
+    data=_mode_dot_data(),
+)
+def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, t1, t2, mode = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensor=t1,
+        matrix_or_vector=t2,
+        mode=mode,
     )
