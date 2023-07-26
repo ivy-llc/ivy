@@ -63,7 +63,7 @@ def softmax(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
@@ -78,7 +78,7 @@ def softplus(
     x: torch.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = None,
+    beta: Optional[Union[int, float]] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -101,7 +101,7 @@ def log_softmax(
     x: torch.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
 ):
     if axis is None:

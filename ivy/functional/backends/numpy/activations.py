@@ -41,7 +41,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 def softmax(
-    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, axis: Optional[int] = -1, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     axis = -1 if axis is None else axis
     exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
@@ -56,7 +56,7 @@ def softplus(
     x: np.ndarray,
     /,
     *,
-    beta: Optional[Union[int, float]] = None,
+    beta: Optional[Union[int, float]] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
@@ -86,7 +86,7 @@ softplus.support_native_out = True
 
 @_scalar_output_to_0d_array
 def log_softmax(
-    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, axis: Optional[int] = -1, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if axis is None:
         axis = -1

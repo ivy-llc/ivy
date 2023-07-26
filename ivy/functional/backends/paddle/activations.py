@@ -95,7 +95,7 @@ def softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if axis is None:
@@ -112,7 +112,7 @@ def softplus(
     x: paddle.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = None,
+    beta: Optional[Union[int, float]] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -142,7 +142,7 @@ def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = None,
+    axis: Optional[int] = -1,
     out: Optional[paddle.Tensor] = None,
 ):
     if axis is None:

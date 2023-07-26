@@ -37,7 +37,7 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def softmax(
-    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, axis: Optional[int] = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if axis is None:
         axis = -1
@@ -48,7 +48,7 @@ def softplus(
     x: JaxArray,
     /,
     *,
-    beta: Optional[Union[int, float]] = None,
+    beta: Optional[Union[int, float]] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
@@ -72,7 +72,7 @@ def softplus(
 
 
 def log_softmax(
-    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, axis: Optional[int] = -1, out: Optional[JaxArray] = None
 ):
     if axis is None:
         axis = -1
