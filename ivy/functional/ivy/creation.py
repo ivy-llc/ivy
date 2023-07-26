@@ -913,36 +913,35 @@ def zeros_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> y1 = ivy.zeros_like(x1)
-    >>> print(y1)
+    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([0, 0, 0, 0, 0, 0])
 
-    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
-    >>> y2 = ivy.zeros_like(x2)
-    >>> print(y2)
+    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([[0., 0., 0.],
             [0., 0., 0.]])
 
-    >>> x3 = ivy.array([3., 2., 1.])
-    >>> y3 = ivy.ones(3)
-    >>> ivy.zeros_like(x3, out=y3)
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.ones(3)
+    >>> ivy.zeros_like(x, out=y)
+    >>> print(y)
     ivy.array([0., 0., 0.])
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
-    >>> y1 = ivy.zeros_like(x1)
-    >>> print(y1)
+    >>> x = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y = ivy.zeros_like(x)
+    >>> print(y)
     ivy.array([[0, 0, 0],[0, 0, 0]])
 
 
-    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
-    >>> y2 = ivy.zeros_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
-    >>> print(y2)
+    >>> x = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y = ivy.zeros_like(x, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y)
     ivy.array([0, 0, 0, 0, 0, 0])
-
-    # Array ``y2`` is now stored on the CPU.
 
     With :class:`ivy.Container` input:
 
@@ -954,8 +953,6 @@ def zeros_like(
         b: ivy.array([0, 0, 0])
     }
 
-    Instance Method Examples
-    -------------------
 
     With :class:`ivy.Array` input:
 
