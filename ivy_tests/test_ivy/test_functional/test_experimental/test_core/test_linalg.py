@@ -734,7 +734,6 @@ def test_khatri_rao_tensorly_1(columns, rows):
     ],
 )
 def test_khatri_rao_tensorly_2(t1, t2, true_res):
-    # Classic example/test
     t1 = ivy.array(t1)
     t2 = ivy.array(t2)
     true_res = ivy.array(true_res)
@@ -790,3 +789,28 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         matrix_or_vector=t2,
         mode=mode,
     )
+
+
+@pytest.mark.parametrize(
+    "X, U, true_res",
+    [
+        (
+            [
+                [[1, 13], [4, 16], [7, 19], [10, 22]],
+                [[2, 14], [5, 17], [8, 20], [11, 23]],
+                [[3, 15], [6, 18], [9, 21], [12, 24]],
+            ],
+            [[1, 3, 5], [2, 4, 6]],
+            [
+                [[22, 130], [49, 157], [76, 184], [103, 211]],
+                [[28, 172], [64, 208], [100, 244], [136, 280]],
+            ],
+        )
+    ],
+)
+def test_mode_dot_tensorly_1(X, U, true_res):
+    X = ivy.array(X)
+    U = ivy.array(U)
+    true_res = ivy.array(true_res)
+    res = ivy.mode_dot(X, U, 0)
+    assert np.allclose(true_res, res, atol=1e-1, rtol=1e-1)
