@@ -792,6 +792,7 @@ def test_tensorflow_Square(  # NOQA
         x=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.SquaredDifference",
     dtype_and_x=helpers.dtype_and_values(
