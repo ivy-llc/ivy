@@ -353,6 +353,9 @@ def scatter_nd(
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
+    if len(updates.shape) == 0:
+        indices = tf.expand_dims(indices, 0)
+        updates = tf.expand_dims(updates, 0)
 
     # implementation
     target = out
@@ -512,7 +515,3 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
-
-
-def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
-    return x.numpy().strides
