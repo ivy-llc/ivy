@@ -83,7 +83,9 @@ def gelu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_complex_input(jax_like="split")
+@handle_complex_input(
+    jax_like="split"
+)  # TODO: replace jax_like with the correct version (and test)
 @handle_array_function
 @handle_device_shifting
 def leaky_relu(
