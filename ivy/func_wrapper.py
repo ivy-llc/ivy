@@ -6,7 +6,7 @@ import weakref
 import warnings
 import copy as python_copy
 from types import FunctionType
-from typing import Callable, Literal, Union
+from typing import Callable, Literal
 import inspect
 import numpy as np
 
@@ -1418,55 +1418,70 @@ def handle_nans(fn: Callable) -> Callable:
 
 # Complex number handling #
 # ----------------------- #
-# TODO: find out how to add this to functions when the backend is explicit
-# (it currently doesn't run after `ivy.set_backend()` is called)
-def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
-    print("factory runs")  # for debugging purposes
+def handle_complex_input(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_complex_input(
+        inp,
+        *args,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        **kwargs,
+    ):
+        # do nothing if the input is real-valued
+        if not ivy.is_complex_dtype(inp):
+            return fn(inp, *args, **kwargs)
 
-    def _handle_complex_input_decorator(fn: Callable) -> Callable:
-        print("decorator runs")  # debugging
-
-        @functools.wraps(fn)
-        def _handle_complex_input(
-            inp,
-            *args,
-            complex_mode: Literal["split", "magnitude", "jax"] = "jax",
-            **kwargs,
+        if complex_mode == "split" or (
+            complex_mode == "jax" and fn.jax_like == "split"
         ):
-            print("inner function runs")  # debugging
-            # do nothing if the input is real-valued
-            if not ivy.is_complex_dtype(inp):
-                return fn(inp, *args, **kwargs)
+            real_inp = ivy.real(inp)
+            imag_inp = ivy.imag(inp)
+            return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
 
-            if complex_mode == "split" or (
-                complex_mode == "jax" and jax_like == "split"
-            ):
-                real_inp = ivy.real(inp)
-                imag_inp = ivy.imag(inp)
-                return fn(real_inp, *args, **kwargs) + 1j * fn(
-                    imag_inp, *args, **kwargs
-                )
+        elif complex_mode == "magnitude" or (
+            complex_mode == "jax" and fn.jax_like == "magnitude"
+        ):
+            mag_inp = ivy.abs(inp)
+            angle_inp = ivy.angle(inp)
+            return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
 
-            elif complex_mode == "magnitude" or (
-                complex_mode == "jax" and jax_like == "magnitude"
-            ):
-                mag_inp = ivy.abs(inp)
-                angle_inp = ivy.angle(inp)
-                return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
+        elif complex_mode == "jax" and fn.jax_like == "entire":
+            return fn(inp, *args, **kwargs)
 
-            elif complex_mode == "jax" and jax_like == "entire":
-                return fn(inp, *args, **kwargs)
+        elif complex_mode == "jax":
+            return fn.jax_like(inp, *args, **kwargs, fn_original=fn)
 
-            elif complex_mode == "jax":
-                return jax_like(inp, *args, **kwargs)
+        else:
+            raise IvyValueError(f"complex_mode '{complex_mode}' is not recognised.")
 
-            else:
-                # TODO: find a way to remove the `numpy:` part from the error readout
-                raise IvyValueError(f"complex_mode '{complex_mode}' is not recognised.")
+    _handle_complex_input.handle_complex_input = True
+    return _handle_complex_input
 
-        return _handle_complex_input
 
-    return _handle_complex_input_decorator
+# Adding function attributes #
+# -------------------------- #
+def add_attributes(**kwargs) -> Callable:
+    """
+    Add every keyword argument as an attribute of the wrapped function. For example, if
+    kwargs contains `{foo: 'bar'}` and this wraps function `func`, then after using this
+    decorator `func.foo` will have the value `'bar'`.
+
+    Parameters
+    ----------
+    kwargs
+        The attributes to be added to the function
+
+    Returns
+    -------
+        The wrapped function, with each attribute and its value added
+    """
+
+    def _add_attributes(fn: Callable) -> Callable:
+        for k, v in kwargs.items():
+            fn.__dict__[k] = v
+        return fn
+
+    _add_attributes.add_attributes = True
+    return _add_attributes
 
 
 attribute_dict = {

@@ -1,6 +1,6 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable
 
 # local
 import ivy
@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_complex_input,
+    add_attributes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -83,6 +84,7 @@ def _leaky_relu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    fn_original: Optional[Callable],
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -103,8 +105,9 @@ def _leaky_relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_complex_input(jax_like=_leaky_relu_jax_like)
+@handle_complex_input
 @handle_device_shifting
+@add_attributes(jax_like=_leaky_relu_jax_like)
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
