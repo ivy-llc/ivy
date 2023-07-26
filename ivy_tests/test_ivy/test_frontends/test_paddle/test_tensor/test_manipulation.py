@@ -470,7 +470,7 @@ def test_paddle_broadcast_to(
         x=x[0],
         shape=shape,
     )
-    
+
 
 @st.composite
 def _gather_helper(draw):
@@ -518,8 +518,8 @@ def test_paddle_gather(
         param=param[0],
         indices=indices[0],
     )
-    
-    
+
+
 # flip
 @st.composite
 def _dtype_x_axis(draw, **kwargs):
