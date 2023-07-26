@@ -169,6 +169,13 @@ def cross(input, other, *, dim=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def norm(A, ord=None, dim=None, keepdim=False, *, dtype=None, out=None):
+    return torch_frontend.reduction_ops.norm(
+        A, p=ord, dim=dim, keepdim=keepdim, out=out, dtype=dtype
+    )
+
+
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
