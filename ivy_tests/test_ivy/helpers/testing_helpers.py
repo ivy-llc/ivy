@@ -25,7 +25,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltCompileStrategy,
     BuiltFrontendArrayStrategy,
 )
-from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData, FrontendTestData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
@@ -452,7 +452,11 @@ def handle_frontend_test(
         A search strategy that generates a list of boolean flags for array inputs to
         be frontend array
     """
+    callable_fw_fn, _, _ = _import_fn(fn_tree)
+
     fn_tree = "ivy.functional.frontends." + fn_tree
+    callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
+
     if aliases is not None:
         for i in range(len(aliases)):
             aliases[i] = "ivy.functional.frontends." + aliases[i]
@@ -473,7 +477,6 @@ def handle_frontend_test(
         )
 
     def test_wrapper(test_fn):
-        callable_fn, fn_name, fn_mod = _import_fn(fn_tree)
         supported_device_dtypes = _get_supported_devices_dtypes(fn_name, fn_mod)
 
         # If a test is not a Hypothesis test, we only set the test global data
@@ -510,12 +513,14 @@ def handle_frontend_test(
         else:
             wrapped_test = test_fn
 
-        wrapped_test.test_data = TestData(
-            test_fn=wrapped_test,
+        wrapped_test.test_data = FrontendTestData(
+            fw_function=callable_fw_fn,
+            ivy_function=callable_fn,
             fn_tree=fn_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
+        wrapped_test._is_frontend_test = True
 
         return wrapped_test
 
