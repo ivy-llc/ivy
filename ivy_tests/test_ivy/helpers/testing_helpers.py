@@ -527,10 +527,10 @@ def handle_frontend_test(
 def _import_method(method_tree: str):
     class_tree, _, method_name = method_tree.rpartition(".")
     module, _, class_name = class_tree.rpartition(".")
-    _mod = importlib.import_module(module)
-    _class = getattr(_mod, class_name)
-    _method = getattr(_class, method_name)
-    return _method, method_name, _class, class_name, _mod
+    module_obj = importlib.import_module(module)
+    class_obj = getattr(module_obj, class_name)
+    method_obj = getattr(class_obj, method_name)
+    return method_obj, method_name, class_obj, class_name, module_obj
 
 
 def handle_method(
