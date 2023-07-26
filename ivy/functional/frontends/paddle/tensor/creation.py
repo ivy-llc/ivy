@@ -146,3 +146,11 @@ def diag(x, offset=0, padding_value=0, name=None):
     else:
         ret = ivy.diag(x, k=offset)
     return ret
+
+  
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def logspace(start, stop, num, base=10.0, dtype=None, name=None):
+    return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)
