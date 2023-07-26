@@ -562,7 +562,6 @@ def test_paddle_flip(
         x=x[0],
         axis=axis,
     )
-    )
 
 
 @handle_frontend_test(
