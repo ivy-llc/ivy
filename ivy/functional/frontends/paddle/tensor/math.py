@@ -386,6 +386,14 @@ def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
 
 
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def prod(x, axis=None, keepdim=False, dtype=None, name=None):
+    return ivy.prod(x, axis=axis, keepdims=keepdim, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 # @with_supported_dtypes({"2.5.0 and below": ("bool")}, "paddle")
 def all(x, axis=None, keepdim=False, name=None):

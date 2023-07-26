@@ -1,7 +1,7 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List
 import paddle
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -548,7 +548,3 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
-
-
-def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.numpy().strides
