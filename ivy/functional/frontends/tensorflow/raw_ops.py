@@ -907,4 +907,35 @@ Imag.supported_dtypes = {
 }
 
 
-Einsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.einsum))
+@to_ivy_arrays_and_back
+def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
+    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+
+
+Svd.supported_dtypes = {
+    "tensorflow": (
+        "float64",
+        "float128",
+        "halfcomplex64",
+        "complex128",
+    ),
+}
+
+
+Einsum = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "complex128 ",
+                "complex64",
+                "float64",
+                "float32",
+                "float16",
+                "int64",
+                "int32"
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
+)
