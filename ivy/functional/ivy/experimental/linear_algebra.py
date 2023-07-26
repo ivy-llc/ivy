@@ -746,3 +746,83 @@ def mode_dot(
         return ivy.reshape(res, new_shape, out=out)
     else:  # tensor times vec: refold the unfolding
         return ivy.fold(res, fold_mode, new_shape, out=out)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def multi_mode_dot(
+    tensor: Union[ivy.Array, ivy.NativeArray],
+    mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    modes: Optional[Sequence[int]] = None,
+    skip: Optional[Sequence[int]] = None,
+    transpose: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""
+    N-mode product of a tensor and several matrices or vectors over several modes.
+
+    Parameters
+    ----------
+    tensor
+        the input tensor
+
+    mat_or_vec_list
+         sequence of matrices or vectors of length ``tensor.ndim``
+
+    skip
+        None or int, optional, default is None
+        If not None, index of a matrix to skip.
+
+    modes
+        None or int list, optional, default is None
+
+    transpose
+        If True, the matrices or vectors in in the list are transposed.
+        For complex tensors, the conjugate transpose is used.
+
+    Returns
+    -------
+    ivy.Array
+        tensor times each matrix or vector in the list at mode `mode`
+
+    Notes
+    -----
+    If no modes are specified, just assumes there is one matrix or vector per mode and returns:
+
+    :math:`\\text{tensor  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
+    """
+    if modes is None:
+        modes = range(len(mat_or_vec_list))
+
+    decrement = 0  # If we multiply by a vector, we diminish the dimension of the tensor
+
+    res = tensor
+
+    # Order of mode dots doesn't matter for different modes
+    # Sorting by mode shouldn't change order for equal modes
+    factors_modes = sorted(zip(mat_or_vec_list, modes), key=lambda x: x[1])
+    for i, (mat_or_vec_list, mode) in enumerate(factors_modes):
+        ndims = len(mat_or_vec_list.shape)
+        if (skip is not None) and (i == skip):
+            continue
+
+        if transpose and ndims == 2:
+            res = mode_dot(
+                res,
+                ivy.conj(ivy.permute_dims(mat_or_vec_list, (1, 0))),
+                mode - decrement,
+            )
+        else:
+            res = mode_dot(res, mat_or_vec_list, mode - decrement)
+
+        if ndims == 1:
+            decrement += 1
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+
+    return res

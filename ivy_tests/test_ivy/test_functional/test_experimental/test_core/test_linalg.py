@@ -814,3 +814,61 @@ def test_mode_dot_tensorly_1(X, U, true_res):
     true_res = ivy.array(true_res)
     res = ivy.mode_dot(X, U, 0)
     assert np.allclose(true_res, res, atol=1e-1, rtol=1e-1)
+
+
+@st.composite
+def _multi_mode_dot_data(draw):
+    t1_dtype, t1, shape_t1 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            ret_shape=True,
+            min_num_dims=2,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+        )
+    )
+    modes = [*range(len(shape_t1))]
+    skip = draw(st.lists(helpers.ints(min_value=0, max_value=len(shape_t1) - 1)))
+    t2 = []
+    t2_dtype = []
+    for i in modes:
+        mode_dimsize = shape_t1[i]
+        rows = draw(helpers.ints(min_value=1, max_value=4))
+        shape = draw(st.sampled_from([(mode_dimsize,), (rows, mode_dimsize)]))
+        mat_or_vec_dtype, mat_or_vec = draw(
+            helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("float"),
+                shape=shape,
+                large_abs_safety_factor=20,
+                small_abs_safety_factor=20,
+                safety_factor_scale="log",
+            )
+        )
+        t2.append(mat_or_vec[0])
+        t2_dtype.append(mat_or_vec_dtype[0])
+
+    return t1_dtype + t2_dtype, t1[0], t2, modes, skip
+
+
+# TODO fix instance method
+@handle_test(
+    fn_tree="functional.ivy.experimental.multi_mode_dot",
+    data=_multi_mode_dot_data(),
+)
+def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, t1, t2, modes, skip = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        tensor=t1,
+        mat_or_vec_list=t2,
+        modes=modes,
+        skip=skip,
+    )
