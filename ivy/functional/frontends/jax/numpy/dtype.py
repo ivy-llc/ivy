@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_jax,
 )
 from ivy.functional.frontends.numpy import dtype as np_dtype
+from ivy import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -83,6 +84,11 @@ def promote_types(type1, type2, /):
 def result_type(*args):
     return ivy.result_type(*args)
 
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float16", "float32", "float64")},
+    "jax",
+)
 @to_ivy_arrays_and_back
 def finfo(dtype):
     return ivy.finfo(dtype)
