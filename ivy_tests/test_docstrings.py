@@ -256,6 +256,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "linspace": "jax",
         "native_array":"tensorflow",
         "logspace": "jax",
+        "function_unsupported_devices":"numpy",
 
     }
     # second dict to keep if a function fails in two backends
@@ -333,6 +334,7 @@ def test_docstrings(backend):
         "dropout1d",
         "dropout2d",
         "dropout3d",
+        "set_split_factor",
     ]
     # the temp skip list consists of functions which have an issue with their
     # implementation

@@ -398,9 +398,9 @@ def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
 
     Examples
     --------
-    >>> y = ivy.as_ivy_dev('cuda:0')
+    >>> y = ivy.as_ivy_dev('cpu')
     >>> print(y)
-    cuda:0
+    cpu
     """
     return ivy.current_backend().as_ivy_dev(device)
 
@@ -994,6 +994,7 @@ def set_split_factor(
     --------
     >>> print(ivy.default_device())
     cpu
+
     >>> ivy.set_split_factor(0.5)
     >>> print(ivy.split_factors)
     {'cpu': 0.5}
@@ -1001,11 +1002,11 @@ def set_split_factor(
     >>> import torch
     >>> ivy.set_backend("torch")
     >>> device = torch.device("cuda")
-    >>> ivy.set_split_factor(0.3,device)
+    >>> ivy.set_split_factor(0.3, device=device)
     >>> print(ivy.split_factors)
     {device(type='cuda'): 0.3}
 
-    >>> ivy.set_split_factor(0.4,"tpu")
+    >>> ivy.set_split_factor(0.4, device="tpu")
     >>> print(ivy.split_factors)
     {'tpu': 0.4}
 
@@ -1289,9 +1290,8 @@ def function_unsupported_devices(
 
     Examples
     --------
-    >>> import ivy
     >>> print(ivy.function_unsupported_devices(ivy.ones))
-    ()
+    ('tpu',)
     """
     ivy.utils.assertions.check_true(
         _is_valid_devices_attributes(fn),
