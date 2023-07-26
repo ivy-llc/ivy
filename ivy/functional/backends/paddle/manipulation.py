@@ -30,12 +30,28 @@ def concat(
     if len(dtypes_list) > 0:
         for d in dtypes_list:
             dtype = ivy.promote_types(dtype, d)
-    if dtype == paddle.int16:
-        xs = list(map(lambda x: x.cast("int32"), xs))
-        return paddle.concat(xs, axis=axis).cast("int16")
+    xs = list(map(lambda x: x.cast("int32" if dtype == paddle.int16 else dtype), xs))
+    if all(0 in x.shape for x in xs):
+        shapes = [x.shape for x in xs]
+        if any(len(s) != len(shapes[0]) for s in shapes):
+            raise ivy.exceptions.IvyValueError(
+                "all the input arrays must have the same number of dimensions"
+            )
+        axis = axis + len(xs[0].shape) if axis < 0 else axis
+        sizes = [[v for i, v in enumerate(s) if i != axis] for s in shapes]
+        if any(s != sizes[0] for s in sizes):
+            raise ivy.exceptions.IvyValueError(
+                "the input arrays must have the same size along the specified axis"
+            )
+        ret = paddle.empty(
+            [*shapes[0][:axis], sum(s[axis] for s in shapes), *shapes[0][axis + 1 :]],
+            dtype=dtype,
+        )
     else:
-        xs = list(map(lambda x: x.cast(dtype), xs))
-        return paddle.concat(xs, axis=axis)
+        ret = paddle.concat(xs, axis=axis)
+    if dtype == paddle.int16:
+        ret = ret.cast("int16")
+    return ret
 
 
 def expand_dims(
@@ -47,10 +63,12 @@ def expand_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
-    # reshape since unsqueeze sets a maximum limit of dimensions
+    if 0 in x.shape:
+        return paddle.empty(out_shape, dtype=x.dtype)
     if copy:
         newarr = paddle.clone(x)
         return newarr.reshape(out_shape)
+    # reshape since unsqueeze sets a maximum limit of dimensions
     return x.reshape(out_shape)
 
 
