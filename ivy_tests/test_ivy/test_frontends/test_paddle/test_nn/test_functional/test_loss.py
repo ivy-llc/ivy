@@ -386,7 +386,7 @@ def test_paddle_margin_ranking_loss(
         on_device=on_device,
         input=x[0],
         output=x[1],
-        label=x[3],
+        label=x[2],
         margin=margin,
         reduction=reduction,
     )
