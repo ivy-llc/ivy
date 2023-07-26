@@ -355,11 +355,11 @@ def frac(x, name=None):
 @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def logcumsumexp(x, axis=None, dtype=None, name=None):
-    if len(x) == 0:
+    if len(x.shape) == 0:
         ret = x
     else:
         # For this x is input and name is out
-        original_dtype = x.dtype
+        original_dtype = dtype
         exp_input = ivy.exp(x.astype("float64"))
         summed_exp_input = ivy.cumsum(exp_input, axis=axis)
         ret = ivy.log(summed_exp_input).astype(original_dtype)
