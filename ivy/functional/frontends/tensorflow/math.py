@@ -713,6 +713,7 @@ def atanh(x, name="atanh"):
     return ivy.atanh(x)
 
 
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64", "complex64", "complex128")}, "tensorflow")
 @to_ivy_arrays_and_back
 def xdivy(x, y, name=None):
     x, y = check_tensorflow_casting(x, y)

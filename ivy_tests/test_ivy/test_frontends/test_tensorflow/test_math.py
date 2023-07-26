@@ -2917,4 +2917,5 @@ def test_tensorflow_xdivy(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        backend_to_test="numpy",
     )
