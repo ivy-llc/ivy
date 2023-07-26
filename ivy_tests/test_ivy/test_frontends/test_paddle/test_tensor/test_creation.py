@@ -1,10 +1,10 @@
 # global
-import ivy
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 
 
 # Helpers #
@@ -14,15 +14,16 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @st.composite
 def _input_fill_and_dtype(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
-    dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-    if ivy.is_uint_dtype(dtype[0]):
-        fill_values = draw(st.integers(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtype[0]):
-        fill_values = draw(st.integers(min_value=-5, max_value=5))
-    else:
-        fill_values = draw(st.floats(min_value=-5, max_value=5))
-    dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
-    return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
+        if ivy_backend.is_uint_dtype(dtype[0]):
+            fill_values = draw(st.integers(min_value=0, max_value=5))
+        elif ivy_backend.is_int_dtype(dtype[0]):
+            fill_values = draw(st.integers(min_value=-5, max_value=5))
+        else:
+            fill_values = draw(st.floats(min_value=-5, max_value=5))
+        dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+        return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
 
 
 # Tests #
@@ -43,10 +44,12 @@ def test_paddle_to_tensor(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -76,10 +79,12 @@ def test_paddle_ones(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -104,11 +109,13 @@ def test_paddle_ones_like(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -137,10 +144,12 @@ def test_paddle_zeros(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -165,11 +174,13 @@ def test_paddle_zeros_like(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -198,11 +209,13 @@ def test_paddle_full(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, fill, dtype_to_cast = input_fill_dtype
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -224,11 +237,13 @@ def test_paddle_full_like(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, fill, dtype_to_cast = input_fill_dtype
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -256,10 +271,12 @@ def test_paddle_arange(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -290,10 +307,12 @@ def test_paddle_empty(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -321,9 +340,11 @@ def test_paddle_eye(
     fn_tree,
     test_flags,
     frontend,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -346,6 +367,7 @@ def test_paddle_empty_like(
     dtype,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -353,6 +375,7 @@ def test_paddle_empty_like(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -375,6 +398,7 @@ def test_paddle_tril(
     *,
     dtype_and_values,
     diagonal,
+    backend_fw,
     on_device,
     fn_tree,
     frontend,
@@ -384,6 +408,7 @@ def test_paddle_tril(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -406,6 +431,7 @@ def test_paddle_triu(
     dtype_and_values,
     diagonal,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -413,6 +439,7 @@ def test_paddle_triu(
     dtype, values = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -439,6 +466,7 @@ def test_paddle_diagflat(
     dtype_and_values,
     offset,
     test_flags,
+    backend_fw,
     frontend,
     fn_tree,
     on_device,
@@ -447,6 +475,7 @@ def test_paddle_diagflat(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -470,6 +499,7 @@ def test_paddle_diagflat(
 def test_paddle_meshgrid(
     dtype_and_arrays,
     test_flags,
+    backend_fw,
     frontend,
     fn_tree,
     on_device,
@@ -483,6 +513,7 @@ def test_paddle_meshgrid(
     test_flags.num_positional_args = len(arrays)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -508,7 +539,7 @@ def test_paddle_tril_indices(
     test_flags,
     backend_fw,
     frontend,
-    fn_tree,
+	  fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -518,9 +549,45 @@ def test_paddle_tril_indices(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        test_values=False,
+		 test_values=False,
         row=row,
         col=col,
         offset=offset,
-        dtype=dtype[0],
+		 dtype=dtype[0],
     )
+    
+    
+# logspace
+@handle_frontend_test(
+    fn_tree="paddle.logspace",
+    start=helpers.floats(min_value=-10, max_value=10),
+    stop=helpers.floats(min_value=-10, max_value=10),
+    num=helpers.ints(min_value=1, max_value=5),
+    base=st.floats(min_value=0.1, max_value=10.0),
+    dtype=helpers.get_dtypes("float"),
+    test_with_out=st.just(False),
+)
+def test_paddle_logspace(
+    start,
+    stop,
+    num,
+    base,
+    dtype,
+    frontend,
+    test_flags,
+	  fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+		 start=start,
+        stop=stop,
+        num=num,
+        base=base,
+		 dtype=dtype[0],
+    )
+    
