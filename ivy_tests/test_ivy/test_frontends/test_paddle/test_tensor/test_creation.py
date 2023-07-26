@@ -542,6 +542,7 @@ def test_paddle_diag(
     dtype_and_x,
     k,
     p,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -550,6 +551,7 @@ def test_paddle_diag(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
