@@ -2835,22 +2835,30 @@ set_item.mixed_backend_wrappers = {
 def _parse_query(query, x_shape, scatter=False):
     query = (query,) if not isinstance(query, tuple) else query
 
+    # sequence and integer queries are dealt with as array queries
+    query = [ivy.array(q) if isinstance(q, (tuple, list, int)) else q for q in query]
+
+    # check if non-slice queries are in consecutive positions
+    # if so, they have to be moved to the front
+    # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
+    # relevant only for gathering
+    if not scatter:
+        non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
+        to_front = any(ivy.diff(non_slice_q_idxs) != 1) and len(non_slice_q_idxs) > 1
+    else:
+        to_front = False
+
     # extract newaxis queries
     new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
     query = [Ellipsis] if query == [] else query
-
-    # sequence queries are dealt with as array queries
-    query = [ivy.array(q) if isinstance(q, (tuple, list)) else q for q in query]
 
     # parse ellipsis
     ellipsis_inds = None
     if any(q is Ellipsis for q in query):
         query, ellipsis_inds = _parse_ellipsis(query, len(x_shape))
 
-    # if the query contains arrays, they need broadcasting and may be moved to the front
-    # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
-    # for set_item we can bypass re-ordering
+    # broadcast array queries
     array_inds = [i for i, v in enumerate(query) if ivy.is_array(v)]
     if array_inds:
         new_arrays = ivy.broadcast_arrays(
@@ -2862,22 +2870,12 @@ def _parse_query(query, x_shape, scatter=False):
         ]
         for idx, arr in zip(array_inds, new_arrays):
             query[idx] = arr
-        to_front = not scatter and (
-            not all(
-                array_inds[i + 1] - array_inds[i] == 1
-                for i in range(len(array_inds) - 1)
-            )
-            or any(isinstance(element, slice) for element in query)
-            and any(isinstance(element, int) for element in query)
-        )
 
     # convert slices to range arrays and replace negative values
     for i, idx in enumerate(query):
         s = x_shape[i]
         if isinstance(idx, slice):
             q_i = _parse_slice(idx, s)
-        elif isinstance(idx, int):
-            q_i = ivy.array(idx + s if idx < 0 else idx)
         elif ivy.is_array(idx):
             q_i = ivy.where(idx < 0, idx + s, idx)
         else:
