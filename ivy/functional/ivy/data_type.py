@@ -216,15 +216,19 @@ def _get_dtypes(fn, complement=True):
 
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
-            v = getattr(fn, key)
+            dtypes = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if isinstance(v, dict):
-                v = v.get(ivy.current_backend_str(), base)
-            for i, d in enumerate(v):
-                if d in typesets:
-                    v = v[:i] + typesets[d] + v[i + 1 :]
-            ivy.utils.assertions.check_isinstance(v, tuple)
-            supported = merge_fn(supported, set(v))
+            if isinstance(dtypes, dict):
+                dtypes = dtypes.get(ivy.current_backend_str(), base)
+            ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            dtypes = list(dtypes)
+            typeset_list = []
+            for i, dtype in enumerate(dtypes[::-1]):
+                if dtype in typesets:
+                    typeset_list.extend(typesets[dtype])
+                    dtypes.pop(i)
+            dtypes = dtypes + typeset_list
+            supported = merge_fn(supported, set(dtypes))
 
     if complement:
         supported = set(ivy.all_dtypes).difference(supported)
