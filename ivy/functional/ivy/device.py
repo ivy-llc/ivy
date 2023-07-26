@@ -35,6 +35,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -338,6 +339,7 @@ def unset_soft_device_mode() -> None:
 # Retrieval
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
@@ -887,6 +889,7 @@ def unset_default_device() -> None:
 # Device Allocation #
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
