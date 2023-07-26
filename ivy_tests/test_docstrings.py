@@ -257,7 +257,9 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "native_array":"tensorflow",
         "logspace": "jax",
         "function_unsupported_devices":"numpy",
-
+        "maximum":"torch",
+        "minimum":"torch",
+        "deg2rad":"tensorflow",
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
