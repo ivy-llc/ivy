@@ -992,12 +992,14 @@ def test_torch_triplet_margin_with_distance_loss(
 @handle_frontend_test(
     fn_tree="torch.nn.functional.multilabel_margin_loss",
     dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         allow_inf=False,
         shared_dtype=True,
         min_num_dims=1,
     ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )

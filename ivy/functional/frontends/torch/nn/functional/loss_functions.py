@@ -618,7 +618,7 @@ def triplet_margin_with_distance_loss(
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def multilabel_margin_loss(
-    input, target, reduction="mean", size_average=None, reduce=None
+    input, target, size_average=None, reduce=None, reduction="mean"
 ):
     ivy.assertions.check_true(
         input.shape == target.shape,
