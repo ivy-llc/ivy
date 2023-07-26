@@ -560,17 +560,16 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 def handle_backend_invalid(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_backend_invalid(*args, **kwargs):
-        from ivy.utils.backend.handler import _determine_backend_from_args
-
-        for arg in args:
-            if ivy.current_backend() != _determine_backend_from_args(arg):
-                raise ivy.utils.exceptions.InvalidBackendException(
-                    f"The current backend is {ivy.current_backend()} while the"
-                    " ivy.Array used is based on the"
-                    f" {_determine_backend_from_args(arg)} backend."
-                    " Please set dynamic_backend=True for the array if you want to"
-                    " convert it to the target backend"
-                )
+        target_backend = ivy.utils.backend.handler._determine_backend_from_args(
+            args[-1]
+        )
+        if ivy.current_backend() != target_backend:
+            raise ivy.utils.exceptions.InvalidBackendException(
+                "Operation not allowed. Array was instantiated with backend"
+                f" {target_backend}. But current backend is"
+                f" {ivy.current_backend_str()}. Please set dynamic_backend=True for the"
+                " array if you want to convert it to the target backend"
+            )
         return fn(*args, **kwargs)
 
     _handle_backend_invalid.handle_backend_invalid = True
