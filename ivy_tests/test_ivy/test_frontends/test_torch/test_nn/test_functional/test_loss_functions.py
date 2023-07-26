@@ -998,6 +998,8 @@ def test_torch_triplet_margin_with_distance_loss(
         shared_dtype=True,
         min_num_dims=1,
     ),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
