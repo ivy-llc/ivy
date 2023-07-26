@@ -1715,7 +1715,7 @@ def test_paddle_rsqrt(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.all",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=["bool"],
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
@@ -1723,7 +1723,7 @@ def test_paddle_rsqrt(
     ),
     keepdims=st.booleans(),
 )
-def test_torch_all(
+def test_paddle_all(
     *,
     dtype_input_axis,
     keepdims,
@@ -1731,15 +1731,17 @@ def test_torch_all(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
         axis=axis,
         keepdim=keepdims,
     )
