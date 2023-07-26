@@ -277,6 +277,7 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -471,6 +472,7 @@ def asarray(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -535,6 +537,7 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1096,6 +1099,7 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
+@handle_backend_invalid
 @infer_device
 @infer_dtype
 @handle_array_function
@@ -1200,6 +1204,7 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1461,6 +1466,7 @@ def linspace(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1581,6 +1587,7 @@ def meshgrid(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1858,6 +1865,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
+@handle_backend_invalid
 @handle_array_like_without_promotion
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
@@ -2205,6 +2213,7 @@ def frombuffer(
     )
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @outputs_to_ivy_arrays
