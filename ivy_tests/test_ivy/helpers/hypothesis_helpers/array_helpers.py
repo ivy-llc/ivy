@@ -1,7 +1,7 @@
 # global
 import numpy as np
 import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
@@ -1870,30 +1870,31 @@ def dtype_array_query(
             )
             new_index = new_index[0]
         else:
-            new_index = slice(
-                start := draw(
-                    st.one_of(
-                        st.integers(min_value=-s - 5, max_value=s + 5),
-                        st.just(None),
-                    )
-                ),
-                end := draw(
-                    st.one_of(
-                        st.integers(min_value=-s - 5, max_value=s + 5),
-                        st.just(None),
-                    )
-                ),
-                (
-                    draw(st.integers(min_value=1, max_value=s + 5))
-                    if (0 if start is None else s + start if start < 0 else start)
-                    < (s - 1 if end is None else s + end if end < 0 else end)
-                    else (
-                        draw(st.integers(max_value=-1, min_value=-s - 5))
-                        if allow_neg_step
-                        else assume(False)
-                    )
-                ),
+            start = draw(
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
             )
+            end = draw(
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
+            )
+            step = draw(
+                st.one_of(
+                    (
+                        st.integers(min_value=1, max_value=1 + 2 * s)
+                        if not allow_neg_step
+                        else st.integers(
+                            min_value=-1 - 2 * s, max_value=1 + 2 * s
+                        ).filter(lambda x: x != 0)
+                    ),
+                    st.just(None),
+                )
+            )
+            new_index = slice(start, end, step)
         index += [new_index]
     if len(index_types) and draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
