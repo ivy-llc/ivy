@@ -201,8 +201,8 @@ def test_paddle_zeropad2d(
         shared_dtype=True,
         min_value=-100,
         max_value=100,
-        min_num_dims=4,
-        max_num_dims=4,
+        min_num_dims=3,
+        max_num_dims=5,
         min_dim_size=2,
     ),
     size=st.lists(
