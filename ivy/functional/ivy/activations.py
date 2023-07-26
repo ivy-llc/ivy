@@ -78,15 +78,32 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
+@handle_device_shifting
+def _leaky_relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    alpha: float = 0.2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        x * alpha,
+        x,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_complex_input(
-    jax_like="split"
-)  # TODO: replace jax_like with the correct version (and test)
 @handle_array_function
+@handle_complex_input(jax_like=_leaky_relu_jax_like)
 @handle_device_shifting
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],

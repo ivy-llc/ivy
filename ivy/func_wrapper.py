@@ -1441,7 +1441,6 @@ def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
                     imag_inp, *args, **kwargs
                 )
 
-            # TODO: fix this part, seems to throw an error in the multiplication
             elif complex_mode == "magnitude" or (
                 complex_mode == "jax" and jax_like == "magnitude"
             ):
