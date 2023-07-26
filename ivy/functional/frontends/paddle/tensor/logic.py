@@ -201,6 +201,25 @@ def bitwise_xor(x, y, /, *, name=None, out=None):
 @with_supported_dtypes(
     {
         "2.5.0 and below": (
+            "bool",
+            "uint8",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+@handle_out_argument
+def bitwise_not(x, out=None, name=None):
+    return ivy.bitwise_invert(x, out=out)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
             "float32",
             "float64",
             "bool",
@@ -257,6 +276,7 @@ def isclose(x, y, rtol=1e-05, atol=1e-08, equal_nan=False, name=None):
 @handle_out_argument
 def logical_and(x, y, /, *, name=None, out=None):
     return ivy.logical_and(x, y, out=out)
+
 
 @with_unsupported_dtypes(
     {"2.5.0 and below": ("uint8", "int8", "int16", "complex64", "complex128")}, "paddle"

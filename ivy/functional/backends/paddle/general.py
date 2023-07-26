@@ -1,7 +1,7 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List
 import paddle
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -369,9 +369,10 @@ def scatter_nd(
     updates = _broadcast_to(updates, expected_shape)._data
 
     # implementation
-    target = out._data
-    target_given = ivy.exists(target)
-    if not target_given:
+    target_given = ivy.exists(out)
+    if target_given:
+        target = out._data
+    else:
         shape = list(shape) if ivy.exists(shape) else out.shape
         target = paddle.zeros(shape=shape).astype(updates.dtype)
     if ivy.exists(shape) and target_given:
@@ -407,12 +408,8 @@ def scatter_nd(
                 paddle.gather_nd(target.cast("float32"), indices),
             ).cast(target.dtype)
         if paddle.is_complex(target):
-            result_real = paddle.scatter_nd_add(
-                target.real(), indices, updates.real().cast(target.dtype)
-            )
-            result_imag = paddle.scatter_nd_add(
-                target.imag(), indices, updates.imag().cast(target.dtype)
-            )
+            result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
+            result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
             ret = paddle.complex(result_real, result_imag)
         else:
             ret = paddle.scatter_nd_add(
@@ -551,7 +548,3 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
-
-
-def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.numpy().strides

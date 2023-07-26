@@ -35,6 +35,15 @@ def eigh(tensor, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+def eigvals(tensor, name=None):
+    return ivy.eigvals(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
 
@@ -308,3 +317,65 @@ def band_part(input, num_lower, num_upper, name=None):
         (num_upper < 0) | ((n - m) <= num_upper)
     )
     return ivy.where(mask, input, ivy.zeros_like(input))
+
+
+@to_ivy_arrays_and_back
+def qr(input, /, *, full_matrices=False, name=None):
+    return ivy.qr(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def inv(input, adjoint=False, name=None):
+    return ivy.inv(input, adjoint=adjoint)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def tensor_diag(diagonal, /, *, name=None):
+    diagonal = ivy.array(diagonal)
+    rank = ivy.matrix_rank(diagonal)
+    if rank > 1:
+        raise ValueError("wrong tensor rank, at most 1")
+    return ivy.diag(diagonal)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def expm(input, name=None):
+    return ivy.matrix_exp(input)

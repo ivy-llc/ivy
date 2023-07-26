@@ -706,3 +706,26 @@ def top_k(input, k=1, sorted=True, name=None):
 @to_ivy_arrays_and_back
 def real(input, name=None):
     return ivy.real(input)
+
+
+@to_ivy_arrays_and_back
+def atanh(x, name="atanh"):
+    return ivy.atanh(x)
+
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("int32",)},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def bincount(
+    arr,
+    weights=None,
+    minlength=None,
+    maxlength=None,
+    dtype=ivy.int32,
+    name=None,
+    axis=None,
+    binary_output=False,
+):
+    return ivy.bincount(arr, weights=weights, minlength=minlength)

@@ -14,6 +14,7 @@ from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ...ivy.general import _broadcast_to
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -32,7 +33,7 @@ def current_backend_str() -> str:
 def get_item(
     x: np.ndarray,
     /,
-    query: np.ndarray,
+    query: Union[np.ndarray, Tuple],
     *,
     copy: bool = None,
 ) -> np.ndarray:
@@ -312,6 +313,7 @@ def scatter_nd(
     if not target_given:
         shape = list(shape) if ivy.exists(shape) else list(out.shape)
         target = np.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)
     if reduction == "sum":
         np.add.at(target, indices_tuple, updates)
     elif reduction == "replace":
@@ -433,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,
@@ -455,7 +457,3 @@ isin.support_native_out = True
 
 def itemsize(x: np.ndarray) -> int:
     return x.itemsize
-
-
-def strides(x: np.ndarray) -> Tuple[int]:
-    return x.strides

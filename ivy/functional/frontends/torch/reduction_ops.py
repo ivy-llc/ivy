@@ -294,7 +294,7 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is not None:
         sorted = True
-    results = ivy.unique_all(input, by_value=sorted, axis=dim)
+    results = ivy.unique_all(input, axis=dim, by_value=sorted)
 
     fields = ["output"]
     if return_inverse:
