@@ -8,15 +8,11 @@ from ivy import Module
 class LogPoissonLoss(Module):
     def __init__(
         self,
-        true,
-        pred,
         *,
         compute_full_loss: bool = False,
         axis: int = -1,
         reduction: str = "none"
     ):
-        self._true = true
-        self._pred = pred
         self._compute_full_loss = compute_full_loss
         self._axis = axis
         self._reduction = reduction
