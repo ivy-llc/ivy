@@ -1,10 +1,9 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from functools import reduce as _reduce
-import math
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List
 
 try:
     import functorch
@@ -495,9 +494,3 @@ isin.support_native_out = True
 
 def itemsize(x: torch.tensor) -> int:
     return x.element_size()
-
-
-def strides(x: torch.tensor) -> Tuple[int]:
-    return tuple(
-        [int(stride * math.ceil(ivy.dtype_bits(x.dtype) / 8)) for stride in x.stride()]
-    )
