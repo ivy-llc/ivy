@@ -210,3 +210,41 @@ def kl_div(
     else:
         pass
     return out.astype(label.dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@inputs_to_ivy_arrays
+def nll_loss(
+    input,
+    label,
+    weight=None,
+    reduction="mean",
+    ignore_index=-100,
+    name=None,
+):
+    if weight is not None:
+        raise ValueError("Weighted nll_loss is not supported in PaddlePaddle.")
+
+    # Get the number of classes
+    ivy.shape(input)[-1]
+
+    # Compute the cross-entropy loss
+    loss = ivy.functional.cross_entropy(input, label, reduction="none", axis=-1)
+
+    # Apply ignore_index if specified
+    if ignore_index is not None:
+        mask = ivy.not_equal(label, ignore_index)
+        loss = ivy.where(mask, loss, 0)
+
+    # Compute the reduction according to the specified method
+    if reduction == "none":
+        pass
+    elif reduction == "mean":
+        loss = ivy.mean(loss)
+    elif reduction == "sum":
+        loss = ivy.sum(loss)
+
+    return paddle.to_tensor(loss)
