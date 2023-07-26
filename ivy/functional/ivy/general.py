@@ -2844,7 +2844,7 @@ def _parse_query(query, x_shape, scatter=False):
     # relevant only for gathering
     if not scatter:
         non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-        to_front = any(ivy.diff(non_slice_q_idxs) != 1) and len(non_slice_q_idxs) > 1
+        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
     else:
         to_front = False
 
