@@ -289,9 +289,10 @@ def astype(
     ivy.array([1., 2.])
 
     >>> x = ivy.array([3.141, 2.718, 1.618])
+    >>> y = ivy.zeros_like(x)
     >>> ivy.astype(x, ivy.int32, out=y)
     >>> print(y)
-    ivy.array([3, 2, 1])
+    ivy.array([3., 2., 1.])
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> ivy.astype(x, ivy.float64, out=x)
@@ -314,13 +315,13 @@ def astype(
         b: ivy.array([True, False, False])
     }
 
-    Using :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([[-1, -2], [0, 2]])
     >>> print(x.astype(ivy.float64))
     ivy.array([[-1., -2.],  [0.,  2.]])
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([False,True,True]),
     ...                   b=ivy.array([3.14, 2.718, 1.618]))
@@ -1035,7 +1036,7 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     >>> xType = ivy.native_uint16
     >>> yType = ivy.closest_valid_dtype(xType)
     >>> print(yType)
-    <dtype:'uint16'>
+    uint16
 
     With :code:`str` input:
 
@@ -1861,10 +1862,8 @@ def is_int_dtype(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1., 2., 3.])
-    >>> x.dtype
-    float32
-    >>> print(ivy.is_int_dtype(x))
-    False
+    >>> print(ivy.is_int_dtype(x), x.dtype)
+    False float32
 
     With :class:`ivy.NativeArray` input:
 
@@ -1881,14 +1880,10 @@ def is_int_dtype(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),b=ivy.array([3, 4, 5]))
-    >>> x.a.dtype
-    float32
-    >>> x.b.dtype
-    int32
     >>> print(ivy.is_int_dtype(x))
     {
-        a: false,
-        b: true
+        a: False,
+        b: True
     }
     """
     if ivy.is_array(dtype_in):

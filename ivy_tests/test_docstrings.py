@@ -349,6 +349,7 @@ def test_docstrings(backend):
         "max_unpool1d",
         "pool",
         "put_along_axis",
+        "result_type",
         # works only if no backend set
         "rfftn"
     ]
