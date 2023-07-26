@@ -358,7 +358,8 @@ def logcumsumexp(x, axis=None, dtype=None, name=None):
     if len(x.shape) == 0:
         ret = x
     else:
-        # For this x is input and name is out
+        # x is input
+        # name is out
         original_dtype = dtype
         exp_input = ivy.exp(x.astype("float64"))
         summed_exp_input = ivy.cumsum(exp_input, axis=axis)
