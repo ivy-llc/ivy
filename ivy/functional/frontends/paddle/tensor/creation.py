@@ -147,7 +147,7 @@ def diag(x, offset=0, padding_value=0, name=None):
         ret = ivy.diag(x, k=offset)
     return ret
 
-  
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )

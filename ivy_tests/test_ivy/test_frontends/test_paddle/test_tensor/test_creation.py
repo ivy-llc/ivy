@@ -542,23 +542,23 @@ def test_paddle_diag(
     dtype_and_x,
     k,
     p,
-	frontend,
+    frontend,
     test_flags,
     fn_tree,
     on_device,
-	):
-	dtype, x = dtype_and_x
-	 helpers.test_frontend_function(
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		 x=x[0],
+        x=x[0],
         offset=k,
         padding_value=p,
-		 )
-    
+    )
+
 
 # logspace
 @handle_frontend_test(
@@ -576,21 +576,20 @@ def test_paddle_logspace(
     num,
     base,
     dtype,
-	frontend,
+    frontend,
     test_flags,
     fn_tree,
     on_device,
-	):
-	 helpers.test_frontend_function(
+):
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		 start=start,
+        start=start,
         stop=stop,
         num=num,
         base=base,
         dtype=dtype[0],
-		 )
-	
+    )
