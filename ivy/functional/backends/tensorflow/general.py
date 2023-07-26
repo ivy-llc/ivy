@@ -96,7 +96,7 @@ def gather_nd_helper(params, indices):
     params_shape = tf.shape(params)
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
-        tf.math.reduce_prod(params_shape[i + 1:]) for i in range(len(params_shape) - 1)
+        tf.math.reduce_prod(params_shape[i + 1 :]) for i in range(len(params_shape) - 1)
     ] + [1]
     result_dim_sizes = tf.convert_to_tensor(result_dim_sizes_list, dtype=indices.dtype)
     implicit_indices_factor = result_dim_sizes[num_index_dims - 1]
@@ -106,9 +106,13 @@ def gather_nd_helper(params, indices):
     indices_for_flat_tiled = tf.reshape(
         tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)
     )
-    indices_for_flat_tiled = tf.repeat(indices_for_flat_tiled, implicit_indices_factor, axis=1)
+    indices_for_flat_tiled = tf.repeat(
+        indices_for_flat_tiled, implicit_indices_factor, axis=1
+    )
     implicit_indices = tf.repeat(
-        tf.expand_dims(tf.range(implicit_indices_factor), 0), indices_for_flat_tiled.shape[0], axis=0
+        tf.expand_dims(tf.range(implicit_indices_factor), 0),
+        indices_for_flat_tiled.shape[0],
+        axis=0,
     )
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = tf.reshape(indices_for_flat, (-1,))
@@ -130,7 +134,7 @@ def gather_nd(
     ivy.utils.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
     try:
         return tf.gather_nd(params, indices, batch_dims=batch_dims)
-    except:   # fall back to compositional implementation
+    except:  # fall back to compositional implementation
         batch_dims = batch_dims % len(params.shape)
         result = []
         if batch_dims == 0:
@@ -141,14 +145,18 @@ def gather_nd(
                     zip_list = list(zip(params, indices))
                 else:
                     zip_list = [
-                        (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                        (p, i)
+                        for z in [zip(p1, i1) for p1, i1 in zip_list]
+                        for p, i in z
                     ]
             for z in zip_list:
                 p, i = z
                 r = gather_nd_helper(p, i)
                 result.append(r)
             result = tf.stack(result)
-            result = tf.reshape(result, tf.concat([params.shape[0:batch_dims], result.shape[1:]], 0))
+            result = tf.reshape(
+                result, tf.concat([params.shape[0:batch_dims], result.shape[1:]], 0)
+            )
         return result
 
 
@@ -345,6 +353,9 @@ def scatter_nd(
         else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
     )
     updates = _broadcast_to(updates, expected_shape)._data
+    if len(updates.shape) == 0:
+        indices = tf.expand_dims(indices, 0)
+        updates = tf.expand_dims(updates, 0)
 
     # implementation
     target = out
@@ -504,7 +515,3 @@ def isin(
 
 def itemsize(x: Union[tf.Tensor, tf.Variable]) -> int:
     return x.dtype.size
-
-
-def strides(x: Union[tf.Tensor, tf.Variable]) -> Tuple[int]:
-    return x.numpy().strides
