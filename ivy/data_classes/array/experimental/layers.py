@@ -1024,3 +1024,35 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def rfftn(
+        self: ivy.Array,
+        s: Sequence[int] = None,
+        axes: Sequence[int] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the n-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        s
+            Shape (length of each transformed axis) of the output.
+        axes
+            Axes over which to compute the RFFT. If not given, the last len(s) axes are
+            used.
+        norm
+            Normalization mode: "backward", "ortho", or "forward".
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            The result of the RFFT operation.
+        """
+        return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)

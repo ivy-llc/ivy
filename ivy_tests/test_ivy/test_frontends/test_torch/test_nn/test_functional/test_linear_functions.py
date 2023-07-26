@@ -41,17 +41,19 @@ def x_and_linear(draw, dtypes):
         dtypes=helpers.get_dtypes("float", full=False),
     ),
 )
-def test_linear(
+def test_torch_linear(
     *,
     dtype_x_weight_bias,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

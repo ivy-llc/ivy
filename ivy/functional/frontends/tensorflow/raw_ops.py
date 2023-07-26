@@ -38,6 +38,14 @@ ArgMax = to_ivy_arrays_and_back(
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
+Atan2 = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {"2.13.0 and below": "float16"},
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.atan2))
+)
+
+
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
@@ -894,6 +902,21 @@ def Imag(
 Imag.supported_dtypes = {
     "tensorflow": (
         "complex64",
+        "complex128",
+    ),
+}
+
+
+@to_ivy_arrays_and_back
+def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
+    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+
+
+Svd.supported_dtypes = {
+    "tensorflow": (
+        "float64",
+        "float128",
+        "halfcomplex64",
         "complex128",
     ),
 }

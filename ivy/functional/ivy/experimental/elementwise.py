@@ -21,6 +21,60 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_array_function
+def lgamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the natural logarithm of the absolute value of the gamma function on x.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the natural log of Gamma(x) of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
+
+    Examples
+    --------
+    >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+    ...                   b=ivy.array([4.5, 5.3, 2.3]))
+    >>> y = x.lgamma()
+    >>> print(y)
+    {
+        a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
+        b: ivy.array([2.45373821, 3.63963795, 0.15418935])
+    }
+
+    >>> x = ivy.array([1 , 2 , 3 ])
+    >>> y = x.lgamma()
+    >>> print(y)
+    ivy.array([0., 0., 0.69314718])
+
+    >>> x = ivy.array([4.5, -4, -5.6])
+    >>> x.lgamma(out = x)
+    >>> print(x)
+    ivy.array([2.45373654, inf, -4.6477685 ])
+    """
+    return ivy.current_backend(x).lgamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_device_shifting
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1138,7 +1192,6 @@ def lerp(
 
 lerp.mixed_backend_wrappers = {
     "to_add": (
-        "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
