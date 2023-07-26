@@ -535,6 +535,7 @@ def test_paddle_meshgrid(
 def test_paddle_assign(
     dtype_and_x,
     test_flags,
+    backend_fw,
     frontend,
     fn_tree,
     on_device,
@@ -542,15 +543,16 @@ def test_paddle_assign(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-		frontend=frontend,
+        backend_to_test=backend_fw,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		x=x[0],
+        x=x[0],
         output=x[1],
-		)
-    
-  
+    )
+
+
 # logspace
 @handle_frontend_test(
     fn_tree="paddle.logspace",
@@ -574,13 +576,13 @@ def test_paddle_logspace(
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-		frontend=frontend,
+        frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		start=start,
+        start=start,
         stop=stop,
         num=num,
         base=base,
         dtype=dtype[0],
-		)
+    )
