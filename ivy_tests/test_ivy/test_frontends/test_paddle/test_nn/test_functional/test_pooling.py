@@ -214,3 +214,40 @@ def test_paddle_max_unpool1d(
         stride=stride,
         padding=padding,
     )
+
+
+# adaptive_max_pool1d
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.pooling",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=helpers.ints(min_value=1, max_value=5),
+    return_mask = st.booleans()
+)
+def test_paddle_adaptive_max_pool1d(
+    *,
+    dtype_and_x,
+    output_size,
+    test_flags,
+    frontend,
+    on_device,
+    fn_tree,
+    return_mask
+):
+    (dtype, x) = dtype_and_x
+    helpers.test_frontend_function(
+        dtype=dtype,
+        x=x[0],
+        output_size=output_size,
+        test_flags=test_flags,
+        frontend=frontend,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        return_mask=return_mask
+    )
