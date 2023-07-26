@@ -1589,6 +1589,10 @@ class Tensor:
     )
     def adjoint(self):
         return torch_frontend.adjoint(self)
+    
+    @with_supported_dtypes({"2.0.1 and below": ("complex64", "complex128")}, "torch")
+    def angle(self):
+        return torch_frontend.angle(self)
 
 
 class Size(tuple):
@@ -1608,6 +1612,4 @@ class Size(tuple):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
 
 
-@with_supported_dtypes({"2.0.1 and below": ("complex64", "complex128")}, "torch")
-def angle(self):
-    return torch_frontend.angle(self)
+
