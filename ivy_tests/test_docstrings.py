@@ -261,6 +261,8 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "deg2rad":"tensorflow",
         "set_item":"jax",
         "vmap":"torch",
+        "conv1d_transpose": "tensorflow",
+        "conv3d_transpose": "numpy",
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
@@ -358,7 +360,9 @@ def test_docstrings(backend):
         "put_along_axis",
         "result_type",
         # works only if no backend set
-        "rfftn"
+        "rfftn",
+        # examples works but exec throws error or generate diff results
+        "scaled_dot_product_attention",
     ]
 
     # skip list for array and container docstrings

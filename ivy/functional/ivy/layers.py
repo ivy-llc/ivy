@@ -478,8 +478,9 @@ def scaled_dot_product_attention(
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
-    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
-
+    ivy.array([[[4.03946018, 5.0280633 ],
+            [4.29981947, 5.29981089],
+            [4.30000019, 5.30000019]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -487,7 +488,9 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array([[[2.30000019, 3.23333359],
+            [2.30000019, 3.23333359],
+            [2.30000019, 3.23333359]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -495,7 +498,9 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array([[[4.03946018, 5.0280633 ],
+            [4.29981947, 5.29981089],
+            [4.30000019, 5.30000019]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -503,7 +508,9 @@ def scaled_dot_product_attention(
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array([[[2.30000019, 3.23333359],
+            [2.30000019, 3.23333359],
+            [2.30000019, 3.23333359]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -511,7 +518,9 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array([[[4.03946018, 5.0280633 ],
+            [4.29981947, 5.29981089],
+            [4.30000019, 5.30000019]]])
 
 
     With :class:`ivy.Container` input:
@@ -525,8 +534,12 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
     {
-        a:ivy.array([[[4.27, 5.4],[4.4, 5.6],[4.4, 5.6]]]),
-        b:ivy.array([[[4.35, 5.54],[4.4, 5.6],[4.4, 5.6]]])
+        a: ivy.array([[[4.26894283, 5.40236187],
+                       [4.39999437, 5.59999037],
+                       [4.4000001, 5.5999999]]]),
+        b: ivy.array([[[4.35046196, 5.54282808],
+                       [4.39989519, 5.5998764],
+                       [4.4000001, 5.5999999]]])
     }
 
 
@@ -536,18 +549,17 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> mask =
-    ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
+    >>> mask = ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0, 1.0]]]),
     ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]])
+        a: ivy.array([[[4.26894283, 5.40236187],
+                       [4.39999437, 5.59999037],
+                       [4.4000001, 5.5999999]]]),
+        b: ivy.array([[[4.35046196, 5.54282808],
+                       [4.39989519, 5.5998764],
+                       [4.4000001, 5.5999999]]])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
@@ -557,11 +569,9 @@ def scaled_dot_product_attention(
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
-    ivy.array([[
-            [4.04, 5.03],
-            [4.3 , 5.3 ],
-            [4.3 , 5.3 ]
-        ]])
+    ivy.array([[[4.03946018, 5.02806377],
+            [4.29981947, 5.29981089],
+            [4.30000019, 5.30000019]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -966,32 +976,30 @@ def conv1d_transpose(
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
-    (1, 56, 6)
+    ivy.Shape(1, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64])
     >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=x)
     >>> print(x.shape)
-    (1, 128, 64)
+    ivy.Shape(1, 128, 64)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 64])
-    >>> y = ivy.zeros_like(x)
+    >>> y = ivy.zeros((1, 258, 32))
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 64, 32])
-    >>> ivy.conv1d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> ivy.conv1d_transpose(x, filters, 1, 'VALID', out=y)
     >>> print(y.shape)
-    (1, 258, 32)
+    ivy.Shape(1, 258, 32)
 
     With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128])
-    ... )
+    ...         ivy.random_normal(mean=0, std=1, shape=[1,256,128]))
     >>> filters = ivy.native_array(
-    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32])
-    ... )
+    ...         ivy.random_normal(mean=0, std=1, shape=[3, 128, 32]))
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
-    (1, 512, 32)
+    ivy.Shape(1, 512, 32)
 
     With one :class:`ivy.Container` input:
 
@@ -1002,28 +1010,36 @@ def conv1d_transpose(
     >>> y = ivy.conv1d_transpose(x, filters, 1, 'VALID', dilations=2)
     >>> print(y.shape)
     {
-        a: [1,10,1],
-        b: [1,10,1]
+        a: ivy.Shape(1, 10, 1),
+        b: ivy.Shape(1, 10, 1)
     }
 
     With multiple :class:`ivy.Container` inputs:
 
     >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 3])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 3])
-    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
-    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 6])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv1d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     {
         a: {
-            c: [1,28,6],
-            d: [1,28,6]
+            c: ivy.Shape(1, 28, 3),
+            d: ivy.Shape(1, 28, 3)
         },
         b: {
-            c: [1,56,6],
-            d: [1,56,6]
+            c: ivy.Shape(1, 56, 3),
+            d: ivy.Shape(1, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 3),
+            d: ivy.Shape(6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 3),
+            d: ivy.Shape(6, 6, 3)
         }
     }
     """
@@ -1096,13 +1112,11 @@ def conv2d(
 
     >>> x = ivy.array([[[[1.], [2.0],[3.]],
     ...                 [[1.], [2.0],[3.]],
-    ...                 [[1.], [2.0],[3.]]]]) #NHWC
-
+    ...                 [[1.], [2.0],[3.]]]])
     >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]],
     ...                      [[[0.]],[[1.]], [[0.]]],
-    ...                      [[[0.]],[[1.]], [[0.]]]]) #HWIO
-    >>> result = ivy.conv2d(x, filters, (1,), 'SAME', data_format='NHWC',
-    ... dilations= (1,))
+    ...                      [[[0.]],[[1.]], [[0.]]]])
+    >>> result = ivy.conv2d(x, filters, 1, 'SAME', data_format='NHWC', dilations=1)
     >>> print(result)
     ivy.array([[
               [[2.],[4.],[6.]],
@@ -1116,8 +1130,7 @@ def conv2d(
     ...                                 [[1.], [2.0],[3.]],
     ...                                 [[1.], [2.0],[3.]]]]))
     >>> filters = ivy.eye(3, 3).reshape((3, 3, 1, 1)).astype(ivy.float32)
-    >>> result = ivy.conv2d(x, filters, (2,), 'SAME', data_format='NHWC',
-    ...    dilations= (1,))
+    >>> result = ivy.conv2d(x, filters, 2, 'SAME', data_format='NHWC', dilations= 1)
     >>> print(result)
     {
         a:ivy.array([[[[3.], [3.]], [[1.], [5.]]]])
@@ -1131,7 +1144,7 @@ def conv2d(
     >>> filters = ivy.array([[1, 1, 1],
     ...                      [0, 1, 1],
     ...                      [0, 0, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
-    >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+    >>> result = ivy.conv2d(x, filters, 2, 'SAME')
     >>> print(result)
     {
         a:ivy.array([[[[2.], [0.]], [[1.], [2.]]]]),
@@ -1149,7 +1162,7 @@ def conv2d(
     >>> filters = ivy.array([[2, 0, 1],
     ...                      [1, 3, 1],
     ...                      [0, 1, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
-    >>> result = ivy.conv2d(x, filters, (2,), 'SAME')
+    >>> result = ivy.conv2d(x, filters, 2, 'SAME')
     >>> print(result)
     {
         a:ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
@@ -1229,20 +1242,20 @@ def conv2d_transpose(
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
-    (1, 56, 56, 6)
+    ivy.Shape(1, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
     >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
     >>> print(x.shape)
-    (1, 128, 128, 64)
+    ivy.Shape(1, 128, 128, 64)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
-    >>> y = ivy.zeros_like(x)
+    >>> y = ivy.zeros((1, 258, 258, 32))
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
-    >>> ivy.conv2d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=y)
     >>> print(y.shape)
-    (1, 258, 258, 32)
+    ivy.Shape(1, 258, 258, 32)
 
     With one :class:`ivy.Container` inputs:
     >>> x = ivy.full((1, 6, 6, 1), 2.7)
@@ -1252,27 +1265,35 @@ def conv2d_transpose(
     >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=2)
     >>> print(y.shape)
     {
-        a: [1,10,10,1],
-        b: [1,10,10,1]
+        a: ivy.Shape(1, 10, 10, 1),
+        b: ivy.Shape(1, 10, 10, 1)
     }
 
     With multiple :class:`ivy.Container` inputs:
     >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
     {
         a: {
-            c: [1,28,28,6],
-            d: [1,28,28,6]
+            c: ivy.Shape(1, 28, 28, 3),
+            d: ivy.Shape(1, 28, 28, 3)
         },
         b: {
-            c: [1,56,56,6],
-            d: [1,56,56,6]
+            c: ivy.Shape(1, 56, 56, 3),
+            d: ivy.Shape(1, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 3)
         }
     }
     """
@@ -1344,36 +1365,33 @@ def depthwise_conv2d(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3]) #NHWC
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3]) #HWI (I == d_in)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3])
     >>> y = ivy.depthwise_conv2d(x, filters, (1, 1), 'VALID')
     >>> print(y.shape)
-    (1, 26, 26, 3)
+    ivy.Shape(1, 26, 26, 3)
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3]) #NHWC
-    >>> y = ivy.zeros_like(x)
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[5, 5, 3]) #HWI (I == d_in)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 32, 32, 3])
+    >>> y = ivy.zeros((1, 16, 16, 3))
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[5, 5, 3])
     >>> ivy.depthwise_conv2d(x, filters, [2, 2], 'SAME', out=y)
     >>> print(y.shape)
-    (1, 16, 16, 3)
+    ivy.Shape(1, 16, 16, 3)
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64, 32]) #NHWC
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[4, 4, 32]) #HWI (I == d_in)
-    >>> ivy.depthwise_conv2d(x, filters, [1, 1], 'VALID', out=x)
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 64, 64, 32])
+    >>> y = ivy.zeros((1, 61, 61, 32))
+    >>> filters = ivy.random_normal(mean=0, std=1, shape=[4, 4, 32])
+    >>> ivy.depthwise_conv2d(x, filters, [1, 1], 'VALID', out=y)
     >>> print(x.shape)
-    (1, 61, 61, 32)
+    ivy.Shape(1, 64, 64, 32)
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array(
-    ...     ivy.random_normal(mean=0, std=1, shape=[1, 7, 7, 64])
-    ... ) #NHWC
-    >>> filters = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[3, 3, 64])
-    ... ) #HWI (I == d_in)
+    >>> x = ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[1, 7, 7, 64]))
+    >>> filters = ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 64]))
     >>> y = ivy.depthwise_conv2d(x, filters, [1, 1], 'SAME')
     >>> print(y.shape)
-    (1, 7, 7, 64)
+    ivy.Shape(1, 7, 7, 64)
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -1390,10 +1408,10 @@ def depthwise_conv2d(
                         [0.]],
                        [[0.],
                         [-6.]]]]),
-        b: ivy.array([[[[0.333],
+        b: ivy.array([[[[0.33333334],
                         [0.]],
                        [[0.],
-                        [0.333]]]])
+                        [0.33333334]]]])
     }
 
     With a mix of :class:`ivy.Array`, code:`ivy.NativeArray`
@@ -1412,7 +1430,10 @@ def depthwise_conv2d(
                         [0.]],
                        [[0.],
                         [-6.]]]]),
-        y: ivy.array([[[[-6.],[0.]],[[0.],[-6.]]]])
+        y: ivy.array([[[[-6.],
+                        [0.]],
+                       [[0.],
+                        [-6.]]]])
     }
 
     """
@@ -1484,19 +1505,13 @@ def conv3d(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array\
-               ([[[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
-                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
-                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]]]).reshape((1, 3, 3, 3, 1))
-
-    >>> filters = ivy.array([[[0.,1.,0.],\
-                              [0.,1.,0.],\
-                              [0.,1.,0.]]]).reshape((1,3,3,1,1))
-
-
-    >>> result = ivy.conv3d(x, filters, (1,1,1), 'SAME', data_format = 'NDHWC',\
-                            dilations = (1,1,1))
-
+    >>> x = ivy.array([[[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],
+    ...         [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],
+    ...         [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]]]).reshape((1, 3, 3, 3, 1))
+    >>> filters = ivy.array([[[0.,1.,0.],
+    ...                       [0.,1.,0.],
+    ...                       [0.,1.,0.]]]).reshape((1,3,3,1,1))
+    >>> result = ivy.conv3d(x, filters, 1, 'SAME', data_format='NDHWC', dilations=1)
     >>> print(result)
     ivy.array([[[[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
                 [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
@@ -1504,10 +1519,8 @@ def conv3d(
 
     With one :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
-
+    >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32))
     >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
-
     >>> result = ivy.conv3d(x, filters, 2, 'SAME')
     >>> print(result)
     {
@@ -1516,21 +1529,19 @@ def conv3d(
 
     With multiple :class:`ivy.Container` input:
 
-    >>> x = ivy.Container( a = ivy.random_normal(mean = 0, std = 1,\
-                               shape = [1, 3, 5, 5, 1]),\
-                           b = ivy.random_normal(mean = 0, std = 1,\
-                               shape = [1, 5, 32 ,32, 3]),\
-                           c = ivy.random_normal(mean = 0, std = 1,\
-                               shape = [1, 32, 32, 32, 1]))
-
-    >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO
-
+    >>> x = ivy.Container( a = ivy.random_normal(mean = 0, std = 1,
+    ...                        shape = [1, 3, 5, 5, 1]),
+    ...                    b = ivy.random_normal(mean = 0, std = 1,
+    ...                        shape = [1, 5, 32 ,32, 1]),
+    ...                    c = ivy.random_normal(mean = 0, std = 1,
+    ...                        shape = [1, 32, 32, 32, 1]))
+    >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32)
     >>> result = ivy.conv3d(x, filters, 1, 'SAME')
     >>> print(result.cont_shapes)
     {
-        a: [1,3,5,5,3],
-        b: [1,5,32,32,3],
-        c: [1,32,32,32,3]
+        a: ivy.Shape(1, 3, 5, 5, 3),
+        b: ivy.Shape(1, 5, 32, 32, 3),
+        c: ivy.Shape(1, 32, 32, 32, 3)
     }
     """
     return current_backend(x).conv3d(
@@ -1604,25 +1615,42 @@ def conv3d_transpose(
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
     >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
-    (1, 6, 56, 56, 6)
+    ivy.Shape(1, 6, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
     >>> y = ivy.conv3d_transpose(x, filters, [1, 1, 1], 'VALID')
     >>> print(y.shape)
-    (1, 9, 258, 258, 32)
+    ivy.Shape(1, 9, 258, 258, 32)
 
     With :class:`ivy.Container` inputs:
 
     >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-    >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
+    >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
+    >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
+    >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3, 3])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
     >>> y = ivy.conv3d_transpose(x, filters, 2, 'SAME')
     >>> print(y.shape)
-    [1, 6, 56, 56, 6]
+    {
+        a: {
+            c: ivy.Shape(1, 6, 28, 28, 3),
+            d: ivy.Shape(1, 6, 28, 28, 3)
+        },
+        b: {
+            c: ivy.Shape(1, 6, 56, 56, 3),
+            d: ivy.Shape(1, 6, 56, 56, 3)
+        },
+        c: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        },
+        d: {
+            c: ivy.Shape(6, 6, 6, 6, 3),
+            d: ivy.Shape(6, 6, 6, 6, 3)
+        }
+    }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -1632,7 +1660,10 @@ def conv3d_transpose(
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
     >>> print(y.shape)
-    [1, 8, 8, 8, 1]
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
 
 
     >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
@@ -1641,7 +1672,10 @@ def conv3d_transpose(
     >>> filters = ivy.Container(a = a, b = b)
     >>> y = ivy.conv3d_transpose(x, filters, 1, 'VALID', dilations=1)
     >>> print(y.shape)
-    [1, 8, 8, 8, 1]
+    {
+        a: ivy.Shape(1, 8, 8, 8, 1),
+        b: ivy.Shape(1, 8, 8, 8, 1)
+    }
     """
     return current_backend(x).conv3d_transpose(
         x,
