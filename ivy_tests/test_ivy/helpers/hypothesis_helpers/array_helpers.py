@@ -1,8 +1,7 @@
 # global
-import math
 import numpy as np
 import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
@@ -10,7 +9,8 @@ import sys
 import string
 
 # local
-import ivy
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ..pipeline_helper import WithBackendContext
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
@@ -1500,10 +1500,12 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        dtype_info = ivy.finfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        dtype_info = ivy.iinfo(dtype)
+        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
     elif "bool" in dtype:
         kind_dtype = "bool"
     else:
@@ -1521,6 +1523,7 @@ def array_values(
 
         min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
             dtype,
+            backend=test_globals.CURRENT_BACKEND,
             min_value=min_value,
             max_value=max_value,
             abs_smallest_val=abs_smallest_val,
@@ -1599,14 +1602,6 @@ def array_values(
                 values = [complex(*v) for v in values]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
-    if dtype == "bfloat16":
-        # check bfloat16 behavior enabled or not
-        try:
-            np.dtype("bfloat16")
-        except Exception:
-            # enables bfloat16 behavior with possibly no side effects
-
-            import paddle_bfloat  # noqa
 
     array = np.asarray(values, dtype=dtype)
 
@@ -1808,10 +1803,9 @@ def dtype_array_query(
     available_dtypes,
     min_num_dims=1,
     max_num_dims=3,
-    min_dim_size=1,
+    min_dim_size=0,
     max_dim_size=10,
     allow_mask=True,
-    allow_none=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1836,8 +1830,6 @@ def dtype_array_query(
             small_abs_safety_factor=2,
         )
     )
-    if allow_none and draw(st.booleans()):
-        return dtype, array, None
     if allow_mask and draw(st.booleans()):
         mask_shape = shape[: draw(st.integers(0, len(shape)))]
         index = draw(
@@ -1851,10 +1843,11 @@ def dtype_array_query(
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
-            min_size=1,
+            min_size=0,
             max_size=len(shape),
         )
     )
+    index_types = [v if shape[i] > 0 else "slice" for i, v in enumerate(index_types)]
     index = []
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
@@ -1877,38 +1870,41 @@ def dtype_array_query(
             )
             new_index = new_index[0]
         else:
-            new_index = slice(
-                start := draw(
-                    st.one_of(
-                        st.integers(min_value=-s + 1, max_value=s - 1),
-                        st.just(None),
-                    )
-                ),
-                end := draw(
-                    st.one_of(
-                        st.integers(min_value=-s + 1, max_value=s - 1),
-                        st.just(None),
-                    )
-                ),
-                (
-                    draw(st.integers(min_value=1, max_value=s))
-                    if (0 if start is None else s + start if start < 0 else start)
-                    < (s - 1 if end is None else s + end if end < 0 else end)
-                    else (
-                        draw(st.integers(max_value=-1, min_value=-s))
-                        if allow_neg_step
-                        else assume(False)
-                    )
-                ),
+            start = draw(
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
             )
+            end = draw(
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
+            )
+            step = draw(
+                st.one_of(
+                    (
+                        st.integers(min_value=1, max_value=1 + 2 * s)
+                        if not allow_neg_step
+                        else st.integers(
+                            min_value=-1 - 2 * s, max_value=1 + 2 * s
+                        ).filter(lambda x: x != 0)
+                    ),
+                    st.just(None),
+                )
+            )
+            new_index = slice(start, end, step)
         index += [new_index]
-    if draw(st.booleans()):
+    if len(index_types) and draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
         min_ = len(index) if len(index_types) < len(shape) else start
         max_ = len(index) if len(index_types) < len(shape) else len(index) - 1
         end = draw(st.integers(min_value=min_, max_value=max_))
         if start != end:
             index = index[:start] + [Ellipsis] + index[end:]
+    for _ in range(draw(st.integers(min_value=0, max_value=3))):
+        index.insert(draw(st.integers(0, len(index))), None)
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
@@ -1922,7 +1918,7 @@ def dtype_array_query_val(
     available_dtypes,
     min_num_dims=1,
     max_num_dims=3,
-    min_dim_size=1,
+    min_dim_size=0,
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
@@ -1939,7 +1935,6 @@ def dtype_array_query_val(
         )
     )
     real_shape = x[query].shape
-    assume(math.prod(real_shape) > 0)
     if len(real_shape):
         val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
     else:
@@ -1953,7 +1948,9 @@ def dtype_array_query_val(
         )
     )
     val_dtype = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+        helpers.get_castable_dtype(
+            draw(available_dtypes), input_dtype[0], x if 0 not in x.shape else None
+        )
     )[-1]
     val = val[0].astype(val_dtype)
     return input_dtype + [val_dtype], x, query, val
@@ -1973,7 +1970,7 @@ def create_nested_input(draw, dimensions, leaf_values):
 @st.composite
 def cond_data_gen_helper(draw):
     dtype_x = helpers.dtype_and_values(
-        available_dtypes=(ivy.float32, ivy.float64),
+        available_dtypes=["float32", "float64"],
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
         max_value=10,
         min_value=-10,
