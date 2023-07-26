@@ -732,11 +732,7 @@ def bincount(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {
-        "2.11.0 and below": ("float32", "float64"),
-    },
-    "tensorflow",
-)
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 def xlog1py(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
     return ivy.multiply(x, ivy.log1p(y))

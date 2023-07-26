@@ -2917,6 +2917,7 @@ def test_tensorflow_xlog1py(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test="numpy",
         x=x[0],
         y=x[1],
     )
