@@ -1590,6 +1590,12 @@ class Tensor:
     def adjoint(self):
         return torch_frontend.adjoint(self)
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("int16", "float16", "bfloat16")}, "torch"
+    )
+    def conj(self):
+        return torch_frontend.conj(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
