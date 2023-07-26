@@ -1252,8 +1252,8 @@ def eye(
 
     With :'n_rows' input:
 
-    >>> x1 = ivy.eye(3)
-    >>> print(x1)
+    >>> x = ivy.eye(3)
+    >>> print(x)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
@@ -1261,8 +1261,8 @@ def eye(
 
     With :'n_cols' input:
 
-    >>> x1 = ivy.eye(3,4)
-    >>> print(x1)
+    >>> x = ivy.eye(3,4)
+    >>> print(x)
     ivy.array([[1., 0., 0., 0.],
                [0., 1., 0., 0.],
                [0., 0., 1., 0.]])
@@ -1270,8 +1270,8 @@ def eye(
 
     With :'k' input:
 
-    >>> x1 = ivy.eye(3, k=1)
-    >>> print(x1)
+    >>> x = ivy.eye(3, k=1)
+    >>> print(x)
     ivy.array([[0., 1., 0.],
                [0., 0., 1.],
                [0., 0., 0.]])
@@ -1279,8 +1279,8 @@ def eye(
 
     With :'dtype' input:
 
-    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
-    >>> print(x1)
+    >>> x = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> print(x)
     ivy.array([[0, 0, 1, 0],
                [0, 0, 0, 1],
                [0, 0, 0, 0],
@@ -1289,8 +1289,8 @@ def eye(
 
     With :'batch_shape' input:
 
-    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
-    >>> print(x1)
+    >>> x = ivy.eye(2, 3, batch_shape=[3])
+    >>> print(x)
     ivy.array([[[1., 0., 0.],
                 [0., 1., 0.]],
 
@@ -1299,18 +1299,13 @@ def eye(
 
                 [[1., 0., 0.],
                 [0., 1., 0.]]])
-    >>> x1.shape
-    (3, 2, 3)
-
-    Suppose batch_shape = [a, b] then the returning identity
-    array shape is [a, b, numRows, numColumns]
 
 
     With :'out' input:
 
-    >>> a1 = ivy.ones(3)
-    >>> ivy.eye(3, out=a1)
-    >>> print(a1)
+    >>> y = ivy.ones((3, 3))
+    >>> ivy.eye(3, out=y)
+    >>> print(y)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
@@ -1318,13 +1313,12 @@ def eye(
 
     With :'device' input:
 
-    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
-    >>> print(x1)
+    >>> x = ivy.eye(3, device=ivy.Device('cpu'))
+    >>> print(x)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
 
-    # Array ``x1`` is now stored on the CPU.
     """
     return current_backend().eye(
         n_rows,
@@ -1404,26 +1398,26 @@ def linspace(
 
     With float input:
 
-    >>> x = ivy.linspace(1, 2, 4)
+    >>> x = ivy.linspace(1, 2, 3)
     >>> print(x)
-    ivy.array([1., 1.33333337, 1.66666663, 2.])
+    ivy.array([1. , 1.5, 2. ])
 
     >>> x = ivy.linspace(1, 2, 4, endpoint=False)
     >>> print(x)
     ivy.array([1., 1.25, 1.5 , 1.75])
 
-    >>> x = ivy.linspace(1, 10, 4, dtype = int)
+    >>> x = ivy.linspace(1, 10, 4, dtype="int32")
     >>> print(x)
     ivy.array([ 1,  4,  7, 10])
 
-    >>> x = ivy.linspace(1, 2, 4, device = "gpu")
+    >>> x = ivy.linspace(1, 2, 4, device= "cpu")
     >>> print(x)
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
-    >>> out = ivy.array([0,0,0,0])
-    >>> ivy.linspace(1, 2, 4, out = out)
-    >>> print(out)
-    ivy.array([1., 1.33333337, 1.66666663, 2.])
+    >>> y = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out= y)
+    >>> print(y)
+    ivy.array([1, 1, 1, 2])
 
     With :class:`ivy.Array` input:
 

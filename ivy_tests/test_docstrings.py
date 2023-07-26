@@ -254,6 +254,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "where": "torch",
         "dct": "jax",
         "idct": "jax",
+        "linspace": "jax",
 
     }
     # second dict to keep if a function fails in two backends
