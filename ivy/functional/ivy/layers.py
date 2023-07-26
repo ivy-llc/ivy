@@ -239,7 +239,7 @@ linear.mixed_backend_wrappers = {
 @handle_array_function
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
-    prob: float,
+    prob: float = 0.5,
     /,
     *,
     scale: bool = True,
