@@ -173,3 +173,36 @@ def test_paddle_searchsorted(
         out_int32=out_int32,
         right=right,
     )
+
+
+# index_select
+@handle_frontend_test(
+    fn_tree="paddle.index_select",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int32", "int64"],
+        max_num_dims=1,
+        indices_same_dims=True,
+    ),
+)
+def test_paddle_index_select(
+    *,
+    params_indices_others,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x, indices, axis, _ = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        axis=axis,
+        index=indices,
+    )
