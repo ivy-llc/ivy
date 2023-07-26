@@ -1000,6 +1000,8 @@ def test_torch_triplet_margin_with_distance_loss(
     ),
     p=st.integers(min_value=1, max_value=2),
     margin=st.floats(min_value=-1.0, max_value=1.0),
+    size_average=st.booleans(),
+    reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
     test_with_out=st.just(False),
 )
@@ -1026,9 +1028,9 @@ def test_torch_multi_margin_loss(
         input=x[0],
         target=x[1],
         weight=x[2],
-        size_average=size_average,
-        reduce=reduce,
         p=p,
         margin=margin,
+        size_average=size_average,
+        reduce=reduce,
         reduction=reduction,
     )
