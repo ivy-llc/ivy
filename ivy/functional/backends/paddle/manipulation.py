@@ -459,10 +459,6 @@ def put_along_axis(
     mode: str = "assign",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if mode == "sum":
-        mode = "add"
-    elif mode == "prod":
-        mode = "mul"
     ret = paddle.put_along_axis(arr, indices, values, axis, reduce=mode)
     return ret
 

@@ -397,10 +397,6 @@ def put_along_axis(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if mode:
-        if mode == "add":
-            mode = "sum"
-        if mode in ["mul", "multiply"]:
-            mode = "prod"
         ret = torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
     elif mode is None:
         ret = torch.scatter_add(arr, axis, indices, values, out=out)

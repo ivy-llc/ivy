@@ -1830,7 +1830,8 @@ def put_along_axis(
         if ivy.asarray(ret).shape == arr.shape[::-1]
         else ivy.asarray(ret)
     )
-    return ret
+
+    return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 
 
 put_along_axis.mixed_backend_wrappers = {
