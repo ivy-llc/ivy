@@ -389,14 +389,7 @@ def test_bincount(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     test_gradients=st.just(False),
     test_with_out=st.just(False),
 )
-def test_igamma(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device
-):
+def test_igamma(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
