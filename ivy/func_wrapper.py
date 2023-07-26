@@ -18,6 +18,7 @@ FN_DECORATORS = [
     "infer_device",
     "handle_device_shifting",
     "infer_dtype",
+    "handle_complex_input",
     "handle_array_function",
     "outputs_to_ivy_arrays",
     "outputs_to_ivy_shapes",
@@ -1420,7 +1421,11 @@ def handle_nans(fn: Callable) -> Callable:
 # TODO: find out how to add this to functions when the backend is explicit
 # (it currently doesn't run after `ivy.set_backend()` is called)
 def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
+    print("factory runs")  # for debugging purposes
+
     def _handle_complex_input_decorator(fn: Callable) -> Callable:
+        print("decorator runs")  # debugging
+
         @functools.wraps(fn)
         def _handle_complex_input(
             inp,
@@ -1428,6 +1433,7 @@ def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
             complex_mode: Literal["split", "magnitude", "jax"] = "jax",
             **kwargs,
         ):
+            print("inner function runs")  # debugging
             # do nothing if the input is real-valued
             if not ivy.is_complex_dtype(inp):
                 return fn(inp, *args, **kwargs)
@@ -1456,7 +1462,7 @@ def handle_complex_input(jax_like: Union[Callable, str]) -> Callable:
 
             else:
                 # TODO: find a way to remove the `numpy:` part from the error readout
-                raise IvyValueError(f"complex_mode {complex_mode} is not recognised.")
+                raise IvyValueError(f"complex_mode '{complex_mode}' is not recognised.")
 
         return _handle_complex_input
 
