@@ -243,7 +243,6 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "histogram": "torch",
         "inplace_update": "torch",
         "layer_norm": "torch",
-        "linear": "torch",
         "outer": "torch",
         "quantile": "torch",
         "conv2d_transpose": "tensorflow",
