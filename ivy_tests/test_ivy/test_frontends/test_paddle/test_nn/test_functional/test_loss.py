@@ -352,7 +352,7 @@ def test_paddle_kl_div(
     fn_tree="paddle.nn.functional.margin_ranking_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+        num_arrays=3,
         shared_dtype=True,
         min_num_dims=2,
         max_num_dims=5,
@@ -385,7 +385,8 @@ def test_paddle_margin_ranking_loss(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        label=x[1],
+        output=x[1],
+        label=x[3],
         margin=margin,
         reduction=reduction,
     )
