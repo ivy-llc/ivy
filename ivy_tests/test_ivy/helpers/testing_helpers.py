@@ -150,12 +150,9 @@ def _import_fn(fn_tree: str):
     -------
     Returns fn_name, imported module, callable function
     """
-    split_index = fn_tree.rfind(".")
-    fn_name = fn_tree[split_index + 1 :]
-    module_to_import = fn_tree[:split_index]
-    mod = importlib.import_module(module_to_import)
-    callable_fn = mod.__dict__[fn_name]
-    return callable_fn, fn_name, module_to_import
+    module, _, fn_name = fn_tree.rpartition(".")
+    callable_fn = getattr(importlib.import_module(module), fn_name)
+    return callable_fn, fn_name, module
 
 
 def _get_method_supported_devices_dtypes(
@@ -528,12 +525,10 @@ def handle_frontend_test(
 
 
 def _import_method(method_tree: str):
-    split_index = method_tree.rfind(".")
-    class_tree, method_name = method_tree[:split_index], method_tree[split_index + 1 :]
-    split_index = class_tree.rfind(".")
-    mod_to_import, class_name = class_tree[:split_index], class_tree[split_index + 1 :]
-    _mod = importlib.import_module(mod_to_import)
-    _class = _mod.__getattribute__(class_name)
+    class_tree, _, method_name = method_tree.rpartition(".")
+    module, _, class_name = class_tree.rpartition(".")
+    _mod = importlib.import_module(module)
+    _class = getattr(_mod, class_name)
     _method = getattr(_class, method_name)
     return _method, method_name, _class, class_name, _mod
 
