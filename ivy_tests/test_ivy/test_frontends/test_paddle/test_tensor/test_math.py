@@ -1762,6 +1762,7 @@ def test_paddle_kron(
     dtype_and_x,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -1769,6 +1770,7 @@ def test_paddle_kron(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
