@@ -2,9 +2,10 @@
 
 # local
 import ivy
+from ivy import Module
 
 
-def LogPoissonLoss(Module):
+class LogPoissonLoss(Module):
     def __init__(
         self,
         true,
