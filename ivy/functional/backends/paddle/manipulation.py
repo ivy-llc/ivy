@@ -1,12 +1,12 @@
 # global
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
-
+import math
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
@@ -343,6 +343,17 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if x.ndim >= 7:
+        repeats = (
+            repeats.numpy().tolist() if isinstance(repeats, paddle.Tensor) else repeats
+        )
+        new_shape = [*x.shape[:5], -1]
+        reshaped_tensor = paddle.reshape(x, new_shape)
+        new_repeats = repeats[:5] + [math.prod(repeats[5:])]
+        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats).data
+        tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
+        result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
+        return result
     if ivy.min(repeats) == 0:
         # This logic is to mimic other backends behaviour when a 0 in repeat
         # is received since paddle doesn't natively support it
