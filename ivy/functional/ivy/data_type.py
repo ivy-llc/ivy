@@ -223,7 +223,7 @@ def _get_dtypes(fn, complement=True):
             ivy.utils.assertions.check_isinstance(dtypes, tuple)
             dtypes = list(dtypes)
             typeset_list = []
-            for i, dtype in enumerate(dtypes[::-1]):
+            for i, dtype in reversed(list(enumerate(dtypes))):
                 if dtype in typesets:
                     typeset_list.extend(typesets[dtype])
                     dtypes.pop(i)
