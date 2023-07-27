@@ -392,3 +392,12 @@ def rsqrt(x, name=None):
 @to_ivy_arrays_and_back
 def prod(x, axis=None, keepdim=False, dtype=None, name=None):
     return ivy.prod(x, axis=axis, keepdims=keepdim, dtype=dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def mm(input, mat2, name=None):
+    ret = ivy.matmul(input, mat2)
+    return ret
