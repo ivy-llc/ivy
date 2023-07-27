@@ -180,5 +180,5 @@ def bincount(x, weights=None, minlength=0, name=None):
 # qr
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
-def qr(x, mode = 'reduced', name=None):
+def qr(x, mode="reduced", name=None):
     return ivy.qr(x, mode=mode)

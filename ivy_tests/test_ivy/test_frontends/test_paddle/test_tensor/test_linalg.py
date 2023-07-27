@@ -806,11 +806,8 @@ def test_paddle_bincount(
 
 #qr
 @handle_frontend_test(
-        fn_tree="paddle.tensor.linalg.qr",
-        dtype_and_x=helpers.dtype_and_values(
-            dtype= ['float32','float64']
-        )
-
+    fn_tree="paddle.tensor.linalg.qr",
+        dtype_and_x=helpers.dtype_and_values(dtype=["float32", "float64"]),
 )
 def test_paddle_qr(
     dtype_and_x,
