@@ -542,19 +542,20 @@ def test_paddle_tril_indices(
     fn_tree,
     on_device,
 ):
-helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		test_values=False,
+        test_values=False,
         row=row,
         col=col,
         offset=offset,
         dtype=dtype[0],
-		 )
+    )
+
 
 # diag
 @handle_frontend_test(
@@ -583,17 +584,17 @@ def test_paddle_diag(
     on_device,
 ):
     dtype, x = dtype_and_x
-	helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		 x=x[0],
+        x=x[0],
         offset=k,
         padding_value=p,
-		 )
+    )
 
 
 # logspace
