@@ -47,7 +47,9 @@
 #         dim = draw(dim)
 #     strides = draw(
 #         st.one_of(
-#             st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+#             st.lists(
+#             st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim,
+#             ),
 #             st.integers(min_value=1, max_value=3),
 #         )
 #     )
@@ -79,7 +81,9 @@
 #     fc = draw(st.sampled_from(group_list))
 #     dilations = draw(
 #         st.one_of(
-#             st.lists(st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim),
+#             st.lists(
+#                 st.integers(min_value=1, max_value=3), min_size=dim, max_size=dim,
+#             ),
 #             st.integers(min_value=1, max_value=3),
 #         )
 #     )
