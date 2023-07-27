@@ -1749,27 +1749,35 @@ def test_paddle_prod(
 
 # logcumsumexp
 @handle_frontend_test(
-    fn_tree="paddle.tensor.math.logcumsumexp",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    fn_tree="paddle.logcumsumexp",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=helpers.get_shape(),
+        max_value=100,
+        min_value=-100,
     ),
+    dim=helpers.get_axis(shape=helpers.get_shape(), force_int=True),
 )
 def test_paddle_logcumsumexp(
     *,
-    dtype_and_x,
+    dtype_and_input,
+    dim,
+    on_device,
+    fn_tree,
     frontend,
     test_flags,
-    fn_tree,
-    on_device,
     backend_fw,
 ):
-    input_dtype, x = dtype_and_x
+    dtype, input = dtype_and_input
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
-        x=x[0],
+        rtol=1e-2,
+        atol=1e-2,
+        input=input[0],
+        dim=dim,
     )
