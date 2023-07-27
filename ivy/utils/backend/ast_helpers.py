@@ -19,7 +19,7 @@ _local_import_template = Template(
     "$name = "
     "ivy.utils.backend.handler._compiled_backends_ids[$ivy_id].utils._importlib.$name"
 )
-_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition("/")[0]
+_unmodified_ivy_path = sys.modules["ivy"].__path__[0].rpartition(os.path.sep)[0]
 _compiled_modules_cache = {}
 
 
