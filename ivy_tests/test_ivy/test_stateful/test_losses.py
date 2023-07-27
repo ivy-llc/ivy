@@ -33,18 +33,20 @@ from ivy_tests.test_ivy.helpers import handle_method
         max_num_dims=3,
         min_dim_size=3,
     ),
+    axis=st.integers(min_value=-1, max_value=1),
     compute_full_loss=st.sampled_from([True, False]),
-    method_num_positional_args=helpers.num_positional_args(
+    method_num_positional_args=helpers.get_num_positional_args(
         fn_name="LogPoissonLoss._forward"
     ),
-    test_gradients=st.just(True),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
 )
 def test_log_poisson_loss(
     *,
     dtype_and_targets,
     dtype_and_log_input,
     compute_full_loss,
-    test_gradients,
+    axis,
+    reduction,
     class_name,
     method_name,
     ground_truth_backend,
@@ -61,14 +63,77 @@ def test_log_poisson_loss(
         method_input_dtypes=targets_dtype + log_input_dtype,
         init_all_as_kwargs_np={
             "compute_full_loss": compute_full_loss,
-            "axis": -1,
-            "reduction": "none",
+            "axis": axis,
+            "reduction": reduction,
         },
         method_all_as_kwargs_np={"true": targets[0], "pred": log_input[0]},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# Cross Entropy Loss
+@handle_method(
+    method_tree="stateful.losses.CrossEntropyLoss.__call__",
+    dtype_and_targets=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_log_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
+        min_value=0,
+        max_value=3,
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    axis=st.integers(min_value=-1, max_value=1),
+    method_num_positional_args=helpers.get_num_positional_args(
+        fn_name="CrossEntropyLoss._forward"
+    ),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+)
+def test_cross_entropy_loss(
+    *,
+    dtype_and_targets,
+    dtype_and_log_input,
+    axis,
+    reduction,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    targets_dtype, targets = dtype_and_targets
+    log_input_dtype, log_input = dtype_and_log_input
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        method_input_dtypes=targets_dtype + log_input_dtype,
+        init_all_as_kwargs_np={
+            "axis": axis,
+            "reduction": reduction,
+        },
+        method_all_as_kwargs_np={"true": targets[0], "pred": log_input[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
     )
