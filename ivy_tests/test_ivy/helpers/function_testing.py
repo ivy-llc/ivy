@@ -280,8 +280,8 @@ def test_function(
             **kwargs,
         )
 
-        assert ivy.nested_map(
-            ret_from_target, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+        assert ivy_backend.nested_map(
+            ret_from_target, lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
         # Assert indices of return if the indices of the out array provided
@@ -386,7 +386,7 @@ def test_function(
             test_compile=test_flags.test_compile,
             **kwargs,
         )
-        assert ivy.nested_map(
+        assert gt_backend.nested_map(
             ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
         ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
         if test_flags.with_out and not test_flags.test_compile:
@@ -622,8 +622,8 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
-        assert ivy.nested_map(
-            ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True
+        assert ivy_backend.nested_map(
+            ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
         ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
@@ -1234,8 +1234,8 @@ def test_method(
         else:
             ret_device = None
 
-        assert ivy.nested_map(
-            ret, lambda x: ivy.is_ivy_array(x) if ivy.is_array(x) else True
+        assert ivy_backend.nested_map(
+            ret, lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True
         ), "Ivy method returned non-ivy arrays: {}".format(ret)
 
     # Compute the return with a Ground Truth backend
@@ -1281,7 +1281,7 @@ def test_method(
             test_compile=test_compile,
             **kwargs_gt_method,
         )
-        assert ivy.nested_map(
+        assert gt_backend.nested_map(
             ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
         ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
         
@@ -1602,8 +1602,8 @@ def test_frontend_method(
             **kwargs_method,
         )
 
-        assert ivy.nested_map(
-            ret, lambda x: _is_frontend_array(x) if ivy.is_array(x) else True
+        assert ivy_backend.nested_map(
+            ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
         ), "Frontend method returned non-frontend arrays: {}".format(ret)
 
     # Compute the return with the native frontend framework
