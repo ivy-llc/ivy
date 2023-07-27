@@ -187,7 +187,7 @@ def check_docstring_examples_run(
 
     words_to_remove = [
         "ivy.Shape",
-        "logabsdet=ivy.array",
+        "logabsdet=",
         "torch.Size",
     ]
 
