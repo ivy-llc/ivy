@@ -273,9 +273,6 @@ def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", ou
 
 nanquantile.unsupported_dtypes = {
     "torch": ("float16", "bfloat16"),
-    "numpy": ("float16", "bfloat16"),
-    "jax": ("float16", "bfloat16"),
-    "tensorflow": ("float16", "bfloat16"),
 }
 
 
