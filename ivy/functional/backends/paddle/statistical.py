@@ -127,23 +127,27 @@ def mean(
 def prod(
     x: paddle.Tensor,
     /,
-    *,
-    axis: Optional[Union[int, Sequence[int]]] = None,
-    dtype: Optional[paddle.dtype] = None,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    dtype: Optional[str] = None,
     keepdims: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    assert isinstance(x, paddle.Tensor), f'Expected x to be a paddle.Tensor, but got {type(x)}'
+
+    assert axis is None or isinstance(axis, int) or (isinstance(axis, tuple) and all(isinstance(a, int) for a in axis)), f'Expected axis to be None or int or tuple of ints, but got {type(axis)}'
+
     if axis is not None:
-        result = paddle.fluid.layers.reduce_prod(x, dim=axis, keep_dim=keepdims)
+        result = paddle.prod(x, axis=axis, keepdim=keepdims)
     else:
-        result = paddle.fluid.layers.reduce_prod(paddle.flatten(x), keep_dim=keepdims)
-    
+        result = paddle.prod(paddle.reshape(x, [-1]), keepdim=keepdims)
+
     if dtype is not None:
         result = paddle.cast(result, dtype)
 
     if out is not None:
         out.assign(result)
         return out
+
     return result
 
 
