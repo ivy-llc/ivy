@@ -84,7 +84,7 @@ def _leaky_relu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    fn_original: Optional[Callable],
+    fn_original: Optional[Callable] = None,
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -118,6 +118,11 @@ def leaky_relu(
     """
     Apply the leaky rectified linear unit function element-wise.
 
+    If the input is complex, then by default each element is scaled by `alpha` if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
+
     Parameters
     ----------
     x
@@ -127,6 +132,9 @@ def leaky_relu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -165,6 +173,7 @@ def leaky_relu(
         b: ivy.array([0.40000001, -0.04])
     }
     """
+    # TODO: tests for JAX frontend, Ivy stateful, and Ivy nn
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 

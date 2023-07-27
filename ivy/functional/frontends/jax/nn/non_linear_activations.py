@@ -160,7 +160,7 @@ def hard_tanh(x):
 @to_ivy_arrays_and_back
 def leaky_relu(x, negative_slope=0.01):
     x = _type_conversion_64(x)
-    return ivy.leaky_relu(x, alpha=negative_slope)
+    return ivy.leaky_relu(x, alpha=negative_slope, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back

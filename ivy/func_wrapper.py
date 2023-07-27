@@ -1426,29 +1426,109 @@ def handle_complex_input(fn: Callable) -> Callable:
         complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         **kwargs,
     ):
-        # do nothing if the input is real-valued
+        """
+        Check whether the first positional argument is an array of complex type, and if
+        so handle it according to the provided `complex_mode`.
+
+        The options are:
+        `"jax"` (default): emulate the behaviour of the JAX framework. If the function
+            has a `jax_like` attribute then this will be used to decide on the
+            behaviour (see below) and if not, then the entire array will be passed to
+            the function.
+        `"split"`: execute the function separately on the real and imaginary parts of
+            the input.
+        `"magnitude"`: execute the function on the magnitude of the input, and keep the
+            angle constant.
+
+        The `jax_like` attribute (which should generally be added to the function using
+        the `@add_attributes` decorator) has the following options:
+        `"entire"` (default): pass the entire input to the function. This is best used
+            for purely mathematical operators which are already well defined on complex
+            inputs, as many backends will throw exceptions otherwise.
+        `"split"`: as the `"split"` option for `complex_mode`
+        `"magnitude"`: as the `"magnitude"` option for `complex_mode`
+        A callable function: the function will be called instead of the originally
+            decorated function. It will be passed `inp` and `*args` as positional
+            arguments, and the original `**kwargs` plus `fn_original` as keyword
+            arguments. The latter is the original function, in case the `jax_like`
+            function wishes to call it.
+
+        Parameters
+        ----------
+        inp
+            The first positional argument to the function, which is expected to be an
+            :class:`ivy.Array`.
+        args
+            The remaining positional arguments to be passed to the function.
+        complex_mode
+            Optional argument which specifies the method that will be used to handle
+            the input, if it is complex.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with handling of inputs based
+            on the selected `complex_mode`.
+
+        Examples
+        --------
+        Using the default `jax_like` behaviour
+        >>> @handle_complex_input
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+
+        >>> x = ivy.array([1+1j, 3+4j, 5+12j])
+        >>> my_func(x)  # equivalent to setting complex_mode="jax"
+        ivy.array([1.+0.j, 1.+0.j, 1.+0.j])
+
+        >>> my_func(x, complex_mode="split")
+        ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
+
+        >>> my_func(x, complex_mode="magnitude")
+        ivy.array([0.70710681+0.70710675j, 0.60000001+0.79999999j,
+                   0.38461535+0.92307694j])
+
+        Using non-default `jax_like` behaviour
+        >>> @handle_complex_input
+        >>> @add_attributes(jax_like="split")
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+        >>> my_func(x, complex_mode="jax")
+        ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
+
+        Using callable `jax_like` behaviour
+        >>> def _my_func_jax_like(inp, fn_original=None):
+        >>>     return fn_original(inp) * 3j
+        >>> @handle_complex_input
+        >>> @add_attributes(jax_like=_my_func_jax_like)
+        >>> def my_func(inp):
+        >>>     return ivy.ones_like(inp)
+        >>> my_func(x, complex_mode="jax")
+        ivy.array([0.+3.j, 0.+3.j, 0.+3.j])
+        """
         if not ivy.is_complex_dtype(inp):
             return fn(inp, *args, **kwargs)
 
-        if complex_mode == "split" or (
-            complex_mode == "jax" and fn.jax_like == "split"
-        ):
+        jax_like = fn.jax_like if hasattr(fn, "jax_like") else "entire"
+
+        if complex_mode == "split" or (complex_mode == "jax" and jax_like == "split"):
             real_inp = ivy.real(inp)
             imag_inp = ivy.imag(inp)
             return fn(real_inp, *args, **kwargs) + 1j * fn(imag_inp, *args, **kwargs)
 
         elif complex_mode == "magnitude" or (
-            complex_mode == "jax" and fn.jax_like == "magnitude"
+            complex_mode == "jax" and jax_like == "magnitude"
         ):
             mag_inp = ivy.abs(inp)
             angle_inp = ivy.angle(inp)
             return fn(mag_inp, *args, **kwargs) * ivy.exp(1j * angle_inp)
 
-        elif complex_mode == "jax" and fn.jax_like == "entire":
+        elif complex_mode == "jax" and jax_like == "entire":
             return fn(inp, *args, **kwargs)
 
         elif complex_mode == "jax":
-            return fn.jax_like(inp, *args, **kwargs, fn_original=fn)
+            return jax_like(inp, *args, **kwargs, fn_original=fn)
 
         else:
             raise IvyValueError(f"complex_mode '{complex_mode}' is not recognised.")
@@ -1461,9 +1541,14 @@ def handle_complex_input(fn: Callable) -> Callable:
 # -------------------------- #
 def add_attributes(**kwargs) -> Callable:
     """
-    Add every keyword argument as an attribute of the wrapped function. For example, if
-    kwargs contains `{foo: 'bar'}` and this wraps function `func`, then after using this
-    decorator `func.foo` will have the value `'bar'`.
+    Add every keyword argument as an attribute of the wrapped function. The benefit of
+    using this instead of the more typical approach:
+    >>> def my_func():
+    >>>     pass
+    >>> my_func.foo = 'bar'
+
+    is that this method allows the attributes to be accessed by other decorators placed
+    above (and running after) this one.
 
     Parameters
     ----------
@@ -1473,6 +1558,14 @@ def add_attributes(**kwargs) -> Callable:
     Returns
     -------
         The wrapped function, with each attribute and its value added
+
+    Example
+    -------
+    >>> @add_attributes(foo='bar')
+    >>> def my_func():
+    >>>     pass
+    >>> print(my_func.foo)
+    'bar'
     """
 
     def _add_attributes(fn: Callable) -> Callable:
