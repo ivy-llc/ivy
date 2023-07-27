@@ -370,13 +370,17 @@ def tile(
         # is received since paddle doesn't natively support it
         if len(repeats) < x.ndim:
             shape = x.shape
-            shape[-len(repeat) :] = paddle_backend.multiply(
-                shape[-len(repeat) :], repeats
+            shape[-len(repeats) :] = paddle_backend.multiply(
+                shape[-len(repeats) :], repeats
             ).tolist()
         elif len(repeats) > x.ndim:
-            shape = list(repeats)
-            shape[-x.ndim :] = paddle_backend.multiply(
-                shape[-x.ndim :], repeats
+            shape = (
+                repeats.tolist()
+                if isinstance(repeats, paddle.Tensor)
+                else list(repeats)
+            )
+            shape[-x.ndim - 1 :] = paddle_backend.multiply(
+                shape[-x.ndim - 1 :], repeats
             ).tolist()
         else:
             shape = paddle_backend.multiply(x.shape, repeats).tolist()
