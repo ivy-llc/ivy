@@ -904,3 +904,75 @@ def test_multi_mode_dot_tensorly_2(shape):
         res = ivy.multi_mode_dot(X, [vecs[i] for i in modes], modes=modes)
         assert ivy.shape(res) == ()
         assert np.allclose(res, 1)
+
+
+# TODO fix instance method
+@handle_test(
+    fn_tree="functional.ivy.experimental.svd_flip",
+    uv=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+    u_based_decision=st.booleans(),
+)
+def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input = uv
+    U = input[0]
+    V = input[1]
+    u_based_decision = u_based_decision
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        U=U,
+        V=V,
+        u_based_decision=u_based_decision,
+    )
+
+
+# truncated svd
+@st.composite
+def _truncated_svd_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    uv = draw(st.booleans())
+    n_eigen = draw(helpers.ints(min_value=0, max_value=max(shape[-2:])))
+    return x_dtype, x[0], uv, n_eigen
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.truncated_svd",
+    data=_truncated_svd_data(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, uv, n_eigenvecs = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        x=x,
+        compute_uv=uv,
+        n_eigenvecs=n_eigenvecs,
+    )

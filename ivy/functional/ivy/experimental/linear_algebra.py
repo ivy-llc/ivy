@@ -1,6 +1,7 @@
 # global
 import logging
-from typing import Union, Optional, Tuple, List, Sequence
+from typing import Union, Optional, Tuple, List, Sequence, Literal
+import warnings
 
 # local
 import ivy
@@ -826,3 +827,319 @@ def multi_mode_dot(
         return ivy.inplace_update(out, res)
 
     return res
+
+
+def _svd_checks(x, n_eigenvecs=None):
+    """
+    Run common checks to all of the SVD methods.
+
+    Parameters
+    ----------
+    matrix : 2D-array
+    n_eigenvecs : int, optional, default is None
+        if specified, number of eigen[vectors-values] to return
+
+    Returns
+    -------
+    n_eigenvecs : int
+        the number of eigenvectors to solve for
+    min_dim : int
+        the minimum dimension of matrix
+    max_dim : int
+        the maximum dimension of matrix
+    """
+    # ndims = len(x.shape)
+    # if ndims != 2:
+    #    raise ValueError(f"matrix be a matrix. matrix.ndim is {ndims} != 2")
+
+    dim_1, dim_2 = ivy.shape(x)[-2:]
+    min_dim, max_dim = min(dim_1, dim_2), max(dim_1, dim_2)
+
+    if n_eigenvecs is None:
+        n_eigenvecs = max_dim
+
+    if n_eigenvecs > max_dim:
+        warnings.warn(
+            f"Trying to compute SVD with n_eigenvecs={n_eigenvecs}, which is larger "
+            f"than max(matrix.shape)={max_dim}. Setting n_eigenvecs to {max_dim}."
+        )
+        n_eigenvecs = max_dim
+
+    return n_eigenvecs, min_dim, max_dim
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def svd_flip(
+    U: Union[ivy.Array, ivy.NativeArray],
+    V: Union[ivy.Array, ivy.NativeArray],
+    u_based_decision: Optional[bool] = True,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[ivy.Array, ivy.NativeArray]:
+    """
+    Sign correction to ensure deterministic output from SVD. Adjusts the columns of u
+    and the rows of v such that the loadings in the columns in u that are largest in
+    absolute value are always positive. This function is borrowed from scikit-
+    learn/utils/extmath.py.
+
+    Parameters
+    ----------
+    U
+        u and v are the output of SVD
+    V
+        u and v are the output of SVD
+    u_based_decision
+        If True, use the columns of u as the basis for sign flipping.
+        Otherwise, use the rows of v. The choice of which variable to base the
+        decision on is generally algorithm dependent.
+
+    Returns
+    -------
+    u_adjusted, v_adjusted : arrays with the same dimensions as the input.
+    """
+    if u_based_decision:
+        # columns of U, rows of V
+        max_abs_cols = ivy.argmax(ivy.abs(U), axis=0)
+        signs = ivy.sign(
+            ivy.array(
+                [U[i, j] for (i, j) in zip(max_abs_cols, range(ivy.shape(U)[1]))],
+            )
+        )
+        U = U * signs
+        if ivy.shape(V)[0] > ivy.shape(U)[1]:
+            signs = ivy.concat((signs, ivy.ones(ivy.shape(V)[0] - ivy.shape(U)[1])))
+        V = V * signs[: ivy.shape(V)[0]][:, None]
+    else:
+        # rows of V, columns of U
+        max_abs_rows = ivy.argmax(ivy.abs(V), axis=1)
+        signs = ivy.sign(
+            ivy.array(
+                [V[i, j] for (i, j) in zip(range(ivy.shape(V)[0]), max_abs_rows)],
+            )
+        )
+        V = V * signs[:, None]
+        if ivy.shape(U)[1] > ivy.shape(V)[0]:
+            signs = ivy.concat(
+                (
+                    signs,
+                    ivy.ones(
+                        ivy.shape(U)[1] - ivy.shape(V)[0],
+                    ),
+                )
+            )
+        U = U * signs[: ivy.shape(U)[1]]
+
+    if ivy.exists(out):
+        U = ivy.inplace_update(out[0], U)
+        V = ivy.inplace_update(out[1], V)
+
+    return U, V
+
+
+def make_svd_non_negative(
+    x: Union[ivy.Array, ivy.NativeArray],
+    U: Union[ivy.Array, ivy.NativeArray],
+    S: Union[ivy.Array, ivy.NativeArray],
+    V: Union[ivy.Array, ivy.NativeArray],
+    nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+) -> ivy.Array:
+    """
+    Use NNDSVD method to transform SVD results into a non-negative form. This method
+    leads to more efficient solving with NNMF [1].
+
+    Parameters
+    ----------
+    x
+      tensor being decomposed
+    U, S, V: SVD factorization results
+    nntype : {'nndsvd', 'nndsvda'}
+        Whether to fill small values with 0.0 (nndsvd),
+          or the tensor mean (nndsvda, default).
+
+    [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
+    """
+    # NNDSVD initialization
+    W = ivy.zeros_like(U)
+    H = ivy.zeros_like(V)
+
+    # The leading singular triplet is non-negative
+    # so it can be used as is for initialization.
+    W[:, 0] = ivy.sqrt(S[0]) * ivy.abs(U[:, 0])
+    H[0, :] = ivy.sqrt(S[0]) * ivy.abs(V[0, :])
+
+    for j in range(1, ivy.shape(U)[1]):
+        a, b = U[:, j], V[j, :]
+
+        # extract positive and negative parts of column vectors
+        # TODO ivy.clip requires x_max as a compulsary argument,
+        # the following code will throw an error.
+        a_p, b_p = ivy.clip(a, 0.0), ivy.clip(b, 0.0)
+        a_n, b_n = ivy.abs(ivy.clip(a, 0.0)), ivy.abs(ivy.clip(b, 0.0))
+
+        # and their norms
+        a_p_nrm, b_p_nrm = ivy.l2_normalize(a_p), ivy.l2_normalize(b_p)
+        a_n_nrm, b_n_nrm = ivy.l2_normalize(a_n), ivy.l2_normalize(b_n)
+
+        m_p, m_n = a_p_nrm * b_p_nrm, a_n_nrm * b_n_nrm
+
+        # choose update
+        if m_p > m_n:
+            u = a_p / a_p_nrm
+            v = b_p / b_p_nrm
+            sigma = m_p
+        else:
+            u = a_n / a_n_nrm
+            v = b_n / b_n_nrm
+            sigma = m_n
+
+        lbd = ivy.sqrt(S[j] * sigma)
+        H[:, j] = lbd * u
+        H[j, :] = lbd * v
+
+    # After this point we no longer need H
+    eps = ivy.finfo(x.dtype)
+
+    if nntype == "nndsvd":
+        W = ivy.soft_thresholding(W, eps)
+    elif nntype == "nndsvda":
+        avg = ivy.mean(x)
+        W = ivy.where(W < eps, ivy.ones(ivy.shape(W)) * avg, W)
+    else:
+        raise ValueError(
+            f'Invalid nntype parameter: got {nntype} instead of one of ("nndsvd",'
+            ' "nndsvda")'
+        )
+
+    return W
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def truncated_svd(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    compute_uv: bool = True,
+    n_eigenvecs: Optional[int] = None,
+    **kwargs,
+) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+    """
+    Compute a truncated SVD on `x` using the standard SVD.
+
+    Parameters
+    ----------
+    x
+      2D-array
+    compute_uv
+        If ``True`` then left and right singular vectors will be computed and returned
+        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be
+        computed, which can be significantly faster.
+    n_eigenvecs
+        if specified, number of eigen[vectors-values] to return
+        else full matrices will be returned
+
+    .. note::
+        once complex numbers are supported, each square matrix must be Hermitian.
+
+    ret
+        a namedtuple ``(U, S, Vh)``
+        Each returned array must have the same floating-point data type as ``x``.
+    """
+    n_eigenvecs, min_dim, _ = _svd_checks(x, n_eigenvecs=n_eigenvecs)
+    full_matrices = True if n_eigenvecs > min_dim else False
+
+    if compute_uv:
+        U, S, Vh = ivy.svd(x, full_matrices=full_matrices, compute_uv=True)
+        return U[:, :n_eigenvecs], S[:n_eigenvecs], Vh[:n_eigenvecs, :]
+    else:
+        S = ivy.svd(x, full_matrices=full_matrices, compute_uv=False)
+        return S[:n_eigenvecs]
+
+
+def svd_interface(
+    matrix,
+    method="truncated_svd",
+    n_eigenvecs=None,
+    flip_sign=True,
+    u_based_flip_sign=True,
+    non_negative=None,
+    mask=None,
+    n_iter_mask_imputation=5,
+    **kwargs,
+):
+    """
+    Dispatching function to various SVD algorithms, alongside additional properties such
+    as resolving sign invariance, imputation, and non-negativity.
+
+    Parameters
+    ----------
+    matrix : tensor
+        A 2D tensor.
+    method : str, default is 'truncated_svd'
+        Function to use to compute the SVD,
+          acceptable values in tensorly.SVD_FUNS or a callable.
+    n_eigenvecs : int, optional, default is None
+        If specified, number of eigen[vectors-values] to return.
+    flip_sign : bool, optional, default is True
+        Whether to resolve the sign indeterminacy of SVD.
+    u_based_flip_sign : bool, optional, default is True
+        Whether the sign indeterminacy should be resolved using U (vs. V).
+    non_negative : bool, optional, default is False
+        Whether to make the SVD results non-negative.
+    nn_type : str, default is 'nndsvd'
+        Algorithm to use for converting U to be non-negative.
+    mask : tensor, default is None.
+        Array of booleans with the same shape as ``matrix``.
+          Should be 0 where
+        the values are missing and 1 everywhere else. None if nothing is missing.
+        Imputation is done by iterative low rank approximation,
+          so n_eigenvecs should be provided
+        and be lower than the rank of the matrix.
+    n_iter_mask_imputation : int, default is 5
+        Number of repetitions to apply in missing value imputation.
+    **kwargs : optional
+        Arguments passed along to individual SVD algorithms.
+
+    Returns
+    -------
+    U : 2-D tensor, shape (matrix.shape[0], n_eigenvecs)
+        Contains the right singular vectors of `matrix`
+    S : 1-D tensor, shape (n_eigenvecs, )
+        Contains the singular values of `matrix`
+    V : 2-D tensor, shape (n_eigenvecs, matrix.shape[1])
+        Contains the left singular vectors of `matrix`
+    """
+    if method == "truncated_svd":
+        svd_fun = truncated_svd
+    # elif method == "symeig_svd":
+    #    svd_fun = symeig_svd
+    # elif method == "randomized_svd":
+    #    svd_fun = randomized_svd
+    elif callable(method):
+        svd_fun = method
+    else:
+        raise ValueError("Invalid Choice")
+    svd_fun = ivy.svd
+
+    U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
+
+    if mask is not None and n_eigenvecs is not None:
+        for _ in range(n_iter_mask_imputation):
+            matrix = matrix * mask + (U @ ivy.diag(S) @ V) * (1 - mask)
+            U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
+
+    if flip_sign:
+        U, V = svd_flip(U, V, u_based_decision=u_based_flip_sign)
+
+    # if non_negative is not False and non_negative is not None:
+    #    U = make_svd_non_negative(matrix, U, S, V, non_negative)
+
+    return U, S, V
