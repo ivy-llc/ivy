@@ -788,6 +788,7 @@ def test_paddle_dist(
     p,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -796,6 +797,7 @@ def test_paddle_dist(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
