@@ -2240,16 +2240,13 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         ...                                [2.0, 1.0]]))
         >>> y = x.slogdet()
         >>> print(y)
-        {
-            a: [
-                sign = ivy.array(-1.),
-                logabsdet = ivy.array(0.6931472)
-            ],
-            b: [
-                sign = ivy.array(-1.),
-                logabsdet = ivy.array(1.0986123)
-            ]
-        }
+        [{
+            a: ivy.array(-1.),
+            b: ivy.array(-1.)
+        }, {
+            a: ivy.array(0.69314718),
+            b: ivy.array(1.09861231)
+        }]
         """
         return self._static_slogdet(
             self,

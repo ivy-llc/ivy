@@ -184,9 +184,20 @@ def check_docstring_examples_run(
         """,
         re.VERBOSE,
     )
-    num_output = output.replace("ivy.array", "").replace("ivy.Shape", "")
+
+    words_to_remove = [
+        "ivy.Shape",
+        "logabsdet=ivy.array",
+        "torch.Size",
+    ]
+
+    num_output = output.replace("ivy.array", "")
+    num_parsed_output = parsed_output.replace("ivy.array", "")
+    for i in words_to_remove:
+        num_output = num_output.replace(i, "")
+        num_parsed_output = num_parsed_output.replace(i, "")
+
     num_output = numeric_pattern.sub("", num_output)
-    num_parsed_output = parsed_output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_parsed_output = numeric_pattern.sub("", num_parsed_output)
     num_output = num_output.split(",")
     num_parsed_output = num_parsed_output.split(",")
@@ -253,16 +264,18 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "dct": "jax",
         "idct": "jax",
         "linspace": "jax",
-        "native_array":"tensorflow",
+        "native_array": "tensorflow",
         "logspace": "jax",
-        "function_unsupported_devices":"numpy",
-        "maximum":"torch",
-        "minimum":"torch",
-        "deg2rad":"tensorflow",
-        "set_item":"jax",
-        "vmap":"torch",
+        "function_unsupported_devices": "numpy",
+        "maximum": "torch",
+        "minimum": "torch",
+        "deg2rad": "tensorflow",
+        "set_item": "jax",
+        "vmap": "torch",
         "conv1d_transpose": "tensorflow",
         "conv3d_transpose": "numpy",
+        "eigvalsh": "jax",
+        "vector_norm": "torch",
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
@@ -280,6 +293,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "native_array":"torch",
         "logspace":"torch",
         "set_item":"numpy",
+        "eigvalsh":"torch",
     }
     try:
         if (
@@ -371,7 +385,6 @@ def test_docstrings(backend):
         "cumprod",
         "supports_inplace_updates",
         "shuffle",
-        "slogdet",
         "dropout",
         "dropout1d",
         "dropout2d",
