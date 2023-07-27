@@ -803,3 +803,40 @@ def test_paddle_bincount(
         weights=None,
         minlength=0,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.dist",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    p=helpers.floats(min_value=1.0, max_value=10.0),
+)
+def test_paddle_dist(
+    *,
+    dtype_and_input,
+    p,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+        p=p,
+    )
+    
