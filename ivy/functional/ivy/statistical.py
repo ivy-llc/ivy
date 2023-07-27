@@ -217,7 +217,7 @@ def max(
     ivy.array(3)
 
     >>> x = ivy.array([0, 1, 2])
-    >>> z = ivy.array([0])
+    >>> z = ivy.array(0)
     >>> y = ivy.max(x, out=z)
     >>> print(z)
     ivy.array(2)

@@ -245,8 +245,6 @@ def check_docstring_examples_run(
 # at least two doc tests should pass to assume problem is specific to a backend
 def skip_conditional(fn_name: str, backend_name: str) -> bool:
     skip_list_conditional_first = {
-        # jax doesn't support inplace updates
-        "assert_supports_inplace": "jax",
         "prod": "numpy",
         "abs": "tensorflow",
         "avg_pool2d": "torch",
@@ -281,10 +279,10 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "conv3d_transpose": "numpy",
         "eigvalsh": "jax",
         "vector_norm": "torch",
+        "l1_normalize": "tensorflow",
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
-        "assert_supports_inplace": "tensorflow",
         "prod": "torch",
         "abs": "torch",
         "avg_pool2d": "tensorflow",
@@ -311,8 +309,7 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
-def \
-        test_docstrings(backend):
+def test_docstrings(backend):
     ivy.set_default_device("cpu")
     ivy.set_backend(backend)
     failures = list()

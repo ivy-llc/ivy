@@ -1406,7 +1406,7 @@ class _ArrayWithElementwise(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 2 ,3 ])
+        >>> x = ivy.array([1., 2., 3.])
         >>> y = x.log1p()
         >>> print(y)
         ivy.array([0.693, 1.1  , 1.39 ])

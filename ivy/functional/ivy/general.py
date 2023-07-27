@@ -2667,19 +2667,21 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     --------
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3])
     >>> print(x.assert_supports_inplace())
     True
 
-    With :class:`ivy.Array` input and default backend set as `jax`:
+    With :class:`ivy.Array` input and default backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.array([1, 2, 3])
     >>> print(x.assert_supports_inplace())
-    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+    True
 
     With :class:`ivy.Container` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> print(x.assert_supports_inplace())
     {
@@ -2687,12 +2689,15 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         b: True
     }
 
-    With :class:`ivy.Container` input and default backend set as `jax`:
+    With :class:`ivy.Container` input and default backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> print(x.assert_supports_inplace())
-    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+    {
+        a: True,
+        b: True
+    }
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),

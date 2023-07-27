@@ -829,19 +829,20 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :class:`ivy.Array` input and default backend set as `numpy`:
+        With :class:`ivy.Array` input and default backend set as `torch`:
 
+        >>> ivy.set_backend("torch")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         True
 
-        With :class:`ivy.Array` input and default backend set as `jax`:
+        With :class:`ivy.Array` input and default backend set as `numpy`:
 
+        >>> ivy.set_backend("numpy")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
-        with jax backend
+        True
+
         """
         return ivy.assert_supports_inplace(self)
 
@@ -1012,7 +1013,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(y)
         True
 
-        >>> x = ivy.array(None)
+        >>> x = ivy.array([])
         >>> y = x.exists()
         >>> print(y)
         True

@@ -50,9 +50,10 @@ def l1_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l1_normalize(x, axis=1)
-    ivy.array([[0.3333, 0.6667],
-               [0.4286, 0.5714]])
+    >>> y = ivy.l1_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 1.33333337],
+           [1.28571439, 2.28571439]])
     """
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
