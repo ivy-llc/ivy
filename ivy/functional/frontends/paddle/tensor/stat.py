@@ -45,3 +45,13 @@ def median(x, axis=None, keepdim=False, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.median(x, axis=axis, keepdims=keepdim)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")},"paddle")
+@to_ivy_arrays_and_back
+def var(x, axis=None, unbiased=True, keepdim=False, name=None):
+    if unbiased:
+        correction=1
+    else:
+        correction=0
+    return ivy.var(x, axis=axis,correction=correction, keepdims=keepdim)
