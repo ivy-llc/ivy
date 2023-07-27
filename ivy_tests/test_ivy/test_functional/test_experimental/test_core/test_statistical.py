@@ -226,6 +226,29 @@ def test_nanmean(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.experimental.nanquantile",
+    dtype_x_axis=_statistical_dtype_values(function="nanquantile"),
+    keep_dims=st.booleans(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_nanquantile(
+    *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
 @st.composite
 def _quantile_helper(draw):
     large_abs_safety_factor = 2
