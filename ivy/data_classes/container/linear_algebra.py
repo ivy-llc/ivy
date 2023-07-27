@@ -1005,6 +1005,55 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.inner. This method simply wraps the
+        function, and so the docstring for ivy.inner also applies to this method with
+        minimal changes.
+
+        Return the inner product of two vectors ``x1`` and ``x2``.
+
+        Parameters
+        ----------
+        x1
+            first one-dimensional input array of size N.
+            Should have a numeric data type.
+            a(N,) array_like
+            First input vector. Input is flattened if not already 1-dimensional.
+        x2
+            second one-dimensional input array of size M.
+            Should have a numeric data type.
+            b(M,) array_like
+            Second input vector. Input is flattened if not already 1-dimensional.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a two-dimensional array containing the inner product and whose
+            shape is (N, M).
+            The returned array must have a data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x1 =ivy.Container( a=ivy.array([[1, 2], [3, 4]]))
+        >>> x2 = ivy.Container(a=ivy.array([5,6]))
+        >>> y = ivy.Container.static_outer(x1, x2)
+        >>> print(y)
+        ivy.array([17.,39.])
+        """
         return ContainerBase.cont_multi_map_in_function(
             "inner",
             x1,
@@ -1027,6 +1076,53 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.inner. This method simply wraps the
+        function, and so the docstring for ivy.inner also applies to this method with
+        minimal changes.
+
+        Return the inner product of two vectors ``x1`` and ``x2``.
+
+        Parameters
+        ----------
+        self : ivy.Container
+            input container of size N. Should have a numeric data type.
+            a(N,) array_like
+            First input vector. Input is flattened if not already 1-dimensional.
+        x2
+            one-dimensional input array of size M. Should have a numeric data type.
+            b(M,) array_like
+            Second input vector. Input is flattened if not already 1-dimensional.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a new container representing the inner product and whose
+            shape is (N, M).
+            The returned array must have a data type determined by Type Promotion Rules.
+
+        Examples
+        --------
+        >>> x1 =ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
+        >>> x2 = ivy.Container(a=ivy.array([5,6]))
+        >>> y = ivy.Container.static_outer(x1, x2)
+        >>> print(y)
+        ivy.array([17.,39.])
+        """
         return self._static_inner(
             self,
             x2,

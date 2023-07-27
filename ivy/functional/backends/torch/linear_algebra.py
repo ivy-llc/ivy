@@ -117,7 +117,11 @@ eigvalsh.support_native_out = True
 
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def inner(
-    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
