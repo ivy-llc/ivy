@@ -1184,8 +1184,8 @@ def test_method(
         # TODO remove when the handle_method can properly compute unsupported dtypes
         if any(
             dtype
-            in ivy_backend.function_unsupported_dtypes(
-                ins.__getattribute__(method_name)
+            in ivy_backend.function_unsupported_devices_and_dtypes(
+                ins.__getattribute__(method_name), on_device
             )
             for dtype in method_input_dtypes
         ):
@@ -1244,8 +1244,8 @@ def test_method(
         # TODO this when the handle_method can properly compute unsupported dtypes
         if any(
             dtype
-            in gt_backend.function_unsupported_dtypes(
-                ins_gt.__getattribute__(method_name)
+            in gt_backend.function_unsupported_devices_and_dtypes(
+                ins_gt.__getattribute__(method_name), on_device
             )
             for dtype in method_input_dtypes
         ):

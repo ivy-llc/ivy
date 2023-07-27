@@ -1213,7 +1213,9 @@ def test_inplace_update(
 ):
     with update_backend(backend_fw) as ivy_backend:
         dtype = x_val_and_dtypes[0][0]
-        if dtype in ivy_backend.function_unsupported_dtypes(ivy_backend.inplace_update):
+        if dtype in ivy_backend.function_unsupported_devices_and_dtypes(
+            ivy_backend.inplace_update, on_device
+        ):
             return
         x, val = x_val_and_dtypes[1]
         x = ivy_backend.array(x.tolist(), dtype=dtype, device=on_device)
@@ -1285,8 +1287,8 @@ def test_inplace_decrement(x_val_and_dtypes, test_flags, on_device, backend_fw):
 def test_inplace_increment(x_val_and_dtypes, test_flags, on_device, backend_fw):
     dtype = x_val_and_dtypes[0][0]
     with update_backend(backend_fw) as ivy_backend:
-        if dtype in ivy_backend.function_unsupported_dtypes(
-            ivy_backend.inplace_increment
+        if dtype in ivy_backend.function_unsupported_devices_and_dtypes(
+            ivy_backend.inplace_increment, on_device
         ):
             return
         x, val = x_val_and_dtypes[1]
@@ -1909,13 +1911,15 @@ def _fn3(x, y):
     ),
     in_axes_as_cont=st.booleans(),
 )
-def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont, backend_fw):
+def test_vmap(func, dtype_and_arrays_and_axes, in_axes_as_cont, backend_fw, on_device):
     with update_backend(backend_fw) as ivy_backend:
         dtype, generated_arrays, in_axes = dtype_and_arrays_and_axes
         arrays = [ivy_backend.native_array(array) for array in generated_arrays]
         assume(
             ivy_backend.as_ivy_dtype(dtype[0])
-            not in ivy_backend.function_unsupported_dtypes(ivy_backend.vmap)
+            not in ivy_backend.function_unsupported_devices_and_dtypes(
+                ivy_backend.vmap, on_device
+            )
         )
 
         if in_axes_as_cont:
