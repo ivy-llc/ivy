@@ -100,3 +100,10 @@ def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
     if ivy.isreal(x):
         time_domain = ivy.real(time_domain)
     return time_domain
+
+
+@with_unsupported_dtypes({"2.5.0 and below": ("float16",)}, "paddle")
+@to_ivy_arrays_and_back
+def rfft(x, n=None, axis=-1, norm="backward", name=None):
+    ret = ivy.dft(x, axis=axis, inverse=False, onesided=True, dft_length=n, norm=norm)
+    return ivy.astype(ret, ret.dtype)
