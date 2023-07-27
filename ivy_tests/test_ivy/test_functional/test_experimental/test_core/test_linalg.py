@@ -691,7 +691,7 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
     test_flags.instance_method = False
     test_flags.with_out = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -784,7 +784,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, t1, t2, mode = data
     test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -866,7 +866,7 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, t1, t2, modes, skip = data
     test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -929,7 +929,7 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
     u_based_decision = u_based_decision
     test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -972,7 +972,7 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, uv, n_eigenvecs = data
     test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
