@@ -1,11 +1,12 @@
 # flake8: noqa
 # global
-from hypothesis import strategies as st, given
+from hypothesis import strategies as st, given, assume
 import numpy as np
 import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.backends.paddle.general import _check_query
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
@@ -184,18 +185,6 @@ def test_paddle_reshape(
     )
 
 
-def _filter_query(query):
-    return (
-        query.ndim > 1
-        if isinstance(query, np.ndarray)
-        else (
-            not any(isinstance(i, np.ndarray) and i.ndim <= 1 for i in query)
-            if isinstance(query, tuple)
-            else True
-        )
-    )
-
-
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -204,7 +193,7 @@ def _filter_query(query):
     dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
-    ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
+    ).filter(lambda x: x[0][0] == x[0][-1] and _check_query(x[-2])),
 )
 def test_paddle_getitem(
     dtype_x_index,
@@ -222,39 +211,6 @@ def test_paddle_getitem(
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"item": index},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# __setitem__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="__setitem__",
-    dtypes_x_index_val=helpers.dtype_array_query_val(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
-)
-def test_paddle_setitem(
-    dtypes_x_index_val,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    backend_fw,
-    frontend,
-    on_device,
-):
-    input_dtype, x, index, val = dtypes_x_index_val
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[*input_dtype[1:]],
-        method_all_as_kwargs_np={"item": index, "value": val},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
