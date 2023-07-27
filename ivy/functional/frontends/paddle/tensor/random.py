@@ -107,3 +107,38 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
     return ivy.random_uniform(
         low=min, high=max, shape=x.shape, dtype=x.dtype, seed=seed
     )
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def standard_normal(shape, dtype=None, name=None):
+    return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("int16", "float16", "bfloat16", "uint8")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def randint_like(x, low=0, high=None, dtype=None, name=None):
+    if high is None:
+        high = low
+        low = 0
+        if high <= 0:
+            raise ivy.exceptions.IvyError(
+                "If high is None, low must be greater than 0, but received low = 0."
+            )
+    return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def multinomial(x, num_samples=1, replacement=False, name=None):
+    n = ivy.astype(ivy.array(x.size), ivy.int64)
+    return ivy.multinomial(n, num_samples, probs=x, replace=replacement)

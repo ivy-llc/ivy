@@ -3,6 +3,7 @@ from hypothesis import strategies as st
 
 # local
 
+import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -271,4 +272,31 @@ def test_paddle_randint_like(
         low=low,
         high=high,
         dtype=dtype[0],
+    )
+
+
+# multinomial
+@handle_frontend_test(
+    fn_tree="paddle.tensor.random.multinomial",
+    dtype=helpers.get_dtypes("valid"),
+    n=helpers.ints(min_value=2, max_value=10),
+)
+def test_paddle_multinomial(
+    dtype,
+    n,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=np.array([1 / n] * n, dtype=dtype[0]),
     )
