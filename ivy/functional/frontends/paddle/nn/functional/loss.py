@@ -217,7 +217,7 @@ def kl_div(
     "paddle",
 )
 @inputs_to_ivy_arrays
-def triplet_loss(anchor, positive, negative, margin=1.0, reduction="mean", name=None):
+def tripl(anchor, positive, negative, margin=1.0, reduction="mean", name=None):
     distance_positive = ivy.mean(ivy.square(anchor - positive), axis=-1, keepdims=True)
     distance_negative = ivy.mean(ivy.square(anchor - negative), axis=-1, keepdims=True)
     loss = ivy.relu(distance_positive - distance_negative + margin)
@@ -228,4 +228,4 @@ def triplet_loss(anchor, positive, negative, margin=1.0, reduction="mean", name=
     if loss.shape == ():
         loss = loss.expand_dims()
 
-    return paddle.to_tensor(ivy.atleast_1d(loss))
+    return paddle.to_tensor(loss)
