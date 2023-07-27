@@ -245,7 +245,6 @@ def check_docstring_examples_run(
 # at least two doc tests should pass to assume problem is specific to a backend
 def skip_conditional(fn_name: str, backend_name: str) -> bool:
     skip_list_conditional_first = {
-        "prod": "numpy",
         "abs": "tensorflow",
         "avg_pool2d": "torch",
         "avg_pool3d": "torch",
@@ -283,7 +282,6 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
     }
     # second dict to keep if a function fails in two backends
     skip_list_conditional_second = {
-        "prod": "torch",
         "abs": "torch",
         "avg_pool2d": "tensorflow",
         "avg_pool3d": "tensorflow",
