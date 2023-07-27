@@ -164,7 +164,7 @@ def gather_nd(
     params_shape = paddle.to_tensor(params.shape)
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
-    batch_size = paddle.prod(batch_shape, [0])
+    batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -217,7 +217,7 @@ def gather_nd(
     )
     index_grid = paddle_backend.tile(index_grid, repeats=paddle.to_tensor(tile_shape))
     # index_grid now has shape [(B1.B2), i1, ..., iK, 2]
-    flat_shape = [batch_size] + indices_shape[batch_dims:]
+    flat_shape = batch_size + indices_shape[batch_dims:]
     flat_indices = paddle_backend.reshape(indices, shape=flat_shape)
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
