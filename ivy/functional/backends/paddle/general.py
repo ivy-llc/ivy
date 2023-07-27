@@ -1,7 +1,7 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 import paddle
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -30,6 +30,45 @@ def container_types():
 
 def current_backend_str() -> str:
     return "paddle"
+
+
+def _check_query(query):
+    return (
+        query.ndim > 1
+        if ivy.is_array(query)
+        else (
+            all(ivy.is_array(query) and i.ndim <= 1 for i in query)
+            if isinstance(query, tuple)
+            else False if isinstance(query, int) else True
+        )
+    )
+
+
+def get_item(
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
+) -> paddle.Tensor:
+    dtype = x.dtype
+    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
+        ret = x.cast("float32").__getitem__(query).cast(dtype)
+    elif dtype in [paddle.complex64, paddle.complex128]:
+        ret = paddle.complex(
+            x.real().__getitem__(query),
+            x.imag().__getitem__(query),
+        )
+    else:
+        ret = x.__getitem__(query)
+    if copy:
+        return paddle_backend.copy_array(ret).data
+    return ret
+
+
+get_item.partial_mixed_handler = (
+    lambda x, query, **kwargs: _check_query(query) and 0 not in x.shape
+)
 
 
 def to_numpy(
