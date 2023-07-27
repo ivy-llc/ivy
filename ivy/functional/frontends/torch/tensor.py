@@ -1578,6 +1578,9 @@ class Tensor:
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
 
+    def angle(self):
+        return torch_frontend.angle(self)
+
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
