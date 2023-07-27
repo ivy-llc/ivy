@@ -12,7 +12,7 @@ def fftshift(x, axes=None, name=None):
     elif isinstance(axes, int):
         shifts = shape[axes] // 2
     else:
-        shifts = ivy.concat([shape[ax] // 2 for ax in axes])
+        shifts = [shape[ax] // 2 for ax in axes]
 
     roll = ivy.roll(x, shifts, axis=axes)
 
