@@ -99,7 +99,7 @@ def standard_normal(shape, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def randint_like(x, low=0, high=None, dtype=None, name=None):
-    if high == None:
+    if high is None:
         high = low
         low = 0
         if high <= 0:
