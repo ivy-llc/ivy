@@ -352,17 +352,16 @@ def frac(x, name=None):
     return ivy.subtract(x, y)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float16", "float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def logcumsumexp(x, axis=None, dtype=None, name=None):
     if len(x.shape) == 0:
-        ret = ivy.array([x.item()], dtype=dtype)
+        ret = x
     else:
-        # name is out
         original_dtype = dtype
-        exp_input = ivy.exp(x.astype("float64"))
-        summed_exp_input = ivy.cumsum(exp_input, axis=axis)
-        ret = ivy.log(summed_exp_input).astype(original_dtype)
+        exp_x = ivy.exp(x.astype("float64"))
+        summed_exp_x = ivy.cumsum(exp_x, axis=axis)
+        ret = ivy.log(summed_exp_x).astype(original_dtype)
     if ivy.exists(name):
         ivy.inplace_update(name, ret)
     return ret
