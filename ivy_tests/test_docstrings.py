@@ -246,7 +246,6 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
     skip_list_conditional_first = {
         # jax doesn't support inplace updates
         "assert_supports_inplace": "jax",
-        "mean": "torch",
         "prod": "numpy",
         "abs": "tensorflow",
         "avg_pool2d": "torch",

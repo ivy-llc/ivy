@@ -348,8 +348,9 @@ def mean(
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
     ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
-    >>> ivy.mean(x, axis=0, out=x)
-    >>> print(x)
+    >>> y = ivy.Container(a = ivy.zeros(3), b = ivy.zeros(3))
+    >>> ivy.mean(x, axis=0, out=y)
+    >>> print(y)
     {
         a: ivy.array([1.5, 2.5, 3.5]),
         b: ivy.array([4.5, 5.5, 6.5])
