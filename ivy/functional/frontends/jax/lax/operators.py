@@ -647,3 +647,8 @@ def conj(x):
 @to_ivy_arrays_and_back
 def is_finite(x):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)
