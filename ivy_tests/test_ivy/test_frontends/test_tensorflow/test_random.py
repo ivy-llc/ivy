@@ -373,3 +373,36 @@ def test_tensorflow_gamma(
         seed=seed,
         test_values=False,
     )
+
+@handle_frontend_test(
+    fn_tree="tensorflow.random.stateless_categorical",
+    logits=st.floats(allow_nan=False, allow_infinity=False, min_value=-5, max_value=5),
+    num_samples=helpers.ints(min_value=1, max_value=5),
+    seed=helpers.dtype_and_values(
+        available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_stateless_categorical(
+    frontend,
+    fn_tree,
+    on_device,
+    logits,
+    num_samples,
+    seed,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, seed = seed
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        logits=logits,
+        num_samples=num_samples,
+        seed=seed[0] + seed[1],
+    )
