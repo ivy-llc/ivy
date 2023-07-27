@@ -265,7 +265,9 @@ class IvyLoader(Loader):
         if self.filename in _compiled_modules_cache:
             compiled_obj = _compiled_modules_cache[self.filename]
         else:
-            with open(self.filename) as f:
+            # enforce UTF-8 for compiling when installed as a package
+            # according to PEP 686
+            with open(self.filename, encoding="utf-8") as f:
                 data = f.read()
 
             ast_tree = parse(data)
