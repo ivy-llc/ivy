@@ -481,9 +481,12 @@ def test_numpy_any(
     method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
         valid_axis=True,
-        max_axes_size=1,
         force_int_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
