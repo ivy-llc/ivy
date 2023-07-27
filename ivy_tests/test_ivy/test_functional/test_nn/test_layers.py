@@ -4,7 +4,6 @@
 from hypothesis import strategies as st, assume
 import ivy
 import numpy as np
-import pdb
 
 
 # local
@@ -649,12 +648,17 @@ def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
 # conv1d
 @handle_test(
     fn_tree="functional.ivy.conv1d",
-    x_f_d_df=x_and_filters(dim=1,bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"])),
+    x_f_d_df=x_and_filters(
+        dim=1,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
 def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
@@ -680,12 +684,17 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
 # conv1d_transpose
 @handle_test(
     fn_tree="functional.ivy.conv1d_transpose",
-    x_f_d_df=x_and_filters(dim=1, transpose=True,bias=True,
-        ),
+    x_f_d_df=x_and_filters(
+        dim=1,
+        transpose=True,
+        bias=True,
+    ),
     ground_truth_backend="jax",
 )
 def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,
@@ -710,11 +719,17 @@ def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
 # conv2d
 @handle_test(
     fn_tree="functional.ivy.conv2d",
-    x_f_d_df=x_and_filters(dim=2,bias=True,filter_format=st.sampled_from(["channel_last","channel_first"])),
+    x_f_d_df=x_and_filters(
+        dim=2,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
 def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc,ff_format,bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
@@ -730,10 +745,10 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
         strides=stride,
         padding=pad,
         data_format=data_format,
-        filter_format= ff_format,
+        filter_format=ff_format,
         x_dilations=dilations[1],
         dilations=dilations[0],
-        bias=bias
+        bias=bias,
     )
 
 
@@ -749,7 +764,9 @@ def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="jax",
 )
 def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
 
     helpers.test_function(
@@ -767,7 +784,7 @@ def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations[0],
-        bias=bias
+        bias=bias,
     )
 
 
@@ -810,11 +827,14 @@ def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_devic
     x_f_d_df=x_and_filters(
         dim=3,
         bias=True,
-        filter_format=st.sampled_from(["channel_last", "channel_first"])),
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
 def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, fc,ff_format,bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,
@@ -847,7 +867,9 @@ def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     ground_truth_backend="jax",
 )
 def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
         input_dtypes=dtype,

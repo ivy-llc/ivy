@@ -18,7 +18,6 @@ from ivy.func_wrapper import (
     handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
-import pdb
 
 # Extra #
 # ------#
@@ -1313,7 +1312,6 @@ def conv2d_transpose(
         }
     }
     """
-    pdb.set_trace()
     return current_backend(x).conv2d_transpose(
         x,
         filters,

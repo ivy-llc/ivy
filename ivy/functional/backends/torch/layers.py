@@ -1,5 +1,4 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
-import pdb
 from typing import Optional, Tuple, Union, Sequence
 
 # global
@@ -29,10 +28,10 @@ def linear(
 
 linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
 
-def _ff_xd_before_conv(x,filters,dims,filter_format,x_dilations):
+
+def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
     if filter_format == "channel_last":
         filters = filters.permute(-1, -2, *range(dims))
-
 
     # adding dilation to input
     x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
@@ -49,9 +48,6 @@ def _ff_xd_before_conv(x,filters,dims,filter_format,x_dilations):
             x = torch.matmul(x, h)
             x = torch.swapaxes(x, -1, 2 + i)
     return x, filters
-
-
-
 
 
 def _pad_before_conv(
@@ -151,7 +147,7 @@ def conv1d(
 ) -> torch.Tensor:
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    x,filters =_ff_xd_before_conv(x,filters,1,filter_format,x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 1, dilations, "channel_first"
     )
@@ -230,7 +226,7 @@ def conv2d(
 ) -> torch.Tensor:
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x,filters =_ff_xd_before_conv(x,filters,2,filter_format,x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 2, dilations, "channel_first"
     )
@@ -262,7 +258,7 @@ def conv2d_transpose(
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
@@ -347,14 +343,14 @@ def conv3d(
     *,
     data_format: str = "NDHWC",
     filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int,int]] = 1,
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    x,filters =_ff_xd_before_conv(x,filters,3,filter_format,x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 3, dilations, "channel_first"
     )
@@ -492,7 +488,6 @@ def conv_general_transpose(
     bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
-
     if data_format == "channel_last":
         x = x.permute(0, dims + 1, *range(1, dims + 1))
     strides = [strides] * dims if isinstance(strides, int) else strides
