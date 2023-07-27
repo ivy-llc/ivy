@@ -413,6 +413,7 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+
 #TODO: Add Ivy function for block_diag but only scipy.linalg and \
 # and torch supports block_diag currently
 @to_ivy_arrays_and_back
@@ -458,3 +459,19 @@ def block_diag(*tensors):
         ret_dim_1 += dim_1
 
     return ret
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def view_as_real(input):
+    if not ivy.is_complex_dtype(input):
+        raise ivy.exceptions.IvyError(
+            "view_as_real is only supported for complex tensors"
+        )
+    re_part = ivy.real(input)
+    im_part = ivy.imag(input)
+    return ivy.stack((re_part, im_part), axis=-1)
+
