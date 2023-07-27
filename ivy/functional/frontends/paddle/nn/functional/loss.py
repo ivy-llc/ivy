@@ -230,3 +230,23 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+@with_supported_dtypes({"2.5.0 and below": ("float32","float64")},
+    "paddle",)
+@inputs_to_ivy_arrays
+def multilabel_soft_margin_loss(input, label, weight=None, reduction='mean', name=None):
+
+    reduction = _get_reduction_func(reduction)
+    loss = -(
+            label * ivy.log(ivy.sigmoid(input))
+            + (1 - label) * ivy.log(1 - ivy.sigmoid(input))
+    )
+
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+    loss = ivy.mean(loss, axis=-1)
+    ret = reduction(loss)
+    if ret.shape == ():
+        ret = ret.expand_dims()
+    return paddle.to_tensor(ret)
+

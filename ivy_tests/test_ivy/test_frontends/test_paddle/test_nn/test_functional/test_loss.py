@@ -390,3 +390,48 @@ def test_paddle_margin_ranking_loss(
         margin=margin,
         reduction=reduction,
     )
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.multilabel_soft_margin_loss",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        exclude_min=True,
+        exclude_max=True,
+        shared_dtype=True,
+        min_num_dims=1,
+    ),
+    dtype_and_weight=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_paddle_multilabel_soft_margin_loss(
+    dtype_and_x,
+    dtype_and_weight,
+    reduction,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    x_dtype, x = dtype_and_x
+    weight_dtype, weight = dtype_and_weight
+    helpers.test_frontend_function(
+        input_dtypes=[
+            x_dtype,
+            weight_dtype[0],
+        ],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+        weight=weight[0],
+        reduction=reduction,
+    )
+
