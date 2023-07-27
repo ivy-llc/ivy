@@ -35,7 +35,7 @@ from ivy_tests.test_ivy.helpers import handle_method
     ),
     axis=st.integers(min_value=-1, max_value=1),
     compute_full_loss=st.sampled_from([True, False]),
-    method_num_positional_args=helpers.get_num_positional_args(
+    method_num_positional_args=helpers.num_positional_args(
         fn_name="LogPoissonLoss._forward"
     ),
     reduction=st.sampled_from(["none", "mean", "sum"]),
@@ -101,7 +101,7 @@ def test_log_poisson_loss(
         min_dim_size=3,
     ),
     axis=st.integers(min_value=-1, max_value=1),
-    method_num_positional_args=helpers.get_num_positional_args(
+    method_num_positional_args=helpers.num_positional_args(
         fn_name="CrossEntropyLoss._forward"
     ),
     reduction=st.sampled_from(["none", "mean", "sum"]),
