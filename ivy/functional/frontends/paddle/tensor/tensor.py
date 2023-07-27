@@ -67,8 +67,9 @@ class Tensor:
         return paddle_frontend.Tensor(ret)
 
     def __setitem__(self, item, value):
-        item, value = ivy.nested_map([item, value], _to_ivy_array)
-        self.ivy_array[item] = value
+        raise ivy.utils.exceptions.IvyException(
+            "ivy.functional.frontends.paddle.Tensor object doesn't support assignment"
+        )
 
     def __iter__(self):
         if self.ndim == 0:
@@ -248,6 +249,10 @@ class Tensor:
         return paddle_frontend.Tensor(
             ivy.sort(self._ivy_array, axis=axis, descending=descending)
         )
+
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def log1p(self, name=None):
+        return ivy.log1p(self._ivy_array)
 
     @with_supported_dtypes(
         {

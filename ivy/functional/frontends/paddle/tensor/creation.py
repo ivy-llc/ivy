@@ -145,5 +145,20 @@ def tril_indices(row, col, offset=0, dtype="int64"):
     {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
+def diag(x, offset=0, padding_value=0, name=None):
+    if len(x.shape) == 1:
+        padding_value = ivy.astype(padding_value, ivy.dtype(x))
+        ret = ivy.diagflat(x, offset=offset, padding_value=padding_value)
+        if len(ret.shape) != 2:
+            ret = ivy.reshape(ret, (1, 1))
+    else:
+        ret = ivy.diag(x, k=offset)
+    return ret
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
 def logspace(start, stop, num, base=10.0, dtype=None, name=None):
     return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)

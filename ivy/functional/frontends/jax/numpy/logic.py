@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.numpy import (
 )
 from ivy.utils.exceptions import IvyNotImplementedException
 
+
 def _packbits_nested_list_padding(arr, pad_length):
     if arr.ndim > 1:
         nested_list = []
@@ -16,6 +17,7 @@ def _packbits_nested_list_padding(arr, pad_length):
         return nested_list
     else:
         return arr.zero_pad(pad_width=[[0, pad_length]])
+
 
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
