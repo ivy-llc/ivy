@@ -278,7 +278,7 @@ def test_paddle_randint_like(
     fn_tree="paddle.tensor.random.exponential_",
     lam=helpers.floats(min_value=0.1, max_value=1.0),
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1000,
         min_num_dims=1,
