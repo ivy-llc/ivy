@@ -203,7 +203,7 @@ def test_paddle_zeropad2d(
 # interpolate
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.interpolate",
-    d_type_x_axis=helpers.dtype_values_axis(
+    d_type_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         shared_dtype=True,
