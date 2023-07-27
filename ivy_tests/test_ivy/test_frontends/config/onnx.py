@@ -96,7 +96,7 @@ def to_numpy(x):
 
 
 def as_native_dtype(dtype: str):
-    return h.np_dtype_to_tensor_dtype(np.dtype("float32"))
+    return h.np_dtype_to_tensor_dtype(np.dtype(dtype))
 
 
 def as_native_dev(device: str):
