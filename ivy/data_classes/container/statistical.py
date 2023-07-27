@@ -922,7 +922,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([0.81649649])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, -2]]))
+        >>> x = ivy.Container(a=ivy.array([[2., 1.]]), b=ivy.array([[2., -2.]]))
         >>> y = x.std(axis=1, keepdims=True)
         >>> print(y)
         {
@@ -930,7 +930,7 @@ class _ContainerWithStatistical(ContainerBase):
             b: ivy.array([[2.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([-1, 1, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
         >>> x.std(out=x)
         >>> print(x)
         {

@@ -501,6 +501,7 @@ def prod(
 @handle_nestable
 @handle_exceptions
 @handle_device_shifting
+
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -754,7 +755,7 @@ def sum(
     ivy.array(1.9)
 
     >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
-    >>> y = ivy.array([0.0,0.0,0.0])
+    >>> y = ivy.array(0.0)
     >>> ivy.sum(x, out=y)
     >>> print(y)
     ivy.array(8.)
