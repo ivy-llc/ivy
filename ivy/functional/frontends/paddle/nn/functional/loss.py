@@ -225,7 +225,8 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
         margin_var = ivy.full([1], margin, dtype=out.dtype)
         out = ivy.add(out, margin_var)
 
-    out = ivy.max(out)
-    out = reduction(out)
+    out = ivy.where(out < 0, 0, out)
+    out = reduction(out).astype(input.dtype)
+    out = ivy.atleast_1d(out)
 
     return out
