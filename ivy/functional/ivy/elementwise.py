@@ -6959,7 +6959,7 @@ def rad2deg(
     ivy.array([  0.,  90., 180., 270., 360.])
 
     >>> x=ivy.array([0.,-0.0262,-0.873,ivy.nan])
-    >>> y=ivy.zeros(5)
+    >>> y=ivy.zeros(4)
     >>> ivy.rad2deg(x,out=y)
     >>> print(y)
     ivy.array([  0. ,  -1.5, -50. ,   nan])
@@ -6978,8 +6978,8 @@ def rad2deg(
 
     With :class:`ivy.Container` input:
 
-    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,1,2,3,4]))
+    >>> x=ivy.Container(a=ivy.array([-0., 20.1, -50.5, -ivy.nan]),
+    ...                 b=ivy.array([0., 1., 2., 3., 4.]))
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     {
