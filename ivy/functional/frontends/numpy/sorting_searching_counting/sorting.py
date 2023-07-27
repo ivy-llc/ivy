@@ -61,3 +61,16 @@ def partition(a, kth, axis=-1, kind="introselect", order=None):
                 left = ivy.concat((left, ivy.array([equal[j]], dtype=a.dtype)))
         a = ivy.concat((left, ivy.array([sorted_arr[k]], dtype=a.dtype), right))
     return a
+
+
+@to_ivy_arrays_and_back
+def argpartition(arr, k, axis=-1, kind='introselect', order=None):
+  less_than_k = []
+  greater_than_k = []
+  for i in range(len(arr)):
+    index = i if axis is None else i // arr.shape[axis]
+    if arr[index] <= arr[k]:
+      less_than_k.append(i)
+    else:
+      greater_than_k.append(i)
+  return less_than_k + greater_than_k
