@@ -25,3 +25,10 @@ pandas
 pyspark
 autoflake # for backend generation
 snakeviz # for profiling
+imageio
+pyvis
+transformers
+kornia
+cython
+ipython
+cryptography
