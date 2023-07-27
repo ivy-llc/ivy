@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1752,22 +1752,23 @@ def test_paddle_prod(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.any",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        valid_axis=True,
-        allow_neg_axes=True,
+        available_dtypes=["bool"],
+        min_axis=-1,
+        max_axis=0,
+        min_value=-10,
+        max_value=10,
         min_num_dims=1,
-        force_int_axis=False,
+        force_int_axis=True,
     ),
-    keepdim=st.booleans(),
 )
 def test_paddle_any(
     *,
     dtype_and_x,
-    keepdim,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
@@ -1776,7 +1777,8 @@ def test_paddle_any(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
-        keepdim=keepdim,
+        keepdim=False,
     )

@@ -394,7 +394,6 @@ def prod(x, axis=None, keepdim=False, dtype=None, name=None):
     return ivy.prod(x, axis=axis, keepdims=keepdim, dtype=dtype)
 
 
-@with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
 @to_ivy_arrays_and_back
 def any(x, axis=None, keepdim=False, name=None):
     return ivy.any(x, axis=axis, keepdims=keepdim)
