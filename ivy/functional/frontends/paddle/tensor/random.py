@@ -107,3 +107,13 @@ def randint_like(x, low=0, high=None, dtype=None, name=None):
                 "If high is None, low must be greater than 0, but received low = 0."
             )
     return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def exponential(x, lam=1.0, name=None):
+    uniform = ivy.random_uniform(low=0.0, high=1.0, shape=x.shape, dtype=x.dtype, seed=0)
+    return -lam * ivy.log(lam - uniform)
