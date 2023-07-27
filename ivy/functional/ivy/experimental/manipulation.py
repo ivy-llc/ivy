@@ -2456,3 +2456,64 @@ def matricize(
         (row_size, column_size),
         out=out,
     )
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def soft_thresholding(
+    x: Union[ivy.Array, ivy.NativeArray],
+    threshold: Union[float, ivy.Array, ivy.NativeArray],
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Soft-thresholding operator.
+
+        sign(tensor) * max[abs(tensor) - threshold, 0]
+
+    Parameters
+    ----------
+    x
+      input array
+    threshold
+          float or ndarray with shape tensor.shape
+        * If float the threshold is applied to the whole tensor
+        * If ndarray, one threshold is applied per elements, 0 values are ignored
+
+    Returns
+    -------
+    ivy.Array
+        thresholded tensor on which the operator has been applied
+
+    Examples
+    --------
+    Basic shrinkage
+
+    >>> x = ivy.array([[1, -2, 1.5], [-4, 3, -0.5]])
+    >>> soft_thresholding(x, 1.1)
+    array([[ 0. , -0.9,  0.4],
+           [-2.9,  1.9,  0. ]])
+
+
+    Example with missing values
+
+    >>> mask = ivy.array([[0, 0, 1], [1, 0, 1]])
+    >>> soft_thresholding(x, mask*1.1)
+    array([[ 1. , -2. ,  0.4],
+           [-2.9,  3. ,  0. ]])
+
+    See Also
+    --------
+    svd_thresholding : SVD-thresholding operator
+    """
+    # TODO x_max in clip should be None ideally
+    # update when ivy.clip has been updated
+    x_max = int(ivy.max(x))
+
+    res = ivy.sign(x) * ivy.clip(ivy.abs(x) - threshold, 0, x_max)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, res)
+    return res

@@ -1314,3 +1314,48 @@ def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
         row_modes=row_modes,
         column_modes=column_modes,
     )
+
+
+@st.composite
+def _soft_thresholding_data(draw):
+    x_min, x_max = 1e-2, 1e2
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            ret_shape=True,
+            min_value=x_min,
+            max_value=x_max,
+        )
+    )
+    threshold_choice_1 = draw(helpers.floats(min_value=x_min, max_value=x_max))
+    t_dtype, threshold_choice_2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=x_min,
+            max_value=x_max,
+        )
+    )
+    threshold = draw(st.sampled_from([threshold_choice_1, threshold_choice_2]))
+    return x_dtype + t_dtype, x[0], threshold
+
+
+# TODO Add container and instance methods
+@handle_test(
+    fn_tree="functional.ivy.experimental.soft_thresholding",
+    data=_soft_thresholding_data(),
+)
+def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
+    x_dtype, x, threshold = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x,
+        threshold=threshold,
+    )
