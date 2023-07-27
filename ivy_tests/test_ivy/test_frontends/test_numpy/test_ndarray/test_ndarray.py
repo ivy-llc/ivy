@@ -4,6 +4,7 @@ from hypothesis import assume, strategies as st, given
 
 # local
 import ivy
+from ivy.functional.frontends.numpy import ndarray
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
@@ -154,7 +155,7 @@ def test_numpy_T(
         ret_shape=True,
     )
 )
-def test_numpy_flat(dtype_x):
+def test_numpy_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
     with update_backend(backend_fw) as ivy_backend:
@@ -222,7 +223,7 @@ def test_numpy_astype(
     method_name="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=st.one_of(
-            helpers.get_dtypes("float_and_integer"), helpers.get_dtypes("bool")
+            helpers.get_dtypes("numeric"),
         ),
         min_axis=-1,
         max_axis=0,
