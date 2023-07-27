@@ -66,7 +66,7 @@ def update_individual_test_results(
     result,
     backend_version=None,
     frontend_version=None,
-    device=None
+    device=None,
 ):
     key = submod + "." + backend
     if backend_version is not None:
@@ -229,7 +229,7 @@ if __name__ == "__main__":
                 res,
                 "latest-stable",
                 frontend_version,
-                "gpu" if with_gpu else "cpu"
+                "gpu" if with_gpu else "cpu",
             )
 
     if failed:
