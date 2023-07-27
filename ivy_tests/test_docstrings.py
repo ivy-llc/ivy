@@ -183,7 +183,7 @@ def check_docstring_examples_run(
     atol = sig_fig / 10000
     numeric_pattern = re.compile(
         r"""
-            [\{\}\(\)\[\]]|\w+:
+            [\{\}\(\)\[\]\<>]|\w+:
         """,
         re.VERBOSE,
     )
@@ -193,8 +193,9 @@ def check_docstring_examples_run(
         "ivy.Shape",
         "logabsdet=",
         "torch.Size",
-        "tf.Tensor",
+        "tf.Tensor:shape=(),dtype=int32,numpy=",
         "shape=",
+        "tf.Tensor",
     ]
 
     num_output = output.replace("ivy.array", "")
@@ -310,7 +311,8 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
 
 
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
-def test_docstrings(backend):
+def \
+        test_docstrings(backend):
     ivy.set_default_device("cpu")
     ivy.set_backend(backend)
     failures = list()

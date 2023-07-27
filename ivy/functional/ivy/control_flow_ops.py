@@ -39,7 +39,8 @@ def if_else(
 
     Examples
     --------
-    >>> cond = lambda x: True
+    >>> x = 1
+    >>> cond = x > 0
     >>> body_fn = lambda x: x + 1
     >>> orelse_fn = lambda x: x - 1
     >>> vars = (1,)
@@ -47,13 +48,14 @@ def if_else(
     >>> print(result)
     2
 
-    >>> cond = lambda x: True
+    >>> x = 0
+    >>> cond = x - 2 == 0
     >>> body_fn = lambda x: x * 2
     >>> orelse_fn = lambda x: x / 2
     >>> vars = ivy.array([1, 2, 3])
     >>> result = ivy.if_else(cond, body_fn, orelse_fn, vars=(vars,))
     >>> print(result)
-    ivy.array([0.5, 1.0, 1.5])
+    ivy.array([0.5, 1. , 1.5])
     """
 
     @to_native_arrays_and_back
@@ -100,7 +102,7 @@ def while_loop(
     >>> body_fn = lambda i: i + 1
     >>> result = ivy.while_loop(test_fn, body_fn, vars= (i,))
     >>> print(result)
-    (3,)
+    (11,)
 
     >>> i = 0
     >>> j = 1
@@ -109,7 +111,7 @@ def while_loop(
     >>> vars = (i, j)
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
-    (3, 8)
+    (11,1)
     """
 
     @to_native_arrays_and_back

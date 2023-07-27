@@ -855,7 +855,7 @@ def var(
     ivy.array(0.07472222)
 
     >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
-    >>> y = ivy.zeros(6)
+    >>> y = ivy.array(0.0)
     >>> ivy.var(x, out=y)
     >>> print(y)
     ivy.array(0.07472222)
