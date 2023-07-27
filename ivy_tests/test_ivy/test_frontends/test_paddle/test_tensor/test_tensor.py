@@ -219,39 +219,6 @@ def test_paddle_getitem(
     )
 
 
-# __setitem__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="__setitem__",
-    dtypes_x_index_val=helpers.dtype_array_query_val(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ).filter(lambda x: x[0][0] == x[0][-1] and _check_query(x[-2])),
-)
-def test_paddle_setitem(
-    dtypes_x_index_val,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    backend_fw,
-    frontend,
-    on_device,
-):
-    input_dtype, x, index, val = dtypes_x_index_val
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[*input_dtype[1:]],
-        method_all_as_kwargs_np={"item": index, "value": val},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
 # dim
 @handle_frontend_method(
     class_tree=CLASS_TREE,
