@@ -356,9 +356,8 @@ def frac(x, name=None):
 @to_ivy_arrays_and_back
 def logcumsumexp(x, axis=None, dtype=None, name=None):
     if len(x.shape) == 0:
-        ret = x
+        ret = ivy.array([x.item()], dtype=dtype)
     else:
-        # x is input
         # name is out
         original_dtype = dtype
         exp_input = ivy.exp(x.astype("float64"))
