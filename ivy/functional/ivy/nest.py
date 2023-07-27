@@ -1063,6 +1063,7 @@ def nested_map(
     >>> x = ([[1., 2.], [3., 4.]])
     >>> function = lambda a : a * 2
     >>> ivy.nested_map(x, function)
+    ([[2.0, 4.0], [6.0, 8.0]])
     >>> print(x)
     ([[2.0, 4.0], [6.0, 8.0]])
 
@@ -1071,6 +1072,7 @@ def nested_map(
     >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
     >>> function = lambda a : a + 1
     >>> ivy.nested_map(x, function)
+    {1 : [2, [3, 4]], 2: (5, 6)}
     >>> print(x)
     {1 : [2, [3, 4]], 2: (5, 6)}
 
@@ -1081,6 +1083,7 @@ def nested_map(
     ...      ['g', ['h', 'i']]]
     >>> function = lambda a: a + 'H'
     >>> ivy.nested_map(x, function)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
     >>> print(x)
     [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
 
@@ -1091,19 +1094,25 @@ def nested_map(
     ... )
     >>> function = lambda a : a  + 1
     >>> ivy.nested_map(x, function)
+    {
+       a: ivy.array([[1, 2, 3], [9, 8, 7]]),
+       b: ivy.array([[4, 5,  6], [12, 13, 14]])
+    }
     >>> print(x)
     {
        a: ivy.array([[1, 2, 3], [9, 8, 7]]),
        b: ivy.array([[4, 5,  6], [12, 13, 14]])
     }
 
-    >>> nest = [[1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3}]
-    >>> ivy.nested_map(lambda x: x * 2, nest, to_ignore=(list))
-    [[1, 2], [3, 4], [5, 6], {"a": 2, "b": 4, "c": 6}]
+    >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function,  to_ignore = (list) )
+    ([1, 2], [3, 4], [5, 6], {'a': 2, 'b': 4, 'c': 6})
 
     >>> nest = [[1, 2], [3, [4, 5]], [[6], [7, 8, [9, 10]]]]
-    >>> ivy.nested_map(lambda x: x * 2, nest, max_depth=1)
-    [[2, 4], [6, [4, 5]], [[6], [14, 16, [9, 10]]]]
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function, max_depth = 3)
+    [[2, 4], [6, [8, 10]], [[12], [14, 16, [9, 10]]]]
 
     >>> nest = ([23, 25, 1337], [63, 98, 6])
     >>> function = lambda a :  a + 1
