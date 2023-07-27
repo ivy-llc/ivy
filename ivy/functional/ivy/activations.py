@@ -94,7 +94,7 @@ def _leaky_relu_jax_like(
                 ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
             )
         ),
-        x * alpha,
+        ivy.astype(x * alpha, x.dtype),
         x,
     )
 
@@ -173,7 +173,8 @@ def leaky_relu(
         b: ivy.array([0.40000001, -0.04])
     }
     """
-    # TODO: tests for JAX frontend, Ivy stateful, and Ivy nn
+    # TODO: tests for stateful API, plus testing complex_mode on functional API
+    # TODO: and JAX frontend
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 

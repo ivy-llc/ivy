@@ -22,7 +22,11 @@ def _type_conversion_64(x):
     # everything else to float64
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
-    return ivy.astype(x, dtype) if "float" in dtype else ivy.astype(x, "float64")
+    return (
+        ivy.astype(x, dtype)
+        if ("float" in dtype) or ("complex" in dtype)
+        else ivy.astype(x, "float64")
+    )
 
 
 def _batch_promotion(*args, default_dtype="float64"):
