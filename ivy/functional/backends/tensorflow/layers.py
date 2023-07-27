@@ -17,7 +17,7 @@ from ivy.functional.ivy.layers import (
 )
 
 
-def _ff_xd_before_conv(x,filters,dims, filter_format,x_dilations):
+def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
     if filter_format == "channel_first":
         filters = tf.transpose(filters, (*range(2, dims + 2), 1, 0))
     # adding dilation in input
@@ -31,6 +31,8 @@ def _ff_xd_before_conv(x,filters,dims, filter_format,x_dilations):
             x = tf.matmul(x, h)
             x = tf.experimental.numpy.swapaxes(x, -1, 1 + i)
     return x, filters
+
+
 def _pad_before_conv(x, filters, strides, padding, dims, dilations):
     dilations = [dilations] * dims if isinstance(dilations, int) else dilations
     strides = [strides] * dims if isinstance(strides, int) else strides
@@ -97,7 +99,7 @@ def conv1d(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCW":
         x = tf.transpose(x, (0, 2, 1))
-    x, filters=_ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
     x = _pad_before_conv(x, filters, strides, padding, 1, dilations)
     res = tf.nn.conv1d(x, filters, strides, "VALID", "NWC", dilations)
     res = tf.math.add(res, bias) if bias is not None else res
@@ -159,7 +161,7 @@ def conv2d(
 ) -> Union[tf.Tensor, tf.Variable]:
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
-    x, filters= _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
     x = _pad_before_conv(x, filters, strides, padding, 2, dilations)
     res = tf.nn.conv2d(x, filters, strides, "VALID", "NHWC", dilations)
     res = tf.math.add(res, bias) if bias is not None else res

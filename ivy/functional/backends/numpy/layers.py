@@ -14,7 +14,6 @@ from ivy.functional.ivy.layers import (
 )
 
 
-
 def _add_dilations(x, dilations, axis, values=0):
     return np.insert(
         x,
@@ -100,7 +99,9 @@ def _dilate_pad_conv_tranpose(
         "constant",
     )
     return x, filters
-def _ff_xd_before_conv(x,filters, dims,filter_format, x_dilations):
+
+
+def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
     if filter_format == "channel_first":
         filters = np.transpose(filters, (*range(2, dims + 2), 1, 0))
 
@@ -110,6 +111,7 @@ def _ff_xd_before_conv(x,filters, dims,filter_format, x_dilations):
         if x_dilations[j] > 1:
             x = _add_dilations(x, x_dilations[j], axis=j + 1)
     return x, filters
+
 
 def conv1d(
     x: np.ndarray,
@@ -129,7 +131,7 @@ def conv1d(
     dilations = [dilations] if isinstance(dilations, int) else dilations
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
-    x,filters = _ff_xd_before_conv(x,filters, 1, filter_format, x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 1, dilations)
 
     x_shape = x.shape
@@ -202,7 +204,7 @@ def conv2d(
     *,
     data_format: str = "NHWC",
     filter_format: str = "channel_last",
-    x_dilations: Union[int,  Tuple[int, int]] = 1,
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
     bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
@@ -211,7 +213,7 @@ def conv2d(
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
-    x, filters = _ff_xd_before_conv(x,filters, 2, filter_format, x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 2, dilations)
 
     x_shape = x.shape
@@ -352,7 +354,7 @@ def conv3d(
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
-    x, filters = _ff_xd_before_conv(x,filters, 3, filter_format, x_dilations)
+    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 3, dilations)
 
     x_shape = x.shape
