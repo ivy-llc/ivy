@@ -2888,13 +2888,16 @@ def _parse_query(query, x_shape, scatter=False):
 
     # calculate target_shape, i.e. the shape the gathered values should be in
     if len(array_inds) and to_front:
-        target_shape = [list(new_arrays[0].shape)] + [
-            list(query[i].shape) for i in range(len(query)) if i not in array_inds
-        ]
+        target_shape = (
+            [list(new_arrays[0].shape)]
+            + [list(query[i].shape) for i in range(len(query)) if i not in array_inds]
+            + [[] for _ in range(len(array_inds) - 1)]
+        )
     elif len(array_inds):
         target_shape = (
             [list(query[i].shape) for i in range(0, array_inds[0])]
             + [list(new_arrays[0].shape)]
+            + [[] for _ in range(len(array_inds) - 1)]
             + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
         )
     else:
