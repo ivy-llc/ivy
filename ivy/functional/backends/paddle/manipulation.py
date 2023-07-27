@@ -118,6 +118,17 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        if -1 in shape:
+            shape = [
+                (
+                    s
+                    if s != -1
+                    else math.prod(x.shape) // math.prod([s for s in shape if s != -1])
+                )
+                for s in shape
+            ]
+        return paddle.empty(shape, dtype=x.dtype)
     if len(shape) == 0:
         out_scalar = True
         shape = [1]
