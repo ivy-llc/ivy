@@ -111,7 +111,7 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        backend = ivy.with_backend("numpy")
+        backend = ivy.with_backend("numpy", cached=True)
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._sub_mods = set()
