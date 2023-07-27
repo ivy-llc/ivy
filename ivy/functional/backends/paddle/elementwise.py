@@ -249,6 +249,10 @@ def sign(
     return paddle.sgn(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("bfloat16",)}},
+    backend_version,
+)
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
