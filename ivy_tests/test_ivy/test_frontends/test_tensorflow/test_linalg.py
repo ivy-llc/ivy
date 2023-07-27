@@ -1016,7 +1016,7 @@ def test_qr(
     adjoint=st.booleans(),
     test_with_out=st.just(False),
 )
-def test_tensorflow_sqrtm(
+def test_sqrtm(
     *,
     dtype_and_x,
     on_device,
@@ -1026,14 +1026,20 @@ def test_tensorflow_sqrtm(
     adjoint,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        rtol=1e-01,
-        atol=1e-01,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        adjoint=adjoint,
-    )
+    # Convert the input to Ivy tensor
+    x_ivy = ivy.array(x[0])
+
+    # Compute the square root using your custom_sqrtm function
+    sqrtm = sqrtm(x_ivy)
+
+    # Convert the Ivy tensor back to NumPy array for comparison
+    sqrtm_np = ivy.to_numpy(sqrtm)
+
+    # Get the expected output using TensorFlow's built-in sqrtm function
+    with ivy.tf.device('/CPU:0'):
+        x_tf = ivy.tf.constant(x[0], dtype=dtype)
+        sqrtm_tf = ivy.tf.linalg.sqrtm(x_tf)
+        sqrtm_tf_np = sqrtm_tf.numpy()
+
+    # Perform the comparison with a suitable tolerance (e.g., rtol and atol)
+    np.testing.assert_allclose(sqrtm_np, sqrtm_tf_np, rtol=1e-05, atol=1e-08)

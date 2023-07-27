@@ -344,4 +344,13 @@ def inv(input, adjoint=False, name=None):
     "tensorflow",
 )
 def sqrtm(input, name=None):
-    return ivy.sqrtm(input)
+    # Compute the eigenvalues and eigenvectors of the matrix
+    eig_vals, eig_vecs = ivy.linalg.eig(input)
+
+    # Compute the square root of the eigenvalues
+    sqrt_eig_vals = ivy.sqrt(eig_vals)
+
+    # Reconstruct the square root matrix
+    sqrt_matrix = ivy.matmul(eig_vecs, ivy.matmul(ivy.diag(sqrt_eig_vals), ivy.linalg.inv(eig_vecs)))
+
+    return sqrt_matrix
