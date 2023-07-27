@@ -346,3 +346,50 @@ def test_paddle_kl_div(
         label=x[1],
         reduction=reduction,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.tripl",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        shared_dtype=True,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    margin=st.floats(
+        min_value=0.1,
+        max_value=1.0,
+    ),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_paddle_tripl(
+    dtype_and_x,
+    margin,
+    reduction,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    anchor_dtype, anchor = input_dtype[0], x[0]
+    positive_dtype, positive = input_dtype[1], x[1]
+    negative_dtype, negative = input_dtype[2], x[2]
+
+    helpers.test_frontend_function(
+        input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        anchor=anchor,
+        positive=positive,
+        negative=negative,
+        margin=margin,
+        reduction=reduction,
+    )

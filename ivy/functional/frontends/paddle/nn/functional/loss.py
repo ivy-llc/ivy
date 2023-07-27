@@ -210,3 +210,22 @@ def kl_div(
     else:
         pass
     return out.astype(label.dtype)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@inputs_to_ivy_arrays
+def triplet_loss(anchor, positive, negative, margin=1.0, reduction="mean", name=None):
+    distance_positive = ivy.mean(ivy.square(anchor - positive), axis=-1, keepdims=True)
+    distance_negative = ivy.mean(ivy.square(anchor - negative), axis=-1, keepdims=True)
+    loss = ivy.relu(distance_positive - distance_negative + margin)
+
+    reduction = _get_reduction_func(reduction)
+    loss = reduction(loss)
+
+    if loss.shape == ():
+        loss = loss.expand_dims()
+
+    return paddle.to_tensor(ivy.atleast_1d(loss))
