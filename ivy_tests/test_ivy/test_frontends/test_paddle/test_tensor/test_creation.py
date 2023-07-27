@@ -539,7 +539,7 @@ def test_paddle_tril_indices(
     test_flags,
     backend_fw,
     frontend,
-	  fn_tree,
+    fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -549,14 +549,14 @@ def test_paddle_tril_indices(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		 test_values=False,
+        test_values=False,
         row=row,
         col=col,
         offset=offset,
-		 dtype=dtype[0],
+        dtype=dtype[0],
     )
-    
-    
+
+
 # logspace
 @handle_frontend_test(
     fn_tree="paddle.logspace",
@@ -575,7 +575,7 @@ def test_paddle_logspace(
     dtype,
     frontend,
     test_flags,
-	  fn_tree,
+    fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
@@ -584,10 +584,9 @@ def test_paddle_logspace(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-		 start=start,
+        start=start,
         stop=stop,
         num=num,
         base=base,
-		 dtype=dtype[0],
+        dtype=dtype[0],
     )
-    
