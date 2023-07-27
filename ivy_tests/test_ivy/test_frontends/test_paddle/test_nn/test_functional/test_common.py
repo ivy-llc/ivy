@@ -265,7 +265,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
     elif mode_list:
         mode = draw(st.sampled_from(mode_list))
-    align_corners = draw(st.one_of(st.booleans(), st.none()))
+    align_corners = draw(st.one_of(True, False))
     if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
         align_corners = False
     if mode == "linear":
@@ -294,7 +294,7 @@ def _interp_args(draw, mode=None, mode_list=None):
             )
             + 2
         )
-        align_corners = None
+        align_corners = False
     if curr_backend == "tensorflow" and not mixed_fn_compos:
         num_dims = 3
     dtype, x = draw(
