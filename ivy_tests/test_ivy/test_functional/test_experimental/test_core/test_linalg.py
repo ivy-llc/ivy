@@ -944,6 +944,73 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
 
 # truncated svd
 @st.composite
+def _make_svd_nn_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=1.0,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    n, m = shape
+    U_dtype, U = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=(n, n),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    S_dtype, S = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=(m,),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    V_dtype, V = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=(m, m),
+            min_value=1.0,
+            max_value=10.0,
+        )
+    )
+    nntype = draw(st.sampled_from(["nndsvd", "nndsvda"]))
+    return x_dtype + U_dtype + S_dtype + V_dtype, x[0], U[0], S[0], V[0], nntype
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.make_svd_non_negative",
+    data=_make_svd_nn_data(),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x, U, S, V, nntype = data
+    test_flags.instance_method = False
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtype,
+        x=x,
+        U=U,
+        S=S,
+        V=V,
+        nntype=nntype,
+    )
+
+
+# truncated svd
+@st.composite
 def _truncated_svd_data(draw):
     x_dtype, x, shape = draw(
         helpers.dtype_and_values(

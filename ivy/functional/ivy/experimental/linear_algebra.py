@@ -940,11 +940,19 @@ def svd_flip(
     return U, V
 
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
 def make_svd_non_negative(
     x: Union[ivy.Array, ivy.NativeArray],
     U: Union[ivy.Array, ivy.NativeArray],
     S: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
 ) -> ivy.Array:
     """
@@ -962,6 +970,9 @@ def make_svd_non_negative(
 
     [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
     """
+    # In tensorly only U is updated and returned.
+    # TODO look into why that's the case. For now,
+    # https://github.com/tensorly/tensorly/issues/515
     # NNDSVD initialization
     W = ivy.zeros_like(U)
     H = ivy.zeros_like(V)
@@ -977,12 +988,16 @@ def make_svd_non_negative(
         # extract positive and negative parts of column vectors
         # TODO ivy.clip requires x_max as a compulsary argument,
         # the following code will throw an error.
-        a_p, b_p = ivy.clip(a, 0.0), ivy.clip(b, 0.0)
-        a_n, b_n = ivy.abs(ivy.clip(a, 0.0)), ivy.abs(ivy.clip(b, 0.0))
+        a_p, b_p = ivy.where(a < 0.0, 0, a), ivy.where(b < 0.0, 0.0, b)
+        # a_p, b_p = ivy.clip(a, 0.0), ivy.clip(b, 0.0)
+        # a_n, b_n = ivy.abs(ivy.clip(a, 0.0)), ivy.abs(ivy.clip(b, 0.0))
+        a_n, b_n = ivy.abs(ivy.where(a > 0.0, 0.0, a)), ivy.abs(
+            ivy.where(b > 0.0, 0.0, b)
+        )
 
         # and their norms
-        a_p_nrm, b_p_nrm = ivy.l2_normalize(a_p), ivy.l2_normalize(b_p)
-        a_n_nrm, b_n_nrm = ivy.l2_normalize(a_n), ivy.l2_normalize(b_n)
+        a_p_nrm, b_p_nrm = int(ivy.vector_norm(a_p)), int(ivy.vector_norm(b_p))
+        a_n_nrm, b_n_nrm = int(ivy.vector_norm(a_n)), int(ivy.vector_norm(b_n))
 
         m_p, m_n = a_p_nrm * b_p_nrm, a_n_nrm * b_n_nrm
 
@@ -996,12 +1011,12 @@ def make_svd_non_negative(
             v = b_n / b_n_nrm
             sigma = m_n
 
-        lbd = ivy.sqrt(S[j] * sigma)
-        H[:, j] = lbd * u
+        lbd = int(ivy.sqrt(S[j] * sigma))
+        W[:, j] = lbd * u
         H[j, :] = lbd * v
 
     # After this point we no longer need H
-    eps = ivy.finfo(x.dtype)
+    eps = ivy.finfo(x.dtype).min
 
     if nntype == "nndsvd":
         W = ivy.soft_thresholding(W, eps)
@@ -1064,7 +1079,7 @@ def truncated_svd(
         return S[:n_eigenvecs]
 
 
-def svd_interface(
+def _svd_interface(
     matrix,
     method="truncated_svd",
     n_eigenvecs=None,
@@ -1127,7 +1142,6 @@ def svd_interface(
         svd_fun = method
     else:
         raise ValueError("Invalid Choice")
-    svd_fun = ivy.svd
 
     U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
 
