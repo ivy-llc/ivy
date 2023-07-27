@@ -187,7 +187,9 @@ def gather_nd(
         mesh_list = []
     # Then we flatten and stack the tensors to form a (B1.B2) by 2 matrix.
     flat_list = [paddle_backend.reshape(x, shape=(-1,)) for x in mesh_list]
-    stacked_list = paddle_backend.stack(flat_list, axis=0)
+    stacked_list = (
+        paddle_backend.stack(flat_list, axis=0) if flat_list else paddle.to_tensor([])
+    )
     index_grid = paddle_backend.permute_dims(
         stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
     )
