@@ -443,7 +443,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         ivy.array(6.3)
 
         >>> x = ivy.arange(8, dtype=float).reshape((2, 2, 2))
-        >>> y = x.matrix_norm(ord="nuc", axis=(2, 1), keepdims=True)
+        >>> y = x.matrix_norm(ord="nuc", keepdims=True)
         >>> print(y)
         ivy.array([[[ 4.24]],
                 [[11.4 ]]])

@@ -1154,8 +1154,9 @@ def matrix_norm(
     ivy.array([ 4., 12.])
 
     >>> x = ivy.arange(12, dtype=float).reshape((3, 2, 2))
-    >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)
-    >>> print(x)
+    >>> y = ivy.zeros((3,))
+    >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=y)
+    >>> print(y)
     ivy.array([ 4., 12., 20.])
 
     >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
@@ -1163,18 +1164,19 @@ def matrix_norm(
     >>> print(y)
     ivy.array([[11.]])
 
-    >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \
-                        [[1., 0., 1.1], [1., 1., 0.]]])   
-    >>> ivy.matrix_norm(x, ord='fro', out=x)
-    >>> print(x)
+    >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]],
+    ...                 [[1., 0., 1.1], [1., 1., 0.]]])
+    >>> y = ivy.zeros((2,))
+    >>> ivy.matrix_norm(x, ord='fro', out=y)
+    >>> print(y)
     ivy.array([10.5 ,  2.05])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
-                                       [42.69, 9.23]]), \
-                          b=ivy.array([[1.1, 2.2, 3.3], \
-                                       [4.4, 5.5, 6.6]]))   
+    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11],
+    ...                                [42.69, 9.23]]),
+    ...                   b=ivy.array([[1.1, 2.2, 3.3],
+    ...                                [4.4, 5.5, 6.6]]))
     >>> y = ivy.matrix_norm(x, ord=-ivy.inf)
     >>> print(y)
     {
@@ -1184,8 +1186,8 @@ def matrix_norm(
 
     With multiple :class:`ivy:Container` inputs:
     
-    >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
-                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
+    >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)),
+    ...                   b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
     >>> ord = ivy.Container(a=1, b=float('inf'))
     >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
     >>> k = ivy.Container(a=False, b=True)
