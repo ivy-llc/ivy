@@ -816,33 +816,34 @@ _composition_2.test_unsupported_dtypes = {
 
 # function_unsupported_dtypes
 @handle_test(
-    fn_tree="functional.ivy.function_supported_dtypes",
+    fn_tree="functional.ivy.function_supported_devices_and_dtypes",
     func=st.sampled_from([_composition_1, _composition_2]),
 )
-def test_function_supported_dtypes(*, func, backend_fw):
+def test_function_supported_dtypes(*, func, backend_fw, on_device):
     with update_backend(backend_fw) as ivy_backend:
-        res = ivy_backend.function_supported_dtypes(func)
+        res = ivy_backend.function_supported_devices_and_dtypes(func, on_device)
+        print(on_device, res)
         exp = set(ivy_backend.all_dtypes).difference(
             set(func.test_unsupported_dtypes[backend_fw])
         )
         assert set(tuple(exp)) == set(res)
 
 
-# function_unsupported_dtypes
+# function_unsupported_devices_and_dtypes
 @handle_test(
-    fn_tree="functional.ivy.function_unsupported_dtypes",
+    fn_tree="functional.ivy.function_unsupported_devices_and_dtypes",
     func=st.sampled_from([_composition_2]),
 )
-def test_function_unsupported_dtypes(*, func, backend_fw):
+def test_function_unsupported_dtypes(*, func, backend_fw, on_device):
     with update_backend(backend_fw) as ivy_backend:
-        res = ivy_backend.function_unsupported_dtypes(func)
+        res = ivy_backend.function_unsupported_devices_and_dtypes(func, on_device)
         exp = func.test_unsupported_dtypes[backend_fw]
         assert set(tuple(exp)) == set(res)
 
 
 # function_dtype_versioning
 @handle_test(
-    fn_tree="functional.ivy.function_unsupported_dtypes",  # dummy fn_tree
+    fn_tree="functional.ivy.function_unsupported_devices_and_dtypes",  # dummy fn_tree
     func_and_version=st.just(
         [
             {
@@ -886,7 +887,7 @@ def test_function_dtype_versioning(
 
 # function_dtype_versioning_frontend
 @handle_test(
-    fn_tree="functional.ivy.function_unsupported_dtypes",  # dummy fn_tree
+    fn_tree="functional.ivy.function_unsupported_devices_and_dtypes",  # dummy fn_tree
     func_and_version=st.just(
         [
             {
