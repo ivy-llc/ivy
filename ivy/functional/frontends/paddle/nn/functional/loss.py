@@ -229,3 +229,22 @@ def tripl(anchor, positive, negative, margin=1.0, reduction="mean", name=None):
         loss = loss.expand_dims()
 
     return paddle.to_tensor(loss)
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
+    reduction = _get_reduction_func(reduction)
+
+    out = ivy.subtract(input, other)
+    neg_label = ivy.negative(label)
+    out = ivy.multiply(neg_label, out)
+
+    if margin != 0.0:
+        margin_var = ivy.full([1], margin, dtype=out.dtype)
+        out = ivy.add(out, margin_var)
+
+    out = ivy.where(out < 0, 0, out)
+    out = reduction(out).astype(input.dtype)
+    out = ivy.atleast_1d(out)
+
+    return out
