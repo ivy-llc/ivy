@@ -323,3 +323,68 @@ class Logit(Module):
             The outputs following the LOGIT activation *[batch_shape, d]*
         """
         return ivy.logit(x, eps=eps)
+
+
+class PReLU(Module):
+    def __init__(self):
+        """Apply the PRELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, slope):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        slope
+            The slope value for the prelu formation.
+
+        Returns
+        -------
+        ret
+            The outputs following the PRELU activation *[batch_shape, d]*
+        """
+        return ivy.prelu(x, slope)
+
+
+class SeLU(Module):
+    def __init__(self):
+        """Apply the SELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the SELU activation *[batch_shape, d]*
+        """
+        return ivy.selu(x)
+
+
+class ELU(Module):
+    def __init__(self):
+        """Apply the ELU activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x, alpha=1.0):
+        """
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        Returns
+        -------
+        ret
+            The outputs following the ELU activation *[batch_shape, d]*
+        """
+        return ivy.elu(x, alpha=alpha)

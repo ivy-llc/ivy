@@ -1650,7 +1650,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
    </a>
 
 |
@@ -1660,7 +1660,7 @@ Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need as many hands as possible on it! Whether you are a seasoned developer or just starting out, you'll find a place here! Join the Ivy community in our `Discord`_ 👾 server, which is the perfect place to ask questions, share ideas, and get help from both fellow developers and the Ivy Team directly!
 
-Also! Feel free to follow us in `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
+Also! Feel free to follow us on `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
 
 Can't wait to see you there!
 

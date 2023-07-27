@@ -32,6 +32,45 @@ def current_backend_str() -> str:
     return "paddle"
 
 
+def _check_query(query):
+    return (
+        query.ndim > 1
+        if ivy.is_array(query)
+        else (
+            all(ivy.is_array(query) and i.ndim <= 1 for i in query)
+            if isinstance(query, tuple)
+            else False if isinstance(query, int) else True
+        )
+    )
+
+
+def get_item(
+    x: paddle.Tensor,
+    /,
+    query: Union[paddle.Tensor, Tuple],
+    *,
+    copy: bool = None,
+) -> paddle.Tensor:
+    dtype = x.dtype
+    if dtype in [paddle.int8, paddle.int16, paddle.float16, paddle.bfloat16]:
+        ret = x.cast("float32").__getitem__(query).cast(dtype)
+    elif dtype in [paddle.complex64, paddle.complex128]:
+        ret = paddle.complex(
+            x.real().__getitem__(query),
+            x.imag().__getitem__(query),
+        )
+    else:
+        ret = x.__getitem__(query)
+    if copy:
+        return paddle_backend.copy_array(ret).data
+    return ret
+
+
+get_item.partial_mixed_handler = (
+    lambda x, query, **kwargs: _check_query(query) and 0 not in x.shape
+)
+
+
 def to_numpy(
     x: Union[paddle.Tensor, List[paddle.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -164,7 +203,7 @@ def gather_nd(
     params_shape = paddle.to_tensor(params.shape)
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
-    batch_size = paddle.prod(batch_shape, [0])
+    batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -187,7 +226,9 @@ def gather_nd(
         mesh_list = []
     # Then we flatten and stack the tensors to form a (B1.B2) by 2 matrix.
     flat_list = [paddle_backend.reshape(x, shape=(-1,)) for x in mesh_list]
-    stacked_list = paddle_backend.stack(flat_list, axis=0)
+    stacked_list = (
+        paddle_backend.stack(flat_list, axis=0) if flat_list else paddle.to_tensor([])
+    )
     index_grid = paddle_backend.permute_dims(
         stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
     )
@@ -215,7 +256,7 @@ def gather_nd(
     )
     index_grid = paddle_backend.tile(index_grid, repeats=paddle.to_tensor(tile_shape))
     # index_grid now has shape [(B1.B2), i1, ..., iK, 2]
-    flat_shape = [batch_size] + indices_shape[batch_dims:]
+    flat_shape = batch_size + indices_shape[batch_dims:]
     flat_indices = paddle_backend.reshape(indices, shape=flat_shape)
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
@@ -548,7 +589,3 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
-
-
-def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.numpy().strides
