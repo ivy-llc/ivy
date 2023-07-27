@@ -611,11 +611,12 @@ def test_frontend_function(
             backend_to_test,
             frontend_fn,
             *args_for_test,
+            test_compile=test_flags.test_compile,
             as_ivy_arrays=(not test_flags.generate_frontend_arrays),
             **kwargs_for_test,
         )
 
-        if test_flags.with_out:
+        if test_flags.with_out and not test_flags.test_compile:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
             else:
@@ -714,6 +715,7 @@ def test_frontend_function(
                     frontend_fn=frontend_fn,
                     backend=backend_to_test,
                     *copy_args,
+                    test_compile=test_flags.test_compile,
                     **copy_kwargs,
                 )
                 assert first_array is ret_
@@ -725,7 +727,11 @@ def test_frontend_function(
                     *args, array_fn=array_fn, **kwargs
                 )
                 ret_ = get_frontend_ret(
-                    frontend_fn=frontend_fn, backend=backend_to_test, *args, **kwargs
+                    frontend_fn=frontend_fn,
+                    backend=backend_to_test,
+                    *args,
+                    test_compile=test_flags.test_compile,
+                    **kwargs,
                 )
                 assert (
                     first_array is ret_
@@ -1897,9 +1903,13 @@ def get_frontend_ret(
     backend,
     frontend_fn,
     *args,
+    test_compile: bool = False,
     as_ivy_arrays=True,
     **kwargs,
 ):
+    frontend_fn = compiled_if_required(
+        backend, frontend_fn, test_compile=test_compile, args=args, kwargs=kwargs
+    )
     with update_backend(backend) as ivy_backend:
         ret = frontend_fn(*args, **kwargs)
         if as_ivy_arrays:
