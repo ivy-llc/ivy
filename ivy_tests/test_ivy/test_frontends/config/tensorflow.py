@@ -103,4 +103,4 @@ def as_native_dev(device: str):
 
 
 def isscalar(x):
-    return tf.experimental.numpy.isscalar(x)
+    return is_native_array(x) and tf.experimental.numpy.isscalar(x)

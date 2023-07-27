@@ -1,7 +1,7 @@
 """Collection of Paddle general functions, wrapped to fit Ivy syntax and signature."""
 # global
 from numbers import Number
-from typing import Optional, Union, Sequence, Callable, List, Tuple
+from typing import Optional, Union, Sequence, Callable, List
 import paddle
 import numpy as np
 import multiprocessing as _multiprocessing
@@ -164,7 +164,7 @@ def gather_nd(
     params_shape = paddle.to_tensor(params.shape)
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
-    batch_size = paddle.prod(batch_shape, [0])
+    batch_size = paddle.prod(batch_shape, [0]).numpy().tolist()
     index_internal_ndims = indices.ndim - batch_dims - 1
     indices_internal_shape = indices_shape[batch_dims:-1]
 
@@ -187,7 +187,9 @@ def gather_nd(
         mesh_list = []
     # Then we flatten and stack the tensors to form a (B1.B2) by 2 matrix.
     flat_list = [paddle_backend.reshape(x, shape=(-1,)) for x in mesh_list]
-    stacked_list = paddle_backend.stack(flat_list, axis=0)
+    stacked_list = (
+        paddle_backend.stack(flat_list, axis=0) if flat_list else paddle.to_tensor([])
+    )
     index_grid = paddle_backend.permute_dims(
         stacked_list, axes=[axis for axis in range(stacked_list.ndim)][::-1]
     )
@@ -215,7 +217,7 @@ def gather_nd(
     )
     index_grid = paddle_backend.tile(index_grid, repeats=paddle.to_tensor(tile_shape))
     # index_grid now has shape [(B1.B2), i1, ..., iK, 2]
-    flat_shape = [batch_size] + indices_shape[batch_dims:]
+    flat_shape = batch_size + indices_shape[batch_dims:]
     flat_indices = paddle_backend.reshape(indices, shape=flat_shape)
     # flat_indices now has shape [(B1.B2), i1, ..., iK, C]
     indices = paddle_backend.concat((index_grid, flat_indices), axis=-1)
@@ -548,7 +550,3 @@ def isin(
 
 def itemsize(x: paddle.Tensor) -> int:
     return x.element_size()
-
-
-def strides(x: paddle.Tensor) -> Tuple[int]:
-    return x.numpy().strides
