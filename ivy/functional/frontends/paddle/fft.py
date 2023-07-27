@@ -100,3 +100,23 @@ def ifftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def rfftn(x, s=None, axes=None, norm="backward", name=None):
+    ret = ivy.rfftn(ivy.astype(x, "float64"), s=s, axes=axes, norm=norm, name=name)
+    return ivy.astype(ret, x.dtype)
