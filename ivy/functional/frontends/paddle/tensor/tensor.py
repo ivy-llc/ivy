@@ -249,6 +249,10 @@ class Tensor:
             ivy.sort(self._ivy_array, axis=axis, descending=descending)
         )
 
+    @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+    def log1p(self, name=None):
+        return ivy.log1p(self._ivy_array)
+
     @with_supported_dtypes(
         {
             "2.4.2 and below": (
@@ -461,6 +465,10 @@ class Tensor:
         return paddle_frontend.Tensor(
             ivy.array_equal(self._ivy_array, _to_ivy_array(y))
         )
+
+    @with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+    def maximum(self, other, name=None):
+        return ivy.maximum(self._ivy_array, other)
 
     @with_unsupported_dtypes({"2.5.0 and below": "bfloat16"}, "paddle")
     def fmax(self, y, name=None):

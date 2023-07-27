@@ -3,6 +3,7 @@
 # global
 import gc
 import inspect
+import itertools
 import math
 from functools import wraps
 from numbers import Number
@@ -38,6 +39,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_view_indexing,
     handle_device_shifting,
+    handle_partial_mixed_function,
 )
 from ivy.functional.ivy.device import dev
 
@@ -173,54 +175,6 @@ class ArrayMode:
             print(exc_tb)
             raise exc_val
         return self
-
-
-def _parse_ellipsis(so, ndims, ret_inds=False):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    ret = tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
-    if ret_inds:
-        return ret, (len(pre), ndims - len(post))
-    return ret
-
-
-def _parse_index(indices, shape):
-    ind = list()
-    for so in indices:
-        pre = list()
-        for s in so:
-            if s == -1:
-                pre.append(shape[len(pre) :][0] - 1)
-                break
-            pre.append(s.numpy())
-        post = list()
-        for s in reversed(so):
-            if s == -1:
-                break
-            post.append(s.numpy())
-        ind.append(
-            tuple(
-                pre
-                + [
-                    slice(None, None, None)
-                    for _ in range(len(shape) - len(pre) - len(post))
-                ]
-                + list(reversed(post))
-            )
-        )
-    return ind
 
 
 def get_referrers_recursive(
@@ -2722,6 +2676,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 @handle_nestable
 @handle_view_indexing
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 @handle_device_shifting
@@ -2775,7 +2730,15 @@ def get_item(
         query = ivy.nonzero(query, as_tuple=False)
         ret = ivy.gather_nd(x, query)
     else:
-        query, target_shape = _parse_query(query, x.shape)
+        query, target_shape, vector_inds = _parse_query(query, x.shape)
+        if vector_inds is not None:
+            x = ivy.permute_dims(
+                x,
+                axes=[
+                    *vector_inds,
+                    *[i for i in range(len(x.shape)) if i not in vector_inds],
+                ],
+            )
         ret = ivy.gather_nd(x, query)
         ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
     if copy:
@@ -2794,6 +2757,7 @@ get_item.mixed_backend_wrappers = {
 
 @handle_nestable
 @handle_view_indexing
+@handle_partial_mixed_function
 @inputs_to_ivy_arrays
 @handle_array_function
 def set_item(
@@ -2842,13 +2806,17 @@ def set_item(
     >>> print(y)
     ivy.array([[0, -1, 20], [10, 10, -8]])
     """
+    if copy:
+        x = ivy.copy_array(x)
+    if 0 in x.shape:
+        return x
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
         target_shape = ivy.get_item(x, query).shape
         query = ivy.nonzero(query, as_tuple=False)
     else:
-        query, target_shape = _parse_query(query, x.shape)
+        query, target_shape = _parse_query(query, x.shape, scatter=True)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
     if copy:
         x = ivy.copy_array(x)
@@ -2864,64 +2832,72 @@ set_item.mixed_backend_wrappers = {
 }
 
 
-def _int_list_or_array(var):
-    # check if var is a list/tuple of integers or a 1-d array of integers
-    return (
-        isinstance(var, (list, tuple)) and all(isinstance(i, int) for i in var)
-    ) or (ivy.is_array(var) and ivy.is_int_dtype(var) and len(var.shape) == 1)
-
-
-def _parse_query(query, x_shape):
+def _parse_query(query, x_shape, scatter=False):
     query = (query,) if not isinstance(query, tuple) else query
+
+    # sequence and integer queries are dealt with as array queries
+    query = [ivy.array(q) if isinstance(q, (tuple, list, int)) else q for q in query]
+
+    # check if non-slice queries are in consecutive positions
+    # if so, they have to be moved to the front
+    # https://numpy.org/neps/nep-0021-advanced-indexing.html#mixed-indexing
+    # relevant only for gathering
+    if not scatter:
+        non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
+        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
+    else:
+        to_front = False
+
+    # extract newaxis queries
     new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
     query = [Ellipsis] if query == [] else query
+
+    # parse ellipsis
     ellipsis_inds = None
     if any(q is Ellipsis for q in query):
-        query, ellipsis_inds = _parse_ellipsis(query, len(x_shape), ret_inds=True)
-    query = (
-        list(query)
-        if isinstance(query, tuple)
-        else [query] if not isinstance(query, list) else query
-    )
-    vectorized_indexing = False
-    if all(_int_list_or_array(q) for q in query):
-        vectorized_indexing = True
-        for i, idx in enumerate(query):
-            if ivy.is_array(idx):
-                query[i] = ivy.where(idx < 0, idx + x_shape[i], idx)
-            else:
-                query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
-        query = ivy.array(query)
-        query = query.T if len(query.shape) > 1 else query
-        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
-        target_shape = [target_shape]
+        query, ellipsis_inds = _parse_ellipsis(query, len(x_shape))
+
+    # broadcast array queries
+    array_inds = [i for i, v in enumerate(query) if ivy.is_array(v)]
+    if array_inds:
+        new_arrays = ivy.broadcast_arrays(
+            *[v for i, v in enumerate(query) if i in array_inds]
+        )
+        new_arrays = [
+            ivy.where(arr < 0, arr + x_shape[i], arr).astype(ivy.int64)
+            for arr, i in zip(new_arrays, array_inds)
+        ]
+        for idx, arr in zip(array_inds, new_arrays):
+            query[idx] = arr
+
+    # convert slices to range arrays and replace negative values
+    for i, idx in enumerate(query):
+        s = x_shape[i]
+        if isinstance(idx, slice):
+            q_i = _parse_slice(idx, s)
+        elif ivy.is_array(idx):
+            q_i = ivy.where(idx < 0, idx + s, idx)
+        else:
+            raise ivy.exceptions.IvyException("unsupported query format")
+        query[i] = q_i.astype(ivy.int64)
+
+    # fill in missing queries
+    if len(query) < len(x_shape):
+        query += [ivy.arange(0, s, 1).astype(ivy.int64) for s in x_shape[len(query) :]]
+
+    # calculate target_shape, i.e. the shape the gathered values should be in
+    if len(array_inds) and to_front:
+        target_shape = [list(new_arrays[0].shape)] + [
+            list(query[i].shape) for i in range(len(query)) if i not in array_inds
+        ]
+    elif len(array_inds):
+        target_shape = (
+            [list(query[i].shape) for i in range(0, array_inds[0])]
+            + [list(new_arrays[0].shape)]
+            + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
+        )
     else:
-        for i, idx in enumerate(query):
-            s = x_shape[i]
-            if isinstance(idx, slice):
-                step = 1 if idx.step is None else idx.step
-                if idx.start is None:
-                    start = 0 if step >= 0 else s - 1
-                else:
-                    start = idx.start
-                start = start + s if start < 0 else start
-                if idx.stop is None:
-                    stop = s if step >= 0 else -1
-                else:
-                    stop = idx.stop
-                stop = stop + s if stop < 0 and idx.stop is not None else stop
-                query[i] = ivy.arange(start, stop, step)
-            elif isinstance(idx, int):
-                query[i] = ivy.array(idx + s if idx < 0 else idx)
-            elif isinstance(idx, (tuple, list)):
-                # ToDo: add handling for case of nested tuple/lists
-                query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
-            elif ivy.is_array(idx):
-                query[i] = ivy.where(idx < 0, idx + s, idx)
-            else:
-                raise ivy.exceptions.IvyException("unsupported query format")
-            query[i] = ivy.astype(query[i], ivy.int64)
         target_shape = [list(q.shape) for q in query]
     if ellipsis_inds is not None:
         target_shape = (
@@ -2930,15 +2906,126 @@ def _parse_query(query, x_shape):
             + target_shape[ellipsis_inds[1] :]
         )
     for ax in new_axes:
+        if len(array_inds) and to_front and ax <= array_inds[-1]:
+            ax = array_inds[0] + 1
         target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
-    if vectorized_indexing:
-        return query, target_shape
-    target_shape += list(x_shape[len(query) :])
-    query = [q.reshape((-1,)) if len(q.shape) > 1 else q for q in query]
-    grid = ivy.meshgrid(*query, indexing="ij")
-    indices = ivy.stack(grid, axis=-1)
-    return indices, target_shape
+
+    # calculate the indices mesh (indices in gather_nd/scatter_nd format)
+    query = [ivy.expand_dims(q) if not len(q.shape) else q for q in query]
+    if len(array_inds):
+        new_arrays = [
+            (
+                arr.reshape((-1,))
+                if len(arr.shape) > 1
+                else ivy.expand_dims(arr) if not len(arr.shape) else arr
+            )
+            for arr in new_arrays
+        ]
+    if len(array_inds) and to_front:
+        indices = ivy.array(
+            [
+                (*k, *i)
+                for k in zip(*new_arrays)
+                for i in itertools.product(
+                    *[v for i, v in enumerate(query) if i not in array_inds]
+                )
+            ]
+        ).reshape((*target_shape, len(x_shape)))
+    elif len(array_inds):
+        indices = ivy.array(
+            [
+                (*i, *k, *j)
+                for i in itertools.product(
+                    *[v for i, v in enumerate(query) if i < array_inds[0]]
+                )
+                for k in zip(*new_arrays)
+                for j in itertools.product(
+                    *[v for i, v in enumerate(query) if i > array_inds[-1]]
+                )
+            ]
+        ).reshape((*target_shape, len(x_shape)))
+    else:
+        indices = ivy.array([(*i,) for i in itertools.product(*query)]).reshape(
+            (*target_shape, len(x_shape))
+        )
+
+    if scatter:
+        return indices.astype(ivy.int64), target_shape
+    else:
+        return (
+            indices.astype(ivy.int64),
+            target_shape,
+            array_inds if len(array_inds) and to_front else None,
+        )
+
+
+def _parse_ellipsis(so, ndims):
+    pre = list()
+    for s in so:
+        if s is Ellipsis:
+            break
+        pre.append(s)
+    post = list()
+    for s in reversed(so):
+        if s is Ellipsis:
+            break
+        post.append(s)
+    ret = list(
+        pre
+        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+        + list(reversed(post))
+    )
+    return ret, (len(pre), ndims - len(post))
+
+
+def _parse_slice(idx, s):
+    step = 1 if idx.step is None else idx.step
+    if step > 0:
+        start = 0 if idx.start is None else idx.start
+        if start >= s:
+            stop = start
+        else:
+            if start <= -s:
+                start = 0
+            elif start < 0:
+                start = start + s
+            stop = s if idx.stop is None else idx.stop
+            if stop > s:
+                stop = s
+            elif start <= -s:
+                stop = 0
+            elif stop < 0:
+                stop = stop + s
+    else:
+        start = s - 1 if idx.start is None else idx.start
+        if start <= -s:
+            stop = start
+        else:
+            if start >= s:
+                start = s - 1
+            elif start < 0:
+                start = start + s
+            if idx.stop is None:
+                stop = -1
+            else:
+                stop = idx.stop
+                if stop > s:
+                    stop = s
+                elif stop <= -s:
+                    stop = 0
+                    if start == 0:
+                        stop = -1
+                elif stop < 0:
+                    stop = stop + s
+    q_i = ivy.arange(start, stop, step).to_list()
+    q_i = [q for q in q_i if 0 <= q < s]
+    q_i = (
+        ivy.array(q_i)
+        if len(q_i) or start == stop or idx.stop is not None
+        else ivy.arange(0, s, 1)
+    )
+    return q_i
 
 
 def _deep_flatten(iterable):
@@ -4158,7 +4245,6 @@ def itemsize(
 
 @handle_exceptions
 @handle_nestable
-@to_native_arrays_and_back
 @handle_device_shifting
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -4183,7 +4269,16 @@ def strides(
     >>> ivy.strides(x)
     (4, 8)
     """
-    return ivy.current_backend(x).strides(x)
+    if ivy.is_native_array(x) or (ivy.is_ivy_array(x) and x.base is None):
+        return ivy.to_numpy(x).strides
+    # if x is an ivy array with a base,
+    # convert it to a numpy array with the same base:
+    ret = ivy.to_numpy(x.base)
+    ivy_numpy = ivy.with_backend("numpy")
+    for fn, args, kwargs, index in x._manipulation_stack:
+        ret = ivy_numpy.__dict__[fn](ret, *args, **kwargs)
+        ret = ret[index] if ivy.exists(index) else ret
+    return ret.to_native().strides
 
 
 def is_ivy_nested_array(x: Any, /) -> bool:

@@ -559,8 +559,8 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
@@ -790,7 +790,7 @@ def result_type(
         a: float64
     }
     """
-    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return current_backend(arrays_and_dtypes[0]).result_type(*arrays_and_dtypes)
 
 
 # Extra #
