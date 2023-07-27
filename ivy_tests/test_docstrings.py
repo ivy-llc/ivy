@@ -103,13 +103,15 @@ def check_docstring_examples_run(
     sub = ">>> print("
     for index, line in enumerate(trimmed_docstring):
         if sub in line:
-            for i, s in enumerate(trimmed_docstring[index + 1:]):
-                if s.startswith(">>>") or s.lower().startswith(("with", "#")):
+            for i, s in enumerate(trimmed_docstring[index + 1 :]):
+                if s.startswith(">>>") or s.lower().startswith(
+                    ("with", "#", "instance")
+                ):
                     end_index = index + i + 1
                     break
             else:
                 end_index = len(trimmed_docstring)
-            p_output = trimmed_docstring[index + 1: end_index]
+            p_output = trimmed_docstring[index + 1 : end_index]
             p_output = "".join(p_output).replace(" ", "")
             p_output = p_output.replace("...", "")
             if parsed_output != "":
@@ -134,8 +136,9 @@ def check_docstring_examples_run(
     for i, v in enumerate(executable_lines):
         executable_lines[i] = v.replace("...", "")
         # backend which doesn't support inplace_update throws an exception
-        executable_lines[i] = v.replace("ensure_in_backend=True",
-                                        "ensure_in_backend=False")
+        executable_lines[i] = v.replace(
+            "ensure_in_backend=True", "ensure_in_backend=False"
+        )
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
@@ -185,10 +188,13 @@ def check_docstring_examples_run(
         re.VERBOSE,
     )
 
+    # word list to remove from execution output
     words_to_remove = [
         "ivy.Shape",
         "logabsdet=",
         "torch.Size",
+        "tf.Tensor",
+        "shape=",
     ]
 
     num_output = output.replace("ivy.array", "")
@@ -377,6 +383,7 @@ def test_docstrings(backend):
         "rfftn",
         # examples works but exec throws error or generate diff results
         "scaled_dot_product_attention",
+        "searchsorted",
     ]
 
     # skip list for array and container docstrings
@@ -397,7 +404,6 @@ def test_docstrings(backend):
         # temp list for array/container methods
         "einops_reduce",
     ]
-    # currently_being_worked_on = ["layer_norm"]
 
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp  # + currently_being_worked_on

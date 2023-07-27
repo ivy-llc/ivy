@@ -337,45 +337,34 @@ def nonzero(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
+    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([1,1, 0,0]))
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[2], <class ivy.array.array.Array> shape=[2])
-    }
-
-    >>> print(y.a)
-    (ivy.array([1, 2, 3]),)
-
-    >>> print(y.b)
-    (ivy.array([0, 0]), ivy.array([0, 1]))
+    [{
+        a: ivy.array([1, 2, 3]),
+        b: ivy.array([0, 1])
+    }]
 
     Instance Method Examples
     ------------------------
 
-    Using :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
     >>> y = x.nonzero()
     >>> print(y)
-    {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[1], <class ivy.array.array.Array> shape=[0])
-    }
+    [{
+        a: ivy.array([0, 1, 2]),
+        b: ivy.array([])
+    }]
 
-    >>> print(y.a)
-    (ivy.array([0, 1, 2]),)
-
-    >>> print(y.b)
-    (ivy.array([]),)
     """
     return current_backend(x).nonzero(
         x, as_tuple=as_tuple, size=size, fill_value=fill_value
