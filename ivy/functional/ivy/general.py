@@ -2849,7 +2849,8 @@ def _parse_query(query, x_shape, scatter=False):
         to_front = False
 
     # extract newaxis queries
-    new_axes = [i for i, q in enumerate(query) if q is None]
+    if not scatter:
+        new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
     query = [Ellipsis] if query == [] else query
 
@@ -2908,10 +2909,11 @@ def _parse_query(query, x_shape, scatter=False):
             + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
             + target_shape[ellipsis_inds[1] :]
         )
-    for ax in new_axes:
-        if len(array_inds) and to_front and ax <= array_inds[-1]:
-            ax = array_inds[0] + 1
-        target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
+    if not scatter:
+        for ax in new_axes:
+            if len(array_inds) and to_front and ax <= array_inds[-1]:
+                ax = array_inds[0] + 1
+            target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
 
     # calculate the indices mesh (indices in gather_nd/scatter_nd format)
