@@ -33,7 +33,7 @@ def current_backend_str() -> str:
 def get_item(
     x: np.ndarray,
     /,
-    query: np.ndarray,
+    query: Union[np.ndarray, Tuple],
     *,
     copy: bool = None,
 ) -> np.ndarray:

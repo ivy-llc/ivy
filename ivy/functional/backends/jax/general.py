@@ -63,7 +63,7 @@ def _mask_to_index(query, x):
 def get_item(
     x: JaxArray,
     /,
-    query: JaxArray,
+    query: Union[JaxArray, Tuple],
     *,
     copy: bool = None,
 ) -> JaxArray:

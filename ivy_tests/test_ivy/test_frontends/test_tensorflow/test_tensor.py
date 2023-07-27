@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.backends.tensorflow.general import _check_query
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -1447,14 +1447,6 @@ def test_tensorflow_pow(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
-    )
-
-
-def _check_query(query):
-    # True if tensorflow supports this type
-    return not isinstance(query, list) and not (
-        isinstance(query, np.ndarray)
-        and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0))
     )
 
 
