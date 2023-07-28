@@ -1,9 +1,8 @@
-import paddle
 import numpy as np
+import pandas as pd
 
-valid_devices = ("cpu", "gpu")
-invalid_devices = ("tpu",)
-
+valid_devices = "cpu"
+invalid_devices = ("gpu", "tpu")
 
 valid_dtypes = [
     "int8",
@@ -11,6 +10,9 @@ valid_dtypes = [
     "int32",
     "int64",
     "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
     "float16",
     "float32",
     "float64",
@@ -18,12 +20,7 @@ valid_dtypes = [
     "complex128",
     "bool",
 ]
-invalid_dtypes = [
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-]
+invalid_dtypes = ["bfloat16"]
 
 valid_numeric_dtypes = [
     "int8",
@@ -31,18 +28,16 @@ valid_numeric_dtypes = [
     "int32",
     "int64",
     "uint8",
+    "uint16",
+    "uint32",
+    "uint64",
     "float16",
     "float32",
     "float64",
     "complex64",
     "complex128",
 ]
-invalid_numeric_dtypes = [
-    "uint16",
-    "uint32",
-    "uint64",
-    "bfloat16",
-]
+invalid_numeric_dtypes = ["bfloat16"]
 
 valid_int_dtypes = [
     "int8",
@@ -50,30 +45,26 @@ valid_int_dtypes = [
     "int32",
     "int64",
     "uint8",
-]
-invalid_int_dtypes = [
     "uint16",
     "uint32",
     "uint64",
 ]
+invalid_int_dtypes = []
 
 valid_uint_dtypes = [
     "uint8",
-]
-invalid_uint_dtypes = [
     "uint16",
     "uint32",
     "uint64",
 ]
+invalid_uint_dtypes = []
 
 valid_float_dtypes = [
     "float16",
     "float32",
     "float64",
 ]
-invalid_float_dtypes = [
-    "bfloat16",
-]
+invalid_float_dtypes = ["bfloat16"]
 
 valid_complex_dtypes = [
     "complex64",
@@ -81,33 +72,35 @@ valid_complex_dtypes = [
 ]
 invalid_complex_dtypes = []
 
+# todo: add extension types
 
 # Helpers for function testing
 
 
-Dtype = paddle.dtype
-Device = paddle.device
+PandasArray = pd.core.arrays.numpy_.PandasArray
+Dtype = np.dtype
+Device = str
 
 
 def native_array(x):
-    return paddle.to_tensor(x)
+    return x.array
 
 
 def is_native_array(x):
-    return isinstance(x, (paddle.Tensor, paddle.fluid.framework.EagerParamBase))
+    return isinstance(x.array, PandasArray)
 
 
 def to_numpy(x):
-    return np.array(x)
+    return x.to_numpy()
 
 
 def as_native_dtype(dtype: str):
-    return paddle.to_tensor([], dtype=dtype).dtype
+    return np.dtype(dtype)
 
 
 def as_native_dev(device: str):
-    return paddle.device(device)
+    return device
 
 
 def isscalar(x):
-    return is_native_array(x) and x.ndim == 0
+    return pd.api.types.is_scalar(x)
