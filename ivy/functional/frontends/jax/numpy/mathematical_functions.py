@@ -549,6 +549,9 @@ def around(a, decimals=0, out=None):
 def round(a, decimals=0, out=None):
     return ivy.round(a, decimals=decimals, out=out)
 
+@to_ivy_arrays_and_back
+def round_(a, decimals=0, out=None):
+    return ivy.round(a, decimals=decimals, out=out)
 
 @to_ivy_arrays_and_back
 def frexp(x, /):
