@@ -324,7 +324,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
 @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def affine_grid(theta, size, align_corners=False):
-        if theta.dim() != 3 and theta.dim() != 4:
+    if theta.dim() != 3 and theta.dim() != 4:
         raise ValueError("Input theta should be a 3D or 4D tensor")
     batch_size = theta.size(0)
     num_channels = theta.size(1) // 2
