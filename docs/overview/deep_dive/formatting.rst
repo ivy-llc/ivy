@@ -169,18 +169,20 @@ We have a GitHub action that runs:
 1. Every day at 08:00 UTC
 2. Manually invoked by making a comment with ``ivy-gardener`` on a PR
 
-The first action is to ensure that the code is always formatted correctly. The second action is to allow you to
-reformat your code directly from GitHub. This is useful if you didn't setup pre-commit correctly and you or one
-of our maintainers want to reformat your code without having to clone the repository.
+The first action is to ensure that the code in the whole codebase is always formatted correctly. The second action 
+is to allow you to reformat your code directly from GitHub. This is useful if you didn't setup pre-commit correctly 
+and you or one of our maintainers want to reformat your code without having to clone the repository.
 
 Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trigger the same set of lint checks 
 as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
 a new commit if there is any. 
 
-However, it is possible for the linters run in the ivy-gardener to face formatting errors that need human intervention 
-like typos and uninitialized arguments. It is also possible that the ivy bot may be unable to create a new commit 
-if it does not have access to edit your branch. In these cases, the ivy-gardener will fail and you should check 
-the log of lint check to manually resolve the remaining errors.
+However, it is possible for the linters run in the ivy-gardener and the github action every day to face formatting 
+errors that need human intervention like typos and uninitialized arguments. In this case, an error will be thrown 
+by the linters while the fixes for other normal errors will still be applied. It is also possible that the ivy bot 
+behind ivy-gardener (ivy-branch) may not be able to apply the changes if it does not have access to edit the target 
+branch. In these cases, the ivy-gardener will fail and you should check the log of lint check to manually resolve 
+the errors.
 
 **Round Up**
 
