@@ -273,9 +273,7 @@ def _nanmedian(input, axis, keepdims):
         axis.pop(0)
         dimension = dimension - 1
     temp = torch.flatten(temp, start_dim=dimension - len(axis))
-    ret = torch.nanquantile(
-        temp, q, dim=-1, keepdim=keepdims, interpolation="midpoint"
-    )
+    ret = torch.nanquantile(temp, q, dim=-1, keepdim=keepdims, interpolation="midpoint")
     if keepdims:
         keepdim_shape = tuple(keepdim_shape)
         ret = ret.reshape(keepdim_shape)
@@ -312,7 +310,7 @@ def nanmedian(
                 keepdim=keepdims,
                 interpolation="midpoint",
             )
-            
+
             if input.dtype in [torch.int32, torch.int64, torch.float64]:
                 ret = ret.to(torch.float64)
             elif input.dtype in [torch.float16, torch.bfloat16]:

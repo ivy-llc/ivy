@@ -12,7 +12,6 @@ _backends_subpackage_path = "ivy.functional.backends"
 _sub_backend_dict = dict()
 _backend_to_sub_backends_dict = dict()
 
-
 # dynamic sub_backend detection
 for backend in os.listdir(
     os.path.join(
@@ -51,7 +50,7 @@ original_backend_dict = None
 
 
 def set_sub_backend(sub_backend_str: str):
-    if ivy.backend == "none":
+    if ivy.backend == "":
         logging.warn("You must set a backend first")
         return
 
