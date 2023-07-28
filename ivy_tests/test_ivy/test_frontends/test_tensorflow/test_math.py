@@ -2907,6 +2907,7 @@ def test_tensorflow_xdivy(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2917,7 +2918,7 @@ def test_tensorflow_xdivy(
         on_device=on_device,
         x=x[0],
         y=x[1],
-        backend_to_test="numpy",
+        backend_to_test=backend_fw,
     )
 
 
