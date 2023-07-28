@@ -187,6 +187,17 @@ def for_loop(
     return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
 
 
+def try_except(
+    body1: Callable, 
+    body2: Callable, 
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+):
+    try:
+        return body1(*vars)
+    except Exception as e:
+        return body2(*vars, e)
+
+
 # todo (nightcrab) find a better place for these cmp functions
 
 
