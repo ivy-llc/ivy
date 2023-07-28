@@ -522,34 +522,38 @@ def test_paddle_meshgrid(
     )
 
 
-# assign
+# tril_indices
 @handle_frontend_test(
-    fn_tree="paddle.assign",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        shared_dtype=True,
-    ),
-    test_with_out=st.just(True),
+    fn_tree="paddle.tril_indices",
+    dtype=helpers.get_dtypes("valid", full=False),
+    row=st.integers(min_value=1, max_value=5),
+    col=st.integers(min_value=1, max_value=5),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
 )
-def test_paddle_assign(
-    dtype_and_x,
+def test_paddle_tril_indices(
+    row,
+    col,
+    offset,
+    dtype,
     test_flags,
     backend_fw,
     frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        output=x[1],
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
     )
 
 
@@ -625,4 +629,36 @@ def test_paddle_logspace(
         num=num,
         base=base,
         dtype=dtype[0],
+    )
+    
+
+
+# assign
+@handle_frontend_test(
+    fn_tree="paddle.assign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_assign(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        output=x[1],
     )
