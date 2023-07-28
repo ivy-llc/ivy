@@ -696,4 +696,3 @@ def test_paddle_triu_indices(
         offset=offset,
         dtype=dtype[0],
     )
-
