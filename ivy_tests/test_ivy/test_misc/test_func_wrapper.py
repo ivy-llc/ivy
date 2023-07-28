@@ -140,3 +140,60 @@ def test_views(array_to_update, backend_fw):
     assert np.allclose(d, d_copy + 1)
     assert np.allclose(e[0], e_copy + 1)
     ivy.previous_backend()
+
+
+def _fn8(x):
+    return ivy.ones_like(x)
+
+
+def _jl(x, *args, fn_original, **kwargs):
+    return fn_original(x) * 3j
+
+
+@pytest.mark.parametrize(
+    ("x", "mode", "jax_like", "expected"),
+    [
+        ([3.0, 7.0, -5.0], None, None, [1.0, 1.0, 1.0]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], None, None, [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "split", None, [1 + 1j, 1 + 1j, 1 + 1j]),
+        (
+            [3 + 4j, 7 - 6j, -5 - 2j],
+            "magnitude",
+            None,
+            [0.6 + 0.8j, 0.75926 - 0.65079j, -0.92848 - 0.37139j],
+        ),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", None, [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", "entire", [1 + 0j, 1 + 0j, 1 + 0j]),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", "split", [1 + 1j, 1 + 1j, 1 + 1j]),
+        (
+            [3 + 4j, 7 - 6j, -5 - 2j],
+            "jax",
+            "magnitude",
+            [0.6 + 0.8j, 0.75926 - 0.65079j, -0.92848 - 0.37139j],
+        ),
+        ([3 + 4j, 7 - 6j, -5 - 2j], "jax", _jl, [3j, 3j, 3j]),
+    ],
+)
+def test_handle_complex_input(x, mode, jax_like, expected, backend_fw):
+    ivy.set_backend(backend_fw)
+    x = ivy.array(x)
+    expected = ivy.array(expected)
+    test_fn = _fn8 if jax_like is None else ivy.add_attributes(jax_like=jax_like)(_fn8)
+    test_fn = ivy.handle_complex_input(test_fn)
+    out = test_fn(x) if mode is None else test_fn(x, complex_mode=mode)
+    if "float" in x.dtype:
+        assert ivy.all(out == expected)
+    else:
+        assert ivy.all(
+            ivy.logical_or(
+                ivy.real(out) > ivy.real(expected) - 1e-4,
+                ivy.real(out) < ivy.real(expected) + 1e-4,
+            )
+        )
+        assert ivy.all(
+            ivy.logical_or(
+                ivy.imag(out) > ivy.imag(expected) - 1e-4,
+                ivy.imag(out) < ivy.imag(expected) + 1e-4,
+            )
+        )
+    ivy.previous_backend()

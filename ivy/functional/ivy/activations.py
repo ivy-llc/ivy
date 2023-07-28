@@ -79,7 +79,6 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
-@handle_device_shifting
 def _leaky_relu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -105,8 +104,8 @@ def _leaky_relu_jax_like(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
-@handle_complex_input
 @handle_device_shifting
+@handle_complex_input
 @add_attributes(jax_like=_leaky_relu_jax_like)
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -173,8 +172,6 @@ def leaky_relu(
         b: ivy.array([0.40000001, -0.04])
     }
     """
-    # TODO: tests for stateful API, plus testing complex_mode on functional API
-    # TODO: and JAX frontend
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
