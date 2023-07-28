@@ -262,29 +262,21 @@ def corrcoef(
     
     if len(x.shape) > 2 or len(x.shape) < 1:
         raise ValueError("x has more than 2 or less than 1 dimensions")
-    
     if x.dtype not in [paddle.float32, paddle.float64]:
         raise TypeError("The data type of X must be float64 or float32")
-        
     c = cov(x, y)
-    
     dia = paddle.diag(c)
-    
     if paddle.is_complex(dia):
         dia = dia.real()
-        
     stddev = paddle.sqrt(dia)
-    
     c /= stddev[:, None]
     c /= stddev[None, :]
-    
     if paddle.is_complex(c):
         return paddle.complex(
             paddle.clip(c.real(), -1, 1), paddle.clip(c.imag(), -1, 1)
         )
     else:
         c = paddle.clip(c, -1, 1)
-        
     return c
 
 
