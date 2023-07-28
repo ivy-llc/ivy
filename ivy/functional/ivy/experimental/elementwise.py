@@ -6,9 +6,12 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
+    handle_partial_mixed_function,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_array_function,
+    infer_dtype,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,7 +21,61 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
+@handle_array_function
+def lgamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the natural logarithm of the absolute value of the gamma function on x.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the natural log of Gamma(x) of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
+
+    Examples
+    --------
+    >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+    ...                   b=ivy.array([4.5, 5.3, 2.3]))
+    >>> y = x.lgamma()
+    >>> print(y)
+    {
+        a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
+        b: ivy.array([2.45373821, 3.63963795, 0.15418935])
+    }
+
+    >>> x = ivy.array([1 , 2 , 3 ])
+    >>> y = x.lgamma()
+    >>> print(y)
+    ivy.array([0., 0., 0.69314718])
+
+    >>> x = ivy.array([4.5, -4, -5.6])
+    >>> x.lgamma(out = x)
+    >>> print(x)
+    ivy.array([2.45373654, inf, -4.6477685 ])
+    """
+    return ivy.current_backend(x).lgamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def sinc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -93,45 +150,7 @@ def sinc(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-def lcm(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Compute the element-wise least common multiple (LCM) of x1 and x2.
-
-    Parameters
-    ----------
-    x1
-        first input array, must be integers
-    x2
-        second input array, must be integers
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        an array that includes the element-wise least common multiples of x1 and x2
-
-    Examples
-    --------
-    With :class:`ivy.Array` input:
-
-    >>> x1=ivy.array([2, 3, 4])
-    >>> x2=ivy.array([5, 8, 15])
-    >>> x1.lcm(x1, x2)
-    ivy.array([10, 21, 60])
-    """
-    return ivy.current_backend().lcm(x1, x2, out=out)
-
-
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@handle_device_shifting
 def fmax(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -176,107 +195,7 @@ def fmax(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-def fmin(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Compute the element-wise minimums of two arrays. Differs from ivy.minimum in the
-    case where one of the elements is NaN. ivy.minimum returns the NaN element while
-    ivy.fmin returns the non-NaN element.
-
-    Parameters
-    ----------
-    x1
-        First input array.
-    x2
-        Second input array.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Array with element-wise minimums.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([2, 3, 4])
-    >>> x2 = ivy.array([1, 5, 2])
-    >>> ivy.fmin(x1, x2)
-    ivy.array([1, 3, 2])
-
-    >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
-    >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
-    >>> ivy.fmin(x1, x2)
-    ivy.array([ 0.,  0., nan])
-    """
-    return ivy.current_backend().fmin(x1, x2, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def trapz(
-    y: ivy.Array,
-    /,
-    *,
-    x: Optional[ivy.Array] = None,
-    dx: float = 1.0,
-    axis: int = -1,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Integrate along the given axis using the composite trapezoidal rule.
-
-    If x is provided, the integration happens in sequence along its elements
-    - they are not sorted..
-
-    Parameters
-    ----------
-    y
-        The array that should be integrated.
-    x
-        The sample points corresponding to the input array values.
-        If x is None, the sample points are assumed to be evenly spaced
-        dx apart. The default is None.
-    dx
-        The spacing between sample points when x is None. The default is 1.
-    axis
-        The axis along which to integrate.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Definite integral of n-dimensional array as approximated along
-        a single axis by the trapezoidal rule. If the input array is a
-        1-dimensional array, then the result is a float. If n is greater
-        than 1, then the result is an n-1 dimensional array.
-
-    Examples
-    --------
-    >>> y = ivy.array([1, 2, 3])
-    >>> ivy.trapz([1,2,3])
-    4.0
-    >>> y = ivy.array([1, 2, 3])
-    >>> ivy.trapz([1,2,3], x=[4, 6, 8])
-    8.0
-    >>> y = ivy.array([1, 2, 3])
-    >>> ivy.trapz([1,2,3], dx=2)
-    8.0
-    """
-    return ivy.current_backend().trapz(y, x=x, dx=dx, axis=axis, out=out)
-
-
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
+@handle_device_shifting
 def float_power(
     x1: Union[ivy.Array, float, list, tuple],
     x2: Union[ivy.Array, float, list, tuple],
@@ -321,46 +240,10 @@ def float_power(
 
 
 @handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def exp2(
-    x: Union[ivy.Array, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate 2**p for all p in the input array.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise 2 to the power x. This is a scalar if x is a scalar.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, 3])
-    >>> ivy.exp2(x)
-    ivy.array([2.,    4.,   8.])
-    >>> x = [5, 6, 7]
-    >>> ivy.exp2(x)
-    ivy.array([32.,   64.,  128.])
-    """
-    return ivy.current_backend().exp2(x, out=out)
-
-
-@handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_device_shifting
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -406,6 +289,8 @@ def copysign(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
 def count_nonzero(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -463,6 +348,8 @@ def count_nonzero(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
 def nansum(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -514,51 +401,12 @@ def nansum(
     )
 
 
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def gcd(
-    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Return the greatest common divisor of |x1| and |x2|.
-
-    Parameters
-    ----------
-    x1
-        First array-like input.
-    x2
-        Second array-input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise gcd of |x1| and |x2|.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.gcd(x1, x2)
-    ivy.array([1.,    1.,   3.])
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> ivy.gcd(x1, 10)
-    ivy.array([1.,   2.,  1.])
-    """
-    return ivy.current_backend().gcd(x1, x2, out=out)
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def isclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -622,183 +470,7 @@ def isclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-def angle(
-    z: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    deg: bool = False,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate Element-wise the angle for an array of complex numbers(x+yj).
-
-    Parameters
-    ----------
-    z
-        Array-like input.
-    deg
-        optional bool.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns an array of angles for each complex number in the input.
-        If deg is False(default), angle is calculated in radian and if
-        deg is True, then angle is calculated in degrees.
-
-    Examples
-    --------
-    >>> ivy.set_backend('tensorflow')
-    >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
-    >>> z
-    ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
-    >>> ivy.angle(z)
-    ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.set_backend('numpy')
-    >>> ivy.angle(z,deg=True)
-    ivy.array([135., 135., -45.])
-    """
-    return ivy.current_backend(z).angle(z, deg=deg, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def imag(
-    val: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Return the Imaginary part of a complex numbers(x+yj).
-
-    Parameters
-    ----------
-    val
-        Array-like input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Returns an array with the imaginary part of complex numbers.
-
-    Examples
-    --------
-    >>> b = ivy.array(np.array([1+2j, 3+4j, 5+6j]))
-    >>> b
-    ivy.array([1.+2.j, 3.+4.j, 5.+6.j])
-    >>> ivy.imag(b)
-    ivy.array([2., 4., 6.])
-    """
-    return ivy.current_backend(val).imag(val, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def nan_to_num(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    copy: bool = True,
-    nan: Union[float, int] = 0.0,
-    posinf: Optional[Union[float, int]] = None,
-    neginf: Optional[Union[float, int]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Replace NaN with zero and infinity with large finite numbers (default behaviour) or
-    with the numbers defined by the user using the nan, posinf and/or neginf keywords.
-
-    Parameters
-    ----------
-    x
-        Array input.
-    copy
-        Whether to create a copy of x (True) or to replace values in-place (False).
-        The in-place operation only occurs if casting to an array does not require
-        a copy. Default is True.
-    nan
-        Value to be used to fill NaN values. If no value is passed then NaN values
-        will be replaced with 0.0.
-    posinf
-        Value to be used to fill positive infinity values. If no value is passed
-        then positive infinity values will be replaced with a very large number.
-    neginf
-        Value to be used to fill negative infinity values.
-        If no value is passed then negative infinity values
-        will be replaced with a very small (or negative) number.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Array with the non-finite values replaced.
-        If copy is False, this may be x itself.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, 2, 3, nan])
-    >>> ivy.nan_to_num(x)
-    ivy.array([1.,    1.,   3.,   0.0])
-    >>> x = ivy.array([1, 2, 3, inf])
-    >>> ivy.nan_to_num(x, posinf=5e+100)
-    ivy.array([1.,   2.,   3.,   5e+100])
-    """
-    return ivy.current_backend(x).nan_to_num(
-        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
-    )
-
-
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-def logaddexp2(
-    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """
-    Calculate log2(2**x1 + 2**x2).
-
-    Parameters
-    ----------
-    x1
-        First array-like input.
-    x2
-        Second array-input.
-    out
-        optional output array, for writing the result to.
-
-    Returns
-    -------
-    ret
-        Element-wise logaddexp2 of x1 and x2.
-
-    Examples
-    --------
-    >>> x1 = ivy.array([1, 2, 3])
-    >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.logaddexp2(x1, x2)
-    ivy.array([4.169925, 5.169925, 6.169925])
-    """
-    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
-
-
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@handle_device_shifting
 def signbit(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -833,6 +505,7 @@ def signbit(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def hypot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -869,6 +542,7 @@ def hypot(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
@@ -923,6 +597,7 @@ def diff(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -996,6 +671,7 @@ def allclose(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def fix(
     x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
     /,
@@ -1033,6 +709,7 @@ def fix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def nextafter(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1073,6 +750,7 @@ def nextafter(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def zeta(
     x: Union[ivy.Array, ivy.NativeArray],
     q: Union[ivy.Array, ivy.NativeArray],
@@ -1114,6 +792,7 @@ def zeta(
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1192,6 +871,7 @@ def gradient(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_device_shifting
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
     y: Union[ivy.Array, ivy.NativeArray],
@@ -1230,71 +910,6 @@ def xlogy(
     ivy.array([1.0986, 1.3863, 0.0000])
     """
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
-
-
-@handle_exceptions
-@handle_nestable
-@handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
-def real(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Test each element ``x_i`` of the input array ``x`` to
-    take only real part from it.
-    Returns a float array, where it only contains .
-    If element has complex type with zero complex part, the return value
-    will be that element, else it only returns real part.
-
-    Parameters
-    ----------
-    x
-        input array.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array containing test results. An element ``out_i`` is
-        ``real number`` if ``x_i`` contain real number part only
-        and if it is ``real number with complex part also`` then it
-        returns the real number part.
-        The returned array should have a data type of ``float``.
-
-    The descriptions above assume an array input for simplicity, but
-    the method also accepts :class:`ivy.Container` instances
-    in place of: class:`ivy.Array` or :class:`ivy.NativeArray`
-    instances, as shown in the type hints and also the examples below.
-
-    Examples
-    --------
-    With :class:`ivy.Array` inputs:
-    >>> x = ivy.array([[[1.1], [2], [-6.3]]])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([[[1.1], [2.], [-6.3]]])
-
-    >>> x = ivy.array([4.2-0j, 3j, 7+5j])
-    >>> z = ivy.real(x)
-    >>> print(z)
-    ivy.array([4.2, 0., 7.])
-
-    With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
-    >>> z = ivy.real(x)
-    >>> print(z)
-    {
-        a: ivy.array([-6.7, 0.314, 1.23]),
-        b: ivy.array([0., 5.32, 3.001])
-    }
-    """
-    return ivy.current_backend(x).real(x, out=out)
 
 
 @handle_exceptions
@@ -1343,6 +958,7 @@ def binarizer(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def conj(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1350,7 +966,31 @@ def conj(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the complex conjugate of complex values in x.
+    Return the complex conjugate for each element ``x_i`` of the input array ``x``.
+
+    For complex number of the form
+
+    .. math::
+        a + bj
+    
+    the complex conjugate is defined as
+    
+    .. math::
+        a - bj
+
+    Hence, the returned conjugates must be computed by negating
+    the imaginary component of each element ``x_i``
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.conj.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Parameters
     ----------
@@ -1400,6 +1040,7 @@ def conj(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def ldexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1437,9 +1078,11 @@ def ldexp(
 
 @handle_exceptions
 @handle_nestable
+@handle_partial_mixed_function
 @handle_array_like_without_promotion
-@handle_out_argument
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
 def lerp(
     input: Union[ivy.Array, ivy.NativeArray],
     end: Union[ivy.Array, ivy.NativeArray],
@@ -1547,7 +1190,14 @@ def lerp(
     return ivy.add(input, ivy.multiply(weight, ivy.subtract(end, input)), out=out)
 
 
-lerp.mixed_function = True
+lerp.mixed_backend_wrappers = {
+    "to_add": (
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
+}
 
 
 @handle_exceptions
@@ -1555,6 +1205,7 @@ lerp.mixed_function = True
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def frexp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1584,3 +1235,39 @@ def frexp(
     (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 2, 2]))
     """
     return ivy.current_backend(x).frexp(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def modf(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Decompose the elements of x into fractional and integral parts.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Optional output array for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        A tuple of two arrays, the fractional and integral parts.
+
+    Examples
+    --------
+    >>> x = ivy.array([1.5, 2.7, 3.9])
+    >>> ivy.modf(x)
+    (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+    """
+    return ivy.current_backend(x).modf(x, out=out)

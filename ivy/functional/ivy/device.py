@@ -39,6 +39,7 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 default_device_stack = list()
+soft_device_mode_stack = list()
 dev_handles = dict()
 split_factors = dict()
 max_chunk_sizes = dict()
@@ -91,6 +92,7 @@ class DefaultDevice:
         "cpu"
         """
         ivy.set_default_device(self._dev)
+        ivy.set_soft_device_mode(True)
         return self
 
     def __exit__(
@@ -126,10 +128,26 @@ class DefaultDevice:
         "cpu"
         """
         ivy.unset_default_device()
+        ivy.unset_soft_device_mode()
         if self and (exc_type is not None):
             print(exc_tb)
             raise exc_val
         return self
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    ivy.set_array_mode(False)
+    default_device = ivy.default_device()
+    args, kwargs = ivy.nested_map(
+        [args, kwargs],
+        lambda x: (
+            ivy.to_device(x, default_device)
+            if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
+            else x
+        ),
+    )
+    ivy.unset_array_mode()
+    return fn(*args, **kwargs)
 
 
 # Helpers #
@@ -265,6 +283,56 @@ def print_all_ivy_arrays_on_dev(
         [print((arr.shape, arr.dtype)) for arr in arrs]
     else:
         [print(arr) for arr in arrs]
+
+
+ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
+
+
+@handle_exceptions
+def set_soft_device_mode(mode: bool) -> None:
+    """
+    Set the mode of whether to move input arrays to `ivy.default_device()` before
+    performing an operation.
+
+    Parameter
+    ---------
+    mode
+        boolean whether to move input arrays
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.soft_device_mode
+    False
+    >>> ivy.set_soft_device_mode(True)
+    >>> ivy.soft_device_mode
+    True
+    """
+    global soft_device_mode_stack
+    ivy.utils.assertions.check_isinstance(mode, bool)
+    soft_device_mode_stack.append(mode)
+    ivy.__setattr__("soft_device_mode", mode, True)
+
+
+@handle_exceptions
+def unset_soft_device_mode() -> None:
+    """
+    Reset the mode of moving input arrays to `ivy.default_device()` before performing an
+    operation.
+
+    Examples
+    --------
+    >>> ivy.set_soft_device_mode(False)
+    >>> ivy.soft_device_mode
+    False
+    >>> ivy.unset_soft_device_mode()
+    >>> ivy.soft_device_mode
+    True
+    """
+    global soft_device_mode_stack
+    if soft_device_mode_stack:
+        soft_device_mode_stack.pop(-1)
+        mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
+        ivy.__setattr__("soft_device_mode", mode, True)
 
 
 # Retrieval
@@ -862,7 +930,7 @@ def to_device(
     >>> print(x.device)
     cpu
     """
-    return ivy.current_backend(x).to_device(x, device)
+    return ivy.current_backend(x).to_device(x, device, stream=stream, out=out)
 
 
 # Function Splitting #
@@ -949,7 +1017,7 @@ def set_split_factor(
     >>> print(ivy.split_factors)
     {'cpu': 0.2, 'gpu': 0.3}
     """
-    ivy.utils.assertions.check_less(0, factor, allow_equal=True)
+    ivy.utils.assertions.check_less(0, factor, allow_equal=True, as_array=False)
     global split_factors
     device = ivy.default(device, default_device())
     split_factors[device] = factor
@@ -1145,9 +1213,13 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
 @handle_exceptions
 @handle_nestable
-def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_supported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the supported devices of the current backend's function.
+    Return the supported devices of the current backend's function. The function returns
+    a dict containing the supported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1159,7 +1231,7 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        Tuple containing the supported devices of the function
+        Tuple or dict containing the supported devices of the function
 
     Examples
     --------
@@ -1174,21 +1246,34 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
             "exist in a particular backend"
         ),
     )
-    supported_devices = set(_get_devices(fn, complement=False))
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_supported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=False),
+        }
+    else:
+        supported_devices = set(_get_devices(fn, complement=False))
+        if recurse:
+            supported_devices = ivy.functional.data_type._nested_get(
+                fn, supported_devices, set.intersection, function_supported_devices
+            )
 
-    if recurse:
-        supported_devices = ivy.functional.data_type._nested_get(
-            fn, supported_devices, set.intersection, function_supported_devices
-        )
-
-    return tuple(supported_devices)
+    return (
+        supported_devices
+        if isinstance(supported_devices, dict)
+        else tuple(supported_devices)
+    )
 
 
 @handle_exceptions
 @handle_nestable
-def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_unsupported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the unsupported devices of the current backend's function.
+    Return the unsupported devices of the current backend's function. The function
+    returns a dict containing the unsupported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1200,7 +1285,7 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        Tuple containing the unsupported devices of the function
+        Tuple or dict containing the unsupported devices of the function
 
     Examples
     --------
@@ -1215,14 +1300,22 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
             "exist in a particular backend"
         ),
     )
-    unsupported_devices = set(_get_devices(fn, complement=True))
-
-    if recurse:
-        unsupported_devices = ivy.functional.data_type._nested_get(
-            fn, unsupported_devices, set.union, function_unsupported_devices
-        )
-
-    return tuple(unsupported_devices)
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=True),
+        }
+    else:
+        unsupported_devices = set(_get_devices(fn, complement=True))
+        if recurse:
+            unsupported_devices = ivy.functional.data_type._nested_get(
+                fn, unsupported_devices, set.union, function_unsupported_devices
+            )
+    return (
+        unsupported_devices
+        if isinstance(unsupported_devices, dict)
+        else tuple(unsupported_devices)
+    )
 
 
 # Profiler #

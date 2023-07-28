@@ -63,7 +63,7 @@ def clear_cached_mem_on_dev(device: str, /):
 
 
 def num_gpus() -> int:
-    raise IvyNotImplementedException()
+    return mx.context.num_gpus()
 
 
 def gpu_is_available() -> bool:
@@ -73,7 +73,7 @@ def gpu_is_available() -> bool:
 
 
 def tpu_is_available() -> bool:
-    raise IvyNotImplementedException()
+    return False
 
 
 class Profiler(BaseProfiler):

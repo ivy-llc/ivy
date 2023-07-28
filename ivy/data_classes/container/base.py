@@ -21,7 +21,7 @@ except ModuleNotFoundError:
 import pickle
 import random
 from operator import mul
-from functools import reduce
+from functools import reduce as _reduce
 from typing import Union, Tuple
 from builtins import set
 
@@ -132,11 +132,11 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout)
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -1052,7 +1052,7 @@ class ContainerBase(dict, abc.ABC):
         containers
             containers to check.
         """
-        ivy.utils.assertions.check_greater(len(containers), 1)
+        ivy.utils.assertions.check_greater(len(containers), 1, as_array=False)
         configs = [cont.cont_config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1092,6 +1092,17 @@ class ContainerBase(dict, abc.ABC):
             ):
                 return False
         return True
+
+    @staticmethod
+    def cont_load(filepath, format="h5py"):
+        if format == "json":
+            return ivy.Container.cont_from_disk_as_json(filepath)
+        elif format == "pickle":
+            return ivy.Container.cont_from_disk_as_pickled(filepath)
+        elif format == "h5py":
+            return ivy.Container.cont_from_disk_as_hdf5(filepath)
+        else:
+            raise ivy.utils.exceptions.IvyException("Unsupported format")
 
     @staticmethod
     def cont_from_disk_as_hdf5(
@@ -1224,7 +1235,7 @@ class ContainerBase(dict, abc.ABC):
                 size += size_to_add
             elif isinstance(value, h5py.Dataset):
                 value_shape = value.shape
-                size += reduce(mul, value_shape, 1) * value.dtype.itemsize
+                size += _reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
                 raise ivy.utils.exceptions.IvyException(
@@ -1942,11 +1953,21 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(
             dict(
                 sorted(
-                    array_dict.items(), key=lambda item: reduce(mul, item[1].shape, 1)
+                    array_dict.items(), key=lambda item: _reduce(mul, item[1].shape, 1)
                 )
             ),
             alphabetical_keys=False,
         )
+
+    def cont_save(self, filepath, format="h5py"):
+        if format == "json":
+            self.cont_to_disk_as_json(filepath)
+        elif format == "pickle":
+            self.cont_to_disk_as_pickled(filepath)
+        elif format == "h5py":
+            self.cont_to_disk_as_hdf5(filepath)
+        else:
+            raise ValueError("Unsupported format")
 
     def cont_to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
@@ -1992,19 +2013,23 @@ class ContainerBase(dict, abc.ABC):
                 value_as_np = self._cont_ivy.to_numpy(value)
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
-                if not max_batch_size:
-                    max_batch_size = starting_index + this_batch_size
+                max_bs = (
+                    starting_index + this_batch_size
+                    if not max_batch_size
+                    else max_batch_size
+                )
                 if key not in h5_obj.keys():
-                    dataset_shape = [max_batch_size] + list(value_shape[1:])
+                    dataset_shape = [max_bs] + list(value_shape[1:])
                     maxshape = [None for _ in dataset_shape]
                     h5_obj.create_dataset(
                         key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape
                     )
-                space_left = max_batch_size - starting_index
+                space_left = max_bs - starting_index
                 amount_to_write = min(this_batch_size, space_left)
-                h5_obj[key][starting_index : starting_index + amount_to_write] = (
-                    value_as_np[0:amount_to_write]
-                )
+                for i in range(amount_to_write):
+                    h5_obj[key][starting_index + i : starting_index + i + 1] = (
+                        value_as_np[i : i + 1]
+                    )
 
     def cont_to_disk_as_pickled(self, pickle_filepath):
         """
@@ -2961,6 +2986,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
@@ -3002,6 +3028,7 @@ class ContainerBase(dict, abc.ABC):
             type="any",
             limit=[1, 2],
             message="at least one of absolute or containing must be specified",
+            as_array=False,
         )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
@@ -3790,7 +3817,7 @@ class ContainerBase(dict, abc.ABC):
                     (self._cont_ivy.is_native_array(v) or isinstance(v, ivy.Array))
                     and len(list(v.shape)) > 0
                     and ivy.exists(self._print_limit)
-                    and reduce(mul, v.shape) > self._print_limit
+                    and _reduce(mul, v.shape) > self._print_limit
                 ):
                     rep = (type(v), "shape=", list(v.shape))
                 elif (

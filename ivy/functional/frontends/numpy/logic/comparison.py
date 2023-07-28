@@ -175,4 +175,4 @@ def array_equiv(a1, a2):
         a1 = ivy.broadcast_to(a1, ivy.shape(a2))
     else:
         a2 = ivy.broadcast_to(a2, ivy.shape(a1))
-    return ivy.array(ivy.array_equal(a1, a2))
+    return ivy.array_equal(a1, a2)

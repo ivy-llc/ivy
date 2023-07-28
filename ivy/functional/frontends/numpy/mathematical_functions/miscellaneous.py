@@ -9,6 +9,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     from_zero_dim_arrays_to_scalar,
     handle_numpy_out,
 )
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -44,7 +45,7 @@ def convolve(a, v, mode="full"):
 @to_ivy_arrays_and_back
 @handle_numpy_casting
 @from_zero_dim_arrays_to_scalar
-def clip(
+def _clip(
     a,
     a_min,
     a_max,
@@ -65,7 +66,6 @@ def clip(
         limit=[1, 2],
         message="at most one of a_min and a_max can be None",
     )
-    a = ivy.array(a, dtype=dtype)
     if a_min is None:
         ret = ivy.minimum(a, a_max, out=out)
     elif a_max is None:
@@ -304,6 +304,51 @@ def _copysign(
     subok=True,
 ):
     ret = ivy.copysign(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def _lcm(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.lcm(x1, x2, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+@with_supported_dtypes(
+    {"1.25.1 and below": ("int8", "int16", "int32", "int64")}, "numpy"
+)  # Add
+def _gcd(
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    ret = ivy.gcd(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret

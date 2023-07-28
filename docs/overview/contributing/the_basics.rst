@@ -40,7 +40,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
@@ -65,13 +65,13 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
    No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:
+d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
-   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the 
+   description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
@@ -106,7 +106,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
@@ -158,7 +158,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
@@ -253,7 +253,7 @@ The code review process is explained in more detail in the following video.
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 

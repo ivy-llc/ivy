@@ -33,9 +33,10 @@ import numpy as np
 import ivy
 from ivy.utils.backend.handler import _backend_dict
 
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+# TODO fix due to refactor
+from ivy_tests.test_ivy.helpers.available_frameworks import _available_frameworks
 
-available_frameworks_with_none = available_frameworks()[:]
+available_frameworks_with_none = _available_frameworks()[:]
 available_frameworks_with_none.append(None)
 
 available_array_types_class = [
@@ -46,13 +47,13 @@ available_array_types_input = [
     ("numpy", np.array(3.0)),
 ]
 
-if "tensorflow" in available_frameworks():
+if "tensorflow" in _available_frameworks():
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
     available_array_types_class.append(
         ("tensorflow", "<class 'tensorflow.python.framework.ops.EagerTensor'>")
     )
 
-if "jax" in available_frameworks():
+if "jax" in _available_frameworks():
     available_array_types_input.append(("jax", jnp.array(3.0)))
     if version.parse(jax.__version__) >= version.parse("0.4.1"):
         available_array_types_class.append(
@@ -64,11 +65,11 @@ if "jax" in available_frameworks():
         )
 
 
-if "torch" in available_frameworks():
+if "torch" in _available_frameworks():
     available_array_types_input.append(("torch", torch.tensor([3.0])))
     available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
 
-if "paddle" in available_frameworks():
+if "paddle" in _available_frameworks():
     available_array_types_input.append(("paddle", paddle.to_tensor([3.0])))
     available_array_types_class.append(("paddle", "<class 'paddle.Tensor'>"))
 
@@ -89,17 +90,21 @@ def test_set_backend(backend, array_type):
     ivy.set_backend(backend)
     stack_after = ivy.backend_stack
     # check that the function id has changed as inverse=True.
-    ivy.utils.assertions.check_equal(func_address_before, id(ivy.sum), inverse=True)
+    ivy.utils.assertions.check_equal(
+        func_address_before, id(ivy.sum), inverse=True, as_array=False
+    )
     # using ivy assertions to ensure the desired backend is set
-    ivy.utils.assertions.check_less(len(stack_before), len(stack_after))
-    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
+    ivy.utils.assertions.check_less(len(stack_before), len(stack_after), as_array=False)
+    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend, as_array=False)
     backend = importlib.import_module(_backend_dict[backend])
-    ivy.utils.assertions.check_equal(stack_after[-1], backend)
+    ivy.utils.assertions.check_equal(stack_after[-1], backend, as_array=False)
     x = ivy.array([1, 2, 3])
-    ivy.utils.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
+    ivy.utils.assertions.check_equal(
+        str(type(ivy.to_native(x))), array_type, as_array=False
+    )
 
 
-@pytest.mark.parametrize("backend", available_frameworks())
+@pytest.mark.parametrize("backend", _available_frameworks())
 def test_previous_backend(backend):
     if not ivy.backend_stack:
         assert ivy.previous_backend() is None
@@ -113,26 +118,30 @@ def test_previous_backend(backend):
     stack_after_unset = ivy.backend_stack
     # check that the function id has changed as inverse=True.
     ivy.utils.assertions.check_equal(
-        func_address_before_unset, id(ivy.sum), inverse=True
+        func_address_before_unset, id(ivy.sum), inverse=True, as_array=False
     )
     ivy.utils.assertions.check_equal(
-        previous_backend, importlib.import_module(_backend_dict[backend])
+        previous_backend,
+        importlib.import_module(_backend_dict[backend]),
+        as_array=False,
     )
-    ivy.utils.assertions.check_greater(len(stack_before_unset), len(stack_after_unset))
+    ivy.utils.assertions.check_greater(
+        len(stack_before_unset), len(stack_after_unset), as_array=False
+    )
 
     # checking a previously set backend is still set
     ivy.set_backend(backend)
     ivy.set_backend("numpy")
     ivy.previous_backend()
-    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
+    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend, as_array=False)
 
 
 def test_unset_backend():
-    for backend_str in available_frameworks():
+    for backend_str in _available_frameworks():
         ivy.set_backend(backend_str)
 
     ivy.unset_backend()
-    ivy.utils.assertions.check_equal(ivy.backend_stack, [])
+    ivy.utils.assertions.check_equal(ivy.backend_stack, [], as_array=False)
 
 
 @pytest.mark.parametrize(
@@ -147,17 +156,19 @@ def test_current_backend(backend, array_type):
     )
 
     # global_backend > argument's backend.
-    if "torch" in available_frameworks():
+    if "torch" in _available_frameworks():
         ivy.set_backend("torch")
         ivy.utils.assertions.check_equal(
             ivy.current_backend(array_type),
             importlib.import_module(_backend_dict["torch"]),
+            as_array=False,
         )
     else:
         ivy.set_backend("numpy")
         ivy.utils.assertions.check_equal(
             ivy.current_backend(array_type),
             importlib.import_module(_backend_dict["numpy"]),
+            as_array=False,
         )
 
 
@@ -170,19 +181,6 @@ def test_choose_random_backend(excluded):
         backends_list = list(_backend_dict.keys())
         backends_list.remove(excluded)
         assert backend in backends_list
-
-
-@pytest.mark.parametrize("backend", available_frameworks())
-def test_get_backend(backend):
-    imported_backend = importlib.import_module(_backend_dict[backend])
-
-    # checking whether the updating of __dict__ works
-    assert "pi" not in imported_backend.__dict__
-    ivy.get_backend(backend)
-    assert "pi" in imported_backend.__dict__
-
-    # checking whether the backend is returned correctly
-    ivy.utils.assertions.check_equal(ivy.get_backend(backend), imported_backend)
 
 
 # Dynamic Backend

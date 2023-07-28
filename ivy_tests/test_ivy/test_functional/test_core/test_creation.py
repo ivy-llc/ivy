@@ -5,9 +5,9 @@ from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
+import ivy_tests.test_ivy.helpers.globals as test_globals
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
@@ -25,19 +25,17 @@ def test_native_array(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -75,13 +73,12 @@ def test_linspace(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -93,48 +90,51 @@ def test_linspace(
         endpoint=endpoint,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
 # logspace
 @handle_test(
     fn_tree="functional.ivy.logspace",
-    dtype_and_start_stop=helpers.dtype_and_values(
+    dtype_and_start_stop_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_value=None,
-        max_value=None,
+        min_value=-1e5,
+        max_value=1e5,
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        allow_inf=False,
         shared_dtype=True,
-        large_abs_safety_factor=24,
-        small_abs_safety_factor=24,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
         safety_factor_scale="log",
+        valid_axis=True,
+        force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False),
     num=helpers.ints(min_value=1, max_value=5),
-    base=helpers.floats(min_value=0.1, max_value=3.0),
-    axis=st.none(),
+    base=helpers.floats(min_value=0.1, max_value=20.0),
+    endpoint=st.booleans(),
 )
 def test_logspace(
     *,
-    dtype_and_start_stop,
+    dtype_and_start_stop_axis,
+    dtype,
     num,
     base,
-    axis,
+    endpoint,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
-    dtype, start_stop = dtype_and_start_stop
+    input_dtypes, start_stop, axis = dtype_and_start_stop_axis
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1,  # if It's less than one it'll test for inf
@@ -144,8 +144,9 @@ def test_logspace(
         num=num,
         base=base,
         axis=axis,
+        endpoint=endpoint,
+        dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -170,97 +171,95 @@ def test_arange(
     test_flags,
     backend_fw,
     fn_name,
-    ground_truth_backend,
     on_device,
 ):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         start=start,
         stop=stop,
         step=step,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
+
+
+@st.composite
+def _asarray_helper(draw):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=st.integers(min_value=1, max_value=10),
+            min_num_dims=0,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=5,
+            shared_dtype=True,
+        )
+    )
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
+        sh = draw(helpers.get_shape(min_num_dims=1))
+        sh = ivy_backend.Shape(sh)
+    # np_array = x[0]
+    # dim = draw(helpers.get_shape(min_num_dims=1))
+    # nested_values = draw(
+    #     helpers.create_nested_input(dim, [sh, np_array, x_list[0]])
+    # )
+    dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("numeric")), dtype=x_dtype[0]
+        )
+    )[-1]
+    dtype = draw(st.sampled_from([dtype, None]))
+    x = draw(
+        st.sampled_from(
+            [
+                x,
+                x_list,
+                sh,
+                # nested_values,
+            ]
+        )
+    )
+    return x_dtype, x, dtype
 
 
 # asarray
 # TODO: Fix container, instance methods and as_variable
 @handle_test(
     fn_tree="functional.ivy.asarray",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=st.integers(min_value=1, max_value=10),
-        min_num_dims=0,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
-        shared_dtype=True,
-    ),
-    as_list=st.booleans(),
+    x_dtype_x_and_dtype=_asarray_helper(),
     test_gradients=st.just(False),
+    test_instance_method=st.just(False),
 )
 def test_asarray(
     *,
-    dtype_and_x,
-    as_list,
+    x_dtype_x_and_dtype,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
-    dtype, x = dtype_and_x
-
-    if as_list:
-        if isinstance(x, list):
-            x = [
-                (
-                    list(i)
-                    if len(i.shape) > 0
-                    else [complex(i) if "complex" in dtype[0] else float(i)]
-                )
-                for i in x
-            ]
-        else:
-            x = list(x)
-        # ToDo: remove this once the tests are able to generate a container of lists
-        # than a list of containers
-        assume(
-            not (
-                test_flags.container[0]
-                or test_flags.instance_method
-                or test_flags.with_out
-            )
-        )
-    else:
-        if len(x) == 1:
-            x = x[0]
-        else:
-            # ToDo: remove this once the tests are able to generate a container of lists
-            # than a list of containers
-            assume(
-                not (
-                    test_flags.container[0]
-                    or test_flags.instance_method
-                    or test_flags.with_out
-                )
-            )
-
+    x_dtype, x, dtype = x_dtype_x_and_dtype
+    if isinstance(x, list) and len(x) == 1:
+        x = x[0]
+    assume(not test_flags.container[0])
+    # avoid casting complex to non-complex
+    if dtype is not None:
+        assume(not ("complex" in x_dtype[0] and "complex" not in dtype))
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=x_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         object_in=x,
-        dtype=dtype[0],
+        dtype=dtype,
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -278,27 +277,17 @@ def test_asarray(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_empty(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_empty(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
         test_values=False,
-        ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
     helpers.assert_same_type_and_shape(ret)
@@ -312,27 +301,18 @@ def test_empty(
     ),
     test_gradients=st.just(False),
 )
-def test_empty_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_empty_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     ret = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
         device=on_device,
         test_values=False,
-        ground_truth_backend=ground_truth_backend,
         return_flat_np_arrays=True,
     )
     helpers.assert_same_type_and_shape(ret)
@@ -352,22 +332,12 @@ def test_empty_like(
     test_gradients=st.just(False),
 )
 def test_eye(
-    *,
-    n_rows,
-    n_cols,
-    k,
-    batch_shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, n_rows, n_cols, k, batch_shape, dtype, test_flags, backend_fw, fn_name, on_device
 ):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=n_rows,
@@ -376,7 +346,6 @@ def test_eye(
         batch_shape=batch_shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -392,34 +361,26 @@ def test_eye(
     ),
     test_gradients=st.just(False),
 )
-def test_from_dlpack(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x = dtype_and_x
+def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
-        ground_truth_backend=ground_truth_backend,
     )
 
 
 @st.composite
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
-    if ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype):
+            return draw(helpers.ints(min_value=0, max_value=5))
+        if ivy_backend.is_int_dtype(dtype):
+            return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -438,28 +399,17 @@ def _fill_value(draw):
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_full(
-    *,
-    shape,
-    fill_value,
-    dtypes,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         fill_value=fill_value,
         dtype=dtypes[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -483,27 +433,19 @@ def _dtype_and_values(draw):
     fill_value=_fill_value(),
 )
 def test_full_like(
-    *,
-    dtype_and_x,
-    fill_value,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_x, fill_value, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         fill_value=fill_value,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -522,15 +464,7 @@ def test_full_like(
     test_with_out=st.just(False),
 )
 def test_meshgrid(
-    *,
-    dtype_and_arrays,
-    test_flags,
-    sparse,
-    indexing,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_arrays, test_flags, sparse, indexing, backend_fw, fn_name, on_device
 ):
     dtype, arrays = dtype_and_arrays
     kw = {}
@@ -543,12 +477,11 @@ def test_meshgrid(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         **kw,
         sparse=sparse,
         indexing=indexing,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -566,26 +499,16 @@ def test_meshgrid(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_ones(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_ones(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -594,32 +517,19 @@ def test_ones(
     fn_tree="functional.ivy.ones_like",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
     ),
 )
-def test_ones_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -635,27 +545,17 @@ def test_ones_like(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
 )
-def test_tril(
-    *,
-    dtype_and_x,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x = dtype_and_x
+def test_tril(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -671,27 +571,17 @@ def test_tril(
     ),
     k=helpers.ints(min_value=-10, max_value=10),
 )
-def test_triu(
-    *,
-    dtype_and_x,
-    k,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x = dtype_and_x
+def test_triu(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
 
     helpers.test_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -705,30 +595,20 @@ def test_triu(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("numeric", full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_zeros(
-    *,
-    shape,
-    dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -736,33 +616,24 @@ def test_zeros(
 @handle_test(
     fn_tree="functional.ivy.zeros_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
     ),
 )
-def test_zeros_like(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
         device=on_device,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -777,36 +648,50 @@ def test_copy_array(
     test_flags,
     dtype_and_x,
     to_ivy_array_bool,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
+    # avoid enabling gradients for non-float arrays
+    if test_flags.as_variable[0]:
+        assume("float" in dtype[0])
     # smoke test
-    x = test_flags.apply_flags(x, dtype, on_device, 0)[0]
-    test_flags.instance_method = (
-        test_flags.instance_method if not test_flags.native_arrays[0] else False
-    )
-    if test_flags.instance_method:
-        ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
-    else:
-        ret = ivy.copy_array(x, to_ivy_array=to_ivy_array_bool)
-    # type test
-    test_ret = ret
-    test_x = x
-    if test_flags.container[0]:
-        assert ivy.is_ivy_container(ret)
-        test_ret = ret["a"]
-        test_x = x["a"]
-    if to_ivy_array_bool:
-        assert ivy.is_ivy_array(test_ret)
-    else:
-        assert ivy.is_native_array(test_ret)
-    # cardinality test
-    assert test_ret.shape == test_x.shape
-    # value test
-    x, ret = ivy.to_ivy(x), ivy.to_ivy(ret)
-    x_np, ret_np = helpers.flatten_and_to_np(ret=x), helpers.flatten_and_to_np(ret=ret)
-    helpers.value_test(ret_np_flat=ret_np, ret_np_from_gt_flat=x_np)
-    assert id(x) != id(ret)
+    with update_backend(backend_fw) as ivy_backend:
+        x = test_flags.apply_flags(
+            x, dtype, 0, backend=backend_fw, on_device=on_device
+        )[0]
+        test_flags.instance_method = (
+            test_flags.instance_method if not test_flags.native_arrays[0] else False
+        )
+        if test_flags.instance_method:
+            ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
+        else:
+            ret = ivy_backend.copy_array(x, to_ivy_array=to_ivy_array_bool)
+        # type test
+        test_ret = ret
+        test_x = x
+        if test_flags.container[0]:
+            assert ivy_backend.is_ivy_container(ret)
+            test_ret = ret["a"]
+            test_x = x["a"]
+        if to_ivy_array_bool:
+            assert ivy_backend.is_ivy_array(test_ret)
+        else:
+            assert ivy_backend.is_native_array(test_ret)
+        # cardinality test
+        assert test_ret.shape == test_x.shape
+        # value test
+        x, ret = ivy_backend.to_ivy(x), ivy_backend.to_ivy(ret)
+        x_np, ret_np = helpers.flatten_and_to_np(
+            backend=backend_fw, ret=x
+        ), helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+        helpers.value_test(
+            backend=backend_fw,
+            ground_truth_backend=backend_fw,
+            ret_np_flat=ret_np,
+            ret_np_from_gt_flat=x_np,
+        )
+        assert id(x) != id(ret)
 
 
 @st.composite
@@ -847,13 +732,7 @@ def _on_off_dtype(draw):
     test_gradients=st.just(False),
 )
 def test_one_hot(
-    dtype_indices_depth_axis,
-    on_off_dtype,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_indices_depth_axis, on_off_dtype, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, indices, depth, axis = dtype_indices_depth_axis
     on_value, off_value, dtype = on_off_dtype
@@ -861,7 +740,7 @@ def test_one_hot(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         indices=indices[0],
         depth=depth,
@@ -869,7 +748,6 @@ def test_one_hot(
         off_value=off_value,
         axis=axis,
         dtype=dtype,
-        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -901,23 +779,43 @@ def _get_dtype_buffer_count_offset(draw):
     test_gradients=st.just(False),
 )
 def test_frombuffer(
-    dtype_buffer_count_offset,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_buffer_count_offset, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         buffer=buffer,
         dtype=input_dtype[0],
         count=count,
         offset=offset,
-        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.triu_indices",
+    n_rows=st.integers(min_value=0, max_value=5),
+    n_cols=st.integers(min_value=0, max_value=5) | st.just(None),
+    k=st.integers(min_value=-5, max_value=5),
+    input_dtype=helpers.get_dtypes("integer"),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+    test_instance_method=st.just(False),
+)
+def test_triu_indices(
+    *, n_rows, n_cols, k, input_dtype, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype = input_dtype
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
     )

@@ -28,7 +28,7 @@ class LayerNorm(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
         elementwise_affine
             Whether to include learnable affine parameters, default is ``True``.
         new_std
@@ -40,6 +40,8 @@ class LayerNorm(Module):
             the variables for each submodule in the sequence,
             constructed internally by default.
         """
+        if isinstance(normalized_shape, int):
+            normalized_shape = (normalized_shape,)
         self._normalized_idxs = [-(i + 1) for i in range(len(normalized_shape))]
         self._epsilon = eps
         self._elementwise_affine = elementwise_affine
@@ -95,6 +97,7 @@ class BatchNorm2D(Module):
         *,
         eps: float = 1e-5,
         momentum: float = 0.1,
+        data_format: str = "NSC",
         affine: bool = True,
         track_running_stats: bool = True,
         device=None,
@@ -110,7 +113,11 @@ class BatchNorm2D(Module):
             Trailing shape to applying the normalization to.
         epsilon
             small constant to add to the denominator,
-            use global ivy._MIN_BASE by default.
+            use global ivy.min_base by default.
+        data_format
+            The ordering of the dimensions in the input, one of "NSC" or "NCS",
+            where N is the batch dimension, S represents any number of spatial
+            dimensions and C is the channel dimension. Default is "NSC".
         affine
             Whether to include learnable affine parameters, default is ``True``.
         track_running_stats
@@ -126,10 +133,13 @@ class BatchNorm2D(Module):
         v
             the variables for each submodule in the sequence,
             constructed internally by default.
+        training
+            If true, calculate and use the mean and variance of `x`. Otherwise, use the
+            internal `mean` and `variance` when affine is True.
         """
         self.num_features = num_features
         self._affine = affine
-        self.training = True
+        self.data_format = data_format
         self._epsilon = eps
         self._momentum = momentum
         self._track_running_stats = track_running_stats
@@ -162,7 +172,11 @@ class BatchNorm2D(Module):
             }
         return {}
 
-    def _forward(self, inputs):
+    def _forward(
+        self,
+        inputs,
+        training: bool = False,
+    ):
         """
         Perform forward pass of the BatchNorm layer.
 
@@ -170,6 +184,8 @@ class BatchNorm2D(Module):
         ----------
         inputs
             Inputs to process of shape N,C,*.
+        training
+            Determine the current phase (training/inference)
 
         Returns
         -------
@@ -182,11 +198,12 @@ class BatchNorm2D(Module):
             self.v.running_var,
             eps=self._epsilon,
             momentum=self._momentum,
-            training=self.training,
+            data_format=self.data_format,
+            training=training,
             scale=self.v.w if self._affine else None,
             offset=self.v.b if self._affine else None,
         )
-        if self._track_running_stats:
+        if self._track_running_stats and training:
             self.v.running_mean = running_mean
             self.v.running_var = running_var
 

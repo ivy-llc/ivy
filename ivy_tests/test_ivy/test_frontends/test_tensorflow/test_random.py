@@ -30,11 +30,13 @@ def test_tensorflow_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, shape = shape
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,9 +76,11 @@ def test_tensorflow_normal(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -104,10 +108,12 @@ def test_tensorflow_shuffle(
     dtype_value,
     seed,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, values = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -146,6 +152,7 @@ def test_tensorflow_stateless_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     shape_input_dtypes, shape = shape
@@ -153,6 +160,7 @@ def test_tensorflow_stateless_uniform(
 
     helpers.test_frontend_function(
         input_dtypes=shape_input_dtypes + seed_input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -173,12 +181,14 @@ def test_tensorflow_stateless_uniform(
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
     ),
     lam=st.one_of(
-        st.floats(allow_infinity=False, allow_nan=False, width=32),
-        st.lists(
-            st.floats(allow_nan=False, allow_infinity=False, width=32),
+        helpers.floats(allow_inf=False, allow_nan=False, min_value=-2, max_value=5),
+        helpers.lists(
+            x=helpers.floats(
+                allow_nan=False, allow_inf=False, min_value=-2, max_value=5
+            ),
             min_size=1,
             max_size=10,
         ),
@@ -196,15 +206,17 @@ def test_tensorflow_poisson(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        lam=lam,
         shape=shape,
+        lam=lam,
         dtype=dtype[0],
         seed=seed,
         test_values=False,
@@ -239,10 +251,12 @@ def test_tensorflow_stateless_normal(
     stddev,
     dtype,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, seed = seed
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -257,8 +271,6 @@ def test_tensorflow_stateless_normal(
 
 
 # stateless_poisson
-
-
 @st.composite
 def _shape_lam_dtype(draw):
     dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
@@ -294,11 +306,13 @@ def test_tensorflow_stateless_poisson(
     shape_lam_dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     shape, lam, dtype = shape_lam_dtype
     input_dtypes, seed = seed
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -343,9 +357,11 @@ def test_tensorflow_gamma(
     dtype,
     seed,
     test_flags,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

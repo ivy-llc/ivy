@@ -92,7 +92,10 @@ def astype(
     copy: bool = True,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    dtype = ivy.as_native_dtype(dtype)
+    if x.dtype == dtype:
+        return mx.nd.copy(x) if copy else x
+    return x.astype(dtype)
 
 
 def broadcast_arrays(

@@ -1,8 +1,8 @@
 Continuous Integration
 ======================
 
-.. _`continuous integration channel`: https://discord.com/channels/799879767196958751/982737993028755496
-.. _`continuous integration forum`: https://discord.com/channels/799879767196958751/982737993028755496
+.. _`continuous integration channel`: https://discord.com/channels/799879767196958751/1028268051776413759
+.. _`continuous integration forum`: https://discord.com/channels/799879767196958751/1028298018438520862
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
 We follow the practice of Continuous Integration (CI), in order to regularly build and test code at Ivy.
@@ -25,9 +25,9 @@ We use GitHub Actions in order to implement and automate the process of testing.
 Commit (Push/PR) Triggered Testing
 ----------------------------------
 
-The following Tests are triggered in case of a Commit (Push/PR) made to the Ivy Repository:
+A small subser of the following tests are triggered in case of a Commit (Push/PR) made to the Ivy Repository:
 
-#. Ivy Tests (A small subset)
+#. Ivy Tests
 #. Array API Tests
 
 Ivy Tests
@@ -37,13 +37,13 @@ A test is defined as the triplet of (submodule, function, backend). We follow th
 
 For example, :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,numpy`
 
-The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 7284 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).
+The Number of such Ivy tests running on the Repository (without taking any Framework/Python Versioning into account) is 12500 (as of writing this documentation), and we are adding tests daily. Therefore, triggering all the tests on each commit is neither desirable (as it will consume a huge lot of Compute Resources, as well take a large amount of time to run) nor feasible (as Each Job in Github Actions has a time Limit of 360 Minutes, and a Memory Limit as well).
 
-Further, When we consider versioning, for a single Python version, and ~40 frontend and backend versions, the tests would shoot up to 40 * 40 * 7284 = 11,654,400, and we obviously don't have resources as well as time to run those many tests on each commit.
+Further, When we consider versioning, for a single Python version, and ~40 frontend and backend versions, the tests would shoot up to 40 * 40 * 12500 = 20,000,000, and we obviously don't have resources as well as time to run those many tests on each commit.
 
 Thus, We need to prune the tests that run on each push to the Github Repository. The ideal situation, here, is to trigger only the tests that are impacted by the changes made in a push. The tests that are not impacted by the changes made in a push, are wasteful to trigger, as their results don’t change (keeping the same Hypothesis Configuration). For example, Consider the `commit <https://github.com/unifyai/ivy/commit/29cc90dda9e9a8d64789ed28e6eab0f41257a435>`_
 
-The commit changes the :code:`_reduce_loss` function and the :code:`binary_cross_entropy` functions in the ivy/functional/ivy/losses.py file. The only tests that must be triggered (for all 4 backends) are:
+The commit changes the :code:`_reduce_loss` function and the :code:`binary_cross_entropy` functions in the ivy/functional/ivy/losses.py file. The only tests that must be triggered (for all 5 backends) are:
 
 :code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_binary_cross_entropy_with_logits`
 :code:`ivy_tests/test_ivy/test_functional/test_nn/test_losses.py::test_cross_entropy`
@@ -52,7 +52,7 @@ The commit changes the :code:`_reduce_loss` function and the :code:`binary_cross
 :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_binary_cross_entropy`
 :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_loss_functions.py::test_torch_cross_entropy`
 
-Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code:`test_cross_entropy`, :code:`test_binary_cross_entropy`, :code:`test_sparse_cross_entropy`, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence are not triggered.
+Ivy’s Functional API functions :code:`binary_cross_entropy_with_logits`, :code:`test_cross_entropy`, :code:`test_binary_cross_entropy`, :code:`test_sparse_cross_entropy`, are precisely the ones impacted by the changes in the commit, and since the torch Frontend Functions torch_binary_cross_entropy, and torch_cross_entropy are wrapping these, the corresponding frontend tests are also impacted. No other Frontend function calls these underneath and hence should not be triggered.
 
 How do we (or at least try to) achieve this?
 
@@ -69,17 +69,27 @@ The way it works is by running a particular pytest, and then logging each line (
 
 Computing Test Coverage for all Ivy tests, allows us to find, for each line of code, which tests affect the same. We create a Dictionary (Mapping) to store this information as follows (The actual Mapping we prepare is a bit different from this design, but we will follow this for now due to Pedagogical Purposes):
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping.png?raw=true
+.. math::
+    \begin{equation}
+    \begin{aligned}
+    &\{ \\
+        & \ \ \ \ "f_1": [\{\}, \{"t_1", "t_3", "t_7"\}, ..., \{"t_{10}", "t_{11}", "t_{15}"\}], \\
+        & \ \ \ \ ... \\
+        & \ \ \ \ "f_m": [\{\}, \{"t_{11}", "t_{23}", "t_{37}"\}, ..., \{"t_{32}", "t_{54}", "t_{65}"\}] \\
+    &\} \\
+    \end{aligned}
+    \end{equation}
 
-The dictionary thus stores a list for each file f1 … fm. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.
+The dictionary thus stores a list for each file :math:`f_1 … f_m`. The list is a sequence encapsulating the lines of the file. Each index of the list contains a set of tests, which are mapped to the corresponding line in the file.
 
-So Yeah, Given this Mapping for a commit, We can just follow the below procedure:
-Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
-Determine the Tests that impact the lines, and trigger just those tests, and no other.
+Given this Mapping for a commit, We can just follow the below procedure:
+
+1. Find the files which are changed in the commit, and check for lines that are added/deleted/updated in the file.
+2. Determine the Tests that impact the lines, and trigger just those tests, and no other.
 
 But, there’s a fundamental issue here, Computing the Mapping requires determining the coverage for all tests, which involves running all the tests. Doesn’t this sound cyclical? After all, We are doing all this to avoid running all the tests.
 
-Now assume that you had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:
+Now assume that we had some way to update the Mapping for a commit from the previous Mapping without having to run all the tests. Then, Given the Mapping for a single commit, we could follow this to determine and run the relevant tests for each commit as follows:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/ITRoadmap.png?raw=true
    :alt: Intelligent Testing Roadmap
@@ -150,6 +160,7 @@ Storing (and retrieving) the Mapping
 
 As we see in the overview section, we compute a mapping of lines to tests, for each commit to the Ivy Repository. This mapping has to be stored somewhere, in order to be used by a future commit to determine the corresponding mapping (and therefore, trigger the required tests). Therefore, we need a mechanism to store and retrieve the Mapping.
 We use the unifyai/Mapping GitHub Repository for this purpose. We use a GitHub Repository for the following Reasons:
+
 #. Unlike Specialized Databases (like Google Cloud), we need not store any specialized secrets to access the Database (separately for reading and writing), and no separate API Keys are required for updating the DB, saving us from exposing our secret key Files (from GitHub Actions). In fact, We just except for a single SSH Deploy Key (secrets.SSH_DEPLOY_KEY) required for pushing the DB.
 #. The Repository is a Public Repository, and thus can be read by anyone, while the push can be restricted. This makes it helpful to expose the Mapping to run tests on the PRs, while allowing only the Push Commits to update the Mapping.
 #. We don’t need to make any specialized API Calls to Read/Write/Update the Mapping (Cloning and Pushing to the Repo suffices).
@@ -211,7 +222,18 @@ Storage Space (unifyai/Mapping)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The GitHub Repository allows only storing 100 MB of files per commit. The current design of the mapping takes a huge space as test names are long strings and are stored repeatedly for each line that is impacted by the tests. In order to reduce the space requirement for storing the Mapping, we restructure the Mapping as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/Mapping2.png?raw=true
+.. math::
+    \begin{equation}
+    \begin{aligned}
+    &\{ \\
+        & \ \ \ \ "index\_mapping": ["t_{1}", "t_{2}", ..., "t_{n}"\}], \\
+        & \ \ \ \ "test\_mapping": \{"t_1": 1, "t_2": 2, ..., "t_n": n\}, \\
+        & \ \ \ \ "f_1": [\{\}, \{1, 3, 7\}, ..., \{10, 11, 15\}],
+        & \ \ \ \ ... \\
+        & \ \ \ \ "f_m": [\{\}, \{11, 23, 37\}, ..., \{32, 54, 65\}] \\
+    &\} \\
+    \end{aligned}
+    \end{equation}
 
 We include the :code:`index_mapping` and the :code:`test_mapping` fields, which map indices to tests and tests to indices, respectively. This allows us to just store the test index for each line in the Mapping, reducing the storage requirement significantly.
 
@@ -266,16 +288,14 @@ We handle the Race Condition as follows:
 
 Array API Tests
 ---------------
-The `test-array-api.yml <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-array-api.yml>`_ workflow runs the Array API Tests.
-Other than being triggered on push and pull requests with the required labels, It can also be manually dispatched from the `Actions <https://github.com/unifyai/ivy/actions>`_ Tab.
+The `array-api-intelligent-tests.yml (Push) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests.yml>`_ and the `array-api-intelligent-tests-pr.yml (Pull Request) <https://github.com/unifyai/ivy/blob/master/.github/workflows/array-api-intelligent-tests-pr.yml>`_ workflows run the Array API Tests. Similar to Ivy Tests, The Array API tests are also determined intelligently and only relevant tests are triggered on each commit.
 
-The Workflow runs the Array API Tests for each backend and submodule pair.
-More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/deep_dive/array_api_tests.rst.html>`_.
+More details about the Array API Tests are available `here <https://unify.ai/docs/ivy/overview/deep_dive/array_api_tests.html>`_.
 
 Periodic Testing
 ----------------
 In order to make sure that none of the Ivy Tests are left ignored for a long time, and to decouple the rate of testing to the rate of committing to the repository, we implement periodic testing on the Ivy Repository.
-The Test Ivy Cron Workflow (Link here) is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
+The `Test Ivy Cron Workflow <https://github.com/unifyai/ivy/blob/master/.github/workflows/test-ivy-cron.yml>`_  is responsible for implementing this behavior by running Ivy tests every hour. In Each Run, It triggers 150 Ivy Tests, cycling through all of the tests.
 This number of 150 is chosen in order to make sure that the Action completes in 1 hour most of the time.
 The Test Results update the corresponding cell on the Dashboards.
 
@@ -289,7 +309,8 @@ follow the following steps:
 #. Click on Run Workflow
 #. Add the Name of the test as: :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_`
 #. If you want the test to be triggered for a particular Backend, append it with a “,” as: :code:`ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow`
-#. Check the result there and then itself, or wait (for ~20 minutes) for the dashboard to update.
+#. Leave the Version Based Testing and GPU Testing Options as false.
+#. Check the result there and then itself, or wait for the dashboard to update.
 
 Manual Tests are also available for PRs.
 You can also run the Manual Tests Workflow on a Fork Repository (while reviewing PRs), as follows:
@@ -324,13 +345,36 @@ It redirects to the Actions Tab, showing details of the failure, as shown below:
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/continuous_integration/push2.png?raw=true
    :alt: Workflow Result
 
-Click on the corresponding section, as given below, in order to see the logs of the failing tests:￼
+Click on the "Run Tests" section in order to see the logs of the failing tests for Array API Tests. For Ivy Tests, head to the "Combined Test Results" Section of the display-test-results Job, which shows the Test Logs for each of the tests in the following format:
 
-#. **Array API Tests**: Run Array Api Tests
-#. **Intelligent Tests**: Run Tests
+\***************************************************
+
+Test 1
+
+\***************************************************
+
+Hypothesis Logs for Test 1 (Indicates Failure/Success)
+
+\***************************************************
+
+Test 2
+
+\***************************************************
+
+Hypothesis Logs for Test 2 (Indicates Failure/Success)
+
+…
+
+\***************************************************
+
+Test n
+
+\***************************************************
+
+Hypothesis Logs for Test n (Indicates Failure/Success)
 
 You can ignore the other sections of the Workflow, as they are for book-keeping and implementation purposes.
-You can also directly refer to the Dashboard (Updated Every ~20 minutes), to check the result of your test.
+You can also directly refer to the Dashboard (available at https://ivy-dynamical-dashboards.onrender.com), to check the result of your test.
 
 Pull Request
 ^^^^^^^^^^^^
@@ -343,15 +387,17 @@ In case of a pull request, the test suite is available on the Pull Request Page 
 Clicking on the "Details" link redirects to the Action Log.
 The rest of the procedure remains the same as given in the Push section above.
 
+As an added feature, the Intelligent Tests for PR Workflow has a section on "New Failures Introduced" in the display-test-results jos, which lists the details of tests that are failing on the PR Fork/Branch but not on the master branch. When creating a PR, make sure that you PR does not introduce any new failures.
+
 Dashboard
 ---------
-In order to view the status of the tests, at any point in time, we maintain a dashboard containing the results of the latest Workflow that ran each test.
-The Dashboards are available on the :code:`dashboard` branch of the Ivy Repository.
-The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.
+In order to view the status of the tests, at any point in time, we have implemented a dashboard application that shows the results of the latest Workflow that ran each test.
+The Dashboards are available on the link: https://ivy-dynamical-dashboards.onrender.com
+You can filter tests by selecting choices from the various dropdowns. The link can also be saved for redirecting straight to the filtered tests in the future. The status badges are clickable, and will take you directly to the Action log of the latest workflow that ran the corresponding test.
 
 **Round Up**
 
-This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
+This should have hopefully given you a good feel for how Continuous Integration works in Ivy.
 
 If you have any questions, please feel free to reach out on `discord`_ in the `continuous integration channel`_
 or in the `continuous integration forum`_!
@@ -360,6 +406,6 @@ or in the `continuous integration forum`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/eO268nc8WH4" class="video">
     </iframe>

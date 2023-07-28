@@ -149,8 +149,8 @@ def roll(
 def squeeze(
     x: torch.Tensor,
     /,
-    axis: Union[int, Sequence[int]],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -221,7 +221,7 @@ def split(
     /,
     *,
     copy: Optional[bool] = None,
-    num_or_size_splits: Optional[Union[int, List[int]]] = None,
+    num_or_size_splits: Optional[Union[int, List[int], torch.Tensor]] = None,
     axis: int = 0,
     with_remainder: bool = False,
 ) -> List[torch.Tensor]:
@@ -239,6 +239,8 @@ def split(
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
         num_or_size_splits = 1
+    elif isinstance(num_or_size_splits, torch.Tensor):
+        num_or_size_splits = num_or_size_splits.to(torch.int64).tolist()
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
             num_chunks = x.shape[axis] / num_or_size_splits
@@ -265,7 +267,9 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
-@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("int8", "int16", "uint8")}, backend_version
+)
 def repeat(
     x: torch.Tensor,
     /,
@@ -332,7 +336,9 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
-@with_unsupported_dtypes({"1.11.0": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("bool", "float16", "complex")}, backend_version
+)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
@@ -342,6 +348,8 @@ def clip(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if hasattr(x_min, "dtype"):
+        x_min = torch.asarray(x_min, device=x.device)
+        x_max = torch.asarray(x_max, device=x.device)
         promoted_type = torch.promote_types(x_min.dtype, x_max.dtype)
         promoted_type = torch.promote_types(promoted_type, x.dtype)
         x_min = x_min.to(promoted_type)

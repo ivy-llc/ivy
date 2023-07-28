@@ -35,7 +35,7 @@ def det(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.linalg.det(x)
 
 
 def diagonal(

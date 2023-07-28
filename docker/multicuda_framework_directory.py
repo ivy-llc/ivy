@@ -34,6 +34,15 @@ def install_pkg(path, pkg, base="fw/"):
             ),
             shell=True,
         )
+    elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
+        subprocess.run(
+            (
+                f"pip install  paddlepaddle-gpu --target {path} "
+                " -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+                " --no-cache-dir"
+            ),
+            shell=True,
+        )
     else:
         subprocess.run(
             (
@@ -49,4 +58,4 @@ if __name__ == "__main__":
     if len(arg_lis) > 1:  # we have specified what frameworks to install
         directory_generator(arg_lis[1:], "")
     else:
-        directory_generator(["tensorflow", "jax", "torch"])
+        directory_generator(["tensorflow", "jax", "torch", "paddle"])

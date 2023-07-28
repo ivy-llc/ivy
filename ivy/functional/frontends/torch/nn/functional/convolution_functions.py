@@ -12,10 +12,16 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
     out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
 
     ivy.utils.assertions.check_equal(
-        in_channels % groups, 0, message="in_channels must be divisible by groups"
+        in_channels % groups,
+        0,
+        message="in_channels must be divisible by groups",
+        as_array=False,
     )
     ivy.utils.assertions.check_equal(
-        out_channels % groups, 0, message="out_channels must be divisible by groups"
+        out_channels % groups,
+        0,
+        message="out_channels must be divisible by groups",
+        as_array=False,
     )
 
     if bias is not None:
@@ -23,17 +29,24 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
             bias.shape[0],
             out_channels,
             message="bias must be same shape as out_channels",
+            as_array=False,
         )
 
     if padding == "same":
         if isinstance(stride, int):
             ivy.utils.assertions.check_equal(
-                stride, 1, message="padding cannot be 'same' for stride > 1"
+                stride,
+                1,
+                message="padding cannot be 'same' for stride > 1",
+                as_array=False,
             )
         else:
             for i in stride:
                 ivy.utils.assertions.check_equal(
-                    i, 1, message="padding cannot be 'same' for stride > 1"
+                    i,
+                    1,
+                    message="padding cannot be 'same' for stride > 1",
+                    as_array=False,
                 )
 
     if not transpose:
@@ -42,12 +55,14 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
             in_channels,
             in_channels_by_groups * groups,
             message="in_channels must be consistent between input and weight",
+            as_array=False,
         )
     else:
         ivy.utils.assertions.check_equal(
             in_channels,
             weight.shape[0],
             message="in_channels must be consistent between input and weight",
+            as_array=False,
         )
 
 
@@ -58,12 +73,10 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     if isinstance(padding, str):
         padding = padding.upper()
     else:
-        padding = [padding] * dims if isinstance(padding, int) else padding
-        pad_width = [(0, 0), (0, 0), *[(p, p) for p in padding]]
-        input = ivy.zero_pad(input, pad_width)
-        padding = "VALID"
-
-    weight = ivy.permute_dims(weight, axes=(*range(2, dims + 2), 1, 0))
+        if isinstance(padding, int):
+            padding = [*[(padding, padding) for _ in range(dims)]]
+        else:
+            padding = [*[(p, p) for p in padding]]
 
     ret = ivy.conv(
         input,
@@ -72,6 +85,7 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
         padding,
         dims=dims,
         data_format="channel_first",
+        filter_format="channel_first",
         dilations=dilation,
         feature_group_count=groups,
     )
@@ -80,7 +94,7 @@ def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -94,7 +108,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -108,7 +122,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return _conv(
@@ -162,7 +176,7 @@ def _conv_transpose(
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose1d(
     input,
@@ -186,7 +200,7 @@ def conv_transpose1d(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose2d(
     input,
@@ -210,7 +224,7 @@ def conv_transpose2d(
     )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def conv_transpose3d(
     input,
@@ -308,6 +322,14 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
                 j_in : j_in + kernel_size[1] * dilation[1] : dilation[1],
             ] += patch
             k += 1
-    return ivy.array(
-        output_padded[:, :, padding[0] : -padding[0], padding[1] : -padding[1]]
+    ret = ivy.array(
+        output_padded[
+            :,
+            :,
+            padding[0] : output_padded.shape[2] - padding[0],
+            padding[1] : output_padded.shape[3] - padding[1],
+        ]
     )
+    if orig_ndim == 2:
+        return ivy.squeeze(ret, axis=0)
+    return ret

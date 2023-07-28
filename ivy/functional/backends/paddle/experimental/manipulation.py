@@ -1,10 +1,13 @@
 from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+
+
 from .. import backend_version
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 
 # Code from cephes for i0
 
@@ -70,10 +73,6 @@ _i0B = [
 ]
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8", "int16", "uint8", "uint16")},
-    backend_version,
-)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -83,22 +82,28 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(source, tuple):
+        source = list(source)
+    if isinstance(destination, tuple):
+        source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes(
+@with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "int8",
-            "int16",
-            "uint8",
-            "uint16",
-            "bfloat16",
-            "float16",
-            "complex64",
-            "complex128",
-            "bool",
-        )
+        "2.5.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "float16",
+                "complex64",
+                "complex128",
+                "bool",
+            )
+        }
     },
     backend_version,
 )
@@ -112,9 +117,6 @@ def heaviside(
     return paddle.heaviside(x1, x2)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def flipud(
     m: paddle.Tensor,
     /,
@@ -129,8 +131,8 @@ def flipud(
     return paddle.flip(m, axis=0)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int16", "uint16", "bfloat16", "float16")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -146,9 +148,6 @@ def vstack(
             return ivy.stack(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def hstack(
     arrays: Sequence[paddle.Tensor],
     /,
@@ -162,9 +161,6 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def rot90(
     m: paddle.Tensor,
     /,
@@ -181,8 +177,8 @@ def rot90(
     return paddle.rot90(m, k=k, axes=axes)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("uint16", "bfloat16", "complex64", "complex128")},
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -208,9 +204,6 @@ def top_k(
         return topk_res(val, indices)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def fliplr(
     m: paddle.Tensor,
     /,
@@ -232,16 +225,20 @@ def i0(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _i0_1(x):
-        return ivy.multiply(
-            ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(x, 2.0), 2), _i0A)
+        return paddle_backend.multiply(
+            paddle_backend.exp(x),
+            _chbevl(paddle_backend.subtract(paddle_backend.divide(x, 2.0), 2.0), _i0A),
         )
 
     def _i0_2(x):
-        return ivy.divide(
-            ivy.multiply(
-                ivy.exp(x), _chbevl(ivy.subtract(ivy.divide(32.0, x), 2), _i0B)
+        return paddle_backend.divide(
+            paddle_backend.multiply(
+                paddle_backend.exp(x),
+                _chbevl(
+                    paddle_backend.subtract(paddle_backend.divide(32.0, x), 2.0), _i0B
+                ),
             ),
-            ivy.sqrt(x),
+            paddle_backend.sqrt(x),
         )
 
     def _chbevl(x, vals):
@@ -251,12 +248,13 @@ def i0(
         for i in range(1, len(vals)):
             b2 = b1
             b1 = b0
-            b0 = ivy.add(ivy.subtract(ivy.multiply(x, b1), b2), vals[i])
-        return ivy.multiply(0.5, ivy.subtract(b0, b2))
+            b0 = paddle_backend.add(
+                paddle_backend.subtract(paddle_backend.multiply(x, b1), b2), vals[i]
+            )
+        return paddle_backend.multiply(0.5, paddle_backend.subtract(b0, b2))
 
-    with ivy.ArrayMode(False):
-        x = ivy.abs(x)
-        return ivy.where(ivy.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
+    x = paddle_backend.abs(x)
+    return paddle_backend.where(paddle_backend.less_equal(x, 8.0), _i0_1(x), _i0_2(x))
 
 
 def flatten(
@@ -302,62 +300,30 @@ def flatten(
 
 def vsplit(
     ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, i))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(
-                    ivy.get_item(
-                        ary, (slice(None, None, None), slice(None, None, None), i)
-                    )
-                )
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=2)
+    if ary.ndim < 3:
+        raise ivy.exceptions.IvyError(
+            "dsplit only works on arrays of 3 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -408,22 +374,35 @@ def atleast_2d(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
         ary = ivy.array(ary, copy=copy).data
-        if ary.ndim < 3:
-            with ivy.ArrayMode(False):
-                res.append(ivy.expand_dims(ary, axis=list(range(3 - ary.ndim))))
+        if ary.ndim == 0:
+            result = ary.reshape((1, 1, 1))
+        elif ary.ndim == 1:
+            result = ary[None, :, None]
+        elif ary.ndim == 2:
+            result = ary[:, :, None]
         else:
-            res.append(ary)
+            result = ary
+        res.append(result)
     if len(res) == 1:
         return res[0]
-    return res
+    else:
+        return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
 def take_along_axis(
     arr: paddle.Tensor,
     indices: paddle.Tensor,
@@ -450,13 +429,19 @@ def take_along_axis(
         max_index = arr.shape[axis] - 1
         with ivy.ArrayMode(False):
             indices = ivy.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = float("nan")
         elif "uint" in str(arr.dtype):
             fill_value = paddle.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -paddle.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
+            )
+
         with ivy.ArrayMode(False):
             indices = ivy.where(
                 (indices < 0) | (indices >= arr.shape[axis]), -1, indices
@@ -494,25 +479,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
-    with ivy.ArrayMode(False):
-        if isinstance(indices_or_sections, Sequence):
-            indices_or_sections = (
-                [
-                    None,
-                ]
-                + indices_or_sections
-                + [
-                    None,
-                ]
-            )
-            slices = []
-            for i, idx in enumerate(indices_or_sections[:-1]):
-                slices.append(slice(indices_or_sections[i], indices_or_sections[i + 1]))
-            results = []
-            for i in slices:
-                results.append(ivy.get_item(ary, (slice(None, None, None), i)))
-            return results
-        return ivy.split(ary, copy=copy, num_or_size_splits=indices_or_sections, axis=1)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
@@ -533,13 +502,11 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     result = _broadcast_shape(shapes[0], shapes[1])
     for i in range(2, len(shapes)):
         result = _broadcast_shape(result, shapes[i])
-
+    # paddle outputs -1 if the output dimension is 0
+    result = [0 if dim == -1 else dim for dim in result]
     return tuple(result)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def expand(
     x: paddle.Tensor,
     shape: Union[List[int], List[Tuple]],
@@ -548,38 +515,9 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    shape = list(shape)
-
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape[i]
-    if x.ndim == 0:
-        if len(shape) == 0:
-            return x
-        else:
-            x = ivy.expand_dims(x, 0)
-    if x.ndim > len(shape):
-        x = x.reshape([-1])
-
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-    ]:
-        return paddle.expand(x.cast("float32"), shape).cast(x.dtype)
-
-    elif x.dtype in [paddle.complex64, paddle.complex128]:
-        x_real = paddle.expand(ivy.real(x).data, shape)
-        x_imag = paddle.expand(ivy.imag(x).data, shape)
-        return x_real + 1j * x_imag
-    else:
-        return paddle.expand(x, shape)
+    return paddle_backend.broadcast_to(x, shape)
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def concat_from_sequence(
     input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
     /,
@@ -596,7 +534,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -621,15 +559,18 @@ def unique_consecutive(
                 paddle.abs(paddle.diff(x, axis=axis)) > 1e-50,
                 axis=tuple(i for i in paddle.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
     )
     if len(split_indices) > 0:
-        split_sizes = [split_indices[0]] + \
-                      [
-                          split_indices[i] - split_indices[i-1]
-                          for i in range(1, len(split_indices))
-                      ] + \
-                      [x.shape[axis] - split_indices[-1]]
+        split_sizes = (
+            [split_indices[0]]
+            + [
+                split_indices[i] - split_indices[i - 1]
+                for i in range(1, len(split_indices))
+            ]
+            + [x.shape[axis] - split_indices[-1]]
+        )
         sub_arrays = paddle.split(
             x,
             split_sizes,
@@ -638,7 +579,10 @@ def unique_consecutive(
     else:
         sub_arrays = [x]
     output = paddle.concat(
-        [ivy.current_backend().unique_all(sub_array, axis=axis)[0] for sub_array in sub_arrays],
+        [
+            ivy.current_backend().unique_all(sub_array, axis=axis)[0]
+            for sub_array in sub_arrays
+        ],
         axis=axis,
     )
     counts = paddle.to_tensor([sub_array.shape[axis] for sub_array in sub_arrays])
@@ -650,3 +594,37 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def fill_diagonal(
+    a: paddle.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    max_end = paddle.prod(paddle.to_tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    end = max_end if end > max_end else end
+    a = paddle.reshape(a, (-1,))
+    w = paddle.zeros(a.shape, dtype=bool)
+    ins = paddle.arange(0, max_end)
+    steps = paddle.arange(0, end, step)
+
+    for i in steps:
+        i = ins == i
+        w = paddle.logical_or(w, i)
+    v = paddle.to_tensor(v, dtype=a.dtype)
+    a = paddle.where(w, v, a)
+    a = paddle.reshape(a, shape)
+    return a

@@ -1,11 +1,13 @@
 # global
 from hypothesis import strategies as st
+from functools import lru_cache
 import math
+import numpy as np
 
 # local
 import ivy
-import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
 
 
@@ -43,12 +45,14 @@ def matrix_is_stable(x, cond_limit=30):
     ret
         If True, the matrix is suitable for further numerical computations.
     """
-    return np.linalg.cond(x.astype("float64")) <= cond_limit
+    return np.all(np.linalg.cond(x.astype("float64")) <= cond_limit)
 
 
+@lru_cache(None)
 def apply_safety_factor(
     dtype,
     *,
+    backend: str,
     min_value=None,
     max_value=None,
     abs_smallest_val=None,
@@ -85,10 +89,12 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        dtype_info = ivy.finfo(dtype)
+        with WithBackendContext(backend) as ivy_backend:
+            dtype_info = ivy_backend.finfo(dtype)
     elif "int" in dtype:
         kind_dtype = "int"
-        dtype_info = ivy.iinfo(dtype)
+        with WithBackendContext(backend) as ivy_backend:
+            dtype_info = ivy_backend.iinfo(dtype)
     else:
         raise TypeError(
             f"{dtype} is not a valid numeric data type only integers and floats"
@@ -415,7 +421,13 @@ def get_axis(
 
 
 @st.composite
-def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
+def x_and_filters(
+    draw,
+    dim: int = 2,
+    transpose: bool = False,
+    depthwise=False,
+    mixed_fn_compos=True,
+):
     """
     Draws a random x and filters for a convolution.
 
@@ -444,7 +456,9 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
     input_channels = draw(st.integers(1, 5))
     output_channels = draw(st.integers(1, 5))
     dilations = draw(st.integers(1, 2))
-    dtype = draw(dtype_helpers.get_dtypes("float", full=False))
+    dtype = draw(
+        dtype_helpers.get_dtypes("float", mixed_fn_compos=mixed_fn_compos, full=False)
+    )
     if dim == 2:
         data_format = draw(st.sampled_from(["NCHW"]))
     elif dim == 1:
@@ -510,7 +524,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False, depthwise=False):
 
 
 @st.composite
-def embedding_helper(draw):
+def embedding_helper(draw, mixed_fn_compos=True):
     """
     Obtain weights for embeddings, the corresponding indices, the padding indices.
 
@@ -528,7 +542,9 @@ def embedding_helper(draw):
         array_helpers.dtype_and_values(
             available_dtypes=[
                 x
-                for x in draw(dtype_helpers.get_dtypes("numeric"))
+                for x in draw(
+                    dtype_helpers.get_dtypes("numeric", mixed_fn_compos=mixed_fn_compos)
+                )
                 if "float" in x or "complex" in x
             ],
             min_num_dims=2,

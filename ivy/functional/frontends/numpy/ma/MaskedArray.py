@@ -59,6 +59,7 @@ class MaskedArray(np_frontend.ndarray):
                         ivy.shape(self._mask),
                         ivy.shape(data.mask),
                         message="shapes of input mask does not match current mask",
+                        as_array=False,
                     )
                 self._mask = ivy.bitwise_or(self._mask, data.mask)
         else:
@@ -74,6 +75,7 @@ class MaskedArray(np_frontend.ndarray):
                 ivy.shape(self._data),
                 ivy.shape(ivy.array(mask)),
                 message="shapes of data and mask must match",
+                as_array=False,
             )
             self._mask = ivy.array(mask)
         elif mask.all():
@@ -164,7 +166,7 @@ class MaskedArray(np_frontend.ndarray):
         return self
 
     def __repr__(self):
-        dec_vals = ivy.array_decimal_values()
+        dec_vals = ivy.array_decimal_values
         with np.printoptions(precision=dec_vals):
             return (
                 "ivy.MaskedArray("

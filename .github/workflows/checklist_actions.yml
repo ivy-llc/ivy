@@ -38,3 +38,23 @@ jobs:
           comment-id: ${{ github.event.comment.id }}
           body: ${{ steps.template.outputs.result }}
           edit-mode: replace
+  
+  frontend_pr_commented:
+    name: Frontend PR comment
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Update Comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-id: ${{ github.event.comment.id }}
+          body-path: ivy/automation_tools/checklists/frontend_checklist.md
+          edit-mode: replace

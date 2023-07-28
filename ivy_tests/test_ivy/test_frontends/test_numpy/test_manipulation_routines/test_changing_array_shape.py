@@ -39,10 +39,12 @@ def test_numpy_reshape(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -69,11 +71,13 @@ def test_numpy_broadcast_to(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, shape = dtype_x_shape
     broadcast_shape = (factor,) + shape
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -85,7 +89,9 @@ def test_numpy_broadcast_to(
 
 @handle_frontend_test(
     fn_tree="numpy.ravel",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
     order=st.sampled_from(["C", "F", "A", "K"]),
     test_with_out=st.just(False),
 )
@@ -97,10 +103,12 @@ def test_numpy_ravel(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -168,10 +176,12 @@ def test_numpy_moveaxis(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -179,6 +189,85 @@ def test_numpy_moveaxis(
         a=a[0],
         source=source,
         destination=destination,
+    )
+
+
+# resize
+@st.composite
+def dtype_and_resize(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=helpers.get_shape(
+                allow_none=False,
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+            ),
+        )
+    )
+    new_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+        ),
+    )
+    return dtype, x, new_shape
+
+
+@handle_frontend_test(
+    fn_tree="numpy.resize",
+    dtypes_x_shape=dtype_and_resize(),
+)
+def test_numpy_resize(
+    *,
+    dtypes_x_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, x, new_shape = dtypes_x_shape
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        newshape=new_shape,
+    )
+
+
+# asfarray
+@handle_frontend_test(
+    fn_tree="numpy.asfarray",
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_numpy_asfarray(
+    *,
+    dtype_and_a,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
     )
 
 
@@ -195,13 +284,49 @@ def test_numpy_asarray_chkfinite(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a[0],
+    )
+
+
+# require
+@handle_frontend_test(
+    fn_tree="numpy.require",
+    dtype_and_a=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    requirements=st.sampled_from(["C", "F", "A", "O", "W", "E"]),
+    like=st.just(None),
+    test_with_out=st.just(False),
+)
+def test_numpy_require(
+    *,
+    dtype_and_a,
+    requirements,
+    like,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, a = dtype_and_a
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a[0],
+        dtype=np.dtype(dtype[0]),
+        requirements=requirements,
+        like=like,
     )

@@ -7,9 +7,7 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, array, weak_type=False):
-        self._ivy_array = (
-            ivy.array(array) if not isinstance(array, ivy.Array) else array
-        )
+        self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
         self.weak_type = weak_type
 
     def __repr__(self):
@@ -43,13 +41,33 @@ class DeviceArray:
     def at(self):
         return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.ivy_array)
 
+    @property
+    def T(self):
+        return self.ivy_array.T
+
     # Instance Methods #
     # ---------------- #
+
+    def copy(self, order=None):
+        return jax_frontend.numpy.copy(self._ivy_array, order=order)
+
+    def diagonal(self, offset=0, axis1=0, axis2=1):
+        return jax_frontend.numpy.diagonal(
+            self._ivy_array, offset=offset, axis1=axis1, axis2=axis2
+        )
 
     def all(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.all(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out
         )
+
+    def astype(self, dtype):
+        try:
+            return jax_frontend.numpy.asarray(self, dtype=dtype)
+        except:  # noqa: E722
+            raise ivy.utils.exceptions.IvyException(
+                f"Dtype {self.dtype} is not castable to {dtype}"
+            )
 
     def argmax(
         self,
@@ -69,6 +87,9 @@ class DeviceArray:
     def conj(self, /):
         return jax_frontend.numpy.conj(self._ivy_array)
 
+    def conjugate(self, /):
+        return jax_frontend.numpy.conjugate(self._ivy_array)
+
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=None):
         return jax_frontend.numpy.mean(
             self._ivy_array,
@@ -85,6 +106,44 @@ class DeviceArray:
             axis=axis,
             dtype=dtype,
             out=out,
+        )
+
+    def cumsum(self, axis=None, dtype=None, out=None):
+        return jax_frontend.numpy.cumsum(
+            self,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+        )
+
+    def nonzero(self, *, size=None, fill_value=None):
+        return jax_frontend.numpy.nonzero(
+            self,
+            size=size,
+            fill_value=fill_value,
+        )
+
+    def ravel(self, order="C"):
+        return jax_frontend.numpy.ravel(
+            self,
+            order=order,
+        )
+
+    flatten = ravel
+
+    def sort(self, axis=-1, order=None):
+        return jax_frontend.numpy.sort(
+            self,
+            axis=axis,
+            order=order,
+        )
+
+    def argsort(self, axis=-1, kind="stable", order=None):
+        return jax_frontend.numpy.argsort(self, axis=axis, kind=kind, order=order)
+
+    def any(self, *, axis=None, out=None, keepdims=False, where=None):
+        return jax_frontend.numpy.any(
+            self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
 
     def __add__(self, other):
@@ -208,5 +267,34 @@ class DeviceArray:
         ndim = len(self.shape)
         if ndim == 0:
             raise TypeError("iteration over a 0-d devicearray not supported")
-        for i in range(ndim):
+        for i in range(self.shape[0]):
             yield self[i]
+
+    def round(self, decimals=0):
+        return jax_frontend.numpy.round(self, decimals)
+
+    def min(
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        where=None,
+    ):
+        return jax_frontend.numpy.min(
+            self, axis=axis, out=out, keepdims=keepdims, where=where
+        )
+
+    def var(
+        self, *, axis=None, dtype=None, out=None, ddof=False, keepdims=False, where=None
+    ):
+        return jax_frontend.numpy.var(
+            self._ivy_array,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=int(ddof),
+            keepdims=keepdims,
+            where=where,
+        )

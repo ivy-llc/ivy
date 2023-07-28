@@ -1,8 +1,8 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # noqa
@@ -17,7 +17,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import (  # 
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -36,10 +38,12 @@ def test_numpy_split(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -57,7 +61,9 @@ def test_numpy_split(
         available_dtypes=helpers.get_dtypes("integer"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=1, allow_none=False, is_mod_split=True
+    ),
     axis=st.shared(
         helpers.get_axis(
             shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -76,10 +82,13 @@ def test_numpy_array_split(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
+    assume(isinstance(indices_or_sections, int))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -97,7 +106,9 @@ def test_numpy_array_split(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=3), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=3, axis=2),
+    indices_or_sections=_get_splits(
+        min_num_dims=3, axis=2, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_dsplit(
@@ -108,10 +119,14 @@ def test_numpy_dsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -128,7 +143,9 @@ def test_numpy_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=2, axis=0),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=0, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_vsplit(
@@ -139,10 +156,14 @@ def test_numpy_vsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -157,9 +178,11 @@ def test_numpy_vsplit(
     fn_tree="numpy.hsplit",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="value_shape"),
     ),
-    indices_or_sections=_get_splits(min_num_dims=1, axis=1),
+    indices_or_sections=_get_splits(
+        min_num_dims=2, axis=1, allow_none=False, is_mod_split=True
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_hsplit(
@@ -170,19 +193,14 @@ def test_numpy_hsplit(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, value = dtype_value
-    # TODO: remove the assumption when these bugfixes are merged and version-pinned
-    # https://github.com/tensorflow/tensorflow/pull/59523
-    # https://github.com/google/jax/pull/14275
-    assume(
-        not (
-            len(value[0].shape) == 1
-            and ivy.current_backend_str() in ("tensorflow", "jax")
-        )
-    )
+    if isinstance(indices_or_sections, np.ndarray):
+        assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

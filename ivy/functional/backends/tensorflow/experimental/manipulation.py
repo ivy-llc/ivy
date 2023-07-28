@@ -22,7 +22,7 @@ def moveaxis(
     return tf.experimental.numpy.moveaxis(a, source, destination)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def heaviside(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -73,7 +73,7 @@ def rot90(
     return tf.experimental.numpy.rot90(m, k, axes)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("unsigned", "complex")}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "complex")}, backend_version)
 def top_k(
     x: tf.Tensor,
     k: int,
@@ -115,7 +115,7 @@ def fliplr(
     return tf.experimental.numpy.fliplr(m)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
 def i0(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -127,17 +127,21 @@ def i0(
 
 def vsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.vsplit(ary, indices_or_sections)
+    if len(ary.shape) < 2:
+        raise ivy.utils.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: Union[tf.Tensor, tf.Variable],
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], tf.Tensor, tf.Variable],
     /,
     *,
     copy: Optional[bool] = None,
@@ -146,7 +150,7 @@ def dsplit(
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    return tf.experimental.numpy.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -204,13 +208,18 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = tf.clip_by_value(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = tf.constant(float("nan"), dtype=arr.dtype)
         elif "uint" in str(arr.dtype):
             fill_value = tf.constant(arr.dtype.max, dtype=arr.dtype)
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = tf.constant(-arr.dtype.max - 1, dtype=arr.dtype)
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
+            )
         indices = tf.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
@@ -226,7 +235,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.experimental.numpy.hsplit(ary, indices_or_sections)
+    if len(ary.shape) == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(
@@ -302,12 +313,15 @@ def unique_consecutive(
     ndim = len(x.shape)
     if axis < 0:
         axis += ndim
-    splits = tf.where(
-        tf.math.reduce_any(
-            tf.experimental.numpy.diff(x, axis=axis) != 0,
-            axis=tuple(i for i in tf.range(ndim) if i != axis),
+    splits = (
+        tf.where(
+            tf.math.reduce_any(
+                tf.experimental.numpy.diff(x, axis=axis) != 0,
+                axis=tuple(i for i in tf.range(ndim) if i != axis),
+            )
         )
-    ) + 1
+        + 1
+    )
     if tf.size(splits) > 0:
         sub_arrays = tf.experimental.numpy.split(x, tf.reshape(splits, -1), axis=axis)
     else:
@@ -328,3 +342,28 @@ def unique_consecutive(
         tf.cast(inverse_indices, tf.int64),
         tf.cast(counts, tf.int64),
     )
+
+
+def fill_diagonal(
+    a: tf.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+):
+    shape = tf.shape(a)
+    max_end = tf.math.reduce_prod(shape)
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + tf.reduce_sum(tf.math.cumprod(shape[:-1]))
+    a = tf.reshape(a, (-1,))
+    end = min(end, max_end)
+    indices = [[i] for i in range(0, end, step)]
+    ups = tf.convert_to_tensor([v] * len(indices), dtype=a.dtype)
+    a = tf.tensor_scatter_nd_update(a, indices, ups)
+    a = tf.reshape(a, shape)
+    return a

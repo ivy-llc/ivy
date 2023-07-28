@@ -234,26 +234,30 @@ def pad(
 
 def vsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.vsplit(ary, indices_or_sections)
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
     ary: JaxArray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], JaxArray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    if len(ary.shape) < 3:
+    if ary.ndim < 3:
         raise ivy.utils.exceptions.IvyError(
             "dsplit only works on arrays of 3 or more dimensions"
         )
-    return jnp.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -305,7 +309,9 @@ def hsplit(
     *,
     copy: Optional[bool] = None,
 ) -> List[JaxArray]:
-    return jnp.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
@@ -321,6 +327,8 @@ def expand(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     shape = list(shape)
+    if len(shape) > len(x.shape):
+        x = jnp.expand_dims(x, range(len(shape) - len(x.shape)))
     for i, dim in enumerate(shape):
         if dim < 0:
             shape[i] = x.shape[i]
@@ -370,7 +378,8 @@ def unique_consecutive(
                 jnp.diff(x, axis=axis) != 0,
                 axis=tuple(i for i in jnp.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
         axis=axis,
     )
     output = jnp.concatenate(
@@ -386,3 +395,24 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: JaxArray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> JaxArray:
+    shape = jnp.array(a.shape)
+    end = None
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (jnp.cumprod(shape[:-1])).sum()
+    a = jnp.reshape(a, (-1,))
+    a = a.at[:end:step].set(jnp.array(v).astype(a.dtype))
+    a = jnp.reshape(a, shape)
+    return a

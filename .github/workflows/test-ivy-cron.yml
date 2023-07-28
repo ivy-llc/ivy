@@ -30,7 +30,7 @@ jobs:
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
-          pip install pymongo
+          pip3 install pymongo
           python run_tests_CLI/cron_tests.py ${{ github.run_number }}
           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true

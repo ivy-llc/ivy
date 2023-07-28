@@ -1,48 +1,87 @@
+import numpy as np
 import ivy
+
+
+# Helpers #
+# ------- #
+
+
+def _broadcast_inputs(x1, x2):
+    x1_, x2_ = x1, x2
+    iterables = (list, tuple, ivy.Shape)
+    if not isinstance(x1_, iterables):
+        x1_, x2_ = x2, x1
+        if not isinstance(x1_, iterables):
+            return [x1], [x2]
+    if not isinstance(x2_, iterables):
+        x1 = [x1] * len(x2)
+    return x1, x2
 
 
 # General with Custom Message #
 # --------------------------- #
 
 
-def check_less(x1, x2, allow_equal=False, message=""):
+def check_less(x1, x2, allow_equal=False, message="", as_array=True):
+    comp_fn = lambda x1, x2: (ivy.any(x1 > x2), ivy.any(x1 >= x2))
+    if not as_array:
+        iter_comp_fn = lambda x1_, x2_: (
+            any(x1 > x2 for x1, x2 in zip(x1_, x2_)),
+            any(x1 >= x2 for x1, x2 in zip(x1_, x2_)),
+        )
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+    gt, gt_eq = comp_fn(x1, x2)
     # less_equal
-    if allow_equal and ivy.any(x1 > x2):
+    if allow_equal and gt:
         raise ivy.utils.exceptions.IvyException(
             "{} must be lesser than or equal to {}".format(x1, x2)
             if message == ""
             else message
         )
     # less
-    elif not allow_equal and ivy.any(x1 >= x2):
+    elif not allow_equal and gt_eq:
         raise ivy.utils.exceptions.IvyException(
             "{} must be lesser than {}".format(x1, x2) if message == "" else message
         )
 
 
-def check_greater(x1, x2, allow_equal=False, message=""):
+def check_greater(x1, x2, allow_equal=False, message="", as_array=True):
+    comp_fn = lambda x1, x2: (ivy.any(x1 < x2), ivy.any(x1 <= x2))
+    if not as_array:
+        iter_comp_fn = lambda x1_, x2_: (
+            any(x1 < x2 for x1, x2 in zip(x1_, x2_)),
+            any(x1 <= x2 for x1, x2 in zip(x1_, x2_)),
+        )
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+    lt, lt_eq = comp_fn(x1, x2)
     # greater_equal
-    if allow_equal and ivy.any(x1 < x2):
+    if allow_equal and lt:
         raise ivy.utils.exceptions.IvyException(
             "{} must be greater than or equal to {}".format(x1, x2)
             if message == ""
             else message
         )
     # greater
-    elif not allow_equal and ivy.any(x1 <= x2):
+    elif not allow_equal and lt_eq:
         raise ivy.utils.exceptions.IvyException(
             "{} must be greater than {}".format(x1, x2) if message == "" else message
         )
 
 
-def check_equal(x1, x2, inverse=False, message=""):
+def check_equal(x1, x2, inverse=False, message="", as_array=True):
     # not_equal
-    if inverse and ivy.any(x1 == x2):
+    eq_fn = lambda x1, x2: (x1 == x2 if inverse else x1 != x2)
+    comp_fn = lambda x1, x2: ivy.any(eq_fn(x1, x2))
+    if not as_array:
+        iter_comp_fn = lambda x1_, x2_: any(eq_fn(x1, x2) for x1, x2 in zip(x1_, x2_))
+        comp_fn = lambda x1, x2: iter_comp_fn(*_broadcast_inputs(x1, x2))
+    eq = comp_fn(x1, x2)
+    if inverse and eq:
         raise ivy.utils.exceptions.IvyException(
             "{} must not be equal to {}".format(x1, x2) if message == "" else message
         )
     # equal
-    elif not inverse and ivy.any(x1 != x2):
+    elif not inverse and eq:
         raise ivy.utils.exceptions.IvyException(
             "{} must be equal to {}".format(x1, x2) if message == "" else message
         )
@@ -93,13 +132,13 @@ def check_false(expression, message="expression must be False"):
         raise ivy.utils.exceptions.IvyException(message)
 
 
-def check_all(results, message="one of the args is False"):
-    if not ivy.all(results):
+def check_all(results, message="one of the args is False", as_array=True):
+    if (as_array and not ivy.all(results)) or (not as_array and not all(results)):
         raise ivy.utils.exceptions.IvyException(message)
 
 
-def check_any(results, message="all of the args are False"):
-    if not ivy.any(results):
+def check_any(results, message="all of the args are False", as_array=True):
+    if (as_array and not ivy.any(results)) or (not as_array and not any(results)):
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -109,9 +148,10 @@ def check_all_or_any_fn(
     type="all",
     limit=[0],
     message="args must exist according to type and limit given",
+    as_array=True,
 ):
     if type == "all":
-        check_all([fn(arg) for arg in args], message)
+        check_all([fn(arg) for arg in args], message, as_array=as_array)
     elif type == "any":
         count = 0
         for arg in args:
@@ -135,14 +175,14 @@ def check_shape(x1, x2, message=""):
 
 
 def check_same_dtype(x1, x2, message=""):
-    message = (
-        message
-        if message != ""
-        else "{} and {} must have the same dtype ({} vs {})".format(
-            x1, x2, ivy.dtype(x1), ivy.dtype(x2)
-        )
-    )
     if ivy.dtype(x1) != ivy.dtype(x2):
+        message = (
+            message
+            if message != ""
+            else "{} and {} must have the same dtype ({} vs {})".format(
+                x1, x2, ivy.dtype(x1), ivy.dtype(x2)
+            )
+        )
         raise ivy.utils.exceptions.IvyException(message)
 
 
@@ -154,14 +194,14 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
     if (
         not (
             (ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype))
-            and isinstance(fill_value, int)
+            and (isinstance(fill_value, int) or ivy.isinf(fill_value))
         )
         and not (
             ivy.is_complex_dtype(dtype) and isinstance(fill_value, (float, complex))
         )
         and not (
             ivy.is_float_dtype(dtype)
-            and isinstance(fill_value, float)
+            and isinstance(fill_value, (float, np.float32))
             or isinstance(fill_value, bool)
         )
     ):
@@ -170,6 +210,50 @@ def check_fill_value_and_dtype_are_compatible(fill_value, dtype):
                 fill_value, dtype
             )
         )
+
+
+def check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+    if not (isinstance(num_segments, int)):
+        raise ValueError("num_segments must be of integer type")
+
+    valid_dtypes = [
+        ivy.int32,
+        ivy.int64,
+    ]
+
+    if ivy.backend == "torch":
+        import torch
+
+        valid_dtypes = [
+            torch.int32,
+            torch.int64,
+        ]
+        if isinstance(num_segments, torch.Tensor):
+            num_segments = num_segments.item()
+    elif ivy.backend == "paddle":
+        import paddle
+
+        valid_dtypes = [
+            paddle.int32,
+            paddle.int64,
+        ]
+        if isinstance(num_segments, paddle.Tensor):
+            num_segments = num_segments.item()
+
+    if segment_ids.dtype not in valid_dtypes:
+        raise ValueError("segment_ids must have an integer dtype")
+
+    if data.shape[0] != segment_ids.shape[0]:
+        raise ValueError("The length of segment_ids should be equal to data.shape[0].")
+
+    if ivy.max(segment_ids) >= num_segments:
+        error_message = (
+            f"segment_ids[{ivy.argmax(segment_ids)}] = "
+            f"{ivy.max(segment_ids)} is out of range [0, {num_segments})"
+        )
+        raise ValueError(error_message)
+    if num_segments <= 0:
+        raise ValueError("num_segments must be positive")
 
 
 # General #
@@ -222,8 +306,10 @@ def check_gather_nd_input_valid(params, indices, batch_dims):
 
 
 def check_one_way_broadcastable(x1, x2):
+    if len(x1) > len(x2):
+        return False
     for a, b in zip(x1[::-1], x2[::-1]):
-        if b == 1 or a == b:
+        if a == 1 or a == b:
             pass
         else:
             return False
@@ -231,17 +317,17 @@ def check_one_way_broadcastable(x1, x2):
 
 
 def check_inplace_sizes_valid(var, data):
-    if not check_one_way_broadcastable(var.shape, data.shape):
+    if not check_one_way_broadcastable(data.shape, var.shape):
         raise ivy.utils.exceptions.IvyException(
             "Could not output values of shape {} into array with shape {}.".format(
-                data.shape, var.shape
+                var.shape, data.shape
             )
         )
 
 
 def check_shapes_broadcastable(var, data):
     if not check_one_way_broadcastable(var, data):
-        raise ivy.utils.exceptions.IvyException(
+        raise ivy.utils.exceptions.IvyBroadcastShapeError(
             "Could not broadcast shape {} to shape {}.".format(data, var)
         )
 

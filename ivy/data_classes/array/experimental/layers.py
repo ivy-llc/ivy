@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -453,6 +453,56 @@ class _ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    def idct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Literal[1, 2, 3, 4] = 2,
+        n: Optional[int] = None,
+        axis: int = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.idct. This method simply wraps the
+        function, and so the docstring for ivy.idct also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the idct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal length,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+        >>> x.idct(type=2, norm="ortho")
+        ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
+            13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
+        """
+        return ivy.idct(
+            self._data,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
+            out=out,
+        )
+
     def fft(
         self: ivy.Array,
         dim: int,
@@ -781,3 +831,228 @@ class _ArrayWithLayersExperimental(abc.ABC):
             self._data,
             output_size,
         )
+
+    def reduce_window(
+        self: ivy.Array,
+        init_value: Union[int, float],
+        computation: Callable,
+        window_dimensions: Union[int, Sequence[int]],
+        /,
+        *,
+        window_strides: Union[int, Sequence[int]] = 1,
+        padding: Union[str, int, Sequence[Tuple[int, int]]] = "VALID",
+        base_dilation: Union[int, Sequence[int]] = 1,
+        window_dilation: Union[int, Sequence[int]] = 1,
+    ) -> ivy.Array:
+        """
+        Apply a reduction function to all elements in each window of an array.
+
+        Parameters
+        ----------
+        self
+            An array representing the base area on which the window is going to slide
+            over.
+        init_value
+            The starting value for the reduction.
+        computation
+            The reduction function to apply to elements in each window.
+        window_dimensions
+            A sequence containing the window dimensions.
+        window_strides
+            A sequence containing the window strides.
+        padding
+            Either the string ‘SAME’ (padding with zeros evenly), the string ‘VALID’ (no
+            padding), or a sequence of n (low, high) integer pairs that give the padding
+            to apply before and after each spatial dimension.
+        base_dilation
+            A sequence containing the base dilation values.
+        window_dilation
+            A sequence containing the window dilation values.
+
+        Returns
+        -------
+        ret
+            The result of the pooling-like operation.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3, 4],
+        >>>                [5, 6, 7, 8],
+        >>>                [9, 10, 11, 12]])
+        >>> x.reduce_window(0, ivy.sum, (2, 2))
+        ivy.array([[32.]])
+        """
+        return ivy.reduce_window(
+            self._data,
+            init_value,
+            computation,
+            window_dimensions,
+            window_strides=window_strides,
+            padding=padding,
+            base_dilation=base_dilation,
+            window_dilation=window_dilation,
+        )
+
+    def fft2(
+        self: ivy.Array,
+        *,
+        s: Sequence[int] = None,
+        dim: Sequence[int] = (-2, -1),
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the 2-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+            Input volume *[...,d_in,...]*,
+            where d_in indicates the dimension that needs FFT2.
+        s
+            sequence of ints, optional
+            Shape (length of each transformed axis) of the output (s[0] refers
+            to axis 0, s[1] to axis 1, etc.). This corresponds to n for fft(x, n).
+            Along each axis, if the given shape is smaller than that of the input,
+            the input is cropped. If it is larger, the input is padded with zeros.
+            If s is not given, the shape of the input along the axes specified by
+            axes is used.
+        dim
+            Axes over which to compute the FFT2. If not given, the last two axes are
+            used. A repeated index in axes means the transform over that axis is
+            performed multiple times. A one-element sequence means that a
+            one-dimensional FFT is performed.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the FFT2 operation.
+
+        Examples
+        --------
+        >>> a = ivy.array([[0, 0, 0, 0, 0],
+                        [1, 1, 1, 1, 1],
+                        [2, 2, 2, 2, 2],
+                        [3, 3, 3, 3, 3],
+                        [4, 4, 4, 4, 4]])
+        >>> ivy.fft2(a)
+        array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ],
+            [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
+                0.  +0.j        ,   0.  +0.j        ]])
+        """
+        return ivy.fft2(self._data, s=s, dim=dim, norm=norm, out=out)
+
+    def ifftn(
+        self: ivy.Array,
+        s: Optional[Union[int, Tuple[int, ...]]] = None,
+        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the N-dimensional inverse discrete Fourier Transform.
+
+        Parameters
+        ----------
+        x
+              Input array of complex numbers.
+
+        s
+            sequence of ints, optional
+            Shape (length of transformed axis) of the output (`s[0]` refers to axis 0,
+            `s[1]` to axis 1, etc.). If given shape is smaller than that of the input,
+            the input is cropped. If larger, input is padded with zeros. If `s` is not
+            given, shape of input along axes specified by axes is used.
+        axes
+            axes over which to compute the IFFT. If not given, last `len(s)` axes are
+            used, or all axes if `s` is also not specified. Repeated indices in axes
+            means inverse transform over that axis is performed multiple times.
+        norm
+            Optional argument, "backward", "ortho" or "forward". Defaults to be
+            "backward".
+            "backward" indicates no normalization.
+            "ortho" indicates normalization by 1/sqrt(n).
+            "forward" indicates normalization by 1/n.
+        out
+            Optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The truncated or zero-padded input, transformed along the axes indicated
+            by axes, or by a combination of s or x, as explained in the parameters
+            section above.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+                            0.98193269+0.49560517j],
+                            [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+                            0.2343787 +0.83528011j],
+                            [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+                            0.44719226+0.72654048j]])
+        >>> y = ivy.ifftn(x)
+        >>> print(y)
+        ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
+                -0.015561  -0.04216015j],
+                [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+                -0.08371392+0.17252843j],
+                [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+                0.05344324+0.07972424j]])
+
+        >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
+        >>> print(b)
+        ivy.array([[ 0.8344667 +0.98222595j],
+                [-0.48472244+0.30233797j]])
+        """
+        return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def rfftn(
+        self: ivy.Array,
+        s: Sequence[int] = None,
+        axes: Sequence[int] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the n-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        s
+            Shape (length of each transformed axis) of the output.
+        axes
+            Axes over which to compute the RFFT. If not given, the last len(s) axes are
+            used.
+        norm
+            Normalization mode: "backward", "ortho", or "forward".
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            The result of the RFFT operation.
+        """
+        return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)

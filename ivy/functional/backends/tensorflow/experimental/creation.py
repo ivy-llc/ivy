@@ -6,38 +6,17 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from .. import backend_version
 
 # Array API Standard #
 # -------------------#
 
 
-def triu_indices(
-    n_rows: int,
-    n_cols: Optional[int] = None,
-    k: int = 0,
-    /,
-    *,
-    device: str,
-) -> Tuple[Union[tf.Tensor, tf.Variable]]:
-    n_cols = n_rows if n_cols is None else n_cols
-
-    if n_rows < 0 or n_cols < 0:
-        n_rows, n_cols = 0, 0
-
-    ret = [[], []]
-
-    for i in range(0, min(n_rows, n_cols - k), 1):
-        for j in range(max(0, k + i), n_cols, 1):
-            ret[0].append(i)
-            ret[1].append(j)
-
-    if device is not None:
-        with tf.device(ivy.as_native_dev(device)):
-            return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
-    return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
-
-
+@with_unsupported_device_and_dtypes(
+    {"2.13.0 and below": {"cpu": ("bfloat16",)}},
+    backend_version,
+)
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -46,32 +25,22 @@ def kaiser_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if window_length < 2:
+        return tf.ones([window_length], dtype=dtype)
     if periodic is False:
-        return tf.signal.kaiser_window(
-            window_length, beta, dtype=tf.dtypes.float32, name=None
-        )
+        return tf.signal.kaiser_window(window_length, beta, dtype=dtype)
     else:
-        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
-            :-1
-        ]
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype)[:-1]
 
 
 def kaiser_bessel_derived_window(
     window_length: int,
-    periodic: bool = True,
     beta: float = 12.0,
     *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if periodic is True:
-        return tf.signal.kaiser_bessel_derived_window(
-            window_length + 1, beta, dtype, name=None
-        )[:-1]
-    else:
-        return tf.signal.kaiser_bessel_derived_window(
-            window_length, beta, dtype, name=None
-        )
+    return tf.signal.kaiser_bessel_derived_window(window_length, beta, dtype)
 
 
 def vorbis_window(
@@ -91,7 +60,12 @@ def hann_window(
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.signal.hann_window(size, periodic=(not periodic), dtype=dtype)
+    if size < 2:
+        return tf.ones([size], dtype=dtype)
+    if periodic:
+        return tf.signal.hann_window(size + 1, periodic=False, dtype=dtype)[:-1]
+    else:
+        return tf.signal.hann_window(size, periodic=False, dtype=dtype)
 
 
 def tril_indices(
@@ -119,3 +93,11 @@ def tril_indices(
             return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+
+def unsorted_segment_min(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_min(data, segment_ids, num_segments)

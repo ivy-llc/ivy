@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
-    inputs_to_ivy_arrays,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -28,6 +28,7 @@ inf = float("inf")
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -63,7 +64,8 @@ def cholesky(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.cholesky.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -165,6 +167,7 @@ def cholesky(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -188,12 +191,22 @@ def cross(
     x1
         first input array. Should have a numeric data type.
     x2
-        second input array. Must have the same shape as x1. Should have a numeric data
-        type.
+        second input array. Must be compatible with ``x1`` for all
+        non-compute axes. The size of the axis over which to compute
+        the cross product must be the same size as the respective axis
+        in ``x``. Should have a numeric data type.
+
+        .. note::
+
+            The compute axis (dimension) must not be broadcasted.
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
-        the cross product.vIf set to -1, the function computes the cross product for
-        vectors defined by the last axis (dimension). Default: ``-1``.
+        the cross product. Must be an integer on the interval``[-N, N)``, where ``N``
+        is the rank (number of dimensions) of the shape. If specified as a
+        negative integer, the function must determine the axis along which to
+        compute the cross product by counting backward from the last dimension
+        (where ``-1`` refers to the last dimension). By default, the function must
+        compute the cross product over the last axis. Default: ``-1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -207,7 +220,8 @@ def cross(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.cross.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -260,6 +274,7 @@ def cross(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -285,7 +300,8 @@ def det(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.det.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -330,6 +346,7 @@ def det(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -373,7 +390,8 @@ def diagonal(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -507,6 +525,7 @@ def diagonal(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -548,16 +567,6 @@ def eig(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     """
     return current_backend(x).eig(x, out=out)
 
@@ -568,6 +577,7 @@ def eig(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -575,7 +585,7 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    r"""Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -600,8 +610,11 @@ def eigh(
         a namedtuple (``eigenvalues``, ``eigenvectors``) whose
 
         -   first element must have the field name ``eigenvalues`` (corresponding to
-            ``L`` above) and must be an array consisting of computed eigenvalues. The
-            array containing the eigenvalues must have shape ``(..., M)``.
+            :math:`\operatorname{diag}\Lambda` above) and must be an array consisting
+            of computed eigenvalues. The array containing the eigenvalues must
+            have shape ``(..., M)`` and must have a real-valued floating-point
+            data type whose precision matches the precision of ``x`` (e.g., if ``x``
+            is ``complex128``, then the ``eigenvalues`` must be ``float64``).
         -   second element have have the field name ``eigenvectors`` (corresponding to
             ``Q`` above) and must be an array where the columns of the inner most
             matrices contain the computed eigenvectors. These matrices must be
@@ -616,7 +629,8 @@ def eigh(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.eigh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -633,6 +647,7 @@ def eigh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -658,8 +673,9 @@ def eigvalsh(
         input array having shape (..., M, M) and whose innermost two dimensions form
         square matrices. Must have floating-point data type.
     UPLO
-        optional string being 'L' or 'U', specifying whether the calculation is done with
-        the lower triangular part of `x` ('L', default) or the upper triangular part ('U').
+        optional string being 'L' or 'U', specifying whether the calculation is done
+        with the lower triangular part of `x` ('L', default) or the
+        upper triangular part ('U').
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -668,12 +684,15 @@ def eigvalsh(
     -------
     ret
         an array containing the computed eigenvalues. The returned array must have shape
-        (..., M) and have the same data type as x.
+        (..., M) and and must have a real-valued floating-point
+        data type whose precision matches the precision of ``x`` (e.g., if ``x``
+        is ``complex128``, then the ``eigenvalues`` must be ``float64``).
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.eigvalsh.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -735,6 +754,7 @@ def eigvalsh(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -774,6 +794,7 @@ def inner(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -804,7 +825,8 @@ def inv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.inv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -838,8 +860,9 @@ def inv(
     >>> x = ivy.Container(a=ivy.array([[11., 100., 10.],
     ...                                [300., 40., 20.], [25., 30, 100.]]),
     ...                   b=ivy.array([[4., 400., 50.], [10., 10., 15.],
-    ...                               [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],
-    ...                               [55, 20., 20.], [55., 50., 100.]]))
+    ...                               [50., 5000., 40.]]),
+    ...                   c=ivy.array([[25., 22., 100.], [55, 20., 20.],
+    ...                               [55., 50., 100.]]))
     >>> y = ivy.Container.static_inv(x)
     >>> print(y)
     {
@@ -864,6 +887,7 @@ def inv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -941,11 +965,11 @@ def matmul(
 
             array having shape (L,), and K != L.
 
-        -   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape
-            (..., L, N), and K != L.
+        -   if x1 is a one-dimensional array having shape (K,), x2 is an array
+            having shape (..., L, N), and K != L.
 
-        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having
-            shape (L,), and K != L.
+        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array
+            having shape (L,), and K != L.
 
         -   if x1 is an array having shape (..., M, K), x2 is an array having shape
             (..., L, N), and K != L.
@@ -953,7 +977,8 @@ def matmul(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matmul.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1024,6 +1049,7 @@ def matmul(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1093,12 +1119,19 @@ def matrix_norm(
     Returns
     -------
     ret
-        Matrix norm of the array at specified axes.
+        Matrix norm of the array at specified axes. If ``keepdims`` is ``False``, the
+        returned array must have a rank which is two less than the ranl of ``x``.
+        If ``x`` has a real-valued data type, the returned array must have a real-valued
+        floating-point data type based on Type promotion. If ``x`` has a complex-valued
+        data type, the returned array must have a real-valued floating-point data type
+        whose precision matches the precision of ``x`` (e.g., if ``x`` is
+        ``complex128``, then the returned array must have a `float64`` data type).
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1175,6 +1208,7 @@ def matrix_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1184,7 +1218,8 @@ def matrix_power(
     Parameters
     ----------
         x
-            input array having shape (..., M, M) and whose innermost two dimensions form square matrices.
+            input array having shape (..., M, M) and whose innermost two dimensions form
+            square matrices.
             Should have a floating-point data type.
         n
             integer exponent.
@@ -1192,16 +1227,21 @@ def matrix_power(
     Returns
     -------
         ret
-            if n is equal to zero, an array containing the identity matrix for each square matrix.
-            If n is less than zero, an array containing the inverse of each square matrix raised to the absolute value of n,
-            provided that each square matrix is invertible.
-            If n is greater than zero, an array containing the result of raising each square matrix to the power n.
-            The returned array must have the same shape as x and a floating-point data type determined by Type Promotion Rules.
+            if n is equal to zero, an array containing the identity matrix for each
+            square matrix.
+            If n is less than zero, an array containing the inverse of each
+            square matrix raised to the absolute value of n, provided that each
+            square matrix is invertible.
+            If n is greater than zero, an array containing the result of raising
+            each square matrix to the power n.
+            The returned array must have the same shape as x and a floating-point
+            data type determined by Type Promotion Rules.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_power.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1268,12 +1308,14 @@ def matrix_power(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1287,7 +1329,7 @@ def matrix_rank(
         ``MxN`` matrices. Should have a floating-point data type.
 
     atol
-        absolute tolerance. When None it’s considered to be zero.
+        absolute tolerance. When None it's considered to be zero.
 
     rtol
         relative tolerance for small singular values. Singular values approximately less
@@ -1300,6 +1342,13 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
+    
+    hermitian
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
+        is assumed to be Hermitian, enabling a more efficient method for finding
+        eigenvalues, but x is not checked inside the function. 
+        Instead, We just use the lower triangular of the matrix to compute.
+        Default: ``False``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1314,7 +1363,8 @@ def matrix_rank(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_rank.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1362,7 +1412,9 @@ def matrix_rank(
         b:ivy.array(1.)
     }
     """
-    return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    return current_backend(x).matrix_rank(
+        x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    )
 
 
 @handle_exceptions
@@ -1371,6 +1423,7 @@ def matrix_rank(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1402,7 +1455,8 @@ def matrix_transpose(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.matrix_transpose.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1458,6 +1512,7 @@ def matrix_transpose(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1490,7 +1545,8 @@ def outer(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.outer.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1546,6 +1602,7 @@ def outer(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1587,7 +1644,8 @@ def pinv(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.pinv.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1617,6 +1675,7 @@ def pinv(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1664,7 +1723,8 @@ def qr(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.qr.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1680,35 +1740,65 @@ def qr(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
     """
-    Return the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
+    Return the sign and the natural logarithm of the absolute value of the determinant
+    of a square matrix (or a stack of square matrices) ``x``.
     .. note::
-       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
-    
+       The purpose of this function is to calculate the determinant more accurately
+       when the determinant is either very small or very large, as calling ``det`` may
+       overflow or underflow.
+
+    **Special cases**
+
+    For real-valued floating-point operands,
+
+    - If the determinant is zero, the ``sign`` should be ``0``and ``logabsdet``
+    should be ``infinity``.
+
+    For complex floating-point operands,
+
+    - If the detereminant is ``0 + 0j``, the ``sign`` should be ``0 + 0j``
+    and ``logabsdet`` should be ``infinity + 0j``.
+
+
     Parameters
     ----------
     x:
-        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
-    
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions
+        form square matrices. Should have a real-valued floating-point data type.
+
     Returns
     -------
     ret:
         a namedtuple (``sign``, ``logabsdet``) whose
-        -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.
-        -   second element must have the field name ``logabsdet`` and must be an array containing the determinant for each square matrix.
-        For a real matrix, the sign of the determinant must be either ``1``, ``0``, or ``-1``.
-        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued floating-point data type determined by :ref:`type-promotion`.
+        -   first element must have the field name ``sign`` and must be an array
+        containing a number representing the sign of the determinant for
+        each square matrix.
+        -   second element must have the field name ``logabsdet`` and must be an array
+        containing the determinant for each square matrix.
+        For a real matrix, the sign of the determinant must be
+        either ``1``, ``0``, or ``-1``.
+        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued
+        floating-point data type determined by :ref:`type-promotion`. If ``x``
+        is complex, the returned array must have a real-valued floating-point data
+        type having the same precision as ``x`` (1.g., if ``x`` is ``complex64``,
+        ``logabsdet`` must have a ``float32`` data type)
         .. note::
-           If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).
+           If a determinant is zero, then the corresponding ``sign`` should be ``0``
+           and ``logabsdet`` should be ``-infinity``; however, depending on the
+           underlying algorithm, the returned result may differ. In all cases,
+           the determinant should be equal to ``sign * exp(logsabsdet)``
+           (although, again, the result may be subject to numerical precision errors).
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
-        signatures.linalg.slogdet.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.slogdet.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1761,6 +1851,7 @@ def slogdet(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1799,7 +1890,8 @@ def solve(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.solve.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1815,6 +1907,7 @@ def solve(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1841,11 +1934,12 @@ def svd(
         Default: ``True``.
     compute_uv
         If ``True`` then left and right singular vectors will be computed and returned
-        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,
-        which can be significantly faster.
+        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be
+        computed, which can be significantly faster.
     .. note::
-        with backend set as torch, svd with still compute left and right singular vectors irrespective
-        of the value of compute_uv, however Ivy will still only return the singular values.
+        with backend set as torch, svd with still compute left and right singular
+        vectors irrespective of the value of compute_uv, however Ivy will still
+        only return the singular values.
 
     Returns
     -------
@@ -1868,21 +1962,25 @@ def svd(
             sorted in descending order by magnitude, such that ``s[..., 0]`` is the
             largest value, ``s[..., 1]`` is the second largest value, et cetera. The
             first ``x.ndim-2`` dimensions must have the same shape as those of the input
-            ``x``.
+            ``x``. Must have a real-valued floating-point data type having the same
+            precision as ``x`` (e.g., if ``x`` is ``complex64``, ``S`` must have
+            a ``float32`` data type).
         -   third element must have the field name ``Vh`` and must be an array whose
             shape depends on the value of ``full_matrices`` and contain orthonormal rows
             (i.e., the rows are the right singular vectors and the array is the
             adjoint). If ``full_matrices`` is ``True``, the array must have shape
             ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have
             shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2``
-            dimensions must have the same shape as those of the input ``x``.
+            dimensions must have the same shape as those of the input ``x``. Must
+            have the same data type as ``x``.
 
         Each returned array must have the same floating-point data type as ``x``.
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.svd.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -1939,6 +2037,7 @@ def svd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1958,12 +2057,15 @@ def svdvals(
     ret
         array with shape ``(..., K)`` that contains the vector(s) of singular values of
         length ``K``, where K = min(M, N). The values are sorted in descending order by
-        magnitude.
+        magnitude. The returned array must have a real-valued floating-point data type
+        having the same precision as ``x`` (e.g., if ``x`` is ``complex64``,
+        the returned array must have a ``float32`` data type).
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.svdvals.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2062,6 +2164,7 @@ def svdvals(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2072,6 +2175,12 @@ def tensordot(
 ) -> ivy.Array:
     """
     Return a tensor contraction of x1 and x2 over specific axes.
+
+    .. note::
+        If either ``x1`` or ``x2`` has a complex floating-point data type, neither
+        argument must be complex-conjugated or transposed. If conjugation and/or
+        transposition is desired, these operations should explicitly performed
+        prior to computing the generalized matrix product.
 
     Parameters
     ----------
@@ -2095,7 +2204,8 @@ def tensordot(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.tensordot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2140,54 +2250,11 @@ def tensordot(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
-@inputs_to_ivy_arrays
-@handle_array_function
-def tensorsolve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    ndim1 = ivy.get_num_dims(x1)
-    ndim2 = ivy.get_num_dims(x2)
-
-    if axes is not None:
-        allaxes = list(range(0, ndim1))
-        for k in axes:
-            allaxes.remove(k)
-            allaxes.insert(ndim1, k)
-
-        x1 = ivy.matrix_transpose(x1, allaxes)
-
-    old_shape = x1.shape[-(ndim1 - ndim2) :]
-
-    prod = 1
-    for k in old_shape:
-        prod *= k
-
-    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement "
-            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
-        )
-
-    x1 = ivy.reshape(x1, (prod, prod))
-    x2 = ivy.flatten(x2)
-    res = ivy.solve(x1, x2)
-    res = ivy.reshape(res, old_shape)
-    return res
-    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
-
-
-@handle_exceptions
-@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2199,6 +2266,16 @@ def trace(
 ) -> ivy.Array:
     """Return the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
+
+    **Special cases**
+
+    Let ``N`` equal the number of elements over which to compute the sum.
+
+    - If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
+
+    For both real-valued and complex floating-point operands,
+    special cases must be handled as if the operation is implemented
+    by successive application of :func:`ivy.add`:
 
     Parameters
     ----------
@@ -2302,6 +2379,7 @@ def trace(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2346,14 +2424,15 @@ def vecdot(
 
         -   if provided an invalid ``axis``.
 
-        -   if the size of the axis over which to compute the dot product is not the same
-            for both ``x1`` and ``x2``.
+        -   if the size of the axis over which to compute the dot product is not
+            the same for both ``x1`` and ``x2``.
 
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.vecdot.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2369,6 +2448,7 @@ def vecdot(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2441,11 +2521,16 @@ def vector_norm(
         is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
         array must have a rank which is ``n`` less than the rank of ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
+        If ``x`` has a complex-valued data type, the returned array must have a
+        real-valued floating-point data type whose precision matches the precision
+        of ``x`` (e.g., if ``x`` is ``complex128``, then the returned array must have
+        a ``float64`` data type).
 
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.vector_norm.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2515,6 +2600,7 @@ def vector_norm(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2550,7 +2636,8 @@ def diag(
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    extensions/generated/array_api.linalg.diagonal.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
@@ -2597,6 +2684,7 @@ def diag(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2660,7 +2748,7 @@ def vander(
         [ 1,  5, 25]]
         )
     """
-    return current_backend().vander(x, N=N, increasing=increasing, out=out)
+    return current_backend(x).vander(x, N=N, increasing=increasing, out=out)
 
 
 @handle_exceptions
@@ -2669,6 +2757,7 @@ def vander(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -2702,6 +2791,7 @@ def vector_to_skew_symmetric_matrix(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def lu(
     A: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2741,4 +2831,49 @@ def lu(
 
             U  – Upper triangular or trapezoidal matrix
     """
-    return current_backend(A).lu_factor(A, permute_l=permute_l ,pivot=pivot, out=out)
+    return current_backend(A).lu(A, permute_l=permute_l ,pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.utils.exceptions.IvyException(
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)

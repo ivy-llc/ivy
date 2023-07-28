@@ -11,9 +11,9 @@ from ivy.functional.frontends.numpy import (
 
 class matrix:
     def __init__(self, data, dtype=None, copy=True):
-        self._init_data(data, dtype)
+        self._init_data(data, dtype, copy)
 
-    def _init_data(self, data, dtype):
+    def _init_data(self, data, dtype, copy):
         if isinstance(data, str):
             self._process_str_data(data, dtype)
         elif isinstance(data, (list, ndarray)) or ivy.is_array(data):
@@ -21,20 +21,21 @@ class matrix:
                 data = data.ivy_array
             if ivy.is_array(data) and dtype is None:
                 dtype = data.dtype
-            data = ivy.array(data, dtype=dtype)
+            data = ivy.array(data, dtype=dtype, copy=copy)
             self._data = data
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be an array, list, or str"
             )
         ivy.utils.assertions.check_equal(
-            len(ivy.shape(self._data)), 2, message="data must be 2D"
+            len(ivy.shape(self._data)), 2, message="data must be 2D", as_array=False
         )
         self._dtype = self._data.dtype
         self._shape = ivy.shape(self._data)
 
     def _process_str_data(self, data, dtype):
         is_float = "." in data or "e" in data
+        is_complex = "j" in data
         data = data.replace(",", " ")
         data = " ".join(data.split())
         data = data.split(";")
@@ -42,9 +43,15 @@ class matrix:
             row = row.strip().split(" ")
             data[i] = row
             for j, elem in enumerate(row):
-                data[i][j] = float(elem) if is_float else int(elem)
+                if is_complex:
+                    data[i][j] = complex(elem)
+                else:
+                    data[i][j] = float(elem) if is_float else int(elem)
         if dtype is None:
-            dtype = ivy.float64 if is_float else ivy.int64
+            if is_complex:
+                dtype = ivy.complex128
+            else:
+                dtype = ivy.float64 if is_float else ivy.int64
         self._data = ivy.array(data, dtype=dtype)
 
     # Properties #

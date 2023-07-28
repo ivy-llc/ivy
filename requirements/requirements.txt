@@ -8,3 +8,4 @@ nvidia-ml-py<=11.495.46 # mod_name=pynvml
 diskcache
 google-auth # mod_name=google.auth
 requests
+pyvis

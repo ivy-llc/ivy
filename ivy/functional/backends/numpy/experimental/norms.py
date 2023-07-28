@@ -1,10 +1,26 @@
 import numpy as np
-from ivy.func_wrapper import with_unsupported_dtypes
 from typing import Optional
-from .. import backend_version
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
-@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, backend_version)
+def l1_normalize(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if axis is None:
+        norm = np.sum(np.abs(x.flatten()))
+        denorm = norm * np.ones_like(x)
+    else:
+        norm = np.sum(np.abs(x), axis=axis, keepdims=True)
+        denorm = np.divide(norm, np.abs(x) + 1e-12)
+    return np.divide(x, denorm)
+
+
 def l2_normalize(
     x: np.ndarray,
     /,

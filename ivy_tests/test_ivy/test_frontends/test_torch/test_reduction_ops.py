@@ -6,11 +6,11 @@ import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    statistical_dtype_values as statistical_dtype_values_experimental,
+    _quantile_helper,
 )
 
 
@@ -34,10 +34,12 @@ def test_torch_dist(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -67,10 +69,12 @@ def test_torch_argmax(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -87,8 +91,13 @@ def test_torch_argmax(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         min_num_dims=1,
-        min_axis=-1,
-        max_axis=0,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=1,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
 )
@@ -100,10 +109,12 @@ def test_torch_argmin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -132,10 +143,12 @@ def test_torch_amax(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -164,10 +177,12 @@ def test_torch_amin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -197,10 +212,12 @@ def test_torch_all(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -230,10 +247,12 @@ def test_torch_any(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -260,6 +279,7 @@ def test_torch_sum(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, castable_dtype = dtype_and_x
     if test_flags.as_variable:
@@ -267,6 +287,7 @@ def test_torch_sum(
     input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -280,25 +301,29 @@ def test_torch_sum(
 
 @handle_frontend_test(
     fn_tree="torch.mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="mean",
         min_value=-1e04,
         max_value=1e04,
     ),
     keepdims=st.booleans(),
+    dtypes=helpers.get_dtypes("float_and_complex", none=True, full=False),
 )
 def test_torch_mean(
     *,
     dtype_and_x,
     keepdims,
+    dtypes,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -306,12 +331,14 @@ def test_torch_mean(
         input=x[0],
         dim=axis,
         keepdim=keepdims,
+        dtype=dtypes[0],
+        atol=1e-2,
     )
 
 
 @handle_frontend_test(
     fn_tree="torch.nanmean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="nanmean",
         min_value=-1e04,
         max_value=1e04,
@@ -326,10 +353,12 @@ def test_torch_nanmean(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -358,10 +387,12 @@ def test_torch_median(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input, dim = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -374,7 +405,7 @@ def test_torch_median(
 
 @handle_frontend_test(
     fn_tree="torch.std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
     keepdims=st.booleans(),
 )
 def test_torch_std(
@@ -385,10 +416,12 @@ def test_torch_std(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -427,14 +460,17 @@ def test_torch_prod(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     # ToDo: set as_variable_flags as the parameter generated by test_torch_prod once
     #  this issue is marked as completed https://github.com/pytorch/pytorch/issues/75733
     if ivy.current_backend_str() == "torch":
         test_flags.as_variable = [False]
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -448,7 +484,7 @@ def test_torch_prod(
 
 @handle_frontend_test(
     fn_tree="torch.var",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var",
         min_value=-1e04,
         max_value=1e04,
@@ -463,10 +499,12 @@ def test_torch_var(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -478,15 +516,15 @@ def test_torch_var(
     )
 
 
-# ToDo, fails for TensorFlow backend, tf.reduce_min doesn't support bool
-# ToDo, fails for torch backend, tf.argmin_cpu doesn't support bool
+# min
 @handle_frontend_test(
-    fn_tree="torch.argmin",
+    fn_tree="torch.min",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -498,17 +536,21 @@ def test_torch_min(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, input, axis = dtype_input_axis
+    inputs = {f"input{i}": input[i] for i in range(len(input))}
+    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
+    test_flags.num_positional_args = len(input)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        dim=axis,
-        keepdim=keepdim,
+        **inputs,
+        **kwargs,
     )
 
 
@@ -569,10 +611,12 @@ def test_torch_moveaxis(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -590,6 +634,7 @@ def test_torch_moveaxis(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
+        num_arrays=st.integers(min_value=1, max_value=2),
     ),
     keepdim=st.booleans(),
 )
@@ -601,23 +646,27 @@ def test_torch_max(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, input, axis = dtype_input_axis
+    inputs = {f"input{i}": input[i] for i in range(len(input))}
+    kwargs = {"dim": axis, "keepdim": keepdim} if len(inputs) == 1 else {}
+    test_flags.num_positional_args = len(input)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        dim=axis,
-        keepdim=keepdim,
+        **inputs,
+        **kwargs,
     )
 
 
 @handle_frontend_test(
     fn_tree="torch.std_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="std_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -632,10 +681,12 @@ def test_torch_std_mean(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -649,7 +700,7 @@ def test_torch_std_mean(
 
 @handle_frontend_test(
     fn_tree="torch.var_mean",
-    dtype_and_x=statistical_dtype_values(
+    dtype_and_x=_statistical_dtype_values(
         function="var_mean",
         min_value=-1e04,
         max_value=1e04,
@@ -664,10 +715,12 @@ def test_torch_var_mean(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -697,10 +750,12 @@ def test_torch_aminmax(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -713,7 +768,7 @@ def test_torch_aminmax(
 
 @handle_frontend_test(
     fn_tree="torch.quantile",
-    dtype_and_x=statistical_dtype_values_experimental(function="quantile"),
+    dtype_and_x=_quantile_helper(),
     keepdims=st.booleans(),
 )
 def test_torch_quantile(
@@ -724,12 +779,14 @@ def test_torch_quantile(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis, interpolation, q = dtype_and_x
     if type(axis) is tuple:
         axis = axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -759,10 +816,12 @@ def test_torch_count_nonzero(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -793,10 +852,12 @@ def test_torch_logsumexp(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -816,28 +877,31 @@ def test_torch_logsumexp(
     ),
     return_inverse=st.booleans(),
     return_counts=st.booleans(),
-    test_with_out=st.just(False),
+    sorted=st.booleans(),
 )
 def test_torch_unique(
     *,
     dtype_x_axis,
     return_inverse,
     return_counts,
+    sorted,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
 
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        sorted=True,
+        sorted=sorted,
         return_inverse=return_inverse,
         return_counts=return_counts,
         dim=axis,
@@ -846,33 +910,35 @@ def test_torch_unique(
 
 @st.composite
 def _get_axis_and_p(draw):
-    force_tuple_axis = True
-
-    p = draw(st.sampled_from(["fro", "nuc", 1, -1, 2, -2]))
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
     if p == "fro" or p == "nuc":
-        force_tuple_axis = True
+        max_axes_size = 2
         min_axes_size = 2
-
     else:
-        force_tuple_axis = False
         min_axes_size = 1
-
-    dtype_x_axis = draw(
+        max_axes_size = 5
+    x_dtype, values, axis = draw(
         helpers.dtype_values_axis(
-            num_arrays=1,
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("valid"),
             min_num_dims=2,
-            max_num_dims=3,
-            max_dim_size=2,
             valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
             min_axes_size=min_axes_size,
+            max_axes_size=max_axes_size,
             large_abs_safety_factor=2,
             safety_factor_scale="log",
-            force_tuple_axis=force_tuple_axis,
         )
     )
-
-    return (p, dtype_x_axis)
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    # ToDo: fix the castable dtype helper. Right now using `dtype` causes errors
+    #  dtype should be real for real inputs, but got ComplexDouble
+    x_dtype, values, dtype = draw(
+        helpers.get_castable_dtype(
+            draw(helpers.get_dtypes("valid")), x_dtype[0], values[0]
+        )
+    )
+    return p, x_dtype, values, axis, x_dtype
 
 
 # norm
@@ -880,33 +946,33 @@ def _get_axis_and_p(draw):
     fn_tree="torch.norm",
     p_dtype_x_axis=_get_axis_and_p(),
     keepdim=st.booleans(),
-    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_norm(
     *,
     p_dtype_x_axis,
     keepdim,
-    dtype,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
-    p, values = p_dtype_x_axis
-    input_dtype, x, axis = values
-
+    p, x_dtype, x, axis, dtype = p_dtype_x_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        input_dtypes=[x_dtype],
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-01,
         atol=1e-08,
-        input=x[0],
+        input=x,
         p=p,
         dim=axis,
         keepdim=keepdim,
+        out=None,
+        dtype=dtype,
     )
 
 
@@ -933,11 +999,13 @@ def test_torch_unique_consecutive(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

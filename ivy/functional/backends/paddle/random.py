@@ -2,27 +2,30 @@
 
 # global
 import paddle
+import ivy.functional.backends.paddle as paddle_backend
 from typing import Optional, Union, Sequence
 
 # local
 import ivy
 from paddle.fluid.libpaddle import Place
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.backends.paddle.device import to_device
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 from . import backend_version
 
 # Extra #
 # ------#
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def random_uniform(
@@ -40,18 +43,21 @@ def random_uniform(
     dtype = ivy.as_native_dtype(dtype)
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     # Set range and seed
     rng = high - low
     if seed:
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
-    with ivy.ArrayMode(False):
-        return ivy.add(ivy.multiply(random_base, rng), low).cast(dtype)
+
+    return to_device(
+        paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(dtype),
+        device,
+    )
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "complex64", "complex128")}},
+    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def random_normal(
@@ -65,17 +71,28 @@ def random_normal(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     if seed:
         paddle.seed(seed)
     if isinstance(mean, (int, float)) and isinstance(std, (int, float)):
-        return paddle.normal(mean, std, shape).cast(dtype)
+        return to_device(paddle.normal(mean, std, shape).cast(dtype), device)
     if mean.dtype not in [paddle.float32, paddle.float64]:
         mean = mean.cast("float32")
     std = std.cast(mean.dtype)
-    return paddle.normal(mean, std).cast(dtype)
+    return to_device(paddle.normal(mean, std).cast(dtype), device)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            )
+        }
+    },
+    backend_version,
+)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -88,11 +105,17 @@ def multinomial(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if probs is None:
+        probs = paddle.ones((batch_size, num_samples)) / population_size
+        probs = paddle.cast(probs, paddle.float32)
+    if seed:
+        paddle.seed(seed)
+    x = paddle.multinomial(probs, num_samples=num_samples, replacement=replace)
+    return to_device(x, device)
 
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("int8",)},
+@with_unsupported_device_and_dtypes(
+    {"2.5.0 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def randint(
@@ -112,7 +135,7 @@ def randint(
     _randint_check_dtype_and_bound(low, high, dtype)
     low = paddle.cast(low, "float32") if isinstance(low, paddle.Tensor) else low
     high = paddle.cast(high, "float32") if isinstance(high, paddle.Tensor) else high
-    shape = _check_bounds_and_get_shape(low, high, shape)
+    shape = _check_bounds_and_get_shape(low, high, shape).shape
     range = high - low
     if seed:
         _ = paddle.seed(seed)
@@ -127,13 +150,12 @@ def randint(
 
 def seed(*, seed_value: int = 0) -> None:
     _ = paddle.seed(seed_value)
+    return
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16")}}, backend_version
-)
 def shuffle(
     x: paddle.Tensor,
+    axis: Optional[int] = 0,
     /,
     *,
     seed: Optional[int] = None,
@@ -142,7 +164,7 @@ def shuffle(
     if seed:
         _ = paddle.seed(seed)
     # Use Paddle's randperm function to generate shuffled indices
-    indices = paddle.randperm(x.shape[0], dtype="int64")
+    indices = paddle.randperm(x.ndim, dtype="int64")
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -153,8 +175,8 @@ def shuffle(
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            shuffled_real = paddle.index_select(x.real(), indices)
-            shuffled_imag = paddle.index_select(x.imag(), indices)
-            return shuffled_real + 1j * shuffled_imag
-        return paddle.index_select(x.cast("float32"), indices).cast(x.dtype)
-    return paddle.index_select(x, indices)
+            shuffled_real = paddle.index_select(x.real(), indices, axis=axis)
+            shuffled_imag = paddle.index_select(x.imag(), indices, axis=axis)
+            return paddle.complex(shuffled_real, shuffled_imag)
+        return paddle.index_select(x.cast("float32"), indices, axis=axis).cast(x.dtype)
+    return paddle.index_select(x, indices, axis=axis)

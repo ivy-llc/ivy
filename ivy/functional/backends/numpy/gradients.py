@@ -30,8 +30,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ):
     logging.warning(
         "NumPy does not support autograd, "
@@ -69,8 +69,6 @@ def jac(func):
         jacobian = ivy.nested_map(
             xs, lambda x: ivy.zeros_like(x), include_derived=True, shallow=False
         )
-        y = func(xs)
-        y = ivy.to_ivy(y)
         return jacobian
 
     return grad_fn

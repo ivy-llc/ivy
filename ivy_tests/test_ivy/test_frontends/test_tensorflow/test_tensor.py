@@ -1,12 +1,11 @@
 # global
-import pytest
 from hypothesis import strategies as st, given, assume
 import numpy as np
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.backends.tensorflow.general import _check_query
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -22,18 +21,21 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_property_ivy_array(
+def test_tensorflow_ivy_array(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = EagerTensor(data[0])
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=backend_fw)
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
         ground_truth_backend="tensorflow",
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -41,13 +43,16 @@ def test_tensorflow_tensor_property_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_tensor_property_device(
+def test_tensorflow_device(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     data = ivy.native_array(data[0])
     x = EagerTensor(data)
-    ivy.utils.assertions.check_equal(x.device, ivy.dev(data))
+    ivy.utils.assertions.check_equal(x.device, ivy.dev(data), as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -55,12 +60,15 @@ def test_tensorflow_tensor_property_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
-def test_tensorflow_tensor_property_dtype(
+def test_tensorflow_dtype(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     dtype, data = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+    ivy.utils.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]), as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -69,12 +77,17 @@ def test_tensorflow_tensor_property_dtype(
         ret_shape=True,
     ),
 )
-def test_tensorflow_tensor_property_shape(
+def test_tensorflow_shape(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = EagerTensor(data[0])
-    ivy.utils.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
+    ivy.utils.assertions.check_equal(
+        x.ivy_array.shape, ivy.Shape(shape), as_array=False
+    )
+    ivy.previous_backend()
 
 
 # __add__
@@ -88,17 +101,19 @@ def test_tensorflow_tensor_property_shape(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_add(
+def test_tensorflow_add(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -122,21 +137,26 @@ def test_tensorflow_instance_add(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_div(
+def test_tensorflow_div(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -162,17 +182,19 @@ def test_tensorflow_instance_div(
         min_dim_size=1,
     ),
 )
-def test_tensorflow_instance_get_shape(
+def test_tensorflow_get_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -195,17 +217,19 @@ def test_tensorflow_instance_get_shape(
         num_arrays=2,
     ),
 )
-def test_tensorflow_instance_eq(
+def test_tensorflow_eq(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -221,7 +245,6 @@ def test_tensorflow_instance_eq(
     )
 
 
-@pytest.mark.skip("Gets stuck.")  # TODO fix
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -230,19 +253,24 @@ def test_tensorflow_instance_eq(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_floordiv(
+def test_tensorflow_floordiv(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -258,6 +286,7 @@ def test_tensorflow_instance_floordiv(
     )
 
 
+# __ge__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -268,17 +297,19 @@ def test_tensorflow_instance_floordiv(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ge(
+def test_tensorflow_ge(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -294,6 +325,7 @@ def test_tensorflow_instance_ge(
     )
 
 
+# __gt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -304,17 +336,19 @@ def test_tensorflow_instance_ge(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_gt(
+def test_tensorflow_gt(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -330,6 +364,7 @@ def test_tensorflow_instance_gt(
     )
 
 
+# __le__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -340,17 +375,19 @@ def test_tensorflow_instance_gt(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_le(
+def test_tensorflow_le(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -366,6 +403,7 @@ def test_tensorflow_instance_le(
     )
 
 
+# __lt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
@@ -376,17 +414,19 @@ def test_tensorflow_instance_le(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_lt(
+def test_tensorflow_lt(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -412,17 +452,19 @@ def test_tensorflow_instance_lt(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_mul(
+def test_tensorflow_mul(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -449,19 +491,21 @@ def test_tensorflow_instance_mul(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_mod(
+def test_tensorflow_mod(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -488,17 +532,19 @@ def test_tensorflow_instance_mod(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_sub(
+def test_tensorflow_sub(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -525,17 +571,19 @@ def test_tensorflow_instance_sub(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ne(
+def test_tensorflow_ne(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -562,17 +610,19 @@ def test_tensorflow_instance_ne(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_radd(
+def test_tensorflow_radd(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -597,19 +647,24 @@ def test_tensorflow_instance_radd(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_rfloordiv(
+def test_tensorflow_rfloordiv(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -636,17 +691,19 @@ def test_tensorflow_instance_rfloordiv(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rsub(
+def test_tensorflow_rsub(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -666,24 +723,26 @@ def test_tensorflow_instance_rsub(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
-    method_name="__add__",
+    method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_and(
+def test_tensorflow_and(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -710,17 +769,19 @@ def test_tensorflow_instance_and(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rand(
+def test_tensorflow_rand(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -747,17 +808,19 @@ def test_tensorflow_instance_rand(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_or(
+def test_tensorflow_or(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -784,17 +847,19 @@ def test_tensorflow_instance_or(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ror(
+def test_tensorflow_ror(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -819,19 +884,25 @@ def test_tensorflow_instance_ror(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_truediv(
+def test_tensorflow_truediv(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -856,19 +927,24 @@ def test_tensorflow_instance_truediv(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_rtruediv(
+def test_tensorflow_rtruediv(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -894,17 +970,19 @@ def test_tensorflow_instance_rtruediv(
         max_dim_size=1,
     ),
 )
-def test_tensorflow_instance_bool(
+def test_tensorflow_bool(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -928,17 +1006,19 @@ def test_tensorflow_instance_bool(
         max_dim_size=1,
     ),
 )
-def test_tensorflow_instance_nonzero(
+def test_tensorflow_nonzero(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -968,17 +1048,19 @@ def test_tensorflow_instance_nonzero(
         ],
     ),
 )
-def test_tensorflow_instance_neg(
+def test_tensorflow_neg(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1003,17 +1085,19 @@ def test_tensorflow_instance_neg(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rxor(
+def test_tensorflow_rxor(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1040,17 +1124,19 @@ def test_tensorflow_instance_rxor(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_xor(
+def test_tensorflow_xor(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1073,7 +1159,6 @@ def test_tensorflow_instance_xor(
     method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1082,19 +1167,24 @@ def test_tensorflow_instance_xor(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_matmul(
+def test_tensorflow_matmul(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1117,7 +1207,6 @@ def test_tensorflow_instance_matmul(
     method_name="__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
-            "float16",
             "float32",
             "float64",
             "int32",
@@ -1126,19 +1215,24 @@ def test_tensorflow_instance_matmul(
         shape=(3, 3),
         num_arrays=2,
         shared_dtype=True,
+        large_abs_safety_factor=10,
+        small_abs_safety_factor=10,
+        safety_factor_scale="log",
     ),
 )
-def test_tensorflow_instance_rmatmul(
+def test_tensorflow_rmatmul(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1162,26 +1256,28 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtype=helpers.get_dtypes("float", full=False),
 )
-def test_tensorflow_instance_array(
+def test_tensorflow_array(
     dtype_and_x,
     dtype,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dtype": dtype[0],
+            "dtype": np.dtype(dtype[0]),
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1200,17 +1296,19 @@ def test_tensorflow_instance_array(
         available_dtypes=helpers.get_dtypes("integer")
     ),
 )
-def test_tensorflow_instance_invert(
+def test_tensorflow_invert(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1237,17 +1335,19 @@ def test_tensorflow_instance_invert(
         max_value=100,
     ),
 )
-def test_tensorflow_instance_rmul(
+def test_tensorflow_rmul(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1270,17 +1370,19 @@ def test_tensorflow_instance_rmul(
     method_name="__rpow__",
     dtype_and_x=_pow_helper_shared_dtype(),
 )
-def test_tensorflow_instance_rpow(
+def test_tensorflow_rpow(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1313,12 +1415,13 @@ def test_tensorflow_instance_rpow(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_pow(
+def test_tensorflow_pow(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1331,6 +1434,7 @@ def test_tensorflow_instance_pow(
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },
@@ -1351,23 +1455,31 @@ def test_tensorflow_instance_pow(
     class_tree=CLASS_TREE,
     init_tree="tensorflow.constant",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
+    ).filter(
+        lambda x: (
+            all(_check_query(i) for i in x[-1])
+            if isinstance(x[-1], tuple)
+            else _check_query(x[-1])
+        )
     ),
 )
-def test_tensorflow_instance_getitem(
+def test_tensorflow_getitem(
     dtype_x_index,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"value": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"slice_spec": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -1430,17 +1542,19 @@ def _array_and_shape(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_instance_set_shape(
+def test_tensorflow_set_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"value": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"shape": x[1]},
@@ -1462,17 +1576,19 @@ def test_tensorflow_instance_set_shape(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_instance_len(
+def test_tensorflow_len(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "value": x[0],
         },

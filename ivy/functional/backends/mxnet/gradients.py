@@ -2,6 +2,7 @@
 
 # global
 from typing import Optional, Sequence, Union
+import mxnet as mx
 
 # local
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -12,7 +13,7 @@ def variable(x, /):
 
 
 def is_variable(x, /, *, exclusive=False):
-    raise IvyNotImplementedException()
+    return isinstance(x, mx.ndarray.NDArray)
 
 
 def variable_data(x, /):
@@ -25,8 +26,8 @@ def execute_with_gradients(
     /,
     *,
     retain_grads: bool = False,
-    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
-    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = None,
+    xs_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
+    ret_grad_idxs: Optional[Sequence[Sequence[Union[str, int]]]] = [[0]],
 ):
     raise IvyNotImplementedException()
 

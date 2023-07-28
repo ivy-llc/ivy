@@ -1,5 +1,8 @@
+import sys
 import ivy
 from ivy.utils.exceptions import handle_exceptions
+from ivy.functional.frontends import set_frontend_to_specific_version
+
 
 # global
 from numbers import Number
@@ -228,8 +231,19 @@ from .tensor.math import *
 from .tensor.random import *
 from .tensor.search import *
 from .tensor.einsum import *
+from .tensor.stat import *
 
 from .tensor.tensor import Tensor
 
 
 _frontend_array = Tensor
+
+# setting to specific version #
+# --------------------------- #
+
+if ivy.is_local():
+    module = ivy.utils._importlib.import_cache[__name__]
+else:
+    module = sys.modules[__name__]
+
+set_frontend_to_specific_version(module)

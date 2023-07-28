@@ -2,17 +2,23 @@
 
 # global
 import numpy as np
-from hypothesis import strategies as st, assume
+from hypothesis import assume
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _deconv_length
-from ivy.functional.ivy.gradients import _variable
-from ivy.data_classes.container import Container
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
+from ivy.data_classes.container import Container
+from ivy.functional.ivy.gradients import _variable
+from ivy.functional.ivy.layers import _deconv_length
 from ivy_tests.test_ivy.helpers import handle_method
-
+from ivy_tests.test_ivy.helpers.assertions import assert_same_type_and_shape
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn import (
+    test_layers as exp_layers_tests,
+)
+from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
+    valid_dct,
+)
 
 # Helpers #
 # --------#
@@ -84,6 +90,7 @@ def test_linear_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -92,6 +99,7 @@ def test_linear_layer(
     input_channels, input_dtype, x = ic_n_dtype_n_vals
     with_bias, bias_initializer = wb_n_b_init
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -143,12 +151,14 @@ def test_dropout_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -260,6 +270,7 @@ def test_multi_head_attention_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -280,6 +291,7 @@ def test_multi_head_attention_layer(
         with_to_out_fn,
     ) = dtype_mha
     ret_np_flat, ret_np_from_gt_flat = helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -408,6 +420,7 @@ def test_conv1d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -424,6 +437,7 @@ def test_conv1d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -474,6 +488,7 @@ def test_conv1d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -490,14 +505,9 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -545,6 +555,7 @@ def test_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -561,6 +572,7 @@ def test_conv2d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -614,6 +626,7 @@ def test_conv2d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -630,14 +643,9 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -689,6 +697,7 @@ def test_depthwise_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -704,12 +713,9 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow" and dilations > 1 and strides > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and dilations > 1 and strides > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -756,6 +762,7 @@ def test_conv3d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -771,14 +778,9 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -832,6 +834,7 @@ def test_conv3d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -848,14 +851,9 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(
-        not (
-            ivy.current_backend_str() == "tensorflow"
-            and on_device == "cpu"
-            and dilations > 1
-        )
-    )
+    assume(not (backend_fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -924,6 +922,7 @@ def test_lstm_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -932,6 +931,7 @@ def test_lstm_layer(
     return_sequence = return_sequence
     return_state = return_state
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1102,12 +1102,14 @@ def test_maxpool2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1139,12 +1141,14 @@ def test_avgpool2d_layer(
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, kernel_size, stride, padding = x_k_s_p
     helpers.test_method(
+        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1165,3 +1169,386 @@ def test_avgpool2d_layer(
 
 
 # ToDo : Add gradient testing once random number generation is unified
+
+
+@handle_method(
+    method_tree="AvgPool3D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+    count_include_pad=st.booleans(),
+    ceil_mode=st.booleans(),
+    divisor_override=st.one_of(st.none(), st.integers(min_value=1, max_value=4)),
+)
+def test_avgpool3d_layer(
+    *,
+    x_k_s_p,
+    count_include_pad,
+    ceil_mode,
+    divisor_override,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "count_include_pad": count_include_pad,
+            "ceil_mode": ceil_mode,
+            "divisor_override": divisor_override,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# MaxPool1D
+@handle_method(
+    method_tree="MaxPool1D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_maxpool1d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# MaxPool3D
+@handle_method(
+    method_tree="MaxPool3D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
+)
+def test_maxpool3d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AdaptiveAveragePool2d
+@st.composite
+def array_for_adaptive(
+    draw,
+    num_dims=3,
+    max_dim_size=8,
+    min_dim_size=3,
+    num_out_size=2,
+):
+    dtypes, arrays = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    size = draw(
+        helpers.list_of_size(
+            x=helpers.ints(min_value=3, max_value=5),
+            size=num_out_size,
+        )
+    )
+    output_size = size[0] if num_out_size == 1 else size
+    return dtypes, arrays, output_size
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool2d.__call__",
+    dt_arr_size=array_for_adaptive(),
+)
+def test_adaptive_avg_pool2d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="AdaptiveAvgPool1d.__call__",
+    dt_arr_size=array_for_adaptive(max_dim_size=3, min_dim_size=2, num_out_size=1),
+)
+def test_adaptive_avg_pool1d_layer(
+    *,
+    dt_arr_size,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    input_dtype, x, out_size = dt_arr_size
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "output_size": out_size,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# FFT
+@handle_method(
+    method_tree="FFT.__call__",
+    x_and_fft=exp_layers_tests.x_and_fft(),
+)
+def test_fft_layer(
+    *,
+    x_and_fft,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtype, x, dim, norm, n = x_and_fft
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dim": dim,
+            "norm": norm,
+            "n": n,
+            "device": on_device,
+            "dtype": dtype[0],
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# AvgPool1D
+@handle_method(
+    method_tree="AvgPool1D.__call__",
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_avgpool1d_layer(
+    *,
+    x_k_s_p,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    input_dtype, x, kernel_size, stride, padding = x_k_s_p
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "kernel_size": kernel_size,
+            "stride": stride,
+            "padding": padding,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+@handle_method(
+    method_tree="Dct.__call__",
+    dtype_x_and_args=valid_dct(),
+)
+def test_dct(
+    *,
+    dtype_x_and_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtype, x, type, n, axis, norm = dtype_x_and_args
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "dtype": dtype[0],
+            "type": type,
+            "n": n,
+            "axis": axis,
+            "norm": norm,
+            "device": on_device,
+        },
+        method_input_dtypes=dtype,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+    )
+
+
+# Embedding
+@handle_method(
+    method_tree="Embedding.__call__",
+    dtypes_indices_weights=helpers.embedding_helper(),
+    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    number_positional_args=st.just(2),
+)
+def test_embedding_layer(
+    *,
+    dtypes_indices_weights,
+    max_norm,
+    number_positional_args,
+    test_gradients,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    dtypes, indices, weights = dtypes_indices_weights
+    dtypes = [dtypes[1], dtypes[0]]
+
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "indices": indices,
+            "max_norm": max_norm,
+            "device": on_device,
+            "dtype": dtypes[0],
+        },
+        method_input_dtypes=dtypes,
+        method_all_as_kwargs_np={"inputs": weights},
+        class_name=class_name,
+        method_name=method_name,
+        test_gradients=test_gradients,
+        on_device=on_device,
+        number_positional_args=number_positional_args,
+    )

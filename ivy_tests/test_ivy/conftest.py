@@ -2,38 +2,13 @@
 import os
 import pytest
 from typing import Dict
-import subprocess
-import importlib
-from .. import config as env_config
-
-mod_frontend = {
-    "tensorflow": None,
-    "numpy": None,
-    "jax": None,
-    "torch": None,
-    "mindspore": None,
-    "scipy": None,
-    "paddle": None,
-}  # multiversion
-mod_backend = {
-    "tensorflow": None,
-    "numpy": None,
-    "jax": None,
-    "torch": None,
-    "paddle": None,
-    "mxnet": None,
-}  # multiversion
-
-ground_backend = None  # multiversion
 
 # local
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy import DefaultDevice
 from ivy import set_exception_trace_mode
 from ivy_tests.test_ivy.helpers import globals as test_globals
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks  # noqa
 
-available_frameworks = available_frameworks()
 GENERAL_CONFIG_DICT = {}
 UNSET_TEST_CONFIG = {"list": [], "flag": []}
 UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
@@ -76,55 +51,6 @@ def pytest_configure(config):
     else:
         backend_strs = raw_value.split(",")
 
-    # env specification for multiversion backend
-    env_val = config.getoption("--env")
-    if env_val:
-        # check if multiversion format in backend argument
-        if [True if "/" in x else False for x in backend_strs][0]:
-            raise Exception("--env and '/' naming in backend can't be used together")
-        else:
-            env_val = env_val.split(",")
-            env_config.allow_global_framework_imports(fw=env_val)
-
-    # frontend
-    frontend = config.getoption("--frontend")
-    if frontend:
-        frontend_strs = frontend.split(",")
-        for i in frontend_strs:
-            process = subprocess.Popen(
-                [
-                    "/opt/miniconda/envs/multienv/bin/python",
-                    "multiversion_frontend_test.py",
-                    "numpy" + "/" + importlib.import_module("numpy").__version__,
-                    i,
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            )
-            mod_frontend[i.split("/")[0]] = [i, process]
-
-    # ground truth
-    ground_truth = config.getoption("--ground_truth")
-    global ground_backend
-    if ground_truth:
-        ground_backend = [
-            ground_truth,
-            subprocess.Popen(
-                [
-                    "/opt/miniconda/envs/multienv/bin/python",
-                    "multiversion_backend_test.py",
-                    "numpy" + "/" + importlib.import_module("numpy").__version__,
-                    ground_truth,
-                ],
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-            ),
-        ]
-
     # compile_graph
     raw_value = config.getoption("--compile_graph")
     if raw_value == "both":
@@ -152,67 +78,42 @@ def pytest_configure(config):
                 continue
             for compile_graph in compile_modes:
                 for implicit in implicit_modes:
-                    if "/" in backend_str:
-                        mod_backend[backend_str.split("/")[0]] = backend_str
-                        TEST_PARAMS_CONFIG.append(
-                            (
-                                device,
-                                test_globals.FWS_DICT[backend_str.split("/")[0]](
-                                    backend_str
-                                ),
-                                compile_graph,
-                                implicit,
-                            )
+                    TEST_PARAMS_CONFIG.append(
+                        (
+                            device,
+                            backend_str,
+                            compile_graph,
+                            implicit,
                         )
-                    else:
-                        TEST_PARAMS_CONFIG.append(
-                            (
-                                device,
-                                test_globals.FWS_DICT[backend_str](),
-                                compile_graph,
-                                implicit,
-                            )
-                        )
+                    )
 
     process_cl_flags(config)
 
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    ivy_test = hasattr(request.function, "_ivy_test")
-    if ivy_test:
-        try:
-            if ground_backend:
-                test_globals.setup_api_test(
-                    backend_fw.backend,
-                    ground_backend,
-                    on_device,
-                    (
-                        request.function.test_data
-                        if hasattr(request.function, "test_data")
-                        else None
-                    ),
-                )
-            else:
-                test_globals.setup_api_test(
-                    backend_fw.backend,
-                    request.function.ground_truth_backend,
-                    on_device,
-                    (
-                        request.function.test_data
-                        if hasattr(request.function, "test_data")
-                        else None
-                    ),
-                )
+    try:
+        test_globals.setup_api_test(
+            backend_fw,
+            (
+                request.function.ground_truth_backend
+                if hasattr(request.function, "ground_truth_backend")
+                else None
+            ),
+            on_device,
+            (
+                request.function.test_data
+                if hasattr(request.function, "test_data")
+                else None
+            ),
+        )
 
-        except Exception as e:
-            test_globals.teardown_api_test()
-            raise RuntimeError(f"Setting up test for {request.function} failed.") from e
-    with backend_fw.use:
-        with DefaultDevice(on_device):
-            yield
-    if ivy_test:
+    except Exception as e:
         test_globals.teardown_api_test()
+        raise RuntimeError(f"Setting up test for {request.function} failed.") from e
+
+    yield
+    test_globals.teardown_api_test()
 
 
 def pytest_generate_tests(metafunc):
@@ -223,7 +124,8 @@ def pytest_generate_tests(metafunc):
         test_paramters = TEST_PARAMS_CONFIG.copy()
         # Find the entries that contains the ground truth backend as it's backend
         for entry in test_paramters.copy():
-            if entry[1].backend == metafunc.function.ground_truth_backend:
+            # Entry 1 is backend_fw
+            if entry[1] == metafunc.function.ground_truth_backend:
                 test_paramters.remove(entry)
         metafunc.parametrize(
             "on_device,backend_fw,compile_graph,implicit", test_paramters

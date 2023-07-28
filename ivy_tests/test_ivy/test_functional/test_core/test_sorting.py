@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 @handle_test(
     fn_tree="functional.ivy.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -24,22 +24,13 @@ from ivy_tests.test_ivy.helpers import handle_test
     test_gradients=st.just(False),
 )
 def test_argsort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -53,7 +44,7 @@ def test_argsort(
 @handle_test(
     fn_tree="functional.ivy.sort",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -64,22 +55,13 @@ def test_argsort(
     test_gradients=st.just(False),
 )
 def test_sort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -103,21 +85,13 @@ def test_sort(
     ),
     test_gradients=st.just(False),
 )
-def test_msort(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_msort(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -185,8 +159,7 @@ def test_searchsorted(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
@@ -197,10 +170,9 @@ def test_searchsorted(
         sorter = None
         xs[0] = np.sort(xs[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=xs[0],

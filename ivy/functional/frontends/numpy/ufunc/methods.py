@@ -51,7 +51,6 @@ ufuncs = [
     "heaviside",
     "hypot",
     "invert",
-    "imag",
     "invert",
     "isfinite",
     "isinf",

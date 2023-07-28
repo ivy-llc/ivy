@@ -66,8 +66,8 @@ def slogdet(a, method=None):
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(M):
-    return ivy.matrix_rank(M)
+def matrix_rank(M, tol=None):
+    return ivy.matrix_rank(M, atol=tol)
 
 
 @to_ivy_arrays_and_back
@@ -107,7 +107,7 @@ def tensorsolve(a, b, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
@@ -125,30 +125,4 @@ def tensorinv(a, ind=2):
 
 @to_ivy_arrays_and_back
 def cond(x, p=None):
-    for a in x:
-        if a.size == 0 and ivy.prod(a.shape[-2:]) == 0:
-            raise ValueError("Arrays cannot be empty")
-    if p in (None, 2):
-        s = ivy.svd(x, compute_uv=False)
-        return s[..., 0] / s[..., -1]
-    elif p == -2:
-        s = ivy.svd(x, compute_uv=False)
-        r = s[..., -1] / s[..., 0]
-    else:
-        if ivy.get_num_dims(x) < 2:
-            raise ValueError(
-                "%d-dimensional array given. Array must be at least two-dimensional"
-                % ivy.get_num_dims(x)
-            )
-        m, n = ivy.shape(x)[-2:]
-        if m != n:
-            raise ValueError("Last 2 dimensions of the array must be square")
-        invx = ivy.inv(x)
-        r = ivy.matrix_norm(x, ord=p, axis=(-2, -1)) * ivy.norm(
-            invx, ord=p, axis=(-2, -1)
-        )
-    # Convert nans to infs unless the original array had nan entries
-    orig_nan_check = ivy.full_like(r, ~ivy.isnan(r).any())
-    nan_mask = ivy.logical_and(ivy.isnan(r), ~ivy.isnan(x).any(axis=(-2, -1)))
-    r = ivy.where(orig_nan_check, ivy.where(nan_mask, ivy.inf, r), r)
-    return r
+    return ivy.cond(x, p=p)

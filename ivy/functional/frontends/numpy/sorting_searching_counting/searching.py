@@ -92,3 +92,11 @@ def nanargmax(a, /, *, axis=None, out=None, keepdims=False):
 def nanargmin(a, /, *, axis=None, out=None, keepdims=False):
     a = _nanargminmax(a, axis=axis)
     return ivy.argmin(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def extract(cond, arr, /):
+    if cond.dtype == "bool":
+        return arr[cond]
+    else:
+        return arr[cond != 0]

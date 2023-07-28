@@ -16,6 +16,10 @@
 .. _`Discord`: https://discord.gg/sXyFF8tDtm
 .. _`Twitter`: https://twitter.com/letsunifyai
 
+..
+
+   🚀 We are granting pilot access to **Ivy's Compiler and Transpiler** to some users, `join the waitlist <https://console.unify.ai/>`_ if you want to test them out!
+
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
    :width: 100%
@@ -25,14 +29,40 @@
    :width: 100%
    :class: only-light
 
-..
-
-   ⚠️ **Warning**: The compiler and the transpiler are not publicly available yet, so certain parts of this README won't work as expected as of now!
+------------------------------------------------------
 
 .. raw:: html
 
-    <br/>
-    <div align="center">
+    <div style="display: block;" align="center">
+    <a href="https://unify.ai/">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/docs_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/demos">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/examples_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy/overview/design.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/design_button.svg">
+    </a>
+    <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://unify.ai/docs/ivy/overview/faq.html">
+        <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.svg">
+    </a>
+    </div>
+
+------------------------------------------------------
+
+Status
+^^^^^^
+
+.. raw:: html
+
+    <div>
     <a href="https://github.com/unifyai/ivy/issues">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
     </a>
@@ -45,14 +75,14 @@
     <a href="https://github.com/unifyai/ivy/pulls">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://pypi.org/project/ivy-core">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-core.svg">
+    <a href="https://pypi.org/project/ivy">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/docs.yml/badge.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Atest-ivy">
-        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/test-ivy.yml/badge.svg">
+        <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://github.com/unifyai/ivy/actions/workflows/intelligent-tests.yml/badge.svg">
     </a>
     <a href="https://discord.gg/sXyFF8tDtm">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
@@ -60,31 +90,33 @@
     </div>
     <br clear="all" />
 
-.. raw:: html
+------------------------------------------------------
 
-    <div style="display: block;" align="center">
-    <b><a href="https://unify.ai/">Website</a></b> | <b><a href="https://unify.ai/docs/ivy/">Docs</a></b> | <b><a href="https://unify.ai/demos/">Examples</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/design.html">Design</a></b> | <b><a href="https://unify.ai/docs/ivy/overview/faq.html">FAQ</a></b><br><br>
-    
-    <b>All of AI, at your fingertips</b>
-    
-    </div>
-    
-    <br>
-    
+Unified AI
+^^^^^^^^^^
+
+.. raw:: html
+        
     <div style="display: block;" align="center">
         <div>
         <a href="https://jax.readthedocs.io">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
-        <img width="1%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        
+        <img class="dark-light" width="5%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
             <img class="dark-light" width="10%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
@@ -108,18 +140,7 @@ and take a look at the `open tasks`_ if you'd like to dive straight in 🧑‍�
 
 **Let's** `unify.ai <https://unify.ai>`_ **together 🦾**
 
-
-Contents
---------
-
-* `Ivy as a transpiler`_
-* `Ivy as a framework`_
-* `Setting up Ivy`_
-* `Documentation`_
-* `Examples`_
-* `Contributing`_
-* `Community`_
-* `Citation`_
+------------------------------------------------------
 
 Ivy as a transpiler
 -------------------
@@ -211,16 +232,21 @@ The `Ivy Stateful API <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framew
 
     import ivy
 
+
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear = ivy.Linear(input_dim, output_dim)
-            self.sigmoid = ivy.Sigmoid()
-            self.dropout = ivy.Dropout(0.5)
-            ivy.Module.__init__(self)
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
 
-        def _forward(self, x, is_training=True):
-            x = self.sigmoid(self.linear(x))
-            x = self.dropout(x, is_training=is_training)
+        def _build(self, *args, **kwargs):
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
+
+        def _forward(self, x):
+            x = self.linear0(x)
+            x = ivy.functional.relu(x)
+            x = self.linear1(x)
             return x
 
 
@@ -231,36 +257,44 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
 
     import ivy
 
+
     class Regressor(ivy.Module):
         def __init__(self, input_dim, output_dim):
-            self.linear = ivy.Linear(input_dim, output_dim)
-            self.sigmoid = ivy.Sigmoid()
-            self.dropout = ivy.Dropout(0.5)
-            ivy.Module.__init__(self)
+            self.input_dim = input_dim
+            self.output_dim = output_dim
+            super().__init__()
 
-        def _forward(self, x, is_training=True):
-            x = self.sigmoid(self.linear(x))
-            x = self.dropout(x, is_training=is_training)
+        def _build(self, *args, **kwargs):
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
+
+        def _forward(self, x):
+            x = self.linear0(x)
+            x = ivy.functional.relu(x)
+            x = self.linear1(x)
             return x
 
-    ivy.set_backend('torch')  # set backend to PyTorch
+    ivy.set_backend('torch')  # set backend to PyTorch (or any other backend!)
 
-    model = Regressor(input_dim=3, output_dim=1)
-    optimizer = ivy.Adam(1e-4)
+    model = Regressor(input_dim=1, output_dim=1)
+    optimizer = ivy.Adam(0.3)
 
-    # generate some random data
-    x = ivy.random.random_normal(shape=(100, 3))
-    y = ivy.random.random_normal(shape=(100, 1))
+    n_training_examples = 2000
+    noise = ivy.random.random_normal(shape=(n_training_examples, 1), mean=0, std=0.1)
+    x = ivy.linspace(-6, 3, n_training_examples).reshape((n_training_examples, 1))
+    y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
-    def loss_fn(pred, target):
-        return ivy.mean((pred - target)**2)
 
-    for epoch in range(50):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
+        return ivy.mean((pred - target) ** 2)
+
+    for epoch in range(40):
         # forward pass
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -275,7 +309,7 @@ The model's output can be visualized as follows:
 .. raw:: html
 
    <div align="center">
-      <img width="50%" src="https://i.imgur.com/DUc97i2.gif">
+      <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
    </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
@@ -286,25 +320,46 @@ covering topics like `Mechanics`_, `Computer Vision`_, `Robotics`_, a `Reinforce
     <br/>
     <div align="center">
     <a href="https://github.com/unifyai/mech">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/vision">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/robot">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/gym">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/memory">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/builder">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
+        </picture>
     </a>
     <a href="https://github.com/unifyai/models">
-        <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
+        <picture>
+            <source class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png">
+            <img class="dark-light" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
+        </picture>
     </a>
     </div>
     <br clear="all" />
@@ -328,13 +383,13 @@ The easiest way to set up Ivy is to install it using pip with the following comm
 
 .. code-block:: bash
 
-    pip install ivy-core
+    pip install ivy
 
 or alternatively:
 
 .. code-block:: bash
 
-    python3 -m pip install ivy-core
+    python3 -m pip install ivy
 
 
 Docker
@@ -423,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
@@ -1385,22 +1440,30 @@ Or you can use Ivy as a framework, breaking yourself (and your code) free from d
             data_format="NCHW",
             device="cpu",
         ):
+            self.h_w = h_w
+            self.input_channels = input_channels
+            self.output_channels = output_channels
+            self.num_classes = num_classes
+            self.data_format = data_format
+            self.device = device
+            super().__init__()
+        
+        def _build(self, *args, **kwargs):
             self.extractor = ivy.Sequential(
-                ivy.Conv2D(input_channels, 6, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(self.input_channels, 6, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(6, 16, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
-                ivy.Conv2D(16, output_channels, [5, 5], 1, "SAME", data_format=data_format),
+                ivy.Conv2D(16, self.output_channels, [5, 5], 1, "SAME", data_format=self.data_format),
                 ivy.GELU(),
             )
 
             self.classifier = ivy.Sequential(
                 # since padding is "SAME", this would be image_height x image_width x output_channels
-                ivy.Linear(h_w[0] * h_w[1] * output_channels, 512),
+                ivy.Linear(self.h_w[0] * self.h_w[1] * self.output_channels, 512),
                 ivy.GELU(),
-                ivy.Linear(512, num_classes),
+                ivy.Linear(512, self.num_classes),
             )
-            ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = self.extractor(x)
@@ -1488,6 +1551,12 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
+    # training hyperparams
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
@@ -1496,13 +1565,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
         device=device,
     )
     model_name = type(model).__name__.lower()
-    
-    
-    # training hyperparams
-    optimizer= ivy.Adam(1e-4)
-    batch_size = 64 
-    num_epochs = 20
-    num_classes = 10
     
     
     # training loop
@@ -1534,8 +1596,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])
@@ -1590,7 +1650,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
    </a>
 
 |
@@ -1600,7 +1660,7 @@ Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need as many hands as possible on it! Whether you are a seasoned developer or just starting out, you'll find a place here! Join the Ivy community in our `Discord`_ 👾 server, which is the perfect place to ask questions, share ideas, and get help from both fellow developers and the Ivy Team directly!
 
-Also! Feel free to follow us in `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
+Also! Feel free to follow us on `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
 
 Can't wait to see you there!
 

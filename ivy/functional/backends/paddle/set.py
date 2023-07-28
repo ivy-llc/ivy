@@ -2,15 +2,15 @@
 import paddle
 from typing import Tuple, Optional
 from collections import namedtuple
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # local
-import ivy
 from . import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("complex",)}}, backend_version
 )
 def unique_all(
     x: paddle.Tensor,
@@ -28,7 +28,8 @@ def unique_all(
         x, x_dtype = x.cast("float32"), x.dtype
     else:
         x_dtype = x.dtype
-
+    if axis is not None:
+        axis = axis % x.ndim
     values, indices, inverse_indices, counts = paddle.unique(
         x,
         return_index=True,
@@ -52,13 +53,21 @@ def unique_all(
 
     if not by_value:
         sort_idx = paddle.argsort(indices)
-        values = paddle.gather(values, sort_idx, axis=axis)
-        counts = paddle.gather(counts, sort_idx)
-        ivy_paddle = ivy.current_backend()
-        inv_sort_idx = ivy_paddle.invert_permutation(sort_idx)
-        inverse_indices = ivy_paddle.vmap(lambda y: paddle.gather(inv_sort_idx, y))(
-            inverse_indices
+    else:
+        if axis is None:
+            axis = 0
+        values_ = paddle.moveaxis(values, axis, 0)
+        values_ = paddle.reshape(values_, (values_.shape[0], -1))
+        sort_idx = paddle.to_tensor(
+            [i[0] for i in sorted(list(enumerate(values_)), key=lambda x: tuple(x[1]))]
         )
+    values = paddle.gather(values, sort_idx, axis=axis)
+    counts = paddle.gather(counts, sort_idx)
+    indices = paddle.gather(indices, sort_idx)
+    inv_sort_idx = paddle_backend.invert_permutation(sort_idx)
+    inverse_indices = paddle_backend.vmap(lambda y: paddle.gather(inv_sort_idx, y))(
+        inverse_indices
+    )
 
     return Results(
         values.cast(x_dtype),
@@ -69,7 +78,7 @@ def unique_all(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("complex",)}}, backend_version
 )
 def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
@@ -97,7 +106,7 @@ def unique_counts(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("complex",)}}, backend_version
 )
 def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
@@ -123,7 +132,7 @@ def unique_inverse(x: paddle.Tensor, /) -> Tuple[paddle.Tensor, paddle.Tensor]:
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}}, backend_version
+    {"2.5.0 and below": {"cpu": ("complex",)}}, backend_version
 )
 def unique_values(
     x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None

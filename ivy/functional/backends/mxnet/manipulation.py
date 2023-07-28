@@ -76,12 +76,15 @@ def roll(
 def squeeze(
     x: Union[(None, mx.ndarray.NDArray)],
     /,
-    axis: Union[(int, Sequence[int])],
     *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
     copy: Optional[bool] = None,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    if copy:
+        newarr = x.copy()
+        return mx.nd.squeeze(newarr, axis=axis)
+    return mx.nd.squeeze(x, axis=axis)
 
 
 def stack(
@@ -159,7 +162,7 @@ def clip(
     *,
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
-    raise IvyNotImplementedException()
+    return mx.nd.clip(x, x_min, x_max)
 
 
 def unstack(

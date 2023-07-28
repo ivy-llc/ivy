@@ -14,10 +14,10 @@ class _ContainerWithSearching(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        select_last_index: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -75,10 +75,10 @@ class _ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[int] = None,
-        keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        select_last_index: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -137,10 +137,10 @@ class _ContainerWithSearching(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = None,
-        keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
-        select_last_index: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.int32, ivy.int64, ivy.Container]] = None,
+        select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -160,7 +160,7 @@ class _ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        output_dtype
+        dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -190,7 +190,7 @@ class _ContainerWithSearching(ContainerBase):
             x,
             axis=axis,
             keepdims=keepdims,
-            output_dtype=output_dtype,
+            dtype=dtype,
             select_last_index=select_last_index,
             out=out,
         )
@@ -199,10 +199,10 @@ class _ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[int] = None,
-        keepdims: bool = False,
-        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
-        select_last_index: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        keepdims: Union[bool, ivy.Container] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        select_last_index: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -222,7 +222,7 @@ class _ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        output_dtype
+        dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -261,7 +261,7 @@ class _ContainerWithSearching(ContainerBase):
             self,
             axis=axis,
             keepdims=keepdims,
-            output_dtype=output_dtype,
+            dtype=dtype,
             select_last_index=select_last_index,
             out=out,
         )
@@ -271,9 +271,9 @@ class _ContainerWithSearching(ContainerBase):
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        as_tuple: bool = True,
-        size: Optional[int] = None,
-        fill_value: Number = 0,
+        as_tuple: Union[bool, ivy.Container] = True,
+        size: Optional[Union[int, ivy.Container]] = None,
+        fill_value: Union[Number, ivy.Container] = 0,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.nonzero. This method simply wraps the
@@ -311,9 +311,9 @@ class _ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        as_tuple: bool = True,
-        size: Optional[int] = None,
-        fill_value: Number = 0,
+        as_tuple: Union[bool, ivy.Container] = True,
+        size: Optional[Union[int, ivy.Container]] = None,
+        fill_value: Union[Number, ivy.Container] = 0,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.nonzero. This method simply wraps
@@ -446,10 +446,10 @@ class _ContainerWithSearching(ContainerBase):
         x: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -512,10 +512,10 @@ class _ContainerWithSearching(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """

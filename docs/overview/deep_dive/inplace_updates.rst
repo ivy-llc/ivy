@@ -21,11 +21,10 @@ Inplace Updates
 .. _`ivy.inplace_update`: https://github.com/unifyai/ivy/blob/3a21a6bef52b93989f2fa2fa90e3b0f08cc2eb1b/ivy/functional/ivy/general.py#L1137
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
-.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/982738152236130335
+.. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
-.. _`in the decorator`: https://github.com/unifyai/ivy/blob/588618fe04de21f79d68a8f6cbb48ab3402c6905/ivy/func_wrapper.py#L287
-.. _`mixed_function attribute`: https://github.com/unifyai/ivy/blob/fe162b84a6d5f492f9e2cef4fbd145fadede8b8f/ivy/func_wrapper.py#L574
-.. _`out argument as a keyword argument`: https://github.com/unifyai/ivy/blob/e4505b6a7ad4922ed423ae09da8c9707c9926161/ivy/func_wrapper.py#L585
+.. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
+
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
 This enables much more control over the memory-efficiency of the program, preventing old unused arrays from being kept in memory for any longer than is strictly necessary.
@@ -286,9 +285,10 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 
 .. code-block:: python
 
-    @_handle_0_dim_output
+    @_scalar_output_to_0d_array
     def tan(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
         return np.tan(x, out=out)
+
 
     tan.support_native_out = True
 
@@ -307,8 +307,9 @@ The implementations of :func:`ivy.tan` for each backend are as follows.
 **PyTorch** (includes :code:`support_native_out` attribute):
 
 .. code-block:: python
-
+    
     def tan(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+        x = _cast_for_unary_op(x)
         return torch.tan(x, out=out)
 
     tan.support_native_out = True
@@ -354,7 +355,7 @@ This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensur
 Another case where we need to use :func:`ivy.inplace_update`_ with a function that has :attr:`support_native_out` is for the example of the :code:`torch` backend implementation of the :func:`ivy.remainder` function
 
 .. code-block:: python
-
+ 
     def remainder(
         x1: Union[float, torch.Tensor],
         x2: Union[float, torch.Tensor],
@@ -378,6 +379,9 @@ Another case where we need to use :func:`ivy.inplace_update`_ with a function th
         return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 
+    remainder.support_native_out = True
+
+
 Here, even though the :func:`torch.round` function natively supports the :code:`out` argument, in case the :code:`dtype` of the :code:`out` argument is different
 from the :code:`dtype` of the result of the function, we need to use :func:`ivy.inplace_update`, while still trying to utilize the native :code:`out` argument whenever
 the :code:`dtype` is the same for maximum possible extent of the native inplace update.
@@ -398,6 +402,7 @@ The second and third points are the most important points.
 
 We'll use :func:`ivy.cross_entropy` as an example:
 
+
 .. code-block:: python
 
     def cross_entropy(
@@ -405,13 +410,15 @@ We'll use :func:`ivy.cross_entropy` as an example:
         pred: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: Optional[int] = -1,
-        epsilon: float =1e-7,
-        out: Optional[ivy.Array] = None
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
         pred = ivy.clip(pred, epsilon, 1 - epsilon)
         log_pred = ivy.log(pred)
-        return ivy.negative(ivy.sum(log_pred * true, axis, out=out), out=out)
+        return _reduce_loss(reduction, log_pred * true, axis, out=out)
 
 By handling the :code:`out` argument in the function, we are able to get the benefits outlined above.
 Firstly, the return of :func:`ivy.sum` is the same shape and type as the return of the entire function, and so we can also write this output to the :code:`out` argument inplace.
@@ -429,13 +436,23 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 **Mixed Functions**
 
-As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected.
+As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
+the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example`_ from the linear function.
 
-Unlike *compositional* functions, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for *mixed* functions.
-This decorator is needed in order to ensure the :code:`out` argument is handled correctly when the backend *does* include a backend-specific implementation, which itself may or may not handle the :code:`out` argument explicitly.
-In such cases, the *mixed* function behaves like a *primary* function.
-If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. Moreover, when the mixed function defers to the compositional implementation, the handle_out_argument decorator will check for the `mixed_function attribute`_ and call the compositional function by directly passing the `out argument as a keyword argument`_.
 
+copy argument
+-------------
+
+As well as the :code:`out` argument, many also support the :code:`copy` argument.
+The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
+Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
+
+The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
+When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
+Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
+If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
+If both are specified, then priority is given to the more general :code:`out` argument.
+As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
 
 
 Views
@@ -468,6 +485,10 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
 #. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
+.. note:: 
+    Parts of an arrays metadata like :code:`stride` are attributed to the low-level memory layout of arrays while views in :code:`ivy` operate at a higher level of abstraction.
+    As a result, :func:`ivy.strides` isn't guaranteed to produce an output reflective of the underlying memory layout if the :class:`ivy.Array` passed in is a view (or in other words has a :code:`_base`).
+
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
 
 #. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
@@ -490,20 +511,6 @@ Here's a brief description of what happens during an inplace operation with a Py
    If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
 #. All other views are expected to be updated automatically through PyTorch's native view handling.
 
-copy argument
--------------
-
-As well as the :code:`out` argument, many also support the :code:`copy` argument.
-The functions with support for the :code:`copy` argument are either in the `Array API Standard`_, and the standard mandates the inclusion of :code:`copy` in each case.
-Or they are expected to return views with specific backends (hence being decorated with the :code:`@handle_view` wrapper) and the :code:`copy` is added to allow a way to prevent views from being created.
-
-The :code:`copy` argument dictates whether a new copy should be created, or whether the input array should be updated inplace.
-When :code:`copy` is not specified explicitly, then an inplace update is performed with the same behaviour as :code:`copy=False`.
-Setting :code:`copy=False` is equivalent to passing :code:`out=input_array`.
-If only one of :code:`copy` or :code:`out` is specified, then this specified argument is given priority.
-If both are specified, then priority is given to the more general :code:`out` argument.
-As with the :code:`out` argument, the :code:`copy` argument is also handled `by the wrapper <insert_link>`_.
-
 **Round Up**
 
 This should have hopefully given you a good feel for inplace updates, and how these are handled in Ivy.
@@ -515,6 +522,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
     </iframe>

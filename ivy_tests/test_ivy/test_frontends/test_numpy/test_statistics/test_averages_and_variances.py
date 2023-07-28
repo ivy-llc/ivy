@@ -6,7 +6,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    statistical_dtype_values,
+    _statistical_dtype_values,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # mean
 @handle_frontend_test(
     fn_tree="numpy.mean",
-    dtype_and_x=statistical_dtype_values(function="mean"),
+    dtype_and_x=_statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -25,6 +25,7 @@ def test_numpy_mean(
     dtype,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -43,6 +44,7 @@ def test_numpy_mean(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -61,7 +63,7 @@ def test_numpy_mean(
 # nanmean
 @handle_frontend_test(
     fn_tree="numpy.nanmean",
-    dtype_and_a=statistical_dtype_values(function="mean"),
+    dtype_and_a=_statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -71,6 +73,7 @@ def test_numpy_nanmean(
     dtype,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -89,6 +92,7 @@ def test_numpy_nanmean(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -107,7 +111,7 @@ def test_numpy_nanmean(
 # std
 @handle_frontend_test(
     fn_tree="numpy.std",
-    dtype_and_x=statistical_dtype_values(function="std"),
+    dtype_and_x=_statistical_dtype_values(function="std"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -117,6 +121,7 @@ def test_numpy_std(
     dtype,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -134,6 +139,7 @@ def test_numpy_std(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -152,8 +158,8 @@ def test_numpy_std(
 # average
 @handle_frontend_test(
     fn_tree="numpy.average",
-    dtype_and_a=statistical_dtype_values(function="average"),
-    dtype_and_x=statistical_dtype_values(function="average"),
+    dtype_and_a=_statistical_dtype_values(function="average"),
+    dtype_and_x=_statistical_dtype_values(function="average"),
     keep_dims=st.booleans(),
     returned=st.booleans(),
     test_with_out=st.just(False),
@@ -164,6 +170,7 @@ def test_numpy_average(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     keep_dims,
     returned,
     on_device,
@@ -179,6 +186,7 @@ def test_numpy_average(
         helpers.test_frontend_function(
             a=a[0],
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             weights=xs[0],
             axis=axis,
             frontend=frontend,
@@ -199,7 +207,7 @@ def test_numpy_average(
 # nanstd
 @handle_frontend_test(
     fn_tree="numpy.nanstd",
-    dtype_and_a=statistical_dtype_values(function="nanstd"),
+    dtype_and_a=_statistical_dtype_values(function="nanstd"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -209,6 +217,7 @@ def test_numpy_nanstd(
     dtype,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -226,6 +235,7 @@ def test_numpy_nanstd(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -241,43 +251,144 @@ def test_numpy_nanstd(
     )
 
 
+@st.composite
+def _get_dtype_value1_value2_cov(
+    draw,
+    available_dtypes,
+    min_num_dims,
+    max_num_dims,
+    min_dim_size,
+    max_dim_size,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    allow_inf=False,
+    exclude_min=False,
+    exclude_max=False,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
+    safety_factor_scale="log",
+):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+
+    dtype = draw(st.sampled_from(draw(available_dtypes)))
+
+    values = []
+    for i in range(2):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=dtype,
+                    shape=shape,
+                    abs_smallest_val=abs_smallest_val,
+                    min_value=min_value,
+                    max_value=max_value,
+                    allow_inf=allow_inf,
+                    exclude_min=exclude_min,
+                    exclude_max=exclude_max,
+                    large_abs_safety_factor=large_abs_safety_factor,
+                    small_abs_safety_factor=small_abs_safety_factor,
+                    safety_factor_scale=safety_factor_scale,
+                )
+            )
+        )
+
+    value1, value2 = values[0], values[1]
+
+    # modifiers: rowVar, bias, ddof
+    rowVar = draw(st.booleans())
+    bias = draw(st.booleans())
+    ddof = draw(helpers.ints(min_value=0, max_value=1))
+
+    numVals = None
+    if rowVar is False:
+        numVals = -1 if numVals == 0 else 0
+    else:
+        numVals = 0 if len(shape) == 1 else -1
+
+    fweights = draw(
+        helpers.array_values(
+            dtype="int64",
+            shape=shape[numVals],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+        )
+    )
+
+    aweights = draw(
+        helpers.array_values(
+            dtype="float64",
+            shape=shape[numVals],
+            abs_smallest_val=1,
+            min_value=1,
+            max_value=10,
+            allow_inf=False,
+            small_abs_safety_factor=1,
+        )
+    )
+
+    return [dtype], value1, value2, rowVar, bias, ddof, fweights, aweights
+
+
 # cov
 @handle_frontend_test(
     fn_tree="numpy.cov",
-    dtype_and_x=statistical_dtype_values(function="cov"),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    keep_dims=st.booleans(),
+    dtype_x1_x2_cov=_get_dtype_value1_value2_cov(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=1,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
+    ),
     test_with_out=st.just(False),
 )
 def test_numpy_cov(
-    dtype_and_x,
-    dtype,
-    frontend,
+    dtype_x1_x2_cov,
     test_flags,
+    frontend,
     fn_tree,
+    backend_fw,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_and_x
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
+    dtype, x1, x2, rowvar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        axis=axis,
-        dtype=dtype[0],
-        test_values=False,
+        rtol=1e-2,
+        atol=1e-2,
+        m=x1,
+        y=x2,
+        rowvar=rowvar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
     )
 
 
 # nanvar
 @handle_frontend_test(
     fn_tree="numpy.nanvar",
-    dtype_x_axis=statistical_dtype_values(function="nanvar"),
+    dtype_x_axis=_statistical_dtype_values(function="nanvar"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -288,6 +399,7 @@ def test_numpy_nanvar(
     where,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     keep_dims,
@@ -304,6 +416,7 @@ def test_numpy_nanvar(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -320,57 +433,17 @@ def test_numpy_nanvar(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.nanpercentile",
-    dtype_values_axis=statistical_dtype_values(function="nanpercentile"),
-    where=np_frontend_helpers.where(),
-    keep_dims=st.booleans(),
-)
-def test_numpy_nanpercentile(
-    dtype_values_axis,
-    where,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-    keep_dims,
-):
-    input_dtypes, values, axis = dtype_values_axis
-    if isinstance(axis, tuple):
-        axis = axis[0]
-
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-
-    np_frontend_helpers.test_frontend_function(
-        a=values[0][0],
-        q=values[0][1],
-        axis=axis,
-        out=None,
-        overwrite_input=None,
-        method=None,
-        keepdims=keep_dims,
-        interpolation=None,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        test_flags=test_flags,
-        input_dtypes=input_dtypes,
-    )
-
-
-@handle_frontend_test(
     fn_tree="numpy.nanmedian",
     keep_dims=st.booleans(),
     overwrite_input=st.booleans(),
-    dtype_x_axis=statistical_dtype_values(function="nanmedian"),
+    dtype_x_axis=_statistical_dtype_values(function="nanmedian"),
 )
 def test_numpy_nanmedian(
     dtype_x_axis,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     keep_dims,
     overwrite_input,
@@ -379,6 +452,7 @@ def test_numpy_nanmedian(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -392,7 +466,7 @@ def test_numpy_nanmedian(
 
 @handle_frontend_test(
     fn_tree="numpy.var",
-    dtype_and_x=statistical_dtype_values(function="var"),
+    dtype_and_x=_statistical_dtype_values(function="var"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
@@ -402,6 +476,7 @@ def test_numpy_var(
     dtype,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -419,6 +494,7 @@ def test_numpy_var(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

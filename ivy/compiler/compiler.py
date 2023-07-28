@@ -1,5 +1,4 @@
 from typing import Callable, Optional, List, Union, Iterable, Tuple
-from ._compiler import transpile as _transpile, compile as _compile, unify as _unify
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -90,6 +89,8 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
+    from ._compiler import compile as _compile
+
     return _compile(
         *objs,
         stateful=stateful,
@@ -145,6 +146,8 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
+    from ._compiler import transpile as _transpile
+
     return _transpile(
         *objs,
         source=source,
@@ -167,6 +170,8 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
+    from ._compiler import unify as _unify
+
     return _unify(
         *objs,
         source=source,

@@ -4,44 +4,20 @@ used by the test helpers to prune unsupported data.
 
 Should not be used inside any of the test functions.
 """
-import importlib
-import sys
-from ... import config
 
 
 from dataclasses import dataclass
+from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
 available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
-FWS_DICT = {
-    "": lambda: None,
-}
-
-if "numpy" in available_frameworks:
-    FWS_DICT["numpy"] = lambda x=None: _get_ivy_numpy(x)
-
-if "jax" in available_frameworks:
-    FWS_DICT["jax"] = lambda x=None: _get_ivy_jax(x)
-
-if "tensorflow" in available_frameworks:
-    FWS_DICT["tensorflow"] = lambda x=None: _get_ivy_tensorflow(x)
-    FWS_DICT["tensorflow_graph"] = lambda: _get_ivy_tensorflow()
-
-if "torch" in available_frameworks:
-    FWS_DICT["torch"] = lambda x=None: _get_ivy_torch(x)
-
-if "paddle" in available_frameworks:
-    FWS_DICT["paddle"] = lambda x=None: _get_ivy_paddle(x)
-
-if "mxnet" in available_frameworks:
-    FWS_DICT["mxnet"] = lambda x=None: _get_ivy_mxnet(x)
-
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
+CURRENT_FRONTEND_CONFIG: _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
@@ -57,112 +33,11 @@ class TestData:
     is_method: bool = False
 
 
-def remove_all_current_framework(framework):
-    temp = sys.modules
-    hold = {}
-    unhold = {}
-    for key, item in sys.modules.items():
-        if getattr(item, "__file__", None):
-            if "/opt/miniconda/fw/" + framework in getattr(
-                item, "__file__", "willywonka"
-            ):
-                hold[key] = item
-            else:
-                unhold[key] = item
-        else:
-            unhold[key] = item
-    sys.modules.clear()
-    first_diff = {k: hold[k] for k in set(hold) - set(temp)}
-    second_diff = {k: unhold[k] for k in set(unhold) - set(first_diff)}
-    if second_diff:
-        unhold.update(second_diff)
-    sys.modules.update(unhold)
-    if "/opt/miniconda/fw/" + framework in sys.path:
-        sys.path.remove("/opt/miniconda/fw/" + framework)
-    return (hold, framework)
-
-
 class InterruptedTest(BaseException):
     """Indicate that a test tried to write global attributes while a test is running."""
 
     def __init__(self, test_interruped):
         super.__init__(f"{test_interruped} was interruped during execution.")
-
-
-def _get_ivy_numpy(version=None):
-    """Import Numpy module from ivy."""
-    if version:
-        if version.split("/")[1] != importlib.import_module("numpy").__version__:
-            config.reset_sys_modules_to_base()
-        config.allow_global_framework_imports(fw=[version])
-
-    try:
-        import ivy.functional.backends.numpy
-    except ImportError:
-        return None
-    return ivy.functional.backends.numpy
-
-
-def _get_ivy_jax(version=None):
-    """Import JAX module from ivy."""
-    if version:
-        las = [
-            version.split("/")[0] + "/" + version.split("/")[1],
-            version.split("/")[2] + "/" + version.split("/")[3],
-        ]
-        config.allow_global_framework_imports(fw=las)
-        import ivy.functional.backends.jax
-
-    else:
-        try:
-            import ivy.functional.backends.jax
-        except ImportError:
-            return None
-    return ivy.functional.backends.jax
-
-
-def _get_ivy_tensorflow(version=None):
-    """Import Tensorflow module from ivy."""
-    if version:
-        config.allow_global_framework_imports(fw=[version])
-    try:
-        import ivy.functional.backends.tensorflow
-    except ImportError:
-        return None
-    return ivy.functional.backends.tensorflow
-
-
-def _get_ivy_torch(version=None):
-    """Import Torch module from ivy."""
-    if version:
-        config.allow_global_framework_imports(fw=[version])
-    try:
-        import ivy.functional.backends.torch
-    except ImportError:
-        return None
-    return ivy.functional.backends.torch
-
-
-def _get_ivy_paddle(version=None):
-    """Import Paddle module from ivy."""
-    if version:
-        config.allow_global_framework_imports(fw=[version])
-    try:
-        import ivy.functional.backends.paddle
-    except ImportError:
-        return None
-    return ivy.functional.backends.paddle
-
-
-def _get_ivy_mxnet(version=None):
-    """Import mxnet module from ivy."""
-    if version:
-        config.allow_global_framework_imports(fw=[version])
-    try:
-        import ivy.functional.backends.mxnet
-    except ImportError:
-        return None
-    return ivy.functional.backends.mxnet
 
 
 # Setup
@@ -176,20 +51,22 @@ def setup_api_test(
 ):
     if test_data is not None:
         _set_test_data(test_data)
+    if ground_truth_backend is not None:
+        _set_ground_truth_backend(ground_truth_backend)
     _set_backend(backend)
     _set_device(device)
-    _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
+    _unset_ground_truth_backend()
     _unset_backend()
     _unset_device()
-    _unset_ground_truth_backend()
 
 
-def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
-    _set_test_data(test_data)
+def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
+    if test_data is not None:
+        _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
@@ -211,33 +88,25 @@ def _set_test_data(test_data: TestData):
 
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
-    global CURRENT_FRONTEND_STR
+    global CURRENT_FRONTEND_CONFIG
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if isinstance(framework, list):
-        CURRENT_FRONTEND = FWS_DICT[framework[0].split("/")[0]]
-        CURRENT_FRONTEND_STR = framework
-    else:
-        CURRENT_FRONTEND = FWS_DICT[framework]
+    CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
+    CURRENT_FRONTEND = framework
 
 
 def _set_backend(framework: str):
     global CURRENT_BACKEND
     if CURRENT_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if "/" in framework:
-        pass
-    CURRENT_BACKEND = FWS_DICT[framework]
+    CURRENT_BACKEND = framework
 
 
 def _set_ground_truth_backend(framework: str):
     global CURRENT_GROUND_TRUTH_BACKEND
     if CURRENT_GROUND_TRUTH_BACKEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    if isinstance(framework, list):
-        CURRENT_GROUND_TRUTH_BACKEND = framework
-    else:
-        CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
+    CURRENT_GROUND_TRUTH_BACKEND = framework
 
 
 def _set_device(device: str):
@@ -257,8 +126,9 @@ def _unset_test_data():
 
 
 def _unset_frontend():
-    global CURRENT_FRONTEND
+    global CURRENT_FRONTEND, CURRENT_FRONTEND_CONFIG
     CURRENT_FRONTEND = _Notsetval
+    CURRENT_FRONTEND_CONFIG = _Notsetval
 
 
 def _unset_backend():

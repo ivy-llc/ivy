@@ -49,7 +49,7 @@ def trim_zeros(filt, trim="fb"):
                 break
             else:
                 first = first + 1
-    last = len(filt)
+    last = ivy.shape(filt)[0]
     if "B" in trim:
         for i in filt[::-1]:
             if i != 0.0:

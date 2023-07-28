@@ -284,14 +284,18 @@ def pad(
 
 def vsplit(
     ary: np.ndarray,
-    indices_or_sections: Union[int, Tuple[int, ...]],
+    indices_or_sections: Union[int, Sequence[int], np.ndarray],
     /,
     *,
     copy: Optional[bool] = None,
 ) -> List[np.ndarray]:
+    if ary.ndim < 2:
+        raise ivy.exceptions.IvyError(
+            "vsplit only works on arrays of 2 or more dimensions"
+        )
     if copy:
         ary = ary.copy()
-    return np.vsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
 
 
 def dsplit(
@@ -307,7 +311,7 @@ def dsplit(
         )
     if copy:
         ary = ary.copy()
-    return np.dsplit(ary, indices_or_sections)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=2)
 
 
 def atleast_1d(
@@ -366,13 +370,18 @@ def take_along_axis(
     if mode == "clip":
         max_index = arr.shape[axis] - 1
         indices = np.clip(indices, 0, max_index)
-    elif mode == "fill" or mode == "drop":
-        if "float" in str(arr.dtype):
+    elif mode in ("fill", "drop"):
+        if "float" in str(arr.dtype) or "complex" in str(arr.dtype):
             fill_value = np.NAN
         elif "uint" in str(arr.dtype):
             fill_value = np.iinfo(arr.dtype).max
-        else:
+        elif "int" in str(arr.dtype):
             fill_value = -np.iinfo(arr.dtype).max - 1
+        else:
+            raise TypeError(
+                f"Invalid dtype '{arr.dtype}'. Valid dtypes are 'float', 'complex',"
+                " 'uint', 'int'."
+            )
         indices = np.where((indices < 0) | (indices >= arr.shape[axis]), -1, indices)
         arr_shape = list(arr_shape)
         arr_shape[axis] = 1
@@ -390,7 +399,9 @@ def hsplit(
 ) -> List[np.ndarray]:
     if copy:
         ary = ary.copy()
-    return np.hsplit(ary, indices_or_sections)
+    if ary.ndim == 1:
+        return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
+    return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=1)
 
 
 take_along_axis.support_native_out = False
@@ -466,7 +477,8 @@ def unique_consecutive(
                 np.diff(x, axis=axis) != 0,
                 axis=tuple(i for i in np.arange(x.ndim) if i != axis),
             )
-        )[0] + 1,
+        )[0]
+        + 1,
         axis=axis,
     )
     output = np.concatenate(
@@ -482,3 +494,14 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: np.ndarray,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> np.ndarray:
+    np.fill_diagonal(a, v, wrap=wrap)
+    return a

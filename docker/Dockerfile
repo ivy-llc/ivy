@@ -2,7 +2,7 @@ FROM debian:buster
 WORKDIR /ivy
 ARG CLI
 # python version for conda
-ARG pycon=3.8.10
+ARG pycon=3.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -36,7 +36,6 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip3 install pip-autoremove &&\
     pip3 install setuptools==58.5.3
-
 
 
 # Install Ivy Upstream

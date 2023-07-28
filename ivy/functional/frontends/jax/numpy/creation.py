@@ -6,13 +6,15 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
     handle_jax_dtype,
+    inputs_to_ivy_arrays,
 )
+
+from ivy.func_wrapper import handle_out_argument
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
-    # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
@@ -20,9 +22,16 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+
+    default_device = ivy.default_device()
+    ret = ivy.to_device(ret, default_device)
+
     if ret.shape == () and dtype is None:
         return DeviceArray(ret, weak_type=True)
     return DeviceArray(ret)
+
+
+ndarray = array
 
 
 @handle_jax_dtype
@@ -96,10 +105,12 @@ def empty(shape, dtype=None):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
+    if x.ndim != 1:
+        raise ValueError("x must be a one-dimensional array")
     if N == 0:
-        return ivy.array([], dtype=x.dtype)
+        return ivy.array([], dtype=x.dtype).reshape((x.shape[0], 0))
     else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+        return ivy.vander(x, N=N, increasing=increasing)
 
 
 @to_ivy_arrays_and_back
@@ -139,7 +150,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -164,7 +175,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.13 and below": (
             "float16",
             "bfloat16",
         )
@@ -192,6 +203,11 @@ def double(x):
 
 
 @to_ivy_arrays_and_back
+def bool_(x):
+    return ivy.astype(x, ivy.bool)
+
+
+@to_ivy_arrays_and_back
 def geomspace(start, stop, num=50, endpoint=True, dtype=None, axis=0):
     cr = ivy.log(stop / start) / (num - 1 if endpoint else num)
     x = ivy.linspace(
@@ -213,3 +229,41 @@ def csingle(x):
 @to_ivy_arrays_and_back
 def cdouble(x):
     return ivy.astype(x, ivy.complex128)
+
+
+@to_ivy_arrays_and_back
+@handle_out_argument
+def compress(condition, a, *, axis=None, out=None):
+    condition_arr = ivy.asarray(condition).astype(bool)
+    if condition_arr.ndim != 1:
+        raise ivy.utils.exceptions.IvyException("Condition must be a 1D array")
+    if axis is None:
+        arr = ivy.asarray(a).flatten()
+        axis = 0
+    else:
+        arr = ivy.moveaxis(a, axis, 0)
+    if condition_arr.shape[0] > arr.shape[0]:
+        raise ivy.utils.exceptions.IvyException(
+            "Condition contains entries that are out of bounds"
+        )
+    arr = arr[: condition_arr.shape[0]]
+    return ivy.moveaxis(arr[condition_arr], 0, axis)
+
+
+@inputs_to_ivy_arrays
+def iterable(y):
+    return hasattr(y, "__iter__") and y.ndim > 0
+
+
+@to_ivy_arrays_and_back
+def size(a, axis=None):
+    ivy.set_default_int_dtype("int64")
+    if axis is not None:
+        sh = ivy.shape(a)
+        return sh[axis]
+    return a.size
+
+
+@to_ivy_arrays_and_back
+def frombuffer(buffer, dtype="float", count=-1, offset=0):
+    return ivy.frombuffer(buffer, dtype, count, offset)

@@ -323,24 +323,25 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             input array having shape (..., M, M) and whose innermost two dimensions form
             square matrices. Must have floating-point data type.
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array containing the computed eigenvalues. The returned array must have shape
-            (..., M) and have the same data type as x.
+            an array containing the computed eigenvalues. The returned array must have
+            shape (..., M) and have the same data type as x.
 
 
         This function conforms to the `Array API Standard
-        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-        `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of
+        the `docstring <https://data-apis.org/array-api/latest/
+        extensions/generated/array_api.linalg.eigvalsh.html>`_
         in the standard.
 
-        Both the description and the type hints above assumes an array input for simplicity,
-        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-        instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for
+        simplicity, but this function is *nestable*, and therefore also
+        accepts :class:`ivy.Container` instances in place of any of the arguments.
 
         Examples
         --------
@@ -466,6 +467,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         *,
         atol: Optional[Union[float, Tuple[float]]] = None,
         rtol: Optional[Union[float, Tuple[float]]] = None,
+        hermitian: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -494,6 +496,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
             be the machine epsilon associated with the floating-point data type
             determined by :ref:`type-promotion` (as applied to ``x``).
             Default: ``None``.
+
+        hermitian
+            indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is
+            assumed to be Hermitian, enabling a more efficient method for finding
+            eigenvalues, but x is not checked inside the function. Instead, We just use
+            the lower triangular of the matrix to compute.
+            Default: ``False``.
+
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -527,7 +537,9 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         >>> ivy.matrix_rank(x)
         ivy.array(0)
         """
-        return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
+        return ivy.matrix_rank(
+            self._data, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+        )
 
     def matrix_transpose(
         self: ivy.Array, /, *, conjugate: bool = False, out: Optional[ivy.Array] = None

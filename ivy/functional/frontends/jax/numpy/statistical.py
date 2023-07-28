@@ -56,9 +56,7 @@ def argmin(a, axis=None, out=None, keepdims=None):
 
 @to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0, *, length=None):
-    x_list = []
-    for i in range(x.shape[0]):
-        x_list.append(int(x[i]))
+    x_list = [int(x[i]) for i in range(x.shape[0])]
     max_val = int(ivy.max(ivy.array(x_list)))
     ret = [x_list.count(i) for i in range(0, max_val + 1)]
     ret = ivy.array(ret)
@@ -100,7 +98,7 @@ def sum(
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
-    # TODO: promote_integers is only supported from JAX v0.3.14
+    # TODO: promote_integers is only supported from JAX v0.4.10
     if dtype is None and promote_integers:
         if ivy.is_bool_dtype(dtype):
             dtype = ivy.default_int_dtype()
@@ -155,7 +153,7 @@ amax = max
 @to_ivy_arrays_and_back
 def average(a, axis=None, weights=None, returned=False, keepdims=False):
     # canonicalize_axis to ensure axis or the values in axis > 0
-    if isinstance(axis, tuple) or isinstance(axis, list):
+    if isinstance(axis, (tuple, list)):
         a_ndim = len(ivy.shape(a))
         new_axis = [0] * len(axis)
         for i, v in enumerate(axis):
@@ -163,10 +161,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                 raise ValueError(
                     f"axis {v} is out of bounds for array of dimension {a_ndim}"
                 )
-            if v < 0:
-                new_axis[i] = v + a_ndim
-            else:
-                new_axis[i] = v
+            new_axis[i] = v + a_ndim if v < 0 else v
         axis = tuple(new_axis)
 
     if weights is None:
@@ -207,7 +202,7 @@ def average(a, axis=None, weights=None, returned=False, keepdims=False):
                 raise ValueError(
                     "Single axis expected when shapes of a and weights differ"
                 )
-            elif not weights.shape[0] == a.shape[axis]:
+            elif weights.shape[0] != a.shape[axis]:
                 raise ValueError(
                     "Length of weights not compatible with specified axis."
                 )
@@ -249,10 +244,9 @@ def nanmax(
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 # introducing the initial in one dimension is enough
                 ax = axis[0] % len(s)
-                s[ax] = 1
             else:
                 ax = axis % len(s)
-                s[ax] = 1
+            s[ax] = 1
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -297,10 +291,9 @@ def nanmin(
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
                 # introducing the initial in one dimension is enough
                 ax = axis[0] % len(s)
-                s[ax] = 1
             else:
                 ax = axis % len(s)
-                s[ax] = 1
+            s[ax] = 1
         header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
         if axis:
             if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
@@ -346,35 +339,18 @@ def nanstd(
 @to_ivy_arrays_and_back
 def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
-    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float16" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-    if not ivy.any(is_nan):
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        else:
-            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
-
-        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            where = ivy.array(where, dtype=ivy.bool)
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
-    else:
+    if ivy.any(is_nan):
         a = [i for i in a if ivy.isnan(i) is False]
 
-        if dtype:
-            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        else:
-            dtype = "float" if ivy.is_int_dtype(a) else a.dtype
+    if dtype:
+        a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
 
-        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
-
-        if ivy.is_array(where):
-            where = ivy.array(where, dtype=ivy.bool)
-            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
     all_nan = ivy.isnan(ret)
     if ivy.all(all_nan):
@@ -397,7 +373,7 @@ def nancumprod(a, axis=None, dtype=None, out=None):
 
 
 @handle_jax_dtype
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, "jax")
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, "jax")
 @to_ivy_arrays_and_back
 def std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -450,8 +426,7 @@ def nanmean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
         not_nan_mask_count1,
         ivy.full_like(not_nan_mask_count1, ivy.nan),
     )
-    ret_nanmean = ivy.divide(array_sum1, count_zero_handel)
-    return ret_nanmean
+    return ivy.divide(array_sum1, count_zero_handel)
 
 
 @to_ivy_arrays_and_back
@@ -466,4 +441,48 @@ def nanmedian(
 ):
     return ivy.nanmedian(
         a, axis=axis, keepdims=keepdims, out=out, overwrite_input=overwrite_input
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
+def correlate(a, v, mode="valid", precision=None):
+    if ivy.get_num_dims(a) != 1 or ivy.get_num_dims(v) != 1:
+        raise ValueError("correlate() only support 1-dimensional inputs.")
+    if a.shape[0] == 0 or v.shape[0] == 0:
+        raise ValueError(
+            f"correlate: inputs cannot be empty, got shapes {a.shape} and {v.shape}."
+        )
+    if v.shape[0] > a.shape[0]:
+        need_flip = True
+        a, v = v, a
+    else:
+        need_flip = False
+
+    out_order = slice(None)
+
+    if mode == "valid":
+        padding = [(0, 0)]
+    elif mode == "same":
+        padding = [(v.shape[0] // 2, v.shape[0] - v.shape[0] // 2 - 1)]
+    elif mode == "full":
+        padding = [(v.shape[0] - 1, v.shape[0] - 1)]
+    else:
+        raise ValueError("mode must be one of ['full', 'same', 'valid']")
+
+    result = ivy.conv_general_dilated(
+        a[None, None, :],
+        v[:, None, None],
+        (1,),
+        padding,
+        dims=1,
+        data_format="channel_first",
+    )
+    return ivy.flip(result[0, 0, out_order]) if need_flip else result[0, 0, out_order]
+
+
+@to_ivy_arrays_and_back
+def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None):
+    return ivy.cov(
+        m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
     )
