@@ -8,25 +8,23 @@ from ivy.func_wrapper import with_supported_dtypes
 
 def _type_conversion(x):
     # Does type conversion, floats maps to float,
+    # complex maps to complex,
     # 64bit dtype to float64, everything else to float32
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
-    if "float" not in dtype:
+    if not ("float" in dtype or "complex" in dtype):
         dtype = "float64" if "64" in dtype[-2:] else "float32"
-
     return ivy.astype(x, dtype)
 
 
 def _type_conversion_64(x):
     # Does type conversion, floats maps to float,
-    # everything else to float64
+    # complex maps to complex, everything else to float64
     x = ivy.asarray(x)
     dtype = ivy.as_ivy_dtype(x.dtype)
-    return (
-        ivy.astype(x, dtype)
-        if ("float" in dtype) or ("complex" in dtype)
-        else ivy.astype(x, "float64")
-    )
+    if not ("float" in dtype or "complex" in dtype):
+        dtype = "float64"
+    return ivy.astype(x, dtype)
 
 
 def _batch_promotion(*args, default_dtype="float64"):
