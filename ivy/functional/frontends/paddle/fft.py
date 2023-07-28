@@ -57,6 +57,24 @@ def ifft(x, n=None, axis=-1.0, norm="backward", name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def irfft(x, n=None, axis=-1.0, norm="backward", name=None):
+    if n is None:
+        n = 2 * (x.shape[axis] - 1)
+
+    pos_freq_terms = ivy.take_along_axis(x, range(n // 2 + 1), axis)
+    neg_freq_terms = ivy.conj(pos_freq_terms[1:-1][::-1])
+    combined_freq_terms = ivy.concat((pos_freq_terms, neg_freq_terms), axis=axis)
+    time_domain = ivy.ifft(combined_freq_terms, axis, norm=norm, n=n)
+    if ivy.isreal(x):
+        time_domain = ivy.real(time_domain)
+    return time_domain
+
+
+@with_supported_dtypes(
     {
         "2.5.0 and below": (
             "int32",

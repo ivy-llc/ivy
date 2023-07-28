@@ -38,12 +38,14 @@ def test_torch_multinomial(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     prob_dtype, batch_size, num_samples, replace, probs = everything
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=prob_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -60,8 +62,8 @@ def test_torch_multinomial(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -77,6 +79,7 @@ def test_torch_manual_seed(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     # just test calling the function
     frontend_fw = importlib.import_module(fn_tree[25 : fn_tree.rfind(".")])
@@ -103,12 +106,14 @@ def test_torch_poisson(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     lam_dtype, lam = dtype_and_lam
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=lam_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -123,8 +128,8 @@ def test_torch_poisson(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -147,10 +152,12 @@ def test_torch_randint(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     def call():
         helpers.test_frontend_function(
             input_dtypes=dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
@@ -166,8 +173,8 @@ def test_torch_randint(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -183,13 +190,14 @@ def test_torch_randint(
         max_dim_size=10,
     ),
 )
-def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
+def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags, backend_fw):
     size = {f"size{i}": size[i] for i in range(len(size))}
     test_flags.num_positional_args = len(size)
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
@@ -203,8 +211,8 @@ def test_torch_rand(*, dtype, size, frontend, fn_tree, test_flags):
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -237,6 +245,7 @@ def test_torch_normal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     mean_dtype, mean = dtype_and_mean
     _, std = dtype_and_std
@@ -244,6 +253,7 @@ def test_torch_normal(
     def call():
         return helpers.test_frontend_function(
             input_dtypes=mean_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -259,8 +269,8 @@ def test_torch_normal(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -277,12 +287,15 @@ def test_torch_normal(
         max_dim_size=10,
     ),
 )
-def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
+def test_torch_rand_like(
+    dtype_and_x, dtype, *, frontend, fn_tree, test_flags, backend_fw
+):
     input_dtype, input = dtype_and_x
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
@@ -297,8 +310,8 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -314,13 +327,14 @@ def test_torch_rand_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
         max_dim_size=10,
     ),
 )
-def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
+def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags, backend_fw):
     size = {f"size{i}": size[i] for i in range(len(size))}
     test_flags.num_positional_args = len(size)
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
@@ -334,8 +348,8 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -352,12 +366,15 @@ def test_torch_randn(*, dtype, size, frontend, fn_tree, test_flags):
         max_dim_size=10,
     ),
 )
-def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
+def test_torch_randn_like(
+    dtype_and_x, dtype, *, frontend, fn_tree, test_flags, backend_fw
+):
     input_dtype, input = dtype_and_x
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_values=False,
             fn_tree=fn_tree,
@@ -372,8 +389,8 @@ def test_torch_randn_like(dtype_and_x, dtype, *, frontend, fn_tree, test_flags):
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -394,12 +411,14 @@ def test_torch_bernoulli(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, probs = dtype_and_probs
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -414,8 +433,8 @@ def test_torch_bernoulli(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -435,10 +454,12 @@ def test_torch_randperm(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     def call():
         return helpers.test_frontend_function(
             input_dtypes=dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -453,8 +474,53 @@ def test_torch_randperm(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
+
+@handle_frontend_test(
+    fn_tree="torch.randint_like",
+    dtype=helpers.get_dtypes("signed_integer", full=False),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("signed_integer"),
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    low=helpers.ints(min_value=0, max_value=10),
+    high=helpers.ints(min_value=11, max_value=20),
+)
+def test_torch_randint_like(
+    dtype_and_x, low, high, *, dtype, frontend, fn_tree, test_flags, backend_fw
+):
+    input_dtype, input = dtype_and_x
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            backend_to_test=backend_fw,
+            frontend=frontend,
+            test_values=False,
+            fn_tree=fn_tree,
+            test_flags=test_flags,
+            input=input[0],
+            low=low,
+            high=high,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
