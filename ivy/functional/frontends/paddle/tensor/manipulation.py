@@ -114,3 +114,9 @@ def broadcast_to(x, shape, name=None):
 @to_ivy_arrays_and_back
 def gather(params, indices, axis=-1, batch_dims=0, name=None):
     return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def flatten(x):
+    return ivy.flatten(x)
+
