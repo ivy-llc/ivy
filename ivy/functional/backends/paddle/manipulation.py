@@ -1,12 +1,12 @@
 # global
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
-
+import math
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes, with_supported_dtypes
 
 # noinspection PyProtectedMember
@@ -30,12 +30,28 @@ def concat(
     if len(dtypes_list) > 0:
         for d in dtypes_list:
             dtype = ivy.promote_types(dtype, d)
-    if dtype == paddle.int16:
-        xs = list(map(lambda x: x.cast("int32"), xs))
-        return paddle.concat(xs, axis=axis).cast("int16")
+    xs = list(map(lambda x: x.cast("int32" if dtype == paddle.int16 else dtype), xs))
+    if all(0 in x.shape for x in xs):
+        shapes = [x.shape for x in xs]
+        if any(len(s) != len(shapes[0]) for s in shapes):
+            raise ivy.exceptions.IvyValueError(
+                "all the input arrays must have the same number of dimensions"
+            )
+        axis = axis + len(xs[0].shape) if axis < 0 else axis
+        sizes = [[v for i, v in enumerate(s) if i != axis] for s in shapes]
+        if any(s != sizes[0] for s in sizes):
+            raise ivy.exceptions.IvyValueError(
+                "the input arrays must have the same size along the specified axis"
+            )
+        ret = paddle.empty(
+            [*shapes[0][:axis], sum(s[axis] for s in shapes), *shapes[0][axis + 1 :]],
+            dtype=dtype,
+        )
     else:
-        xs = list(map(lambda x: x.cast(dtype), xs))
-        return paddle.concat(xs, axis=axis)
+        ret = paddle.concat(xs, axis=axis)
+    if dtype == paddle.int16:
+        ret = ret.cast("int16")
+    return ret
 
 
 def expand_dims(
@@ -47,10 +63,12 @@ def expand_dims(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     out_shape = _calculate_out_shape(axis, x.shape)
-    # reshape since unsqueeze sets a maximum limit of dimensions
+    if 0 in x.shape:
+        return paddle.empty(out_shape, dtype=x.dtype)
     if copy:
         newarr = paddle.clone(x)
         return newarr.reshape(out_shape)
+    # reshape since unsqueeze sets a maximum limit of dimensions
     return x.reshape(out_shape)
 
 
@@ -100,6 +118,17 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        if -1 in shape:
+            shape = [
+                (
+                    s
+                    if s != -1
+                    else math.prod(x.shape) // math.prod([s for s in shape if s != -1])
+                )
+                for s in shape
+            ]
+        return paddle.empty(shape, dtype=x.dtype)
     if len(shape) == 0:
         out_scalar = True
         shape = [1]
@@ -177,7 +206,7 @@ def squeeze(
         # Paddle squeeze sets a maximum limit of 6 dims in the input
         x_shape = x.shape
         x_shape.pop(axis)
-        return x.reshape(x_shape)
+        return paddle_backend.reshape(x, x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
@@ -325,18 +354,33 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if x.ndim >= 7:
+        repeats = (
+            repeats.numpy().tolist() if isinstance(repeats, paddle.Tensor) else repeats
+        )
+        new_shape = [*x.shape[:5], -1]
+        reshaped_tensor = paddle.reshape(x, new_shape)
+        new_repeats = repeats[:5] + [math.prod(repeats[5:])]
+        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats).data
+        tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
+        result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
+        return result
     if ivy.min(repeats) == 0:
         # This logic is to mimic other backends behaviour when a 0 in repeat
         # is received since paddle doesn't natively support it
         if len(repeats) < x.ndim:
             shape = x.shape
-            shape[-len(repeat) :] = paddle_backend.multiply(
-                shape[-len(repeat) :], repeats
+            shape[-len(repeats) :] = paddle_backend.multiply(
+                shape[-len(repeats) :], repeats
             ).tolist()
         elif len(repeats) > x.ndim:
-            shape = list(repeats)
-            shape[-x.ndim :] = paddle_backend.multiply(
-                shape[-x.ndim :], repeats
+            shape = (
+                repeats.tolist()
+                if isinstance(repeats, paddle.Tensor)
+                else list(repeats)
+            )
+            shape[-x.ndim - 1 :] = paddle_backend.multiply(
+                shape[-x.ndim - 1 :], repeats
             ).tolist()
         else:
             shape = paddle_backend.multiply(x.shape, repeats).tolist()
