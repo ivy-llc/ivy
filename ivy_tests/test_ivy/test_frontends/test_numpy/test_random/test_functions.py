@@ -812,7 +812,7 @@ def test_numpy_gamma(
         max_value=1000,
         exclude_min=True,
     ),
-    size=helpers.get_shape(allow_none=False),
+    size=helpers.get_shape(allow_none=True),
 )
 def test_numpy_triangular(
     input_dtypes,
