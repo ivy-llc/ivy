@@ -170,8 +170,8 @@ We have a GitHub action that runs:
 2. Manually invoked by making a comment with ``ivy-gardener`` on a PR
 
 The first action is to ensure that the code in the whole codebase is always formatted correctly. The second action 
-is to allow you to reformat your code directly from GitHub. This is useful if you didn't setup pre-commit correctly 
-and you or one of our maintainers want to reformat your code without having to clone the repository.
+is to reformat the files you changed in your PR directly on GitHub. This is useful in case if you didn't setup 
+pre-commit correctly or if you or one of our maintainers want to reformat your code remotely.
 
 Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trigger the same set of lint checks 
 as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
