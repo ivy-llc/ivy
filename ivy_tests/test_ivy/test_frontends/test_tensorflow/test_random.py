@@ -374,10 +374,32 @@ def test_tensorflow_gamma(
         test_values=False,
     )
 
+# stateless_categorical
+@st.composite
+def _logits_num_samples_seed_dtype(draw):
+    num_samples = draw(st.integers(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("int32", full=False))
+    num_classes = draw(st.integers(min_value=2, max_value=10))
+    common_shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=2,
+            max_num_dims=3,
+            min_dim_size=num_classes,
+            max_dim_size=num_classes,
+        )
+    )
+    _, logits = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=10, shape=common_shape
+        )
+    )
+    return logits, num_samples, dtype
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.random.stateless_categorical",
-    logits=st.floats(allow_nan=False, allow_infinity=False, min_value=-5, max_value=5),
-    num_samples=helpers.ints(min_value=1, max_value=5),
+    logits_num_samples_seed_dtype=_logits_num_samples_seed_dtype(),
     seed=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"), min_value=0, max_value=10, shape=[2]
     ),
@@ -387,15 +409,13 @@ def test_tensorflow_stateless_categorical(
     frontend,
     fn_tree,
     on_device,
-    logits,
-    num_samples,
+    logits_num_samples_seed_dtype,
     seed,
     test_flags,
     backend_fw,
 ):
-    input_dtypes, seed_values = seed
-    seed_0, _ = seed_values  # Only use seed_0, discard seed_1
-
+    logits, num_samples, dtype = logits_num_samples_seed_dtype
+    input_dtypes, seed = seed
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -406,5 +426,6 @@ def test_tensorflow_stateless_categorical(
         test_values=False,
         logits=logits,
         num_samples=num_samples,
-        seed=seed_0,  # Use seed_0 directly
+        dtype=dtype[0],
+        seed=seed,
     )
