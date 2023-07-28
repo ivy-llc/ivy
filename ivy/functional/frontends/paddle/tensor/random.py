@@ -115,5 +115,6 @@ def randint_like(x, low=0, high=None, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def exponential_(x, lam=1.0, name=None):
-    uniform = ivy.random_uniform(shape=x, dtype=x.dtype)
+    x = ivy.array(x)
+    uniform = ivy.random_uniform(shape=x.shape, dtype=x.dtype)
     return -lam * ivy.log(lam - uniform)
