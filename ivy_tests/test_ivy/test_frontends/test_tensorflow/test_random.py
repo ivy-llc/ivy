@@ -393,8 +393,9 @@ def test_tensorflow_stateless_categorical(
     test_flags,
     backend_fw,
 ):
-    input_dtypes, seed_val = seed
-    seed_val = tuple(seed_val)  # Convert the seed values to a tuple
+    input_dtypes, seed_values = seed
+    seed_0, _ = seed_values  # Only use seed_0, discard seed_1
+
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -405,5 +406,5 @@ def test_tensorflow_stateless_categorical(
         test_values=False,
         logits=logits,
         num_samples=num_samples,
-        seed=seed_val,  # Use the tuple for seed
+        seed=seed_0,  # Use seed_0 directly
     )
