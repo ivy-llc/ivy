@@ -707,7 +707,7 @@ def vector_to_skew_symmetric_matrix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": ("uint16", "bfloat16", "float16", "complex")},
+    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex")}},
     backend_version
 )
 def lu(

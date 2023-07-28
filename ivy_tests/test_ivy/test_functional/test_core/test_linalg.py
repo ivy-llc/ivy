@@ -1233,13 +1233,11 @@ def test_lu(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     assume(pivot)
     input_dtype, x = dtype_x
     assume(np.all(matrix_is_stable(np.array(x), cond_limit=5)).item())
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
