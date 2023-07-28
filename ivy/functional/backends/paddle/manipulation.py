@@ -1,12 +1,12 @@
 # global
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
-
+import math
 import paddle
-import ivy.functional.backends.paddle as paddle_backend
 
 # local
 import ivy
+import ivy.functional.backends.paddle as paddle_backend
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 
 # noinspection PyProtectedMember
@@ -118,6 +118,17 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        if -1 in shape:
+            shape = [
+                (
+                    s
+                    if s != -1
+                    else math.prod(x.shape) // math.prod([s for s in shape if s != -1])
+                )
+                for s in shape
+            ]
+        return paddle.empty(shape, dtype=x.dtype)
     if len(shape) == 0:
         out_scalar = True
         shape = [1]
@@ -195,7 +206,7 @@ def squeeze(
         # Paddle squeeze sets a maximum limit of 6 dims in the input
         x_shape = x.shape
         x_shape.pop(axis)
-        return x.reshape(x_shape)
+        return paddle_backend.reshape(x, x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
@@ -343,18 +354,33 @@ def repeat(
 def tile(
     x: paddle.Tensor, /, repeats: Sequence[int], *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if x.ndim >= 7:
+        repeats = (
+            repeats.numpy().tolist() if isinstance(repeats, paddle.Tensor) else repeats
+        )
+        new_shape = [*x.shape[:5], -1]
+        reshaped_tensor = paddle.reshape(x, new_shape)
+        new_repeats = repeats[:5] + [math.prod(repeats[5:])]
+        tiled_reshaped_tensor = tile(reshaped_tensor, new_repeats).data
+        tiled_shape = tuple(s * r for s, r in zip(x.shape, repeats))
+        result = paddle.reshape(tiled_reshaped_tensor, tiled_shape)
+        return result
     if ivy.min(repeats) == 0:
         # This logic is to mimic other backends behaviour when a 0 in repeat
         # is received since paddle doesn't natively support it
         if len(repeats) < x.ndim:
             shape = x.shape
-            shape[-len(repeat) :] = paddle_backend.multiply(
-                shape[-len(repeat) :], repeats
+            shape[-len(repeats) :] = paddle_backend.multiply(
+                shape[-len(repeats) :], repeats
             ).tolist()
         elif len(repeats) > x.ndim:
-            shape = list(repeats)
-            shape[-x.ndim :] = paddle_backend.multiply(
-                shape[-x.ndim :], repeats
+            shape = (
+                repeats.tolist()
+                if isinstance(repeats, paddle.Tensor)
+                else list(repeats)
+            )
+            shape[-x.ndim - 1 :] = paddle_backend.multiply(
+                shape[-x.ndim - 1 :], repeats
             ).tolist()
         else:
             shape = paddle_backend.multiply(x.shape, repeats).tolist()
