@@ -28,8 +28,8 @@ from . import backend_version
 )
 def batch_norm(
     x: paddle.Tensor,
-    running_mean: paddle.Tensor,
-    running_var: paddle.Tensor,
+    mean: paddle.Tensor,
+    variance: paddle.Tensor,
     /,
     *,
     scale: Optional[paddle.Tensor] = None,
@@ -41,11 +41,11 @@ def batch_norm(
     out: Optional[Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     if x.dtype not in [paddle.float32, paddle.float64]:
-        x, running_mean, running_var, scale, offset = [
-            t.cast("float32") for t in [x, running_mean, running_var, scale, offset]
+        x, mean, variance, scale, offset = [
+            t.cast("float32") for t in [x, mean, variance, scale, offset]
         ]
-    runningmean = running_mean
-    runningvariance = running_var
+    runningmean = mean
+    runningvariance = variance
     data_formats = ["NC", "NCL", "NCHW", "NCDHW", "NLC", "NHWC", "NDHWC"]
 
     try:
@@ -68,31 +68,31 @@ def batch_norm(
                 x.dtype
             )
             dims = (0, *range(1, x.ndim - 1))
-            running_mean = ivy.mean(x, axis=dims)
-            running_var = ivy.var(x, axis=dims)
+            mean = ivy.mean(x, axis=dims)
+            variance = ivy.var(x, axis=dims)
             # runningmean = (1 - momentum) * runningmean + momentum * mean
             runningmean = ivy.add(
                 ivy.multiply(ivy.subtract(1, momentum), runningmean),
-                ivy.multiply(momentum, running_mean),
+                ivy.multiply(momentum, mean),
             )
             # runningvariance = (
             #    1 - momentum
             # ) * runningvariance + momentum * variance * n / (n - 1)
             runningvariance = ivy.add(
                 ivy.multiply(ivy.subtract(1, momentum), runningvariance),
-                ivy.divide(ivy.multiply(ivy.multiply(momentum, running_var), n), n - 1),
+                ivy.divide(ivy.multiply(ivy.multiply(momentum, variance), n), n - 1),
             )
 
     xnormalized = F.batch_norm(
         x,
-        running_mean,
-        running_var,
-        training,
-        momentum,
-        data_format,
+        running_mean=mean,
+        running_var=variance,
         weight=scale,
         bias=offset,
+        training=training,
+        momentum=momentum,
         epsilon=eps,
+        data_format=data_format,
     ).cast(x.dtype)
     return xnormalized, runningmean, runningvariance
 
@@ -134,19 +134,24 @@ def l2_normalize(
 
 def instance_norm(
     x: paddle.Tensor,
+    mean: paddle.Tensor,
+    variance: paddle.Tensor,
     /,
     *,
-    scale: Optional[paddle.Tensor],
-    bias: Optional[paddle.Tensor],
-    eps: float = 1e-05,
-    momentum: Optional[float] = 0.1,
-    data_format: str = "NCHW",
-    running_mean: Optional[paddle.Tensor] = None,
-    running_stddev: Optional[paddle.Tensor] = None,
-    affine: Optional[bool] = True,
-    track_running_stats: Optional[bool] = False,
-    out: Optional[paddle.Tensor] = None,
-):
+    scale: Optional[paddle.Tensor] = None,
+    offset: Optional[paddle.Tensor] = None,
+    training: Optional[bool] = False,
+    eps: Optional[float] = 1e-5,
+    momentum: Optional[float] = 1e-1,
+    data_format: Optional[str] = "NSC",
+    out: Optional[
+        Tuple[
+            paddle.Tensor,
+            paddle.Tensor,
+            paddle.Tensor,
+        ]
+    ] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor,]:
     raise IvyNotImplementedException()
 
 

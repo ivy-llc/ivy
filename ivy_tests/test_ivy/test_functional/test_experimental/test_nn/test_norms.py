@@ -16,7 +16,7 @@ import ivy
 def test_l1_normalize(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, axis = dtype_values_axis
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -132,7 +132,7 @@ def _instance_and_batch_norm_helper(draw, *, min_dims=1, test_function="instance
 def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -161,7 +161,7 @@ def test_instance_norm(*, data, training, test_flags, backend_fw, fn_name, on_de
 def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_device):
     x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
@@ -170,8 +170,8 @@ def test_batch_norm(*, data, training, test_flags, backend_fw, fn_name, on_devic
         atol_=1e-2,
         input_dtypes=x_dtype,
         x=x,
-        running_mean=mean,
-        running_var=variance,
+        mean=mean,
+        variance=variance,
         scale=scale,
         offset=offset,
         eps=eps,
@@ -244,7 +244,7 @@ def test_group_norm(
 ):
     x_dtype, x, num_groups, data_format, scale, offset, eps = data
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

@@ -4,10 +4,14 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_nn.test_norms import (
+    _generate_data_layer_norm,
+)
 
 
 @st.composite
 def _batch_norm_helper(draw, *, min_dims=1):
+    mixed_fn_compos = draw(st.booleans())
     data_format = draw(st.sampled_from(["NCHW", "NHWC"]))
     shape1, shape2, shape3, shape4 = draw(
         helpers.mutually_broadcastable_shapes(
@@ -22,6 +26,7 @@ def _batch_norm_helper(draw, *, min_dims=1):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes(
                 "float",
+                mixed_fn_compos=mixed_fn_compos,
             ),
             large_abs_safety_factor=24,
             small_abs_safety_factor=24,
@@ -57,7 +62,7 @@ def _batch_norm_helper(draw, *, min_dims=1):
     _, offset = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
-            shape=shape3,
+            shape=shape2,
             min_value=-1001,
             max_value=999,
             large_abs_safety_factor=24,
@@ -68,7 +73,7 @@ def _batch_norm_helper(draw, *, min_dims=1):
     _, scale = draw(
         helpers.dtype_and_values(
             dtype=x_dtype,
-            shape=shape4,
+            shape=shape,
             min_value=-1001,
             max_value=999,
             large_abs_safety_factor=24,
@@ -76,8 +81,13 @@ def _batch_norm_helper(draw, *, min_dims=1):
             safety_factor_scale="log",
         )
     )
-    eps = draw(helpers.floats(min_value=1e-5, max_value=0.1))
-    momentum = draw(helpers.floats(min_value=0.0, max_value=1.0))
+    eps = draw(
+        helpers.floats(min_value=1e-5, max_value=0.1, mixed_fn_compos=mixed_fn_compos)
+    )
+    momentum = draw(
+        helpers.floats(min_value=0.0, max_value=1.0, mixed_fn_compos=mixed_fn_compos)
+    )
+    training = draw(st.booleans())
     return (
         x_dtype,
         x[0],
@@ -88,37 +98,73 @@ def _batch_norm_helper(draw, *, min_dims=1):
         eps,
         momentum,
         data_format,
+        training,
     )
 
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.batch_norm",
     data=_batch_norm_helper(min_dims=2),
-    training=st.booleans(),
 )
 def test_batch_norm(
     *,
     data,
-    training,
     test_flags,
     fn_tree,
     frontend,
+    backend_fw,
     on_device,
 ):
-    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format = data
+    x_dtype, x, mean, variance, offset, scale, eps, momentum, data_format, training = (
+        data
+    )
     helpers.test_frontend_function(
         test_flags=test_flags,
         on_device=on_device,
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         x=x,
         running_mean=mean,
         running_var=variance,
-        weight=scale,
-        bias=offset,
-        epsilon=eps,
+        weight=scale[0],
+        bias=offset[0],
         training=training,
         momentum=momentum,
+        epsilon=eps,
         data_format=data_format,
+    )
+
+
+# layer_norm
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.layer_norm",
+    values_tuple=_generate_data_layer_norm(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    eps=st.floats(min_value=0.01, max_value=0.1),
+)
+def test_paddle_layer_norm(
+    *,
+    values_tuple,
+    normalized_shape,
+    eps,
+    test_flags,
+    frontend,
+    on_device,
+    fn_tree,
+):
+    (dtype, x, normalized_shape, scale, offset) = values_tuple
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        x=x,
+        normalized_shape=normalized_shape,
+        weight=scale[0],
+        bias=offset[0],
+        epsilon=eps,
     )
