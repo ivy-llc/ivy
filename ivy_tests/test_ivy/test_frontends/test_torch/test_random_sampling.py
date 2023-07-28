@@ -529,7 +529,7 @@ def test_torch_randint_like(
 # set_rng_state
 @handle_frontend_test(
     fn_tree="torch.set_rng_state",
-    state=helpers.dtype_and_values(
+    new_state=helpers.dtype_and_values(
         available_dtypes=("int64", "int32"),
         min_value=0,
         max_value=10,
@@ -541,17 +541,17 @@ def test_torch_randint_like(
 )
 def test_torch_set_rng_state(
     *,
-    state,
+    new_state,
     frontend,
     test_flags,
     fn_tree,
 ):
-    dtype, state = state
+    dtype, new_state = new_state
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
         test_values=False,
         fn_tree=fn_tree,
         test_flags=test_flags,
-        state=state[0],
+        state=new_state[0],
     )

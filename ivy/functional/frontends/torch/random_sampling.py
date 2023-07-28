@@ -18,8 +18,8 @@ def manual_seed(seed: int):
 
 
 @to_ivy_arrays_and_back
-def set_rng_state(state):
-    return ivy.seed(seed_value=state)
+def set_rng_state(new_state):
+    return ivy.seed(seed_value=new_state)
 
 
 @with_supported_dtypes(
