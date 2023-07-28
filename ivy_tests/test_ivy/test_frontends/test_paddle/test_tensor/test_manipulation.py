@@ -488,7 +488,7 @@ def test_paddle_broadcast_to(
 def test_scatter_nd(x, test_flags, backend_fw, on_device):
     ind_dtype, ind = x
     update_dtype, updates = y
-    shape = vals[0].shape
+    shape = st.shared(helpers.get_shape(), key="value_shape")
     helpers.test_function(
         input_dtypes=[ind_dtype, update_dtype],
         test_flags=test_flags,
