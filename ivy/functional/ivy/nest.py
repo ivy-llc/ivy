@@ -1071,11 +1071,10 @@ def nested_map(
     # TODO: Fixes iterating over tracked instances from the graph
     # during transpilation. However, there might be a better fix
     # than this. Remove the check below if that's the case
-    class_instance_name = class_instance.__name__
     if (
-        "Tracked" in class_instance_name
-        and "Proxy" in class_instance_name
-        and class_instance not in to_ignore
+        hasattr(x, "is_tracked_proxy")
+        and hasattr(class_instance, "__bases__")
+        and not set(class_instance.__bases__).intersection(set(to_ignore))
     ):
         to_ignore += (class_instance,)
     tuple_check_fn = ivy.default(
