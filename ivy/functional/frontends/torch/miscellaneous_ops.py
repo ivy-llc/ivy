@@ -426,3 +426,13 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an input "
+            f"with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input)
