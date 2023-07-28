@@ -200,6 +200,9 @@ def gather_nd(
         indices = paddle_backend.expand_dims(indices, axis=0)
         batch_dims = 1
 
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast(paddle.int32)
+
     params_shape = paddle.to_tensor(params.shape)
     indices_shape = indices.shape
     batch_shape = params_shape[:batch_dims]
@@ -396,11 +399,8 @@ def scatter_nd(
         ),
     )
 
-    if reduction != "sum":
-        ind_shape = indices.shape
-        indices = paddle.reshape(indices, (ind_shape[0], -1))
-        indices = paddle.unique(indices, axis=0)
-        indices = paddle.reshape(indices, (-1, *ind_shape[1:]))
+    if indices.dtype not in [paddle.int32, paddle.int64]:
+        indices = indices.cast(paddle.int32)
 
     expected_shape = (
         list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
@@ -434,32 +434,46 @@ def scatter_nd(
     if indices.ndim <= 1:
         indices = ivy.expand_dims(indices, axis=0)._data
         updates = ivy.expand_dims(updates, axis=0)._data
-    if target.dtype in [
+    target_dtype = target.dtype
+    if target_dtype in [
+        paddle.complex64,
+        paddle.complex128,
+    ]:
+        if reduction == "replace":
+            updates = paddle_backend.subtract(
+                updates,
+                paddle_backend.gather_nd(target, indices),
+            )
+        result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
+        result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
+        ret = paddle.complex(result_real, result_imag)
+    elif target_dtype in [
         paddle.int8,
         paddle.int16,
         paddle.uint8,
         paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
         paddle.bool,
     ]:
         if reduction == "replace":
             updates = paddle.subtract(
                 updates.cast("float32"),
                 paddle.gather_nd(target.cast("float32"), indices),
-            ).cast(target.dtype)
-        if paddle.is_complex(target):
-            result_real = paddle.scatter_nd_add(target.real(), indices, updates.real())
-            result_imag = paddle.scatter_nd_add(target.imag(), indices, updates.imag())
-            ret = paddle.complex(result_real, result_imag)
-        else:
-            ret = paddle.scatter_nd_add(
-                target.cast("float32"), indices, updates.cast("float32")
-            ).cast(target.dtype)
+            )
+        ret = paddle.scatter_nd_add(target.cast("float32"), indices, updates).cast(
+            target_dtype
+        )
     else:
         if reduction == "replace":
-            updates = paddle.subtract(updates, paddle.gather_nd(target, indices))
-        ret = paddle.scatter_nd_add(target, indices, updates.cast(target.dtype))
+            gathered_vals = paddle.gather_nd(target, indices)
+            # values greater than 2^24 - 1 can only be accurately represented as float64
+            if (np.abs(gathered_vals.numpy()).max() >= 2**24) or (
+                np.abs(updates.numpy()).max() >= 2**24
+            ):
+                gathered_vals = gathered_vals.cast("float64")
+                target = target.cast("float64")
+                updates = updates.cast("float64")
+            updates = paddle.subtract(updates, gathered_vals)
+        ret = paddle.scatter_nd_add(target, indices, updates).cast(target_dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
