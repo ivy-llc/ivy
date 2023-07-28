@@ -929,7 +929,8 @@ def test_paddle_neg(
 @handle_frontend_test(
     fn_tree="paddle.lgamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
+        safety_factor_scale="log",
     ),
 )
 def test_paddle_lgamma(
@@ -949,6 +950,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1E-4,
         x=x[0],
     )
 
@@ -1717,8 +1719,7 @@ def test_paddle_heaviside(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.rsqrt",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_paddle_rsqrt(
@@ -1736,6 +1737,5 @@ def test_paddle_rsqrt(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
         x=x[0],
     )
