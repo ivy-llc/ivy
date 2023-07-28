@@ -3223,7 +3223,8 @@ def test_jax_conjugate(
         x=x[0],
     )
 
-#cos
+
+# cos
 @handle_frontend_test(
     fn_tree="jax.numpy.cos",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
