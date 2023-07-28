@@ -45,7 +45,6 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 )
 def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
-    print(dtype)
     helpers.test_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,

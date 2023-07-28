@@ -13,7 +13,6 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_complex_input,
-    add_attributes,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -106,7 +105,6 @@ def _leaky_relu_jax_like(
 @handle_array_function
 @handle_device_shifting
 @handle_complex_input
-@add_attributes(jax_like=_leaky_relu_jax_like)
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -173,6 +171,9 @@ def leaky_relu(
     }
     """
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
+
+
+leaky_relu.jax_like = _leaky_relu_jax_like
 
 
 @handle_exceptions

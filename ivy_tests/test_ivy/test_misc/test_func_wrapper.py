@@ -178,8 +178,12 @@ def test_handle_complex_input(x, mode, jax_like, expected, backend_fw):
     ivy.set_backend(backend_fw)
     x = ivy.array(x)
     expected = ivy.array(expected)
-    test_fn = _fn8 if jax_like is None else ivy.add_attributes(jax_like=jax_like)(_fn8)
-    test_fn = ivy.handle_complex_input(test_fn)
+    if jax_like is not None:
+        _fn8.jax_like = jax_like
+    elif hasattr(_fn8, "jax_like"):
+        # _fn8 might have the jax_like attribute still attached from previous tests
+        delattr(_fn8, "jax_like")
+    test_fn = ivy.handle_complex_input(_fn8)
     out = test_fn(x) if mode is None else test_fn(x, complex_mode=mode)
     if "float" in x.dtype:
         assert ivy.all(out == expected)

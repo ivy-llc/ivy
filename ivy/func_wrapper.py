@@ -1440,8 +1440,8 @@ def handle_complex_input(fn: Callable) -> Callable:
         `"magnitude"`: execute the function on the magnitude of the input, and keep the
             angle constant.
 
-        The `jax_like` attribute (which should generally be added to the function using
-        the `@add_attributes` decorator) has the following options:
+        The `jax_like` attribute (which should be added to the function itself, and not
+        passed as a parameter) has the following options:
         `"entire"` (default): pass the entire input to the function. This is best used
             for purely mathematical operators which are already well defined on complex
             inputs, as many backends will throw exceptions otherwise.
@@ -1491,9 +1491,9 @@ def handle_complex_input(fn: Callable) -> Callable:
 
         Using non-default `jax_like` behaviour
         >>> @handle_complex_input
-        >>> @add_attributes(jax_like="split")
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
+        >>> my_func.jax_like = "split"
         >>> my_func(x, complex_mode="jax")
         ivy.array([1.+1.j, 1.+1.j, 1.+1.j])
 
@@ -1501,9 +1501,9 @@ def handle_complex_input(fn: Callable) -> Callable:
         >>> def _my_func_jax_like(inp, fn_original=None):
         >>>     return fn_original(inp) * 3j
         >>> @handle_complex_input
-        >>> @add_attributes(jax_like=_my_func_jax_like)
         >>> def my_func(inp):
         >>>     return ivy.ones_like(inp)
+        >>> my_func.jax_like = _my_func_jax_like
         >>> my_func(x, complex_mode="jax")
         ivy.array([0.+3.j, 0.+3.j, 0.+3.j])
         """
@@ -1535,46 +1535,6 @@ def handle_complex_input(fn: Callable) -> Callable:
 
     _handle_complex_input.handle_complex_input = True
     return _handle_complex_input
-
-
-# Adding function attributes #
-# -------------------------- #
-def add_attributes(**kwargs) -> Callable:
-    """
-    Add every keyword argument as an attribute of the wrapped function. The benefit of
-    using this instead of the more typical approach:
-    >>> def my_func():
-    >>>     pass
-    >>> my_func.foo = 'bar'
-
-    is that this method allows the attributes to be accessed by other decorators placed
-    above (and running after) this one.
-
-    Parameters
-    ----------
-    kwargs
-        The attributes to be added to the function
-
-    Returns
-    -------
-        The wrapped function, with each attribute and its value added
-
-    Example
-    -------
-    >>> @add_attributes(foo='bar')
-    >>> def my_func():
-    >>>     pass
-    >>> print(my_func.foo)
-    'bar'
-    """
-
-    def _add_attributes(fn: Callable) -> Callable:
-        for k, v in kwargs.items():
-            fn.__dict__[k] = v
-        return fn
-
-    _add_attributes.add_attributes = True
-    return _add_attributes
 
 
 attribute_dict = {
