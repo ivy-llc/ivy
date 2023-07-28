@@ -25,6 +25,7 @@ def test_numpy_cos(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -35,6 +36,7 @@ def test_numpy_cos(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -71,6 +73,7 @@ def test_numpy_tan(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -81,6 +84,7 @@ def test_numpy_tan(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -118,6 +122,7 @@ def test_numpy_arcsin(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -128,6 +133,7 @@ def test_numpy_arcsin(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -165,6 +171,7 @@ def test_numpy_arccos(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -175,6 +182,7 @@ def test_numpy_arccos(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -212,6 +220,7 @@ def test_numpy_arctan(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -222,6 +231,7 @@ def test_numpy_arctan(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -256,6 +266,7 @@ def test_numpy_arccosh(
     dtypes_values_casting,
     where,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -269,6 +280,7 @@ def test_numpy_arccosh(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -304,6 +316,7 @@ def test_numpy_rad2deg(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -314,6 +327,7 @@ def test_numpy_rad2deg(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -350,6 +364,7 @@ def test_numpy_deg2rad(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -360,6 +375,7 @@ def test_numpy_deg2rad(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -397,6 +413,7 @@ def test_numpy_degrees(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -407,6 +424,7 @@ def test_numpy_degrees(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -421,3 +439,4 @@ def test_numpy_degrees(
         dtype=dtype,
         subok=True,
     )
+
