@@ -137,3 +137,59 @@ def test_cross_entropy_loss(
         atol_=1e-2,
         on_device=on_device,
     )
+
+
+# Dice Loss
+@handle_test(
+    fn_tree="functional.ivy.dice_loss",
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    smooth=helpers.floats(min_value=0, max_value=1.0),
+    axis=st.integers(min_value=-1, max_value=1),
+)
+def test_dice_loss(
+    dtype_and_pred,
+    dtype_and_target,
+    reduction,
+    smooth,
+    axis,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    pred_dtype, pred = dtype_and_pred
+    target_dtype, target = dtype_and_target
+
+    helpers.test_function(
+        input_dtypes=pred_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        pred=pred[0],
+        target=target[0],
+        reduction=reduction,
+        smooth=smooth,
+        axis=axis,
+    )
+
