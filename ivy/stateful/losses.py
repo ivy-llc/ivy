@@ -2,7 +2,7 @@
 
 # local
 import ivy
-from ivy import Module
+from ivy.stateful.module import Module
 
 
 class LogPoissonLoss(Module):
@@ -11,7 +11,7 @@ class LogPoissonLoss(Module):
         *,
         compute_full_loss: bool = False,
         axis: int = -1,
-        reduction: str = "none"
+        reduction: str = "none",
     ):
         self._compute_full_loss = compute_full_loss
         self._axis = axis
@@ -53,5 +53,54 @@ class LogPoissonLoss(Module):
             pred,
             compute_full_loss=ivy.default(compute_full_loss, self._compute_full_loss),
             axis=ivy.default(axis, self._axis),
+            reduction=ivy.default(reduction, self._reduction),
+        )
+
+
+class CrossEntropyLoss(Module):
+    def __init__(
+        self,
+        *,
+        axis: int = -1,
+        epsilon: float = 1e-7,
+        reduction: str = "sum",
+    ):
+        self._axis = axis
+        self._epsilon = epsilon
+        self._reduction = reduction
+        Module.__init__(self)
+
+    def _forward(self, true, pred, *, axis=None, epsilon=None, reduction=None):
+        """
+        Perform forward pass of the Cross Entropy Loss.
+
+        true
+            input array containing true labels.
+        pred
+            input array containing Predicted labels.
+        axis
+            the axis along which to compute the cross-entropy loss. If axis is ``-1``,
+            the cross-entropy loss will be computed along the last dimension.
+            Default: ``-1``.
+        epsilon
+            small value to avoid division by zero. Default: ``1e-7``.
+        reduction
+            ``'none'``: No reduction will be applied to the output.
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'sum'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The cross-entropy loss between the given distributions.
+        """
+        return ivy.cross_entropy(
+            true,
+            pred,
+            axis=ivy.default(axis, self._axis),
+            epsilon=ivy.default(epsilon, self._epsilon),
             reduction=ivy.default(reduction, self._reduction),
         )
