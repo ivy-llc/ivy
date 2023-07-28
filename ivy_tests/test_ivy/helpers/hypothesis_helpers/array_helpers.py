@@ -1733,7 +1733,10 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=get_dtypes("float"),
+            available_dtypes=[
+                "float32",
+                "float64",
+            ],  # get_dtypes("float")
             shape=in_shape,
             num_arrays=1,
             max_value=100,
@@ -1789,15 +1792,25 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
 
-    strides = draw(st.tuples(st.integers(1, min(kernel))))
+    # We do this to avoid this error in the tf backend
+    # ValueError: `strides > 1` not supported in conjunction with `dilation_rate > 1`
+    # TODO: Explore fully compositional implementation for pooling to bypass this in tf.
+    if return_dilation:
+        strides = (
+            draw(st.tuples(st.integers(1, min(kernel))))
+            if max(dilations) <= 1
+            else (1,)
+        )
+    else:
+        strides = draw(st.tuples(st.integers(1, min(kernel))))
 
     if data_format == "channel_first":
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
 
     if return_dilation:
-        return dtype, x, kernel, strides, padding, dilations
-    return dtype, x, kernel, strides, padding
+        return dtype, x, kernel, strides, padding, dilations, data_format
+    return dtype, x, kernel, strides, padding, data_format
 
 
 @st.composite

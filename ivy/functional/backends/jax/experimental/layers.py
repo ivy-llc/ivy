@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
@@ -11,7 +11,7 @@ from ivy import output_to_native_arrays
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.random import RNG
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import _handle_padding, _validate_max_pool_params
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -188,9 +188,9 @@ def general_pool(
 
 def max_pool1d(
     x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: Union[str, int, Tuple[int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -198,18 +198,14 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=1
+    )
+
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
-
-    if isinstance(strides, int):
-        strides = (strides,)
-    elif len(strides) == 1:
-        strides = (strides[0],)
-
-    if isinstance(kernel, int):
-        kernel = (kernel,)
-    elif len(kernel) == 1:
-        kernel = (kernel[0],)
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == 3 else kernel
+        strides = [strides[i] for i in [0, 2, 1]] if len(strides) == 3 else strides
 
     res = general_pool(
         x,
@@ -219,12 +215,12 @@ def max_pool1d(
         strides,
         padding,
         1,
-        dilation=dilation,
-        ceil_mode=ceil_mode,
+        dilation,
+        ceil_mode,
     )
 
     if data_format == "NCW":
-        res = jnp.transpose(x, (0, 2, 1))
+        res = jnp.transpose(res, (0, 2, 1))
     return res
 
 

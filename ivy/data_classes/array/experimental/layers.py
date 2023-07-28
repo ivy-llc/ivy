@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -9,12 +9,14 @@ import ivy
 class _ArrayWithLayersExperimental(abc.ABC):
     def max_pool1d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NWC",
+        dilation: Union[int, Tuple[int]] = 1,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -63,6 +65,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             out=out,
         )
 

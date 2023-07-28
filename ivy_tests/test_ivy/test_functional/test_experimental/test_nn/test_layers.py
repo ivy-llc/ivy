@@ -9,20 +9,35 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=3,
+        max_dims=3,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+    ),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_max_pool1d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+    data_format = "NCW" if data_format == "channel_first" else "NWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw.backend == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtype,
         test_flags=test_flags,
         fw=backend_fw,
@@ -34,6 +49,9 @@ def test_max_pool1d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        data_format=data_format,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -63,7 +81,7 @@ def test_max_pool2d(
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, _ = x_k_s_p
     assume(
         not (
             backend_fw.current_backend_str() == "tensorflow"
@@ -106,7 +124,7 @@ def test_max_pool3d(
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, _ = x_k_s_p
     helpers.test_function(
         ground_truth_backend="jax",
         input_dtypes=dtype,

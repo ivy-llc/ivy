@@ -1,22 +1,38 @@
 # global
-from typing import Optional, Union, Tuple, Literal, Sequence
+from typing import Optional, Union, Tuple, List, Literal, Sequence
 import paddle
-from ivy.functional.ivy.layers import _handle_padding
+from ivy.functional.ivy.layers import (
+    _depth_max_pooling_helper,
+    _handle_padding,
+    _validate_max_pool_params,
+)
 from ivy.utils.assertions import check_kernel_padding_size
 from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
+    with_supported_dtypes,
 )
 from .. import backend_version
 
 # local
 
 
+def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
+    # Determine depth pooling
+    kernel, strides, depth_pooling = _depth_max_pooling_helper(
+        x.shape, kernel, strides, dims=dims, data_format=data_format
+    )
+    if depth_pooling:
+        x = paddle.transpose(x, (0, 2, 1, *range(3, dims + 2)))
+    return x, kernel, strides, depth_pooling
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, backend_version)
 def max_pool1d(
     x: paddle.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: Union[str, int, Tuple[int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
@@ -24,31 +40,40 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    dtype = x.dtype
-    x = x.astype("float64")
-    if isinstance(strides, int):
-        strides = (strides,)
-    elif len(strides) == 1:
-        strides = (strides[0],)
-
-    if isinstance(kernel, int):
-        kernel = (kernel,)
-    elif len(kernel) == 1:
-        kernel = (kernel[0],)
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=1
+    )
 
     if data_format == "NWC":
         x = paddle.transpose(x, perm=(0, 2, 1))
-    x_shape = x.shape[2]
-    pad_w = _handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = paddle.nn.functional.pad(
-        x, pad=[pad_w // 2, pad_w - pad_w // 2], value=float("-inf"), data_format="NCL"
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == 3 else kernel
+        strides = [strides[i] for i in [0, 2, 1]] if len(strides) == 3 else strides
+
+    # Determine depthwise pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, 1, data_format="channel_first"
     )
 
-    res = paddle.nn.functional.max_pool1d(x, kernel, strides, padding="valid")
+    # TODO: Add support for pooling with dilation in the paddle backend.
+    # It's currently not natively supported in the fromework.
+    if dilation[0] > 1:
+        raise NotImplementedError(
+            "Max pooling with dilation is currently not supported in the 'paddle'"
+            " backend"
+        )
 
+    padding = (
+        list(padding[0]) if not isinstance(padding, str) else padding
+    )  # to work directly with paddle's max_pool1d function
+    res = paddle.nn.functional.max_pool1d(
+        x, kernel, strides, padding=padding, ceil_mode=ceil_mode
+    )
+
+    if depth_pooling:
+        res = paddle.transpose(res, perm=(0, 2, 1))
     if data_format == "NWC":
         res = paddle.transpose(res, perm=(0, 2, 1))
-    return res.astype(dtype)
+    return res
 
 
 @with_supported_device_and_dtypes(
