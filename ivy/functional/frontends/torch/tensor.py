@@ -1603,6 +1603,9 @@ class Tensor:
     def conj(self):
         return torch_frontend.conj(self)
 
+    def gcd(self, other, *, out=None):
+        return torch_frontend.gcd(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
