@@ -255,7 +255,6 @@ def corrcoef(
         y: paddle.Tensor = None,
         /,
         *,
-
         rowvar: Optional[bool] = True,
         out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
