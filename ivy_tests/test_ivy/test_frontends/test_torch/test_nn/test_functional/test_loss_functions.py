@@ -1050,12 +1050,14 @@ def test_torch_multilabel_margin_loss(
     reduce,
     test_flags,
     fn_tree,
+    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1065,4 +1067,52 @@ def test_torch_multilabel_margin_loss(
         reduction=reduction,
         size_average=size_average,
         reduce=reduce,
+    )
+
+
+# multi_margin_loss test
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.multi_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        allow_inf=False,
+        shared_dtype=True,
+        min_num_dims=1,
+    ),
+    p=st.integers(min_value=1, max_value=2),
+    margin=st.floats(min_value=-1.0, max_value=1.0),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_torch_multi_margin_loss(
+    *,
+    dtype_and_inputs,
+    p,
+    margin,
+    size_average,
+    reduce,
+    reduction,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        target=x[1],
+        p=p,
+        margin=margin,
+        weight=x[2],
+        size_average=size_average,
+        reduce=reduce,
+        reduction=reduction,
     )

@@ -652,6 +652,7 @@ def multi_margin_loss(
 ):
     corr_class_scores = input[ivy.arange(input.size()[0]), target]
     diff = margin - (corr_class_scores[:, None] - input)
+    diff[ivy.arange(input.size()[0]), target] = 0
     loss = (
         ivy.maximum(0, weight[target][:, None] * diff)
         if weight is not None
