@@ -15,10 +15,10 @@ from ivy.utils.exceptions import IvyValueError
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
+    "handle_complex_input",
     "infer_device",
     "handle_device_shifting",
     "infer_dtype",
-    "handle_complex_input",
     "handle_array_function",
     "outputs_to_ivy_arrays",
     "outputs_to_ivy_shapes",
