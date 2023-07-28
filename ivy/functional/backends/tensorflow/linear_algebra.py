@@ -754,12 +754,14 @@ def lu(
     res = namedtuple("PLU", ["P", "L", "U"])
     res2 = namedtuple("PLU", ["PL", "U"])
     dtype = A.dtype
-    m, n = tf.shape(A)
+    m, n = A.shape[-2:]
     lu, permutation = tf.linalg.lu(A)
     P = tf.cast(tf.equal(permutation[None, :], tf.range(m, dtype=permutation.dtype)[:, None]), dtype=dtype)
     k = tf.minimum(m, n)
-    L = tf.linalg.set_diag(tf.linalg.band_part(lu, -1, 0)[:, :k] + tf.eye(m, k, dtype=dtype),
-                           tf.ones((m,), dtype=dtype))
+    L = tf.linalg.set_diag(
+        tf.linalg.band_part(lu, -1, 0)[:, :k] + tf.eye(m, k, dtype=dtype),
+        tf.ones(A.shape[:-1], dtype=dtype)
+    )
     U = tf.linalg.band_part(lu, 0, -1)[:k, :]
     if permute_l:
         return res2(tf.matmul(P, L), U)

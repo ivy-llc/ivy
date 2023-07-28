@@ -1236,7 +1236,7 @@ def test_lu(
 ):
     assume(pivot)
     input_dtype, x = dtype_x
-    assume(np.all(matrix_is_stable(np.array(x), cond_limit=5)).item())
+    assume(np.all(matrix_is_stable(np.array(x[0]), cond_limit=5)).item())
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,

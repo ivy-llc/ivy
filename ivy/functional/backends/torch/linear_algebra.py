@@ -589,12 +589,12 @@ def lu(
     /,
     *,
     pivot: bool = True,
-    permute_l: bool = 0,
+    permute_l: bool = False,
     out: Optional[Tuple[torch.Tensor, torch.Tensor]] = None,
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     res = namedtuple("PLU", ["P", "L", "U"])
     res2 = namedtuple("PLU", ["PL", "U"])
     P, L, U = torch.linalg.lu(A, pivot=pivot)
     if permute_l:
-        res2(torch.matmul(P, L), U)
+        return res2(torch.matmul(P, L), U)
     return res(P, L, U)
