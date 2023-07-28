@@ -179,13 +179,3 @@ def cond(
 
 
 cond.support_native_out = False
-
-
-def lu_factor(
-    x: torch.Tensor,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[torch.Tensor] = None,
-) -> Tuple[torch.Tensor]:
-    raise IvyNotImplementedException()

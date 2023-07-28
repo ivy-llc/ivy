@@ -1220,13 +1220,15 @@ def test_vander(
 
 @handle_test(
     fn_tree="functional.ivy.lu",
-    dtype_x= _get_dtype_and_matrix(),
+    dtype_x=_get_dtype_and_matrix(),
     pivot=st.booleans(),
+    permute_l=st.booleans(),
 )
 def test_lu(
     *,
     dtype_x,
     pivot,
+    permute_l,
     test_flags,
     backend_fw,
     fn_name,
@@ -1240,11 +1242,12 @@ def test_lu(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
-        x=x[0],
+        A=x[0],
         pivot=pivot,
+        permute_l=permute_l,
     )

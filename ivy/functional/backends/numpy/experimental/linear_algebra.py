@@ -174,13 +174,3 @@ def cond(
 
 
 cond.support_native_out = False
-
-
-def lu_factor(
-    x: np.ndarray,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[np.ndarray] = None,
-) -> Tuple[np.ndarray]:
-    raise IvyNotImplementedException()

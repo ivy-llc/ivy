@@ -580,7 +580,10 @@ def vector_to_skew_symmetric_matrix(
 
 vector_to_skew_symmetric_matrix.support_native_out = True
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint64", "uint16", "float16", "bfloat16", "uint32")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("uint64", "uint16", "float16", "bfloat16", "uint32")},
+    backend_version
+)
 def lu(
     A: torch.Tensor,
     /,

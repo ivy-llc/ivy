@@ -2799,7 +2799,7 @@ def lu(
     pivot: bool = True,
     permute_l: bool = False,
     out: Optional[Tuple[ivy.Array, ivy.Array, ivy.Array]] = None,
-) ->Union[Tuple[ivy.Array, ivy.Array], Tuple[ivy.Array, ivy.Array, ivy.Array]]:
+) -> Union[Tuple[ivy.Array, ivy.Array], Tuple[ivy.Array, ivy.Array, ivy.Array]]:
     """
     Parameters
     ----------
@@ -2831,7 +2831,7 @@ def lu(
 
             U  – Upper triangular or trapezoidal matrix
     """
-    return current_backend(A).lu(A, permute_l=permute_l ,pivot=pivot, out=out)
+    return current_backend(A).lu(A, pivot=pivot, permute_l=permute_l, out=out)
 
 
 @handle_exceptions

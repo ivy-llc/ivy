@@ -191,13 +191,3 @@ def cond(
             tf.linalg.inv(x), ord=p, axis=[-2, -1]
         )
     return k
-
-
-def lu_factor(
-    x: Union[tf.Tensor, tf.Variable],
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Tuple[tf.Tensor]:
-    raise IvyNotImplementedException()

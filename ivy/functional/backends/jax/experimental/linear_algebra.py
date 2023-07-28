@@ -149,13 +149,3 @@ def cond(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.linalg.cond(x, p=p)
-
-
-def lu_factor(
-    x: JaxArray,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[JaxArray] = None,
-) -> Tuple[JaxArray]:
-    raise IvyNotImplementedException()

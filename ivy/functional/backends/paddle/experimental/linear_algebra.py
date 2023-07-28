@@ -94,13 +94,3 @@ def cond(
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()
-
-
-def lu_factor(
-    x: paddle.Tensor,
-    /,
-    *,
-    pivot: Optional[bool] = True,
-    out: Optional[paddle.Tensor] = None,
-) -> Any:
-    raise IvyNotImplementedException()

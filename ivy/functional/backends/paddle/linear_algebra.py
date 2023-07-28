@@ -707,7 +707,8 @@ def vector_to_skew_symmetric_matrix(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("uint16", "bfloat16", "float16", "complex")}}, backend_version
+    {"2.5.0 and below": ("uint16", "bfloat16", "float16", "complex")},
+    backend_version
 )
 def lu(
     A: paddle.Tensor,
@@ -720,7 +721,7 @@ def lu(
     res = namedtuple("PLU", ["P", "L", "U"])
     res2 = namedtuple("PLU", ["PL", "U"])
     lu, p, _ = paddle.linalg.lu(A, pivot=pivot)
-    P, L, U = paddle.linalg.lu_unpack(lu,p)
+    P, L, U = paddle.linalg.lu_unpack(lu, p)
     if permute_l:
         return res2(paddle.matmul(P, L), U)
     return res(P, L, U)
