@@ -279,12 +279,10 @@ def test_paddle_randint_like(
     lam=helpers.floats(min_value=0.1, max_value=1.0),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        min_value=0,
-        max_value=1000,
         min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-        max_dim_size=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
 )
 def test_paddle_exponential_(
