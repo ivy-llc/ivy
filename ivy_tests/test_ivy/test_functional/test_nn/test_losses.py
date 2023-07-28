@@ -205,11 +205,6 @@ def test_sparse_cross_entropy(
     )
 
 
-
-
-
-
-
 # dice_loss
 @handle_test(
     fn_tree="functional.ivy.dice_loss",
