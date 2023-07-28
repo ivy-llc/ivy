@@ -198,7 +198,7 @@ def _get_jac_one_arg_fn(grad_fn, xs, out_idx):
 
     def one_arg_fn(x):
         idx = next(nested_indices)
-        new_xs = ivy.set_nest_at_index(xs, idx, x) if idx else x
+        new_xs = ivy.set_nest_at_index(xs, idx, x, shallow=False) if idx else x
         ret = grad_fn(new_xs)
         for i in out_idx:
             ret = ret[i]
@@ -212,10 +212,17 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
 
     def one_out_fn(o):
         out_idx = next(out_nested_indices)
+        out_shape = ivy.index_nest(grad_fn(xs), out_idx).shape
         one_arg_fn = _get_jac_one_arg_fn(grad_fn, xs, out_idx)
         jacobian = ivy.nested_map(
             xs,
-            lambda x: paddle.incubate.autograd.Jacobian(one_arg_fn, ivy.to_native(x)),
+            lambda x: jacobian_to_ivy(
+                paddle.incubate.autograd.Jacobian(
+                    one_arg_fn, ivy.to_native(x.expand_dims())
+                ),
+                x.shape,
+                out_shape,
+            ),
             shallow=False,
         )
         return jacobian
@@ -223,8 +230,19 @@ def _get_one_out_fn(grad_fn, xs, fn_ret):
     return one_out_fn
 
 
+def jacobian_to_ivy(jacobian, in_shape, out_shape):
+    jac_ivy = ivy.to_ivy(jacobian[:])
+    jac_shape = out_shape + in_shape
+    jac_reshaped = jac_ivy.reshape(jac_shape)
+    return jac_reshaped
+
+
 def jac(func: Callable):
-    grad_fn = lambda x_in: ivy.to_native(func(x_in), nested=True)
+    grad_fn = lambda x_in: ivy.to_native(
+        func(ivy.to_ivy(x_in, nested=True)),
+        nested=True,
+        include_derived={tuple: True},
+    )
 
     def callback_fn(xs):
         fn_ret = grad_fn(xs)

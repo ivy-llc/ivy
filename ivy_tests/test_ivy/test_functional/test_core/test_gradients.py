@@ -187,23 +187,26 @@ def test_value_and_grad(x, dtype, func, backend_fw):
     "x", [[[4.6, 2.1, 5], [2.8, 1.3, 6.2]], [[4.6, 2.1], [5, 2.8], [1.3, 6.2]]]
 )
 @pytest.mark.parametrize("dtype", ["float32", "float64"])
-@pytest.mark.parametrize(
-    "func", [lambda x: ivy.mean(ivy.square(x)), lambda x: ivy.mean(ivy.cos(x))]
-)
-def test_jac(x, dtype, func, backend_fw):
+@pytest.mark.parametrize("func_str", ["square", "cos"])
+def test_jac(x, dtype, func_str, backend_fw):
     if backend_fw == "numpy":
         pytest.skip()
 
     with update_backend(backend_fw) as ivy_backend:
+        f = ivy_backend.__dict__[func_str]
+        func = lambda x: ivy_backend.mean(f(x))
         _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
         var = _variable_fn(ivy_backend.array(x, dtype=dtype))
         fn = ivy_backend.jac(func)
         jacobian = fn(var)
         jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
+        assert jacobian_np != []
 
     with update_backend("tensorflow") as gt_backend:
+        f = gt_backend.__dict__[func_str]
+        func = lambda x: gt_backend.mean(f(x))
         _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
-        var = _variable_fn(ivy.array(x, dtype=dtype))
+        var = _variable_fn(gt_backend.array(x, dtype=dtype))
         fn = gt_backend.jac(func)
         jacobian_gt = fn(var)
         jacobian_np_from_gt = helpers.flatten_and_to_np(
@@ -239,6 +242,29 @@ def test_jac(x, dtype, func, backend_fw):
     for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
         assert jacobian.shape == jacobian_from_gt.shape
         assert np.allclose(jacobian, jacobian_from_gt)
+
+    # Test func with non 0-dim output
+    with update_backend(backend_fw) as ivy_backend:
+        func = ivy_backend.__dict__[func_str]
+        _variable_fn = ivy_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(ivy_backend.array(x, dtype=dtype))
+        fn = ivy_backend.jac(func)
+        jacobian = fn(var)
+        jacobian_np = helpers.flatten_and_to_np(ret=jacobian, backend=backend_fw)
+
+    with update_backend("tensorflow") as gt_backend:
+        func = gt_backend.__dict__[func_str]
+        _variable_fn = gt_backend.ivy.functional.ivy.gradients._variable
+        var = _variable_fn(gt_backend.array(x, dtype=dtype))
+        fn = gt_backend.jac(func)
+        jacobian_gt = fn(var)
+        jacobian_np_from_gt = helpers.flatten_and_to_np(
+            ret=jacobian_gt, backend="tensorflow"
+        )
+        for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
+            print(jacobian.shape, "====", jacobian_from_gt.shape)
+            assert jacobian.shape == jacobian_from_gt.shape
+            assert np.allclose(jacobian, jacobian_from_gt)
 
 
 # grad
