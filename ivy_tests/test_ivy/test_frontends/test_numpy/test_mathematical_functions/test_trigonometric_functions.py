@@ -439,4 +439,3 @@ def test_numpy_degrees(
         dtype=dtype,
         subok=True,
     )
-

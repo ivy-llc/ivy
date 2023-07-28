@@ -31,7 +31,6 @@ class Tensor:
         self._grads = None
         self._requires_grad = requires_grad
         self.grad_fn = None
-        self._grads = None
         if not _init_overload:
             self._is_leaf = True
         else:
