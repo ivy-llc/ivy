@@ -59,9 +59,7 @@ def test_numpy_ivy_array(
         ret_shape=True,
     ),
 )
-def test_numpy_dtype(
-    dtype_x, backend_fw, frontend
-):
+def test_numpy_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
     with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])

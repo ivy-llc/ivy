@@ -139,7 +139,14 @@ def meshgrid(*args, **kwargs):
 )
 @to_ivy_arrays_and_back
 def assign(x, output=None):
-    return ivy.copy_array(x, out=output)
+    if len(ivy.shape(x)) == 0:
+        x = ivy.reshape(ivy.Array(x), (1,))
+        if ivy.exists(output):
+            output = ivy.reshape(ivy.Array(output), (1,))
+    else:
+        x = ivy.reshape(x, ivy.shape(x))
+    ret = ivy.copy_array(x, to_ivy_array=False, out=output)
+    return ret
 
 
 @with_supported_dtypes(
