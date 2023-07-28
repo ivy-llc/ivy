@@ -177,7 +177,8 @@ def transpose(x, perm, name=None):
 def bincount(x, weights=None, minlength=0, name=None):
     return ivy.bincount(x, weights=weights, minlength=minlength)
 
-@with_supported_dtypes({"2.4.1 and above": ("float64","float32")}, "paddle")
+
+@with_supported_dtypes({"2.4.1 and above": ("float64", "float32")}, "paddle")
 @to_ivy_arrays_and_back
 def dist(x, y, p=2):
     ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)
