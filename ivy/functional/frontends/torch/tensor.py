@@ -1515,6 +1515,10 @@ class Tensor:
     def diag(self, diagonal=0):
         return torch_frontend.diag(self, diagonal=diagonal)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def diagonal(self, offset=0, dim1=0, dim2=1):
+        return torch_frontend.diagonal(self, offset=offset, dim1=dim1, dim2=dim2)
+
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
 
@@ -1570,6 +1574,13 @@ class Tensor:
             else:
                 next_function(_grad_list[idx])
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def logaddexp(self, other):
+        return torch_frontend.logaddexp(self, other)
+
+    def angle(self):
+        return torch_frontend.angle(self)
+
     @with_supported_dtypes(
         {
             "2.5.0 and below": (
@@ -1585,6 +1596,12 @@ class Tensor:
     )
     def adjoint(self):
         return torch_frontend.adjoint(self)
+
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("int16", "float16", "bfloat16")}, "torch"
+    )
+    def conj(self):
+        return torch_frontend.conj(self)
 
 
 class Size(tuple):

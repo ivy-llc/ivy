@@ -522,6 +522,46 @@ def test_paddle_meshgrid(
     )
 
 
+# diag
+@handle_frontend_test(
+    fn_tree="paddle.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-1, max_value=1),
+    p=st.one_of(
+        helpers.ints(min_value=-25, max_value=25),
+        helpers.floats(min_value=-25, max_value=25),
+    ),
+)
+def test_paddle_diag(
+    dtype_and_x,
+    k,
+    p,
+    backend_fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=k,
+        padding_value=p,
+    )
+
+
 # triu_indices
 @handle_frontend_test(
     fn_tree="paddle.triu_indices",
