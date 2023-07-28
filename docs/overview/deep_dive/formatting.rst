@@ -159,7 +159,7 @@ We have a GitHub action that runs:
 
 The important check is the one that runs on every pull request. You should expect this check to pass if you have
 pre-commit correctly set up. Note that you can also reformat your code directly from GitHub making a comment with
-``ivy-gardener``, we will go through this in the next section.
+``ivy-gardener``, we will go through more details about it in the next section.
 
 Lint Formatting
 ~~~~~~~~~~~~~~~
@@ -172,6 +172,15 @@ We have a GitHub action that runs:
 The first action is to ensure that the code is always formatted correctly. The second action is to allow you to
 reformat your code directly from GitHub. This is useful if you didn't setup pre-commit correctly and you or one
 of our maintainers want to reformat your code without having to clone the repository.
+
+Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trigger the same set of lint checks 
+as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
+a new commit if there is any. 
+
+However, it is possible for the linters run in the ivy-gardener to face formatting errors that need human intervention 
+like typos and uninitialized arguments. It is also possible that the ivy bot may be unable to create a new commit 
+if it does not have access to edit your branch. In these cases, the ivy-gardener will fail and you should check 
+the log of lint check to manually resolve the remaining errors.
 
 **Round Up**
 
