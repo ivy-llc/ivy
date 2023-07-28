@@ -193,5 +193,4 @@ def test_paddle_topk(
         k=k,
         sorted=sorted,
         largest=largest,
-        # test_with_out=test_with_out
     )
