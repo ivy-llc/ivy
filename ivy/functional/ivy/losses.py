@@ -386,6 +386,7 @@ def sparse_cross_entropy(
 
 
 
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -439,12 +440,13 @@ def dice_loss(
     """
     ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
-    
-    intersection = 2.0 * ivy.reduce_sum(pred * true, axis=axis, keepdims=True)
-    denominator = ivy.reduce_sum(pred, axis=axis, keepdims=True) + ivy.reduce_sum(true, axis=axis, keepdims=True)
-    
-    dice_score = intersection / (denominator + epsilon)
-    
-    return _reduce_loss(reduction, 1 - dice_score, axis, out)
 
+    intersection = 2.0 * ivy.reduce_sum(pred * true, axis=axis, keepdims=True)
+    denominator = ivy.reduce_sum(pred, axis=axis, keepdims=True) + ivy.reduce_sum(
+        true, axis=axis, keepdims=True
+    )
+
+    dice_score = intersection / (denominator + epsilon)
+
+    return _reduce_loss(reduction, 1 - dice_score, axis, out)
 
