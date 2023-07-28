@@ -1753,12 +1753,10 @@ def test_paddle_prod(
     fn_tree="paddle.tensor.math.any",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=["bool"],
-        min_axis=-1,
-        max_axis=0,
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
+        valid_axis=True,
+        allow_neg_axes=True,
         force_int_axis=True,
+        min_num_dims=1,
     ),
 )
 def test_paddle_any(
