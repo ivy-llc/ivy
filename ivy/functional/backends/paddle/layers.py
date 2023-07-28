@@ -149,17 +149,22 @@ def conv1d_transpose(
     dilations: Union[int, Tuple[int]] = 1,
     out: Optional[paddle.Tensor] = None,
 ):
+
+    if data_format not in ["NCW", "NWC"]:
+        raise ValueError(f"Unexpected data_format {data_format}. Expected 'NCW' or 'NWC'.")
+    
     if data_format == "NCW":
-        x = tf.transpose(x, (0, 2, 1))
-        filters = tf.transpose(filters, (0, 2, 1))
-        output_shape = _output_shape(
+        x = paddle.transpose(x, (0, 2, 1))
+        filters = paddle.transpose(filters, (0, 2, 1))
+    
+    output_shape = output_shape(
         x.shape, filters.shape, output_shape, strides, padding, 1, dilations
     )
-    res = tf.nn.conv1d_transpose(
+    res = paddle.nn.functional.conv1d_transpose(
         x, filters, output_shape, strides, padding, "NWC", dilations
     )
     if data_format == "NCW":
-        res = tf.transpose(res, (0, 2, 1))
+        res = paddle.transpose(res, (0, 2, 1))
     return res
     #raise IvyNotImplementedException()
 
