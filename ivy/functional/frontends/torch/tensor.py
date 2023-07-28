@@ -710,6 +710,9 @@ class Tensor:
             slices.append(self.ivy_array[i : i + size])
         return torch_frontend.stack(slices)
 
+    def logit(self, eps=None):
+        return torch_frontend.logit(self.data, eps)
+
     def long(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int64, copy=False)
         return self
