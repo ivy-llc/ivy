@@ -907,6 +907,10 @@ class Tensor:
         self.ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    def clamp_min(self, min=None):
+        return torch_frontend.clamp(self, min=min)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self)
