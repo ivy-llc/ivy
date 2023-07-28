@@ -3883,12 +3883,12 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
+        if isinstance(list(fn_unsupported_dnd.__get__())[0], dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_supported_dnd.__get__().values())[0], dict):
+        if isinstance(list(fn_supported_dnd.__get__())[0], dict):
             fn_supported_dnd = fn_supported_dnd.get(backend, {})
 
     ivy.utils.assertions.check_false(
