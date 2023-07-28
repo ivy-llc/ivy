@@ -216,6 +216,7 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
             new_params.append(param.replace(name=name, kind=param.KEYWORD_ONLY))
         new_signature = sig.replace(parameters=new_params)
 
+        @functools.wraps(fn)
         def _wraped_fn(**kwargs):
             # update kwargs dictionary keys
             if kw_update:
