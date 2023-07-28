@@ -37,7 +37,6 @@ The updates should be applied for the:
 
 #. ivy API
 #. all backend APIs
-#. container static methods
 #. array instance methods
 #. container instance methods
 #. array operators
@@ -59,7 +58,7 @@ However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
 #. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
 #. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
 #. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
