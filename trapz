@@ -1,0 +1,24 @@
+import numpy as np
+
+# Define your custom mathematical function here
+def custom_function(x):
+    return x**2 + np.sin(x)
+
+# Create a wrapper function that combines your custom function with trapz
+def trapz_with_custom_function(y, x=None, dx=1.0, axis=-1, custom_func=None):
+    if custom_func is None:
+        # If no custom function is provided, use the regular trapz
+        return np.trapz(y, x=x, dx=dx, axis=axis)
+    else:
+        # Evaluate the custom function on y and then use trapz on the result
+        result = custom_func(y)
+        return np.trapz(result, x=x, dx=dx, axis=axis)
+
+# Example usage:
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+result_regular_trapz = trapz_with_custom_function(y, x=x)
+result_custom_trapz = trapz_with_custom_function(y, x=x, custom_func=custom_function)
+
+print("Regular trapz result:", result_regular_trapz)
+print("Custom trapz result:", result_custom_trapz)
