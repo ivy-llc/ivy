@@ -290,15 +290,16 @@ def skip_conditional(fn_name: str, backend_name: str) -> bool:
         "dct": "tensorflow",
         "idct": "tensorflow",
         "histogram": "tensorflow",
-        "native_array":"torch",
-        "logspace":"torch",
-        "set_item":"numpy",
-        "eigvalsh":"torch",
+        "native_array": "torch",
+        "logspace": "torch",
+        "set_item": "numpy",
+        "eigvalsh": "torch",
     }
     try:
         if (
             skip_list_conditional_first[fn_name] == backend_name
-                or skip_list_conditional_second[fn_name] == backend_name):
+            or skip_list_conditional_second[fn_name] == backend_name
+        ):
             return True
         else:
             return False
