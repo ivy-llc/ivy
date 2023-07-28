@@ -565,30 +565,25 @@ def test_paddle_diag(
 # triu_indices
 @handle_frontend_test(
     fn_tree="paddle.triu_indices",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
-    ),
     dtype=helpers.get_dtypes("valid", full=False),
     row=st.integers(min_value=1, max_value=5),
     col=st.integers(min_value=1, max_value=5),
-    offset=st.integers(min_value=0, max_value=4),
+    offset=st.integers(min_value=-4, max_value=4),
     test_with_out=st.just(False),
 )
 def test_paddle_triu_indices(
-    dtype_and_x,
-    backend_fw,
     row,
     col,
     offset,
     dtype,
     test_flags,
+    backend_fw,
     frontend,
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
