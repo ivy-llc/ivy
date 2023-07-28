@@ -55,7 +55,7 @@ def _property_helper(draw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_A(matrices, backend_fw):
+def test_numpy_A(matrices, backend_fw):
     data, data_gt = matrices
     ret = np.ravel(data.A)
     ret_gt = np.ravel(data_gt.A)
@@ -71,7 +71,7 @@ def test_numpy_matrix_property_A(matrices, backend_fw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_A1(matrices, backend_fw):
+def test_numpy_A1(matrices, backend_fw):
     data, data_gt = matrices
     helpers.value_test(
         ret_np_flat=data.A1,
@@ -85,7 +85,7 @@ def test_numpy_matrix_property_A1(matrices, backend_fw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_I(matrices, backend_fw):
+def test_numpy_I(matrices, backend_fw):
     data, data_gt = matrices
     assume(
         np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
@@ -105,7 +105,7 @@ def test_numpy_matrix_property_I(matrices, backend_fw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_T(matrices, backend_fw):
+def test_numpy_T(matrices, backend_fw):
     data, data_gt = matrices
     ret = np.ravel(data.T)
     ret_gt = np.ravel(data_gt.T)
@@ -121,7 +121,7 @@ def test_numpy_matrix_property_T(matrices, backend_fw):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_data(matrices):
+def test_numpy_data(matrices):
     data, data_gt = matrices
     # sanity test
     ivy.utils.assertions.check_equal(
@@ -133,7 +133,7 @@ def test_numpy_matrix_property_data(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_dtype(matrices):
+def test_numpy_dtype(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(
         str(data.dtype), str(data_gt.dtype), as_array=False
@@ -144,7 +144,7 @@ def test_numpy_matrix_property_dtype(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_ndim(matrices):
+def test_numpy_ndim(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.ndim, data_gt.ndim, as_array=False)
 
@@ -153,7 +153,7 @@ def test_numpy_matrix_property_ndim(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_shape(matrices):
+def test_numpy_shape(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.shape, data_gt.shape, as_array=False)
 
@@ -162,7 +162,7 @@ def test_numpy_matrix_property_shape(matrices):
     fn_tree="numpy.add",  # dummy fn_tree
     matrices=_property_helper(),
 )
-def test_numpy_matrix_property_size(matrices):
+def test_numpy_size(matrices):
     data, data_gt = matrices
     ivy.utils.assertions.check_equal(data.size, data_gt.size, as_array=False)
 
