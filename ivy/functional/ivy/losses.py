@@ -384,9 +384,6 @@ def sparse_cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
 
-
-
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
