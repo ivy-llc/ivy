@@ -230,3 +230,32 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dice_loss(logit, label, reduction="mean", smooth=1e-5):
+    intersection = ivy.sum(logit * label)
+    union = ivy.sum(logit) + ivy.sum(label)
+
+    dice_score = (2.0 * intersection + smooth) / (union + smooth)
+    dice_loss = 1.0 - dice_score
+
+    reduction_func = _get_reduction_func(reduction)
+    dice_loss = reduction_func(dice_loss).astype(label.dtype)
+    
+    return paddle.to_tensor(dice_loss)
+
+# Helper function to get the appropriate reduction function
+def _get_reduction_func(reduction):
+    if reduction == "none":
+        ret = lambda x: x
+    elif reduction == "mean":
+        ret = ivy.mean
+    elif reduction == "sum":
+        ret = ivy.sum
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "{} is not a valid value for reduction".format(reduction)
+        )
+    return ret
+

@@ -383,3 +383,70 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def dice_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    epsilon: float = 1e-7,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute Dice loss between predicted and true discrete distributions.
+
+    Parameters
+    ----------
+    true
+        Input array containing true labels.
+    pred
+        Input array containing predicted labels.
+    axis
+        The axis along which to compute the Dice loss. Default: -1.
+    epsilon
+        A float in [0.0, 1.0] specifying the amount of smoothing when calculating
+        the loss. If epsilon is 0, no smoothing will be applied. Default: 1e-7.
+    reduction
+        The reduction type for the output. Options: "none", "sum", "mean". Default: "mean".
+    out
+        Optional output array, for writing the result to. It must have a shape
+        that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The Dice loss between the given distributions.
+
+    Examples
+    --------
+    >>> x = ivy.array([0, 0, 1, 0])
+    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> print(ivy.dice_loss(x, y))
+    ivy.array(0.6)
+
+    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
+    >>> print(ivy.dice_loss(x, z))
+    ivy.array(0.8333333)
+    """
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    pred = ivy.clip(pred, epsilon, 1 - epsilon)
+
+    intersection = 2.0 * ivy.reduce_sum(pred * true, axis=axis, keepdims=True)
+    denominator = ivy.reduce_sum(pred, axis=axis, keepdims=True) + ivy.reduce_sum(
+        true, axis=axis, keepdims=True
+    )
+
+    dice_score = intersection / (denominator + epsilon)
+
+    return _reduce_loss(reduction, 1 - dice_score, axis, out)
+
