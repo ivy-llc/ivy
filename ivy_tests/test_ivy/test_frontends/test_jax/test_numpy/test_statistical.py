@@ -1189,10 +1189,10 @@ def test_jax_cov(
 
 @st.composite
 def _get_array_axes_probs(draw):
-    dtypes = draw(helpers.get_dtypes(kind="float"))
-    dtype, array, axes = draw(
+    array_dtypes = draw(helpers.get_dtypes(kind="float"))
+    array_dtype, array, axes = draw(
         helpers.dtype_values_axis(
-            available_dtypes=dtypes,
+            available_dtypes=array_dtypes,
             small_abs_safety_factor=5,
             large_abs_safety_factor=5,
             min_num_dims=1,
@@ -1201,24 +1201,32 @@ def _get_array_axes_probs(draw):
             max_axes_size=5,
             valid_axis=True,
             force_int_axis=True,
+            min_value=1,
+            max_value=10,
         )
     )
-    q = np.array(
-        draw(
-            helpers.lists(
-                x=helpers.floats(
-                    min_value=0,
-                    max_value=1,
-                    small_abs_safety_factor=50,
-                    abs_smallest_val=1e-1,
-                ),
-                min_size=1,
-                max_size=10,
+    q = np.round(
+        np.array(
+            draw(
+                helpers.lists(
+                    x=helpers.floats(
+                        min_value=0,
+                        max_value=1,
+                        small_abs_safety_factor=50,
+                        large_abs_safety_factor=50,
+                        safety_factor_scale="log",
+                        abs_smallest_val=1e-1,
+                        mixed_fn_compos=False,
+                    ),
+                    min_size=1,
+                    max_size=5,
+                )
             )
-        )
+        ),
+        decimals=3,
     )
 
-    return dtype, array, axes, q
+    return array_dtype, array, axes, q
 
 
 @handle_frontend_test(
@@ -1239,12 +1247,14 @@ def test_jax_quantile(
     test_flags,
     method,
     keepdims,
+    backend_fw,
 ):
-    dtype, array, axes, q = dtype_array_axes_q
+    dtypes, array, axes, q = dtype_array_axes_q
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=array[0],

@@ -202,16 +202,18 @@ def _compute_quantile(
             tensor_upper.astype("float64"),
             weights,
         )
-    if not keepdim:
-        out = paddle.squeeze(out, axis=axis)
-    else:
-        out = out.reshape(out_shape)
-    outputs.append(out)
+        outputs.append(out)
 
-    if len(q) > 1:
-        outputs = paddle.stack(outputs, 0)
-    else:
-        outputs = outputs[0]
+    outputs = paddle.to_tensor(outputs)
+
+    if not keepdim:
+        if len(q) > 1:
+            axis += 1
+        elif len(out_shape) != 1:
+            axis = (axis, -1)
+        else:
+            axis = -1
+        outputs = paddle.squeeze(outputs, axis=axis)
 
     return outputs.astype(ret_dtype)
 

@@ -489,6 +489,10 @@ def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=N
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.13 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
 def quantile(
     a,
     q,
