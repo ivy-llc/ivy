@@ -40,9 +40,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
     return np.asarray(1 / (1 + np.exp(-x))).astype(x.dtype)
 
 
-def softmax(
-    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def softmax(x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None) -> np.ndarray:
     axis = -1 if axis is None else axis
     exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
     return np.divide(exp_x, np.sum(exp_x, axis=axis, keepdims=True), out=out)

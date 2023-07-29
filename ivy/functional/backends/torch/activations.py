@@ -59,13 +59,7 @@ sigmoid.support_native_out = True
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
-def softmax(
-    x: torch.Tensor,
-    /,
-    *,
-    axis: Optional[int] = None,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def softmax(x: torch.Tensor,/,*,axis: Optional[int] = None,out: Optional[torch.Tensor] = None) -> torch.Tensor:
     if axis is None:
         axis = -1
     return torch.nn.functional.softmax(x, axis)
