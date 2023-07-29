@@ -230,3 +230,20 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float32",)},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def dice_loss(input, label, reduction="mean", epsilon=1e-7, name=None):
+    intersection = ivy.sum(input * label)
+    union = ivy.sum(input) + ivy.sum(label)
+    dice_coefficient = (2.0 * intersection + epsilon) / (union + epsilon)
+    loss = 1.0 - dice_coefficient
+
+    reduction = _get_reduction_func(reduction)
+    out = reduction(loss).astype(input.dtype)
+
+    return out
+
