@@ -3883,7 +3883,9 @@ def _is_valid_device_and_dtypes_attributes(fn: Callable) -> bool:
     if hasattr(fn, "unsupported_device_and_dtype"):
         fn_unsupported_dnd = fn.unsupported_device_and_dtype
         # if it's a nested dict, unwrap for the current backend
-        if isinstance(list(fn_unsupported_dnd.__get__().values())[0], dict):
+        if isinstance(fn_unsupported_dnd.__get__(), dict) and isinstance(
+            list(fn_unsupported_dnd.__get__().values())[0], dict
+        ):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, {})
     if hasattr(fn, "supported_device_and_dtype"):
         fn_supported_dnd = fn.supported_device_and_dtype
@@ -3991,9 +3993,12 @@ def _get_devices_and_dtypes(fn, recurse=False, complement=True):
         if "einops" in fn.__name__ and isinstance(fn_unsupported_dnd, dict):
             fn_unsupported_dnd = fn_unsupported_dnd.get(backend, supported)
 
-        ivy.utils.assertions.check_isinstance(
-            list(fn_unsupported_dnd.values())[0], tuple
-        )
+        if isinstance(fn_unsupported_dnd, dict):
+            ivy.utils.assertions.check_isinstance(
+                list(fn_unsupported_dnd.values())[0], tuple
+            )
+        else:
+            ivy.utils.assertions.check_isinstance(fn_unsupported_dnd, tuple)
         # dict difference
         supported = _dnd_dict_difference(supported, fn_unsupported_dnd)
 
