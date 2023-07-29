@@ -174,6 +174,11 @@ class Tensor:
         return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv_(self, mat, vec, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
