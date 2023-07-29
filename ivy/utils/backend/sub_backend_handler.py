@@ -19,7 +19,7 @@ for backend in os.listdir(
         _backends_subpackage_path.replace(".", os.path.sep),
     )
 ):
-    if backend.startswith("__"):
+    if not backend[0].isalpha():
         continue
 
     sub_backends_dir = os.path.join(
@@ -29,7 +29,7 @@ for backend in os.listdir(
         "sub_backends",
     )
     for sub_backend in os.listdir(sub_backends_dir):
-        if sub_backend.startswith("__"):
+        if not sub_backend[0].isalpha():
             continue
         _sub_backend_dict[sub_backend] = (
             f"{_backends_subpackage_path}.{backend}.sub_backends.{sub_backend}"
