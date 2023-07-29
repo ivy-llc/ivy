@@ -1,5 +1,5 @@
 import mxnet as mx
-from typing import Union, Optional, Tuple
+from typing import Union, Optional
 import numpy as np
 
 from ivy.utils.exceptions import IvyNotImplementedException
