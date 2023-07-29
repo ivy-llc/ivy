@@ -518,8 +518,8 @@ def test_paddle_gather(
         param=param[0],
         indices=indices[0],
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="paddle.unstack",
     dtype_and_x=helpers.dtype_and_values(
