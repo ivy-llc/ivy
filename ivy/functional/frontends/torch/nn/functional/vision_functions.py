@@ -330,9 +330,9 @@ def affine_grid(theta, size, align_corners=False):
     num_channels = theta.size(1) // 2
 
     grid = ivy.zeros(
-    (batch_size, size[0], size[1], num_channels),
-    dtype=theta.dtype,
-    device=theta.device,
+        (batch_size, size[0], size[1], num_channels),
+        dtype=theta.dtype,
+        device=theta.device,
     )
     
     for i in range(batch_size):
@@ -345,9 +345,9 @@ def ivy_affine_grid_generator(theta, size):
     num_channels = theta.size(1) // 2
     
     grid = ivy.zeros(
-    (batch_size, size[0], size[1], num_channels),
-    dtype=theta.dtype,
-    device=theta.device,
+        (batch_size, size[0], size[1], num_channels),
+        dtype=theta.dtype,
+        device=theta.device,
     )
     
     # Extract the affine matrices from theta.
