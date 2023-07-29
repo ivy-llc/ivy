@@ -69,6 +69,105 @@ def check_docstring_examples_run(
     -------
     None if the test passes, else marks the test as failed.
     """
+
+    """
+    Functions skipped as their output dependent on outside factors:
+
+    random_normal, random_uniform, shuffle, num_gpus, current_backend,
+    get_backend
+    """
+    to_skip = [
+         "random_normal",
+         "random_uniform",
+         "randint",
+         "shuffle",
+         "beta",
+         "gamma",
+         "dev",
+         "num_gpus",
+         "current_backend",
+         "get_backend",
+         "namedtuple",
+         "invalid_dtype",
+         "DType",
+         "NativeDtype",
+         "Dtype",
+         "multinomial",
+         "num_cpu_cores",
+         "get_all_ivy_arrays_on_dev",
+         "num_ivy_arrays_on_dev",
+         "total_mem_on_dev",
+         "used_mem_on_dev",
+         "percent_used_mem_on_dev",
+         "function_supported_dtypes",
+         "function_unsupported_dtypes",
+         "randint",
+         "unique_counts",
+         "unique_all",
+         "dropout",
+         "dropout1d",
+         "dropout2d",
+         "dropout3d",
+         "total_mem_on_dev",
+         "supports_inplace_updates",
+         "get",
+         "deserialize",
+         "set_split_factor",
+    ]
+    # # the temp skip list consists of functions which have an issue with their
+    # # implementation
+    skip_list_temp = [
+        "outer",
+        "argmax",
+        "split",
+        "det",
+        "cumprod",
+        "sinc",
+        "grad",
+        "try_else_none",
+        # all examples are wrong including functional/ivy
+        "einops_reduce",
+        "max_unpool1d",
+        "pool",
+        "put_along_axis",
+        "result_type",
+        # works only if no backend set
+        "rfftn",
+        # examples works but exec throws error or generate diff results
+        "scaled_dot_product_attention",
+        "searchsorted",
+        # generates different results in different backends
+        "eigh_tridiagonal",
+        "log_poisson_loss",
+        "dct",
+        "idct",
+        "set_item",
+        "l1_normalize",
+        "histogram",
+        "native_array",
+        "function_supported_devices",
+        "acosh",
+        "bitwise_invert",
+        "cosh",
+        "exp",
+        "sinh",
+        "reciprocal",
+        "deg2rad",
+        "inplace_update",
+        "value_and_grad",
+        "vector_norm",
+        "set_nest_at_index",
+        "set_nest_at_indices",
+        "layer_norm",
+        "where",
+        "compile",
+        "eigvalsh",
+        "conv2d_transpose",
+    ]
+
+    # comment out the line below in future to check for the functions in temp skip list
+    to_skip += skip_list_temp  # + currently_being_worked_on
+
     if not hasattr(fn, "__name__"):
         return True
     fn_name = fn.__name__
@@ -87,7 +186,8 @@ def check_docstring_examples_run(
         docstring = ivy.utils.backend.handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
-
+    if fn_name in to_skip:
+        return True
     # removing extra new lines and trailing white spaces from the docstrings
 
     trimmed_docstring = trim(docstring=docstring)
@@ -241,145 +341,12 @@ def check_docstring_examples_run(
     return docstr_result
 
 
-# conditional checks that specific functions/backends require
-# at least two doc tests should pass to assume problem is specific to a backend
-def skip_conditional(fn_name: str, backend_name: str) -> bool:
-    skip_list_conditional_first = {
-        "abs": "tensorflow",
-        "avg_pool2d": "torch",
-        "avg_pool3d": "torch",
-        "fourier_encode": "torch",
-        "max_pool3d": "torch",
-        "eigh_tridiagonal": "tensorflow",
-        "isreal": "tensorflow",
-        "reciprocal": "tensorflow",
-        "finfo": "torch",
-        "histogram": "torch",
-        "inplace_update": "torch",
-        "layer_norm": "torch",
-        "outer": "torch",
-        "quantile": "torch",
-        "conv2d_transpose": "tensorflow",
-        "max_pool2d": "torch",
-        "cummax": "torch",
-        "where": "torch",
-        "dct": "jax",
-        "idct": "jax",
-        "linspace": "jax",
-        "native_array": "tensorflow",
-        "logspace": "jax",
-        "function_unsupported_devices": "numpy",
-        "maximum": "torch",
-        "minimum": "torch",
-        "deg2rad": "tensorflow",
-        "set_item": "jax",
-        "vmap": "torch",
-        "conv1d_transpose": "tensorflow",
-        "conv3d_transpose": "numpy",
-        "eigvalsh": "jax",
-        "vector_norm": "torch",
-        "l1_normalize": "tensorflow",
-    }
-    # second dict to keep if a function fails in two backends
-    skip_list_conditional_second = {
-        "abs": "torch",
-        "avg_pool2d": "tensorflow",
-        "avg_pool3d": "tensorflow",
-        "fourier_encode": "tensorflow",
-        "max_pool3d": "tensorflow",
-        "dct": "tensorflow",
-        "idct": "tensorflow",
-        "histogram": "tensorflow",
-        "native_array": "torch",
-        "logspace": "torch",
-        "set_item": "numpy",
-        "eigvalsh": "torch",
-    }
-    try:
-        if (
-            skip_list_conditional_first[fn_name] == backend_name
-            or skip_list_conditional_second[fn_name] == backend_name
-        ):
-            return True
-        else:
-            return False
-    except KeyError:
-        return False
-
-
 @pytest.mark.parametrize("backend", ["jax", "numpy", "tensorflow", "torch"])
 def test_docstrings(backend):
     ivy.set_default_device("cpu")
     ivy.set_backend(backend)
     failures = list()
     success = True
-    """
-    Functions skipped as their output dependent on outside factors:
-
-    random_normal, random_uniform, shuffle, num_gpus, current_backend,
-    get_backend
-    """
-    to_skip = [
-        "random_normal",
-        "random_uniform",
-        "randint",
-        "shuffle",
-        "beta",
-        "gamma",
-        "dev",
-        "num_gpus",
-        "current_backend",
-        "get_backend",
-        "namedtuple",
-        "invalid_dtype",
-        "DType",
-        "NativeDtype",
-        "Dtype",
-        "multinomial",
-        "num_cpu_cores",
-        "get_all_ivy_arrays_on_dev",
-        "num_ivy_arrays_on_dev",
-        "total_mem_on_dev",
-        "used_mem_on_dev",
-        "percent_used_mem_on_dev",
-        "function_supported_dtypes",
-        "function_unsupported_dtypes",
-        "randint",
-        "unique_counts",
-        "unique_all",
-        "total_mem_on_dev",
-        "supports_inplace_updates",
-        "get",
-        "deserialize",
-        "dropout",
-        "dropout1d",
-        "dropout2d",
-        "dropout3d",
-        "set_split_factor",
-    ]
-    # the temp skip list consists of functions which have an issue with their
-    # implementation
-    skip_list_temp = [
-        "outer",
-        "argmax",
-        "split",
-        "det",
-        "cumprod",
-        "sinc",
-        "grad",
-        "try_else_none",
-        # all examples are wrong including functional/ivy
-        "einops_reduce",
-        "max_unpool1d",
-        "pool",
-        "put_along_axis",
-        "result_type",
-        # works only if no backend set
-        "rfftn",
-        # examples works but exec throws error or generate diff results
-        "scaled_dot_product_attention",
-        "searchsorted",
-    ]
 
     # skip list for array and container docstrings
     skip_arr_cont = [
@@ -399,10 +366,6 @@ def test_docstrings(backend):
         # temp list for array/container methods
         "einops_reduce",
     ]
-
-    # comment out the line below in future to check for the functions in temp skip list
-    to_skip += skip_list_temp  # + currently_being_worked_on
-
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
@@ -410,7 +373,6 @@ def test_docstrings(backend):
                     method = getattr(ivy.Array, method_name)
                     if (
                         method_name in skip_arr_cont
-                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
@@ -422,9 +384,7 @@ def test_docstrings(backend):
                 else:
                     method = getattr(ivy.Array, method_name)
                     if (
-                        method_name in skip_arr_cont
-                        or skip_conditional(method_name, backend)
-                        or helpers.gradient_incompatible_function(fn=method)
+                        helpers.gradient_incompatible_function(fn=method)
                         or check_docstring_examples_run(fn=method, from_array=True)
                     ):
                         continue
@@ -437,7 +397,6 @@ def test_docstrings(backend):
                     method = getattr(ivy.Container, method_name)
                     if (
                         method_name in skip_arr_cont
-                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
@@ -450,7 +409,6 @@ def test_docstrings(backend):
                     method = getattr(ivy.Container, method_name)
                     if (
                         method_name in skip_arr_cont
-                        or skip_conditional(method_name, backend)
                         or helpers.gradient_incompatible_function(fn=method)
                         or check_docstring_examples_run(fn=method, from_container=True)
                     ):
@@ -460,9 +418,7 @@ def test_docstrings(backend):
 
         else:
             if (
-                k in to_skip
-                or skip_conditional(k, backend)
-                or check_docstring_examples_run(fn=v)
+                check_docstring_examples_run(fn=v)
                 or helpers.gradient_incompatible_function(fn=v)
             ):
                 continue

@@ -1838,15 +1838,29 @@ class _ContainerWithLayers(ContainerBase):
         --------
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x,filters,2,'SAME')
+        >>> y = x.conv2d_transpose(filters,2,'SAME')
         >>> print(y.shape)
         {
-            a: ivy.Shape(1, 10, 10, 1),
-            b: ivy.Shape(1, 10, 10, 1)
+            a: {
+                c: ivy.Shape(1, 28, 28, 3),
+                d: ivy.Shape(1, 28, 28, 3)
+            },
+            b: {
+                c: ivy.Shape(1, 56, 56, 3),
+                d: ivy.Shape(1, 56, 56, 3)
+            },
+            c: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
+            },
+            d: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
+            }
         }
         """
         return self._static_conv2d_transpose(
