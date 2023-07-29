@@ -399,5 +399,4 @@ def prod(x, axis=None, keepdim=False, dtype=None, name=None):
 )
 @to_ivy_arrays_and_back
 def mm(input, mat2, name=None):
-    ret = ivy.matmul(input, mat2)
-    return ret
+    return ivy.matmul(input, mat2)
