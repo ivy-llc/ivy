@@ -2,7 +2,6 @@
 import ivy
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
-    integer_arrays_to_float,
     with_supported_dtypes,
 )
 import ivy.functional.frontends.torch as torch_frontend
@@ -325,7 +324,6 @@ def flipud(input):
     return ivy.flipud(input)
 
 
-@integer_arrays_to_float
 @to_ivy_arrays_and_back
 def deg2rad(input, *, out=None):
     return ivy.array(input * 3.1416 / 180, out=out)
@@ -530,6 +528,12 @@ def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erfc(input, *, out=None):
+    return 1.0 - ivy.erf(input, out=out)
+
+
 @to_ivy_arrays_and_back
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
@@ -547,3 +551,9 @@ def sgn(input, *, out=None):
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def masked_fill(input, mask, value):
+    return ivy.where(mask, value, input, out=input)

@@ -364,3 +364,34 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def fill_diagonal(
+    a: torch.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> torch.Tensor:
+    shape = a.shape
+    max_end = torch.prod(torch.tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (torch.cumprod(torch.tensor(shape[:-1]), 0)).sum()
+
+    end = max_end if end > max_end else end
+    a = torch.reshape(a, (-1,))
+    w = torch.zeros(a.shape, dtype=bool).to(a.device)
+    ins = torch.arange(0, max_end).to(a.device)
+    steps = torch.arange(0, end, step).to(a.device)
+
+    for i in steps:
+        i = ins == i
+        w = torch.logical_or(w, i)
+    a = torch.where(w, v, a)
+    a = torch.reshape(a, shape)
+    return a
