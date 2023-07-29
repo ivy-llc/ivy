@@ -104,3 +104,37 @@ class CrossEntropyLoss(Module):
             epsilon=ivy.default(epsilon, self._epsilon),
             reduction=ivy.default(reduction, self._reduction),
         )
+
+class DiceLoss(Module):
+    def __init__(self, smooth: float = 1.0, reduction: str = "mean"):
+        self._smooth = smooth
+        self._reduction = reduction
+        Module.__init__(self)
+
+    def _forward(self, true, pred, *, smooth=None, reduction=None):
+        """
+        Perform forward pass of the Dice Loss.
+
+        true
+            input array containing true labels.
+        pred
+            input array containing Predicted labels.
+        smooth
+            smoothing value to avoid division by zero in denominator. Default: ``1.0``.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+
+        Returns
+        -------
+        ret
+            The Dice Loss between the given distributions.
+        """
+        return ivy.dice_loss(
+            true,
+            pred,
+            smooth=ivy.default(smooth, self._smooth),
+            reduction=ivy.default(reduction, self._reduction),
+        )
+
