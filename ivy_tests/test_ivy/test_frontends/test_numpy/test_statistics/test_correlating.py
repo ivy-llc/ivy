@@ -33,6 +33,7 @@ def test_numpy_corrcoef(
     fn_tree,
     on_device,
     dtype,
+    backend_fw,
 ):
     input_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
@@ -45,6 +46,7 @@ def test_numpy_corrcoef(
         y=x[1],
         rowvar=rowvar,
         dtype=dtype[0],
+        backend_to_test=backend_fw,
     )
 
 
