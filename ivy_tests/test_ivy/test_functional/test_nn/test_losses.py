@@ -203,3 +203,50 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
+
+
+# dice_loss
+@handle_test(
+    fn_tree="functional.ivy.dice_loss",
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+    ),
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1e-04,
+        max_value=1,
+        allow_inf=False,
+    ),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+    epsilon=helpers.floats(min_value=0.0, max_value=1.0),
+)
+def test_dice_loss(
+    dtype_and_pred,
+    dtype_and_true,
+    reduction,
+    epsilon,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    pred_dtype, pred = dtype_and_pred
+    true_dtype, true = dtype_and_true
+
+    helpers.test_function(
+        input_dtypes=true_dtype + pred_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        pred=pred[0],
+        true=true[0],
+        epsilon=epsilon,
+        reduction=reduction,
+    )
+

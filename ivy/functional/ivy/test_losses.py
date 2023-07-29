@@ -164,7 +164,6 @@ def test_cross_entropy_loss(
     smooth=helpers.floats(min_value=0, max_value=1.0),
     axis=st.integers(min_value=-1, max_value=1),
 )
-
 def test_dice_loss(
     dtype_and_pred,
     dtype_and_target,

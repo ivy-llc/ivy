@@ -39,6 +39,9 @@ class LogPoissonLoss(Module):
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'none'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -85,6 +88,9 @@ class CrossEntropyLoss(Module):
             ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
             ``'sum'``: The output will be summed. Default: ``'sum'``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -99,65 +105,36 @@ class CrossEntropyLoss(Module):
             reduction=ivy.default(reduction, self._reduction),
         )
 
-
-class BinaryCrossEntropyLoss(Module):
-    def __init__(
-        self,
-        *,
-        from_logits: bool = False,
-        epsilon: float = 0.0,
-        reduction: str = "none",
-    ):
-        self._from_logits = from_logits
-        self._epsilon = epsilon
+class DiceLoss(Module):
+    def __init__(self, smooth: float = 1.0, reduction: str = "mean"):
+        self._smooth = smooth
         self._reduction = reduction
         Module.__init__(self)
 
-    def _forward(
-        self,
-        true,
-        pred,
-        *,
-        from_logits=None,
-        epsilon=None,
-        reduction=None,
-        pos_weight=None,
-        axis=None,
-    ):
+    def _forward(self, true, pred, *, smooth=None, reduction=None):
         """
-        Parameters
-        ----------
+        Perform forward pass of the Dice Loss.
+
         true
             input array containing true labels.
         pred
             input array containing Predicted labels.
-        from_logits
-            Whether `pred` is expected to be a logits tensor. By
-            default, we assume that `pred` encodes a probability distribution.
-        epsilon
-            a float in [0.0, 1.0] specifying the amount of smoothing when calculating
-            the loss. If epsilon is ``0``, no smoothing will be applied. Default: ``0``.
+        smooth
+            smoothing value to avoid division by zero in denominator. Default: ``1.0``.
         reduction
-            ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed. Default: ``'none'``.
-        pos_weight
-            a weight for positive examples. Must be an array with length equal to the
-            number of classes.
-        axis
-            Axis along which to compute crossentropy.
+            ``'sum'``: The output will be summed.
+            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
 
         Returns
         -------
         ret
-            The binary cross entropy between the given distributions.
+            The Dice Loss between the given distributions.
         """
-        return ivy.binary_cross_entropy(
+        return ivy.dice_loss(
             true,
             pred,
-            from_logits=ivy.default(from_logits, self._from_logits),
-            epsilon=ivy.default(epsilon, self._epsilon),
+            smooth=ivy.default(smooth, self._smooth),
             reduction=ivy.default(reduction, self._reduction),
-            pos_weight=pos_weight,
-            axis=axis,
         )
+
