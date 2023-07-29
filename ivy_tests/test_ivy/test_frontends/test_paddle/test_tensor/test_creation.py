@@ -630,7 +630,6 @@ def test_paddle_logspace(
         base=base,
         dtype=dtype[0],
     )
-    
 
 
 # assign
