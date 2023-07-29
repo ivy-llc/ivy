@@ -66,6 +66,7 @@ def update_individual_test_results(
     result,
     backend_version=None,
     frontend_version=None,
+    device=None,
 ):
     key = submod + "." + backend
     if backend_version is not None:
@@ -75,6 +76,8 @@ def update_individual_test_results(
         frontend_version = frontend_version.replace(".", "_")
         key += "." + frontend_version
     key += "." + test
+    if device:
+        key += "." + device
     collection.update_one(
         {"_id": id},
         {"$set": {key: result}},
@@ -166,7 +169,7 @@ if __name__ == "__main__":
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db_multi = cluster["Ivy_tests_multi"]
-    db_gpu = cluster["Ivy_tests_gpu"]
+    db_gpu = cluster["Ivy_tests_multi_gpu"]
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
@@ -217,17 +220,17 @@ if __name__ == "__main__":
                     "latest-stable",
                     frontend_version,
                 )
-            else:
-                update_individual_test_results(
-                    db_gpu[coll[0]],
-                    coll[1],
-                    submod,
-                    backend,
-                    test_fn,
-                    res,
-                    "latest-stable",
-                    frontend_version,
-                )
+            update_individual_test_results(
+                db_gpu[coll[0]],
+                coll[1],
+                submod,
+                backend,
+                test_fn,
+                res,
+                "latest-stable",
+                frontend_version,
+                "gpu" if with_gpu else "cpu",
+            )
 
     if failed:
         exit(1)
