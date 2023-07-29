@@ -1845,7 +1845,6 @@ def dtype_array_query(
             ).filter(lambda x: np.sum(x) > 0)
         )
         return dtype + ["bool"], array, index
-    supported_index_types = supported_index_types
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
@@ -1853,10 +1852,14 @@ def dtype_array_query(
             max_size=len(shape),
         )
     )
+    print("shape before: ", shape)
     index = []
+    shape = (prod(shape),)
+    print("shape: ", shape)
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
             new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
+        # not sure if this should be "seq" but "list"
         elif index_type == "seq":
             new_index = draw(
                 st.lists(
@@ -1957,19 +1960,18 @@ def dtype_array_query_val(
     return input_dtype + [val_dtype], x, query, val
 
 
-# fix this to make sure that there's always an index being provided
 @st.composite
 def dtype_array_index_value_mode(
     draw,
     *,
     available_dtypes,
     min_num_dims=1,
-    max_num_dims=1,
+    max_num_dims=3,
     min_dim_size=1,
     max_dim_size=10,
     allow_mask=True,
     allow_neg_step=True,
-    supported_index_types=["int"],
+    supported_index_types=["int", "seq", "array"],
 ):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
 
@@ -1985,6 +1987,15 @@ def dtype_array_index_value_mode(
             supported_index_types=supported_index_types,
         )
     )
+
+    # making sure the bool index values are in range
+    if ivy.is_array(index) is False or type(index) != tuple:
+        if ivy.prod(ivy.shape(x)) - 1 == 0 and index is True:
+            index = False
+    else:
+        for i in index:
+            if ivy.prod(ivy.shape(x)) - 1 == 0 and i is True:
+                i = False
 
     real_shape = x[index].shape
     assume(math.prod(real_shape) > 0)
@@ -2004,7 +2015,6 @@ def dtype_array_index_value_mode(
         helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
     )[-1]
     value = value[0].astype(value_dtype)
-
     return input_dtype + [value_dtype], x, index, value, mode
 
 

@@ -32,20 +32,15 @@ def fill_diagonal(a, val, wrap=False):
 
 @to_ivy_arrays_and_back
 def put(a, indices, values, mode="raise"):
-    if type(a) == tuple:
-        print("flag a")
-    if type(indices) == tuple:
-        print("flag ind")
-    if type(values) == tuple:
-        print("flag v")
     a_shape = ivy.shape(a)
     a_length = int(ivy.prod(a_shape))
     a = ivy.flatten(a)
+
     indices = ivy.flatten(indices)
     ind_length = int(ivy.shape(indices)[0])
+
     values = ivy.flatten(values)
     v_length = int(ivy.shape(values)[0])
-
     if mode == "raise":
         for i in range(ind_length):
             if int(indices[i]) >= a_length:
