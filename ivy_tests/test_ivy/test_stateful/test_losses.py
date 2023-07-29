@@ -250,10 +250,19 @@ def test_binary_cross_entropy_loss(
             on_device=on_device,
         )
 
-@handle_test(
-    fn_tree="functional.ivy.dice_loss",
+@handle_method(
+    method_tree="stateful.losses.DiceLoss.__call__",
+    dtype_and_true=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=0,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
     dtype_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
         max_value=1,
         allow_inf=False,
@@ -261,44 +270,40 @@ def test_binary_cross_entropy_loss(
         max_num_dims=3,
         min_dim_size=3,
     ),
-    dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=1,
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=3,
-    ),
+    smooth=st.floats(min_value=0, max_value=1.0),
     reduction=st.sampled_from(["none", "mean", "sum"]),
-    smooth=helpers.floats(min_value=0, max_value=1.0),
-    axis=st.integers(min_value=-1, max_value=1),
 )
+
+
 def test_dice_loss(
+    *,
+    dtype_and_true,
     dtype_and_pred,
-    dtype_and_target,
-    reduction,
     smooth,
-    axis,
-    test_flags,
-    backend_fw,
-    fn_name,
+    reduction,
+    class_name,
+    method_name,
+    ground_truth_backend,
+    init_flags,
+    method_flags,
     on_device,
 ):
-    pred_dtype, pred = dtype_and_pred
-    target_dtype, target = dtype_and_target
+    dtype_true, true = dtype_and_true
+    dtype_pred, pred = dtype_and_pred
 
-    helpers.test_function(
-        input_dtypes=pred_dtype + target_dtype,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        method_input_dtypes=dtype_true + dtype_pred,
+        init_all_as_kwargs_np={
+            "smooth": smooth,
+            "reduction": reduction,
+        },
+        method_all_as_kwargs_np={"true": true[0], "pred": pred[0]},
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-2,
+        atol_=1e-2,
         on_device=on_device,
-        rtol_=1e-02,
-        atol_=1e-02,
-        pred=pred[0],
-        target=target[0],
-        reduction=reduction,
-        smooth=smooth,
-        axis=axis,
     )

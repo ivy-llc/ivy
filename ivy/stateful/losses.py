@@ -163,7 +163,12 @@ class BinaryCrossEntropyLoss(Module):
         )
     
 class DiceLoss(Module):
-    def __init__(self, smooth: float = 1.0, reduction: str = "mean"):
+    def __init__(
+        self,
+        *,
+        smooth: float = 1.0,
+        reduction: str = "mean",
+    ):
         self._smooth = smooth
         self._reduction = reduction
         Module.__init__(self)
@@ -175,18 +180,18 @@ class DiceLoss(Module):
         true
             input array containing true labels.
         pred
-            input array containing Predicted labels.
+            input array containing predicted labels.
         smooth
-            smoothing value to avoid division by zero in denominator. Default: ``1.0``.
+            a small constant to avoid division by zero. Default: 1.0.
         reduction
+            ``'none'``: No reduction will be applied to the output.
             ``'mean'``: The output will be averaged.
-            ``'sum'``: The output will be summed.
-            ``'none'``: No reduction will be applied to the output. Default: ``'mean'``.
+            ``'sum'``: The output will be summed. Default: ``'mean'``.
 
         Returns
         -------
         ret
-            The Dice Loss between the given distributions.
+            The Dice loss between the given true and predicted labels.
         """
         return ivy.dice_loss(
             true,
@@ -194,5 +199,3 @@ class DiceLoss(Module):
             smooth=ivy.default(smooth, self._smooth),
             reduction=ivy.default(reduction, self._reduction),
         )
-
-

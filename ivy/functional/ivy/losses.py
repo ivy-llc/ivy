@@ -394,55 +394,56 @@ def dice_loss(
     pred: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: int = -1,
-    epsilon: float = 1e-7,
+    smooth: float = 1.0,
     reduction: str = "mean",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute Dice loss between predicted and true discrete distributions.
+    Compute the Dice loss.
 
     Parameters
     ----------
     true
-        Input array containing true labels.
+        input array containing true labels.
     pred
-        Input array containing predicted labels.
-    axis
-        The axis along which to compute the Dice loss. Default: -1.
-    epsilon
-        A float in [0.0, 1.0] specifying the amount of smoothing when calculating
-        the loss. If epsilon is 0, no smoothing will be applied. Default: 1e-7.
+        input array containing predicted labels.
+    smooth
+        a float specifying the amount of smoothing to avoid division by zero.
+        Default: 1.0.
     reduction
-        The reduction type for the output. Options: "none", "sum", "mean". Default: "mean".
+        ``'none'``: No reduction will be applied to the output.
+        ``'mean'``: The output will be averaged.
+        ``'sum'``: The output will be summed. Default: ``'mean'``.
     out
-        Optional output array, for writing the result to. It must have a shape
+        optional output array, for writing the result to. It must have a shape
         that the inputs broadcast to.
 
     Returns
     -------
     ret
-        The Dice loss between the given distributions.
+        The Dice loss between the given true and predicted labels.
 
     Examples
     --------
-    >>> x = ivy.array([0, 0, 1, 0])
-    >>> y = ivy.array([0.25, 0.25, 0.25, 0.25])
+    >>> x = ivy.array([0, 1, 0, 1])
+    >>> y = ivy.array([0.2, 0.7, 0.2, 0.6])
     >>> print(ivy.dice_loss(x, y))
-    ivy.array(0.6)
+    ivy.array(0.22334225)
 
-    >>> z = ivy.array([0.1, 0.1, 0.7, 0.1])
-    >>> print(ivy.dice_loss(x, z))
-    ivy.array(0.8333333)
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> print(ivy.dice_loss(x, y, reduction='mean'))
+    ivy.array(0.66826624)
+
+    >>> x = ivy.array([[0, 1, 1, 0]])
+    >>> y = ivy.array([[2.6, 6.2, 3.7, 5.3]])
+    >>> print(ivy.dice_loss(x, y, reduction='sum', smooth=0.5))
+    ivy.array(3.34133124)
     """
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
-    pred = ivy.clip(pred, epsilon, 1 - epsilon)
-
-    intersection = 2.0 * ivy.reduce_sum(pred * true, axis=axis, keepdims=True)
-    denominator = ivy.reduce_sum(pred, axis=axis, keepdims=True) + ivy.reduce_sum(
-        true, axis=axis, keepdims=True
-    )
-
-    dice_score = intersection / (denominator + epsilon)
-
-    return _reduce_loss(reduction, 1 - dice_score, axis, out)
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "mean", "sum"])
+    true = true.astype(pred.dtype)
+    intersection = ivy.sum(true * pred)
+    cardinality = ivy.sum(true) + ivy.sum(pred)
+    dice_coefficient = (2.0 * intersection + smooth) / (cardinality + smooth)
+    dice_loss = 1.0 - dice_coefficient
+    return _reduce_loss(reduction, dice_loss, None, out)
