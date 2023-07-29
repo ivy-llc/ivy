@@ -44,7 +44,7 @@ def binary_cross_entropy_with_logits(
     if weight is not None:
         ret = ivy.multiply(weight, ret)
     ret = reduction(ret).astype(label.dtype)
-    return paddle.to_tensor(ret.reshape([-1]))
+    return paddle.to_tensor(ivy.atleast_1d(ret))
 
 
 @with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
@@ -179,3 +179,54 @@ def l1_loss(
     if out.shape == ():
         out = out.expand_dims()
     return paddle.to_tensor(out)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def kl_div(
+    input,
+    label,
+    reduction="mean",
+    name=None,
+):
+    if input.shape != label.shape:
+        raise ValueError(
+            "the shape of input tensor should be equal to target tensor, but found"
+            " inputs with different sizes"
+        )
+
+    out = label * (ivy.log(label) - input)
+
+    size = ivy.shape(input)
+    if len(size) < 1:
+        size = [1]
+
+    if reduction == "mean":
+        out = ivy.mean(out)
+    elif reduction == "batchmean":
+        out = ivy.sum(out) / size[0]
+    elif reduction == "sum":
+        out = ivy.sum(out)
+    else:
+        pass
+    return out.astype(label.dtype)
+
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
+    reduction = _get_reduction_func(reduction)
+
+    out = ivy.subtract(input, other)
+    neg_label = ivy.negative(label)
+    out = ivy.multiply(neg_label, out)
+
+    if margin != 0.0:
+        margin_var = ivy.full([1], margin, dtype=out.dtype)
+        out = ivy.add(out, margin_var)
+
+    out = ivy.where(out < 0, 0, out)
+    out = reduction(out).astype(input.dtype)
+    out = ivy.atleast_1d(out)
+
+    return out

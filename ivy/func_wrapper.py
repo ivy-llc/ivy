@@ -29,6 +29,7 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_partial_mixed_function",
     "handle_nestable",
+    "handle_ragged",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -813,21 +814,20 @@ def handle_device_shifting(fn: Callable) -> Callable:
         """
         if ivy.soft_device_mode:
             return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
-        else:
-            inputs = args + tuple(kwargs.values())
-            devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
-            unique_devices = set(devices)
-            # check if arrays are on the same device
-            if len(unique_devices) == 1:
-                with ivy.DefaultDevice(next(iter(unique_devices))):
-                    return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
-            # raise when arrays are on different devices
-            elif len(unique_devices) > 1:
-                raise ivy.utils.exceptions.IvyException(
-                    "Expected all input arrays to be on the same device, "
-                    f"but found atleast two devices - {devices}, "
-                    "set `ivy.set_soft_device_mode(True)` to handle this problem."
-                )
+        inputs = args + tuple(kwargs.values())
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        unique_devices = set(devices)
+        # check if arrays are on the same device
+        if len(unique_devices) == 1:
+            with ivy.DefaultDevice(next(iter(unique_devices))):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        # raise when arrays are on different devices
+        elif len(unique_devices) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                "Expected all input arrays to be on the same device, "
+                f"but found atleast two devices - {devices}, "
+                "set `ivy.set_soft_device_mode(True)` to handle this problem."
+            )
         return fn(*args, **kwargs)
 
     _handle_device_shifting.handle_device_shifting = True
@@ -977,6 +977,44 @@ def handle_nestable(fn: Callable) -> Callable:
 
     _handle_nestable.handle_nestable = True
     return _handle_nestable
+
+
+def handle_ragged(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_ragged(*args, **kwargs):
+        """
+        Call `fn` with the *ragged* property of the function correctly handled. This
+        means mapping the function to the RaggedArray arrays if any RaggedArrays are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the ragged property handled correctly.
+        """
+        nested_fn = (
+            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
+                fn, *args, **kwargs
+            )
+        )
+        if ivy.nested_any(
+            args, ivy.is_ivy_nested_array, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
+            return nested_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    _handle_ragged.handle_ragged = True
+    return _handle_ragged
 
 
 # Partial Mixed Function Handling #

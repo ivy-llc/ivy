@@ -655,19 +655,14 @@ def abs(
     x: Union[float, torch.Tensor],
     /,
     *,
-    where: Union[bool, torch.Tensor] = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if x.dtype is torch.bool:
+        if ivy.exists(out):
+            return ivy.inplace_update(out, x)
         return x
-    where = _cast_for_unary_op(where)
-    ret = torch.where(where, torch.abs(x), x)
-    if ivy.is_complex_dtype(x.dtype):
-        ret = torch.real(ret)
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    return ret
+    return torch.abs(x, out=out)
 
 
 abs.support_native_out = True

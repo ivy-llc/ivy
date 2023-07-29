@@ -50,6 +50,10 @@ class ndarray:
         return self.ivy_array.shape
 
     @property
+    def size(self):
+        return self.ivy_array.size
+
+    @property
     def dtype(self):
         return self.ivy_array.dtype
 
@@ -551,5 +555,20 @@ class ndarray:
         xmin = self.min(axis=axis, out=out, keepdims=keepdims)
         return np_frontend.subtract(xmax, xmin)
 
+    def item(self, *args):
+        if len(args) == 0:
+            return self[0].ivy_array.to_scalar()
+        elif len(args) == 1 and type(args[0]) == int:
+            index = args[0]
+            return self.ivy_array.flatten()[index].to_scalar()
+        else:
+            out = self
+            for index in args:
+                out = out[index]
+            return out.ivy_array.to_scalar()
+
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
+
+    def __lshift__(self, value, /):
+        return ivy.bitwise_left_shift(self.ivy_array, value)
