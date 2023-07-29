@@ -647,3 +647,10 @@ def conj(x):
 @to_ivy_arrays_and_back
 def is_finite(x):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def erfc(x):
+    value = ivy.erf(x)
+    value = (1.0 - value) if value is not None else None
+    return value
