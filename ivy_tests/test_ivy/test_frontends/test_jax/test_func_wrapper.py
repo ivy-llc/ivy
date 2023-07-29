@@ -61,7 +61,6 @@ def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-
 def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x

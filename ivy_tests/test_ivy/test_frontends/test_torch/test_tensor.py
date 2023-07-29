@@ -9904,6 +9904,67 @@ def test_torch_diag(
     )
 
 
+# diagonal
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dims_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_torch_diagonal(
+    dtype_and_values,
+    dims_and_offset,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, value = dtype_and_values
+    dim1, dim2, offset = dims_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(dim1 != dim2)
+    if dim1 < 0:
+        assume(dim1 + num_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_dims)
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"data": input},
+        method_input_dtypes=[input_dtype[0]],
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "dim1": dim1,
+            "dim2": dim2,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -10357,6 +10418,82 @@ def test_torch_instance_backward(
     )
 
 
+# angle
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="angle",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_torch_instance_angle(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# logaddexp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="logaddexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
+    ),
+)
+def test_torch_instance_logaddexp(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -10387,6 +10524,38 @@ def test_torch_instance_adjoint(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
+)
+def test_torch_instance_conj(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
     )
