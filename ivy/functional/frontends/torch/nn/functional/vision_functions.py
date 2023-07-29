@@ -328,7 +328,6 @@ def affine_grid(theta, size, align_corners=False):
         raise ValueError("Input theta should be a 3D or 4D tensor")
     batch_size = theta.size(0)
     num_channels = theta.size(1) // 2
-
     grid = ivy.zeros(
         (batch_size, size[0], size[1], num_channels),
         dtype=theta.dtype,
