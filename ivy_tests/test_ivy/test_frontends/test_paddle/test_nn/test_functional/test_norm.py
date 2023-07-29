@@ -162,7 +162,7 @@ def test_paddle_layer_norm(
         test_flags=test_flags,
         on_device=on_device,
         fn_tree=fn_tree,
-        x=x,
+        x=x[0],
         normalized_shape=normalized_shape,
         weight=scale[0],
         bias=offset[0],
