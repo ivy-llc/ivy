@@ -334,7 +334,6 @@ def affine_grid(theta, size, align_corners=False):
         dtype=theta.dtype,
         device=theta.device,
     )
-    
     for i in range(batch_size):
         grid[i] = ivy_affine_grid_generator(theta[i], size)
     return grid
@@ -349,7 +348,6 @@ def ivy_affine_grid_generator(theta, size):
         dtype=theta.dtype,
         device=theta.device,
     )
-    
     # Extract the affine matrices from theta.
 
     if theta.dim() == 3:
