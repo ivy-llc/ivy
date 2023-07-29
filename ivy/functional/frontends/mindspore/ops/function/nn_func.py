@@ -6,6 +6,7 @@ import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
+
 @with_supported_dtypes(
     {
         "2.0.0 and below": (
@@ -23,6 +24,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 @to_ivy_arrays_and_back
 def dropout2d(input, p=0.5, training=True):
     return ivy.dropout2d(input, p, training=training, data_format="NCHW")
+
 
 @with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back

@@ -719,4 +719,3 @@ def conjugate(x, /):
 @to_ivy_arrays_and_back
 def cos(x, /):
     return ivy.cos(x)
-    

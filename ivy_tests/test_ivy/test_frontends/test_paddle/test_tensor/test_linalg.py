@@ -839,4 +839,3 @@ def test_paddle_dist(
         y=x[1],
         p=p,
     )
-    
