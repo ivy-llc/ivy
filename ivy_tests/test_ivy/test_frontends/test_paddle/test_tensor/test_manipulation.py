@@ -517,6 +517,7 @@ def test_paddle_gather(
         on_device=on_device,
         param=param[0],
         indices=indices[0],
+    )
     
     
 @handle_frontend_test(
@@ -533,20 +534,22 @@ def test_paddle_unstack(
     dtype_and_x,
     axis,
     on_device,
-   fn_tree,
+    fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    axis = 0
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
-    )
     )
 
 
