@@ -282,6 +282,85 @@ def test_paddle_smooth_l1_loss(
     )
 
 
+
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.ctc_loss",
+    log_probs_and_labels=st.tuples(
+        dtype_and_values(
+            available_dtypes=dtype_and_values.get_dtypes("float"),
+            num_arrays=3,
+            shared_dtype=True,
+            min_num_dims=3,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=10,
+        ),
+        dtype_and_values(
+            available_dtypes=dtype_and_values.get_dtypes("int"),
+            num_arrays=1,
+            min_num_dims=2,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=5,
+        ),
+        st.integers(min_value=1, max_value=10),  # input_lengths
+        st.integers(min_value=1, max_value=5),   # label_lengths
+    ),
+    blank=st.integers(min_value=0, max_value=9),
+    reduction=st.sampled_from(["mean", "sum", "none"]),
+)
+def test_ctc_Loss(
+    log_probs_and_labels,
+    input_lengths,
+    label_lengths,
+    blank,
+    reduction,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    log_probs, labels = log_probs_and_labels
+
+    # Convert numpy arrays to paddle tensors
+    log_probs = paddle.to_tensor(log_probs)
+    labels = paddle.to_tensor(labels)
+    input_lengths = paddle.to_tensor(np.array(input_lengths))
+    label_lengths = paddle.to_tensor(np.array(label_lengths))
+
+    # Compute the expected output using Paddle's implementation
+    expected_output = paddle.nn.functional.ctc_loss(
+        log_probs, labels, input_lengths, label_lengths, blank=blank, reduction=reduction
+    )
+
+    # Perform the frontend function call
+    helpers.test_frontend_function(
+        input_dtypes=[
+            log_probs.dtype,
+            labels.dtype,
+            input_lengths.dtype,
+            label_lengths.dtype,
+        ],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        log_probs=log_probs,
+        labels=labels,
+        input_lengths=input_lengths,
+        label_lengths=label_lengths,
+        blank=blank,
+        reduction=reduction,
+        expected_output=expected_output,
+    )
+
+
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.l1_loss",
     dtype_and_x=helpers.dtype_and_values(

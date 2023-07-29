@@ -166,6 +166,34 @@ def smooth_l1_loss(
     return out.astype(label.dtype)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("float32",)}, "paddle")
+@inputs_to_ivy_arrays
+def ctc_loss(
+    log_probs,
+    targets,
+    input_lengths,
+    target_lengths,
+    blank=0,
+    reduction="mean",
+    name=None,
+):
+    # The CTC loss calculation
+    ctc_loss = ivy.nn.functional.ctc_loss(
+        log_probs,
+        targets,
+        input_lengths,
+        target_lengths,
+        blank=blank,
+        reduction="none"  # Setting reduction to 'none' to get per-element loss.
+    )
+
+    reduction_func = _get_reduction_func(reduction)
+    ctc_loss = reduction_func(ctc_loss)
+
+    return paddle.to_tensor(ctc_loss)
+
+
+
 @inputs_to_ivy_arrays
 def l1_loss(
     input,
