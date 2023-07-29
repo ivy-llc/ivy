@@ -341,7 +341,6 @@ def affine_grid(theta, size, align_corners=False):
 def ivy_affine_grid_generator(theta, size):
     batch_size = theta.size(0)
     num_channels = theta.size(1) // 2
-    
     grid = ivy.zeros(
         (batch_size, size[0], size[1], num_channels),
         dtype=theta.dtype,
