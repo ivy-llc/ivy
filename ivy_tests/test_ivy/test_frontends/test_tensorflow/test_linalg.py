@@ -1133,7 +1133,7 @@ def test_tensorflow_tensor_diag(
         on_device=on_device,
         diagonal=x[0],
     )
-    
+
 
 # Tests for tensorflow.linalg.set_diag function's frontend
 @handle_frontend_test(
@@ -1144,17 +1144,17 @@ def test_tensorflow_tensor_diag(
         max_num_dims=3,
         min_dim_size=3,
         max_dim_size=6,
-        min_value=-10.,
-        max_value=10.,
-    )
+        min_value=-10.0,
+        max_value=10.0,
+    ),
 )
 def test_tensorflow_set_diag(
-        dtype_and_x,
-        frontend,
-        backend_fw,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     x = ivy.squeeze(x)
@@ -1166,7 +1166,7 @@ def test_tensorflow_set_diag(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
-        diagonal=x[0]
+        diagonal=x[0],
     )
 
 
