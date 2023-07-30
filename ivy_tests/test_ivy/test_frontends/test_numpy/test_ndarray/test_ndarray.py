@@ -4,6 +4,7 @@ from hypothesis import assume, strategies as st, given
 
 # local
 import ivy
+from ivy.functional.frontends.numpy import ndarray
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
@@ -59,9 +60,7 @@ def test_numpy_ivy_array(
         ret_shape=True,
     ),
 )
-def test_numpy_dtype(
-    dtype_x, backend_fw, frontend
-):
+def test_numpy_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
     with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
@@ -156,7 +155,7 @@ def test_numpy_T(
         ret_shape=True,
     )
 )
-def test_numpy_flat(dtype_x):
+def test_numpy_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
     with update_backend(backend_fw) as ivy_backend:
@@ -224,7 +223,7 @@ def test_numpy_astype(
     method_name="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=st.one_of(
-            helpers.get_dtypes("float_and_integer"), helpers.get_dtypes("bool")
+            helpers.get_dtypes("numeric"),
         ),
         min_axis=-1,
         max_axis=0,
@@ -482,9 +481,12 @@ def test_numpy_any(
     method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
         valid_axis=True,
-        max_axes_size=1,
         force_int_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),

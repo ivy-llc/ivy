@@ -361,8 +361,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays(*args, order="K", **kwargs):
         """
-        Call the function, and then convert all `ivy.Array` instances
-        returned by the function into `ndarray` instances.
+        Call the function, and then convert all `ivy.Array` instances returned by the
+        function into `ndarray` instances.
 
         Returns
         -------
@@ -424,11 +424,8 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
-    """
-    Wrap `fn` so that input arrays are all converted to `ivy.Array`
-    instances and return arrays are all converted to `ndarray`
-    instances.
-    """
+    """Wrap `fn` so that input arrays are all converted to `ivy.Array` instances and
+    return arrays are all converted to `ndarray` instances."""
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
 
 
