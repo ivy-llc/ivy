@@ -1,8 +1,6 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
+from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 import ivy.functional.frontends.jax as jax_frontend
 
 
@@ -10,7 +8,6 @@ if ivy.backend in ("jax", "numpy", "tensorflow"):
     double_precision_dtypes = (ivy.complex128, ivy.float64, ivy.int64, ivy.uint64)
 else:
     double_precision_dtypes = (ivy.complex128, ivy.float64, ivy.int64)
-
 
 @to_ivy_arrays_and_back
 def ifft(a, n=None, axis=-1, norm=None):
@@ -29,3 +26,9 @@ def ifft(a, n=None, axis=-1, norm=None):
             return ivy.ifft(a, axis, norm=norm, n=n)
     a = ivy.array(a, dtype=ivy.complex64)
     return ivy.ifft(a, axis, norm=norm, n=n)
+
+@to_ivy_arrays_and_back
+def fft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.fft(a, axis, norm=norm, n=n)
