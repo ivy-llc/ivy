@@ -374,17 +374,11 @@ def test_bincount(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.igamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
-        abs_smallest_val=1e-5,
-        min_num_dims=2,
-        max_num_dims=2,
-        min_dim_size=3,
-        max_dim_size=3,
         min_value=2,
         max_value=100,
-        allow_nan=False,
     ),
     test_gradients=st.just(False),
     test_with_out=st.just(False),
