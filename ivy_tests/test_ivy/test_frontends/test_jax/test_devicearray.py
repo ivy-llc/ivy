@@ -2231,3 +2231,48 @@ def test_jax_devicearray_min(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="trace",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+    ),
+)
+def test_jax_devicearray_trace(
+    dtype_and_x,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        backend_to_test=backend_fw,
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        rtol_=1e-3,
+        atol_=1e-3,
+    )

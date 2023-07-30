@@ -145,6 +145,9 @@ class DeviceArray:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+    
+    def trace(self, offset=0, axis1=0, axis2=1, out=None):
+        return jax_frontend.numpy.trace(self._ivy_array,offset=offset, axis1=axis1, axis2=axis2,out=out)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
