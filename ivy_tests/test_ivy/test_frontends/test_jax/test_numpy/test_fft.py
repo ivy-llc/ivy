@@ -28,6 +28,7 @@ def dtype_x_axis_norm_n(draw):
     n = draw(st.one_of(st.integers(min_fft_points, 256), st.none()))
     return dtype, x, axis, norm, n
 
+
 @handle_frontend_test(
     fn_tree="jax.numpy.fft.ifft",
     dtype_x_axis_norm_n=dtype_x_axis_norm_n(),
@@ -49,6 +50,7 @@ def test_jax_numpy_iftt(
         axis=axis,
         norm=norm,
     )
+
 
 # fft
 @handle_frontend_test(

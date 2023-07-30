@@ -9,6 +9,7 @@ if ivy.backend in ("jax", "numpy", "tensorflow"):
 else:
     double_precision_dtypes = (ivy.complex128, ivy.float64, ivy.int64)
 
+
 @to_ivy_arrays_and_back
 def ifft(a, n=None, axis=-1, norm=None):
     # JAX applies no normalization if norm=None, which is
@@ -26,6 +27,7 @@ def ifft(a, n=None, axis=-1, norm=None):
             return ivy.ifft(a, axis, norm=norm, n=n)
     a = ivy.array(a, dtype=ivy.complex64)
     return ivy.ifft(a, axis, norm=norm, n=n)
+
 
 @to_ivy_arrays_and_back
 def fft(a, n=None, axis=-1, norm=None):
