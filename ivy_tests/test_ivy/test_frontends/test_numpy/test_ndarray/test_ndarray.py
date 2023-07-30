@@ -3615,6 +3615,7 @@ def test_numpy_ndarray_trace(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, axes = dtype_and_x_axes
@@ -3630,10 +3631,11 @@ def test_numpy_ndarray_trace(
             "axis1": axes[0],
             "axis2": axes[1],
         },
+        backend_to_test=backend_fw,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
     )
-
+ 
