@@ -148,10 +148,26 @@ class DeviceArray:
         where=None,
         promote_integers=True,
     ):
+        arr = self
+
+        if (
+            str(self.dtype) == "uint8"
+            or str(self.dtype) == "uint16"
+            or str(self.dtype) == "uint32"
+            or str(self.dtype) == "uint64"
+        ):
+            arr = jax_frontend.numpy.array(self, dtype="uint64")
+        elif (
+            str(self.dtype) == "int8"
+            or str(self.dtype) == "int16"
+            or str(self.dtype) == "int32"
+            or str(self.dtype) == "int64"
+        ):
+            arr = jax_frontend.numpy.array(self, dtype="int64")
         return jax_frontend.numpy.sum(
-            self,
+            arr,
             axis=axis,
-            dtype=self.dtype,
+            dtype=arr.dtype,
             out=out,
             keepdims=keepdims,
             initial=initial,
