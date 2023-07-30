@@ -40,6 +40,15 @@ class Series(NDFrame):
                 index=self.index[index_val],
                 name=self.name,
                 dtype=self.dtype,
-                copy=self.copy
+                copy=self.copy,
             )
-        return self.array[index_val].item()
+        return self.array[self.index.index(index_val)].item()
+
+    def __getattr__(self, item):
+        if item in self.index:
+            return self[item]
+        else:
+            return super().__getattr__(item)
+
+    def __len__(self):
+        return len(self.array)

@@ -27,7 +27,7 @@ def variable(x, /):
         ret = x.detach()
         ret.stop_gradient = False
         return ret
-    ret = x.clone()
+    ret = paddle_backend.copy_array(x)
     ret.stop_gradient = False
     return ret
 

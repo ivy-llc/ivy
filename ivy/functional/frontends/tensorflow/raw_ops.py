@@ -527,6 +527,24 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
+SquaredDifference = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "complex",
+                "bfloat16",
+                "float16",
+                "float64",
+                "float32",
+                "int32",
+                "int64",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.squared_difference))
+)
+
+
 Squeeze = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.squeeze)
 )
@@ -902,6 +920,21 @@ def Imag(
 Imag.supported_dtypes = {
     "tensorflow": (
         "complex64",
+        "complex128",
+    ),
+}
+
+
+@to_ivy_arrays_and_back
+def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
+    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+
+
+Svd.supported_dtypes = {
+    "tensorflow": (
+        "float64",
+        "float128",
+        "halfcomplex64",
         "complex128",
     ),
 }
