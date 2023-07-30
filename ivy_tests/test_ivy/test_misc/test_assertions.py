@@ -15,6 +15,7 @@ from ivy.utils.assertions import (
     check_less,
     check_same_dtype,
     check_true,
+    check_unsorted_segment_min_valid_params,
 )
 import ivy
 
@@ -454,6 +455,64 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
 
     if "e" in local_vars.keys():
         assert "not compatible" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "data, segment_ids, num_segments",
+    [
+        (
+            ivy.array([1, 2, 3]),
+            ivy.array([0, 1, 0], dtype=ivy.int32),
+            2.0,
+        ),  # cases of failure
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), -2),
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
+        (ivy.array([1, 2, 3]), ivy.array([0.0, 1.0, 0.0], dtype=ivy.float16), 0),
+        (ivy.array([1, 2]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
+        (ivy.array([1, 2, 3]), ivy.array([0, 1], dtype=ivy.int32), 0),
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 2], dtype=ivy.int32), 2),
+        (
+            ivy.array([1, 2, 3]),
+            ivy.array([0, 1, 0], dtype=ivy.int32),
+            2,
+        ),  # cases to pass
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), ivy.array([2])),
+    ],
+)
+def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_unsorted_segment_min_valid_params(data, segment_ids, num_segments)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert (
+            "num_segments must be of integer type" in lines.strip()
+            or "segment_ids must have an integer dtype" in lines.strip()
+            or "segment_ids should be equal to data.shape[0]" in lines.strip()
+            or "is out of range" in lines.strip()
+            or "num_segments must be positive" in lines.strip()
+        )
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
