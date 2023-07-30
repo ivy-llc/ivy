@@ -747,3 +747,7 @@ def bincount(
 @to_ivy_arrays_and_back
 def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
+
+@to_ivy_arrays_and_back
+def reduce_mean(x, axis=None, keepdims=False, name=None):
+    return ivy.astype(reduce_mean(x), x.dtype)
