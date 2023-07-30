@@ -36,3 +36,16 @@ def selu(input_x):
 @to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def gumble_softmax(logits, tau=1.0, hard=False):
+    if hard:
+        # For hard Gumbel-Softmax, take argmax instead of softmax
+        return ivy.one_hot(ivy.argmax(logits, axis=-1), logits.shape[-1])
+    else:
+        # Sample from the Gumbel-Softmax distribution
+        gumbel_noise = ivy.random.gumbel(logits.shape, device=logits.device)
+        gumbel_sample = logits + gumbel_noise
+        return ivy.softmax(gumbel_sample / tau, axis=-1)
