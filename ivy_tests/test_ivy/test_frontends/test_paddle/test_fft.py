@@ -178,32 +178,54 @@ def test_paddle_ifftshift(dtype_x_axis, frontend, test_flags, fn_tree, on_device
         axes=axes,
     )
 
+@st.composite
+def x_and_rfftn(draw):
+    min_rfftn_points = 2
+    dtype = draw(helpers.get_dtypes("valid"))
+    x_dim = draw(
+        helpers.get_shape(
+            min_dim_size=2, max_dim_size=100, min_num_dims=2, max_num_dims=3
+        )
+    )
+    x = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=tuple(x_dim),
+            min_value=-1e10,
+            max_value=1e10,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
+        )
+    )
+    axes = draw(
+        st.lists(
+            st.integers(0, len(x_dim) - 1), min_size=1, max_size=len(x_dim), unique=True
+        )
+    )
+    s = draw(
+        st.lists(
+            st.integers(min_rfftn_points, 256), min_size=len(axes), max_size=len(axes)
+        )
+    )
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    return dtype, x, s, axes, norm
+
 
 @handle_frontend_test(
     fn_tree="paddle.fft.rfftn",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_value=-10,
-        max_value=10,
-        min_num_dims=1,
-        min_dim_size=2,
-        valid_axis=True,
-        force_int_axis=True,
-    ),
-    norm=st.sampled_from(["backward", "ortho", "forward"]),
-    s=st.lists(st.integers()),
+    d_x_d_s_n=x_and_rfftn(),
 )
-def test_paddle_rfftn(dtype_x_axis, s, norm, frontend, test_flags, fn_tree):
-    input_dtypes, x, axis = dtype_x_axis
+def test_paddle_rfftn(d_x_d_s_n, frontend, backend_fw, test_flags, fn_tree):
+    input_dtypes, x,s,axes,norm = d_x_d_s_n
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x[0],
+        x=x,
         s=s,
-        axis=axis,
+        axes=axes,
         norm=norm,
-        valid_axis=True,
-        force_int_axis=True,
     )
