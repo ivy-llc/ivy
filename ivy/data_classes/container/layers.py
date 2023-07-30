@@ -1112,12 +1112,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NWC",
-        dilations: Union[int, Tuple[int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int]] = 1,
+        dilations: Union[int, Tuple[int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1138,6 +1141,10 @@ class _ContainerWithLayers(ContainerBase):
             per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         key_chains
@@ -1151,6 +1158,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+        Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1181,11 +1190,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1196,12 +1208,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NWC",
-        dilations: Union[int, Tuple[int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int]] = 1,
+        dilations: Union[int, Tuple[int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1222,6 +1237,10 @@ class _ContainerWithLayers(ContainerBase):
             per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
         key_chains
@@ -1235,6 +1254,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1264,11 +1285,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1280,12 +1304,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NHWC",
-        dilations: Union[int, Tuple[int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1349,11 +1376,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1364,12 +1394,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NHWC",
-        dilations: Union[int, Tuple[int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int]] = 1,
+        dilations: Union[int, Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1433,10 +1466,13 @@ class _ContainerWithLayers(ContainerBase):
             padding,
             data_format=data_format,
             dilations=dilations,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1449,12 +1485,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NWC",
-        dilations: Union[int, Tuple[int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NWC",
+        dilations: Union[int, Tuple[int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1493,6 +1530,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1527,6 +1566,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1538,12 +1578,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NWC",
-        dilations: Union[int, ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NWC",
+        dilations: int = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
         """
@@ -1582,6 +1623,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1615,6 +1658,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1627,12 +1671,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NHWC",
-        dilations: Union[int, Tuple[int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
+        dilations: Union[int, Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1668,6 +1713,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1711,6 +1758,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1722,12 +1770,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NHWC",
-        dilations: Union[int, Tuple[int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NHWC",
+        dilations: Union[int, Tuple[int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1763,6 +1812,8 @@ class _ContainerWithLayers(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -1780,7 +1831,7 @@ class _ContainerWithLayers(ContainerBase):
         >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x, filters, 2, 'SAME')
+        >>> y = x.conv2d_transpose(x,filters,2,'SAME')
         >>> print(y.shape)
         {
             a: {
@@ -1805,6 +1856,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -1958,12 +2010,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NDHWC",
-        dilations: Union[int, Tuple[int, int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int, int]] = 1,
+        dilations: Union[int, Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1984,8 +2039,14 @@ class _ContainerWithLayers(ContainerBase):
             the per-dimension paddings.
         data_format
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)    
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2016,11 +2077,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2031,12 +2095,15 @@ class _ContainerWithLayers(ContainerBase):
         padding: Union[str, ivy.Container],
         /,
         *,
-        data_format: Union[str, ivy.Container] = "NDHWC",
-        dilations: Union[int, Tuple[int, int, int], ivy.Container] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NDHWC",
+        filter_format: str = "channel_last",
+        x_dilations: Union[int, Tuple[int, int, int]] = 1,
+        dilations: Union[int, Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2057,8 +2124,14 @@ class _ContainerWithLayers(ContainerBase):
             the per-dimension paddings.
         data_format
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        filter_format
+            Either "channel_first" or "channel_last". Defaults to "channel_last".
+        x_dilations
+            The dilation factor for each dimension of input. (Default value = 1)    
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -2088,11 +2161,14 @@ class _ContainerWithLayers(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            filter_format=filter_format,
+            x_dilations=x_dilations,
             dilations=dilations,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2107,14 +2183,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NDHWC",
-        dilations: Union[
-            int, Tuple[int], Tuple[int, int], Tuple[int, int, int], ivy.Container
-        ] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NDHWC",
+        dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2144,6 +2219,8 @@ class _ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -2185,6 +2262,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
@@ -2198,14 +2276,13 @@ class _ContainerWithLayers(ContainerBase):
         /,
         *,
         output_shape: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
-        data_format: Union[str, ivy.Container] = "NDHWC",
-        dilations: Union[
-            int, Tuple[int], Tuple[int, int], Tuple[int, int, int], ivy.Container
-        ] = 1,
-        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
-        to_apply: Union[bool, ivy.Container] = True,
-        prune_unapplied: Union[bool, ivy.Container] = False,
-        map_sequences: Union[bool, ivy.Container] = False,
+        data_format: str = "NDHWC",
+        dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2235,6 +2312,8 @@ class _ContainerWithLayers(ContainerBase):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
+        bias
+            Bias array of shape *[d_out]*.
         out
             optional output container, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -2275,6 +2354,7 @@ class _ContainerWithLayers(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            bias=bias,
             out=out,
         )
 
