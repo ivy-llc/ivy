@@ -598,11 +598,11 @@ def test_jax_devicearray_sort(
     init_tree="jax.numpy.array",
     method_name="sum",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=["int64"],
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=2,
-        max_dim_size=100,
+        max_dim_size=10,
         valid_axis=True,
         force_int_axis=True,
     ),
