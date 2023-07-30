@@ -361,10 +361,10 @@ def narrow(input, dim, start, length):
 
 
 @to_ivy_arrays_and_back
-def select_scatter(input,src,dim,index):
+def select_scatter(input, src, dim, index):
     output = ivy.zeros_like(input)
     output[dim, index] = src
-    return(output)
+    return output
 
 @to_ivy_arrays_and_back
 def select(input, dim, index):
