@@ -357,7 +357,7 @@ def sigmoid(
 @handle_array_function
 @handle_device_shifting
 def softmax(
-    x: Union[ivy.Array, ivy.NativeArray],/,*,axis: Optional[int] = None,out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],/,*,axis: Optional[int] = None,out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the softmax function element-wise.
