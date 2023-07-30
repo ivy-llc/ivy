@@ -77,3 +77,42 @@
 #         on_device=on_device,
 #         x=x[0],
 #     )
+
+# adaptive_maxpool2d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.adaptive_maxpool2d",
+#     d_type_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#         shape=(
+#             st.integers(min_value=2, max_value=10),
+#             4,
+#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=12, max_value=64),
+#         ),
+#     ),
+#     output_size=st.tuples(st.integers(min_value=1, max_value=10), st.integers(min_value=1, max_value=10)),
+# )
+# def test_mindspore_adaptive_maxpool2d(
+#     *,
+#     d_type_and_x,
+#     output_size,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = d_type_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         output_size=output_size,
+#     )
