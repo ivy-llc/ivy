@@ -1899,3 +1899,64 @@ def test_tensorflow_weighted_moments(
         frequency_weights=fw[0],
         keepdims=keepdims,
     )
+
+@st.composite
+def _dropout_helper(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+        )
+    )
+    noise_shape = list(shape)
+    if draw(st.booleans()):
+        noise_shape = None
+    else:
+        for i, _ in enumerate(noise_shape):
+            if draw(st.booleans()):
+                noise_shape[i] = 1
+            elif draw(st.booleans()):
+                noise_shape[i] = None
+    seed = draw(helpers.ints(min_value=0, max_value=100))
+    rate = draw(helpers.floats(min_value=0, max_value=0.9))
+
+    return (
+        dtype_and_x,
+        noise_shape,
+        seed,
+        rate,
+    )
+
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.dropout",
+    dtype_x_noiseshape=_dropout_helper(),
+)
+def test_tensorflow_dropout(
+    *,
+    dtype_x_noiseshape,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    (x_dtype, x), noise_shape, seed, rate = dtype_x_noiseshape
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=x[0],
+        rate=rate,
+        noise_shape=noise_shape,
+        seed=seed,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
+    for u, v, w in zip(ret, frontend_ret, x):
+        # cardinality test
+        assert u.shape == v.shape == w.shape
