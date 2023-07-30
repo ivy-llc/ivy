@@ -36,3 +36,8 @@ def selu(input_x):
 @to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def lrn(input_x, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5):
+    return ivy.lrn(input_x, depth_radius=depth_radius, bias=bias, alpha=alpha, beta=beta)

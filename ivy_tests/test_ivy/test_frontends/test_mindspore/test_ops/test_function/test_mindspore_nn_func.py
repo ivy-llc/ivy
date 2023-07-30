@@ -77,3 +77,50 @@
 #         on_device=on_device,
 #         x=x[0],
 #     )
+
+# lrn
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.lrn",
+#     d_type_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#         shape=(
+#             st.integers(min_value=2, max_value=10),
+#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=12, max_value=64),
+#         ),
+#     ),
+#     depth_radius=st.integers(min_value=1, max_value=5),
+#     bias=st.floats(min_value=0.1, max_value=2.0),
+#     alpha=st.floats(min_value=0.1, max_value=2.0),
+#     beta=st.floats(min_value=0.1, max_value=2.0),
+# )
+# def test_mindspore_lrn(
+#     *,
+#     d_type_and_x,
+#     depth_radius,
+#     bias,
+#     alpha,
+#     beta,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = d_type_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         depth_radius=depth_radius,
+#         bias=bias,
+#         alpha=alpha,
+#         beta=beta,
+#     )
