@@ -78,9 +78,10 @@
 #         x=x[0],
 #     )
 
-# lrn
+
+# adaptive_avg_pool3d
 # @handle_frontend_test(
-#     fn_tree="mindspore.ops.function.nn_func.lrn",
+#     fn_tree="mindspore.ops.function.nn_func.adaptive_avg_pool3d",
 #     d_type_and_x=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
@@ -90,22 +91,21 @@
 #         min_dim_size=4,
 #         shape=(
 #             st.integers(min_value=2, max_value=10),
-#             st.integers(min_value=12, max_value=64),
-#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=2, max_value=10),
+#             st.integers(min_value=2, max_value=10),
+#             st.integers(min_value=2, max_value=10),
 #         ),
 #     ),
-#     depth_radius=st.integers(min_value=1, max_value=5),
-#     bias=st.floats(min_value=0.1, max_value=2.0),
-#     alpha=st.floats(min_value=0.1, max_value=2.0),
-#     beta=st.floats(min_value=0.1, max_value=2.0),
+#     output_size=(
+#         st.integers(min_value=1, max_value=10),
+#         st.integers(min_value=1, max_value=10),
+#         st.integers(min_value=1, max_value=10),
+#     ),
 # )
-# def test_mindspore_lrn(
+# def test_mindspore_adaptive_avg_pool3d(
 #     *,
 #     d_type_and_x,
-#     depth_radius,
-#     bias,
-#     alpha,
-#     beta,
+#     output_size,
 #     on_device,
 #     fn_tree,
 #     frontend,
@@ -119,8 +119,5 @@
 #         fn_tree=fn_tree,
 #         on_device=on_device,
 #         input=x[0],
-#         depth_radius=depth_radius,
-#         bias=bias,
-#         alpha=alpha,
-#         beta=beta,
+#         output_size=output_size,
 #     )
