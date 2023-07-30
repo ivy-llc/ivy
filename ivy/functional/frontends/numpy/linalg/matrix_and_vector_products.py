@@ -68,3 +68,10 @@ def cross(a, b, *, axisa=-1, axisb=-1, axisc=-1, axis=None):
 @to_ivy_arrays_and_back
 def multi_dot(arrays, *, out=None):
     return ivy.multi_dot(arrays, out=out)
+
+
+@handle_numpy_out
+@to_ivy_arrays_and_back
+def dot(a, b, out=None):
+    a, b = promote_types_of_numpy_inputs(a, b)
+    return ivy.matmul(a, b)

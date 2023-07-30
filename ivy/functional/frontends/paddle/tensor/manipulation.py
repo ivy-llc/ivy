@@ -44,6 +44,15 @@ def tile(x, repeat_times, name=None):
 
 
 @with_unsupported_dtypes(
+    {"2.5.0 and below": ("int8", "uint8", "int16", "float16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def flip(x, axis, name=None):
+    return ivy.flip(x, axis=axis)
+
+
+@with_unsupported_dtypes(
     {"2.5.0 and below": ("int16", "complex64", "complex128")},
     "paddle",
 )
@@ -96,3 +105,12 @@ def cast(x, dtype):
 @to_ivy_arrays_and_back
 def broadcast_to(x, shape, name=None):
     return ivy.broadcast_to(x, shape)
+
+
+@with_supported_dtypes(
+    {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def gather(params, indices, axis=-1, batch_dims=0, name=None):
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)

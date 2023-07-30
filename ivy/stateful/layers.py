@@ -1,11 +1,10 @@
 """Collection of Ivy neural network layers as stateful classes."""
-
+# flake8: noqa
 # local
 import ivy
-from ivy.stateful.module import Module
-from ivy.stateful.initializers import Zeros, GlorotUniform
 from ivy.func_wrapper import handle_nestable
-
+from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
 
@@ -414,18 +413,18 @@ class MultiHeadAttention(Module):
             num_heads=self._num_heads,
             scale=self._scale,
             attention_mask=attention_mask,
-            in_proj_weights=self.v.in_proj_weights
-            if self._qkv_same_embed_dim
-            else None,
-            q_proj_weights=self.v.q_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
-            k_proj_weights=self.v.k_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
-            v_proj_weights=self.v.v_proj_weights
-            if not self._qkv_same_embed_dim
-            else None,
+            in_proj_weights=(
+                self.v.in_proj_weights if self._qkv_same_embed_dim else None
+            ),
+            q_proj_weights=(
+                self.v.q_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            k_proj_weights=(
+                self.v.k_proj_weights if not self._qkv_same_embed_dim else None
+            ),
+            v_proj_weights=(
+                self.v.v_proj_weights if not self._qkv_same_embed_dim else None
+            ),
             out_proj_weights=self.v.out_proj_weights,
             in_proj_bias=self.v.in_proj_bias if self._use_proj_bias else None,
             out_proj_bias=self.v.out_proj_bias if self._use_proj_bias else None,
@@ -1933,6 +1932,61 @@ class AdaptiveAvgPool1d(Module):
         )
 
 
+class FFT(Module):
+    def __init__(
+        self,
+        dim,
+        /,
+        *,
+        norm="backward",
+        n=None,
+        out=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying FFT to input.
+
+        Parameters
+        ----------
+        dim : int
+            Dimension along which to take the FFT.
+        norm : str
+            Normalization mode. Default: 'backward'
+        n : int
+            Size of the FFT. Default: None
+        out : int
+            Size of the output. Default: None
+        """
+        self._dim = dim
+        self._norm = norm
+        self._n = n
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs : array
+            Input array to take the FFT of.
+
+        Returns
+        -------
+        array
+            The output array of the layer.
+        """
+        return ivy.fft(
+            inputs,
+            self._dim,
+            norm=self._norm,
+            n=self._n,
+            out=self._out,
+        )
+
+
 class AvgPool1D(Module):
     def __init__(
         self,
@@ -1982,4 +2036,102 @@ class AvgPool1D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+        )
+
+
+class Dct(Module):
+    def __init__(
+        self,
+        *,
+        type=2,
+        n=None,
+        axis=-1,
+        norm=None,
+        device=None,
+        dtype=None,
+    ):
+        """
+        Class for applying the Discrete Cosine Transform over mini-batch of inputs.
+
+        Parameters
+        ----------
+        x
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The length of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger then x is zero-padded.
+        axis
+            The axis to compute the DCT along.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        """
+        self.type = type
+        self.n = n
+        self.axis = axis
+        self.norm = norm
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, x):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.dct(
+            x,
+            type=self.type,
+            n=self.n,
+            axis=self.axis,
+            norm=self.norm,
+        )
+
+
+class Embedding(Module):
+    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+        """
+        Class for embedding indices into a dense representation.
+
+        Parameters
+        ----------
+        indices
+            The indices to embed.
+        max_norm
+            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
+        out
+            If given, the result will be inserted into this tensor. Default: None
+        """
+        self._indices = indices
+        self._max_norm = max_norm
+        self._out = out
+        Module.__init__(self, device=device, dtype=dtype)
+
+    def _forward(self, inputs):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        inputs
+            The input array to the layer.
+
+        Returns
+        -------
+            The output array of the layer.
+        """
+        return ivy.embedding(
+            inputs,
+            self._indices,
+            max_norm=self._max_norm,
+            out=self._out,
         )
