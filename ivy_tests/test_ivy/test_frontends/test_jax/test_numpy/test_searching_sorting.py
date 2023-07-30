@@ -494,3 +494,41 @@ def test_jax_unique(fn_inputs, backend_fw, frontend, test_flags, fn_tree, on_dev
         return_counts=return_counts,
         axis=axis,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.lexsort",
+    test_with_out=st.just(False),
+    dtype_keys_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes(kind="numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=5,
+        max_axes_size=1,
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+        min_axis=0,
+    ),
+)
+def test_jax_lexsort(
+    *,
+    dtype_keys_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, keys, axis = dtype_keys_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        keys=keys[0],
+        axis=axis - 1,
+    )
