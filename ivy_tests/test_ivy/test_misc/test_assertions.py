@@ -416,5 +416,5 @@ def test_check_same_dtype(x1, x2):
     if "e" not in local_vars.keys():
         assert not lines.strip()
 
-    # with contextlib.suppress(FileNotFoundError):
-    #     os.remove(filename)
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
