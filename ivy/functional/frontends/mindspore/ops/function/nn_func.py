@@ -36,3 +36,11 @@ def selu(input_x):
 @to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+@with_supported_dtypes(
+    {"2.0.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")},
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def interpolate(input, size=None, scale_factor=None, mode='nearest', align_corners=False):
+    return ivy.interpolate(input, size=size, scale_factor=scale_factor, mode=mode, align_corners=align_corners)
