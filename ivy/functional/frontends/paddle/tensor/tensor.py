@@ -67,8 +67,9 @@ class Tensor:
         return paddle_frontend.Tensor(ret)
 
     def __setitem__(self, item, value):
-        item, value = ivy.nested_map([item, value], _to_ivy_array)
-        self.ivy_array[item] = value
+        raise ivy.utils.exceptions.IvyException(
+            "ivy.functional.frontends.paddle.Tensor object doesn't support assignment"
+        )
 
     def __iter__(self):
         if self.ndim == 0:
