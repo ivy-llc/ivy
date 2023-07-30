@@ -9,6 +9,7 @@ from ivy.utils.assertions import (
     check_equal,
     check_exists,
     check_false,
+    check_fill_value_and_dtype_are_compatible,
     check_greater,
     check_isinstance,
     check_less,
@@ -412,6 +413,47 @@ def test_check_same_dtype(x1, x2):
 
     if "e" in local_vars.keys():
         assert "same dtype" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "fill_value, dtype",
+    [
+        (1.0, ivy.int16),  # cases of failure
+        (1, ivy.float16),
+        (1, ivy.complex64),
+        (1j, ivy.complex64),  # cases to pass
+        (1.0, ivy.complex64),
+        (1.0, ivy.float16),
+        (1, ivy.int16),
+    ],
+)
+def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_fill_value_and_dtype_are_compatible(fill_value, dtype)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "not compatible" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
