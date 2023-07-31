@@ -383,3 +383,76 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+# Hinge Embedding Loss #
+# --------------------- #
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def hinge_embedding_loss(
+    input1: Union[ivy.Array, ivy.NativeArray],
+    input2: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    margin: float = 1.0,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the hinge embedding loss between two input tensors.
+
+    Parameters
+    ----------
+    input1 : array_like
+        First input tensor.
+    input2 : array_like
+        Second input tensor.
+    target : array_like
+        Tensor of the same shape as input1 and input2, representing the target binary labels (1 for positive pairs, -1 for negative pairs).
+    margin : float, optional
+        Margin value. Default is 1.0.
+    reduction : {'mean', 'sum', 'none'}, optional
+        Type of reduction to apply to the output. Default is 'mean'.
+    out : array_like, optional
+        Optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret : array
+        The hinge embedding loss between the two input tensors.
+
+    Examples
+    --------
+    >>> input1 = ivy.array([1.0, 2.0, 3.0])
+    >>> input2 = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, -1.0, 1.0])
+    >>> ivy.hinge_embedding_loss(input1, input2, target)
+    ivy.array(2.0)
+
+    >>> input1 = ivy.array([1.0, 2.0, 3.0])
+    >>> input2 = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, -1.0, -1.0])
+    >>> ivy.hinge_embedding_loss(input1, input2, target, margin=1.5)
+    ivy.array(0.5)
+
+    >>> input1 = ivy.array([1.0, 2.0, 3.0])
+    >>> input2 = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, 1.0, 1.0])
+    >>> ivy.hinge_embedding_loss(input1, input2, target, reduction='sum')
+    ivy.array(2.0)
+
+    >>> input1 = ivy.array([1.0, 2.0, 3.0])
+    >>> input2 = ivy.array([4.0, 5.0, 6.0])
+    >>> target = ivy.array([1.0, 1.0, 1.0])
+    >>> ivy.hinge_embedding_loss(input1, input2, target, reduction='none')
+    ivy.array([2.0, 0.0, 0.0])
+    """
+    ivy.utils.assertions.check_elem_in_list(reduction, ["mean", "sum", "none"])
+
+    loss = ivy.maximum(0.0, margin - target * (input1 - input2))
+    return ivy.reduce(loss, reduction=reduction, out=out)

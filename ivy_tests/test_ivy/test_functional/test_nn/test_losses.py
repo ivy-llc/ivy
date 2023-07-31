@@ -203,3 +203,57 @@ def test_sparse_cross_entropy(
         epsilon=epsilon,
         reduction=reduction,
     )
+
+# Test cases for hinge_embedding_loss
+@handle_test(
+    fn_tree="functional.ivy.hinge_embedding_loss",
+    dtype_input1=helpers.dtype_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+    ),
+    dtype_input2=helpers.dtype_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+    ),
+    dtype_target=helpers.dtype_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+    ),
+    margin=helpers.floats(min_value=0),
+    reduction=st.sampled_from(["none", "sum", "mean"]),
+)
+def test_hinge_embedding_loss(
+    dtype_input1,
+    dtype_input2,
+    dtype_target,
+    margin,
+    reduction,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input1_dtype, input1 = dtype_input1
+    input2_dtype, input2 = dtype_input2
+    target_dtype, target = dtype_target
+
+    helpers.test_function(
+        input_dtypes=input1_dtype + input2_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-02,
+        atol_=1e-02,
+        input1=input1[0],
+        input2=input2[0],
+        target=target[0],
+        margin=margin,
+        reduction=reduction,
+    )
