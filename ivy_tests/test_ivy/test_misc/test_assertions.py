@@ -23,6 +23,7 @@ from ivy.utils.assertions import (
     check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
+    check_dev_correct_formatting,
 )
 from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
@@ -871,3 +872,21 @@ def test_check_jax_x64_flag(dtype):
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "device",
+    [
+        # VALID CASES
+        "cpu",
+        "gpu:0",
+        "tpu:1",
+        # INVALID
+        "cuda",
+        "gpu;",
+        "tpu:abc12",
+    ],
+)
+def test_check_dev_correct_formatting(device):
+    with pytest.raises(AssertionError):
+        check_dev_correct_formatting(device)
