@@ -1,5 +1,5 @@
 import importlib
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from hypothesis import given
 from typing import List, Callable, Any
 
@@ -14,7 +14,11 @@ class FunctionHandler(ABC):
         module = importlib.import_module(module_tree)
         return getattr(module, fn_name)
 
-    @abstractmethod
+    @abstractproperty
+    def is_hypothesis_test(self) -> List[str]:
+        pass
+
+    @abstractproperty
     def paremeters(self) -> List[str]:
         pass
 
