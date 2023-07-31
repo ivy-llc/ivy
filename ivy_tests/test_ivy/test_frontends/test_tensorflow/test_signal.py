@@ -99,10 +99,12 @@ def test_tensorflow_idct(
 @handle_frontend_test(
     fn_tree="tensorflow.signal.kaiser_bessel_derived_window",
     dtype_and_window_length=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer")
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_length=1  # Ensure non-empty list
     ),
     dtype_and_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_length=1  # Ensure non-empty list
     ),
     dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
@@ -120,6 +122,10 @@ def test_tensorflow_kaiser_bessel_derived_window(
 ):
     window_length_dtype, window_length = dtype_and_window_length
     beta_dtype, beta = dtype_and_beta
+    
+    window_length = window_length or [1]
+    beta = beta or [1.0]
+    
     helpers.test_frontend_function(
         input_dtypes=[window_length_dtype[0], beta_dtype[0]],
         backend_to_test=backend_fw,
@@ -131,3 +137,5 @@ def test_tensorflow_kaiser_bessel_derived_window(
         beta=beta,
         dtype=dtype,
     )
+
+
