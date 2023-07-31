@@ -1,6 +1,6 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional, Callable
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -111,6 +111,7 @@ def leaky_relu(
     *,
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the leaky rectified linear unit function element-wise.
