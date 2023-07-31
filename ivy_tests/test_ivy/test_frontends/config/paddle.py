@@ -1,4 +1,5 @@
 import paddle
+import numpy as np
 
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
@@ -93,11 +94,11 @@ def native_array(x):
 
 
 def is_native_array(x):
-    return isinstance(x, (paddle.Tensor, paddle.fluid.dygraph.ParamBase))
+    return isinstance(x, (paddle.Tensor, paddle.fluid.framework.EagerParamBase))
 
 
 def to_numpy(x):
-    return x.numpy()
+    return np.array(x)
 
 
 def as_native_dtype(dtype: str):
