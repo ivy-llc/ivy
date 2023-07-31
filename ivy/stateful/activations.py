@@ -239,6 +239,27 @@ class Sigmoid(Module):
         return ivy.sigmoid(x)
 
 
+class LogSigmoid(Module):
+    def __init__(self):
+        """Apply the LogSigmoid activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+             Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+         ret
+            The outputs following the LogSigmoid activation *[batch_shape, d]*
+        """
+        return ivy.log_sigmoid(x)
+
+
 class Tanh(Module):
     def __init__(self):
         """Apply the TANH activation function."""
