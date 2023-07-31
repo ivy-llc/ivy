@@ -208,19 +208,19 @@ def test_sparse_cross_entropy(
 @handle_test(
     fn_tree="functional.ivy.hinge_embedding_loss",
     dtype_input1=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-1,
         max_value=1,
         allow_inf=False,
     ),
     dtype_input2=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-1,
         max_value=1,
         allow_inf=False,
     ),
     dtype_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-1,
         max_value=1,
         allow_inf=False,
