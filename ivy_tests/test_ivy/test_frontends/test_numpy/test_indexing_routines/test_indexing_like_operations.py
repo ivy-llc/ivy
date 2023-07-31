@@ -193,8 +193,7 @@ def test_numpy_compress(
         indices_same_dims=True,
         valid_bounds=False,
     ),
-    mode=st.sampled_from(["clip", "wrap", "raise"]),
-    test_with_out=st.just(False)
+    mode=st.sampled_from(["clip", "wrap", "raise"])
 )
 def test_numpy_take(
     *,
@@ -217,6 +216,5 @@ def test_numpy_take(
         arr=x,
         indices=indices,
         axis=axis,
-        mode=mode,
-        test_with_out = test_with_out
+        mode=mode
     )
