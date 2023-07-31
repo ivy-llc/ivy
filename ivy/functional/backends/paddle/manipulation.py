@@ -213,7 +213,7 @@ def squeeze(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
