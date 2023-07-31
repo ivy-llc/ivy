@@ -133,8 +133,7 @@ def test_jax_silu(
 @handle_frontend_test(
     fn_tree="jax.nn.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer")
-        | helpers.get_dtypes("complex", full=False, prune_function=False),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",

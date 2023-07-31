@@ -1,7 +1,7 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-from hypothesis import strategies as st, assume, reproduce_failure
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -31,7 +31,6 @@ def test_relu(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 
 
 # leaky_relu
-@reproduce_failure("6.72.0", b"AXicY2QAAUYGBjiNzEYHAADUAAY=")
 @handle_test(
     fn_tree="functional.ivy.leaky_relu",
     dtype_and_x=helpers.dtype_and_values(
