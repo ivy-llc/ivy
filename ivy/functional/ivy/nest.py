@@ -1111,7 +1111,7 @@ def nested_map(
     >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
     >>> function = lambda a :  a * 2
     >>> ivy.nested_map(nest, function,  to_ignore = (list) )
-    ([1, 2], [3, 4], [5, 6], {'a': 2, 'b': 4, 'c': 6})
+    ([1, 2, 1, 2], [3, 4, 3, 4], [5, 6, 5, 6], {'a': 2, 'b': 4, 'c': 6})
 
     >>> nest = [[1, 2], [3, [4, 5]], [[6], [7, 8, [9, 10]]]]
     >>> function = lambda a :  a * 2
