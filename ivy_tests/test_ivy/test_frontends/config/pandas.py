@@ -1,7 +1,8 @@
-import tensorflow as tf
+import numpy as np
+import pandas as pd
 
-valid_devices = ("cpu", "gpu")
-invalid_devices = ("tpu",)
+valid_devices = "cpu"
+invalid_devices = ("gpu", "tpu")
 
 valid_dtypes = [
     "int8",
@@ -12,7 +13,6 @@ valid_dtypes = [
     "uint16",
     "uint32",
     "uint64",
-    "bfloat16",
     "float16",
     "float32",
     "float64",
@@ -20,7 +20,7 @@ valid_dtypes = [
     "complex128",
     "bool",
 ]
-invalid_dtypes = []
+invalid_dtypes = ["bfloat16"]
 
 valid_numeric_dtypes = [
     "int8",
@@ -31,14 +31,13 @@ valid_numeric_dtypes = [
     "uint16",
     "uint32",
     "uint64",
-    "bfloat16",
     "float16",
     "float32",
     "float64",
     "complex64",
     "complex128",
 ]
-invalid_numeric_dtypes = []
+invalid_numeric_dtypes = ["bfloat16"]
 
 valid_int_dtypes = [
     "int8",
@@ -61,12 +60,11 @@ valid_uint_dtypes = [
 invalid_uint_dtypes = []
 
 valid_float_dtypes = [
-    "bfloat16",
     "float16",
     "float32",
     "float64",
 ]
-invalid_float_dtypes = []
+invalid_float_dtypes = ["bfloat16"]
 
 valid_complex_dtypes = [
     "complex64",
@@ -74,33 +72,35 @@ valid_complex_dtypes = [
 ]
 invalid_complex_dtypes = []
 
+# todo: add extension types
 
 # Helpers for function testing
 
 
-Dtype = tf.dtypes.DType
-Device = tf.DeviceSpec
+PandasArray = pd.core.arrays.numpy_.PandasArray
+Dtype = np.dtype
+Device = str
 
 
 def native_array(x):
-    return tf.constant(x)
+    return x.array
 
 
 def is_native_array(x):
-    return isinstance(x, (tf.Tensor, tf.Variable))
+    return isinstance(x.array, PandasArray)
 
 
 def to_numpy(x):
-    return x.numpy()
+    return x.to_numpy()
 
 
 def as_native_dtype(dtype: str):
-    return tf.as_dtype(dtype)
+    return np.dtype(dtype)
 
 
 def as_native_dev(device: str):
-    return tf.device(device)
+    return device
 
 
 def isscalar(x):
-    return is_native_array(x) and tf.experimental.numpy.isscalar(x)
+    return pd.api.types.is_scalar(x)
