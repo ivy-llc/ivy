@@ -19,6 +19,7 @@ from ivy.utils.assertions import (
     check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
+    check_dimensions,
 )
 import ivy
 
@@ -642,6 +643,46 @@ def test_check_shapes_broadcastable(var, data):
 
     if "e" in local_vars.keys():
         assert "Could not broadcast shape" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "x",
+    [
+        # cases of failure
+        (ivy.array([1])),
+        (ivy.array([])),
+        # cases to pass
+        (ivy.array([1, 2])),
+        (ivy.array([[1, 2], [2, 3]])),
+    ],
+)
+def test_check_dimensions(x):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_dimensions(x)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "greater than one dimension" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
