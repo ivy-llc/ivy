@@ -570,14 +570,7 @@ class ndarray:
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
 
-    def trace(
-        self,
-        *,
-        offset=0,
-        axis1=0,
-        axis2=1,
-        out=None
-    ):
+    def trace(self, *, offset=0, axis1=0, axis2=1, out=None):
         return np_frontend.trace(
             self,
             offset=offset,
