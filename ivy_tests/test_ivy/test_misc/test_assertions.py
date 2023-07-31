@@ -392,6 +392,52 @@ def test_check_any(results):
 
 
 @pytest.mark.parametrize(
+    "args, fn, type, limit",
+    [
+        # INVALID CASES
+        ((1, 2, 0), ivy.array, "all", [3]),
+        ((0, 0), ivy.array, "all", [2]),
+        ((1, 1), ivy.array, "any", [3]),
+        ((0, 0, 1), ivy.array, "any", [3]),
+        ((1, 0, 1), ivy.array, "all_any", [3]),
+        # VALID
+        ((1, 1), ivy.array, "any", [2]),
+        ((0, 1), ivy.array, "any", [1]),
+        ((1, 1, 2), ivy.array, "all", [3]),
+    ],
+)
+def test_check_all_or_any_fn(args, fn, type, limit):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_all_or_any_fn(*args, fn=fn, type=type, limit=limit)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if type == "all" or type == "any":
+        if "e" in local_vars.keys():
+            assert "args must exist according to" in lines.strip()
+        else:
+            assert not lines.strip()
+
+    else:
+        assert "type must be all or any" in lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
     "x1, x2",
     [
         (ivy.array([1, 2, 3]), ivy.array([4, 5, 6])),
@@ -775,52 +821,6 @@ def test_check_jax_x64_flag(dtype):
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
-
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(filename)
-
-
-@pytest.mark.parametrize(
-    "args, fn, type, limit",
-    [
-        # INVALID CASES
-        ((1, 2, 0), ivy.array, "all", [3]),
-        ((0, 0), ivy.array, "all", [2]),
-        ((1, 1), ivy.array, "any", [3]),
-        ((0, 0, 1), ivy.array, "any", [3]),
-        ((1, 0, 1), ivy.array, "all_any", [3]),
-        # VALID
-        ((1, 1), ivy.array, "any", [2]),
-        ((0, 1), ivy.array, "any", [1]),
-        ((1, 1, 2), ivy.array, "all", [3]),
-    ],
-)
-def test_check_all_or_any_fn(args, fn, type, limit):
-    filename = "except_out.txt"
-    orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_all_or_any_fn(*args, fn=fn, type=type, limit=limit)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
-    sys.stdout = orig_stdout
-    f.close()
-
-    with open(filename) as f:
-        lines += f.read()
-
-    if type == "all" or type == "any":
-        if "e" in local_vars.keys():
-            assert "args must exist according to" in lines.strip()
-        else:
-            assert not lines.strip()
-
-    else:
-        assert "type must be all or any" in lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
