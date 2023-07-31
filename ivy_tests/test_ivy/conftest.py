@@ -117,6 +117,11 @@ def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
 
 
 def pytest_generate_tests(metafunc):
+    if (
+        hasattr(metafunc.function, "pytestmark")
+        and metafunc.function.pytestmark[0].name == "backend_independent"
+    ):
+        return
     # Skip backend test against groud truth backend
     # This redundant and wastes resources, as we going to be comparing
     # The backend against it self
