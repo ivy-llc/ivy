@@ -3,6 +3,8 @@
 # local
 import ivy
 from ivy.stateful.module import Module
+from ivy.core.container import Container
+from ivy.framework_handler import choose_framework
 
 
 class GELU(Module):
@@ -346,3 +348,41 @@ class PReLU(Module):
             The outputs following the PRELU activation *[batch_shape, d]*
         """
         return ivy.prelu(x, slope)
+
+class ThresholdedReLU(Module):
+    def __init__(self, threshold=0.0):
+        super(ThresholdedReLU, self).__init__()
+        self.threshold = threshold
+
+    def _forward(self, x):
+        """
+        Apply the ThresholdedReLU activation function to the input tensor x.
+
+        Parameters
+        ----------
+        x : array-like
+            Input tensor.
+
+        Returns
+        -------
+        array-like
+            Output tensor after applying ThresholdedReLU activation function.
+        """
+        backend = choose_framework(x)
+        return ivy.maximum(x - self.threshold, backend.zeros_like(x))
+
+    def forward(self, x):
+        """
+        Apply the ThresholdedReLU activation function to the input tensor x.
+
+        Parameters
+        ----------
+        x : array-like
+            Input tensor.
+
+        Returns
+        -------
+        Container
+            Container with a single entry for the output tensor after applying ThresholdedReLU activation function.
+        """
+        return Container(self._forward(x))
