@@ -1,7 +1,7 @@
 # global
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
-from ivy.func_wrapper import with_supported_device_and_dtypes
+from ivy.func_wrapper import with_supported_device_and_dtypes, with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
@@ -91,3 +91,19 @@ def uniform_(x, min=-1.0, max=1.0, seed=0, name=None):
 @to_ivy_arrays_and_back
 def standard_normal(shape, dtype=None, name=None):
     return ivy.random_normal(mean=0, std=1, shape=shape, dtype=dtype)
+
+
+@with_unsupported_dtypes(
+    {"2.5.0 and below": ("int16", "float16", "bfloat16", "uint8")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def randint_like(x, low=0, high=None, dtype=None, name=None):
+    if high == None:
+        high = low
+        low = 0
+        if high <= 0:
+            raise ivy.exceptions.IvyError(
+                "If high is None, low must be greater than 0, but received low = 0."
+            )
+    return ivy.randint(low, high, shape=x.shape, dtype=dtype, seed=None)
