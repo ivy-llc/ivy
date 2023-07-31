@@ -1,4 +1,4 @@
-import pytorch
+import torch
 
 def to_cpu(self):
      if self.is_cuda:
