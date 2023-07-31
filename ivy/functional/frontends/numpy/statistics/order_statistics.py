@@ -1,6 +1,7 @@
 # global
 import ivy
 import numpy
+import ivy.numpy as np 
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -41,42 +42,83 @@ def _cpercentile(N, percent, key=lambda x: x):
     d0 = key(N[int(f)]) * (c - k)
     d1 = key(N[int(c)]) * (k - f)
     return d0 + d1
+import ivy
 
 
-@handle_numpy_out
-@handle_numpy_dtype
-@to_ivy_arrays_and_back
-@from_zero_dim_arrays_to_scalar
-
-def percentile(
-    a,
-    q,
-    axis=None,
-    interpolation='linear',
-    keepdims=False
-):
+@ivy.to_ivy_arrays_and_back
+@ivy.handle_numpy_out
+def percentile(a, q, axis=None, out=None, overwrite_input=False, interpolation='linear', keepdims=False):
     a = ivy.array(a)
     q = ivy.divide(q, 100.0)
     q = ivy.array(q)
 
-    if not ivy.all(ivy.logical_and(q >= 0, q <= 1)):
-        ivy.logging.warning("Percentiles must be in the range [0, 100]")
+    if not _quantile_is_valid(q):
+        ivy.logging.warning("percentile s must be in the range [0, 100]")
         return []
 
     if axis is None:
-        nanlessarray = ivy.where(ivy.isnan(a), ivy.inf, a)
-        nanlessarray = ivy.reshape(nanlessarray, (-1,))
-        resultarray = ivy.percentile(nanlessarray, q)
+        resultarray = []
+        nanlessarray = ivy.where(~ivy.isnan(a), a, ivy.array(float('nan')))
+        for i in q:
+            resultarray.append(_cpercentile(nanlessarray, i, interpolation))
         return resultarray
     elif axis == 1:
-        nanlessarrayofarrays = ivy.where(ivy.isnan(a), ivy.inf, a)
-        resultarray = ivy.percentile(nanlessarrayofarrays, q, axis=1, keepdims=keepdims)
+        resultarray = []
+        nanlessarrayofarrays = ivy.stack([ivy.where(~ivy.isnan(row), row, ivy.array(float('nan'))) for row in a])
+        for i in q:
+            arrayofpercentiles = []
+            for ii in nanlessarrayofarrays:
+                arrayofpercentiles.append(_cpercentile(ii, i, interpolation))
+            resultarray.append(arrayofpercentiles)
         return resultarray
     elif axis == 0:
-        nanlessarrayofarrays = ivy.where(ivy.isnan(a), ivy.inf, a)
-        nanlessarrayofarrays = ivy.swapaxes(nanlessarrayofarrays, 0, 1)
-        resultarray = ivy.percentile(nanlessarrayofarrays, q, axis=0, keepdims=keepdims)
-        return resultarray
+        try:
+            a = ivy.swapaxes(a, 0, 1)
+        except ivy.exceptions.IvyError:
+            ivy.logging.warning("axis is 0 but couldn't swap")
+
+        finally:
+            resultarray = []
+            nanlessarrayofarrays = ivy.stack([ivy.where(~ivy.isnan(col), col, ivy.array(float('nan'))) for col in a])
+            for i in q:
+                arrayofpercentiles = []
+                for ii in nanlessarrayofarrays:
+                    arrayofpercentiles.append(_cpercentile(ii, i, interpolation))
+                resultarray.append(arrayofpercentiles)
+            return resultarray
+
+def _quantile_is_valid(q):
+    return ivy.all(ivy.logical_and(q >= 0, q <= 1))
+
+def _cpercentile(arr, q, interpolation='linear'):
+    # Assuming arr is already nan-less
+    sorted_arr = ivy.sort(arr, axis=-1)
+    n = ivy.shape(arr)[-1]
+
+    # Calculate percentile index
+    idx = q * (n - 1)
+
+    # Split the index into integer and fractional parts
+    idx_int = ivy.floor(idx)
+    idx_frac = idx - idx_int
+
+    if interpolation == 'lower':
+        # Percentile calculated as the lower value
+        percentiles = sorted_arr[ivy.minimum(idx_int, n - 1)]
+    elif interpolation == 'higher':
+        # Percentile calculated as the higher value
+        percentiles = sorted_arr[ivy.maximum(idx_int + 1, 0)]
+    elif interpolation == 'midpoint':
+        # Percentile calculated as the average of two nearest values
+        percentiles = 0.5 * (sorted_arr[ivy.minimum(idx_int + 1, n - 1)] + sorted_arr[ivy.minimum(idx_int, n - 1)])
+    else:
+        # Default interpolation is 'linear'
+        lower_vals = ivy.index_update(sorted_arr, idx_int.astype(ivy.int32), 0)
+        upper_vals = ivy.index_update(sorted_arr, ivy.clip(idx_int + 1, 0, n - 1).astype(ivy.int32), 0)
+        percentiles = (1.0 - idx_frac) * lower_vals + idx_frac * upper_vals
+
+    return percentiles
+
 
 def nanpercentile(
     a,
