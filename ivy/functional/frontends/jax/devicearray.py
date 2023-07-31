@@ -124,7 +124,20 @@ class DeviceArray:
         )
 
     def prod(self, axis=None):
-        return jax_frontend.numpy.product(self, axis=axis)
+        arr = self
+        if (
+            str(self.dtype) == "uint8"
+            or str(self.dtype) == "uint16"
+            or str(self.dtype) == "uint32"
+        ):
+            arr = jax_frontend.numpy.asarray(self, dtype="uint64")
+        if (
+            str(self.dtype) == "int8"
+            or str(self.dtype) == "int16"
+            or str(self.dtype) == "int32"
+        ):
+            arr = jax_frontend.numpy.asarray(self, dtype="int64")
+        return jax_frontend.numpy.product(arr, axis=axis)
 
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
