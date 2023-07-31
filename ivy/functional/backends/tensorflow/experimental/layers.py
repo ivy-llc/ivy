@@ -1268,7 +1268,7 @@ def _rfftn_helper(x, shape, axes, norm):
     {
         "2.5.0 and above": {
             "cpu": (
-                "floar32",
+                "float32",
                 "float64",
                 "complex128",
             )
