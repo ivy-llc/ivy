@@ -1407,7 +1407,6 @@ def handle_nans(fn: Callable) -> Callable:
             elif nan_policy == "warns":
                 logging.warning("Nans are present in the input.")
 
-
         return fn(*args, **kwargs)
 
     _handle_nans.handle_nans = True
