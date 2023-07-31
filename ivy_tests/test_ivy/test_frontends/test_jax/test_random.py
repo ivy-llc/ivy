@@ -1357,3 +1357,65 @@ def test_jax_ball(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.multivariate_normal",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    shape=helpers.get_shape(
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    mean=st.floats(min_value=-10, max_value=10),
+    cov=st.floats(min_value=0, max_value=10),
+    method=st.sampled_from(["cholesky", "eigh", "svd"]),
+)
+def test_jax_multivariate_normal(
+    *,
+    dtype_key,
+    mean,
+    cov,
+    shape,
+    dtype,
+    method,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    input_dtype, _ = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            test_flags=test_flags,
+            backend_to_test=backend_fw,
+            fn_tree=fn_tree,
+            test_values=False,
+            mean=mean,
+            cov=cov,
+            shape=shape,
+            dtype=dtype[0],
+            method=method,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape

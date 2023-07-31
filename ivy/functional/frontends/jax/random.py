@@ -332,3 +332,32 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     exp = -ivy.log(1 - uniform)
 
     return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "0.4.13 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
+    seed = _get_seed(key)
+
+    if shape is None:
+        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
+    
+    if method == "cholesky":
+        cov_factor = ivy.linalg.cholesky(cov)
+    elif method == 'eigh':
+        (w, v) = ivy.linalg.eigh(cov)
+        cov_factor = w * ivy.sqrt(s[..., None, :])
+    elif method == "svd":
+        (u, s, __) = ivy.linalg.svd(cov)
+        cov_factor = u * ivy.sqrt(s[...,None, :])
+    
+    uniform = ivy.random_normal(seed, shape=shape+mean.shape[-1:],dtype=dtype)
+    return mean + ivy.einsum('...ij,...j->...i',cov_factor,uniform)
