@@ -23,7 +23,6 @@ from ivy.utils.assertions import (
     check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
-    check_shape,
 )
 from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
@@ -478,45 +477,6 @@ def test_check_same_dtype(x1, x2):
 
 
 @pytest.mark.parametrize(
-    "x1, x2",
-    [
-        (ivy.array([1, 2, 3]), ivy.array([[4, 5, 6], [2, 3, 1]])),
-        (ivy.array([[1.0, 2.0], [3.0, 4.0]]), ivy.array([4, 5, 6])),
-        (ivy.array([1, 2]), ivy.array([3, 4, 5])),
-        (ivy.array([1]), ivy.array([2])),
-        (ivy.array([1, 2]), ivy.array([2, 3])),
-    ],
-)
-def test_check_shape(x1, x2):
-    filename = "except_out.txt"
-    orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_shape(x1, x2)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
-
-    sys.stdout = orig_stdout
-    f.close()
-
-    with open(filename) as f:
-        lines += f.read()
-
-    if "e" in local_vars.keys():
-        assert "same shape" in lines.strip()
-
-    if "e" not in local_vars.keys():
-        assert not lines.strip()
-
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(filename)
-
-
-@pytest.mark.parametrize(
     "fill_value, dtype",
     [
         # INVALID CASES
@@ -616,6 +576,52 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
 
 
 @pytest.mark.parametrize(
+    "params, indices, axis, batch_dims",
+    [
+        # INVALID CASES
+        (ivy.array([1, 2, 3]), ivy.array([1]), 2, 3),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0], [2]]), 1, 2),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2], [2, 3]]), 1, 0),
+        (ivy.array([1, 2, 3]), ivy.array([[1, 2]]), 1, 0),
+        # VALID
+        (ivy.array([1, 2, 3]), ivy.array([1]), 0, 1),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), -1, 0),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2]]), -1, 0),
+    ],
+)
+def test_check_gather_input_valid(params, indices, axis, batch_dims):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_gather_input_valid(params, indices, axis, batch_dims)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert (
+            "must be less than or equal" in lines.strip()
+            or "batch dimensions must match in" in lines.strip()
+        )
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
     "params, indices, batch_dims",
     [
         # INVALID CASES
@@ -654,52 +660,6 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
             or "less than rank(`indices`)" in lines.strip()
             or "dimensions must match in `params` and `indices`" in lines.strip()
             or "index innermost dimension length must be <=" in lines.strip()
-        )
-
-    if "e" not in local_vars.keys():
-        assert not lines.strip()
-
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(filename)
-
-
-@pytest.mark.parametrize(
-    "params, indices, axis, batch_dims",
-    [
-        # INVALID CASES
-        (ivy.array([1, 2, 3]), ivy.array([1]), 2, 3),
-        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0], [2]]), 1, 2),
-        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2], [2, 3]]), 1, 0),
-        (ivy.array([1, 2, 3]), ivy.array([[1, 2]]), 1, 0),
-        # VALID
-        (ivy.array([1, 2, 3]), ivy.array([1]), 0, 1),
-        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), -1, 0),
-        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2]]), -1, 0),
-    ],
-)
-def test_check_gather_input_valid(params, indices, axis, batch_dims):
-    filename = "except_out.txt"
-    orig_stdout = sys.stdout
-    f = open(filename, "w")
-    sys.stdout = f
-    lines = ""
-    try:
-        check_gather_input_valid(params, indices, axis, batch_dims)
-        local_vars = {**locals()}
-    except Exception as e:
-        local_vars = {**locals()}
-        print(e)
-
-    sys.stdout = orig_stdout
-    f.close()
-
-    with open(filename) as f:
-        lines += f.read()
-
-    if "e" in local_vars.keys():
-        assert (
-            "must be less than or equal" in lines.strip()
-            or "batch dimensions must match in" in lines.strip()
         )
 
     if "e" not in local_vars.keys():
