@@ -1063,9 +1063,9 @@ def nested_map(
     >>> x = ([[1., 2.], [3., 4.]])
     >>> function = lambda a : a * 2
     >>> ivy.nested_map(x, function)
-    ([[2.0, 4.0], [6.0, 8.0]])
+    [[2.0, 4.0], [6.0, 8.0]]
     >>> print(x)
-    ([[2.0, 4.0], [6.0, 8.0]])
+    [[2.0, 4.0], [6.0, 8.0]]
 
     With :code:`Dict` input:
 
