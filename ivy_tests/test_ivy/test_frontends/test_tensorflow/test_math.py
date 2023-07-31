@@ -2906,19 +2906,19 @@ def test_tensorflow_xdivy(
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     backend_fw,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
-        y=x[1],
-        backend_to_test=backend_fw,
+        x=xs[0],
+        y=xs[1],
     )
 
 
