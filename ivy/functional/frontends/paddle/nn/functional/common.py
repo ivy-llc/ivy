@@ -5,7 +5,7 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
     if len(x1.shape) == len(x2.shape) and len(x2.shape) >= 2:
         numerator = ivy.sum(x1 * x2, axis=axis)
@@ -26,7 +26,7 @@ def cosine_similarity(x1, x2, *, axis=1, eps=1e-08):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def dropout2d(x, *, p=0.5, training=True, data_format="NCHW", name=None):
     return ivy.dropout2d(x, p=p, training=training, data_format=data_format)
 
@@ -41,7 +41,7 @@ def get_mask(shape, device, prob, seed=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=None):
     if axis > 1:
         raise ValueError("Axis value can only be 0 or 1 or None.")
@@ -68,7 +68,7 @@ def dropout(x, p=0.5, axis=None, training=True, mode="upscale_in_train", name=No
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def zeropad2d(x, padding, data_format="NCHW", name=None):
     if ivy.is_array(padding):
         padding = padding.to_list()
@@ -88,7 +88,7 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def interpolate(
     x,
     size=None,
@@ -105,7 +105,7 @@ def interpolate(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
