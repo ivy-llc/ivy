@@ -200,41 +200,59 @@ def test_paddle_zeropad2d(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            ret_shape=True,
+            min_num_dims=4,
+            max_num_dims=4,
+            min_value=-100,
+            max_value=100,
+        )
+    )
+    ndim = len(shape)
+    min_dim = min(shape)
+    padding = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=min_dim),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    return dtype, input, padding
+
+
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.pad",
-    dtype_and_x_paddings=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        ret_shape=True,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_value=-100,
-        max_value=100,
-    ),
+    fn_tree="paddle.nn.functional.pad",
+    dtype_and_x_and_paddings=_pad_helper(),
     mode=st.sampled_from(["constant", "reflect", "replicate", "circular"]),
-    constant_value=st.floats(min_value=-100, max_value=100),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_pad(
     *,
-    dtype_and_x_paddings,
+    dtype_and_x_and_paddings,
     on_device,
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     mode,
-    constant_value,
+    data_format,
 ):
-    dtype, x, paddings = dtype_and_x_paddings
+    dtype, x, pad = dtype_and_x_and_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        pad=paddings,
+        pad=pad,
         mode=mode,
-        value=constant_value,
-        backend_to_test="paddle",
+        data_format=data_format,
     )
 
 
