@@ -515,11 +515,11 @@ def test_jax_devicearray_nonzero(
     init_tree="jax.numpy.array",
     method_name="prod",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=["int64"],
+        available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
         valid_axis=True,
         min_dim_size=2,
-        max_dim_size=100,
+        max_dim_size=10,
         min_num_dims=2,
     ),
 )
