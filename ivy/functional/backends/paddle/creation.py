@@ -534,9 +534,13 @@ def copy_array(
     to_ivy_array: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        new_arr = paddle.empty(x.shape, dtype=x.dtype)
+    else:
+        new_arr = x.clone()
     if to_ivy_array:
-        return ivy.to_ivy(x.clone())
-    return x.clone()
+        return ivy.to_ivy(new_arr)
+    return new_arr
 
 
 def one_hot(

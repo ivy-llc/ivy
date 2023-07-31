@@ -16,9 +16,9 @@ Array API Tests
 .. _`here`: https://unify.ai/docs/ivy/overview/contributing/the_basics.html#running-tests-locally
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
-.. _`ivy tests`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html
-.. _`final section`: https://unify.ai/docs/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
-.. _`CI Pipeline`: https://unify.ai/docs/ivy/deep_dive/continuous_integration.html#ci-pipeline
+.. _`ivy tests`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html
+.. _`final section`: https://unify.ai/docs/ivy/overview/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
+.. _`CI Pipeline`: https://unify.ai/docs/ivy/overview/deep_dive/continuous_integration.html
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.

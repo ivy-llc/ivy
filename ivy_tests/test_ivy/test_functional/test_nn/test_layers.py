@@ -2,7 +2,9 @@
 
 # global
 from hypothesis import strategies as st, assume
+import ivy
 import numpy as np
+
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,17 +15,31 @@ from ivy.functional.ivy.layers import _deconv_length
 # Linear #
 # -------#
 @st.composite
-def x_and_linear(draw, dtypes):
-    dtype = draw(dtypes)
-    in_features = draw(helpers.ints(min_value=1, max_value=2))
-    out_features = draw(helpers.ints(min_value=1, max_value=2))
+def x_and_linear(draw):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
+    dtype = draw(
+        helpers.get_dtypes("numeric", full=False, mixed_fn_compos=mixed_fn_compos)
+    )
+    in_features = draw(
+        helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+    )
+    out_features = draw(
+        helpers.ints(min_value=1, max_value=2, mixed_fn_compos=mixed_fn_compos)
+    )
 
     x_shape = (
         1,
         1,
         in_features,
     )
+
     weight_shape = (1,) + (out_features,) + (in_features,)
+    # if backend is torch and we're testing the primary implementation
+    # weight.ndim should be equal to 2
+    if is_torch_backend and not mixed_fn_compos:
+        weight_shape = (out_features,) + (in_features,)
+
     bias_shape = (
         1,
         out_features,
@@ -48,25 +64,14 @@ def x_and_linear(draw, dtypes):
 # linear
 @handle_test(
     fn_tree="functional.ivy.linear",
-    dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("numeric", full=False),
-    ),
+    dtype_x_weight_bias=x_and_linear(),
 )
-def test_linear(
-    *,
-    dtype_x_weight_bias,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_linear(*, dtype_x_weight_bias, test_flags, backend_fw, fn_name, on_device):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -83,10 +88,17 @@ def test_linear(
 
 @st.composite
 def _dropout_helper(draw):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
     shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype = draw(
+        helpers.get_dtypes("float", full=False, mixed_fn_compos=mixed_fn_compos)
+    )
     dtype_and_x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes(
+                "float", mixed_fn_compos=mixed_fn_compos
+            ),
             shape=shape,
         )
     )
@@ -99,41 +111,36 @@ def _dropout_helper(draw):
                 noise_shape[i] = 1
             elif draw(st.booleans()):
                 noise_shape[i] = None
-    return dtype_and_x, noise_shape
+    seed = draw(helpers.ints(min_value=0, max_value=100))
+    prob = draw(helpers.floats(min_value=0, max_value=0.9))
+    scale = draw(st.booleans())
+    training = draw(st.booleans())
+
+    if is_torch_backend and not mixed_fn_compos:
+        noise_shape = None
+        seed = None
+    return dtype_and_x, noise_shape, seed, dtype, prob, scale, training
 
 
 # dropout
 @handle_test(
     fn_tree="functional.ivy.dropout",
-    dtype_x_noiseshape=_dropout_helper(),
-    prob=helpers.floats(min_value=0, max_value=0.9),
-    scale=st.booleans(),
-    training=st.booleans(),
-    seed=helpers.ints(min_value=0, max_value=100),
-    dtype=helpers.get_dtypes("float", full=False),
+    data=_dropout_helper(),
     test_gradients=st.just(False),
-    test_with_out=st.just(True),
 )
 def test_dropout(
     *,
-    dtype_x_noiseshape,
-    prob,
-    scale,
-    training,
-    seed,
-    dtype,
+    data,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
-    (x_dtype, x), noise_shape = dtype_x_noiseshape
+    (x_dtype, x), noise_shape, seed, dtype, prob, scale, training = data
     ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         test_values=False,
@@ -145,8 +152,10 @@ def test_dropout(
         training=training,
         seed=seed,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    gt_ret = helpers.flatten_and_to_np(
+        ret=gt_ret, backend=test_flags.ground_truth_backend
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -200,20 +209,13 @@ def x_and_scaled_attention(draw, dtypes):
     ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
-    *,
-    dtype_q_k_v_mask_scale,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_q_k_v_mask_scale, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -421,7 +423,6 @@ def test_multi_head_attention(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     (
         dtype,
@@ -439,10 +440,9 @@ def test_multi_head_attention(
         out_proj_bias,
     ) = dtype_mha
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         atol_=1e-02,
@@ -606,14 +606,14 @@ def x_and_filters(
         )
     if general:
         data_format = "channel_first" if channel_first else "channel_last"
-        if not transpose:
-            x_dilation = draw(
-                st.one_of(
-                    st.integers(1, 3),
-                    st.lists(st.integers(1, 3), min_size=dim, max_size=dim),
-                )
-            )
-            dilations = (dilations, x_dilation)
+
+    x_dilation = draw(
+        st.one_of(
+            st.integers(1, 3),
+            st.lists(st.integers(1, 3), min_size=dim, max_size=dim),
+        )
+    )
+    dilations = (dilations, x_dilation)
     if filter_format is not None:
         filter_format = draw(filter_format)
         if filter_format == "channel_first":
@@ -635,8 +635,6 @@ def x_and_filters(
 
 
 def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
-    if not isinstance(backend_fw, str):
-        backend_fw = backend_fw.current_backend_str()
     if backend_fw == "tensorflow":
         assume(
             not (
@@ -650,26 +648,23 @@ def _assume_tf_dilation_gt_1(backend_fw, on_device, dilations):
 # conv1d
 @handle_test(
     fn_tree="functional.ivy.conv1d",
-    x_f_d_df=x_and_filters(dim=1),
+    x_f_d_df=x_and_filters(
+        dim=1,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
-def test_conv1d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -679,32 +674,32 @@ def test_conv1d(
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        filter_format=ff_format,
+        x_dilations=dilations[1],
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
 # conv1d_transpose
 @handle_test(
     fn_tree="functional.ivy.conv1d_transpose",
-    x_f_d_df=x_and_filters(dim=1, transpose=True),
+    x_f_d_df=x_and_filters(
+        dim=1,
+        transpose=True,
+        bias=True,
+    ),
     ground_truth_backend="jax",
 )
-def test_conv1d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -716,33 +711,31 @@ def test_conv1d_transpose(
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
 # conv2d
 @handle_test(
     fn_tree="functional.ivy.conv2d",
-    x_f_d_df=x_and_filters(dim=2),
+    x_f_d_df=x_and_filters(
+        dim=2,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
-def test_conv2d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
+def test_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -752,7 +745,10 @@ def test_conv2d(
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        filter_format=ff_format,
+        x_dilations=dilations[1],
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
@@ -762,26 +758,21 @@ def test_conv2d(
     x_f_d_df=x_and_filters(
         dim=2,
         transpose=True,
+        bias=True,
     ),
     # tensorflow does not work with dilations > 1 on cpu
     ground_truth_backend="jax",
 )
-def test_conv2d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+def test_conv2d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -792,7 +783,8 @@ def test_conv2d_transpose(
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
@@ -806,29 +798,16 @@ def test_conv2d_transpose(
     # tensorflow does not support dilations > 1 and stride > 1
     ground_truth_backend="jax",
 )
-def test_depthwise_conv2d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_depthwise_conv2d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     # tensorflow only supports equal length strides in row and column
-    if (
-        "tensorflow" in backend_fw.__name__
-        and isinstance(stride, list)
-        and len(stride) > 1
-    ):
+    if backend_fw == "tensorflow" and isinstance(stride, list) and len(stride) > 1:
         assume(stride[0] == stride[1])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -845,25 +824,22 @@ def test_depthwise_conv2d(
 # conv3d
 @handle_test(
     fn_tree="functional.ivy.conv3d",
-    x_f_d_df=x_and_filters(dim=3),
+    x_f_d_df=x_and_filters(
+        dim=3,
+        bias=True,
+        filter_format=st.sampled_from(["channel_last", "channel_first"]),
+    ),
     ground_truth_backend="jax",
 )
-def test_conv3d(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+def test_conv3d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, fc, ff_format, bias = (
+        x_f_d_df
+    )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -873,7 +849,10 @@ def test_conv3d(
         strides=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        filter_format=ff_format,
+        x_dilations=dilations[1],
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
@@ -883,25 +862,19 @@ def test_conv3d(
     x_f_d_df=x_and_filters(
         dim=3,
         transpose=True,
+        bias=True,
     ),
     ground_truth_backend="jax",
 )
-def test_conv3d_transpose(
-    *,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
-    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
-    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
+def test_conv3d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -912,7 +885,8 @@ def test_conv3d_transpose(
         padding=pad,
         output_shape=output_shape,
         data_format=data_format,
-        dilations=dilations,
+        dilations=dilations[0],
+        bias=bias,
     )
 
 
@@ -929,14 +903,7 @@ def test_conv3d_transpose(
     ground_truth_backend="jax",
 )
 def test_conv_general_dilated(
-    *,
-    dims,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
     (
         dtype,
@@ -952,10 +919,9 @@ def test_conv_general_dilated(
     ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -986,14 +952,7 @@ def test_conv_general_dilated(
     ground_truth_backend="jax",
 )
 def test_conv_general_transpose(
-    *,
-    dims,
-    x_f_d_df,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dims, x_f_d_df, test_flags, backend_fw, fn_name, on_device
 ):
     (
         dtype,
@@ -1009,10 +968,9 @@ def test_conv_general_transpose(
     ) = x_f_d_df
     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1104,15 +1062,7 @@ def x_and_lstm(draw, dtypes):
     ),
     test_with_out=st.just(False),
 )
-def test_lstm_update(
-    *,
-    dtype_lstm,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_lstm_update(*, dtype_lstm, test_flags, backend_fw, fn_name, on_device):
     (
         dtype,
         x_lstm,
@@ -1124,10 +1074,9 @@ def test_lstm_update(
         recurrent_bias,
     ) = dtype_lstm
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
