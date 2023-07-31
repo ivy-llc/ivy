@@ -12,6 +12,7 @@ from ivy.utils.assertions import (
     check_fill_value_and_dtype_are_compatible,
     check_gather_nd_input_valid,
     check_greater,
+    check_inplace_sizes_valid,
     check_isinstance,
     check_less,
     check_same_dtype,
@@ -560,6 +561,46 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
             or "dimensions must match in `params` and `indices`" in lines.strip()
             or "index innermost dimension length must be <=" in lines.strip()
         )
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "var, data",
+    [
+        # cases of failure
+        (ivy.array([1]), ivy.array([1, 2])),
+        (ivy.array([[1], [1], [2]]), ivy.array([1, 2])),
+        # cases to pass
+        (ivy.array([1, 2]), ivy.array([1])),
+        (ivy.array([[[1]]]), ivy.array([1, 2])),
+    ],
+)
+def test_check_inplace_sizes_valid(var, data):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_inplace_sizes_valid(var, data)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "Could not output values of shape" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
