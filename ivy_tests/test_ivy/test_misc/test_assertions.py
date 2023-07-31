@@ -22,6 +22,7 @@ from ivy.utils.assertions import (
     check_true,
     check_unsorted_segment_min_valid_params,
 )
+from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
 
 
@@ -726,6 +727,50 @@ def test_check_kernel_padding_size(kernel_size, padding_size):
 
     if "e" in local_vars.keys():
         assert "less than or equal to half" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "dtype",
+    [
+        # INVALID CASES
+        "float64",
+        "int64",
+        "uint64",
+        "complex128"
+        # VALID
+        "float16",
+        "float32int32",
+        "int16",
+        "complex64",
+    ],
+)
+def test_check_jax_x64_flag(dtype):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        _check_jax_x64_flag(dtype)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "output not supported while jax_enable_x64" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
