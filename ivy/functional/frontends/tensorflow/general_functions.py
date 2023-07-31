@@ -650,3 +650,21 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+@to_ivy_arrays_and_back
+def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
+
+    if maxlen is None:
+        maxlen = ivy.maximum(ivy.max(lengths), ivy.max(ivy.arange(ivy.get_num_dims(lengths))))
+        maxlen = ivy.maximum(0, maxlen)
+    else:
+        maxlen = ivy.array(maxlen)
+    if ivy.get_num_dims(maxlen )is not None and ivy.get_num_dims(maxlen) != 0:
+        raise ValueError("Argument `maxlen` must be scalar for sequence_mask, "
+                         f"received `maxlen` = {maxlen} "
+                         f"with shape '{maxlen.get_shape()}' instead")
+
+    row_vector = ivy.arange(0, maxlen, 1)
+    matrix = ivy.expand_dims(lengths, axis=-1)
+    result = row_vector < matrix
+    return result

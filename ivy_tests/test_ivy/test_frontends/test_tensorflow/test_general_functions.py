@@ -2329,3 +2329,35 @@ def test_tensorflow_unravel_index(
         indices=indices[0],
         dims=dims[0],
     )
+
+# sequence_mask
+@handle_frontend_test(
+    fn_tree="tensorflow.sequence_mask",
+    dtype_and_lens=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+    ),
+    max_len=st.integers(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_sequence_mask(
+    *,
+    dtype_and_lens,
+    max_len,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, lens = dtype_and_lens
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        lengths=lens[0],
+        maxlen=max_len,
+    )
