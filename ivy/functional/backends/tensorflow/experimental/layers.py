@@ -7,6 +7,7 @@ import tensorflow as tf
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 from .. import backend_version
 import ivy
@@ -1197,187 +1198,155 @@ RFFTN Function implementation
 """
 
 
-# def rfft_input_validation(x):
-#     if not x.dtype.is_floating:
-#         raise TypeError(
-#             "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
-#                 x.dtype
-#             )
-#         )
-#     return x
+def rfft_input_validation(x):
+    if not x.dtype.is_floating:
+        raise TypeError(
+            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
+                x.dtype
+            )
+        )
+    return x
 
 
-# def rfft_operations(x, rank, norm_factor):
-#     if x.shape.rank == 1:
-#         x = tf.signal.rfft(x)
-#     elif x.shape.rank == 2:
-#         x = tf.switch_case(
-#             rank - 1, {0: lambda: tf.signal.rfft(x), 1: lambda: tf.signal.rfft2d(x)}
-#         )
-#     else:
-#         x = tf.switch_case(
-#             rank - 1,
-#             {
-#                 0: lambda: tf.signal.rfft(x),
-#                 1: lambda: tf.signal.rfft2d(x),
-#                 2: lambda: tf.signal.rfft3d(x),
-#             },
-#         )
-#     # norm_factor = tf.cast(norm_factor, tf.complex64)
-#     norm_factor = tf.cast(norm_factor, tf.complex128)
-#     x = x * norm_factor
-#     return x
+def rfft_operations(x, rank, norm_factor):
+    if x.shape.rank == 1:
+        x = tf.signal.rfft(x)
+    elif x.shape.rank == 2:
+        x = tf.switch_case(
+            rank - 1, {0: lambda: tf.signal.rfft(x), 1: lambda: tf.signal.rfft2d(x)}
+        )
+    else:
+        x = tf.switch_case(
+            rank - 1,
+            {
+                0: lambda: tf.signal.rfft(x),
+                1: lambda: tf.signal.rfft2d(x),
+                2: lambda: tf.signal.rfft3d(x),
+            },
+        )
+    # norm_factor = tf.cast(norm_factor, tf.complex64)
+    norm_factor = tf.cast(norm_factor, tf.complex128)
+    x = x * norm_factor
+    return x
 
 
-# def _rfftn_helper(x, shape, axes, norm):
-#     x = rfft_input_validation(tf.convert_to_tensor(x))
-#     # x = rfft_input_validation(x)
-#     input_shape = x.shape
-#     input_rank_tensor = tf.rank(x)
+def _rfftn_helper(x, shape, axes, norm):
+    x = rfft_input_validation(tf.convert_to_tensor(x))
+    # x = rfft_input_validation(x)
+    input_shape = x.shape
+    input_rank_tensor = tf.rank(x)
 
-#     shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
+    shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
 
-#     axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
+    axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
 
-#     perform_padding, perform_transpose = perform_actions_initialization(
-#         shape, axes, input_shape, input_rank_tensor
-#     )
+    perform_padding, perform_transpose = perform_actions_initialization(
+        shape, axes, input_shape, input_rank_tensor
+    )
 
-#     shape = shape_initialization(shape, axes, x)
+    shape = shape_initialization(shape, axes, x)
 
-#     rank = rank_initialization(axes)
+    rank = rank_initialization(axes)
 
-#     norm_factor = norm_initialization(norm, shape, x)
+    norm_factor = norm_initialization(norm, shape, x)
 
-#     x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
+    x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
 
-#     perm = get_perm(input_rank_tensor, axes)
+    perm = get_perm(input_rank_tensor, axes)
 
-#     x = transpose_x(x, perm, perform_transpose)
+    x = transpose_x(x, perm, perform_transpose)
 
-#     x = rfft_operations(x, rank, norm_factor)
+    x = rfft_operations(x, rank, norm_factor)
 
-#     x = transpose_x(x, tf.argsort(perm), perform_transpose)
+    x = transpose_x(x, tf.argsort(perm), perform_transpose)
 
-#     x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
+    x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
 
-#     return x
+    return x
 
 
-# @with_supported_device_and_dtypes(
-#     {
-#         "2.5.0 and above": {
-#             "cpu": (
-#                 "floar32",
-#                 "float64",
-#                 "complex128",
-#             )
-#         }
-#     },
-#     backend_version,
-# )
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "floar32",
+                "float64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def rfftn(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = [("forward", "ortho", "backward")],
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    result = _rfftn_helper(x, s, axes, norm)
+
+    if out is not None:
+        out = tf.cast(result, tf.complex128)
+        # out = result
+        return out
+    else:
+        # return result
+        return tf.cast(result, tf.complex128)
+
+
+# @with_unsupported_dtypes({"0.4.13 and below": ("float64")}, backend_version)
 # def rfftn(
-#     x: Union[tf.Tensor, tf.Variable],
-#     s: Optional[Union[int, Tuple[int]]] = None,
-#     axes: Optional[Union[int, Tuple[int]]] = None,
-#     *,
-#     norm: Optional[str] = [("forward", "ortho", "backward")],
-#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-# ) -> Union[tf.Tensor, tf.Variable]:
-#     result = _rfftn_helper(x, s, axes, norm)
-
-#     if out is not None:
-#         out = tf.cast(result, tf.complex128)
-#         # out = result
-#         return out
-#     else:
-#         # return result
-#         return tf.cast(result, tf.complex128)
-
-
-# def _rfftn_norm1(
 #     x: Union[tf.Tensor, tf.Variable],
 #     s: Sequence[int] = None,
 #     axes: Sequence[int] = None,
+#     *,
 #     norm: str = "backward",
-# ):
-#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
+#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+# ) -> Union[tf.Tensor, tf.Variable]:
+#     x = rfft_input_validation(tf.convert_to_tensor(x))
+#     if x.dtype != tf.float32 and x.dtype != tf.float64:
+#         x = tf.cast(x, tf.float64)
+#     if not isinstance(x, tf.Tensor):
+#         raise TypeError("Input `x` must be a TensorFlow tensor.")
+#         # Convert the input tensor x to float32 or float64 if it's not already
+
+#     if s is None:
+#         s = [x.shape[axis] for axis in axes]
+#     if norm != "backward" and norm != "ortho" and norm != "forward":
+#         raise ValueError(
+#             "Invalid value for 'norm'. Must be one of 'backward', 'ortho', or"
+#             " 'forward'."
+#         )
+
+#     # Determine the number of dimensions and reshape x to 1D or 2D if necessary
+#     # x.shape
+#     x_rank = x.shape.rank
+
+#     # if x_rank > 3:
+#     #     raise ValueError(
+#     #         "Invalid number of dimensions in `x`. Maximum supported dimensions is 3"
+#     #     )
+
+#     # if x_rank == 1:
+#     #     x_fft = tf.signal.rfft(x, s)
+#     if x_rank == 2:
+#         x_fft = tf.signal.rfft2d(x, s)
+#     # else:  # x_rank == 3
+#     #     x_fft = tf.signal.rfft3d(x, s)
+
 #     if norm == "backward":
-#         return x
+#         pass
 #     elif norm == "ortho":
-#         return x / tf.sqrt(n)
+#         x_fft /= tf.cast(tf.math.sqrt(tf.reduce_prod(s)), x_fft.dtype)
 #     elif norm == "forward":
-#         return x / n
+#         x_fft /= tf.cast(tf.reduce_prod(s), x_fft.dtype)
+
+#     x_fft = tf.cast(x_fft, tf.complex128)
+#     # If an output tensor is provided, assign the computed result to it
+#     if out is not None:
+#         out.assign(x_fft)
+#         return out
 #     else:
-#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-
-
-@with_unsupported_dtypes({"0.4.13 and below": ("float64", "complex")}, backend_version)
-def rfftn(
-    x: Union[tf.Tensor, tf.Variable],
-    s: Sequence[int] = None,
-    axes: Sequence[int] = None,
-    *,
-    norm: str = "backward",
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype != tf.float32 and x.dtype != tf.float64:
-        x = tf.cast(x, tf.float64)
-    if not isinstance(x, tf.Tensor):
-        raise TypeError("Input `x` must be a TensorFlow tensor.")
-        # Convert the input tensor x to float32 or float64 if it's not already
-
-    if s is None:
-        s = [x.shape[axis] for axis in axes]
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ValueError(
-            "Invalid value for 'norm'. Must be one of 'backward', 'ortho', or"
-            " 'forward'."
-        )
-
-    if x.dtype.is_complex:
-        raise TypeError(
-            "Invalid FFT input: `x` must be of a real dtype. Received complex dtype."
-        )
-
-    # Determine the number of dimensions and reshape x to 1D or 2D if necessary
-    x.shape
-    x_rank = x.shape.rank
-
-    if x_rank > 3:
-        raise ValueError(
-            "Invalid number of dimensions in `x`. Maximum supported dimensions is 3."
-        )
-
-    if x_rank == 1:
-        x = tf.expand_dims(x, axis=0)
-    elif x_rank == 2:
-        x = tf.expand_dims(x, axis=0)
-
-    # Perform the rfft operation
-    if x_rank == 1:
-        x_fft = tf.signal.rfft(x)
-    elif x_rank == 2:
-        x_fft = tf.signal.rfft2d(x)
-    else:  # x_rank == 3
-        x_fft = tf.signal.rfft3d(x)
-
-    # Apply normalization if required
-    if norm == "backward":
-        x_fft /= tf.cast(tf.reduce_prod(s), x_fft.dtype)
-    elif norm == "ortho":
-        x_fft /= tf.cast(tf.reduce_prod(s), x_fft.dtype) ** 0.5
-
-    # Convert back to the original shape
-    if x_rank == 1:
-        x_fft = tf.squeeze(x_fft, axis=0)
-    elif x_rank == 2:
-        x_fft = tf.squeeze(x_fft, axis=0)
-
-    x_fft = tf.cast(x_fft, tf.complex128)
-    # If an output tensor is provided, assign the computed result to it
-    if out is not None:
-        out.assign(x_fft)
-        return out
-    else:
-        return x_fft
+#         return x_fft
