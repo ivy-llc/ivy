@@ -159,6 +159,20 @@ def function_flags(
     )
 
 
+def build_function_flags_with_defaults(ground_truth_backend, num_positional_args):
+    return function_flags(
+        ground_truth_backend=ground_truth_backend,
+        num_positional_args=num_positional_args,
+        instance_method=BuiltInstanceStrategy,
+        with_out=BuiltWithOutStrategy,
+        test_gradients=BuiltGradientStrategy,
+        test_compile=BuiltCompileStrategy,
+        as_variable=BuiltAsVariableStrategy,
+        native_arrays=BuiltNativeArrayStrategy,
+        container_flags=BuiltContainerStrategy,
+    )
+
+
 class FrontendFunctionTestFlags(TestFlags):
     def __init__(
         self,
