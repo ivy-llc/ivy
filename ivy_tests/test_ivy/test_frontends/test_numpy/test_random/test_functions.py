@@ -747,6 +747,32 @@ def test_numpy_gumbel(
         scale=scale,
         size=size,
     )
+    
+    
+def test_numpy_f(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    dfn,
+    dfd,
+):
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        on_device=on_device,
+        dfn=dfn,
+        dfd=dfd,
+        size=size,
+    )
 
 
 @handle_frontend_test(
@@ -787,47 +813,81 @@ def test_numpy_gamma(
 
 
 @handle_frontend_test(
-    fn_tree="numpy.random.f",
-    input_dtypes=helpers.get_dtypes("float"),
-    dfn=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
+    fn_tree="numpy.random.gamma",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    shape=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
-    dfd=st.floats(
-        allow_nan=False,
-        allow_infinity=False,
-        width=32,
-        min_value=1,
-        max_value=1000,
-        exclude_min=True,
+    scale=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
     ),
-    size=helpers.get_shape(allow_none=False),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    test_with_out=st.just(False),
 )
-def test_numpy_f(
+def test_numpy_gamma(
+    input_dtypes,
+    shape,
+    scale,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        scale=scale,
+        size=size,
+    )
+
+
+# logistic
+@handle_frontend_test(
+    fn_tree="numpy.random.logistic",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    loc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_logistic(
     input_dtypes,
     size,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
-    dfn,
-    dfd,
+    loc,
+    scale,
 ):
-    test_flags.num_positional_args = 2
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        frontend=frontend,
         test_flags=test_flags,
+        frontend=frontend,
         fn_tree=fn_tree,
-        test_values=False,
         on_device=on_device,
-        dfn=dfn,
-        dfd=dfd,
+        test_values=False,
+        loc=loc,
+        scale=scale,
         size=size,
     )
