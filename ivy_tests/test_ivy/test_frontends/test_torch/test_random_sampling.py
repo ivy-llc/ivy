@@ -552,7 +552,6 @@ def test_torch_set_rng_state(
         backend_to_test=backend_fw,
         frontend=frontend,
         input_dtypes=dtype,
-        frontend=frontend,
         test_values=False,
         fn_tree=fn_tree,
         test_flags=test_flags,
