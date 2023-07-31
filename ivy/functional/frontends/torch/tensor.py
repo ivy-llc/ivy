@@ -1328,6 +1328,13 @@ class Tensor:
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
         return self
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "complex64", "complex128", "bool")},
+        "torch",
+    )
+    def divide(self, other, *, rounding_mode=None):
+        return torch_frontend.divide(self, other, rounding_mode=rounding_mode)
+
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(
             mean=mean,
