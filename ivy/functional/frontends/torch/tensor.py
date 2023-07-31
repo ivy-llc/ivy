@@ -1522,6 +1522,35 @@ class Tensor:
     def gather(self, dim, index):
         return torch_frontend.gather(self, dim=dim, index=index)
 
+    def scatter_add_(self, dim, index, src):
+        self.ivy_array = torch_frontend.scatter_add(
+            self, dim=dim, index=index, src=src
+        ).ivy_array
+        return self
+
+    def scatter_(self, dim, index, src):
+        self.ivy_array = torch_frontend.scatter(dim=dim, index=index, src=src).ivy_array
+        return self
+
+    def scatter_reduce_(self, dim, index, src, reduce=None):
+        self.ivy_array = torch_frontend.scatter_reduce(
+            self, dim=dim, index=index, src=src, reduce=reduce
+        ).ivy_array
+        return self
+
+    def scatter_add(self, dim, index, src):
+        return torch_frontend.scatter_add(self, dim=dim, index=index, src=src)
+
+    def scatter(self, dim, index, src, reduce=None):
+        return torch_frontend.scatter(
+            self, dim=dim, index=index, src=src, reduce=reduce
+        )
+
+    def scatter_reduce(self, dim, index, src, reduce=None):
+        return torch_frontend.scatter_reduce(
+            self, dim=dim, index=index, src=src, reduce=reduce
+        )
+
     def take_along_dim(self, indices, dim):
         return torch_frontend.take_along_dim(self, indices=indices, dim=dim)
 
