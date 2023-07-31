@@ -530,7 +530,7 @@ def test_torch_randint_like(
 @handle_frontend_test(
     fn_tree="torch.set_rng_state",
     new_state=helpers.dtype_and_values(
-        available_dtypes=("int64", "int32"),
+        available_dtypes="uint8",
         min_value=0,
         max_value=10,
         min_num_dims=1,
