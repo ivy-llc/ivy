@@ -1582,7 +1582,7 @@ class Tensor:
 
     @with_supported_dtypes(
         {
-            "2.5.1 and below": (
+            "2.5.0 and below": (
                 "int64",
                 "float64",
                 "complex128",
