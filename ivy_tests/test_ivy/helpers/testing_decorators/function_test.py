@@ -19,7 +19,7 @@ class FunctionHandler(ABC):
         pass
 
     @abstractproperty
-    def paremeters(self) -> List[str]:
+    def parameters(self) -> List[str]:
         pass
 
     @abstractmethod
