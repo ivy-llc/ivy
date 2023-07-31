@@ -26,7 +26,7 @@ def _fn(x=None, dtype=None):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
+def test_tensorflow_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     x_dtype, x = dtype_and_x
 
     with update_backend(backend_fw) as ivy_backend:
@@ -61,7 +61,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x):
+def test_tensorflow_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -77,7 +77,7 @@ def test_outputs_to_frontend_arrays(dtype_and_x):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x):
+def test_tensorflow_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -131,6 +131,6 @@ def _dtype_helper(draw):
 @given(
     dtype=_dtype_helper(),
 )
-def test_handle_tf_dtype(dtype):
+def test_tensorflow_handle_tf_dtype(dtype):
     ret_dtype = handle_tf_dtype(_fn)(dtype=dtype)
     assert isinstance(ret_dtype, ivy.Dtype)

@@ -95,9 +95,7 @@ Out Argument Support
 Nestable Support
 ^^^^^^^^^^^^^^^^
 
-#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead.
-    Whenever there's a :class:`ivy.Container` argument, this wrapping function defers to the corresponding :ref:`Containers` static method to facilitate the same.
-    As a result, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
+#.  `handle_nestable`_ : This wrapping function enables the use of :class:`ivy.Container` arguments in functions and directly calling them through the :code:`ivy` namespace, just like calling a function with :class:`ivy.Array` arguments instead. Thus, the function can be called by passing an :class:`ivy.Container` to any or all of its arguments.
 
 Partial Mixed Function Support
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
