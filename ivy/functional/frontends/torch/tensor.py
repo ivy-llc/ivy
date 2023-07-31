@@ -31,7 +31,6 @@ class Tensor:
         self._grads = None
         self._requires_grad = requires_grad
         self.grad_fn = None
-        self._grads = None
         if not _init_overload:
             self._is_leaf = True
         else:
@@ -1577,6 +1576,9 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
+
+    def angle(self):
+        return torch_frontend.angle(self)
 
     @with_supported_dtypes(
         {
