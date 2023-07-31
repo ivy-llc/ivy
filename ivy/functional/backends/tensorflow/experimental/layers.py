@@ -1266,7 +1266,7 @@ def _rfftn_helper(x, shape, axes, norm):
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and above": {
+        "2.5.1 and above": {
             "cpu": (
                 "floar32",
                 "float64",

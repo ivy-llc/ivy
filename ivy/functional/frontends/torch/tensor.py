@@ -662,7 +662,7 @@ class Tensor:
         return self.ivy_array.ndim
 
     @with_supported_dtypes(
-        {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+        {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
     )
     def heaviside(self, values, *, out=None):
         return torch_frontend.heaviside(self, values, out=out)
@@ -1582,7 +1582,7 @@ class Tensor:
 
     @with_supported_dtypes(
         {
-            "2.5.0 and below": (
+            "2.5.1 and below": (
                 "int64",
                 "float64",
                 "complex128",
