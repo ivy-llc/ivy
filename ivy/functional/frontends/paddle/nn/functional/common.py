@@ -87,31 +87,39 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+def _handle_padding_shape(padding, n, mode, data_format):
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
+    while len(padding) < n:
+        if mode == "circular":
+            padding = padding + ((0, 0),)
+        else:
+            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = tuple(list(padding)[::-1])
+    if data_format == "NCHW":
+        padding = ((0, 0),) + padding
+    elif data_format == "NHWC":
+        padding = padding + ((0, 0),)
+    return padding
+
+
 @to_ivy_arrays_and_back
 def pad(x, pad, mode="constant", value=0.0, data_format="NCHW", name=None):
-    if ivy.is_array(pad):
-        pad = pad.to_list()
-    if isinstance(pad, int):
-        pad = [pad, pad, pad, pad]
-    if len(pad) != 4:
-        raise ValueError("Padding length should be 4.")
-    if x.ndim != 4:
-        raise ValueError("Input x must be 4-dimensional.")
-
-    if mode == "constant":
-        constant_values = value
-    else:
-        constant_values = 0.0
-
-    if data_format == "NCHW":
-        pad = ((0, 0), (0, 0), (pad[2], pad[3]), (pad[0], pad[1]))
-    elif data_format == "NHWC":
-        pad = ((0, 0), (pad[2], pad[3]), (pad[0], pad[1]), (0, 0))
-    else:
-        raise ValueError("Unknown data_format: {}".format(data_format))
-
-    return ivy.pad(x, pad, mode=mode, constant_values=constant_values)
+    mode_dict = {
+        "constant": "constant",
+        "reflect": "reflect",
+        "replicate": "edge",
+        "circular": "wrap",
+    }
+    if mode not in mode_dict:
+        raise ValueError(f"Unsupported padding mode: {mode}")
+    pad = _handle_padding_shape(pad, len(x.shape), mode, data_format)
+    return ivy.pad(x, pad, mode=mode_dict[mode], constant_values=value)
 
 
 @to_ivy_arrays_and_back
