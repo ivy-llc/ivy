@@ -3638,4 +3638,3 @@ def test_numpy_ndarray_trace(
         method_flags=method_flags,
         on_device=on_device,
     )
- 
