@@ -2942,6 +2942,7 @@ def test_tensorflow_rint(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2950,5 +2951,6 @@ def test_tensorflow_rint(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test=backend_fw,
         x=x[0],
     )
