@@ -88,3 +88,6 @@ class NDFrame:
     @outputs_to_self_class
     def __array_wrap__(self, array):
         return array
+
+    def __getattr__(self, item):
+        raise NotImplementedError
