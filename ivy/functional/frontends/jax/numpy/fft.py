@@ -1,8 +1,12 @@
+# local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
+
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 def fftshift(x, axes=None, name=None):
     shape = x.shape
 
@@ -17,3 +21,11 @@ def fftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+
+
+@to_ivy_arrays_and_back
+def fft(a, n=None, axis=-1, norm=None):
+    if norm is None:
+        norm = "backward"
+    return ivy.fft(a, axis, norm=norm, n=n)
+
