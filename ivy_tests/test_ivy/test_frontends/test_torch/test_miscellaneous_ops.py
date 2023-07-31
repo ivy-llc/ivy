@@ -1617,10 +1617,12 @@ def test_torch_view_as_complex(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, value = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
