@@ -383,3 +383,57 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def l1_loss(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute L1 loss (Mean Absolute Error - MAE) between predicted and true values.
+
+    Parameters
+    ----------
+    true : Union[ivy.Array, ivy.NativeArray]
+        Input array containing true values.
+    pred : Union[ivy.Array, ivy.NativeArray]
+        Input array containing predicted values.
+    reduction : str, optional
+        Reduction method for the output loss. Options: "none" (no reduction), "mean" (mean of losses),
+        "sum" (sum of losses). Default: "mean".
+    out : Optional[ivy.Array], optional
+        Optional output array for writing the result to. It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ivy.Array
+        The L1 loss (MAE) between the given true and predicted values.
+
+    Examples
+    --------
+    >>> x = ivy.array([1.0, 2.0, 3.0])
+    >>> y = ivy.array([0.5, 2.5, 2.0])
+    >>> print(ivy.l1_loss(x, y))
+    ivy.array(0.5)
+
+    >>> a = ivy.array([[1.0, 2.0], [3.0, 4.0]])
+    >>> b = ivy.array([[0.5, 1.5], [2.5, 3.5]])
+    >>> print(ivy.l1_loss(a, b))
+    ivy.array(1.0)
+    """
+    loss = ivy.abs(pred - true)
+
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return loss
