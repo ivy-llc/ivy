@@ -10,6 +10,7 @@ from ivy.utils.assertions import (
     check_exists,
     check_false,
     check_fill_value_and_dtype_are_compatible,
+    check_gather_nd_input_valid,
     check_greater,
     check_isinstance,
     check_less,
@@ -466,11 +467,8 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
 @pytest.mark.parametrize(
     "data, segment_ids, num_segments",
     [
-        (
-            ivy.array([1, 2, 3]),
-            ivy.array([0, 1, 0], dtype=ivy.int32),
-            2.0,
-        ),  # cases of failure
+        # cases of failure
+        (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 2.0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), -2),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
@@ -478,11 +476,12 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         (ivy.array([1, 2]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 2], dtype=ivy.int32), 2),
+        # cases to pass
         (
             ivy.array([1, 2, 3]),
             ivy.array([0, 1, 0], dtype=ivy.int32),
             2,
-        ),  # cases to pass
+        ),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), ivy.array([2])),
     ],
 )
@@ -512,6 +511,54 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
             or "segment_ids should be equal to data.shape[0]" in lines.strip()
             or "is out of range" in lines.strip()
             or "num_segments must be positive" in lines.strip()
+        )
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "params, indices, batch_dims",
+    [
+        # cases of failure
+        (ivy.array([1, 2, 3]), ivy.array([1]), 2),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), 1),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2], [2, 3]]), 1),
+        (ivy.array([1, 2, 3]), ivy.array([[1, 2]]), 0),
+        # cases to pass
+        (ivy.array([1, 2, 3]), ivy.array([1]), 0),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), 0),
+        (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2]]), 1),
+    ],
+)
+def test_check_gather_nd_input_valid(params, indices, batch_dims):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_gather_nd_input_valid(params, indices, batch_dims)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert (
+            "less than rank(`params`)" in lines.strip()
+            or "less than rank(`indices`)" in lines.strip()
+            or "dimensions must match in `params` and `indices`" in lines.strip()
+            or "index innermost dimension length must be <=" in lines.strip()
         )
 
     if "e" not in local_vars.keys():
