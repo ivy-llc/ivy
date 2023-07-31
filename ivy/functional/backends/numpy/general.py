@@ -14,6 +14,7 @@ from ivy.functional.backends.numpy.device import _to_device
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ...ivy.general import _broadcast_to
 
 
 def array_equal(x0: np.ndarray, x1: np.ndarray, /) -> bool:
@@ -29,10 +30,31 @@ def current_backend_str() -> str:
 
 
 @_scalar_output_to_0d_array
-def get_item(x: np.ndarray, /, query: np.ndarray, *, copy: bool = None) -> np.ndarray:
+def get_item(
+    x: np.ndarray,
+    /,
+    query: Union[np.ndarray, Tuple],
+    *,
+    copy: bool = None,
+) -> np.ndarray:
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
+
+
+@_scalar_output_to_0d_array
+def set_item(
+    x: np.ndarray,
+    query: Union[np.ndarray, Tuple],
+    val: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> np.ndarray:
+    if copy:
+        x = np.copy(x)
+    x.__setitem__(query, val)
+    return x
 
 
 def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
@@ -263,7 +285,9 @@ def scatter_flat(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _to_device(target)
+    if target_given:
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_flat.support_native_out = True
@@ -284,34 +308,15 @@ def scatter_nd(
         ivy.utils.assertions.check_equal(
             ivy.Shape(target.shape), ivy.Shape(shape), as_array=False
         )
-    shape = list(shape) if ivy.exists(shape) else list(out.shape)
-    if indices is not Ellipsis and (
-        isinstance(indices, (tuple, list)) and not (Ellipsis in indices)
-    ):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = np.array(indices)
-        if len(indices.shape) < 2:
-            indices = np.expand_dims(indices, -1)
-        expected_shape = (
-            indices.shape[:-1] + out.shape[indices.shape[-1] :]
-            if ivy.exists(out)
-            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
-        )
-        if sum(updates.shape) < sum(expected_shape):
-            updates = ivy.broadcast_to(updates, expected_shape)._data
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(
-                indices, updates.shape[:1] + (indices.shape[-1],)
-            )._data
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if not target_given:
-        reduction = "replace"
+        shape = list(shape) if ivy.exists(shape) else list(out.shape)
+        target = np.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)
     if reduction == "sum":
         np.add.at(target, indices_tuple, updates)
     elif reduction == "replace":
-        if not target_given:
-            target = np.zeros(shape, dtype=updates.dtype)
         target = np.asarray(target).copy()
         target.setflags(write=1)
         target[indices_tuple] = updates
@@ -430,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.24.3 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,
@@ -452,7 +457,3 @@ isin.support_native_out = True
 
 def itemsize(x: np.ndarray) -> int:
     return x.itemsize
-
-
-def strides(x: np.ndarray) -> Tuple[int]:
-    return x.strides

@@ -23,9 +23,7 @@ Inplace Updates
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
-.. _`in the decorator`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L832
-.. _`checks the module`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L780
-.. _`passed as a keyword argument`: https://github.com/unifyai/ivy/blob/840b6fa1dd0ad634d2efc9a4faea30d9404faef9/ivy/func_wrapper.py#L805
+.. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
@@ -438,13 +436,8 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 
 **Mixed Functions**
 
-As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected.
-
-Unlike compositional functions, where the :code:`handle_out_argument` decorator is not included, this decorator *should* be included for mixed functions.
-This decorator is needed in order to ensure the :code:`out` argument is handled correctly when the backend *does* include a backend-specific implementation, which itself may or may not handle the :code:`out` argument explicitly.
-In such cases, the mixed function behaves like a primary function.
-If the backend-specific implementation does not handle the :code:`out` argument explicitly (there is no attribute :code:`support_native_out` specified on the backend function), then it will need to be handled `in the decorator`_. The :code:`handle_out_argument` decorator also `checks the module`_ of the function to see if it's being called with respect to a compositional function in which case the out argument can be handled directly and therefore is `passed as a keyword argument`_ to the function.
-
+As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
+the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example`_ from the linear function.
 
 
 copy argument
@@ -492,6 +485,10 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
 #. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
+.. note:: 
+    Parts of an arrays metadata like :code:`stride` are attributed to the low-level memory layout of arrays while views in :code:`ivy` operate at a higher level of abstraction.
+    As a result, :func:`ivy.strides` isn't guaranteed to produce an output reflective of the underlying memory layout if the :class:`ivy.Array` passed in is a view (or in other words has a :code:`_base`).
+
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
 
 #. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
@@ -525,6 +522,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
     </iframe>

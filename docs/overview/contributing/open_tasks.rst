@@ -25,7 +25,7 @@ The tasks currently open are:
 
 We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
 
-Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy-core`.
+Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
 Function Formatting
 -------------------
@@ -37,7 +37,6 @@ The updates should be applied for the:
 
 #. ivy API
 #. all backend APIs
-#. container static methods
 #. array instance methods
 #. container instance methods
 #. array operators
@@ -59,7 +58,7 @@ However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
 #. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
 #. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
 #. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
@@ -107,7 +106,7 @@ The PR assignee will then see this comment and address your issues.
 Frontend APIs
 -------------
 
-For this task, the goal will be to implement functions for each of the frontend functional APIs (see :ref:`Ivy as a Transpiler`), with frontend APIs implemented for: :code:`JAX`, :code:`NumPy`, :code:`TensorFlow` and :code:`PyTorch`.
+For this task, the goal will be to implement functions for each of the frontend functional APIs (see :ref:`Ivy as a Transpiler`), with frontend APIs implemented for: :code:`JAX`, :code:`NumPy`, :code:`TensorFlow` :code:`PyTorch`, :code:`Paddle`, :code:`Scipy`, :code:`MXNet` and :code:`MindSpore`.
 
 Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22+-label%3A%22Test+Sweep%22>`_ for this task.
 
@@ -209,27 +208,33 @@ In :code:`matrix_and_vector_products.py`, we can see other functions such as :co
 This is confirmation that we've found the correct place!
 If many of the files are empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
 
-Frontend formatting checklist
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Please refer to the `Formatting checklist`_, only changing the comment to :code:`add_frontend_checklist`.
+Frontend checklist
+~~~~~~~~~~~~~~~~~~
+
+After creating a frontend-related Pull Request on github, you will notice a checklist is automatically added. This checklist describes the main points that need to be taken into consideration when adding a new frontend function. Please do not worry if you don't understand everything in that checklist! It's mainly there for the reviewer to make sure everything has been done correctly.
+
+However, you can still use the checklist as a reference in cases where you do understand the content, if you find it helpful in your development efforts. In that case, feel free to update any "not completed" (marked with ❌) items of the list to "stuck" (🆘) and/or "ready for review" (✅) status. Your reviewer will make sure to guide you as needed 🙂.
+
+**Notes**:
+
+1. More details on how to update the checklist items can be found in the :ref:`Formatting checklist` part of our docs.
+2. Do not edit the checklist text, only the emoji symbols.
+3. Please refrain from using the checkboxes next to checklist items.
 
 Ivy Experimental API
 --------------------
 
 The goal of this task is to add functions to the existing Ivy API which would help with the implementation for many of the functions in the frontend.
 
-Your task is to implement these functions in Ivy, along with their Implementation in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` and :code:`NumPy`.
+Your task is to implement these functions in Ivy, along with their Implementation in the respective backends which are :code:`Jax`, :code:`PyTorch`, :code:`TensorFlow` :code:`NumPy` and :code:`Paddle`.
 You must also implement tests for these functions.
 
 There is only one central ToDo list `issue <https://github.com/unifyai/ivy/issues/3856>`_ for this task.
 
 A general workflow for these tasks would be:
 
-#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
-   You may also use submodule-specific helper functions to recreate the behaviour.
-   Refer the `Backend API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
-#. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
-   Refer the `Ivy API Guide <https://unify.ai/docs/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+#. Analyze the function type, we have a very detailed section for it in the deep dive `Function Types Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html>`_
+#. Every function will have a different file structure according to the function type, refer to :ref:`Where to place a backend function` subsection below.
 #. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
    in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the :ref:`Ivy Tests` guide, and make sure they are passing.
@@ -240,6 +245,41 @@ A few points to keep in mind while doing this:
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
 If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+
+Where to place a backend function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The placement of the backend function should be in the proper location to follow the proper structure as guided below.
+
+There are multiple types of backend functions as discussed above, we will go through 3 of those which you will encounter while adding a backend function in our Funcional API:
+
+**Primary Functions**
+
+Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation
+(where ivy.current_backend(x).function_name() is called), refer the `Ivy API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#ivy-api>`_
+to get a clearer picture of how this must be done. Then, implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`,
+you can refer the `Backend API Guide <https://unify.ai/docs/ivy/overview/deep_dive/navigating_the_code.html#backend-api>`_ for this.
+
+**Compositional Functions**
+
+Implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, we will not use the primary function approach in this
+case, the implementaion will be a composition of functions from Ivy's functional API. You can refer to
+`Compostional Functions Guide <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#compositional-functions>`_ for a better understanding of this.
+You don't need to add any implementation in any other file in this case.
+
+**Mixed Functions**
+
+Sometimes, a function may only be provided by some of the supported backends. In this case, we have to take a mixed approach. You can say that this is a mix of both
+primary and a compositional function. For this, you have to implement the function in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py`, where the implementaion
+will be a composition of functions from Ivy's functional API. After you are done with this, you then have to implement the functions in each of the backend files
+:mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`.
+
+**Other Function Types**
+
+`Standalone Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#standalone-functions>`_, `Nestable Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#nestable-functions>`_ and
+`Convenience Functions <https://unify.ai/docs/ivy/overview/deep_dive/function_types.html#convenience-functions>`_ are the ones which you will rarely come across
+while implementing a function from the ToDo List but they are an essential part of the Ivy API.
+
 
 Creating an Issue on Ivy's GitHub using a Template
 ----------------------------------------------------

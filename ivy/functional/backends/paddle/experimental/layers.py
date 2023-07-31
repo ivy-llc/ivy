@@ -1,11 +1,12 @@
 # global
 from typing import Optional, Union, Tuple, Literal, Sequence
 import paddle
-from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.functional.ivy.layers import _handle_padding
 from ivy.utils.assertions import check_kernel_padding_size
+from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
-    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+    with_unsupported_dtypes,
 )
 from .. import backend_version
 
@@ -49,12 +50,12 @@ def max_pool1d(
     return res.astype(dtype)
 
 
-@with_supported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.4.2 and below": (
-            "float32",
-            "float64",
-        )
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
     },
     backend_version,
 )
@@ -245,9 +246,47 @@ def fft(
     n: Union[int, Tuple[int]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if not isinstance(dim, int):
+        raise IvyValueError(f"Expecting <class 'int'> instead of {type(dim)}")
+
+    if n is None:
+        n = x.shape[dim]
+
+    if dim < -x.ndim or dim >= x.ndim:
+        raise IvyValueError(
+            f"Invalid dim {dim}, expecting a value ranging from {-x.ndim} to {x.ndim-1}"
+        )
+
+    if not isinstance(n, int):
+        raise TypeError(f"Expecting int type for 'n', instead of {type(n)}")
+
+    if n <= 1:
+        raise IvyValueError(f"Invalid number of data points {n}, expecting more than 1")
+
+    valid_norm_modes = ["backward", "ortho", "forward"]
+    if norm not in valid_norm_modes:
+        raise IvyValueError(
+            f"Unrecognized normalization mode {norm}, expecting one of"
+            f" {valid_norm_modes}"
+        )
+
+    if x.dtype in [paddle.int64, paddle.float64, paddle.complex128]:
+        x = x.cast(paddle.complex128)
+    else:
+        x = x.cast(paddle.complex64)
+
+    return paddle.fft.fft(x, n, dim, norm=norm)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def dropout1d(
     x: paddle.Tensor,
     prob: float,
@@ -257,9 +296,19 @@ def dropout1d(
     data_format: str = "NWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = data_format.index("C") - 3 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def dropout2d(
     x: paddle.Tensor,
     prob: float,
@@ -269,9 +318,19 @@ def dropout2d(
     data_format: str = "NHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = data_format.index("C") - 4 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def dropout3d(
     x: paddle.Tensor,
     prob: float,
@@ -281,7 +340,8 @@ def dropout3d(
     data_format: str = "NDHWC",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    axis = data_format.index("C") - 5 + x.ndim
+    return paddle.nn.functional.dropout(x, p=prob, axis=axis, training=training)
 
 
 def ifft(
@@ -312,7 +372,37 @@ def interpolate(
     /,
     *,
     mode: Optional[Literal["linear", "bilinear", "trilinear"]] = "linear",
+    scale_factor: Optional[Union[Sequence[int], int]] = None,
+    recompute_scale_factor: Optional[bool] = None,
     align_corners: Optional[bool] = None,
     antialias: Optional[bool] = False,
+    out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
+
+
+def ifftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.fft.ifftn(x, s, axes, norm)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
+def rfftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.fft.rfftn(x, s, axes, norm)
+    return result.astype("complex128")

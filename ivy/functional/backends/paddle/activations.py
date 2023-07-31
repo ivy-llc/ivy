@@ -89,7 +89,7 @@ def sigmoid(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def softmax(
     x: paddle.Tensor,
@@ -136,7 +136,7 @@ def softplus(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def log_softmax(
     x: paddle.Tensor,
@@ -167,3 +167,12 @@ def mish(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
             return x * paddle_backend.tanh(paddle_backend.log1p(paddle_backend.exp(x)))
         return F.mish(x.cast("float32")).cast(x.dtype)
     return F.mish(x)
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
+def hardswish(
+    x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    return F.hardswish(x)

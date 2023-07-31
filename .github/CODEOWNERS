@@ -15,3 +15,12 @@ docs/prebuild.sh @KareemMAX
 docs/overview/contributing/building_the_docs.rst @KareemMAX
 docs/overview/deep_dive/building_the_docs_pipline.rst @KareemMAX
 docs/_templates @KareemMAX
+
+# Docker
+docker/* @ricksanchezstoic
+
+# Idea files
+.idea/* @Aarsh2001 @zaeemansari70
+
+# README
+README.rst @guillesanbri

@@ -13,6 +13,7 @@ Won’t adding a new “unified” framework just make the problem even worse…
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
    :align: center
    :width: 70%
+   :target: https://xkcd.com/927/
 
 Complimentary vs Competitive
 ----------------------------
