@@ -5,6 +5,7 @@ import pytest
 from ivy.utils.assertions import (
     check_all,
     check_any,
+    check_dimensions,
     check_elem_in_list,
     check_equal,
     check_exists,
@@ -14,12 +15,12 @@ from ivy.utils.assertions import (
     check_greater,
     check_inplace_sizes_valid,
     check_isinstance,
+    check_kernel_padding_size,
     check_less,
     check_same_dtype,
     check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
-    check_dimensions,
 )
 import ivy
 
@@ -429,10 +430,12 @@ def test_check_same_dtype(x1, x2):
 @pytest.mark.parametrize(
     "fill_value, dtype",
     [
-        (1.0, ivy.int16),  # cases of failure
+        # INVALID CASES
+        (1.0, ivy.int16),
         (1, ivy.float16),
         (1, ivy.complex64),
-        (1j, ivy.complex64),  # cases to pass
+        # VALID
+        (1j, ivy.complex64),
         (1.0, ivy.complex64),
         (1.0, ivy.float16),
         (1, ivy.int16),
@@ -470,7 +473,7 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
 @pytest.mark.parametrize(
     "data, segment_ids, num_segments",
     [
-        # cases of failure
+        # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 2.0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 0], dtype=ivy.int32), -2),
@@ -479,7 +482,7 @@ def test_check_fill_value_and_dtype_are_compatible(fill_value, dtype):
         (ivy.array([1, 2]), ivy.array([0, 1, 0], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1], dtype=ivy.int32), 0),
         (ivy.array([1, 2, 3]), ivy.array([0, 1, 2], dtype=ivy.int32), 2),
-        # cases to pass
+        # VALID
         (
             ivy.array([1, 2, 3]),
             ivy.array([0, 1, 0], dtype=ivy.int32),
@@ -526,12 +529,12 @@ def test_check_unsorted_segment_min_valid_params(data, segment_ids, num_segments
 @pytest.mark.parametrize(
     "params, indices, batch_dims",
     [
-        # cases of failure
+        # INVALID CASES
         (ivy.array([1, 2, 3]), ivy.array([1]), 2),
         (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), 1),
         (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2], [2, 3]]), 1),
         (ivy.array([1, 2, 3]), ivy.array([[1, 2]]), 0),
-        # cases to pass
+        # VALID
         (ivy.array([1, 2, 3]), ivy.array([1]), 0),
         (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([0, 2]), 0),
         (ivy.array([[1, 2, 3], [4, 5, 6]]), ivy.array([[0, 1], [1, 2]]), 1),
@@ -574,10 +577,10 @@ def test_check_gather_nd_input_valid(params, indices, batch_dims):
 @pytest.mark.parametrize(
     "var, data",
     [
-        # cases of failure
+        # INVALID CASES
         (ivy.array([1]), ivy.array([1, 2])),
         (ivy.array([[1], [1], [2]]), ivy.array([1, 2])),
-        # cases to pass
+        # VALID
         (ivy.array([1, 2]), ivy.array([1])),
         (ivy.array([[[1]]]), ivy.array([1, 2])),
     ],
@@ -614,10 +617,10 @@ def test_check_inplace_sizes_valid(var, data):
 @pytest.mark.parametrize(
     "var, data",
     [
-        # cases of failure
+        # INVALID CASES
         ((2, 1), (1, 2, 1)),
         ((2, 1), (3, 1)),
-        # cases to pass
+        # VALID
         ((1, 2), (1, 2)),
         ((1, 2), (1, 1, 1)),
     ],
@@ -654,10 +657,10 @@ def test_check_shapes_broadcastable(var, data):
 @pytest.mark.parametrize(
     "x",
     [
-        # cases of failure
+        # INVALID CASES
         (ivy.array([1])),
         (ivy.array([])),
-        # cases to pass
+        # VALID
         (ivy.array([1, 2])),
         (ivy.array([[1, 2], [2, 3]])),
     ],
@@ -683,6 +686,46 @@ def test_check_dimensions(x):
 
     if "e" in local_vars.keys():
         assert "greater than one dimension" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "kernel_size, padding_size",
+    [
+        # INVALID CASES
+        (((2, 2), ((2, 2), (1, 1)))),
+        (((3, 3), ((2, 2), (1, 1)))),
+        # VALID
+        (((5, 5), ((1, 1), (2, 2)))),
+        (((3, 3), ((1, 1), (0, 0)))),
+    ],
+)
+def test_check_kernel_padding_size(kernel_size, padding_size):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_kernel_padding_size(kernel_size, padding_size)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "less than or equal to half" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
