@@ -2042,6 +2042,7 @@ def get_second_solve_matrix(draw):
 
 @st.composite
 def einsum_helper(draw):
+    # Todo: generalize to n equations and arrays
     # Generate unique dimensions for both arrays
     dims_1 = draw(st.integers(min_value=1, max_value=5))
     dims_2 = draw(st.integers(min_value=1, max_value=5))

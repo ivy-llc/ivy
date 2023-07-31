@@ -347,7 +347,6 @@ def test_einsum(
 ):
     eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
-    i = 0
     # x_dtype = np.dtype(dtype[0])
     for i, x_ in enumerate(operands):
         dtype = dtypes[i][0]
