@@ -78,22 +78,30 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=1
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
     )
 
     if data_format == "NWC":
         x = x.permute((0, 2, 1))
-        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == 3 else kernel
-        strides = [strides[i] for i in [0, 2, 1]] if len(strides) == 3 else strides
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
     # Determine deptwise pooling
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
-        x, kernel, strides, 1, data_format="channel_first"
+        x, kernel, strides, dims, data_format="channel_first"
     )
 
     if not depth_pooling:
-        new_kernel = [kernel[0] + (kernel[0] - 1) * (dilation[0] - 1)]
+        new_kernel = [dilation[0] * (kernel[0] - 1) + 1]
 
         if isinstance(padding, str):
             pad_w = _handle_padding(x.shape[2], strides[0], new_kernel[0], padding)
@@ -214,67 +222,49 @@ def max_pool2d(
 )
 def max_pool3d(
     x: torch.Tensor,
-    kernel: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    strides: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    # TODO: Refactor to remove the redundancies in the three max_pool functions.
-    if isinstance(strides, int):
-        strides = (strides, strides, strides)
-    elif len(strides) == 1:
-        strides = (strides[0], strides[0], strides[0])
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
-    if isinstance(kernel, int):
-        kernel = (kernel, kernel, kernel)
-    elif len(kernel) == 1:
-        kernel = (kernel[0], kernel[0], kernel[0])
-
-    if isinstance(dilation, int):
-        dilation = (dilation,) * 3
-    elif len(dilation) == 1:
-        dilation = (dilation[0],) * 3
-
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * 3
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * 3
-    elif isinstance(padding, tuple) and len(padding) == 3:
-        padding = [(padding[0],) * 2, (padding[1],) * 2, (padding[2],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
-
-    x_format, kernel_format = ("channel_first",) * 2
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-        kernel_format = "channel_last"
+        kernel = (
+            [kernel[i] for i in [0, 4, 1, 2, 3]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 4, 1, 2, 3]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 4, 1, 2, 3]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    # Depth wise (channel) pooling
-    kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
-        x, kernel, strides, 3, data_format=x_format, filter_format=kernel_format
+    # Determine deptwise pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
+        x, kernel, strides, dims, data_format="channel_first"
     )
-    x_shape = list(x.shape[2:])
 
     if not depth_pooling:
-        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(3)]
+        x_shape = x.shape[2:]
+        new_kernel = [dilation[i] * (kernel[i] - 1) + 1 for i in range(dims)]
 
         if isinstance(padding, str):
-            if padding.upper() != "VALID" and padding.upper() != "SAME":
-                raise ivy.utils.exceptions.IvyException(
-                    'Invalid padding arg {}\nMust be one of: "VALID" or "SAME"'.format(
-                        padding
-                    )
-                )
             pad_d = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
             pad_h = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
             pad_w = _handle_padding(x_shape[2], strides[2], new_kernel[2], padding)
@@ -296,27 +286,18 @@ def max_pool3d(
             pad_list,
             value=float("-inf"),
         )
-        res = torch.nn.functional.max_pool3d(
-            x, kernel, strides, 0, dilation=dilation, ceil_mode=ceil_mode
-        )
     else:
-        if any(torch.tensor(padding) != 0):
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
             raise NotImplementedError(
-                "Nonzero explicit padding is not supported for depthwise (channel) max"
-                " pooling"
+                "Nonzero explicit padding is not supported for depthwise max pooling"
             )
-        x_full_shape = x.shape
-        x = x.reshape((x_full_shape[0], x_full_shape[1], -1)).permute((0, 2, 1))
-        res = torch.nn.functional.max_pool1d(
-            x,
-            kernel[0],
-            strides[0],
-            0,
-            dilation=dilation,
-            ceil_mode=ceil_mode,
-        )
-        res = res.permute((0, 2, 1)).reshape(*x_full_shape)
 
+    res = torch.nn.functional.max_pool3d(x, kernel, strides, 0, dilation, ceil_mode)
+
+    if depth_pooling:
+        res = res.permute(0, 2, 1, 3, 4)
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res

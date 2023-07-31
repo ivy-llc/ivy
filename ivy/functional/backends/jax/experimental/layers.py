@@ -81,19 +81,7 @@ def general_pool(
     ceil_mode=False,
     count_include_pad=False,
 ):
-    window_shape = _from_int_to_tuple(window_shape, dim)
-    strides = _from_int_to_tuple(strides, dim)
-    dilation = _from_int_to_tuple(dilation, dim)
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * dim
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * dim
-    elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(window_shape, padding)
-
+    # Assuming param validation is already done
     assert len(window_shape) == len(
         strides
     ), f"len({window_shape}) must equal len({strides})"
@@ -120,7 +108,7 @@ def general_pool(
         ]
     )
     inputs, window_shape, strides, depth_pooling = _determine_depth_max_pooling(
-        inputs, window_shape, strides, 2
+        inputs, window_shape, strides, dim
     )
     if not depth_pooling:
         # manually creating padding list
@@ -198,25 +186,25 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=1
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
     )
 
     if data_format == "NCW":
         x = jnp.transpose(x, (0, 2, 1))
-        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == 3 else kernel
-        strides = [strides[i] for i in [0, 2, 1]] if len(strides) == 3 else strides
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
     res = general_pool(
-        x,
-        -jnp.inf,
-        jlax.max,
-        kernel,
-        strides,
-        padding,
-        1,
-        dilation,
-        ceil_mode,
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dims, dilation, ceil_mode
     )
 
     if data_format == "NCW":
@@ -251,30 +239,44 @@ def max_pool2d(
 
 def max_pool3d(
     x: JaxArray,
-    kernel: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    strides: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
-    if isinstance(kernel, int):
-        kernel = (kernel,) * 3
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 4, 1]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 4, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 4, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+
     res = general_pool(
-        x, -jnp.inf, jlax.max, kernel, strides, padding, 3, dilation, ceil_mode
+        x, -jnp.inf, jlax.max, kernel, strides, padding, dims, dilation, ceil_mode
     )
 
     if data_format == "NCDHW":
-        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+        res = jnp.transpose(res, (0, 4, 1, 2, 3))
 
     return res
 

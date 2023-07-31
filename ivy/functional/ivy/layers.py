@@ -2021,7 +2021,7 @@ def lstm_update(
 
 
 def _handle_padding(x, strides, filters, padding):
-    if padding == "SAME":
+    if isinstance(padding, str) and padding.upper() == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
         else:
@@ -2060,15 +2060,17 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         padding = [(padding[i],) * 2 for i in range(dims)]
     elif isinstance(padding, list) and len(padding) == dims:
         if not all([isinstance(p, tuple) and len(p) == 2 for p in padding]):
-            raise ValueError(
-                "Explicit padding must be a list of tuple of two integers."
-            )
+            raise ValueError("Explicit padding must be a list of tuple of two integers")
+    if isinstance(padding, str) and padding.upper() not in ["VALID", "SAME"]:
+        raise ValueError(
+            f"Invalid padding arg {padding}Must be one of: 'VALID' or 'SAME'"
+        )
 
     if isinstance(dilation, int):
         dilation = (dilation,) * dims
     elif len(dilation) == 1:
         dilation = (dilation[0],) * dims
-    else:
+    elif len(dilation) != dims:
         raise ValueError(
             f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
         )

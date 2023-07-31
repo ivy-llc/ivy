@@ -73,17 +73,30 @@ def max_pool1d(
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    dims = 1
     kernel, strides, padding, dilation = _validate_max_pool_params(
-        kernel, strides, padding, dilation, ceil_mode, dims=1
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
     )
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
-        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == 3 else kernel
-        strides = [strides[i] for i in [0, 2, 1]] if len(strides) == 3 else strides
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
-        x, kernel, strides, 1
+        x, kernel, strides, dims
     )
 
     x_shape = x.shape[1:2]
@@ -260,56 +273,48 @@ def max_pool2d(
 
 def max_pool3d(
     x: np.ndarray,
-    kernel: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    strides: Union[
-        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
-    ],
-    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = [kernel] * 3
-    elif len(kernel) == 1:
-        kernel = [kernel[0]] * 3
-
-    if isinstance(strides, int):
-        strides = [strides] * 3
-    elif len(strides) == 1:
-        strides = [strides[0]] * 3
-
-    if isinstance(dilation, int):
-        dilation = [dilation] * 3
-    elif len(dilation) == 1:
-        dilation = [dilation[0]] * 3
-
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * 3
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * 3
-    elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1],) * 2, (padding[2],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 4, 1]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 4, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 4, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, 3
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling_2(
+        x, kernel, strides, dims
     )
-    x_shape = list(x.shape[1:4])
+
+    x_shape = x.shape[1:4]
     filters = np.ones((list(kernel)), dtype=x.dtype)
 
     if not depth_pooling:
-        for j in range(3):
+        for j in range(dims):
             if dilation[j] > 1:
                 filters = _add_dilations(filters, dilation[j], axis=j, values=0)
         kernel = list(filters.shape)
@@ -325,7 +330,7 @@ def max_pool3d(
             ]
         pad_list = list(pad_list)
         if ceil_mode:
-            for i in range(3):
+            for i in range(dims):
                 pad_list[i] = _padding_ceil_mode(
                     x_shape[i], kernel[i], pad_list[i], strides[i]
                 )

@@ -37,6 +37,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -140,12 +145,14 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def max_pool3d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
+        dilation: Union[int, Tuple[int, ...]] = 1,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -160,10 +167,15 @@ class _ArrayWithLayersExperimental(abc.ABC):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating
+            "SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -191,6 +203,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             out=out,
         )
 

@@ -39,10 +39,15 @@ class _ContainerWithLayersExperimental(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list
+            "SAME" or "VALID" indicating the algorithm, or list
             indicating the per-dimension paddings.
         data_format
-            NWC" or "NCW". Defaults to "NWC".
+            "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to.
 
@@ -114,7 +119,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list
             indicating the per-dimension paddings.
         data_format
-            NWC" or "NCW". Defaults to "NWC".
+            "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to.
 
@@ -296,12 +306,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_max_pool3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NDHWC",
+        dilation: Union[int, Tuple[int, ...]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -325,7 +337,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
-            NDHWC" or "NCDHW". Defaults to "NDHWC".
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -356,6 +373,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -365,12 +384,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def max_pool3d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NDHWC",
+        dilation: Union[int, Tuple[int, ...]] = 1,
+        ceil_mode: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -394,7 +415,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
             SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
-            NDHWC" or "NCDHW". Defaults to "NDHWC".
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must
             have a shape that the inputs broadcast to.
@@ -424,6 +450,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
