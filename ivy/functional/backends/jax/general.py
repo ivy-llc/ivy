@@ -16,6 +16,7 @@ import importlib
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax.device import _to_device, _to_array
+from ivy.functional.ivy.general import _broadcast_to
 from ivy.functional.backends.jax import JaxArray, NativeArray
 from . import backend_version
 
@@ -49,23 +50,58 @@ def is_native_array(x, /, *, exclusive=False):
     )
 
 
+def _mask_to_index(query, x):
+    if query.shape != x.shape:
+        if len(query.shape) > len(x.shape):
+            raise ivy.exceptions.IvyException("too many indices")
+        elif not len(query.shape):
+            query = jnp.tile(query, x.shape[0])
+    expected_shape = x[query].shape
+    return jnp.where(query), expected_shape
+
+
 def get_item(
     x: JaxArray,
     /,
-    query: JaxArray,
+    query: Union[JaxArray, Tuple],
     *,
     copy: bool = None,
 ) -> JaxArray:
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        if not len(query.shape):
+            if not query:
+                return jnp.array([], dtype=x.dtype)
+            else:
+                return jnp.expand_dims(x, 0)
+        query, _ = _mask_to_index(query, x)
+    elif isinstance(query, list):
+        query = (query,)
     if copy:
         return x.__getitem__(query).copy()
     return x.__getitem__(query)
+
+
+def set_item(
+    x: JaxArray,
+    query: Union[JaxArray, Tuple],
+    val: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> JaxArray:
+    if copy:
+        x = x.copy()
+    if ivy.is_array(query) and ivy.is_bool_dtype(query):
+        query, expected_shape = _mask_to_index(query, x)
+        val = _broadcast_to(val, expected_shape)._data
+    return x.at[query].set(val)
 
 
 def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.8 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -304,7 +340,9 @@ def scatter_flat(
             "reduction is {}, but it must be one of "
             '"sum", "min", "max" or "replace"'.format(reduction)
         )
-    return _to_device(target)
+    if target_given:
+        return ivy.inplace_update(out, target)
+    return target
 
 
 scatter_flat.support_native_out = True
@@ -319,26 +357,6 @@ def scatter_nd(
     reduction: str = "sum",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    # parse numeric inputs
-    if (
-        indices != Ellipsis
-        and not (
-            isinstance(indices, (tuple, list))
-            and (Ellipsis in indices or len(indices) != 0)
-        )
-        and not isinstance(indices, slice)
-        and not (
-            isinstance(indices, (tuple, list))
-            and any(isinstance(k, slice) for k in indices)
-        )
-    ):
-        indices = [[indices]] if isinstance(indices, Number) else indices
-        indices = jnp.array(indices)
-        if len(indices.shape) < 2:
-            indices = jnp.expand_dims(indices, -1)
-    # keep below commented out, array API tests are passing without this
-    # updates = [updates] if isinstance(updates, Number) else updates
-
     updates = jnp.array(
         updates,
         dtype=(
@@ -347,26 +365,8 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-
-    # handle Ellipsis
-    if isinstance(indices, tuple) or indices is Ellipsis or isinstance(indices, slice):
-        indices_tuple = indices
-    else:
-        expected_shape = (
-            indices.shape[:-1] + out.shape[indices.shape[-1] :]
-            if ivy.exists(out)
-            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
-        )
-        if sum(updates.shape) < sum(expected_shape):
-            updates = ivy.broadcast_to(updates, expected_shape)._data
-        elif sum(updates.shape) > sum(expected_shape):
-            indices = ivy.broadcast_to(
-                indices, updates.shape[:1] + (indices.shape[-1],)
-            )._data
-        indices_flat = indices.reshape(-1, indices.shape[-1]).T
-        indices_tuple = tuple(indices_flat) + (Ellipsis,)
-
-    # implementation
+    indices_flat = indices.reshape(-1, indices.shape[-1]).T
+    indices_tuple = tuple(indices_flat) + (Ellipsis,)
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -375,12 +375,11 @@ def scatter_nd(
         )
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
-        reduction = "replace"
+        target = jnp.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)._data
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
-        if not target_given:
-            target = jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].set(updates)
     elif reduction == "min":
         target = target.at[indices_tuple].min(updates)
@@ -436,8 +435,3 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
-
-
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
-def strides(x: JaxArray) -> Tuple[int]:
-    return to_numpy(x).strides

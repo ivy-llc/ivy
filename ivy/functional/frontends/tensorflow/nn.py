@@ -2,6 +2,7 @@
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 
 
 def _reduce_strides_dilations(dim, stride, dilations):
@@ -119,7 +120,7 @@ def conv3d(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def conv3d_transpose(
     input,
@@ -145,7 +146,7 @@ def conv3d_transpose(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def depthwise_conv2d(
     input,
@@ -173,7 +174,7 @@ def depthwise_conv2d(
     )
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def separable_conv2d(
     input,
@@ -224,7 +225,7 @@ def silu(features, beta: float = 1.0):
 
 @with_unsupported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -247,7 +248,7 @@ def sigmoid_cross_entropy_with_logits(labels=None, logits=None, name=None):
 
 @with_unsupported_dtypes(
     {
-        "2.12.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",
@@ -277,7 +278,7 @@ def weighted_cross_entropy_with_logits(
     return ivy.add(first_term, second_term)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("bfloat16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
     input, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
@@ -316,6 +317,34 @@ def moments(x, axes, shift=None, keepdims=False, name=None):
     return ivy.mean(x, axis=ivy.to_list(axes), keepdims=keepdims), ivy.var(
         x, axis=ivy.to_list(axes), keepdims=keepdims
     )
+
+
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "bool",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def normalize_moments(counts, mean_ss, variance_ss, shift=None, name=None):
+    divisor = ivy.reciprocal(counts)
+    if shift is not None:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = ivy.add(shifted_mean, shift)
+    else:
+        shifted_mean = ivy.multiply(mean_ss, divisor)
+        mean = shifted_mean
+
+    variance = ivy.subtract(
+        ivy.multiply(variance_ss, divisor), ivy.square(shifted_mean)
+    )
+    return mean, variance
 
 
 @to_ivy_arrays_and_back
@@ -411,7 +440,7 @@ def embedding_lookup(params, ids, max_norm=None, name=None):
     return ivy.embedding(params, ids, max_norm=max_norm)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("complex",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def relu(features, name=None):
     return ivy.relu(features)
@@ -422,13 +451,13 @@ def relu6(features, name=None):
     return ivy.relu6(features)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": ("float16",)}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": ("float16",)}, "tensorflow")
 @to_ivy_arrays_and_back
 def softmax(logits, axis=None, name=None):
     return ivy.softmax(logits, axis=axis)
 
 
-@with_unsupported_dtypes({"2.12.0 and below": "float16"}, "tensorflow")
+@with_unsupported_dtypes({"2.13.0 and below": "float16"}, "tensorflow")
 @to_ivy_arrays_and_back
 def leaky_relu(features, alpha=0.2, name=None):
     return ivy.leaky_relu(features, alpha=alpha)
@@ -482,3 +511,94 @@ def pool(
         data_format=data_format,
         dilations=dilations,
     )
+
+
+# sufficient_statistics
+@to_ivy_arrays_and_back
+def sufficient_statistics(x, axes, shift=None, keepdims=False, name=None):
+    count = 1
+    shape = ivy.shape(x)
+    axes = list(set(axes))
+    for a in axes:
+        if ivy.to_scalar(a) < 0:
+            index = x.ndim + ivy.to_scalar(a)
+        else:
+            index = ivy.to_scalar(a)
+        count *= shape[index]
+    count = ivy.array(count, dtype=ivy.dtype(x))
+    if shift is None:
+        sum_of_elements = ivy.sum(x, axis=axes, keepdims=keepdims)
+        sum_of_squares = ivy.sum(ivy.square(x), axis=axes, keepdims=keepdims)
+    else:
+        sum_of_elements = ivy.sum(
+            (ivy.subtract(x, shift)), axis=axes, keepdims=keepdims
+        )
+        sum_of_squares = ivy.sum(
+            (ivy.square(ivy.subtract(x, shift))), axis=axes, keepdims=keepdims
+        )
+        if shift.ndim == 0:
+            ivy.reshape(shift, ())
+
+    if count.ndim == 0:
+        ivy.reshape(count, ())
+    if sum_of_elements.ndim == 0:
+        ivy.reshape(sum_of_elements, ())
+    if sum_of_squares.ndim == 0:
+        ivy.reshape(sum_of_squares, ())
+    return count, sum_of_elements, sum_of_squares, shift
+
+
+# log_poisson_loss
+@to_ivy_arrays_and_back
+def log_poisson_loss(targets, log_input, compute_full_loss=False, name=None):
+    return ivy.log_poisson_loss(targets, log_input, compute_full_loss=compute_full_loss)
+
+
+# ctc_unique_labels
+@to_ivy_arrays_and_back
+def ctc_unique_labels(labels, name=None):
+    ctc_labels = ivy.unique_all(labels, by_value=False)
+    unique_pad = ivy.pad(
+        ctc_labels[0], (0, labels.size - ctc_labels[0].size), mode="constant"
+    )
+    return unique_pad, ctc_labels[2]
+
+
+# weighted_moments
+@to_ivy_arrays_and_back
+def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
+    fw_x_prod = frequency_weights * x
+    fw_x_prod = ivy.array(fw_x_prod)
+    weighted_input_sum = ivy.sum(fw_x_prod, axis=axes, keepdims=True).astype(
+        fw_x_prod.dtype
+    )
+
+    broadcasted_weights = frequency_weights + ivy.zeros_like(x)
+    broadcasted_weights = ivy.array(broadcasted_weights)
+    sum_of_weights = ivy.sum(broadcasted_weights, axis=axes, keepdims=True).astype(
+        broadcasted_weights.dtype
+    )
+
+    divisor = ivy.reciprocal(sum_of_weights)
+
+    weighted_input_sum, divisor = check_tensorflow_casting(weighted_input_sum, divisor)
+    weighted_mean = ivy.multiply(weighted_input_sum, divisor)
+
+    x, weighted_mean = check_tensorflow_casting(x, weighted_mean)
+    squared_difference = ivy.square(ivy.subtract(x, weighted_mean))
+    if isinstance(squared_difference, complex):
+        squared_difference = squared_difference.real - squared_difference.imag * 1j
+
+    fw_sq_diff_prod = frequency_weights * squared_difference
+    fw_sq_diff_prod = ivy.array(fw_sq_diff_prod)
+    weighted_distsq = ivy.sum(fw_sq_diff_prod, axis=axes, keepdims=True).astype(
+        fw_sq_diff_prod.dtype
+    )
+
+    weighted_distsq, divisor = check_tensorflow_casting(weighted_distsq, divisor)
+    weighted_variance = ivy.multiply(weighted_distsq, divisor)
+
+    if not keepdims:
+        weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
+        weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
+    return weighted_mean, weighted_variance
