@@ -85,5 +85,9 @@ def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
     return ivy.gamma(alpha, beta, shape=shape, dtype=dtype, seed=seed)
 
 @to_ivy_arrays_and_back
-def stateless_categorical(logits, num_samples, seed, dtype=ivy.int64, name=None):
-    return ivy.categorical(logits=logits, num_samples=num_samples, dtype=dtype, seed=seed[0] + seed[1])
+def stateless_categorical(
+    logits, num_samples, seed, dtype=ivy.int64, name=None
+):
+    return ivy.categorical(logits=logits, num_samples=num_samples, dtype=dtype, seed=seed[0] + seed[1]
+    )
+
