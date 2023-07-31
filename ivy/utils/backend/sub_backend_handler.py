@@ -19,7 +19,7 @@ for backend in os.listdir(
         _backends_subpackage_path.replace(".", os.path.sep),
     )
 ):
-    if backend.startswith("__"):
+    if backend.startswith("__") or backend.startswith("."):
         continue
 
     sub_backends_dir = os.path.join(
