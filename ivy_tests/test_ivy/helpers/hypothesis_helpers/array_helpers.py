@@ -1725,6 +1725,7 @@ def arrays_for_pooling(
     only_explicit_padding=False,
     return_dilation=False,
     data_format="channel_last",
+    return_data_format=False,
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -1808,9 +1809,13 @@ def arrays_for_pooling(
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
 
+    out = [dtype, x, kernel, strides, padding]
     if return_dilation:
-        return dtype, x, kernel, strides, padding, dilations, data_format
-    return dtype, x, kernel, strides, padding, data_format
+        out.append(dilations)
+    if return_data_format:
+        out.append(data_format)
+
+    return tuple(out)
 
 
 @st.composite

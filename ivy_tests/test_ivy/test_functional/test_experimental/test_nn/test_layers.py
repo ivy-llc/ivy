@@ -17,6 +17,7 @@ from ivy_tests.test_ivy.helpers import handle_test
         explicit_or_str_padding=True,
         return_dilation=True,
         data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
     ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
@@ -65,6 +66,7 @@ def test_max_pool1d(
         explicit_or_str_padding=True,
         return_dilation=True,
         data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
     ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
@@ -111,6 +113,7 @@ def test_max_pool2d(
         padding=pad,
         dilation=dilation,
         ceil_mode=ceil_mode,
+        data_format=data_format,
     )
 
 
@@ -124,6 +127,7 @@ def test_max_pool2d(
         explicit_or_str_padding=True,
         return_dilation=True,
         data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
     ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
