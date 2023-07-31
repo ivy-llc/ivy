@@ -805,10 +805,10 @@ def test_paddle_bincount(
     )
 
 
-#qr
+# qr
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.qr",
-        dtype_and_x=helpers.dtype_and_values(dtype=["float32", "float64"]),
+    dtype_and_x=helpers.dtype_and_values(dtype=["float32", "float64"]),
 )
 def test_paddle_qr(
     dtype_and_x,
@@ -818,8 +818,7 @@ def test_paddle_qr(
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    
+    dtype, x = dtype_and_x    
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
