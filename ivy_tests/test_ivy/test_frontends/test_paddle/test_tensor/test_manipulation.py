@@ -595,3 +595,40 @@ def test_paddle_flip(
         x=x[0],
         axis=axis,
     )
+
+
+# roll
+@handle_frontend_test(
+    fn_tree="paddle.roll",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+    shift=helpers.ints(min_value=1, max_value=10),
+    axis=helpers.ints(min_value=-1, max_value=1),
+    test_with_out=st.just(False),
+)
+def test_paddle_roll(
+    *,
+    dtype_and_x,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shifts=shift,
+        axis=axis,
+    )
