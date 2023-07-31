@@ -6634,10 +6634,12 @@ def test_torch_clamp(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -10536,7 +10538,7 @@ def _get_clip_min_inputs(draw):
     )
     x_dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             shape=shape,
         )
     )
@@ -10568,7 +10570,7 @@ def test_torch_instance_clamp_min(
         init_input_dtypes=x_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
-            "data": x,
+            "data": x[0],
         },
         method_input_dtypes=x_dtype,
         method_all_as_kwargs_np={
