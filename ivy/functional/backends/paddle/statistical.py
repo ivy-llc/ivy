@@ -327,4 +327,4 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.einsum(equation, *operands, out=out)
+    raise IvyNotImplementedException()
