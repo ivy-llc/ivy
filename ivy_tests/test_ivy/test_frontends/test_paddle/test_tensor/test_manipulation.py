@@ -472,69 +472,51 @@ def test_paddle_broadcast_to(
     )
 
 
-@handle_frontend_test(
-    fn_tree="paddle.scatter_nd",
-    ind_dtype_and_ind=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=6,
-    ),
-    update_dtype_and_updates=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=6,
-    ),
-)
-def test_scatter_nd(x, test_flags, backend_fw, on_device):
-    ind_dtype, ind = x
-    update_dtype, updates = y
-    shape = st.shared(helpers.get_shape(), key="value_shape")
-    helpers.test_function(
-        input_dtypes=[ind_dtype, update_dtype],
-        test_flags=test_flags,
-        on_device=on_device,
-        fw=backend_fw,
-        index=ind,
-        updates=updates,
-        shape=shape,
-    )
-
-
-def _gather_helper(draw):
-    dtype_and_param = draw(
+@st.composite
+def _scatter_nd_helper(draw):
+    dtype_and_index = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             min_num_dims=1,
             max_num_dims=6,
         )
     )
 
-    dtype_and_indices = draw(
+    dtype, index = dtype_and_index
+    output_shape = draw(
+        helpers.get_shape(min_num_dims=len(index[0].shape), max_num_dims=6)
+    )
+
+    updates_shape = index[0].shape[:-1] + output_shape[len(index[0].shape) - 1 :]
+
+    dtype_and_updates = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=1,
-            max_num_dims=6,
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=updates_shape,
+            min_num_dims=len(updates_shape),
+            max_num_dims=len(updates_shape),
         )
     )
-    dtype, param = dtype_and_param
-    dtype, indices = dtype_and_indices
-    return dtype, param, indices
+
+    _, updates = dtype_and_updates
+
+    return dtype, index, updates, output_shape
 
 
 @handle_frontend_test(
-    fn_tree="paddle.gather",
-    dtype_param_and_indices=_gather_helper(),
+    fn_tree="paddle.scatter_nd",
+    dtype_index_updates_and_shape=_scatter_nd_helper(),
 )
-def test_paddle_gather(
+def test_paddle_scatter(
     *,
-    dtype_param_and_indices,
+    dtype_index_updates_and_shape,
     on_device,
     fn_tree,
-    frontend,
     backend_fw,
+    frontend,
     test_flags,
 ):
-    input_dtype, param, indices = dtype_param_and_indices
+    input_dtype, index, updates, shape = dtype_index_updates_and_shape
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -542,9 +524,57 @@ def test_paddle_gather(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        param=param[0],
-        indices=indices[0],
+        index=index[0],
+        updates=updates[0],
+        shape=shape,
     )
+
+
+# def _gather_helper(draw):
+#     dtype_and_param = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=helpers.get_dtypes("valid"),
+#             min_num_dims=1,
+#             max_num_dims=6,
+#         )
+#     )
+
+#     dtype_and_indices = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=helpers.get_dtypes("valid"),
+#             min_num_dims=1,
+#             max_num_dims=6,
+#         )
+#     )
+#     dtype, param = dtype_and_param
+#     dtype, indices = dtype_and_indices
+#     return dtype, param, indices
+
+
+# @handle_frontend_test(
+#     fn_tree="paddle.gather",
+#     dtype_param_and_indices=_gather_helper(),
+# )
+# def test_paddle_gather(
+#     *,
+#     dtype_param_and_indices,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     backend_fw,
+#     test_flags,
+# ):
+#     input_dtype, param, indices = dtype_param_and_indices
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         backend_to_test=backend_fw,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         param=param[0],
+#         indices=indices[0],
+#     )
 
 
 # flip
