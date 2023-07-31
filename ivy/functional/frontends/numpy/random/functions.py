@@ -190,7 +190,15 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 def gamma(shape, scale=1.0, size=None):
     return ivy.gamma(shape, scale, shape=size, dtype="float64")
 
+  
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logistic(loc=0.0, scale=1.0, size=None):
+    u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
+    x = loc + scale * ivy.log(u / (1 - u))
+    return x
 
+  
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def triangular(left, mode, right, size=None):
@@ -205,3 +213,4 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
