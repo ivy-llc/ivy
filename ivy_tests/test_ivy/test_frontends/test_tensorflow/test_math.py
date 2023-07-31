@@ -2890,16 +2890,13 @@ def test_tensorflow_bincount(
     )
 
 
-# xlog1py
+# Xlog1py
 @handle_frontend_test(
     fn_tree="tensorflow.math.xlog1py",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        safety_factor_scale="log",
         num_arrays=2,
         shared_dtype=True,
-        # allow_inf=False,
-        allow_nan=False,
     ),
     test_with_out=st.just(False),
 )
@@ -2909,19 +2906,19 @@ def test_tensorflow_xlog1py(
     frontend,
     test_flags,
     fn_tree,
-    on_device,
     backend_fw,
+    on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
-        x=x[0],
-        y=x[1],
+        x=xs[0],
+        y=xs[1],
     )
 
 
