@@ -135,7 +135,7 @@ def roll(x, shifts, axis=None, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    {"2.5.0 and below": ("float16", "bfloat16")},
     "paddle",
 )
 @to_ivy_arrays_and_back

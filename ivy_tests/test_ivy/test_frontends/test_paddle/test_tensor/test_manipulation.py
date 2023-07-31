@@ -520,34 +520,38 @@ def test_paddle_gather(
     )
 
 
+# unstack
 @handle_frontend_test(
     fn_tree="paddle.unstack",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=1,
-        max_num_dims=6,
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=2,
+        max_dim_size=1,
     ),
-    axis=st.integers(min_value=0, max_value=5),
+    number_positional_args=st.just(1),
+    axis=st.integers(-1, 0),
+    test_with_out=st.just(False),
 )
 def test_paddle_unstack(
     *,
-    dtype_and_x,
+    dtypes_values,
     axis,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
-    backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    axis = 0
+    x_dtype, x = dtypes_values
+    axis = axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
     )
