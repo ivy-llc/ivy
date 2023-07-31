@@ -321,11 +321,10 @@ def cumsum(
     else:
         x = paddle.cumsum(paddle_backend.flip(x, axis=(axis,)), axis=axis)
         return paddle_backend.flip(x, axis=axis).cast(dtype)
-
-
+    
 def einsum(
     equation: str,
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.einsum(equation, *operands, out=out)
