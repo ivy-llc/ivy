@@ -8,14 +8,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 
 # local
 import ivy
-from paddle.fluid.libpaddle import Place
+from paddle.device import core
 
 # dirichlet
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -56,7 +56,7 @@ def beta(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
-    device: Place = None,
+    device: core.Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -70,7 +70,7 @@ def gamma(
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: Optional[Union[paddle.dtype, ivy.Dtype]] = None,
-    device: Place = None,
+    device: core.Place = None,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
@@ -81,7 +81,7 @@ def poisson(
     lam: Union[float, paddle.Tensor],
     *,
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
-    device: Place,
+    device: core.Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     fill_value: Optional[Union[float, int]] = 0,
@@ -95,7 +95,7 @@ def bernoulli(
     *,
     logits: Union[float, paddle.Tensor] = None,
     shape: Optional[Union[ivy.NativeArray, Sequence[int]]] = None,
-    device: Place,
+    device: core.Place,
     dtype: paddle.dtype,
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,

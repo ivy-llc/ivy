@@ -23,7 +23,7 @@ Inplace Updates
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`inplace updates channel`: https://discord.com/channels/799879767196958751/1028681763947552778
 .. _`inplace updates forum`: https://discord.com/channels/799879767196958751/1028681672268464199
-.. _`_example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
+.. _`example`: https://github.com/unifyai/ivy/blob/0ef2888cbabeaa8f61ce8aaea4f1175071f7c396/ivy/functional/ivy/layers.py#L169-L176
 
 
 Inplace updates enable users to overwrite the contents of existing arrays with new data.
@@ -437,7 +437,7 @@ Technically, this could be handled using the `handle_out_argument`_ wrapping, bu
 **Mixed Functions**
 
 As explained in the :ref:`Function Types` section, *mixed* functions can effectively behave as either compositional or primary functions, depending on the backend that is selected. We must add the :code:`handle_out_argument` to the :code:`add_wrappers`key of
-the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example_` from the linear function.
+the :code:`mixed_backend_wrappers` attribute so that the decorator gets added to the primary implementation when the backend is set. Here's an `example`_ from the linear function.
 
 
 copy argument
@@ -485,6 +485,10 @@ Here's a brief description of the additional attributes added to :class:`ivy.Arr
 #. PyTorch reference stack (:code:`._torch_view_refs`): Functional views referencing this array in its PyTorch base, only populated for original arrays or functional views.
 #. PyTorch manipulation cache (:code:`._torch_manipulation`): Tuple storing array or view and function which made the functional view, only populated for functional views
 
+.. note:: 
+    Parts of an arrays metadata like :code:`stride` are attributed to the low-level memory layout of arrays while views in :code:`ivy` operate at a higher level of abstraction.
+    As a result, :func:`ivy.strides` isn't guaranteed to produce an output reflective of the underlying memory layout if the :class:`ivy.Array` passed in is a view (or in other words has a :code:`_base`).
+
 Here's a brief description of how the :code:`@handle_view` wrapper populates these attributes:
 
 #. When an array is made using a function decorated by this wrapper its base becomes the array that made it, or if the array that made it is also a view, its base.
@@ -518,6 +522,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
     </iframe>

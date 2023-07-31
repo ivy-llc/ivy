@@ -47,6 +47,8 @@ def roll(input, shifts, dims=None):
 def meshgrid(*tensors, indexing=None):
     if indexing is None:
         indexing = "ij"
+    if len(tensors) == 1 and isinstance(tensors[0], (list, tuple)):
+        tensors = tensors[0]
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
@@ -89,6 +91,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
@@ -114,13 +117,14 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("int8", "int16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def tril(input, diagonal=0, *, out=None):
     return ivy.tril(input, k=diagonal, out=out)
@@ -320,6 +324,8 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
+    if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
+        operands = operands[0]
     return ivy.einsum(equation, *operands)
 
 
@@ -405,3 +411,18 @@ def clone(input):
 @to_ivy_arrays_and_back
 def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def view_as_real(input):
+    if not ivy.is_complex_dtype(input):
+        raise ivy.exceptions.IvyError(
+            "view_as_real is only supported for complex tensors"
+        )
+    re_part = ivy.real(input)
+    im_part = ivy.imag(input)
+    return ivy.stack((re_part, im_part), axis=-1)

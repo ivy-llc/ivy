@@ -18,3 +18,18 @@ def is_integer(x):
 @to_ivy_arrays_and_back
 def is_floating_point(x):
     return ivy.is_float_dtype(x)
+
+
+@to_ivy_arrays_and_back
+def rank(input):
+    return ivy.get_num_dims(input)
+
+
+@to_ivy_arrays_and_back
+def real(x):
+    return ivy.real(x)
+
+
+@to_ivy_arrays_and_back
+def imag(x):
+    return ivy.imag(x)

@@ -2,7 +2,7 @@ Function Arguments
 ==================
 
 .. _`Array API Standard`: https://data-apis.org/array-api/latest/
-.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/API_specification/signatures
+.. _`spec/API_specification/signatures`: https://github.com/data-apis/array-api/tree/main/spec/2022.12/API_specification
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function arguments channel`: https://discord.com/channels/799879767196958751/982738240354254898
@@ -218,6 +218,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5cAbryXza18" class="video">
     </iframe>

@@ -11,6 +11,12 @@ from ivy.functional.frontends.numpy.func_wrapper import (
     
 )
 
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_out,
+)
+
+
 def _quantile_is_valid(q):
     # avoid expensive reductions, relevant for arrays with < O(1000) elements
     if q.ndim == 1 and q.size < 10:
@@ -118,6 +124,15 @@ def _cpercentile(arr, q, interpolation='linear'):
         percentiles = (1.0 - idx_frac) * lower_vals + idx_frac * upper_vals
 
     return percentiles
+
+
+@to_ivy_arrays_and_back
+@handle_numpy_out
+def ptp(a, axis=None, out=None, keepdims=False):
+    x = ivy.max(a, axis=axis, keepdims=keepdims)
+    y = ivy.min(a, axis=axis, keepdims=keepdims)
+    ret = ivy.subtract(x, y)
+    return ret.astype(a.dtype, copy=False)
 
 
 def nanpercentile(

@@ -1,6 +1,7 @@
 """Collection of tests for Ivy modules."""
 
 # global
+import os
 from hypothesis import given, strategies as st
 import numpy as np
 
@@ -1009,3 +1010,52 @@ def test_module_track_submod_call_order(
             module._dl0._l0.v.cont_flatten_key_chains().to_numpy(),
         ]
     )
+
+
+@given(
+    batch_shape=helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
+    ),
+    input_channels=st.integers(min_value=2, max_value=5),
+    output_channels=st.integers(min_value=2, max_value=5),
+)
+def test_module_save_and_load_as_pickled(
+    batch_shape, input_channels, output_channels, on_device
+):
+    save_filepath = "module.pickled"
+
+    # smoke test
+    if ivy.current_backend_str() == "numpy":
+        # NumPy does not support gradients
+        return
+    x = ivy.astype(
+        ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+        "float32",
+    )
+    module = TrainableModule(input_channels, output_channels, device=on_device)
+
+    def loss_fn(v_):
+        out = module(x, v=v_)
+        return ivy.mean(out)
+
+    module.save(save_filepath)
+    assert os.path.exists(save_filepath)
+    loaded_module = ivy.Module.load(save_filepath)
+
+    # train
+    loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
+    module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
+
+    loaded_loss, loaded_grads = ivy.execute_with_gradients(loss_fn, loaded_module.v)
+    loaded_module.v = ivy.gradient_descent_update(loaded_module.v, loaded_grads, 1e-3)
+
+    # type test
+    assert ivy.is_array(loaded_loss)
+    assert isinstance(loaded_grads, ivy.Container)
+    # cardinality test
+    assert loaded_loss.shape == ()
+    # value test
+    assert ivy.all_equal(loaded_loss == loss)
+    assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
+
+    os.remove(save_filepath)

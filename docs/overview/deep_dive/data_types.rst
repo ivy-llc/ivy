@@ -395,7 +395,7 @@ The :code: `[un]supported_dtypes_and_devices` decorators can be used for more sp
 set of dtypes is not supported by a certain device.
 
 .. code-block:: python
-    @with_unsupported_device_and_dtypes({"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
+    @with_unsupported_device_and_dtypes({"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version)
     def gcd(
         x1: Union[paddle.Tensor, int, list, tuple],
         x2: Union[paddle.Tensor, float, list, tuple],
@@ -649,6 +649,6 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/2qOBzQdLXn4" class="video">
     </iframe>

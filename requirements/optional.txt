@@ -10,7 +10,6 @@ jax[cpu] # unpinned, we test for latest version now, mod_name=jax
 jaxlib # unpinned, we test for latest version now
 paddlepaddle # unpinned , mod_name=paddle
 tensorflow-cpu  # unpinned, we test for latest version now, mod_name=tensorflow
-tensorflow-addons # unpinned, we test for latest version now, mod_name=tensorflow_addons
 tensorflow-probability # unpinned, we test for latest version now, mod_name=tensorflow_probability
 torch # unpinned, we test for latest version now
 torch-scatter # unpinned, mod_name=torch_scatter
@@ -26,3 +25,4 @@ pandas
 pyspark
 autoflake # for backend generation
 snakeviz # for profiling
+cryptography
