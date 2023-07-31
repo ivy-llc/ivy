@@ -214,7 +214,16 @@ This is a builtin package and doesn't require explicit installation.
       .. code-block:: none
    
          pip install -r requirements/optional.txt
+
+      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source. 
    
+      .. code-block:: none
+        
+         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+        
+      PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
+
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
       .. code-block:: none
