@@ -7,6 +7,8 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
+from ivy.func_wrapper import with_supported_dtypes
+
 
 def _packbits_nested_list_padding(arr, pad_length):
     if arr.ndim > 1:
@@ -16,6 +18,7 @@ def _packbits_nested_list_padding(arr, pad_length):
         return nested_list
     else:
         return arr.zero_pad(pad_width=[[0, pad_length]])
+
 
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
@@ -136,7 +139,6 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 alltrue = all
 
-
 sometrue = any
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
@@ -162,6 +164,11 @@ def invert(x, /):
 @to_ivy_arrays_and_back
 def isfinite(x, /):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def isin(element, test_elements, assume_unique=False, invert=False):
+    return ivy.isin(element, test_elements, assume_unique=assume_unique, invert=invert)
 
 
 @to_ivy_arrays_and_back
@@ -226,6 +233,35 @@ def iscomplex(x: any):
 @to_ivy_arrays_and_back
 def iscomplexobj(x):
     return ivy.is_complex_dtype(ivy.dtype(x))
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("int32", "int64", "float64", "float32")}, "torch"
+)
+@to_ivy_arrays_and_back
+def setxor1d(ar1, ar2, assume_unique=False):
+    common_dtype = ivy.promote_types(ivy.dtype(ar1), ivy.dtype(ar2))
+    ar1 = ivy.asarray(ar1, dtype=common_dtype)
+    ar2 = ivy.asarray(ar2, dtype=common_dtype)
+    if not assume_unique:
+        ar1 = ivy.unique_values(ar1)
+        ar2 = ivy.unique_values(ar2)
+    ar1 = ivy.reshape(ar1, (-1,))
+    ar2 = ivy.reshape(ar2, (-1,))
+    aux = ivy.concat([ar1, ar2], axis=0)
+    if aux.size == 0:
+        return aux
+    aux = ivy.sort(aux)
+    flag = ivy.concat(
+        (ivy.array([True]), ivy.not_equal(aux[1:], aux[:-1]), ivy.array([True])), axis=0
+    )
+    mask = flag[1:] & flag[:-1]
+    if ivy.all(ivy.logical_not(mask)):
+        ret = ivy.asarray([], dtype=common_dtype)
+    else:
+        ret = aux[mask]
+    return ret
 
 
 @to_ivy_arrays_and_back

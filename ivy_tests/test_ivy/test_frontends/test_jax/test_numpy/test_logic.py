@@ -393,8 +393,8 @@ def test_jax_not_equal(
 # all
 @handle_frontend_test(
     fn_tree="jax.numpy.all",
-    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12. uncomment with
-    # multi-version testing pipeline
+    # aliases=["jax.numpy.alltrue"], deprecated since 0.4.12.
+    #  uncomment with multi-version testing pipeline
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
@@ -544,8 +544,8 @@ def test_jax_bitwise_xor(
 # any
 @handle_frontend_test(
     fn_tree="jax.numpy.any",
-    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12. uncomment with
-    # multi-version testing pipeline
+    # aliases=["jax.numpy.sometrue"], deprecated since 0.4.12.
+    # uncomment with multi-version testing pipeline
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         valid_axis=True,
@@ -672,6 +672,47 @@ def test_jax_isfinite(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# isin
+@st.composite
+def _isin_data_generation_helper(draw):
+    dtype_and_x = helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    )
+    return draw(dtype_and_x)
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.isin",
+    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
+    invert=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_isin(
+    *,
+    assume_unique_and_dtype_and_x,
+    invert,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_and_dtype = assume_unique_and_dtype_and_x
+    dtypes, values = x_and_dtype
+    elements, test_elements = values
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        element=elements,
+        test_elements=test_elements,
+        invert=invert,
     )
 
 
@@ -1033,6 +1074,38 @@ def test_jax_iscomplexobj(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+# setxor1d
+@handle_frontend_test(
+    fn_tree="jax.numpy.setxor1d",
+    dtypes_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
+    ),
+    assume_unique=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_setxor1d(
+    dtypes_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    assume_unique,
+    backend_fw,
+):
+    x_dtypes, x = dtypes_values
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ar1=x[0],
+        ar2=x[1],
+        assume_unique=assume_unique,
     )
 
 

@@ -1,6 +1,10 @@
 # global
 import ivy
-from ivy import with_supported_dtypes, with_unsupported_dtypes
+from ivy import (
+    with_supported_dtypes,
+    with_unsupported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -747,3 +751,17 @@ def bincount(
     binary_output=False,
 ):
     return ivy.bincount(arr, weights=weights, minlength=minlength)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def igamma(a, x, name=None):
+    return ivy.igamma(a, x=x)
