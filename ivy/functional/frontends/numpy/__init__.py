@@ -617,7 +617,7 @@ from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding impor
     _maximum,
     _minimum,
     _fmax,
-    _fmin,
+    _fmin,#import fmin
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.floating_point_routines import (  # noqa
@@ -695,7 +695,7 @@ maximum = ufunc("_maximum")
 minimum = ufunc("_minimum")
 divmod = ufunc("_divmod")
 fmax = ufunc("_fmax")
-fmin = ufunc("_fmin")
+fmin = ufunc("_fmin")#initialise fmin
 ldexp = ufunc("_ldexp")
 floor = ufunc("_floor")
 frexp = ufunc("_frexp")

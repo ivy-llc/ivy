@@ -279,6 +279,7 @@ def _fmin(
     dtype=None,
     subok=True,
 ):
+#Test with out
     ret = ivy.fmin(x1, x2, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)

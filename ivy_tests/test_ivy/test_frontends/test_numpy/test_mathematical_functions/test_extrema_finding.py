@@ -361,6 +361,7 @@ def test_numpy_fmax(
         fn_name="fmin"
     ),
 )
+#front end test for fmin
 def test_numpy_fmin(
     dtypes_values_casting,
     where,
