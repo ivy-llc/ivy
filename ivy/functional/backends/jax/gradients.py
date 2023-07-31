@@ -148,12 +148,12 @@ def jac(func: Callable):
     grad_fn = lambda x_in: ivy.to_native(
         func(ivy.to_ivy(x_in, nested=True)),
         nested=True,
-        include_derived={tuple: True},
+        include_derived=True,
     )
     callback_fn = lambda x_in: ivy.to_ivy(
-        jax.jacrev(grad_fn)((ivy.to_native(x_in, nested=True))),
+        jax.jacfwd(grad_fn)((ivy.to_native(x_in, nested=True))),
         nested=True,
-        include_derived={tuple: True},
+        include_derived=True,
     )
     return callback_fn
 

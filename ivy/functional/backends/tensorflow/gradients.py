@@ -165,7 +165,7 @@ def jac(func: Callable):
     grad_fn = lambda x_in: ivy.to_native(
         func(ivy.to_ivy(x_in, nested=True)),
         nested=True,
-        include_derived={tuple: True},
+        include_derived=True,
     )
 
     def callback_fn(x_in):
@@ -183,7 +183,7 @@ def jac(func: Callable):
                         tape.jacobian(yi, x_in, unconnected_gradients="zero"),
                         nested=True,
                     ),
-                    include_derived={tuple: True},
+                    include_derived=True,
                 )
             else:
                 jacobian = ivy.to_ivy(tape.jacobian(y, x_in))
