@@ -16,6 +16,7 @@ from ivy.utils.assertions import (
     check_isinstance,
     check_less,
     check_same_dtype,
+    check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
 )
@@ -601,6 +602,46 @@ def test_check_inplace_sizes_valid(var, data):
 
     if "e" in local_vars.keys():
         assert "Could not output values of shape" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "var, data",
+    [
+        # cases of failure
+        ((2, 1), (1, 2, 1)),
+        ((2, 1), (3, 1)),
+        # cases to pass
+        ((1, 2), (1, 2)),
+        ((1, 2), (1, 1, 1)),
+    ],
+)
+def test_check_shapes_broadcastable(var, data):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_shapes_broadcastable(var, data)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "Could not broadcast shape" in lines.strip()
 
     if "e" not in local_vars.keys():
         assert not lines.strip()
