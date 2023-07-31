@@ -828,8 +828,8 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="numpy.random.triangular",
     input_dtypes=helpers.get_dtypes("float"),
