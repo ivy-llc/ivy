@@ -1095,16 +1095,16 @@ def nested_map(
     >>> function = lambda a : a  + 1
     >>> ivy.nested_map(x, function)
     {
-        a: ivy.array([[2, 3, 4], 
+        a: ivy.array([[2, 3, 4],
                       [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7], 
+        b: ivy.array([[5, 6, 7],
                       [13, 14, 15]])
     }
     >>> print(x)
     {
-        a: ivy.array([[2, 3, 4], 
+        a: ivy.array([[2, 3, 4],
                       [10, 9, 8]]),
-        b: ivy.array([[5, 6, 7], 
+        b: ivy.array([[5, 6, 7],
                       [13, 14, 15]])
     }
 
