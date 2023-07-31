@@ -234,9 +234,9 @@ def test_nanmean(
     test_gradients=st.just(False),
 )
 def test_nanquantile(
-    *, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device
+    *, dtype_x_axis, keep_dims, test_flags, backend_fw, fn_name, on_device
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
