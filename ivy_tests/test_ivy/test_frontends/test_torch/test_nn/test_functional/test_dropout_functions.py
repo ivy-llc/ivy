@@ -20,7 +20,6 @@ import ivy_tests.test_ivy.helpers as helpers
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     training=st.booleans(),
-    test_with_out=st.just(True),
     test_inplace=st.just(False),
 )
 def test_torch_dropout(
@@ -32,10 +31,12 @@ def test_torch_dropout(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -45,7 +46,7 @@ def test_torch_dropout(
         training=training,
         test_values=False,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     x = np.asarray(x[0], input_dtype[0])
     for u in ret:
         # cardinality test
@@ -77,6 +78,7 @@ def test_torch_dropout1d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
@@ -89,8 +91,9 @@ def test_torch_dropout1d(
         p=prob,
         training=training,
         test_values=False,
+        backend_to_test=backend_fw,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     x = np.asarray(x[0], input_dtype[0])
     for u in ret:
         # cardinality test
@@ -122,10 +125,12 @@ def test_torch_dropout2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -135,7 +140,7 @@ def test_torch_dropout2d(
         training=training,
         test_values=False,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
     x = np.asarray(x[0], dtype[0])
     for u in ret:
         # cardinality test
@@ -167,10 +172,12 @@ def test_torch_dropout3d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -180,7 +187,7 @@ def test_torch_dropout3d(
         training=training,
         test_values=False,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
     x = np.asarray(x[0], input_dtype[0])
     for u in ret:
         # cardinality test

@@ -613,7 +613,7 @@ def unsorted_segment_min(
     segment_ids: Union[ivy.Array, ivy.NativeArray],
     num_segments: Union[int, ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    r"""
+    """
     Compute the minimum along segments of an array. Segments are defined by an integer
     array of segment IDs.
 

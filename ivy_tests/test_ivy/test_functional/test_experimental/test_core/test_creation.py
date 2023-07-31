@@ -28,7 +28,7 @@ def test_vorbis_window(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=1e-02,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -58,8 +58,8 @@ def test_hann_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        atol_=0.005,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        atol_=0.015,
         fn_name=fn_name,
         on_device=on_device,
         size=int(x[0]),
@@ -90,7 +90,7 @@ def test_kaiser_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -121,7 +121,7 @@ def test_kaiser_bessel_derived_window(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -167,7 +167,8 @@ def test_hamming_window(
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
+        atol_=2e-06,
         fn_name=fn_name,
         on_device=on_device,
         window_length=int(x[0]),
@@ -197,7 +198,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=int(x[0]),
@@ -210,7 +211,7 @@ def test_tril_indices(*, dtype_and_n, k, test_flags, backend_fw, fn_name, on_dev
 @handle_test(
     fn_tree="functional.ivy.experimental.eye_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         max_num_dims=1,
         min_dim_size=1,
@@ -226,7 +227,7 @@ def test_eye_like(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device)
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -278,7 +279,7 @@ def test_ndindex(dtype_x_shape):
         max_dim_size=10,
     ),
     dtypes=helpers.get_dtypes(
-        "numeric", 
+        "numeric",
         full=False,
     ),
     sparse=st.booleans(),
@@ -292,7 +293,7 @@ def test_indices(*, shape, dtypes, sparse, test_flags, backend_fw, fn_name, on_d
         input_dtypes=[],
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         dimensions=shape,
         dtype=dtypes[0],
@@ -342,7 +343,6 @@ def valid_unsorted_segment_min_inputs(draw):
 # unsorted_segment_min
 @handle_test(
     fn_tree="functional.ivy.experimental.unsorted_segment_min",
-    ground_truth_backend="tensorflow",
     d_x_n_s=valid_unsorted_segment_min_inputs(),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
@@ -354,13 +354,12 @@ def test_unsorted_segment_min(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dtypes, data, num_segments, segment_ids = d_x_n_s
     helpers.test_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
-        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,

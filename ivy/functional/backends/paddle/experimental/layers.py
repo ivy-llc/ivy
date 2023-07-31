@@ -9,6 +9,7 @@ from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
     with_supported_dtypes,
+    with_unsupported_dtypes,
 )
 from .. import backend_version
 
@@ -86,11 +87,9 @@ def max_pool1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-            )
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,
@@ -324,11 +323,9 @@ def fft(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-            )
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,
@@ -348,11 +345,9 @@ def dropout1d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-            )
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,
@@ -372,11 +367,9 @@ def dropout2d(
 
 @with_supported_device_and_dtypes(
     {
-        "2.5.0 and below": {
-            "cpu": (
-                "float32",
-                "float64",
-            )
+        "2.5.1 and below": {
+            "cpu": ("bfloat16", "float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
         }
     },
     backend_version,
@@ -440,3 +433,19 @@ def ifftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.ifftn(x, s, axes, norm)
+
+
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16", "complex64", "complex128", "bool")},
+    backend_version,
+)
+def rfftn(
+    x: paddle.Tensor,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = "backward",
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    result = paddle.fft.rfftn(x, s, axes, norm)
+    return result.astype("complex128")

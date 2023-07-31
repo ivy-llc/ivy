@@ -6,7 +6,7 @@ from hypothesis import strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 
 
 # random_uniform
@@ -51,7 +51,7 @@ def test_random_uniform(
             input_dtypes=low_dtype + high_dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             low=low[0],
@@ -65,8 +65,10 @@ def test_random_uniform(
     if seed:
         ret1, ret_gt2 = call()
         assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
 
     for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
@@ -113,7 +115,7 @@ def test_random_normal(
             input_dtypes=mean_dtype + std_dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             mean=mean[0],
@@ -127,8 +129,10 @@ def test_random_normal(
     if seed:
         ret1, ret_gt1 = call()
         assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
     for u, v in zip(ret, ret_gt):
         assert u.dtype == v.dtype
 
@@ -173,7 +177,7 @@ def test_multinomial(*, everything, seed, test_flags, backend_fw, fn_name, on_de
             input_dtypes=prob_dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             population_size=population_size,
@@ -195,8 +199,10 @@ def test_multinomial(*, everything, seed, test_flags, backend_fw, fn_name, on_de
 
         assert ivy.any(ret_np == ret_np1)
 
-    ret_np = helpers.flatten_and_to_np(ret=ret_np)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(
+        ret=ret_from_np, backend=test_flags.ground_truth_backend
+    )
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -241,7 +247,7 @@ def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_de
             input_dtypes=dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             low=low,
@@ -255,8 +261,10 @@ def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_de
     if seed:
         ret1, ret_gt1 = call()
         assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
     for u, v in zip(ret, ret_gt):
         assert ivy.all(u >= low) and ivy.all(u < high)
         assert ivy.all(v >= low) and ivy.all(v < high)
@@ -267,9 +275,10 @@ def test_randint(*, dtype_low_high, seed, test_flags, backend_fw, fn_name, on_de
     fn_tree="functional.ivy.seed",
     seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
-def test_seed(seed_val):
+def test_seed(seed_val, backend_fw):
     # smoke test
-    ivy.seed(seed_value=seed_val)
+    with update_backend(backend_fw) as ivy_backend:
+        ivy_backend.seed(seed_value=seed_val)
 
 
 # shuffle
@@ -295,7 +304,7 @@ def test_shuffle(
             input_dtypes=dtype,
             test_flags=test_flags,
             on_device=on_device,
-            fw=backend_fw,
+            backend_to_test=backend_fw,
             fn_name=fn_name,
             test_values=False,
             x=x[0],
@@ -307,7 +316,9 @@ def test_shuffle(
     if seed:
         ret1, ret_gt1 = call()
         assert ivy.any(ret == ret1)
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ret_gt, backend=test_flags.ground_truth_backend
+    )
     for u, v in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))

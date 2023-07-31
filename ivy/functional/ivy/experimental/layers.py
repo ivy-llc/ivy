@@ -116,6 +116,76 @@ def max_pool1d(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+def max_unpool1d(
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    x
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+
+    Both the description and the type hints above assume an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
+    >>> print(pool_result)
+    ivy.array([[[ 4.,  5.,  6.,  7.],
+            [ 8.,  9., 10., 11.]],
+
+           [[16., 17., 18., 19.],
+            [20., 21., 22., 23.]]])
+    >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
+    >>> print(unpool_result)
+    ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  8.,  0.,  9.,  0., 10.,  0., 11.,  0.]],
+
+           [[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 16.,  0., 17.,  0.],
+            [ 0., 18.,  0., 19.,  0.,  0.,  0.,  0., 20.,  0., 21.,  0.]]])
+    """
+    return ivy.current_backend(x).max_unpool1d(
+        x, indices, kernel, strides, padding, data_format=data_format, out=out
+    )
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
     kernel: Union[int, Tuple[int, ...]],
@@ -2350,12 +2420,6 @@ def _get_identity(func, dtype, init):
     return init
 
 
-def _int_arg_to_tuple(arg, dims):
-    if isinstance(arg, int):
-        arg = tuple([arg] * dims)
-    return arg
-
-
 avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
@@ -2417,27 +2481,16 @@ def reduce_window(
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
-    >>> ivy.reduce_window(x, 0, ivy.sum, (2, 2))
-    ivy.array([[32.]])
+    >>> ivy.reduce_window(x, 0, ivy.add, (2, 2))
+    ivy.array([[14, 18, 22], [30, 34, 38]])
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-
-    dims, strides, padding, base_dilation, window_dilation = ivy.map(
-        _int_arg_to_tuple,
-        unique={
-            "arg": [
-                window_dimensions,
-                window_strides,
-                padding,
-                base_dilation,
-                window_dilation,
-            ]
-        },
-        constant={"dims": len(op.shape)},
+    dims, strides, padding, base_dilation, window_dilation = map(
+        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
     )
-
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
@@ -2613,3 +2666,84 @@ def ifftn(
             [-0.48472244+0.30233797j]])
     """
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+# @inputs_to_ivy_arrays
+@to_native_arrays_and_back
+def rfftn(
+    x: Union[ivy.Array, ivy.NativeArray],
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
+    *,
+    norm: Optional[str] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the N-dimensional discrete Fourier Transform for real input.
+
+    Parameters
+    ----------
+    x : array_like
+        Input array, taken to be real.
+    s : sequence of ints, optional
+        Shape (length along each transformed axis) to use from the input.
+        (s[0] refers to axis 0, s[1] to axis 1, etc.). The final element of s
+        corresponds to n for rfft(x, n), while for the remaining axes, it
+        corresponds to n for fft(x, n). Along any axis, if the given shape is
+        smaller than that of the input, the input is cropped. If it is larger,
+        the input is padded with zeros. If s is not given, the shape of the
+        input along the axes specified by axes is used.
+    axes : sequence of ints, optional
+        Axes over which to compute the FFT. If not given, the last len(s) axes
+        are used, or all axes if s is also not specified.
+    norm : {"backward", "ortho", "forward"}, optional
+        Normalization mode. Default is "backward". Indicates which direction of
+        the forward/backward pair of transforms is scaled and with what
+        normalization factor.
+    out : array_like, optional
+        Optional output array to store the result of the computation. The shape
+        and dtype of this array must match the expected output.
+
+    Returns
+    -------
+    out : complex ndarray
+        The truncated or zero-padded input, transformed along the axes indicated
+        by axes or by a combination of s and a, as explained in the parameters
+        section above. The length of the last axis transformed will be
+        s[-1] // 2 + 1, while the remaining transformed axes will have lengths
+        according to s, or unchanged from the input.
+
+    Raises
+    ------
+    ValueError
+        If s and axes have different lengths.
+    IndexError
+        If an element of axes is larger than the number of axes of a.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x)
+    >>> print(result)
+    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+
+    >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
+    >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
+    >>> print(result)
+    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
+     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
+    """
+    if norm is None:
+        norm = "backward"
+
+    if axes is None:
+        axes = list(range(x.ndim - len(s), x.ndim))
+    elif s is None:
+        s = [x.shape[axis] for axis in axes]
+    elif len(s) != len(axes):
+        raise ValueError("s and axes must have the same length.")
+
+    return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)

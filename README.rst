@@ -75,7 +75,7 @@ Status
     <a href="https://github.com/unifyai/ivy/pulls">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://pypi.org/project/ivy-core">
+    <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
@@ -309,7 +309,7 @@ The model's output can be visualized as follows:
 .. raw:: html
 
    <div align="center">
-      <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
+      <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/regressor_lq.gif">
    </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
@@ -383,13 +383,13 @@ The easiest way to set up Ivy is to install it using pip with the following comm
 
 .. code-block:: bash
 
-    pip install ivy-core
+    pip install ivy
 
 or alternatively:
 
 .. code-block:: bash
 
-    python3 -m pip install ivy-core
+    python3 -m pip install ivy
 
 
 Docker
@@ -478,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
@@ -1650,7 +1650,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
    </a>
 
 |
@@ -1660,7 +1660,7 @@ Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need as many hands as possible on it! Whether you are a seasoned developer or just starting out, you'll find a place here! Join the Ivy community in our `Discord`_ 👾 server, which is the perfect place to ask questions, share ideas, and get help from both fellow developers and the Ivy Team directly!
 
-Also! Feel free to follow us in `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
+Also! Feel free to follow us on `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
 
 Can't wait to see you there!
 
