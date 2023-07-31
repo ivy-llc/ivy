@@ -2078,6 +2078,7 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
     # Other errors
     if isinstance(padding, str) and (padding.upper() == "VALID") and ceil_mode:
         raise ValueError("When 'padding' is 'VALID', 'ceil_mode' must be False")
+    assert len(kernel) == len(strides), f"len({kernel}) must equal len({strides})"
 
     # Account for dilation when padding > kernel/2. Not the case in torch by default.
     new_kernel = tuple(
@@ -2096,32 +2097,28 @@ def _depth_max_pooling_helper(
     # We assume that the kernel and the data have the same data_format.
     depth_pooling = False
     CHANNEL_LAST = "channel_last"
-    channel_kernel_idx = -1 if data_format == CHANNEL_LAST else 1
-    channels = x_shape[channel_kernel_idx]
+    channel_idx = -1 if data_format == CHANNEL_LAST else 1
     if len(kernel) == dims + 2:
         spatial_kernel = kernel[1:-1] if data_format == CHANNEL_LAST else kernel[2:]
-        if kernel[channel_kernel_idx] != 1:
+        if kernel[channel_idx] != 1:
             depth_pooling = True
             if any(i != 1 for i in spatial_kernel):
                 raise NotImplementedError(
                     "MaxPooling supports exactly one of pooling across"
                     " depth or pooling across width/height."
                 )
-            if (
-                len(strides) != dims + 2
-                or strides[channel_kernel_idx] != kernel[channel_kernel_idx]
-            ):
+            if len(strides) != dims + 2 or strides[channel_idx] != kernel[channel_idx]:
                 raise NotImplementedError(
                     "Depthwise max pooling requires the depth window to equal the depth"
                     " stride"
                 )
-            if channels % kernel[-1] != 0:
+            if x_shape[channel_idx] % kernel[channel_idx] != 0:
                 raise NotImplementedError(
                     "Depthwise max pooling requires the depth window to evenly divide"
                     " the input depth"
                 )
-            kernel = [kernel[channel_kernel_idx], *[1] * (dims - 1)]
-            strides = [strides[channel_kernel_idx], *[1] * (dims - 1)]
+            kernel = [kernel[channel_idx], *[1] * (dims - 1)]
+            strides = [strides[channel_idx], *[1] * (dims - 1)]
         else:
             kernel = spatial_kernel
             if len(strides) == dims + 2:

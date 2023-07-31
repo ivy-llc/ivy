@@ -64,13 +64,11 @@ def test_max_pool1d(
         max_side=4,
         explicit_or_str_padding=True,
         return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
     ),
-    ceil_mode=st.just(True),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
     ground_truth_backend="jax",
-    # problem with containers converting tuple padding to
-    # lists which jax does not support
-    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
@@ -81,7 +79,7 @@ def test_max_pool2d(
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation, _ = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
     assume(
         not (
             backend_fw.current_backend_str() == "tensorflow"
@@ -94,6 +92,11 @@ def test_max_pool2d(
             )
         )
     )
+    data_format = "NCHW" if data_format == "channel_first" else "NHWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw.backend == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,

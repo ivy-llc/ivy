@@ -77,13 +77,13 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def max_pool2d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NHWC",
-        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        dilation: Union[int, Tuple[int, ...]] = 1,
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -105,6 +105,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -147,7 +152,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self: ivy.Array,
         kernel: Union[int, Tuple[int, ...]],
         strides: Union[int, Tuple[int, ...]],
-        padding: str,
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NDHWC",
