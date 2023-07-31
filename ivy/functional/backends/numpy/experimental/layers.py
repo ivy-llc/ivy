@@ -883,40 +883,34 @@ def stft(
     boundary: Optional[str] = 'zeros',
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(signal, int):
-        raise ValueError("Signal must be an array-like object, not an integer.")
+    if window is None:
+        window = np.hanning(win_length or n_fft)
 
-    if isinstance(signal, tuple):
-        signal = np.array(signal)
+    if len(signal.shape) == 1:
+        signal = signal[np.newaxis, :] 
 
-    if axis is None:
-        signal = np.atleast_1d(signal)
-    else:
-        signal = np.expand_dims(signal, axis=axis)
+    if center:
+        pad = ((n_fft - frame_step) // 2)
+        signal = np.pad(signal, [(0, 0)] * (signal.ndim - 1) + [(pad, pad)], mode=pad_mode)
 
-    signal_length = signal.shape[-1]
+    num_frames = 1 + (signal.shape[-1] - n_fft) // frame_step
 
-    if isinstance(n_fft, int):
-        n_fft = (n_fft,)
-    if any(length > signal_length for length in n_fft):
-        raise ValueError("Window size (n_fft) cannot be larger than the input length signal.")
+    stft_result = np.empty((signal.shape[0], num_frames, n_fft // 2 + 1), dtype=np.complex128)
 
-    frames = np.lib.stride_tricks.sliding_window_view(signal, window_shape=n_fft, axis=-1, writeable=False)
+    for i in range(num_frames):
+        start = i * frame_step
+        end = start + n_fft
+        frame = signal[..., start:end]
+        frame = frame * window
 
-    if window is not None:
-        if isinstance(window, str):
-            window = np.hanning(n_fft[-1]) 
-        frames *= window
+        stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
 
-    if onesided:
-        stft_result = np.fft.rfft(frames, n=n_fft[-1], axis=-1)
-    else:
-        stft_result = np.fft.fft(frames, n=n_fft[-1], axis=-1)
+        if onesided:
+            stft_result[:, i] = stft_frame[..., :n_fft // 2 + 1]
+        else:
+            stft_result[:, i] = stft_frame
 
-    if return_complex:
-        return stft_result
-    else:
-        return np.abs(stft_result)
+    return stft_result[0] if len(signal.shape) == 1 else stft_result
         
     
 def fft2(
