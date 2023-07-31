@@ -732,6 +732,20 @@ Log of container being built would look like below:
 7. That's it, you have just setup GitHub codespaces and can start developing Ivy.
 The configuration files install all the required packages, extensions for you to get started quickly.
 
+**Setting up Codespaces with a GPU**
+
+If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
+
+1. Point 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
+   :width: 420
+
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
+   :width: 420
+
 **Opening an existing Codespace**
 
 If you have already setup codespaces, refer to the following to open your previously setup codespaces environment.
