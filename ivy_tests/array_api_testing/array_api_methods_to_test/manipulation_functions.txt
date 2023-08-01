@@ -6,3 +6,4 @@ reshape
 roll
 squeeze
 stack
+flatten
