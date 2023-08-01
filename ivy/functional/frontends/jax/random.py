@@ -352,10 +352,10 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     if method == "cholesky":
         cov_factor = ivy.cholesky(cov)
     elif method == "eigh":
-        (w, v) = ivy.linalg.eigh(cov)
+        (w, v) = ivy.eigh(cov)
         cov_factor = v * ivy.sqrt(w[..., None, :])
     elif method == "svd":
-        (u, s, _) = ivy.linalg.svd(cov)
+        (u, s, _) = ivy.svd(cov)
         cov_factor = u * ivy.sqrt(s[..., None, :])
-    normal = ivy.random_normal(seed, shape=shape + mean.shape[-1:], dtype=dtype)
-    return mean + ivy.einsum("...ij,...j->...i", cov_factor, normal)
+    rand_normal = ivy.random_normal(seed, shape=shape + mean.shape[-1:], dtype=dtype)
+    return mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal)
