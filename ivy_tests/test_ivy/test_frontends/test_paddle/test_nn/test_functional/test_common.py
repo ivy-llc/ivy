@@ -198,7 +198,7 @@ def test_paddle_zeropad2d(
         padding=padding,
         data_format=dataformat,
     )
-    
+
 
 @st.composite
 def _pad_helper(draw):
