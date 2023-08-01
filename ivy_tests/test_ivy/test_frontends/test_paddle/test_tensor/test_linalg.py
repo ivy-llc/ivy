@@ -818,7 +818,7 @@ def test_paddle_qr(
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x    
+    dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -829,7 +829,7 @@ def test_paddle_qr(
         mode=mode,
     )
 
-    
+
 @handle_frontend_test(
     fn_tree="paddle.dist",
     dtype_and_input=helpers.dtype_and_values(
