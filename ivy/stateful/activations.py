@@ -388,3 +388,28 @@ class ELU(Module):
             The outputs following the ELU activation *[batch_shape, d]*
         """
         return ivy.elu(x, alpha=alpha)
+
+class LogSigmoid(Module):
+    def __init__ (self):
+"Apply the LogSigmoid activation function"
+     super().__init__()
+
+    def forward(self, x:ivy.Array) -> ivy.Array
+
+        """
+        Forward pass of the logsigmoid activation. 
+        
+        
+        Parameters
+        ----------
+        
+        x(ivy.Array): Input array
+
+        Returns
+        -------
+        
+        y(ivy.Array): Output from applying logisgmoid to the input array elementwise. 
+
+        """
+
+        return ivy.logsigmoid(x)
