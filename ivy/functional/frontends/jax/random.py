@@ -353,7 +353,7 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
         cov_factor = ivy.cholesky(cov)
     elif method == "eigh":
         (w, v) = ivy.linalg.eigh(cov)
-        cov_factor = w * ivy.sqrt(s[..., None, :])
+        cov_factor = v * ivy.sqrt(w[..., None, :])
     elif method == "svd":
         (u, s, _) = ivy.linalg.svd(cov)
         cov_factor = u * ivy.sqrt(s[..., None, :])
