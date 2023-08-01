@@ -104,7 +104,7 @@ class Tensor:
     def ceil(self):
         return paddle_frontend.ceil(self)
 
-    @with_unsupported_dtypes({"2.4.2 and below": ("complex", "int8")}, "paddle")
+    @with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
     def numel(self):
         return paddle_frontend.numel(self)
 

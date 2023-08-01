@@ -22,7 +22,7 @@ def numel(x, name=None):
         length = len(x)
     except (ValueError, TypeError):
         length = 1  # if 0 dimensional tensor with 1 element
-    return ivy.array([prod if prod > 0 else ivy.array(length, dtype=ivy.int64)])
+    return ivy.array(prod if prod > 0 else ivy.array(length, dtype=ivy.int64))
 
 
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
