@@ -5,7 +5,7 @@ import sys
 from ivy.functional.frontends import set_frontend_to_specific_version
 from . import config
 from . import devicearray
-from .devicearray import DeviceArray
+from .devicearray import Array
 from . import general_functions
 from .general_functions import *
 from . import lax
