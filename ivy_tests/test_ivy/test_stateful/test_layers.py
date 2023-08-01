@@ -1514,13 +1514,19 @@ def test_dct(
     method_tree="Embedding.__call__",
     dtypes_indices_weights=helpers.embedding_helper(),
     max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
-    number_positional_args=st.just(2),
+    weight_initializer=_sample_initializer(),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
+    seed=helpers.seed(),
 )
 def test_embedding_layer(
     *,
     dtypes_indices_weights,
     max_norm,
-    number_positional_args,
+    weight_initializer,
+    init_with_v,
+    method_with_v,
+    seed,
     test_gradients,
     on_device,
     class_name,
@@ -1530,27 +1536,33 @@ def test_embedding_layer(
     method_flags,
     backend_fw,
 ):
-    dtypes, indices, weights = dtypes_indices_weights
-    dtypes = [dtypes[1], dtypes[0]]
+    ivy.seed(seed_value=seed)
+    dtypes, indices, weights, _ = dtypes_indices_weights
+    input_dims, output_dims = weights.shape
 
     helpers.test_method(
-        ground_truth_backend=ground_truth_backend,
         backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
-            "indices": indices,
+            "input_dims": input_dims,
+            "output_dims": output_dims,
             "max_norm": max_norm,
+            "weight_initializer": weight_initializer,
             "device": on_device,
-            "dtype": dtypes[0],
+            "dtype": dtypes[1],
         },
-        method_input_dtypes=dtypes,
-        method_all_as_kwargs_np={"inputs": weights},
+        method_input_dtypes=list(dtypes[0]),
+        method_all_as_kwargs_np={"x": indices},
         class_name=class_name,
         method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+        rtol_=1e-03,
+        atol_=1e-03,
         test_gradients=test_gradients,
         on_device=on_device,
-        number_positional_args=number_positional_args,
     )
 
 

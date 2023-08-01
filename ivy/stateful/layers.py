@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.func_wrapper import handle_nestable
-from ivy.stateful.initializers import GlorotUniform, Zeros
+from ivy.stateful.initializers import GlorotUniform, RandomNormal, Zeros
 from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
@@ -2098,31 +2098,68 @@ class Dct(Module):
 
 
 class Embedding(Module):
-    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+    def __init__(
+        self,
+        input_dims,
+        output_dims,
+        /,
+        *,
+        max_norm=None,
+        weight_initializer=RandomNormal(0.0, 1.0),
+        device=None,
+        v=None,
+        dtype=None,
+    ):
         """
-        Class for embedding indices into a dense representation.
+        Class for embedding indices into a dense representation. The Embedding layer is
+        a simple lookup table for dense vectors. It's typically used to store word
+        embeddings and query them using indices.
 
         Parameters
         ----------
-        indices
-            The indices to embed.
+        input_dims
+            Size of the vocabulary.
+        output_dims
+            Dimension of each embedding vector.
         max_norm
-            If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
-        out
-            If given, the result will be inserted into this tensor. Default: None
+            If given, each embedding vector with L2 norm larger than max_norm is renormalized to have norm max_norm.
         """
-        self._indices = indices
+        self._input_dims = input_dims
+        self._output_dims = output_dims
         self._max_norm = max_norm
-        self._out = out
-        Module.__init__(self, device=device, dtype=dtype)
+        self._w_init = weight_initializer
+        self._w_shape = (self._input_dims, self._output_dims)
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _create_variables(self, device, dtype=None):
+        """
+        Create internal variables for the layer.
+
+        Parameters
+        ----------
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
+        """
+        v = {
+            "weight": self._w_init.create_variables(
+                var_shape=self._w_shape,
+                device=device,
+                dtype=dtype,
+            )
+        }
+        return v
+
+    def _forward(self, x):
         """
         Forward pass of the layer.
 
         Parameters
         ----------
-        inputs
+        x
             The input array to the layer.
 
         Returns
@@ -2130,10 +2167,9 @@ class Embedding(Module):
             The output array of the layer.
         """
         return ivy.embedding(
-            inputs,
-            self._indices,
+            self.v.weight,
+            x,
             max_norm=self._max_norm,
-            out=self._out,
         )
 
 
