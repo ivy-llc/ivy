@@ -107,7 +107,7 @@ def tensorsolve(a, b, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
