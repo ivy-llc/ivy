@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_function,
     inputs_to_ivy_arrays,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
