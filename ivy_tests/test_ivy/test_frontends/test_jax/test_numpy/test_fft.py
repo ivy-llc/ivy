@@ -55,7 +55,7 @@ def test_jax_numpy_fft(
         available_dtypes=helpers.get_dtypes("valid"), shape=(4,), array_api_dtypes=True
     ),
 )
-def test_jax_numpy_fttshift(
+def test_jax_numpy_fftshift(
     dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_device
 ):
     input_dtype, arr = dtype_and_x
