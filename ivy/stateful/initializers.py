@@ -396,8 +396,9 @@ class RandomNormal(Initializer):
 
     def create_variables(
         self,
-        device,
-        dtype,
+        var_shape=None,
+        device=None,
+        dtype=None,
     ):
         """
         Create internal variables for the layer.
@@ -414,7 +415,7 @@ class RandomNormal(Initializer):
             ivy.random_normal(
                 mean=self._mean,
                 std=self._stddev,
-                shape=self._shape,
+                shape=self._shape if not var_shape else var_shape,
                 seed=self._seed,
                 device=device,
                 dtype=dtype,
