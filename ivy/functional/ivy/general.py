@@ -37,6 +37,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view_indexing,
+    handle_device_shifting,
 )
 from ivy.functional.ivy.device import dev
 
@@ -637,6 +638,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -776,6 +778,7 @@ def all_equal(
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -847,6 +850,7 @@ def isscalar(x: Any, /) -> bool:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """
     Convert an array with a single element into a scalar.
@@ -903,6 +907,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """
     Create a (possibly nested) list from input array.
@@ -2710,6 +2715,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_view_indexing
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2752,35 +2758,22 @@ def get_item(
     >>> print(ivy.get_item(x, query))
     ivy.array([  4,  -2, -10])
     """
-    if query is Ellipsis or (isinstance(query, tuple) and query == (Ellipsis,)):
+    query = ivy.array(True) if query is None else query
+    if query is Ellipsis or (
+        isinstance(query, tuple) and len(query) == 1 and query[0] is Ellipsis
+    ):
         return x
-    mask_or_slices = (
-        any(isinstance(idx, slice) for idx in query)
-        if isinstance(query, (tuple, list))
-        else isinstance(query, slice)
-    )
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
-        mask_or_slices = True
         if not len(query.shape):
             if not query:
                 return ivy.array([], shape=(0,), dtype=x.dtype)
             return ivy.expand_dims(x, axis=0)
         query = ivy.nonzero(query, as_tuple=False)
-        to_squeeze = []
+        ret = ivy.gather_nd(x, query)
     else:
-        query = _parse_query(query, x.shape)
-        query, to_squeeze = _query_to_indices(query)
-    ret = ivy.gather_nd(x, query)
-    if to_squeeze:
-        to_squeeze = [i for i in to_squeeze if ret.shape[i] == 1]
-        ret = ivy.squeeze(ret, axis=to_squeeze) if to_squeeze else ret
-    if (
-        query.shape[0] == 1
-        and not mask_or_slices
-        and 0 not in to_squeeze
-        and len(ret.shape) > 1
-    ):
-        ret = ivy.squeeze(ret, axis=0)
+        query, target_shape = _parse_query(query, x.shape)
+        ret = ivy.gather_nd(x, query)
+        ret = ivy.reshape(ret, target_shape) if target_shape != list(ret.shape) else ret
     if copy:
         return ivy.copy_array(ret)
     return ret
@@ -2845,16 +2838,15 @@ def set_item(
     >>> print(y)
     ivy.array([[0, -1, 20], [10, 10, -8]])
     """
+    query = ivy.array(True) if query is None else query
     if ivy.is_array(query) and ivy.is_bool_dtype(query):
         if not len(query.shape):
             query = ivy.tile(query, (x.shape[0],))
-        expected_shape = ivy.get_item(x, query).shape
+        target_shape = ivy.get_item(x, query).shape
         query = ivy.nonzero(query, as_tuple=False)
     else:
-        query = _parse_query(query, x.shape)
-        query, to_squeeze = _query_to_indices(query)
-        expected_shape = ivy.gather_nd(x, query).shape
-    val = _broadcast_to(val, expected_shape).astype(x.dtype)
+        query, target_shape = _parse_query(query, x.shape)
+    val = _broadcast_to(val, target_shape).astype(x.dtype)
     if copy:
         x = ivy.copy_array(x)
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
@@ -2869,14 +2861,31 @@ set_item.mixed_backend_wrappers = {
 }
 
 
-def _parse_query(query, x_shape, allow_neg_step=True):
-    query = (query,) if not isinstance(query, (tuple, list)) else query
+def _int_list_or_array(var):
+    # check if var is a list/tuple of integers or a 1-d array of integers
+    return (
+        isinstance(var, (list, tuple)) and all(isinstance(i, int) for i in var)
+    ) or (ivy.is_array(var) and ivy.is_int_dtype(var) and len(var.shape) == 1)
+
+
+def _parse_query(query, x_shape):
+    if isinstance(query, tuple) and all(_int_list_or_array(q) for q in query):
+        query = list(query) if isinstance(query, tuple) else query
+        for i, idx in enumerate(query):
+            if ivy.is_array(idx):
+                query[i] = ivy.where(idx < 0, idx + x_shape[i], idx)
+            else:
+                query[i] = [ii + x_shape[i] if ii < 0 else ii for ii in idx]
+        query = ivy.array(query)
+        query = query.T if len(query.shape) > 1 else query
+        target_shape = [query.shape[0], *x_shape[query.shape[1] :]]
+        return query, target_shape
+    query = (query,) if not isinstance(query, tuple) else query
     query = (
         _parse_ellipsis(query, len(x_shape))
         if any(q is Ellipsis for q in query)
         else query
     )
-    ind_type = type(query)
     query = (
         list(query)
         if isinstance(query, tuple)
@@ -2896,43 +2905,26 @@ def _parse_query(query, x_shape, allow_neg_step=True):
             else:
                 stop = idx.stop
             stop = stop + s if stop < 0 and idx.stop is not None else stop
-            query[i] = (
-                slice(start, stop, step)
-                if step >= 0 or allow_neg_step
-                else ivy.arange(start, stop, step).to_list()
-            )
+            query[i] = ivy.arange(start, stop, step)
         elif isinstance(idx, int):
-            query[i] = idx + s if idx < 0 else idx
+            query[i] = ivy.array(idx + s if idx < 0 else idx)
         elif isinstance(idx, (tuple, list)):
-            query[i] = [ii + s if ii < 0 else ii for ii in idx]
-        elif ivy.is_array(idx) and len(idx.shape) <= 1:
+            # ToDo: add handling for case of nested tuple/lists
+            query[i] = ivy.array([ii + s if ii < 0 else ii for ii in idx])
+        elif ivy.is_array(idx):
             query[i] = ivy.where(idx < 0, idx + s, idx)
         else:
-            raise ivy.exceptions.IvyException("unsupported query type")
-    if ind_type not in (tuple, list):
-        return query[0]
-    return tuple(query)
+            raise ivy.exceptions.IvyException("unsupported query format")
+        query[i] = ivy.astype(query[i], ivy.int64)
+    target_shape = [s for q in query for s in q.shape]
+    target_shape += list(x_shape[len(query) :])
+    query = [q.reshape((-1,)) if len(q.shape) > 1 else q for q in query]
+    grid = ivy.meshgrid(*query, indexing="ij")
+    return ivy.stack(grid, axis=-1), target_shape
 
 
 def _numel(shape):
     return math.prod(shape) if shape != () else 1
-
-
-def _query_to_indices(query):
-    mesh = [
-        (
-            ivy.arange(idx.start, idx.stop, idx.step, dtype=ivy.int64)
-            if isinstance(idx, slice)
-            else ivy.array(idx, dtype=ivy.int64)
-        )
-        for idx in query
-    ]
-    grid = ivy.meshgrid(*mesh, indexing="ij")
-    to_squeeze = []
-    for i, g in enumerate(grid):
-        if mesh[i].shape == ():
-            to_squeeze += [i]
-    return ivy.stack(grid, axis=-1), to_squeeze
 
 
 def _broadcast_to(input, target_shape):
@@ -2958,6 +2950,7 @@ def _broadcast_to(input, target_shape):
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+# @handle_device_shifting
 def inplace_update(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3059,6 +3052,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def inplace_decrement(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3129,6 +3123,7 @@ def inplace_decrement(
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 def inplace_increment(
     x: Union[ivy.Array, ivy.NativeArray],
     val: Union[ivy.Array, ivy.NativeArray],
@@ -3187,6 +3182,7 @@ def inplace_increment(
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3275,6 +3271,7 @@ def scatter_flat(
 @to_native_arrays_and_back
 @handle_array_function
 @inputs_to_native_shapes
+@handle_device_shifting
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -3358,6 +3355,7 @@ def scatter_nd(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3466,6 +3464,7 @@ def gather(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3565,6 +3564,7 @@ def multiprocessing(context: Optional[str] = None):
 @outputs_to_ivy_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def shape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3657,6 +3657,7 @@ def unset_shape_array_mode() -> None:
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
@@ -3827,9 +3828,13 @@ def _dnd_dict_union(a, b):
     return res
 
 
-def _get_devices_and_dtypes(fn, complement=True):
-    supported_devices = ivy.function_supported_devices(fn)
-    supported_dtypes = ivy.function_supported_dtypes(fn)
+def _get_devices_and_dtypes(fn, recurse=False, complement=True):
+    supported_devices = ivy.function_supported_devices(fn, recurse=recurse)
+    supported_dtypes = ivy.function_supported_dtypes(fn, recurse=recurse)
+
+    if hasattr(fn, "partial_mixed_handler"):
+        supported_devices = supported_devices["primary"]
+        supported_dtypes = supported_dtypes["primary"]
 
     supported = {}
     # Generate a base supported set from other attributes
@@ -3883,7 +3888,9 @@ def _get_devices_and_dtypes(fn, complement=True):
 def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Return the supported combination of devices and dtypes of the current backend's
-    function.
+    function. The function returns a dict containing the supported combination of
+    devices and dtypes of the primary and compositional implementations incase of
+    partial mixed functions.
 
     Parameters
     ----------
@@ -3896,7 +3903,7 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
     Returns
     -------
     ret
-        The unsupported devices of the function
+        Tuple or dict containing the supported devices and dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
@@ -3905,18 +3912,26 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
             "attributes cannot both exist in a particular backend"
         ),
     )
-    supported_devices_dtype = _get_devices_and_dtypes(fn, complement=False)
 
-    if recurse:
-        supported_devices_dtype = ivy.functional.data_type._nested_get(
-            fn,
-            _all_dnd_combinations(),
-            _dnd_dict_intersection,
-            function_supported_devices_and_dtypes,
-            wrapper=lambda x: x,
-        )
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_supported_devices_and_dtypes(
+                fn.compos, recurse=recurse
+            ),
+            "primary": _get_devices_and_dtypes(fn, complement=False),
+        }
+    else:
+        supported_devices_dtypes = _get_devices_and_dtypes(fn, complement=False)
+        if recurse:
+            supported_devices_dtypes = ivy.functional.data_type._nested_get(
+                fn,
+                supported_devices_dtypes,
+                _dnd_dict_intersection,
+                function_supported_devices_and_dtypes,
+                wrapper=lambda x: x,
+            )
 
-    return supported_devices_dtype
+    return supported_devices_dtypes
 
 
 @handle_exceptions
@@ -3924,7 +3939,9 @@ def function_supported_devices_and_dtypes(fn: Callable, recurse: bool = True) ->
 def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) -> Dict:
     """
     Return the unsupported combination of devices and dtypes of the current backend's
-    function.
+    function. The function returns a dict containing the unsupported combination of
+    devices and dtypes of the primary and compositional implementations incase of
+    partial mixed functions.
 
     Parameters
     ----------
@@ -3937,7 +3954,7 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
     Returns
     -------
     ret
-        The unsupported combination of devices and dtypes of the function
+        Tuple or dict containing the unsupported devices and dtypes of the function
     """
     ivy.utils.assertions.check_true(
         _is_valid_device_and_dtypes_attributes(fn),
@@ -3946,18 +3963,24 @@ def function_unsupported_devices_and_dtypes(fn: Callable, recurse: bool = True) 
             "attributes cannot both exist in a particular backend"
         ),
     )
-    unsupported_devices_dtype = _get_devices_and_dtypes(fn, complement=True)
-
-    if recurse:
-        unsupported_devices_dtype = ivy.functional.data_type._nested_get(
-            fn,
-            {},
-            _dnd_dict_union,
-            function_unsupported_devices_and_dtypes,
-            wrapper=lambda x: x,
-        )
-
-    return unsupported_devices_dtype
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_unsupported_devices_and_dtypes(
+                fn.compos, recurse=recurse
+            ),
+            "primary": _get_devices_and_dtypes(fn, complement=True),
+        }
+    else:
+        unsupported_devices_dtypes = _get_devices_and_dtypes(fn, complement=True)
+        if recurse:
+            unsupported_devices_dtypes = ivy.functional.data_type._nested_get(
+                fn,
+                unsupported_devices_dtypes,
+                _dnd_dict_union,
+                function_unsupported_devices_and_dtypes,
+                wrapper=lambda x: x,
+            )
+    return unsupported_devices_dtypes
 
 
 @handle_exceptions
@@ -4022,6 +4045,7 @@ def vmap(
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
+@handle_device_shifting
 def isin(
     elements: Union[ivy.Array, ivy.NativeArray],
     test_elements: Union[ivy.Array, ivy.NativeArray],
@@ -4072,6 +4096,7 @@ def isin(
 @handle_exceptions
 @handle_nestable
 @inputs_to_native_arrays
+@handle_device_shifting
 def itemsize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4105,6 +4130,7 @@ def itemsize(
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
+@handle_device_shifting
 def strides(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

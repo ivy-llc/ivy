@@ -2745,3 +2745,97 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_frexp(self, out=out)
+
+    @staticmethod
+    def static_modf(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.modf. This method simply wraps the
+        function, and so the docstring for ivy.modf also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            The container whose arrays should be split into the fractional and integral parts.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the fractional and integral parts of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> ivy.Container.static_modf(x)
+        {
+            a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
+            b: (ivy.array([-0.5, 0.3, -0.7]), ivy.array([-1.0, 5.0, -10.0]))
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "modf",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def modf(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.modf. This method simply wraps the
+        function, and so the docstring for ivy.modf also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be split into the fractional and integral parts.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including the fractional and integral parts of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1.2, 2.7, 3.9]), b=ivy.array([-1.5, 5.3, -10.7]))
+        >>> x.modf()
+        {
+            a: (ivy.array([0.2, 0.7, 0.9]), ivy.array([1.0, 2.0, 3.0])),
+            b: (ivy.array([-0.5, 0.3, -0.7]), ivy.array([-1.0, 5.0, -10.0]))
+        }
+        """
+        return self.static_modf(self, out=out)

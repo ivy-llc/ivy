@@ -485,3 +485,12 @@ def frexp(
     m = x / tf.math.pow(2, e)
     e = tf.cast(e, tf.int32)
     return m, e
+
+
+def modf(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.modf(x)

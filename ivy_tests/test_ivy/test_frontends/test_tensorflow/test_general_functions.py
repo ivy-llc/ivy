@@ -2038,6 +2038,41 @@ def test_tensorflow_unique(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.unique_with_counts",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=1,
+            )
+        ),
+        dtype=["int32", "int64"],
+    ),
+    output_dtype=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_unique_with_counts(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    output_dtype,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        x=x[0],
+        input_dtypes=input_dtype,
+        out_idx=output_dtype,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        test_flags=test_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_test(
     fn_tree="tensorflow.while_loop",
     dtype_and_x=helpers.dtype_and_values(
         num_arrays=1,
