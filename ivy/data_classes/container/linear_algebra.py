@@ -1121,7 +1121,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         --------
         >>> x1 = ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
         >>> x2 = ivy.Container(a=ivy.array([5, 6]))
-        >>> y = ivy.Container.static_inner(x1, x2)
+        >>> y = ivy.Container.inner(x1, x2)
         >>> print(y)
         {
             a: ivy.array([17, 39])
