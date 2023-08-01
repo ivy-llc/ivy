@@ -211,7 +211,7 @@ def var(
 # Extra #
 # ----- #
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int16")}},
+    {"2.5.1 and below": {"cpu": ("uint8", "int16")}},
     backend_version,
 )
 def cumprod(
@@ -268,7 +268,7 @@ def cumprod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def cumsum(
