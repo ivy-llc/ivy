@@ -319,7 +319,7 @@ def flatten(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 if x.shape == ():
-    return x.reshape((1,)) 
+    return x.reshape(-1) 
 else:
     return x
-return np.reshape(order=order)
+return np.flatten(order=order)
