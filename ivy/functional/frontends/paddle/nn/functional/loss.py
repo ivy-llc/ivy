@@ -25,7 +25,7 @@ def _get_reduction_func(reduction):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32",)},
+    {"2.5.1 and below": ("float32",)},
     "paddle",
 )
 @inputs_to_ivy_arrays
@@ -62,7 +62,7 @@ def mse_loss(input, label, reduction="mean", name=None):
 
 @handle_exceptions
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
     input1, input2, label, margin=0.0, reduction="mean", name=None
 ):
@@ -104,7 +104,7 @@ def cosine_embedding_loss(
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32",)},
+    {"2.5.1 and below": ("float32",)},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -129,7 +129,7 @@ def hinge_embedding_loss(input, label, margin=1.0, reduction="mean"):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32",)},
+    {"2.5.1 and below": ("float32",)},
     "paddle",
 )
 @to_ivy_arrays_and_back
@@ -140,7 +140,7 @@ def log_loss(input, label, epsilon=0.0001, name=None):
     return out
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def smooth_l1_loss(
     input,
@@ -181,7 +181,7 @@ def l1_loss(
     return paddle.to_tensor(out)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def kl_div(
     input,
@@ -212,7 +212,7 @@ def kl_div(
     return out.astype(label.dtype)
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=None):
     reduction = _get_reduction_func(reduction)
