@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -73,6 +74,7 @@ def _in_projection(
 
 # Linear #
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -231,6 +233,7 @@ linear.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -417,6 +420,7 @@ dropout.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_array_function
 def scaled_dot_product_attention(
@@ -806,6 +810,7 @@ def multi_head_attention(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -915,6 +920,7 @@ def conv1d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1054,6 +1060,7 @@ def conv1d_transpose(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1196,6 +1203,7 @@ def conv2d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1326,6 +1334,7 @@ def conv2d_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1465,6 +1474,7 @@ def depthwise_conv2d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1595,6 +1605,7 @@ def conv3d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1710,6 +1721,7 @@ def conv3d_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1793,6 +1805,7 @@ def conv_general_dilated(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1869,6 +1882,7 @@ def conv_general_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
@@ -1976,6 +1990,7 @@ def conv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
