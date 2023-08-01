@@ -30,6 +30,7 @@ FN_DECORATORS = [
     "handle_partial_mixed_function",
     "handle_nestable",
     "handle_ragged",
+    "handle_backend_invalid",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -292,6 +293,43 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
                 for sub_sequence in sequence
                 if isinstance(sub_sequence, (tuple, list))
             )
+
+
+# Invalid Backend Handling #
+# ---------------#
+
+
+def handle_backend_invalid(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_backend_invalid(*args, **kwargs):
+        if args:
+            indices = [
+                arg
+                for arg in args
+                if isinstance(arg, (ivy.Array, ivy.NativeArray, ivy.Dtype))
+            ]
+        elif kwargs:
+            indices = [
+                kwarg
+                for kwarg in kwargs
+                if isinstance(kwarg, (ivy.Array, ivy.NativeArray))
+            ]
+        for a in indices:
+            target_backend = ivy.utils.backend.handler._determine_backend_from_args(a)
+            if target_backend is None:
+                return fn(*args, **kwargs)
+            if ivy.current_backend() != target_backend:
+                raise ivy.utils.exceptions.InvalidBackendException(
+                    "Operation not allowed. Array was instantiated with backend"
+                    f" {target_backend}. But current backend is"
+                    f" {ivy.current_backend_str()}. Please set dynamic=True"
+                    " for the array if you want to convert it to the target"
+                    " backend"
+                )
+        return fn(*args, **kwargs)
+
+    _handle_backend_invalid.handle_backend_invalid = True
+    return _handle_backend_invalid
 
 
 # Array Handling #
