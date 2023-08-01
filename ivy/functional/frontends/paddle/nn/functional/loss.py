@@ -270,5 +270,6 @@ def triplet_margin_loss(
 
     reduction = _get_reduction_func(reduction)
     loss = reduction(loss)
+    loss = ivy.atleast_1d(loss)
 
     return loss

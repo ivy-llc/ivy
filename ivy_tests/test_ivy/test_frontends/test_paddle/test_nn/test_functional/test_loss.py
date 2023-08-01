@@ -439,7 +439,4 @@ def test_paddle_triplet_margin_loss(
         negative=negative,
         margin=margin,
         reduction=reduction,
-        swap=swap,
-        p=p,
-        eps=eps,
     )
