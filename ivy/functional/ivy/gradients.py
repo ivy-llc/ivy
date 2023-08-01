@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -318,6 +319,7 @@ def _variable_data(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -589,6 +591,7 @@ grad.computes_gradients = True
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -743,6 +746,7 @@ adam_step.out_index = 0
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -866,6 +870,7 @@ def optimizer_update(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -959,6 +964,7 @@ def gradient_descent_update(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1010,6 +1016,7 @@ def lars_update(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1175,6 +1182,7 @@ adam_update.out_index = 0
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
