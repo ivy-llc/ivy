@@ -332,7 +332,6 @@ def sigmoid(
 
     >>> x = ivy.Container(a=ivy.array([0.]),
                           b=ivy.Container(c=ivy.array([1.]),
-                                          d=ivy.array([2.]))))
     >>> y = ivy.Container(a=ivy.array([0.]),
                           b=ivy.Container(c=ivy.array([0.]),
                                           d=ivy.array([0.]))))
