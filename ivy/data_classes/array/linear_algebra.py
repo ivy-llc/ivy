@@ -366,7 +366,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
 
         Parameters
         ----------
-        x1
+        self
             first one-dimensional input array of size N.
             Should have a numeric data type.
             a(N,) array_like
@@ -392,16 +392,16 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         Matrices of identical shapes
         >>> x = ivy.array([[1., 2.],[3., 4.]])
         >>> y = ivy.array([[5., 6.],[7., 8.]])
-        >>> d = ivy.inner(x,y)
+        >>> d = ivy.inner(x, y)
         >>> print(d)
         ivy.array([[17., 23.], [39., 53.]])
 
         Matrices of different shapes
-        >>> x = ivy.array([[1., 2.],[3., 4.],[5.,6.]])
+        >>> x = ivy.array([[1., 2.],[3., 4.],[5., 6.]])
         >>> y = ivy.array([[5., 6.],[7., 8.]])
-        >>> d = ivy.inner(x,y)
+        >>> d = ivy.inner(x, y)
         >>> print(d)
-        ivy.array([[17., 23.], [39., 53.], [61.,83.]])
+        ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
         3D matrices
         >>> x = ivy.array([[[1., 2.], [3., 4.]],

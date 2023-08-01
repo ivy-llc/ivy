@@ -797,16 +797,16 @@ def inner(
     Matrices of identical shapes
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.array([[5., 6.],[7., 8.]])
-    >>> d = ivy.inner(x,y)
+    >>> d = ivy.inner(x, y)
     >>> print(d)
     ivy.array([[17., 23.], [39., 53.]])
 
     Matrices of different shapes
-    >>> x = ivy.array([[1., 2.],[3., 4.],[5.,6.]])
+    >>> x = ivy.array([[1., 2.],[3., 4.],[5., 6.]])
     >>> y = ivy.array([[5., 6.],[7., 8.]])
-    >>> d = ivy.inner(x,y)
+    >>> d = ivy.inner(x, y)
     >>> print(d)
-    ivy.array([[17., 23.], [39., 53.], [61.,83.]])
+    ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
     3D matrices
     >>> x = ivy.array([[[1., 2.], [3., 4.]],

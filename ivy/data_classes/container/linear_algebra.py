@@ -1048,11 +1048,11 @@ class _ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x1 =ivy.Container( a=ivy.array([[1, 2], [3, 4]]))
-        >>> x2 = ivy.Container(a=ivy.array([5,6]))
+        >>> x1 = ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6]))
         >>> y = ivy.Container.static_outer(x1, x2)
         >>> print(y)
-        ivy.array([17.,39.])
+        ivy.array([17., 39.])
         """
         return ContainerBase.cont_multi_map_in_function(
             "inner",
@@ -1117,7 +1117,7 @@ class _ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        >>> x1 =ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
+        >>> x1 = ivy.Container(a=ivy.array([[1, 2], [3, 4]]))
         >>> x2 = ivy.Container(a=ivy.array([5,6]))
         >>> y = ivy.Container.static_outer(x1, x2)
         >>> print(y)
