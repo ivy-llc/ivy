@@ -3473,6 +3473,7 @@ def test_numpy_instance_lshift__(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x = dtype_and_x
@@ -3499,6 +3500,7 @@ def test_numpy_instance_lshift__(
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "value": x[1],
         },
