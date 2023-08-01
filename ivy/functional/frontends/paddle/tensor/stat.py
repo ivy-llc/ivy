@@ -59,4 +59,3 @@ def nanmedian(x, axis=None, keepdim=True, name=None):
         else ivy.astype(x, ivy.float32)
     )
     return ivy.median(x, axis=axis, keepdims=keepdim)
-
