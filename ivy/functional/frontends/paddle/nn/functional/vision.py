@@ -8,7 +8,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def affine_grid(theta, out_shape, align_corners=True):
     if len(out_shape) == 4:
         N, C, H, W = out_shape
