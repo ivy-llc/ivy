@@ -755,6 +755,7 @@ def test_elu(
         on_device=on_device,
     )
 
+
 @handle_method(
     method_tree="stateful.activations.LogSigmoid.__call__",
     dtype_and_x=helpers.dtype_and_values(
@@ -764,7 +765,9 @@ def test_elu(
         safety_factor_scale="log",
         min_num_dims=1,
     ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="LogSigmoid._forward"),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="LogSigmoid._forward"
+    ),
     test_gradients=st.just(True),
 )
 def test_log_sigmoid(

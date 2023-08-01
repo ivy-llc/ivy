@@ -332,7 +332,6 @@ class PReLU(Module):
 
     def _forward(self, x, slope):
         """
-
         Parameters
         ----------
         x
@@ -389,27 +388,24 @@ class ELU(Module):
         """
         return ivy.elu(x, alpha=alpha)
 
+
 class LogSigmoid(Module):
-    def __init__ (self):
-"Apply the LogSigmoid activation function"
-     super().__init__()
+    def __init__(self):
+        "Apply the LogSigmoid activation function"
+        Module().__init__()
 
-    def forward(self, x:ivy.Array) -> ivy.Array
-
+    def forward(self, x: ivy.Array) -> ivy.Array:
         """
-        Forward pass of the logsigmoid activation. 
-        
-        
+
         Parameters
         ----------
-        
-        x(ivy.Array): Input array
+        x
+            Inputs to process *[batch_shape, d]*.
 
         Returns
         -------
-        
-        y(ivy.Array): Output from applying logisgmoid to the input array elementwise. 
-
+        ret
+            The outputs following the SIGMOID activation *[batch_shape, d]*
         """
 
         return ivy.logsigmoid(x)
