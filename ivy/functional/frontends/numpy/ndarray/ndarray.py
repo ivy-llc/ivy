@@ -308,8 +308,9 @@ class ndarray:
         else:
             return np_frontend.ravel(self, order="C")
 
-    def fill(self, num):
-        return np_frontend.fill(self, num)
+    def fill(self, num, /):
+        self.ivy_array = np_frontend.full(self.shape, num).ivy_array
+        return
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self, repeats, axis=axis)

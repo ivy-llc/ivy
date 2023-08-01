@@ -1433,8 +1433,9 @@ def test_numpy_std(
     init_tree="numpy.array",
     method_name="fill",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    num=st.integers(min_value=1, max_value=10) | st.floats(min_value=1, max_value=10),
 )
 def test_numpy_fill(
     dtype_and_x,
