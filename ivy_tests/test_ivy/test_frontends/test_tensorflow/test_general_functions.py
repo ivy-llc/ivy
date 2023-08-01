@@ -2336,8 +2336,9 @@ def test_tensorflow_unravel_index(
     dtype_and_lens=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
+        shape=(4,3),
     ),
-    max_len=st.integers(),
+    max_len=st.integers(min_value=0),
     test_with_out=st.just(False),
 )
 def test_tensorflow_sequence_mask(

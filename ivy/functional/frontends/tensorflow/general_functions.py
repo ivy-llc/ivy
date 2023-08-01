@@ -12,6 +12,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow import check_tensorflow_casting
+from ivy.functional.frontends.tensorflow.dtypes import cast
 import functools
 
 
@@ -665,6 +666,6 @@ def sequence_mask(lengths, maxlen=None, dtype=ivy.bool, name=None):
                          f"with shape '{maxlen.get_shape()}' instead")
 
     row_vector = ivy.arange(0, maxlen, 1)
-    matrix = ivy.expand_dims(lengths, axis=-1)
+    matrix = cast(ivy.expand_dims(lengths, axis=-1), maxlen.dtype)._ivy_array
     result = row_vector < matrix
     return result
