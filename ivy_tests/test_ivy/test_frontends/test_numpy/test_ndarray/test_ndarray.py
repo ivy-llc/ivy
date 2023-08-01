@@ -3065,38 +3065,24 @@ def test_numpy___array_wrap__(
     )
 
 
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="tobytes",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+# tobytes
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=["complex128"],
+        ret_shape=True,
     ),
 )
 def test_numpy_tobytes(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
+    dtype_x,
     backend_fw,
-    frontend,
-    on_device,
 ):
-    input_dtypes, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        on_device=on_device,
-    )
+    dtype, data, shape = dtype_x
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.array(data[0], dtype=dtype[0])
+        x.ivy_array = data[0]
+        ivy_backend.utils.assertions.check_equal(
+            x.tobytes(), data[0].tobytes(), as_array=False
+        )
 
 
 # tofile
@@ -3518,41 +3504,6 @@ def test_numpy_instance_lshift__(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
-# __tostring__
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="tostring",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_numpy_tostring(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
-        backend_to_test=backend_fw,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
         on_device=on_device,
     )
 

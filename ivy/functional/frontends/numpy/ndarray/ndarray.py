@@ -1,9 +1,112 @@
 # global
+import struct
+import warnings
 
 # local
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
+
+
+# tobytes helper function
+def _to_bytes_helper(array, order="C"):
+    # This representation uses struct.pack to convert the array to bytes.
+    # The format string is determined by the data type of the array.
+    # But the results are inconsistent with numpy.ndarray.tobytes() in some cases
+    # Like when we are presenting uint8 0-D array, numpy.ndarray.tobytes()
+    # returns b'\x00'
+    # while this function returns b'\x00\x00\x00\x00' which is
+    # correct bytes representation of 0.
+    if ivy.get_num_dims(array) == 0:
+        if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
+            if ivy.dtype(array) == ivy.int8:
+                scalar_value = ivy.to_scalar(array)
+                return scalar_value.to_bytes(1, byteorder="big", signed=True)
+            elif ivy.dtype(array) == ivy.int16:
+                return struct.pack("h", ivy.to_scalar(array))
+            elif ivy.dtype(array) == ivy.int32:
+                return struct.pack("i", ivy.to_scalar(array))
+            elif ivy.dtype(array) == ivy.int64:
+                return struct.pack("q", ivy.to_scalar(array))
+        elif ivy.is_float_dtype(array):
+            if ivy.dtype(array) == ivy.float16:
+                return struct.pack("e", ivy.to_scalar(array))
+            elif ivy.dtype(array) == ivy.float32:
+                return struct.pack("f", ivy.to_scalar(array))
+            return struct.pack("d", ivy.to_scalar(array))
+        elif ivy.is_bool_dtype(array):
+            return struct.pack("?", ivy.to_scalar(array))
+        elif ivy.is_complex_dtype(array):
+            return struct.pack(
+                "dd", ivy.real(array).to_scalar(), ivy.imag(array).to_scalar()
+            )
+        elif ivy.is_uint_dtype(array):
+            if ivy.dtype(array) == ivy.uint8:
+                scalar_value = ivy.to_scalar(array)
+                return scalar_value.to_bytes(1, byteorder="little", signed=False)
+            elif ivy.dtype(array) == ivy.uint16:
+                return struct.pack("H", ivy.to_scalar(array))
+            elif ivy.dtype(array) == ivy.uint32:
+                return struct.pack("I", ivy.to_scalar(array))
+        else:
+            raise ValueError("Unsupported data type for the array.")
+    if order == "F":
+        array = np_frontend.ravel(array, order="F").ivy_array
+    format_string = ""
+    array = ivy.flatten(array)
+    if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
+        if ivy.dtype(array) == ivy.int8:
+            byte_reprs = [
+                item.to_bytes(1, byteorder="big", signed=True)
+                for item in array.to_list()
+            ]
+            return b"".join(byte_reprs)
+        elif ivy.dtype(array) == ivy.int16:
+            byte_reprs = [
+                item.to_bytes(2, byteorder="little", signed=True)
+                for item in array.to_list()
+            ]
+            return b"".join(byte_reprs)
+        elif ivy.dtype(array) == ivy.int32:
+            byte_reprs = [
+                item.to_bytes(4, byteorder="little", signed=True)
+                for item in array.to_list()
+            ]
+            return b"".join(byte_reprs)
+        format_string = "{}q".format(len(array))
+    elif ivy.is_float_dtype(array):
+        if ivy.dtype(array) == ivy.float16:
+            return struct.pack("{}e".format(len(array)), *array.to_list())
+        elif ivy.dtype(array) == ivy.float32:
+            return struct.pack("{}f".format(len(array)), *array.to_list())
+        format_string = "{}d".format(len(array))
+    elif ivy.is_bool_dtype(array):
+        format_string = "{}?".format(len(array))
+    elif ivy.is_complex_dtype(array):
+        real_part = ivy.real(array)
+        complex_part = ivy.imag(array)
+        if ivy.dtype(array) == ivy.complex64:
+            # complex64 is represented as two 32-bit floats
+            real_bytes = struct.pack("{}f".format(len(real_part)), *real_part.to_list())
+            complex_bytes = struct.pack(
+                "{}f".format(len(complex_part)), *complex_part.to_list()
+            )
+            return real_bytes + complex_bytes
+        elif ivy.dtype(array) == ivy.complex128:
+            format_string = "{}d{}d".format(len(array), len(array))
+            return struct.pack(
+                format_string, *real_part.to_list(), *complex_part.to_list()
+            )
+    elif ivy.is_uint_dtype(array):
+        if ivy.dtype(array) == ivy.uint8:
+            format_string = "{}B".format(len(array))
+        elif ivy.dtype(array) == ivy.uint16:
+            format_string = "{}H".format(len(array))
+        elif ivy.dtype(array) == ivy.uint32:
+            format_string = "{}I".format(len(array))
+    else:
+        raise ValueError("Unsupported data type for the array.")
+    return struct.pack(format_string, *array.to_list())
 
 
 class ndarray:
@@ -334,11 +437,14 @@ class ndarray:
             where=where,
         )
 
-    def tobytes(self, order="C") -> bytes:
-        return np_frontend.tobytes(self, order=order)
+    def tobytes(self, order="C"):
+        return _to_bytes_helper(self.ivy_array, order=order)
 
-    def tostring(self, order="C") -> bytes:
-        return np_frontend.tobytes(self.data, order=order)
+    def tostring(self, order="C"):
+        warnings.warn(
+            "DeprecationWarning: tostring() is deprecated. Use tobytes() instead."
+        )
+        return self.tobytes(order=order)
 
     def prod(
         self,
