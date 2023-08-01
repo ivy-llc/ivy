@@ -2531,6 +2531,7 @@ def test_paddle_numel(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2540,6 +2541,7 @@ def test_paddle_numel(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
