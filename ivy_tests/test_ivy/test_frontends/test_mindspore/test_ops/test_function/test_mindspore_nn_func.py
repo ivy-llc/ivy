@@ -1,5 +1,7 @@
 # global
 # from hypothesis import strategies as st
+# from hypothesis import given
+
 
 # local
 # TODO: uncomment after frontend is not required
@@ -79,6 +81,7 @@
 #     )
 
 # interpolate
+# @given(size_or_scale_factor=st.one_of(st.integers(min_value=1, max_value=10), st.tuples(st.integers(min_value=1, max_value=10)), st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3), st.none()))
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.interpolate",
 #     dtype_and_x=helpers.dtype_and_values(
@@ -95,24 +98,38 @@
 #             st.integers(min_value=12, max_value=64),
 #         ),
 #     ),
-#     size=st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3) | None,
-#     scale_factor=st.lists(st.floats(min_value=0.1, max_value=2.0), min_size=3, max_size=3) | None,
-#     mode=st.sampled_from(['nearest', 'linear', 'bilinear', 'bicubic', 'trilinear']),
+#     mode=st.sampled_from(['nearest', 'linear', 'bilinear', 'bicubic', 'trilinear', 'area', 'nearest-exact']),
 #     align_corners=st.booleans(),
+#     recompute_scale_factor=st.booleans(),
 # )
 # def test_mindspore_interpolate(
 #     *,
 #     dtype_and_x,
-#     size,
-#     scale_factor,
+#     size_or_scale_factor,
 #     mode,
 #     align_corners,
+#     recompute_scale_factor,
 #     on_device,
 #     fn_tree,
 #     frontend,
 #     test_flags,
 # ):
 #     dtype, x = dtype_and_x
+
+#     # Extract size and scale_factor from size_or_scale_factor argument
+#     if isinstance(size_or_scale_factor, tuple):
+#         size, scale_factor = size_or_scale_factor, None
+#     elif isinstance(size_or_scale_factor, list):
+#         size, scale_factor = None, size_or_scale_factor
+#     else:
+#         size, scale_factor = None, None
+
+#     # Ensure that one and only one of size and scale_factor is None
+#     if size is None:
+#         assert scale_factor is not None
+#     else:
+#         assert scale_factor is None
+
 #     helpers.test_frontend_function(
 #         input_dtypes=dtype,
 #         frontend=frontend,
@@ -124,4 +141,5 @@
 #         scale_factor=scale_factor,
 #         mode=mode,
 #         align_corners=align_corners,
+#         recompute_scale_factor=recompute_scale_factor,
 #     )

@@ -42,5 +42,5 @@ def softsign(x):
     "mindspore",
 )
 @to_ivy_arrays_and_back
-def interpolate(input, size=None, scale_factor=None, mode='nearest', align_corners=False):
-    return ivy.interpolate(input, size=size, scale_factor=scale_factor, mode=mode, align_corners=align_corners)
+def interpolate(input, size=None, scale_factor=None, mode='nearest', align_corners=False, recompute_scale_factor=False):
+    return ivy.interpolate(input, size=size, scale_factor=scale_factor, mode=mode, align_corners=align_corners, recompute_scale_factor=recompute_scale_factor)
