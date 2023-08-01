@@ -29,6 +29,26 @@ def normal(key, shape=(), dtype=None):
     return ivy.random_normal(shape=shape, dtype=dtype, seed=ivy.to_scalar(key[1]))
 
 
+@handle_jax_dtype
+@to_ivy_arrays_and_back
+def orthogonal(key, n, shape=(), dtype=None):
+    flat_shape = (n, n)
+    if shape:
+        flat_shape = shape + flat_shape
+
+    # Generate a random matrix with the given shape and dtype
+    random_matrix = ivy.random_uniform(key, shape=flat_shape, dtype=dtype)
+
+    # Compute the QR decomposition of the random matrix
+    q, _ = ivy.linalg.qr(random_matrix)
+
+    # Reshape the resulting orthogonal matrix to the desired shape
+    if shape:
+        q = ivy.reshape(q, shape + (n, n))
+
+    return q
+
+
 def _get_seed(key):
     key1, key2 = int(key[0]), int(key[1])
     return ivy.to_scalar(int("".join(map(str, [key1, key2]))))
