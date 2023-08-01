@@ -7,3 +7,10 @@ class FrontendMethodData:
     framework_init_module: str
     init_name: str
     method_name: str
+
+
+@dataclass(frozen=True, kw_only=True)
+class ParametersInfo:
+    total: int
+    positional_only: int
+    keyword_only: int
