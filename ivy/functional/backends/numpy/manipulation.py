@@ -308,3 +308,18 @@ def as_strided(
         shape=shape,
         strides=strides,
     )
+
+
+def flatten(
+    x: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = None,
+    order: str = 'C',
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+if x.shape == ():
+    return x.reshape((1,)) 
+else:
+    return x
+return np.reshape(order=order)
