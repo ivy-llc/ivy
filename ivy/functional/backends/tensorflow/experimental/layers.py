@@ -205,7 +205,8 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
+        print("why")
         x = tf.transpose(x, (0, 2, 1))
 
     manual_padding = False
@@ -246,7 +247,7 @@ def avg_pool1d(
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         res = tf.transpose(res, (0, 2, 1))
     return res
 
@@ -580,7 +581,6 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -1268,7 +1268,7 @@ def _rfftn_helper(x, shape, axes, norm):
     {
         "2.5.0 and above": {
             "cpu": (
-                "floar32",
+                "float32",
                 "float64",
                 "complex128",
             )
@@ -1313,7 +1313,7 @@ def rfftn(
 
 
 # @with_unsupported_dtypes(
-#     {"0.4.13 and below": ("float32", "complex")}, backend_version
+#     {"0.4.14 and below": ("float32", "complex")}, backend_version
 # )
 # def rfftn(
 #     x: Union[tf.Tensor, tf.Variable],

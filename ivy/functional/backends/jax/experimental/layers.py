@@ -275,7 +275,7 @@ def avg_pool1d(
     ceil_mode: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         x = jnp.transpose(x, (0, 2, 1))
 
     if isinstance(kernel, int):
@@ -305,8 +305,11 @@ def avg_pool1d(
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
     )
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         res = jnp.transpose(res, (0, 2, 1))
+    if x.dtype == "float16":
+        res = res.astype("float16")
+
     return res
 
 
@@ -414,7 +417,7 @@ def avg_pool3d(
     return res
 
 
-@with_supported_dtypes({"0.4.13 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"0.4.14 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: JaxArray,
     /,
@@ -719,6 +722,10 @@ def reduce_window(
 ) -> JaxArray:
     computation = _correct_ivy_callable(computation)
     computation = output_to_native_arrays(computation)
+    window_dimensions, window_strides, padding, base_dilation, window_dilation = map(
+        lambda x: tuple([x] * len(operand.shape)) if isinstance(x, int) else x,
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
+    )
     if not isinstance(padding, str):
         # for containers the padding reaches the function as a list of lists instead of
         # a list of tuples, which gives an unhashable dtype error
@@ -780,7 +787,7 @@ def ifftn(
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16", "float16", "complex")}, backend_version
+    {"0.4.14 and below": ("bfloat16", "float16", "complex")}, backend_version
 )
 def embedding(
     weights: JaxArray,
@@ -802,7 +809,7 @@ def embedding(
     return embeddings
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "complex")}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "complex")}, backend_version)
 def rfftn(
     x: JaxArray,
     s: Sequence[int] = None,

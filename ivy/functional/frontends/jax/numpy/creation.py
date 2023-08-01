@@ -15,7 +15,6 @@ from ivy.func_wrapper import handle_out_argument
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
-    # TODO must ensure the array is created on default device.
     if order is not None and order != "K":
         raise ivy.utils.exceptions.IvyNotImplementedException(
             "Only implemented for order='K'"
@@ -23,6 +22,10 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.array(object, dtype=dtype)
     if ivy.get_num_dims(ret) < ndmin:
         ret = ivy.expand_dims(ret, axis=list(range(ndmin - ivy.get_num_dims(ret))))
+
+    default_device = ivy.default_device()
+    ret = ivy.to_device(ret, default_device)
+
     if ret.shape == () and dtype is None:
         return DeviceArray(ret, weak_type=True)
     return DeviceArray(ret)
@@ -147,7 +150,7 @@ def full(shape, fill_value, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -172,7 +175,7 @@ def meshgrid(*x, copy=True, sparse=False, indexing="xy"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -259,3 +262,8 @@ def size(a, axis=None):
         sh = ivy.shape(a)
         return sh[axis]
     return a.size
+
+
+@to_ivy_arrays_and_back
+def frombuffer(buffer, dtype="float", count=-1, offset=0):
+    return ivy.frombuffer(buffer, dtype, count, offset)
