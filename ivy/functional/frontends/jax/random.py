@@ -350,14 +350,14 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     if shape is None:
         shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
     
-    if method == 'cholesky':
+    if method == "cholesky":
         cov_factor = ivy.cholesky(cov)
-    elif method == 'eigh':
+    elif method == "eigh":
         (w, v) = ivy.linalg.eigh(cov)
         cov_factor = w * ivy.sqrt(s[..., None, :])
-    elif method == 'svd':
+    elif method == "svd":
         (u, s, _) = ivy.linalg.svd(cov)
-        cov_factor = u * ivy.sqrt(s[...,None, :])
+        cov_factor = u * ivy.sqrt(s[..., None, :])
     
-    normal = ivy.random_normal(seed, shape=shape+mean.shape[-1:],dtype=dtype)
-    return mean + ivy.einsum('...ij,...j->...i',cov_factor,normal)
+    normal = ivy.random_normal(seed, shape=shape + mean.shape[-1:], dtype=dtype)
+    return mean + ivy.einsum("...ij,...j->...i", cov_factor, normal)
