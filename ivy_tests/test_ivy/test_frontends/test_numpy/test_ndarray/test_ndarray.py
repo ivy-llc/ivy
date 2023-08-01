@@ -1047,11 +1047,12 @@ def test_numpy_instance_dot(
     method_name="diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=0,
-        max_axis=1,
-        min_num_dims=1,
-        force_int_axis=True,
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
     ),
+    offset=st.integers(min_value=-2, max_value=2),
 )
 def test_numpy_diagonal(
     dtype_x_axis,
@@ -1063,7 +1064,7 @@ def test_numpy_diagonal(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis1, axis2 = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
@@ -1073,8 +1074,8 @@ def test_numpy_diagonal(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "axis1": axis1,
-            "axis2": axis2,
+            "axis1": axis[0],
+            "axis2": axis[1],
             "offset": offset,
         },
         frontend=frontend,
