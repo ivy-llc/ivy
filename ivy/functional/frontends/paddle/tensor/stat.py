@@ -48,7 +48,7 @@ def median(x, axis=None, keepdim=False, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float16","float32", "float64", "uint16")},
+    {"2.5.0 and below": ("float16", "float32", "float64", "uint16")},
     "paddle",
 )
 @to_ivy_arrays_and_back
