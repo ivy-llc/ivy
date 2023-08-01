@@ -24,15 +24,18 @@ def test_paddle_pixel_shuffle(
     *,
     dtype_and_x,
     factor,
+    data_format,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
-    data_format
 ):
     input_dtype, x = dtype_and_x
-    assume(ivy.shape(x[0])[1] % (factor**2) == 0)
+    if data_format == "NCHW":
+        assume(ivy.shape(x[0])[1] % (factor**2) == 0)
+    else:
+        assume(ivy.shape(x[0])[3] % (factor**2) == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -40,8 +43,8 @@ def test_paddle_pixel_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        data_format=data_format,
         upscale_factor=factor,
+        data_format=data_format,
         backend_to_test=backend_fw,
     )
 
