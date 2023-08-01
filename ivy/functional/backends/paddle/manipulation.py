@@ -118,6 +118,17 @@ def reshape(
     allowzero: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if 0 in x.shape:
+        if -1 in shape:
+            shape = [
+                (
+                    s
+                    if s != -1
+                    else math.prod(x.shape) // math.prod([s for s in shape if s != -1])
+                )
+                for s in shape
+            ]
+        return paddle.empty(shape, dtype=x.dtype)
     if len(shape) == 0:
         out_scalar = True
         shape = [1]
@@ -195,14 +206,14 @@ def squeeze(
         # Paddle squeeze sets a maximum limit of 6 dims in the input
         x_shape = x.shape
         x_shape.pop(axis)
-        return x.reshape(x_shape)
+        return paddle_backend.reshape(x, x_shape)
     if x.dtype in [paddle.int16, paddle.float16]:
         return paddle.squeeze(x.cast("float32"), axis=axis).cast(x.dtype)
     return paddle.squeeze(x, axis=axis)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "uint8", "int8", "float16")}},
     backend_version,
 )
 def stack(
@@ -359,13 +370,17 @@ def tile(
         # is received since paddle doesn't natively support it
         if len(repeats) < x.ndim:
             shape = x.shape
-            shape[-len(repeat) :] = paddle_backend.multiply(
-                shape[-len(repeat) :], repeats
+            shape[-len(repeats) :] = paddle_backend.multiply(
+                shape[-len(repeats) :], repeats
             ).tolist()
         elif len(repeats) > x.ndim:
-            shape = list(repeats)
-            shape[-x.ndim :] = paddle_backend.multiply(
-                shape[-x.ndim :], repeats
+            shape = (
+                repeats.tolist()
+                if isinstance(repeats, paddle.Tensor)
+                else list(repeats)
+            )
+            shape[-x.ndim - 1 :] = paddle_backend.multiply(
+                shape[-x.ndim - 1 :], repeats
             ).tolist()
         else:
             shape = paddle_backend.multiply(x.shape, repeats).tolist()

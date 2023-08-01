@@ -958,8 +958,8 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = "none"
-backend_version = "none"
+backend = ""
+backend_version = {}
 
 native_inplace_support = None
 
@@ -1442,7 +1442,7 @@ class LoggingMode:
 
     def set_logging_mode(self, mode):
         """
-        Sets the current logging mode for Ivy.
+        Set the current logging mode for Ivy.
 
         Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
         """
@@ -1455,7 +1455,7 @@ class LoggingMode:
         self.logging_mode_stack.append(mode)
 
     def unset_logging_mode(self):
-        """Removes the most recently set logging mode, returning to the previous one."""
+        """Remove the most recently set logging mode, returning to the previous one."""
         if len(self.logging_mode_stack) > 1:
             # Remove the current mode
             self.logging_mode_stack.pop()
