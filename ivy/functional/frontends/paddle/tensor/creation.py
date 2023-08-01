@@ -187,16 +187,10 @@ def logspace(start, stop, num, base=10.0, dtype=None, name=None):
 @to_ivy_arrays_and_back
 def complex(real, imag, name=None):
     assert real.dtype == imag.dtype, (
-
         "(InvalidArgument) The type of data we are trying to retrieve does not match"
         " the type of data currently contained in the container."
     )
-    complex_dtype = (
-        "complex64"
-        if real.dtype == "float32"
-        else "complex128"
-
-    )
+    complex_dtype = "complex64" if real.dtype == "float32" else "complex128"
     imag_cmplx = ivy.astype(imag, complex_dtype) * 1j
     complex_array = real + imag_cmplx
     return complex_array
