@@ -328,4 +328,4 @@ def einsum(
     *operands: paddle.Tensor,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    return paddle.einsum(equation, *operands, out=out)
