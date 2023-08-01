@@ -272,6 +272,52 @@ def test_array_property_T(
         )
 
 
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("complex")),
+)
+def test_array_property_real(
+    dtype_x,
+    backend_fw,
+    test_flags,
+):
+    _, data = dtype_x
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ret = helpers.flatten_and_to_np(ret=x.real, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy.real(x), backend=backend_fw)
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("complex")),
+)
+def test_array_property_imag(
+    dtype_x,
+    backend_fw,
+    test_flags,
+):
+    _, data = dtype_x
+    with update_backend(backend_fw) as ivy_backend:
+        data = ivy_backend.native_array(data[0])
+        x = ivy_backend.Array(data)
+        ret = helpers.flatten_and_to_np(ret=x.imag, backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy.imag(x), backend=backend_fw)
+        helpers.value_test(
+            ret_np_flat=ret,
+            ret_np_from_gt_flat=ret_gt,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+
+
 @handle_method(
     init_tree=CLASS_TREE,
     method_tree="Array.__getitem__",
