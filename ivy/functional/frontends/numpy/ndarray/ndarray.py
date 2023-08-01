@@ -8,105 +8,111 @@ import ivy.functional.frontends.numpy as np_frontend
 from ivy.functional.frontends.numpy.func_wrapper import _to_ivy_array
 
 
+# --- Helpers ---#
+# ---------------#
+
+
 # tobytes helper function
 def _to_bytes_helper(array, order="C"):
-    # This representation uses struct.pack to convert the array to bytes.
-    # The format string is determined by the data type of the array.
-    # But the results are inconsistent with numpy.ndarray.tobytes() in some cases
-    # Like when we are presenting uint8 0-D array, numpy.ndarray.tobytes()
-    # returns b'\x00'
-    # while this function returns b'\x00\x00\x00\x00' which is
-    # correct bytes representation of 0.
+    def _integers_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.int8:
+            return item_val.to_bytes(1, byteorder="big", signed=True)
+        elif dtype == ivy.int16:
+            return struct.pack("h", item_val)
+        elif dtype == ivy.int32:
+            return struct.pack("i", item_val)
+        elif dtype == ivy.int64:
+            return struct.pack("q", item_val)
+
+    def _float_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.float16:
+            return struct.pack("e", item_val)
+        elif dtype == ivy.float32:
+            return struct.pack("f", item_val)
+        return struct.pack("d", item_val)
+
+    def _bool_bytes_repr(item_val, /):
+        return struct.pack("?", item_val)
+
+    def _complex_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.complex64:
+            # complex64 is represented as two 32-bit floats
+            return struct.pack("ff", item_val.real, item_val.imag)
+
+        elif dtype == ivy.complex128:
+            # complex128 is represented as two 64-bit floats
+            return struct.pack("dd", item_val.real, item_val.imag)
+
+    def _unsigned_int_bytes_repr(item_val, /, *, dtype=None):
+        if dtype == ivy.uint8:
+            return item_val.to_bytes(1, byteorder="little", signed=False)
+        elif dtype == ivy.uint16:
+            return struct.pack("H", item_val)
+        elif dtype == ivy.uint32:
+            return struct.pack("I", item_val)
+        elif dtype == ivy.uint64:
+            return struct.pack("Q", item_val)
+
     if ivy.get_num_dims(array) == 0:
-        if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
-            if ivy.dtype(array) == ivy.int8:
-                scalar_value = ivy.to_scalar(array)
-                return scalar_value.to_bytes(1, byteorder="big", signed=True)
-            elif ivy.dtype(array) == ivy.int16:
-                return struct.pack("h", ivy.to_scalar(array))
-            elif ivy.dtype(array) == ivy.int32:
-                return struct.pack("i", ivy.to_scalar(array))
-            elif ivy.dtype(array) == ivy.int64:
-                return struct.pack("q", ivy.to_scalar(array))
-        elif ivy.is_float_dtype(array):
-            if ivy.dtype(array) == ivy.float16:
-                return struct.pack("e", ivy.to_scalar(array))
-            elif ivy.dtype(array) == ivy.float32:
-                return struct.pack("f", ivy.to_scalar(array))
-            return struct.pack("d", ivy.to_scalar(array))
-        elif ivy.is_bool_dtype(array):
-            return struct.pack("?", ivy.to_scalar(array))
-        elif ivy.is_complex_dtype(array):
-            return struct.pack(
-                "dd", ivy.real(array).to_scalar(), ivy.imag(array).to_scalar()
-            )
-        elif ivy.is_uint_dtype(array):
-            if ivy.dtype(array) == ivy.uint8:
-                scalar_value = ivy.to_scalar(array)
-                return scalar_value.to_bytes(1, byteorder="little", signed=False)
-            elif ivy.dtype(array) == ivy.uint16:
-                return struct.pack("H", ivy.to_scalar(array))
-            elif ivy.dtype(array) == ivy.uint32:
-                return struct.pack("I", ivy.to_scalar(array))
+        scalar_value = ivy.to_scalar(array)
+        dtype = ivy.dtype(array)
+        if ivy.is_int_dtype(dtype) and not ivy.is_uint_dtype(dtype):
+            return _integers_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_float_dtype(dtype):
+            return _float_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_bool_dtype(dtype):
+            return _bool_bytes_repr(scalar_value)
+
+        elif ivy.is_complex_dtype(dtype):
+            return _complex_bytes_repr(scalar_value, dtype=dtype)
+
+        elif ivy.is_uint_dtype(dtype):
+            return _unsigned_int_bytes_repr(scalar_value, dtype=dtype)
         else:
             raise ValueError("Unsupported data type for the array.")
-    if order == "F":
-        array = np_frontend.ravel(array, order="F").ivy_array
-    format_string = ""
-    array = ivy.flatten(array)
-    if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
-        if ivy.dtype(array) == ivy.int8:
-            byte_reprs = [
-                item.to_bytes(1, byteorder="big", signed=True)
-                for item in array.to_list()
-            ]
-            return b"".join(byte_reprs)
-        elif ivy.dtype(array) == ivy.int16:
-            byte_reprs = [
-                item.to_bytes(2, byteorder="little", signed=True)
-                for item in array.to_list()
-            ]
-            return b"".join(byte_reprs)
-        elif ivy.dtype(array) == ivy.int32:
-            byte_reprs = [
-                item.to_bytes(4, byteorder="little", signed=True)
-                for item in array.to_list()
-            ]
-            return b"".join(byte_reprs)
-        format_string = "{}q".format(len(array))
-    elif ivy.is_float_dtype(array):
-        if ivy.dtype(array) == ivy.float16:
-            return struct.pack("{}e".format(len(array)), *array.to_list())
-        elif ivy.dtype(array) == ivy.float32:
-            return struct.pack("{}f".format(len(array)), *array.to_list())
-        format_string = "{}d".format(len(array))
-    elif ivy.is_bool_dtype(array):
-        format_string = "{}?".format(len(array))
-    elif ivy.is_complex_dtype(array):
-        real_part = ivy.real(array)
-        complex_part = ivy.imag(array)
-        if ivy.dtype(array) == ivy.complex64:
-            # complex64 is represented as two 32-bit floats
-            real_bytes = struct.pack("{}f".format(len(real_part)), *real_part.to_list())
-            complex_bytes = struct.pack(
-                "{}f".format(len(complex_part)), *complex_part.to_list()
-            )
-            return real_bytes + complex_bytes
-        elif ivy.dtype(array) == ivy.complex128:
-            format_string = "{}d{}d".format(len(array), len(array))
-            return struct.pack(
-                format_string, *real_part.to_list(), *complex_part.to_list()
-            )
-    elif ivy.is_uint_dtype(array):
-        if ivy.dtype(array) == ivy.uint8:
-            format_string = "{}B".format(len(array))
-        elif ivy.dtype(array) == ivy.uint16:
-            format_string = "{}H".format(len(array))
-        elif ivy.dtype(array) == ivy.uint32:
-            format_string = "{}I".format(len(array))
     else:
-        raise ValueError("Unsupported data type for the array.")
-    return struct.pack(format_string, *array.to_list())
+        if order == "F":
+            array = np_frontend.ravel(array, order="F").ivy_array
+        array = ivy.flatten(array)
+        if ivy.is_int_dtype(array) and not ivy.is_uint_dtype(array):
+            bytes_reprs = [
+                _integers_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_float_dtype(array):
+            bytes_reprs = [
+                _float_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_bool_dtype(array):
+            bytes_reprs = [_bool_bytes_repr(item) for item in array.to_list()]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_complex_dtype(array):
+            bytes_reprs = [
+                _complex_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+
+        elif ivy.is_uint_dtype(array):
+            bytes_reprs = [
+                _unsigned_int_bytes_repr(item, dtype=ivy.dtype(array))
+                for item in array.to_list()
+            ]
+            return b"".join(bytes_reprs)
+        else:
+            raise ValueError("Unsupported data type for the array.")
+
+
+# --- Classes ---#
+# ---------------#
 
 
 class ndarray:

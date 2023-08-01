@@ -3068,20 +3068,22 @@ def test_numpy___array_wrap__(
 # tobytes
 @given(
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=["complex128"],
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
         ret_shape=True,
     ),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_numpy_tobytes(
     dtype_x,
+    order,
     backend_fw,
 ):
     dtype, data, shape = dtype_x
     with update_backend(backend_fw) as ivy_backend:
-        x = ivy_backend.functional.frontends.numpy.array(data[0], dtype=dtype[0])
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
         x.ivy_array = data[0]
         ivy_backend.utils.assertions.check_equal(
-            x.tobytes(), data[0].tobytes(), as_array=False
+            x.tobytes(order=order), data[0].tobytes(order=order), as_array=False
         )
 
 
