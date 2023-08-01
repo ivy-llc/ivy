@@ -40,6 +40,7 @@ from ivy.func_wrapper import (
     handle_view_indexing,
     handle_device_shifting,
     handle_partial_mixed_function,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.device import dev
 
@@ -1800,6 +1801,7 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1925,6 +1927,7 @@ def einops_rearrange(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1998,6 +2001,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2176,6 +2180,7 @@ def unset_min_base() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2277,6 +2282,7 @@ def stable_divide(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2547,6 +2553,7 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
@@ -2614,6 +2621,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
@@ -2674,6 +2682,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_view_indexing
 @handle_partial_mixed_function
@@ -2755,6 +2764,7 @@ get_item.mixed_backend_wrappers = {
 }
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_view_indexing
 @handle_partial_mixed_function
@@ -3068,6 +3078,7 @@ def _broadcast_to(input, target_shape):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3170,6 +3181,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3241,6 +3253,7 @@ def inplace_decrement(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3299,6 +3312,7 @@ def inplace_increment(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -3388,6 +3402,7 @@ def scatter_flat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
@@ -3471,6 +3486,7 @@ def scatter_nd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3580,6 +3596,7 @@ def gather(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3680,6 +3697,7 @@ def multiprocessing(context: Optional[str] = None):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @outputs_to_ivy_shapes
@@ -3774,6 +3792,7 @@ def unset_shape_array_mode() -> None:
         ivy.__setattr__("shape_array_mode", mode, True)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -4164,6 +4183,7 @@ def vmap(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_device_shifting
@@ -4215,6 +4235,7 @@ def isin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_device_shifting
@@ -4249,6 +4270,7 @@ def itemsize(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_device_shifting
 def strides(
