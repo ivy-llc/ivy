@@ -87,39 +87,10 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
     return ivy.pad(x, padding, mode="constant", constant_values=0.0)
 
 
-def _handle_padding_shape(padding, n, mode, data_format):
-    padding = tuple(
-        [
-            (padding[i * 2], padding[i * 2 + 1])
-            for i in range(int(len(padding) / 2) - 1, -1, -1)
-        ]
-    )
-    while len(padding) < n:
-        if mode == "circular":
-            padding = padding + ((0, 0),)
-        else:
-            padding = ((0, 0),) + padding
-    if mode == "circular":
-        padding = tuple(list(padding)[::-1])
-    if data_format == "NCHW":
-        padding = ((0, 0),) + padding
-    elif data_format == "NHWC":
-        padding = padding + ((0, 0),)
-    return padding
-
-
 @to_ivy_arrays_and_back
-def pad(x, pad, mode="constant", value=0.0, data_format="NCHW", name=None):
-    mode_dict = {
-        "constant": "constant",
-        "reflect": "reflect",
-        "replicate": "edge",
-        "circular": "wrap",
-    }
-    if mode not in mode_dict:
-        raise ValueError(f"Unsupported padding mode: {mode}")
-    pad = _handle_padding_shape(pad, len(x.shape), mode, data_format)
-    return ivy.pad(x, pad, mode=mode_dict[mode], constant_values=value)
+def pad(x, pad, mode="constant", value=0.0, name=None):
+    pad = pad.to_list() if ivy.is_array(pad) else pad
+    return ivy.pad(x, pad, mode=mode.lower(), value=value)
 
 
 @to_ivy_arrays_and_back

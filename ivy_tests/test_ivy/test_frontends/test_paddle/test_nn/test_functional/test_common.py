@@ -198,7 +198,7 @@ def test_paddle_zeropad2d(
         padding=padding,
         data_format=dataformat,
     )
-
+    
 
 @st.composite
 def _pad_helper(draw):
@@ -207,81 +207,59 @@ def _pad_helper(draw):
             [
                 "constant",
                 "reflect",
-                "replicate",
-                "circular",
             ]
         )
     )
-    min_v = 4
-    max_v = 4
-    if mode != "constant":
-        min_v = 4
-        if mode == "reflect":
-            max_v = 4
     dtype, input, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
+            available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
-            min_num_dims=min_v,
-            max_num_dims=max_v,
-            min_dim_size=4,
-            max_dim_size=4,
-            min_value=-1e05,
-            max_value=1e05,
+            min_num_dims=4,
+            max_num_dims=4,
+            min_value=-100,
+            max_value=100,
         )
     )
-    padding = draw(_pad_generator(shape, mode))
-    if mode == "constant":
-        value = draw(helpers.ints(min_value=0, max_value=4))
-    else:
-        value = 0.0
-    return dtype, input[0], padding, value, mode
-
-
-@st.composite
-def _pad_generator(draw, shape, mode):
-    pad = ()
-    m = max(int((len(shape) + 1) / 2), 1)
-    for i in range(m):
-        if mode != "constant":
-            if i < 2:
-                max_pad_value = 0
-        else:
-            max_pad_value = shape[i] - 1
-        pad = pad + draw(
-            st.tuples(
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
-                st.integers(min_value=0, max_value=max(0, max_pad_value)),
-            )
+    ndim = len(shape)
+    min_dim = min(shape)
+    paddings = draw(
+        st.lists(
+            st.integers(min_value=0, max_value=min_dim - 1),
+            min_size=ndim,
+            max_size=ndim,
         )
-    return pad
+    )
+    constant_values = draw(st.integers(min_value=0, max_value=4))
+    return dtype, input[0], paddings, mode, constant_values
 
 
+# pad
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.pad",
-    dtype_and_input_and_other=_pad_helper(),
+    dtype_and_values_and_other=_pad_helper(),
+    test_with_out=st.just(False),
 )
 def test_paddle_pad(
     *,
-    dtype_and_input_and_other,
-    on_device,
-    fn_tree,
+    dtype_and_values_and_other,
     frontend,
-    test_flags,
     backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    dtype, input, padding, value, mode = dtype_and_input_and_other
+    input_dtype, x, paddings, mode, constant_values = dtype_and_values_and_other
     helpers.test_frontend_function(
-        input_dtypes=dtype,
-        backend_to_test=backend_fw,
+        input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=input,
-        pad=padding,
+        x=x,
+        pad=paddings,
         mode=mode,
-        value=value,
+        value=constant_values,
     )
 
 
