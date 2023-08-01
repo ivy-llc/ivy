@@ -393,7 +393,7 @@ def test_paddle_margin_ranking_loss(
 
 
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.tripl",
+    fn_tree="paddle.nn.functional.triplet_margin_loss",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=3,
@@ -409,7 +409,7 @@ def test_paddle_margin_ranking_loss(
     ),
     reduction=st.sampled_from(["mean", "sum", "none"]),
 )
-def test_paddle_tripl(
+def test_paddle_triplet_margin_loss(
     dtype_and_x,
     margin,
     reduction,

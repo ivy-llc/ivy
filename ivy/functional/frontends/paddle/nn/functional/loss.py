@@ -24,6 +24,18 @@ def _get_reduction_func(reduction):
     return ret
 
 
+def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+    x1, x2 = paddle.promote_types_paddle(x1, x2)
+    x1_dim = len(x1.shape)
+    x2_dim = len(x2.shape)
+    if x1_dim > x2_dim:
+        output_dim = x1_dim
+    else:
+        output_dim = x2_dim
+
+    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -232,19 +244,39 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
+@to_ivy_arrays_and_back
+def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+    input_tensor = ivy.array(input_tensor)
+    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
+        input_tensor.dtype
+    )
+
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("float32",)},
     "paddle",
 )
 @inputs_to_ivy_arrays
-def tripl(anchor, positive, negative, margin=1.0, reduction="mean", name=None):
-    distance_positive = ivy.mean(ivy.square(anchor - positive), axis=-1, keepdims=True)
-    distance_negative = ivy.mean(ivy.square(anchor - negative), axis=-1, keepdims=True)
-    loss = ivy.relu(distance_positive - distance_negative + margin)
+def triplet_margin_loss(
+    anchor,
+    positive,
+    negative,
+    margin=1.0,
+    p=2,
+    epsilon=1e-6,
+    swap=False,
+    reduction="mean",
+    name=None,
+):
+    distance_positive = pairwise_distance(anchor, positive, p=p, eps=epsilon)
+    distance_negative = pairwise_distance(anchor, negative, p=p, eps=epsilon)
+
+    if swap:
+        swap_dist = pairwise_distance(positive, negative, p=p, eps=epsilon)
+        distance_negative = ivy.minimum(distance_negative, swap_dist)
+    loss = ivy.clip(distance_positive - distance_negative + margin, min=0.0)
 
     reduction = _get_reduction_func(reduction)
     loss = reduction(loss)
-
-    loss = ivy.atleast_1d(loss)
 
     return loss
