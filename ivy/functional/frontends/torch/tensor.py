@@ -1613,6 +1613,18 @@ class Tensor:
     def conj(self):
         return torch_frontend.conj(self)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc(self):
+        return torch_frontend.sinc(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
