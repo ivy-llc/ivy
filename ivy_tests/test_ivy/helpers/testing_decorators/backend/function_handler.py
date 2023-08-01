@@ -1,7 +1,7 @@
 import inspect
 
 from hypothesis import strategies as st
-from typing import List, Callable, Any
+from typing import Callable, Any
 from ..function_test import FunctionHandler, num_positional_args_from_dict
 from ...globals import TestData
 from ...test_parameter_flags import (
@@ -56,10 +56,6 @@ class BackendFunctionHandler(FunctionHandler):
     @property
     def is_hypothesis_test(self) -> bool:
         return len(self._given_kwargs.items()) > 0
-
-    @property
-    def parameters(self) -> List[str]:
-        return inspect.signature(self._callable_fn).parameters
 
     def _add_test_attrs_to_fn(self, fn: Callable[..., Any]):
         fn._is_ivy_backend_test = True

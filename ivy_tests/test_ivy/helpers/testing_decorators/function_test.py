@@ -156,10 +156,6 @@ class FunctionHandler(ABC):
     def is_hypothesis_test(self) -> List[str]:
         pass
 
-    @abstractproperty
-    def parameters(self) -> List[str]:
-        pass
-
     @abstractmethod
     def __call__(self, func: Callable[..., Any]):
         pass
