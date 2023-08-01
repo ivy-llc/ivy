@@ -1081,11 +1081,11 @@ class _ContainerWithLinearAlgebra(ContainerBase):
         function, and so the docstring for ivy.inner also applies to this method with
         minimal changes.
 
-        Return the inner product of two vectors ``x1`` and ``x2``.
+        Return the inner product of two vectors ``self`` and ``x2``.
 
         Parameters
         ----------
-        self : ivy.Container
+        self
             input container of size N. Should have a numeric data type.
             a(N,) array_like
             First input vector. Input is flattened if not already 1-dimensional.
