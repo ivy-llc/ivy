@@ -2135,3 +2135,34 @@ class Embedding(Module):
             max_norm=self._max_norm,
             out=self._out,
         )
+
+
+class Identity(Module):
+    """
+    The Identity layer is argument insensitive and returns the input argument as output
+    when called.
+
+    It's typically used as a placeholder when no operation is to be
+    performed. It doesn't have any learnable parameter.
+    """
+
+    def __init__(self, dtype=None):
+        Module.__init__(self, device=None, v=None, dtype=dtype)
+
+    def _forward(self, x, dtype=None):
+        """
+        Forward pass of the layer.
+
+        Parameters
+        ----------
+        x
+            The input array.
+        dtype
+            The desired data type of the internal variables to be created if not
+            provided. Default is ``None``.
+
+        Returns
+        -------
+            The input array as it is.
+        """
+        return x
