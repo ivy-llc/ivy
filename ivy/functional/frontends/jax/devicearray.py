@@ -300,14 +300,15 @@ class DeviceArray:
         )
     
     def ptp(
-            self,
-            axis=None,
-            out=None,
-            keepdims=False,
+        self,
+        /,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+        where=None,
     ):
         return jax_frontend.numpy.ptp(
-        self._ivy_array,
-        axis=axis,
-        out=out,
-        keepdims=keepdims,
+            self, axis=axis, out=out, keepdims=keepdims, where=where
         )
+
