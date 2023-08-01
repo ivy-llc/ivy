@@ -94,12 +94,6 @@ def pad(x, pad, mode="constant", value=0.0, name=None):
 
 
 @to_ivy_arrays_and_back
-def pad(x, pad, mode="constant", value=0.0, name=None):
-    pad = pad.to_list() if ivy.is_array(pad) else pad
-    return ivy.pad(x, pad, mode=mode.lower(), value=value)
-
-
-@to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
