@@ -321,13 +321,11 @@ def maxwell(key, shape=None, dtype="float64"):
 )
 def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
     seed = _get_seed(key)
-    # generate uniform random numbers between 0 and 1
-    y = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
-    z = (y - loc) / scale
-    # applying inverse transform sampling
-    x = (z**2) * ivy.exp(-(z**2) / 2)
-
-    return x
+    x = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
+    z_1 = ivy.subtract(x, loc)
+    z = ivy.divide(z_1, scale)
+    double_maxwell = 1 / (2 * ivy.pi * scale) * (z**2) * ivy.exp(-(z**2) / 2)
+    return double_maxwell
 
 
 @handle_jax_dtype

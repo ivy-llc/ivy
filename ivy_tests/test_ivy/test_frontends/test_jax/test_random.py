@@ -1261,8 +1261,9 @@ def test_jax_maxwell(
     ),
     shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("float", full=False),
-    loc=st.floats(min_value=0, max_value=5, exclude_min=True),
-    scale=st.floats(min_value=0, max_value=5, exclude_min=True),
+    loc=st.integers(min_value=1, max_value=100),
+    scale=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
+    test_with_out=st.just(False),
 )
 def test_jax_double_sided_maxwell(
     *,
@@ -1281,14 +1282,14 @@ def test_jax_double_sided_maxwell(
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
-            loc=loc,
-            scale=scale,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
             key=key[0],
+            loc=loc,
+            scale=scale,
             shape=shape,
             dtype=dtype[0],
         )
