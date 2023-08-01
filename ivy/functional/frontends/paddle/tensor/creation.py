@@ -180,6 +180,16 @@ def logspace(start, stop, num, base=10.0, dtype=None, name=None):
     return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def triu_indices(row, col=None, offset=0, dtype="int64"):
+    arr = ivy.triu_indices(row, col, offset)
+    if not ivy.to_scalar(ivy.shape(arr[0], as_array=True)):
+        return arr
+    arr = ivy.astype(arr, dtype)
+    return arr
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64")},
     "paddle",
