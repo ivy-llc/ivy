@@ -31,7 +31,6 @@ def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
-    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:  # noqa
     """Calculate the absolute value for each element ``x_i`` of the input array ``x``
@@ -67,8 +66,6 @@ def abs(
     ----------
     x
         input array. Should have a numeric data type
-    where
-        optional boolean mask
 
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -124,7 +121,7 @@ def abs(
 
     """
 
-    return ivy.current_backend(x).abs(x, out=out, where=where)
+    return ivy.current_backend(x).abs(x, out=out)
 
 
 @handle_exceptions
@@ -2402,13 +2399,11 @@ def angle(
 
     Examples
     --------
-    >>> ivy.set_backend('tensorflow')
     >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
     >>> z
     ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
     >>> ivy.angle(z)
     ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.set_backend('numpy')
     >>> ivy.angle(z,deg=True)
     ivy.array([135., 135., -45.])
     """
