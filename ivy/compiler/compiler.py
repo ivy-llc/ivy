@@ -28,7 +28,6 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
-    from ._compiler import compile as _compile
     """
     Take `fn` and compiles it into a more efficient composition of backend operations.
 
@@ -90,6 +89,8 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
+    from ._compiler import compile as _compile
+
     return _compile(
         *objs,
         stateful=stateful,
@@ -113,14 +114,12 @@ def transpile(
     *objs: Callable,
     source: Optional[str] = None,
     to: Optional[str] = None,
-    debug_mode: bool = False,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
-    from ._compiler import transpile as _transpile
     """
     Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -146,11 +145,12 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
+    from ._compiler import transpile as _transpile
+
     return _transpile(
         *objs,
         source=source,
         to=to,
-        debug_mode=debug_mode,
         with_numpy=with_numpy,
         args=args,
         kwargs=kwargs,

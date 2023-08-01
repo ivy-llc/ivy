@@ -75,7 +75,7 @@ Status
     <a href="https://github.com/unifyai/ivy/pulls">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
     </a>
-    <a href="https://pypi.org/project/ivy-core">
+    <a href="https://pypi.org/project/ivy">
         <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy.svg">
     </a>
     <a href="https://github.com/unifyai/ivy/actions?query=workflow%3Adocs">
@@ -265,8 +265,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
             super().__init__()
 
         def _build(self, *args, **kwargs):
-            self.linear0 = ivy.Linear(input_dim, 128)
-            self.linear1 = ivy.Linear(128, output_dim)
+            self.linear0 = ivy.Linear(self.input_dim, 128)
+            self.linear1 = ivy.Linear(128, self.output_dim)
 
         def _forward(self, x):
             x = self.linear0(x)
@@ -285,7 +285,8 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
     y = 0.2 * x ** 2 + 0.5 * x + 0.1 + noise
 
 
-    def loss_fn(pred, target):
+    def loss_fn(v, x, target):
+        pred = model(x, v=v)
         return ivy.mean((pred - target) ** 2)
 
     for epoch in range(40):
@@ -293,7 +294,7 @@ but this can easily be changed to your favorite framework, such as TensorFlow, o
         pred = model(x)
 
         # compute loss and gradients
-        loss, grads = ivy.execute_with_gradients(lambda v: loss_fn(pred, y), model.v)
+        loss, grads = ivy.execute_with_gradients(lambda params: loss_fn(*params), (model.v, x, y))
 
         # update parameters
         model.v = optimizer.step(model.v, grads)
@@ -308,7 +309,7 @@ The model's output can be visualized as follows:
 .. raw:: html
 
    <div align="center">
-      <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
+      <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/regressor_lq.gif">
    </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 
@@ -382,13 +383,13 @@ The easiest way to set up Ivy is to install it using pip with the following comm
 
 .. code-block:: bash
 
-    pip install ivy-core
+    pip install ivy
 
 or alternatively:
 
 .. code-block:: bash
 
-    python3 -m pip install ivy-core
+    python3 -m pip install ivy
 
 
 Docker
@@ -477,7 +478,7 @@ You can find quite a lot more examples in the corresponding section below, but u
 Documentation
 -------------
 
-The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy's and it's framework API reference. 
+The `Ivy Docs page <https://unify.ai/docs/ivy/>`_ holds all the relevant information about Ivy and its framework API reference. 
 
 There, you will find the `Design <https://unify.ai/docs/ivy/overview/design.html>`_ page, which is a user-focused guide about the architecture and the building blocks of Ivy. Likewise, you can take a look at the `Deep dive <https://unify.ai/docs/ivy/overview/deep_dive.html>`_, which is oriented towards potential contributors of the code base and explains the nuances of Ivy in full detail 🔎
 
@@ -1550,6 +1551,12 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
     # train the model on gpu if it's available
     device = "cuda:0" if ivy.gpu_is_available() else "cpu"
 
+    # training hyperparams
+    optimizer= ivy.Adam(1e-4)
+    batch_size = 64 
+    num_epochs = 20
+    num_classes = 10
+
     model = IvyNet(
         h_w=(28, 28),
         input_channels=1,
@@ -1558,13 +1565,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
         device=device,
     )
     model_name = type(model).__name__.lower()
-    
-    
-    # training hyperparams
-    optimizer= ivy.Adam(1e-4)
-    batch_size = 64 
-    num_epochs = 20
-    num_classes = 10
     
     
     # training loop
@@ -1596,8 +1596,6 @@ Last but not least, we can also build the training pipeline in pure ivy ⬇️
                 loss_probs, grads = ivy.execute_with_gradients(
                     loss_fn,
                     (model.v, model, xbatch, ybatch_encoded),
-                    ret_grad_idxs=[[0]],
-                    xs_grad_idxs=[[0]],
                 )
                 
                 model.v = optimizer.step(model.v, grads["0"])
@@ -1652,7 +1650,7 @@ Join our amazing community as a code contributor, and help accelerate our journe
 .. raw:: html
 
    <a href="https://github.com/unifyai/ivy/graphs/contributors">
-     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100" />
+     <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
    </a>
 
 |
@@ -1662,7 +1660,7 @@ Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need as many hands as possible on it! Whether you are a seasoned developer or just starting out, you'll find a place here! Join the Ivy community in our `Discord`_ 👾 server, which is the perfect place to ask questions, share ideas, and get help from both fellow developers and the Ivy Team directly!
 
-Also! Feel free to follow us in `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
+Also! Feel free to follow us on `Twitter`_ 🐦 as well, we use it to share updates, sneak peeks, and all sorts of relevant news, certainly a great way to stay in the loop 😄
 
 Can't wait to see you there!
 

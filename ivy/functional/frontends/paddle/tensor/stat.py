@@ -6,7 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def mean(input, axis=None, keepdim=False, out=None):
     ret = ivy.mean(input, axis=axis, keepdims=keepdim, out=out)
@@ -14,7 +14,7 @@ def mean(input, axis=None, keepdim=False, out=None):
     return ret
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("complex", "int8")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("complex", "int8")}, "paddle")
 @to_ivy_arrays_and_back
 def numel(x, name=None):
     prod = ivy.prod(x.size, dtype=ivy.int64)
@@ -34,7 +34,7 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
+    {"2.5.1 and below": ("bool", "float16", "float32", "float64", "int32", "int64")},
     "paddle",
 )
 @to_ivy_arrays_and_back

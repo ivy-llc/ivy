@@ -14,9 +14,9 @@ import numpy as np
 # for wrapping (sequence matters)
 FN_DECORATORS = [
     "infer_device",
+    "handle_device_shifting",
     "infer_dtype",
     "handle_array_function",
-    "integer_arrays_to_float",
     "outputs_to_ivy_arrays",
     "outputs_to_ivy_shapes",
     "outputs_to_native_arrays",
@@ -29,6 +29,7 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_partial_mixed_function",
     "handle_nestable",
+    "handle_ragged",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -757,42 +758,6 @@ def infer_dtype(fn: Callable) -> Callable:
     return _infer_dtype
 
 
-def integer_arrays_to_float(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def _integer_arrays_to_float(*args, **kwargs):
-        """
-        Promote all the integer array inputs passed to the function both as positional
-        or keyword arguments to the default float dtype.
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with integer array arguments
-            promoted to default float dtype.
-        """
-
-        def _to_float_array(x):
-            if not ivy.is_array(x) or not ivy.is_int_dtype(x.dtype):
-                return x
-            if ivy.is_ivy_array(x):
-                return ivy.asarray(x, dtype=ivy.default_float_dtype())
-            return ivy.native_array(x, dtype=ivy.default_float_dtype(as_native=True))
-
-        args = ivy.nested_map(args, _to_float_array, to_mutable=True)
-        kwargs = ivy.nested_map(kwargs, _to_float_array, to_mutable=True)
-        return fn(*args, **kwargs)
-
-    _integer_arrays_to_float.integer_arrays_to_float = True
-    return _integer_arrays_to_float
-
-
 # Device Handling #
 # ----------------#
 
@@ -828,6 +793,45 @@ def infer_device(fn: Callable) -> Callable:
 
     _infer_device.infer_device = True
     return _infer_device
+
+
+def handle_device_shifting(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_device_shifting(*args, **kwargs):
+        """
+        Move all array inputs of the function to `ivy.default_device()`.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function.
+        """
+        if ivy.soft_device_mode:
+            return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        inputs = args + tuple(kwargs.values())
+        devices = tuple(ivy.dev(x) for x in inputs if ivy.is_native_array(x))
+        unique_devices = set(devices)
+        # check if arrays are on the same device
+        if len(unique_devices) == 1:
+            with ivy.DefaultDevice(next(iter(unique_devices))):
+                return ivy.handle_soft_device_variable(*args, fn=fn, **kwargs)
+        # raise when arrays are on different devices
+        elif len(unique_devices) > 1:
+            raise ivy.utils.exceptions.IvyException(
+                "Expected all input arrays to be on the same device, "
+                f"but found atleast two devices - {devices}, "
+                "set `ivy.set_soft_device_mode(True)` to handle this problem."
+            )
+        return fn(*args, **kwargs)
+
+    _handle_device_shifting.handle_device_shifting = True
+    return _handle_device_shifting
 
 
 # Inplace Update Handling #
@@ -872,11 +876,11 @@ def handle_out_argument(fn: Callable) -> Callable:
             ret = fn(*args, out=native_out, **kwargs)
             if isinstance(ret, (tuple, list)):
                 for i in range(len(ret)):
-                    out[i].data = ivy.to_native(ret[i])
+                    ivy.inplace_update(out[i], ret[i])
                     if ivy.backend == "torch":
                         _update_torch_views(out[i])
             else:
-                out.data = ivy.to_native(ret)
+                ivy.inplace_update(out, ret)
                 if ivy.backend == "torch":
                     _update_torch_views(out)
             return out
@@ -973,6 +977,44 @@ def handle_nestable(fn: Callable) -> Callable:
 
     _handle_nestable.handle_nestable = True
     return _handle_nestable
+
+
+def handle_ragged(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_ragged(*args, **kwargs):
+        """
+        Call `fn` with the *ragged* property of the function correctly handled. This
+        means mapping the function to the RaggedArray arrays if any RaggedArrays are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the ragged property handled correctly.
+        """
+        nested_fn = (
+            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
+                fn, *args, **kwargs
+            )
+        )
+        if ivy.nested_any(
+            args, ivy.is_ivy_nested_array, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
+            return nested_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    _handle_ragged.handle_ragged = True
+    return _handle_ragged
 
 
 # Partial Mixed Function Handling #
