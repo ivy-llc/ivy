@@ -75,6 +75,11 @@ def avg_pool1d(
 def adaptive_max_pool2d(x, output_size):
     return paddle.nn.functional.adaptive_max_pool2d(x, output_size=output_size)
 
+@ivy.to_ivy_arrays_and_back
+@ivy.with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def adaptive_max_pool3d(x, output_size, name=None):
+    return paddle.nn.functional.adaptive_max_pool3d(x, output_size=output_size)
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def adaptive_avg_pool1d(x, output_size, name=None):
