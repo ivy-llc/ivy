@@ -1,4 +1,5 @@
 # local
+import numpy as np
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
@@ -69,6 +70,80 @@ def avg_pool1d(
         ceil_mode=ceil_mode,
         data_format=data_format,
     )
+
+
+@ivy.to_ivy_arrays_and_back
+@ivy.with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def adaptive_max_pool2d(x, output_size, name=None):
+    return paddle.nn.functional.adaptive_max_pool2d(x, output_size=output_size)
+
+
+def test_adaptive_max_pool2d(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+):
+    # Unpack dtype and input tensor
+    input_dtype, x = dtype_and_x
+
+    # Convert input tensor to Ivy format
+    x = ivy.to_ivy(x)
+
+    # Apply adaptive max pooling to x
+    output = adaptive_max_pool2d(x, output_size=(1, 1))
+
+    # Convert output to numpy array
+    output_np = ivy.to_numpy(output)
+
+    # Compute expected output
+    x_np = ivy.to_numpy(x)
+    exp_output_np = np.zeros((1, 1, 1, 1), dtype=x_np.dtype)
+    exp_output_np[0, 0, 0, 0] = np.max(x_np[0, 0, :, :])
+
+    # Check that the output matches the expected output
+    assert np.allclose(output_np, exp_output_np, atol=1e-6, rtol=1e-6)
+
+    print("Test passed!")
+
+
+@ivy.to_ivy_arrays_and_back
+@ivy.with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def adaptive_max_pool3d(x, output_size, name=None):
+    return paddle.nn.functional.adaptive_max_pool3d(x, output_size=output_size)
+
+
+def test_adaptive_max_pool3d(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+):
+    # Unpack dtype and input tensor
+    input_dtype, x = dtype_and_x
+
+    # Convert input tensor to Ivy format
+    x = ivy.to_ivy(x)
+
+    # Apply adaptive max pooling to x
+    output = adaptive_max_pool3d(x, output_size=(1, 1, 1))
+
+    # Convert output to numpy array
+    output_np = ivy.to_numpy(output)
+
+    # Compute expected output
+    x_np = ivy.to_numpy(x)
+    exp_output_np = np.zeros((1, 1, 1, 1, 1), dtype=x_np.dtype)
+    exp_output_np[0, 0, 0, 0, 0] = np.max(x_np[0, 0, :, :, :])
+
+    # Check that the output matches the expected output
+    assert np.allclose(output_np, exp_output_np, atol=1e-6, rtol=1e-6)
+
+    print("Test passed!")
 
 
 @to_ivy_arrays_and_back
