@@ -52,9 +52,17 @@ def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
     oh = h * upscale_factor
     ow = w * upscale_factor
 
-    input_reshaped = ivy.reshape(x, (b, oc, upscale_factor, upscale_factor, h, w))
+    if data_format == "NCHW":
+        input_reshaped = ivy.reshape(x, (b, oc, upscale_factor, upscale_factor, h, w))
+    else:
+        input_reshaped = ivy.reshape(x, (b, h, w, upscale_factor, upscale_factor, oc))
+
+    if data_format == "NCHW":
+        return ivy.reshape(
+            ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
+        )
     return ivy.reshape(
-        ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
+        ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
     )
 
 
