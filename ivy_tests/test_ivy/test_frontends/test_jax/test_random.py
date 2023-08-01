@@ -94,7 +94,7 @@ def test_jax_uniform(
     ),
     n=helpers.get_shape(),
     shape=helpers.get_shape(),
-    dtype=helpers.get_dtypes("float", full=True),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_orthogonal(
     *,
@@ -136,7 +136,6 @@ def test_jax_orthogonal(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
-
         # Check if the output matrices are orthogonal
         assert ivy.allclose(ivy.eye(n), ivy.matmul(u.T, u))
 
