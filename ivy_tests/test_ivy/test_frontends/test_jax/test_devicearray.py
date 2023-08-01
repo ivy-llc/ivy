@@ -4,7 +4,6 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method, update_backend
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
@@ -2235,36 +2234,19 @@ def test_jax_devicearray_min(
 
 
 # ptp
-@st.composite
-def _get_castable_dtypes_values(draw, *, allow_nan=False, use_where=False):
-    available_dtypes = helpers.get_dtypes("numeric")
-    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6))
-    dtype, values = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            num_arrays=1,
-            large_abs_safety_factor=24,
-            small_abs_safety_factor=24,
-            safety_factor_scale="log",
-            shape=shape,
-            allow_nan=allow_nan,
-        )
-    )
-    axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, values, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[0])
-    )
-    if use_where:
-        where = draw(np_frontend_helpers.where(shape=shape))
-        return [dtype1], [values], axis, dtype2, where
-    return [dtype1], [values], axis, dtype2
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="ptp",
-    dtype_and_x_axis_dtype=_get_castable_dtypes_values(),
+    dtype_and_x_axis_dtype=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        allow_inf=False,
+        num_arrays=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+        shape=helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6),
+    ),
     keep_dims=st.booleans(),
 )
 def test_jax_devicearray_ptp(
@@ -2277,7 +2259,19 @@ def test_jax_devicearray_ptp(
     method_flags,
     on_device,
 ):
-    input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
+    input_dtypes, x, axis = dtype_and_x_axis_dtype
+    if backend_fw == "torch" and (
+        "complex128" in input_dtypes or "complex64" in input_dtypes
+    ):
+        return
+    if backend_fw == "tensorflow" and (
+        "complex128" in input_dtypes or "complex64" in input_dtypes
+    ):
+        return
+    if backend_fw == "paddle" and (
+        "bfloat16" in input_dtypes or "bool" in input_dtypes
+    ):
+        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
