@@ -47,6 +47,31 @@ def current_backend_str() -> str:
     return "tensorflow"
 
 
+def _check_query(query):
+    return not isinstance(query, list) and (
+        not (ivy.is_array(query) and ivy.is_bool_dtype(query) ^ bool(query.ndim > 0))
+    )
+
+
+def get_item(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    query: Union[tf.Tensor, tf.Variable, Tuple],
+    *,
+    copy: bool = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if copy:
+        return tf.identity(x.__getitem__(query))
+    return x.__getitem__(query)
+
+
+get_item.partial_mixed_handler = lambda x, query, **kwargs: (
+    all(_check_query(i) for i in query)
+    if isinstance(query, tuple)
+    else _check_query(query)
+)
+
+
 def to_numpy(x: Union[tf.Tensor, tf.Variable], /, *, copy: bool = True) -> np.ndarray:
     # TensorFlow fails to convert bfloat16 tensor when it has 0 dimensions
     if (

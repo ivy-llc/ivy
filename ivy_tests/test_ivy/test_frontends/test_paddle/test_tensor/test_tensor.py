@@ -1,15 +1,14 @@
-# flake8: noqa
 # global
 import numpy as np
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
 import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy.functional.frontends.paddle import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
-from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
-    _statistical_dtype_values,
-)
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa E501
     _get_dtype_values_k_axes_for_rot90,
 )
@@ -57,34 +56,6 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
-@st.composite
-def _get_clip_inputs(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=1, max_dim_size=10
-        )
-    )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=shape,
-            min_value=0,
-            max_value=50,
-        )
-    )
-    min = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=0, max_value=25)
-    )
-    max = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=(1,), min_value=26, max_value=50)
-    )
-    if draw(st.booleans()):
-        min = None
-    elif draw(st.booleans()):
-        max = None
-    return x_dtype, x, min, max
-
-
 # Tests #
 # ----- #
 
@@ -94,7 +65,7 @@ def _get_clip_inputs(draw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_device(
+def test_paddle_instance_property_device(
     dtype_x,
 ):
     _, data = dtype_x
@@ -110,7 +81,7 @@ def test_paddle_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_dtype(
+def test_paddle_instance_property_dtype(
     dtype_x,
 ):
     dtype, data = dtype_x
@@ -125,7 +96,7 @@ def test_paddle_dtype(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_shape(dtype_x):
+def test_paddle_instance_property_shape(dtype_x):
     _, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(
@@ -138,7 +109,7 @@ def test_paddle_shape(dtype_x):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_paddle_ndim(
+def test_paddle_instance_property_ndim(
     dtype_x,
 ):
     _, data = dtype_x
@@ -153,12 +124,11 @@ def test_paddle_ndim(
     method_name="reshape",
     dtype_x_shape=_reshape_helper(),
 )
-def test_paddle_reshape(
+def test_paddle_instance_reshape(
     dtype_x_shape,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -169,7 +139,6 @@ def test_paddle_reshape(
     }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -205,19 +174,17 @@ def _filter_query(query):
         allow_neg_step=False,
     ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
 )
-def test_paddle_getitem(
+def test_paddle_instance_getitem(
     dtype_x_index,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"item": index},
@@ -238,19 +205,17 @@ def test_paddle_getitem(
         available_dtypes=helpers.get_dtypes("valid"),
     ).filter(lambda x: x[0][0] == x[0][-1] and _filter_query(x[-2])),
 )
-def test_paddle_setitem(
+def test_paddle_instance_setitem(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x, index, val = dtypes_x_index_val
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"item": index, "value": val},
@@ -271,19 +236,17 @@ def test_paddle_setitem(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_dim(
+def test_paddle_instance_dim(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -306,19 +269,17 @@ def test_paddle_dim(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_abs(
+def test_paddle_instance_abs(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -341,19 +302,17 @@ def test_paddle_abs(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_sin(
+def test_paddle_instance_sin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -376,19 +335,17 @@ def test_paddle_sin(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_sinh(
+def test_paddle_instance_sinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -411,19 +368,17 @@ def test_paddle_sinh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_asin(
+def test_paddle_instance_asin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -446,13 +401,12 @@ def test_paddle_asin(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_asinh(
+def test_paddle_instance_asinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -463,7 +417,6 @@ def test_paddle_asinh(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -481,19 +434,17 @@ def test_paddle_asinh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_cosh(
+def test_paddle_instance_cosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -516,19 +467,17 @@ def test_paddle_cosh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_log(
+def test_paddle_instance_log(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -556,20 +505,18 @@ def test_paddle_log(
     ),
     keep_dims=st.booleans(),
 )
-def test_paddle_argmax(
+def test_paddle_instance_argmax(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
@@ -595,19 +542,17 @@ def test_paddle_argmax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_exp(
+def test_paddle_instance_exp(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -630,13 +575,12 @@ def test_paddle_exp(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_cos(
+def test_paddle_instance_cos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -651,7 +595,6 @@ def test_paddle_cos(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -665,13 +608,12 @@ def test_paddle_cos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_log10(
+def test_paddle_instance_log10(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -686,7 +628,6 @@ def test_paddle_log10(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -705,14 +646,13 @@ def test_paddle_log10(
     ),
     descending=st.booleans(),
 )
-def test_paddle_argsort(
+def test_paddle_instance_argsort(
     dtype_x_axis,
     descending,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
@@ -727,7 +667,6 @@ def test_paddle_argsort(
             "descending": descending,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -744,13 +683,12 @@ def test_paddle_argsort(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_floor(
+def test_paddle_instance_floor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -765,7 +703,6 @@ def test_paddle_floor(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -779,13 +716,12 @@ def test_paddle_floor(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_sqrt(
+def test_paddle_instance_sqrt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -800,7 +736,6 @@ def test_paddle_sqrt(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -814,13 +749,12 @@ def test_paddle_sqrt(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_tanh(
+def test_paddle_instance_tanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -835,7 +769,6 @@ def test_paddle_tanh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -851,13 +784,12 @@ def test_paddle_tanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_add_(
+def test_paddle_instance_add_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -872,7 +804,6 @@ def test_paddle_add_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -886,13 +817,12 @@ def test_paddle_add_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_square(
+def test_paddle_instance_square(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -907,7 +837,6 @@ def test_paddle_square(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -920,14 +849,13 @@ def test_paddle_square(
     dtype_and_x=_get_dtype_and_square_matrix(),
     upper=st.booleans(),
 )
-def test_paddle_cholesky(
+def test_paddle_instance_cholesky(
     dtype_and_x,
     upper,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -941,7 +869,6 @@ def test_paddle_cholesky(
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"upper": upper},
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -959,13 +886,12 @@ def test_paddle_cholesky(
         shared_dtype=True,
     ),
 )
-def test_paddle_multiply(
+def test_paddle_instance_multiply(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -982,7 +908,6 @@ def test_paddle_multiply(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1001,14 +926,13 @@ def test_paddle_multiply(
     ),
     keep_dims=st.booleans(),
 )
-def test_paddle_all(
+def test_paddle_instance_all(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
@@ -1023,7 +947,6 @@ def test_paddle_all(
             "keepdim": keep_dims,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1045,7 +968,7 @@ def test_paddle_all(
     # atol=1e-08,
     # equal_nan=st.booleans(),
 )
-def test_paddle_allclose(
+def test_paddle_instance_allclose(
     dtype_and_x,
     # rtol,
     # atol,
@@ -1054,7 +977,6 @@ def test_paddle_allclose(
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1071,7 +993,6 @@ def test_paddle_allclose(
             # "equal_nan": equal_nan,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1093,14 +1014,13 @@ def test_paddle_allclose(
     ),
     descending=st.booleans(),
 )
-def test_paddle_sort(
+def test_paddle_instance_sort(
     dtype_x_axis,
     descending,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
@@ -1115,7 +1035,6 @@ def test_paddle_sort(
             "descending": descending,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1137,13 +1056,12 @@ def test_paddle_sort(
     ),
     keep_dims=st.booleans(),
 )
-def test_paddle_any(
+def test_paddle_instance_any(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -1159,7 +1077,6 @@ def test_paddle_any(
             "keepdim": keep_dims,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -1176,13 +1093,12 @@ def test_paddle_any(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_isinf(
+def test_paddle_instance_isinf(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1197,7 +1113,6 @@ def test_paddle_isinf(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1212,14 +1127,13 @@ def test_paddle_isinf(
     ),
     dtype=st.one_of(helpers.get_dtypes("valid")),
 )
-def test_paddle_astype(
+def test_paddle_instance_astype(
     dtype_and_x,
     dtype,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1238,7 +1152,6 @@ def test_paddle_astype(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1252,13 +1165,12 @@ def test_paddle_astype(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_isfinite(
+def test_paddle_instance_isfinite(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1273,7 +1185,6 @@ def test_paddle_isfinite(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1287,13 +1198,12 @@ def test_paddle_isfinite(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_erf(
+def test_paddle_instance_erf(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1308,7 +1218,6 @@ def test_paddle_erf(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1322,13 +1231,12 @@ def test_paddle_erf(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_subtract(
+def test_paddle_instance_subtract(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1341,7 +1249,6 @@ def test_paddle_subtract(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1355,13 +1262,12 @@ def test_paddle_subtract(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_bitwise_xor(
+def test_paddle_instance_bitwise_xor(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1374,7 +1280,6 @@ def test_paddle_bitwise_xor(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1388,13 +1293,12 @@ def test_paddle_bitwise_xor(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_logical_xor(
+def test_paddle_instance_logical_xor(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1407,7 +1311,6 @@ def test_paddle_logical_xor(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1421,13 +1324,12 @@ def test_paddle_logical_xor(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_logical_or(
+def test_paddle_instance_logical_or(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1440,7 +1342,6 @@ def test_paddle_logical_or(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1454,13 +1355,12 @@ def test_paddle_logical_or(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_rsqrt(
+def test_paddle_instance_rsqrt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1475,7 +1375,6 @@ def test_paddle_rsqrt(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1488,13 +1387,12 @@ def test_paddle_rsqrt(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_bitwise_or(
+def test_paddle_instance_bitwise_or(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1507,7 +1405,6 @@ def test_paddle_bitwise_or(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1521,13 +1418,12 @@ def test_paddle_bitwise_or(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_ceil(
+def test_paddle_instance_ceil(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1542,7 +1438,6 @@ def test_paddle_ceil(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1556,13 +1451,12 @@ def test_paddle_ceil(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_bitwise_and(
+def test_paddle_instance_bitwise_and(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1575,7 +1469,6 @@ def test_paddle_bitwise_and(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1593,13 +1486,12 @@ def test_paddle_bitwise_and(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_greater_than(
+def test_paddle_instance_greater_than(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1612,7 +1504,6 @@ def test_paddle_greater_than(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1626,13 +1517,12 @@ def test_paddle_greater_than(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_bitwise_not(
+def test_paddle_instance_bitwise_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1647,7 +1537,6 @@ def test_paddle_bitwise_not(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1661,13 +1550,12 @@ def test_paddle_bitwise_not(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_reciprocal(
+def test_paddle_instance_reciprocal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1682,7 +1570,6 @@ def test_paddle_reciprocal(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1696,13 +1583,12 @@ def test_paddle_reciprocal(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_logical_and(
+def test_paddle_instance_logical_and(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1715,7 +1601,6 @@ def test_paddle_logical_and(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1733,13 +1618,12 @@ def test_paddle_logical_and(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_divide(
+def test_paddle_instance_divide(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1752,7 +1636,6 @@ def test_paddle_divide(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1770,13 +1653,12 @@ def test_paddle_divide(
         max_value=5,
     ),
 )
-def test_paddle_cumprod(
+def test_paddle_instance_cumprod(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -1791,7 +1673,6 @@ def test_paddle_cumprod(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1809,13 +1690,12 @@ def test_paddle_cumprod(
         max_value=5,
     ),
 )
-def test_paddle_cumsum(
+def test_paddle_instance_cumsum(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -1830,7 +1710,6 @@ def test_paddle_cumsum(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1843,13 +1722,12 @@ def test_paddle_cumsum(
         available_dtypes=["float64", "complex64", "complex128"],
     ),
 )
-def test_paddle_angle(
+def test_paddle_instance_angle(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1864,7 +1742,6 @@ def test_paddle_angle(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1880,13 +1757,12 @@ def test_paddle_angle(
         shared_dtype=True,
     ),
 )
-def test_paddle_equal(
+def test_paddle_instance_equal(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1899,7 +1775,6 @@ def test_paddle_equal(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1913,13 +1788,12 @@ def test_paddle_equal(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_rad2deg(
+def test_paddle_instance_rad2deg(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -1934,7 +1808,6 @@ def test_paddle_rad2deg(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1947,13 +1820,12 @@ def test_paddle_rad2deg(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_fmax(
+def test_paddle_instance_fmax(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1966,7 +1838,6 @@ def test_paddle_fmax(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1979,13 +1850,12 @@ def test_paddle_fmax(
         available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_fmin(
+def test_paddle_instance_fmin(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -1998,7 +1868,6 @@ def test_paddle_fmin(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2013,13 +1882,12 @@ def test_paddle_fmin(
         shared_dtype=True,
     ),
 )
-def test_paddle_minimum(
+def test_paddle_instance_minimum(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2032,40 +1900,6 @@ def test_paddle_minimum(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-    )
-
-
-# clip
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="clip",
-    input_and_ranges=_get_clip_inputs(),
-)
-def test_paddle_clip(
-    input_and_ranges,
-    frontend,
-    backend_fw,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x, min, max = input_and_ranges
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"min": min, "max": max},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2079,13 +1913,12 @@ def test_paddle_clip(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_less_than(
+def test_paddle_instance_less_than(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -2098,7 +1931,6 @@ def test_paddle_less_than(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2117,14 +1949,13 @@ def test_paddle_less_than(
     ),
     keep_dims=st.booleans(),
 )
-def test_paddle_max(
+def test_paddle_instance_max(
     dtype_x_axis,
     keep_dims,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis = dtype_x_axis
@@ -2139,7 +1970,6 @@ def test_paddle_max(
             "keepdim": keep_dims,
         },
         frontend=frontend,
-        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -2156,13 +1986,12 @@ def test_paddle_max(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_deg2rad(
+def test_paddle_instance_deg2rad(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2177,7 +2006,6 @@ def test_paddle_deg2rad(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2195,13 +2023,12 @@ def test_paddle_deg2rad(
         max_dim_size=10,
     ),
 )
-def test_paddle_rot90(
+def test_paddle_instance_rot90(
     dtype_m_k_axes,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, values, k, axes = dtype_m_k_axes
@@ -2220,7 +2047,6 @@ def test_paddle_rot90(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2234,13 +2060,12 @@ def test_paddle_rot90(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_imag(
+def test_paddle_instance_imag(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2255,7 +2080,6 @@ def test_paddle_imag(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2275,13 +2099,12 @@ def test_paddle_imag(
         safety_factor_scale="linear",
     ),
 )
-def test_paddle_floor_divide(
+def test_paddle_instance_floor_divide(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -2295,7 +2118,6 @@ def test_paddle_floor_divide(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
         atol_=1,
     )
@@ -2311,13 +2133,12 @@ def test_paddle_floor_divide(
         num_arrays=1,
     ),
 )
-def test_paddle_is_tensor(
+def test_paddle_instance_is_tensor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2332,7 +2153,6 @@ def test_paddle_is_tensor(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2346,13 +2166,12 @@ def test_paddle_is_tensor(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2, shared_dtype=True
     ),
 )
-def test_paddle_isclose(
+def test_paddle_instance_isclose(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -2365,7 +2184,6 @@ def test_paddle_isclose(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2385,13 +2203,12 @@ def test_paddle_isclose(
         small_abs_safety_factor=32,
     ),
 )
-def test_paddle_equal_all(
+def test_paddle_instance_equal_all(
     dtypes_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtypes_and_x
@@ -2404,7 +2221,6 @@ def test_paddle_equal_all(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2418,13 +2234,12 @@ def test_paddle_equal_all(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_paddle_conj(
+def test_paddle_instance_conj(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2439,7 +2254,6 @@ def test_paddle_conj(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2453,13 +2267,12 @@ def test_paddle_conj(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_floor_(
+def test_paddle_instance_floor_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2474,42 +2287,6 @@ def test_paddle_floor_(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-    )
-
-
-# log2
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="log2",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-)
-def test_paddle_log2(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2526,10 +2303,9 @@ def test_paddle_log2(
         allow_inf=False,
     ),
 )
-def test_paddle_neg(
+def test_paddle_instance_neg(
     dtype_and_x,
     frontend,
-    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2547,7 +2323,6 @@ def test_paddle_neg(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2561,13 +2336,12 @@ def test_paddle_neg(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_isnan(
+def test_paddle_instance_isnan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2582,7 +2356,6 @@ def test_paddle_isnan(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2596,13 +2369,12 @@ def test_paddle_isnan(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_logical_not(
+def test_paddle_instance_logical_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2617,7 +2389,6 @@ def test_paddle_logical_not(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2630,13 +2401,12 @@ def test_paddle_logical_not(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_sign(
+def test_paddle_instance_sign(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2651,7 +2421,6 @@ def test_paddle_sign(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2665,13 +2434,12 @@ def test_paddle_sign(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_paddle_acosh(
+def test_paddle_instance_acosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2686,7 +2454,6 @@ def test_paddle_acosh(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2731,7 +2498,6 @@ def test_paddle_cond(
     init_flags,
     method_flags,
     frontend,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2746,7 +2512,6 @@ def test_paddle_cond(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
-        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -2754,139 +2519,19 @@ def test_paddle_cond(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
-    method_name="sgn",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=1,
-        abs_smallest_val=1e-10,
-        min_value=-10,
-        max_value=10,
-    ),
-)
-def test_paddle_sgn(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="tolist",
+    method_name="numel",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_tolist(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        on_device=on_device,
-    )
-
-
-# min
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="min",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=st.one_of(helpers.get_dtypes("numeric")),
-        min_axis=-1,
-        max_axis=0,
         min_num_dims=1,
-        force_int_axis=True,
-    ),
-    keep_dims=st.booleans(),
-)
-def test_paddle_min(
-    dtype_x_axis,
-    keep_dims,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, x, axis = dtype_x_axis
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axis": axis,
-            "keepdim": keep_dims,
-        },
-        frontend=frontend,
-        backend_to_test=backend_fw,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
-# maximum
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="maximum",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
     ),
 )
-def test_paddle_instance_maximum(
+def test_paddle_numel(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -2896,116 +2541,9 @@ def test_paddle_instance_maximum(
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={"other": x[1]},
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
-# std
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="std",
-    dtypes_and_x=_statistical_dtype_values(function="std"),
-    keep_dims=st.booleans(),
-)
-def test_paddle_instance_std(
-    dtypes_and_x,
-    keep_dims,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    backend_fw,
-    on_device,
-):
-    input_dtypes, x, axis, _ = dtypes_and_x
-    helpers.test_frontend_method(
         backend_to_test=backend_fw,
-        init_input_dtypes=input_dtypes,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={
-            "axis": axis,
-            "keepdim": keep_dims,
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# atanh
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="atanh",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-)
-def test_paddle_atanh(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# log1p
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="paddle.to_tensor",
-    method_name="log1p",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        safety_factor_scale="log",
-        small_abs_safety_factor=32,
-    ),
-)
-def test_paddle_log1p(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    backend_fw,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,

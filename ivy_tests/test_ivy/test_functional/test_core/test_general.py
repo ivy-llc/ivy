@@ -190,16 +190,22 @@ def test_get_item(
     on_device,
 ):
     dtypes, x, query = dtypes_x_query
-    helpers.test_function(
-        input_dtypes=dtypes,
-        test_flags=test_flags,
-        on_device=on_device,
-        backend_to_test=backend_fw,
-        fn_name=fn_name,
-        x=x,
-        query=query,
-        copy=copy,
-    )
+    try:
+        helpers.test_function(
+            input_dtypes=dtypes,
+            test_flags=test_flags,
+            on_device=on_device,
+            backend_to_test=backend_fw,
+            fn_name=fn_name,
+            x=x,
+            query=query,
+            copy=copy,
+        )
+    except ivy.utils.exceptions.IvyBackendException as e:
+        if backend_fw == "paddle" and "only supports access to dimension 0 to 9" in e:
+            assume(False)
+        else:
+            raise
 
 
 # set_item
