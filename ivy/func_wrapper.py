@@ -311,7 +311,7 @@ def handle_array_function(fn):
         overloaded_types = []
         overloaded_args = []
 
-        for arg in list(args) + list(kwargs.values()):
+        for arg in args + tuple(kwargs.values()):
             if ivy.exists(arg):
                 if not isinstance(arg, ivy.Container) and hasattr(
                     arg, "__ivy_array_function__"
