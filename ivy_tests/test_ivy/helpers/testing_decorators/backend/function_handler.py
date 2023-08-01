@@ -13,17 +13,21 @@ class BackendFunctionHandler(FunctionHandler):
     def __init__(
         self, fn_tree: str, ground_truth="tensorflow", test_flags=None, **_given_kwargs
     ):
+        # Changing the order of init vars will likely break things. Change with caution!
         self.fn_tree = fn_tree
         self.ground_truth = ground_truth
         self._given_kwargs = _given_kwargs
         self.callable_fn = self.import_function(self.fn_tree)
-        self.test_data = self._build_test_data()
+        self._build_test_data()
 
         if test_flags is None:
             self._build_test_flags_with_defaults()
         else:
             self.test_flags = test_flags
 
+        self._init_possible_args()
+
+    def _init_possible_args(self):
         self.possible_args = {
             "ground_truth_backend": st.just(self.ground_truth),
             "fn_name": st.just(self.test_data.fn_name),
@@ -34,7 +38,7 @@ class BackendFunctionHandler(FunctionHandler):
     def _build_test_data(self):
         module_tree, fn_name = self._partition_fn_tree(self.fn_tree)
         supported_device_dtypes = self._get_supported_devices_dtypes(self.fn_tree)
-        return TestData(
+        self.test_data = TestData(
             module_tree=module_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
@@ -65,6 +69,7 @@ class BackendFunctionHandler(FunctionHandler):
 
     def _update_given_kwargs(self, fn):
         param_names = inspect.signature(fn).parameters.keys()
+
         # Check if these arguments are being asked for
         filtered_args = set(param_names).intersection(self.possible_args.keys())
         for key in filtered_args:
