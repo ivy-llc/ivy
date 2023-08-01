@@ -2928,3 +2928,31 @@ def test_tensorflow_igamma(
         a=xs[0],
         x=xs[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.bessel_i0",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_bessel_i0(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        x=x,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
