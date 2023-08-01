@@ -1,6 +1,6 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.jax.devicearray import Array
+from ivy.functional.frontends.jax.array import Array
 
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,

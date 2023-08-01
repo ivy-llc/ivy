@@ -9,7 +9,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
 )
-from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.jax.array import DeviceArray
 import ivy.functional.frontends.jax as jax_frontend
 
 
