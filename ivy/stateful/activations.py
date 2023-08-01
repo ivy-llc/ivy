@@ -391,10 +391,10 @@ class ELU(Module):
 
 class LogSigmoid(Module):
     def __init__(self):
-        "Apply the LogSigmoid activation function"
-        Module().__init__()
+        """Apply the LogSigmoid activation function."""
+        Module.__init__(self)
 
-    def forward(self, x: ivy.Array) -> ivy.Array:
+    def _forward(self, x):
         """
 
         Parameters
@@ -407,5 +407,4 @@ class LogSigmoid(Module):
         ret
             The outputs following the SIGMOID activation *[batch_shape, d]*
         """
-
         return ivy.logsigmoid(x)
