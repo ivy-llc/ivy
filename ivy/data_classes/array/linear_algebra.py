@@ -362,7 +362,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        Return the inner product of two vectors ``x1`` and ``x2``.
+        Return the inner product of two vectors ``self`` and ``x2``.
 
         Parameters
         ----------
