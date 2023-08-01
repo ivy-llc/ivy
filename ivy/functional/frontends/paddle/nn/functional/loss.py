@@ -25,7 +25,7 @@ def _get_reduction_func(reduction):
 
 
 def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
-    x1, x2 = paddle.promote_types_paddle(x1, x2)
+    x1, x2 = paddle.promote_types_of_paddle_inputs(x1, x2)
     x1_dim = len(x1.shape)
     x2_dim = len(x2.shape)
     if x1_dim > x2_dim:
