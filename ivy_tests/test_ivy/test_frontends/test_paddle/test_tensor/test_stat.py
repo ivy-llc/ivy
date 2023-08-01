@@ -129,6 +129,7 @@ def test_paddle_median(
         keepdim=keepdim,
     )
 
+
 @handle_frontend_test(
     fn_tree="paddle.nanmedian",
     dtype_x_and_axis=helpers.dtype_values_axis(
