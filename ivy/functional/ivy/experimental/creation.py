@@ -15,10 +15,12 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -60,6 +62,7 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -107,6 +110,7 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -157,6 +161,7 @@ def kaiser_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @infer_dtype
@@ -210,6 +215,7 @@ def kaiser_bessel_derived_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @infer_dtype
 def hamming_window(
@@ -370,6 +376,7 @@ def tril_indices(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -606,6 +613,7 @@ indices.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def unsorted_segment_min(
