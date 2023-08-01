@@ -6,6 +6,7 @@ import ivy
 from ivy.func_wrapper import (
     handle_nestable,
     inputs_to_ivy_arrays,
+    handle_array_like_without_promotion,
     handle_array_function,
 )
 from ivy.utils.exceptions import handle_exceptions
@@ -93,3 +94,73 @@ def log_poisson_loss(
         return ivy.mean(loss, axis=axis, out=out)
     else:
         return ivy.inplace_update(out, loss) if out is not None else loss
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def gumbel_softmax(
+    logits: Union[ivy.Array, ivy.NativeArray],
+    tau: float = 1.0,
+    hard: bool = False,
+    eps: float = 1e-10,
+    dim: int = -1,
+) -> ivy.Array:
+    """
+    Sample from the Gumbel-Softmax distribution and optionally discretizes.
+
+    Parameters
+    ----------
+    logits : array_like
+        Unnormalized log probabilities of shape `[..., num_features]`.
+    tau : float, optional
+        Non-negative scalar temperature. Default: 1.0.
+    hard : bool, optional
+        If True, the returned samples will be discretized as one-hot vectors,
+        but will be differentiated as if it is the soft sample in autograd.
+        Default: False.
+    eps : float, optional
+        Small value to prevent numerical instability when
+        taking logarithms. Default: 1e-10.
+    dim : int, optional
+        A dimension along which softmax will be computed. Default: -1.
+
+    Returns
+    -------
+    array_like
+        Sampled tensor of the same shape as `logits` from the
+        Gumbel-Softmax distribution.
+        If `hard=True`, the returned samples will be one-hot, otherwise they will be
+        probability distributions that sum to 1 across `dim`.
+
+    Examples
+    --------
+    >>> logits = ivy.array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0]])
+    >>> # Sample soft categorical using reparametrization trick:
+    >>> soft_samples = ivy.gumbel_softmax(logits, tau=0.5, hard=False)
+    >>> print(soft_samples)
+    ivy.array([[0.217, 0.301, 0.482],
+               [0.253, 0.346, 0.401]])
+    >>> # Sample hard categorical using "Straight-through" trick:
+    >>> hard_samples = ivy.gumbel_softmax(logits, tau=0.5, hard=True)
+    >>> print(hard_samples)
+    ivy.array([[0., 0., 1.],
+               [0., 0., 1.]])
+    """
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(gumbels, axis=dim)
+
+    if hard:
+        indices = ivy.argmax(y_soft, axis=dim, keepdims=True)
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - ivy.stop_gradient(y_soft, preserve_type=True) + y_soft
+    else:
+        ret = y_soft
+
+    return ret
