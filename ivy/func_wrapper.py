@@ -312,43 +312,45 @@ def handle_array_function(fn):
         overloaded_args = []
 
         for arg in args + tuple(kwargs.values()):
-            if ivy.exists(arg) and (
-                not isinstance(arg, ivy.Container)
-                and hasattr(arg, "__ivy_array_function__")
-            ):
-                if type(arg) not in overloaded_types:
-                    overloaded_types.append(type(arg))
-                    if (
-                        arg.__ivy_array_function__
-                        is not ivy.Array.__ivy_array_function__
-                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
-                    ):
-                        index = len(overloaded_args)
-                        for i, old_arg in enumerate(overloaded_args):
-                            if issubclass(type(arg), type(old_arg)):
-                                index = i
-                                break
-                        overloaded_args.insert(index, arg)
-            if ivy.exists(arg) and isinstance(arg, ivy.Container):
-                arg = ivy.Container.cont_flatten_key_chains(arg)
-                indices = ivy.nested_argwhere(
-                    arg, lambda x: hasattr(x, "__ivy_array_function__")
-                )
-                for a in indices:
-                    if type(getattr(arg, a[0])) not in overloaded_types:
-                        overloaded_types.append(type(getattr(arg, a[0])))
-
-                        if getattr(
-                            arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
-                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+            if ivy.exists(arg):
+                if not isinstance(arg, ivy.Container) and hasattr(
+                    arg, "__ivy_array_function__"
+                ):
+                    if type(arg) not in overloaded_types:
+                        overloaded_types.append(type(arg))
+                        if (
+                            arg.__ivy_array_function__
+                            is not ivy.Array.__ivy_array_function__
+                            and not isinstance(arg, (ivy.Array, ivy.NativeArray))
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):
-                                if issubclass(type(getattr(arg, a[0])), type(old_arg)):
+                                if issubclass(type(arg), type(old_arg)):
                                     index = i
                                     break
                             overloaded_args.insert(index, arg)
+                elif isinstance(arg, ivy.Container):
+                    arg = ivy.Container.cont_flatten_key_chains(arg)
+                    indices = ivy.nested_argwhere(
+                        arg, lambda x: hasattr(x, "__ivy_array_function__")
+                    )
+                    for a in indices:
+                        if type(getattr(arg, a[0])) not in overloaded_types:
+                            overloaded_types.append(type(getattr(arg, a[0])))
+
+                            if getattr(
+                                arg, a[0]
+                            ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
+                                getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+                            ):
+                                index = len(overloaded_args)
+                                for i, old_arg in enumerate(overloaded_args):
+                                    if issubclass(
+                                        type(getattr(arg, a[0])), type(old_arg)
+                                    ):
+                                        index = i
+                                        break
+                                overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
             ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
