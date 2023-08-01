@@ -951,7 +951,7 @@ Einsum = to_ivy_arrays_and_back(
                 "float32",
                 "float16",
                 "int64",
-                "int32"
+                "int32",
             ),
         },
         "tensorflow",
