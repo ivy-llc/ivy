@@ -1262,7 +1262,7 @@ def test_jax_maxwell(
     shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("float", full=False),
     loc=st.integers(min_value=1, max_value=100),
-    scale=st.floats(min_value=1e-5, max_value=100, exclude_min=True),
+    scale=st.floats(min_value=0, max_value=100, exclude_min=True),
     test_with_out=st.just(False),
 )
 def test_jax_double_sided_maxwell(
