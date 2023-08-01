@@ -2174,18 +2174,17 @@ class Embedding(Module):
 
 
 class Identity(Module):
-    """
-    The Identity layer is argument insensitive and returns the input argument as output
-    when called.
-
-    It's typically used as a placeholder when no operation is to be
-    performed. It doesn't have any learnable parameter.
-    """
-
     def __init__(self, dtype=None):
+        """
+        Identity layer. The layer is argument insensitive and returns the input argument
+        as output when called.
+
+        It's typically used as a placeholder when no operation is to be
+        performed. It doesn't have any learnable parameter.
+        """
         Module.__init__(self, device=None, v=None, dtype=dtype)
 
-    def _forward(self, x, dtype=None):
+    def _forward(self, x):
         """
         Forward pass of the layer.
 
