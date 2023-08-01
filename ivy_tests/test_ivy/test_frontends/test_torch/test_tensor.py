@@ -6634,10 +6634,12 @@ def test_torch_clamp(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8158,6 +8160,40 @@ def test_torch_square(
     ),
 )
 def test_torch_log10(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# log10_ tests
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log10_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_log10_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -10589,6 +10625,61 @@ def test_torch_instance_conj(
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@st.composite
+def _get_clip_min_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+        )
+    )
+
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=0, max_value=25)
+    )
+
+    return x_dtype, x, min
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_min",
+    input_and_ranges=_get_clip_min_inputs(),
+)
+def test_torch_instance_clamp_min(
+    input_and_ranges,
+    frontend_method_data,
+    init_flags,
+    backend_fw,
+    frontend,
+    on_device,
+    method_flags,
+):
+    x_dtype, x, min = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=x_dtype,
+        method_all_as_kwargs_np={
+            "min": min,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
