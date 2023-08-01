@@ -203,8 +203,6 @@ This added support for handling :class:`ivy.Container` instances is all handled 
 This will add the `handle_nestable`_ wrapping to the function if it has the :code:`@handle_nestable` decorator.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
-Under the hood, the :class:`ivy.Container` API static methods are called when :class:`ivy.Container` instances are passed in as inputs to functions in the functional API.
-
 Nestable functions are explained in more detail in the :ref:`Containers` section.
 
 Convenience Functions
