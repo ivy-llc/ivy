@@ -418,6 +418,9 @@ def test_paddle_triplet_margin_loss(
     frontend,
     test_flags,
     backend_fw,
+    swap,
+    p,
+    eps,
 ):
     input_dtype, x = dtype_and_x
     anchor_dtype, anchor = input_dtype[0], x[0]
@@ -436,4 +439,7 @@ def test_paddle_triplet_margin_loss(
         negative=negative,
         margin=margin,
         reduction=reduction,
+        swap=swap,
+        p=p,
+        eps=eps,
     )

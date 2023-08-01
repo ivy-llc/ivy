@@ -24,7 +24,7 @@ def _get_reduction_func(reduction):
     return ret
 
 
-def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
     x1, x2 = paddle.promote_types_paddle(x1, x2)
     x1_dim = len(x1.shape)
     x2_dim = len(x2.shape)
@@ -244,14 +244,6 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
-@to_ivy_arrays_and_back
-def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
-    input_tensor = ivy.array(input_tensor)
-    return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
-        input_tensor.dtype
-    )
-
-
 @with_supported_dtypes(
     {"2.5.0 and below": ("float32",)},
     "paddle",
@@ -268,11 +260,11 @@ def triplet_margin_loss(
     reduction="mean",
     name=None,
 ):
-    distance_positive = pairwise_distance(anchor, positive, p=p, eps=epsilon)
-    distance_negative = pairwise_distance(anchor, negative, p=p, eps=epsilon)
+    distance_positive = _pairwise_distance(anchor, positive, p=p, eps=epsilon)
+    distance_negative = _pairwise_distance(anchor, negative, p=p, eps=epsilon)
 
     if swap:
-        swap_dist = pairwise_distance(positive, negative, p=p, eps=epsilon)
+        swap_dist = _pairwise_distance(positive, negative, p=p, eps=epsilon)
         distance_negative = ivy.minimum(distance_negative, swap_dist)
     loss = ivy.clip(distance_positive - distance_negative + margin, min=0.0)
 
