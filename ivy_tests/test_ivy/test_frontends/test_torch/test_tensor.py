@@ -1,6 +1,5 @@
 # global
 import pytest
-import sys
 from types import SimpleNamespace
 import numpy as np
 
@@ -10607,10 +10606,7 @@ def test_torch_instance_conj(
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-    ),
+    ).filter(lambda x: "float16" not in x[0] and "bfloat16" not in x[0]),
     some=st.booleans(),
     compute_uv=st.booleans(),
 )
