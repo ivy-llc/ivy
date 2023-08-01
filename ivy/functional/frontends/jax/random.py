@@ -322,8 +322,7 @@ def maxwell(key, shape=None, dtype="float64"):
 def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
     seed = _get_seed(key)
     x = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
-    z_1 = ivy.subtract(x, loc)
-    z = ivy.divide(z_1, scale)
+    z = (x - loc) / scale
     maxwell = (z**2) * ivy.exp(-(z**2) / 2)
     if scale != 0:
         coefficient = 1 / (2 * ivy.pi * scale)

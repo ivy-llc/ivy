@@ -1251,7 +1251,7 @@ def test_jax_maxwell(
 @handle_frontend_test(
     fn_tree="jax.random.double_sided_maxwell",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=2000,
         min_num_dims=1,
