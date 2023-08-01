@@ -747,3 +747,8 @@ def bincount(
 @to_ivy_arrays_and_back
 def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
+
+
+@to_ivy_arrays_and_back
+def bessel_i0(x, name=None):
+    return ivy.i0(x, out=name)
