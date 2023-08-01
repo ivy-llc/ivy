@@ -1748,6 +1748,40 @@ def test_paddle_prod(
     )
 
 
+# any
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.any",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=["bool"],
+        valid_axis=True,
+        allow_neg_axes=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_paddle_any(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+        keepdim=False,
+    )
+
+
 # mm
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.mm",
