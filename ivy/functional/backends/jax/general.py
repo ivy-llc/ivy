@@ -101,7 +101,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -421,7 +421,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
