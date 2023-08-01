@@ -569,7 +569,7 @@ Example of Downcasting mode :
     ivy.set_backend('torch')
     try:
     ret = ivy.expm1(ivy.array([1], dtype='float16')) # raises exception
-    ivy.upcast_data_types()
+    ivy.downcast_data_types()
     ret = ivy.expm1(ivy.array([1], dtype='float16')) # doesn't raise exception
 
 
