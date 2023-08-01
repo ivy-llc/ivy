@@ -6,6 +6,7 @@ from ivy.utils.assertions import (
     check_all,
     check_all_or_any_fn,
     check_any,
+    check_dev_correct_formatting,
     check_dimensions,
     check_elem_in_list,
     check_equal,
@@ -20,10 +21,10 @@ from ivy.utils.assertions import (
     check_kernel_padding_size,
     check_less,
     check_same_dtype,
+    check_shape,
     check_shapes_broadcastable,
     check_true,
     check_unsorted_segment_min_valid_params,
-    check_dev_correct_formatting,
 )
 from ivy.utils.assertions import _check_jax_x64_flag
 import ivy
@@ -434,6 +435,45 @@ def test_check_all_or_any_fn(args, fn, type, limit):
 
     else:
         assert "type must be all or any" in lines.strip()
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
+
+
+@pytest.mark.parametrize(
+    "x1, x2",
+    [
+        (ivy.array([1, 2, 3]), ivy.array([[4, 5, 6], [2, 3, 1]])),
+        (ivy.array([[1.0, 2.0], [3.0, 4.0]]), ivy.array([4, 5, 6])),
+        (ivy.array([1, 2]), ivy.array([3, 4, 5])),
+        (ivy.array([1]), ivy.array([2])),
+        (ivy.array([1, 2]), ivy.array([2, 3])),
+    ],
+)
+def test_check_shape(x1, x2):
+    filename = "except_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    lines = ""
+    try:
+        check_shape(x1, x2)
+        local_vars = {**locals()}
+    except Exception as e:
+        local_vars = {**locals()}
+        print(e)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if "e" in local_vars.keys():
+        assert "same shape" in lines.strip()
+
+    if "e" not in local_vars.keys():
+        assert not lines.strip()
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(filename)
