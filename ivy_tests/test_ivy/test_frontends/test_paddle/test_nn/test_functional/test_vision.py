@@ -18,9 +18,18 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=3,
     ),
     factor=helpers.ints(min_value=1),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
 )
 def test_paddle_pixel_shuffle(
-    *, dtype_and_x, factor, on_device, fn_tree, frontend, test_flags, backend_fw
+    *,
+    dtype_and_x,
+    factor,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+    data_format
 ):
     input_dtype, x = dtype_and_x
     assume(ivy.shape(x[0])[1] % (factor**2) == 0)
@@ -31,6 +40,7 @@ def test_paddle_pixel_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        data_format=data_format,
         upscale_factor=factor,
         backend_to_test=backend_fw,
     )
