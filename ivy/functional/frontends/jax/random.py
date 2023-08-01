@@ -39,8 +39,8 @@ def _get_seed(key):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -55,8 +55,8 @@ def beta(key, a, b, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -91,8 +91,8 @@ def poisson(key, lam, shape=None, dtype=None):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -107,8 +107,8 @@ def gamma(key, a, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -143,8 +143,8 @@ def rademacher(key, shape, dtype="int64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -211,8 +211,8 @@ def permutation(key, x, axis=0, independent=False):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -234,8 +234,8 @@ def shuffle(key, x, axis=0):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -252,8 +252,8 @@ def exponential(key, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -271,8 +271,8 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.4.13 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -293,8 +293,8 @@ def pareto(key, b, shape=None, dtype="float64"):
 @with_unsupported_dtypes(
     {
         "0.3.14 and below": (
-            "float16",
-            "bfloat16",
+                "float16",
+                "bfloat16",
         )
     },
     "jax",
@@ -304,7 +304,7 @@ def maxwell(key, shape=None, dtype="float64"):
     # generate uniform random numbers between 0 and 1
     z = ivy.random_uniform(seed=seed, shape=shape, dtype=dtype)
     # applying inverse transform sampling
-    x = (z**2) * ivy.exp(-(z**2) / 2)
+    x = (z ** 2) * ivy.exp(-(z ** 2) / 2)
     return x
 
 
@@ -313,8 +313,8 @@ def maxwell(key, shape=None, dtype="float64"):
 @with_supported_dtypes(
     {
         "0.4.13 and below": (
-            "float32",
-            "float64",
+                "float32",
+                "float64",
         )
     },
     "jax",
@@ -333,31 +333,33 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
 
     return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]
 
+
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "0.4.13 and below": (
-            "float32",
-            "float64",
+                "float32",
+                "float64",
         )
     },
     "jax",
 )
-def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
+def multivariate_normal(key, mean, cov, shape=(), dtype="float64", method="cholesky"):
     seed = _get_seed(key)
 
     if shape is None:
         shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
-    
-    if method == 'cholesky':
-        cov_factor = ivy.cholesky(cov)
-    elif method == 'eigh':
-        (w, v) = ivy.linalg.eigh(cov)
-        cov_factor = w * ivy.sqrt(s[..., None, :])
+
+    if method == 'eigh':
+        (w, v) = ivy.eigh(cov)
+        cov_factor = w * ivy.sqrt(w[..., None, :])
     elif method == 'svd':
-        (u, s, _) = ivy.linalg.svd(cov)
-        cov_factor = u * ivy.sqrt(s[...,None, :])
-    
-    normal = ivy.random_normal(seed, shape=shape+mean.shape[-1:],dtype=dtype)
-    return mean + ivy.einsum('...ij,...j->...i',cov_factor,normal)
+        (u, s, _) = ivy.svd(cov)
+        cov_factor = u * ivy.sqrt(s[..., None, :])
+    else:
+        cov_factor = ivy.cholesky(cov)
+
+    rand_normal = ivy.random_normal(seed, shape=shape + mean.shape[-1:], dtype=dtype)
+    result = mean + ivy.einsum('...ij,...j->...i', cov_factor, rand_normal)
+    return result
