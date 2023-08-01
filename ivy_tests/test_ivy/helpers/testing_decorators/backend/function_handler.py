@@ -79,5 +79,5 @@ class BackendFunctionHandler(FunctionHandler):
             wrapped_fn = fn
 
         self._add_test_attrs_to_fn(wrapped_fn)
-        self._wrap_handle_not_implemented(wrapped_fn)
+        self._handle_not_implemented(wrapped_fn)
         return wrapped_fn

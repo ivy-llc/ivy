@@ -163,7 +163,7 @@ class FunctionHandler(ABC):
     def _wrap_with_hypothesis(self, func: Callable[..., Any]):
         return given(**self._given_kwargs)(func)
 
-    def _wrap_handle_not_implemented(self, func):
+    def _handle_not_implemented(self, func):
         @functools.wraps(func)
         def wrapped_test(*args, **kwargs):
             try:
