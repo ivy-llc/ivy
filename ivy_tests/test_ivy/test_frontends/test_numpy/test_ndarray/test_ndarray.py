@@ -3435,9 +3435,18 @@ def test_numpy___rshift__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
-    x[1] = np.asarray(
-        np.clip(x[1], 0, np.iinfo(input_dtypes[1]).bits - 1), dtype=input_dtypes[1]
+    max_bits = np.iinfo(input_dtypes[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(
+        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
     )
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.clip(x[0], None, overflow_threshold)
+    if np.any(x[0] < 0):
+        x[0] = np.abs(x[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -3479,21 +3488,16 @@ def test_numpy_instance_lshift__(
     input_dtypes, x = dtype_and_x
     max_bits = np.iinfo(input_dtypes[0]).bits
     max_shift = max_bits - 1
-
     x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
-
     max_value_before_shift = 2 ** (max_bits - x[1]) - 1
     overflow_threshold = 2 ** (max_bits - 1)
-
     x[0] = np.asarray(
         np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
     )
-
     if np.any(x[0] > overflow_threshold):
         x[0] = np.clip(x[0], None, overflow_threshold)
     if np.any(x[0] < 0):
         x[0] = np.abs(x[0])
-
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
