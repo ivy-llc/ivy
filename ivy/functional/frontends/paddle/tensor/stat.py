@@ -47,9 +47,6 @@ def median(x, axis=None, keepdim=False, name=None):
     return ivy.median(x, axis=axis, keepdims=keepdim)
 
 
-
-#float16 should be supported
-#nanmedian
 @with_supported_dtypes(
     {"2.5.0 and below": ("float16","float32", "float64", "uint16")},
     "paddle",
