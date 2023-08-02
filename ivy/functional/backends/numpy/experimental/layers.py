@@ -914,6 +914,10 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
+
     embeddings = np.take(weights, indices, axis=0)
     if max_norm is not None:
         norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
