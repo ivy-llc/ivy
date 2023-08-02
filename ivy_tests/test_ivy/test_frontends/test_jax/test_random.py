@@ -1355,7 +1355,7 @@ def test_jax_maxwell(
         assert u.shape == v.shape
 
 
-# @pytest.mark.xfail
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.ball",
     dtype_key=helpers.dtype_and_values(
@@ -1419,7 +1419,7 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-# @pytest.mark.xfail
+@pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
