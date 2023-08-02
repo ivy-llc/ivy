@@ -301,6 +301,34 @@ class Array(
         """Original array referenced by view."""
         return self._base
 
+    @property
+    def real(self) -> ivy.Array:
+        """
+        Real part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the real part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.real(self._data)
+
+    @property
+    def imag(self) -> ivy.Array:
+        """
+        Imaginary part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the imaginary part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.imag(self._data)
+
     # Setters #
     # --------#
 
