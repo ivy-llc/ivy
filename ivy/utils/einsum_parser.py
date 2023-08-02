@@ -1,6 +1,5 @@
-"""
-Einsum expression parser, this file has been adapted from `opt_einsum` parser here https://github.com/dgasmith/opt_einsum/blob/master/opt_einsum/parser.py
-"""
+# Einsum expression parser, this file has been adapted from `opt_einsum` parser here
+# https://github.com/dgasmith/opt_einsum/blob/master/opt_einsum/parser.py
 
 import itertools
 from typing import Any, Dict, Iterator, List, Tuple, Union
@@ -13,8 +12,8 @@ _einsum_symbols_base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 def is_valid_einsum_char(x: str) -> bool:
-    """Check if the character ``x`` is valid for numpy einsum.
-
+    """
+    Check if the character ``x`` is valid for numpy einsum.
     **Examples:**
 
     ```python
@@ -28,9 +27,9 @@ def is_valid_einsum_char(x: str) -> bool:
     return (x in _einsum_symbols_base) or (x in ",->.")
 
 
-def has_valid_einsum_chars_only(einsum_str: str) -> bool: #[x]
-    """Check if ``einsum_str`` contains only valid characters for numpy einsum.
-
+def has_valid_einsum_chars_only(einsum_str: str) -> bool:  # [x]
+    """
+    Check if ``einsum_str`` contains only valid characters for numpy einsum.
     **Examples:**
 
     ```python
@@ -45,9 +44,10 @@ def has_valid_einsum_chars_only(einsum_str: str) -> bool: #[x]
 
 
 def get_symbol(i: int) -> str:
-    """Get the symbol corresponding to int ``i`` - runs through the usual 52
-    letters before resorting to unicode characters, starting at ``chr(192)`` and skipping surrogates.
-
+    """
+    Get the symbol corresponding to int ``i`` - runs through the usual 52
+    letters before resorting to unicode characters, starting at ``chr(192)``
+    and skipping surrogates.
     **Examples:**
 
     ```python
@@ -71,7 +71,8 @@ def get_symbol(i: int) -> str:
 
 
 def gen_unused_symbols(used: str, n: int) -> Iterator[str]:
-    """Generate ``n`` symbols that are not already in ``used``.
+    """
+    Generate ``n`` symbols that are not already in ``used``.
 
     **Examples:**
     ```python
@@ -91,8 +92,9 @@ def gen_unused_symbols(used: str, n: int) -> Iterator[str]:
 
 def find_output_str(subscripts: str) -> str:
     """
-    Find the output string for the inputs ``subscripts`` under canonical einstein summation rules.
-    That is, repeated indices are summed over by default.
+    Find the output string for the inputs ``subscripts`` under
+    canonical einstein summation rules.That is, repeated
+    indices are summed over by default.
 
     Examples
     --------
@@ -106,12 +108,17 @@ def find_output_str(subscripts: str) -> str:
     ''
     """
     tmp_subscripts = subscripts.replace(",", "")
-    return "".join(s for s in sorted(set(tmp_subscripts)) if tmp_subscripts.count(s) == 1)
+    return "".join(
+        s for s in sorted(set(tmp_subscripts)) if tmp_subscripts.count(s) == 1
+    )
 
 
-def find_output_shape(inputs: List[str], shapes: List[TensorShapeType], output: str) -> TensorShapeType:
-    """Find the output shape for given inputs, shapes and output string, taking
-    into account broadcasting.
+def find_output_shape(
+    inputs: List[str], shapes: List[TensorShapeType], output: str
+) -> TensorShapeType:
+    """
+    Find the output shape for given inputs, shapes and output string, taking into
+    account broadcasting.
 
     Examples
     --------
@@ -122,11 +129,19 @@ def find_output_shape(inputs: List[str], shapes: List[TensorShapeType], output: 
     >>> oe.parser.find_output_shape(["a", "a"], [(4, ), (1, )], "a")
     (4,)
     """
-    return tuple(max(shape[loc] for shape, loc in zip(shapes, [x.find(c) for x in inputs]) if loc >= 0) for c in output)
+    return tuple(
+        max(
+            shape[loc]
+            for shape, loc in zip(shapes, [x.find(c) for x in inputs])
+            if loc >= 0
+        )
+        for c in output
+    )
 
 
-def possibly_convert_to_numpy(x: Any) -> Any: #possibly convert to native
-    """Convert things without a 'shape' to ndarrays, but leave everything else.
+def possibly_convert_to_numpy(x: Any) -> Any:  # possibly convert to native
+    """
+    Convert things without a 'shape' to ndarrays, but leave everything else.
 
     Examples
     --------
@@ -157,7 +172,8 @@ def possibly_convert_to_numpy(x: Any) -> Any: #possibly convert to native
 
 
 def convert_subscripts(old_sub: List[Any], symbol_map: Dict[Any, Any]) -> str:
-    """Convert user custom subscripts list to subscript string according to `symbol_map`.
+    """
+    Convert user custom subscripts list to subscript string according to `symbol_map`.
 
     Examples
     --------
@@ -176,7 +192,9 @@ def convert_subscripts(old_sub: List[Any], symbol_map: Dict[Any, Any]) -> str:
     return new_sub
 
 
-def convert_interleaved_input(operands: Union[List[Any], Tuple[Any]]) -> Tuple[str, List[Any]]:
+def convert_interleaved_input(
+    operands: Union[List[Any], Tuple[Any]]
+) -> Tuple[str, List[Any]]:
     """Convert 'interleaved' input to standard einsum input."""
     tmp_operands = list(operands)
     operand_list = []
@@ -196,9 +214,10 @@ def convert_interleaved_input(operands: Union[List[Any], Tuple[Any]]) -> Tuple[s
 
         # remove Ellipsis because it can not be compared with other objects
         symbol_set.discard(Ellipsis)
-
-        # build the map based on sorted user symbols, retaining the order we lost in the `set`
-        symbol_map = {symbol: get_symbol(idx) for idx, symbol in enumerate(sorted(symbol_set))}
+        # build the map based on sorted user symbols retaining order lost in `set`
+        symbol_map = {
+            symbol: get_symbol(idx) for idx, symbol in enumerate(sorted(symbol_set))
+        }
 
     except TypeError:  # unhashable or uncomparable object
         raise TypeError(
@@ -216,12 +235,13 @@ def convert_interleaved_input(operands: Union[List[Any], Tuple[Any]]) -> Tuple[s
 
 def legalise_einsum_expr(*operands: Any) -> str:
     """
-    A reproduction of einsum c side einsum parsing in python.
-
+    Reproduction of einsum c side einsum parsing in python.
     **Parameters:**
     Intakes the same inputs as `contract_path`, but NOT the keyword args. The only
     supported keyword argument is:
-    - **shapes** - *(bool, optional)* Whether ``parse_einsum_input`` should assume arrays (the default) or
+    - **shapes** - *(bool, optional)* Whether
+        ``parse_einsum_input`` should assume
+        arrays (the default) or
         array shapes have been supplied.
 
     Returns
@@ -260,7 +280,9 @@ def legalise_einsum_expr(*operands: Any) -> str:
     # Parse ellipses
     if "." in subscripts:
         used = subscripts.replace(".", "").replace(",", "").replace("->", "")
-        ellipse_inds = "".join(gen_unused_symbols(used, max(len(x) for x in operand_shapes)))
+        ellipse_inds = "".join(
+            gen_unused_symbols(used, max(len(x) for x in operand_shapes))
+        )
         longest = 0
 
         # Do we have an output to account for?
@@ -291,7 +313,9 @@ def legalise_einsum_expr(*operands: Any) -> str:
                 elif ellipse_count == 0:
                     split_subscripts[num] = sub.replace("...", "")
                 else:
-                    split_subscripts[num] = sub.replace("...", ellipse_inds[-ellipse_count:])
+                    split_subscripts[num] = sub.replace(
+                        "...", ellipse_inds[-ellipse_count:]
+                    )
 
         subscripts = ",".join(split_subscripts)
 
@@ -319,14 +343,16 @@ def legalise_einsum_expr(*operands: Any) -> str:
     # Make sure output subscripts are in the input
     for char in output_subscript:
         if char not in input_subscripts:
-            raise ValueError("Output character '{}' did not appear in the input".format(char))
+            raise ValueError(
+                "Output character '{}' did not appear in the input".format(char)
+            )
 
     # Make sure number operands is equivalent to the number of terms
     if len(input_subscripts.split(",")) != len(operands):
         raise ValueError(
-            f"Number of einsum subscripts, {len(input_subscripts.split(','))}, must be equal to the "
-            f"number of operands, {len(operands)}."
+            f"Number of einsum subscripts, {len(input_subscripts.split(','))}, must be"
+            f" equal to the number of operands, {len(operands)}."
         )
-        
-    eqn = input_subscripts +"->"+ output_subscript
+
+    eqn = input_subscripts + "->" + output_subscript
     return eqn
