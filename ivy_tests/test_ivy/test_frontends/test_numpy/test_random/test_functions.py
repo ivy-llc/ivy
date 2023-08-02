@@ -772,9 +772,11 @@ def test_numpy_gamma(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -815,11 +817,13 @@ def test_numpy_logistic(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
     loc,
     scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         backend_to_test=backend_fw,
