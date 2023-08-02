@@ -429,6 +429,7 @@ def scaled_dot_product_attention(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     dropout_p: Optional[float] = 0.0,
     is_causal: Optional[bool] = False,
+    training: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -611,7 +612,7 @@ def scaled_dot_product_attention(
     )
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
-    sim = ivy.dropout(sim, dropout_p)
+    sim = ivy.dropout(sim, dropout_p, training=training)
 
     if ivy.exists(mask):
         # BS x Q x K
@@ -624,7 +625,8 @@ def scaled_dot_product_attention(
     elif is_causal:
         L = q.shape[-2]  # Source sequence length
         S = k.shape[-2]  # Target sequence length
-        mask = ivy.ones((L, S), dtype=ivy.bool).tril(k=0)
+        mask = ivy.tril(ivy.ones((L, S)), k=0)
+        mask = ivy.astype(mask, ivy.bool)
         sim = ivy.where(
             ivy.logical_not(mask),
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
@@ -634,7 +636,7 @@ def scaled_dot_product_attention(
     # BS x Q x K
     attn = ivy.softmax(sim, axis=-1)
     # BS x Q x F
-    return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
+    return ivy.einsum("... qk, ...kf -> ...qf", attn, v)
 
 
 @handle_array_function

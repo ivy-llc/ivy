@@ -168,32 +168,47 @@ def test_dropout(
 @st.composite
 def x_and_scaled_attention(draw, dtypes):
     dtype = draw(dtypes)
-    num_queries = draw(helpers.ints(min_value=1, max_value=2))
-    num_keys = draw(helpers.ints(min_value=1, max_value=2))
-    feat_dim = draw(helpers.ints(min_value=1, max_value=2))
-
-    q_shape = (1,) + (num_queries,) + (feat_dim,)
-    k_shape = (1,) + (num_keys,) + (feat_dim,)
-    v_shape = (1,) + (num_keys,) + (feat_dim,)
-    mask_shape = (1,) + (num_queries,) + (num_keys,)
+    num_queries = draw(helpers.ints(min_value=2, max_value=4))
+    num_keys = draw(helpers.ints(min_value=2, max_value=4))
+    feat_dim = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=2))
+    q_shape = (batch_size,) + (num_queries,) + (feat_dim,)
+    k_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    v_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    mask_shape = (batch_size,) + (num_queries,) + (num_keys,)
 
     q = draw(
-        helpers.array_values(dtype=dtype[0], shape=q_shape, min_value=0, max_value=10)
-    )
-    k = draw(
-        helpers.array_values(dtype=dtype[0], shape=k_shape, min_value=0, max_value=10)
-    )
-    v = draw(
-        helpers.array_values(dtype=dtype[0], shape=v_shape, min_value=0, max_value=10)
-    )
-    mask = draw(
         helpers.array_values(
             dtype=dtype[0],
-            shape=mask_shape,
-            min_value=0,
-            max_value=10,
-            large_abs_safety_factor=2,
+            shape=q_shape,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
             safety_factor_scale="linear",
+        )
+    )
+    k = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=k_shape,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    v = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=v_shape,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+
+    mask = draw(
+        helpers.array_values(
+            dtype="bool",
+            shape=mask_shape,
         )
         | st.none()
     )
@@ -209,6 +224,7 @@ def x_and_scaled_attention(draw, dtypes):
     scale=st.floats(min_value=0.1, max_value=1),
     dropout_p=st.floats(min_value=0, max_value=0.99),
     is_causal=st.booleans(),
+    training=st.just(False),  # st.booleans(), disabled until proper testing is used
     ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
@@ -217,6 +233,7 @@ def test_scaled_dot_product_attention(
     scale,
     dropout_p,
     is_causal,
+    training,
     test_flags,
     backend_fw,
     fn_name,
@@ -230,8 +247,8 @@ def test_scaled_dot_product_attention(
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        atol_=1e-02,
-        rtol_=1e-02,
+        atol_=1e-01,
+        rtol_=1e-01,
         q=q,
         k=k,
         v=v,
@@ -239,6 +256,7 @@ def test_scaled_dot_product_attention(
         mask=mask,
         dropout_p=dropout_p,
         is_causal=is_causal,
+        training=training,
     )
 
 

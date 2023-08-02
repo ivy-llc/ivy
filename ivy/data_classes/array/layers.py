@@ -295,6 +295,7 @@ class _ArrayWithLayers(abc.ABC):
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         dropout_p: Optional[float] = 0.0,
         is_causal: Optional[bool] = False,
+        training: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -365,6 +366,7 @@ class _ArrayWithLayers(abc.ABC):
             mask=mask,
             dropout_p=dropout_p,
             is_causal=is_causal,
+            training=training,
             out=out,
         )
 
