@@ -114,8 +114,8 @@ def broadcast_to(x, shape, name=None):
 @to_ivy_arrays_and_back
 def scatter_nd(index, updates, shape, name=None):
     return ivy.scatter_nd(index, updates, shape)
-  
- 
+
+
 @with_supported_dtypes(
     {"2.5.0 and below": ("bool", "float32", "float64", "int32", "int64")},
     "paddle",
