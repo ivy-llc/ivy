@@ -239,8 +239,6 @@ def test_scaled_dot_product_attention(
         mask=mask,
         dropout_p=dropout_p,
         is_causal=is_causal,
-        dropout_p=dropout_p,
-        is_causal=is_causal,
     )
 
 
