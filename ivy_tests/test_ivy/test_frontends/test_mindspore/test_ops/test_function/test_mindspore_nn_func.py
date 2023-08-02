@@ -78,37 +78,45 @@
 #         x=x[0],
 #     )
 
-# gumble_softmax
+# gumbel_softmax
 # @handle_frontend_test(
-#     fn_tree="gumble_softmax",
+#     fn_tree="mindspore.ops.function.nn_func.gumbel_softmax",
 #     logits=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
 #         shared_dtype=True,
-#         min_value=2,
-#         max_value=5,
-#         min_dim_size=4,
 #     ),
 #     tau=st.floats(min_value=0.1, max_value=10.0),
 #     hard=st.booleans(),
+#     eps=st.floats(min_value=1e-12, max_value=1e-6),
+#     dim=st.integers(min_value=-1, max_value=1),
 # )
-# def test_mindspore_gumble_softmax(
+# def test_mindspore_gumbel_softmax(
 #     *,
 #     logits,
 #     tau,
 #     hard,
+#     eps,
+#     dim,
 #     on_device,
 #     fn_tree,
 #     frontend,
 #     test_flags,
 # ):
+#     input_logits = logits
+#     gumbel_tau = tau
+#     gumbel_hard = hard
+#     gumbel_eps = eps
+#     gumbel_dim = dim
+
 #     helpers.test_frontend_function(
-#         input_dtypes=logits[0],
+#         input_logits=input_logits,
 #         frontend=frontend,
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
-#         logits=logits[1],
-#         tau=tau,
-#         hard=hard,
+#         gumbel_tau=gumbel_tau,
+#         gumbel_hard=gumbel_hard,
+#         gumbel_eps=gumbel_eps,
+#         gumbel_dim=gumbel_dim,
 #     )

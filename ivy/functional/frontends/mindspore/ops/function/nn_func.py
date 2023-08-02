@@ -38,14 +38,21 @@ def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
 
-@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@with_supported_dtypes({"2.0.0 and below": "float16"}, "mindspore")
 @to_ivy_arrays_and_back
-def gumble_softmax(logits, tau=1.0, hard=False):
+def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(x=gumbels, axis=dim)
+
     if hard:
-        # For hard Gumbel-Softmax, take argmax instead of softmax
-        return ivy.one_hot(ivy.argmax(logits, axis=-1), logits.shape[-1])
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
     else:
-        # Sample from the Gumbel-Softmax distribution
-        gumbel_noise = ivy.random.gumbel(logits.shape, device=logits.device)
-        gumbel_sample = logits + gumbel_noise
-        return ivy.softmax(gumbel_sample / tau, axis=-1)
+        ret = y_soft
+
+    return ret
