@@ -231,8 +231,7 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
 
     return out
 
-@with_supported_dtypes({"2.5.0 and below": ("float32","float64")},
-    "paddle",)
+@with_supported_dtypes({"2.5.1 and below": ("float32","float64")},"paddle")
 @to_ivy_arrays_and_back
 def multilabel_soft_margin_loss(input, label, weight=None, reduction='mean', name=None):
 

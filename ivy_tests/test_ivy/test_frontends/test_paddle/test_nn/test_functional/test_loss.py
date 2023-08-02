@@ -396,10 +396,12 @@ def test_paddle_margin_ranking_loss(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        shared_dtype=True,
         exclude_min=True,
         exclude_max=True,
-        shared_dtype=True,
-        min_num_dims=1,
+        min_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=10,
     ),
     dtype_and_weight=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
