@@ -171,9 +171,6 @@ def x_and_scaled_attention(draw, dtypes):
     num_queries = draw(helpers.ints(min_value=1, max_value=2))
     num_keys = draw(helpers.ints(min_value=1, max_value=2))
     feat_dim = draw(helpers.ints(min_value=1, max_value=2))
-    scale = draw(helpers.floats(min_value=0.1, max_value=1))
-    dropout_p = draw(helpers.floats(min_value=0.0, max_value=1))
-    is_causal = draw(st.booleans())
 
     q_shape = (1,) + (num_queries,) + (feat_dim,)
     k_shape = (1,) + (num_keys,) + (feat_dim,)
@@ -198,30 +195,43 @@ def x_and_scaled_attention(draw, dtypes):
             large_abs_safety_factor=2,
             safety_factor_scale="linear",
         )
+        | st.none()
     )
-    return dtype, q, k, v, mask, scale, dropout_p, is_causal
+    return dtype, q, k, v, mask
 
 
 # scaled_dot_product_attention
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
-    dtype_q_k_v_mask_scale_d_ic_=x_and_scaled_attention(
+    dtype_q_k_v_mask=x_and_scaled_attention(
         dtypes=helpers.get_dtypes("float", full=False),
     ),
+    scale=st.floats(min_value=0.1, max_value=1),
+    dropout_p=st.floats(min_value=0, max_value=0.99),
+    is_causal=st.booleans(),
     ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
-    *, dtype_q_k_v_mask_scale_d_ic, test_flags, backend_fw, fn_name, on_device
+    *,
+    dtype_q_k_v_mask,
+    scale,
+    dropout_p,
+    is_causal,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    dtype, q, k, v, mask, scale, dropout_p, is_causal = dtype_q_k_v_mask_scale_d_ic
+    (dtype, q, k, v, mask) = dtype_q_k_v_mask
+    is_causal = is_causal if mask is None else False
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-02,
         atol_=1e-02,
+        rtol_=1e-02,
         q=q,
         k=k,
         v=v,
