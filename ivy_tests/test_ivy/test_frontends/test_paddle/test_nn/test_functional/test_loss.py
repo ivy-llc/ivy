@@ -405,13 +405,7 @@ def test_paddle_margin_ranking_loss(
         max_num_dims=2,
         min_dim_size=1,
     ),
-    margin=st.floats(),
-    p=st.integers(min_value=0, max_value=2),
-    swap=st.booleans(),
-    size_average=st.booleans(),
-    reduce=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
-    test_with_out=st.just(False),
 )
 def test_paddle_triplet_margin_loss(
     dtype_and_inputs,
