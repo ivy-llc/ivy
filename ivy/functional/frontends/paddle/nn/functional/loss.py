@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 import ivy.functional.frontends.paddle as paddle
 from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -22,18 +22,6 @@ def _get_reduction_func(reduction):
             "{} is not a valid value for reduction".format(reduction)
         )
     return ret
-
-
-def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
-    x1, x2 = paddle.promote_types_of_paddle_inputs(x1, x2)
-    x1_dim = len(x1.shape)
-    x2_dim = len(x2.shape)
-    if x1_dim > x2_dim:
-        output_dim = x1_dim
-    else:
-        output_dim = x2_dim
-
-    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
 
 
 @with_supported_dtypes(
@@ -244,32 +232,43 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
-@with_supported_dtypes(
-    {"2.5.0 and below": ("float32",)},
-    "paddle",
-)
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float32", "bfloat32")}, "paddle")
 def triplet_margin_loss(
     anchor,
     positive,
     negative,
     margin=1.0,
-    p=2,
-    epsilon=1e-6,
+    p=2.0,
+    eps=1e-06,
     swap=False,
     reduction="mean",
-    name=None,
 ):
-    distance_positive = _pairwise_distance(anchor, positive, p=p, eps=epsilon)
-    distance_negative = _pairwise_distance(anchor, negative, p=p, eps=epsilon)
-
-    if swap:
-        swap_dist = _pairwise_distance(positive, negative, p=p, eps=epsilon)
-        distance_negative = ivy.minimum(distance_negative, swap_dist)
-    loss = ivy.clip(distance_positive - distance_negative + margin, min=0.0)
+    distance_function = paddle.nn.functional.distance.pairwise_distance
 
     reduction = _get_reduction_func(reduction)
-    loss = reduction(loss)
-    loss = ivy.atleast_1d(loss)
 
+    a_dim = anchor.ndim
+    p_dim = positive.ndim
+    n_dim = negative.ndim
+
+    ivy.assertions.check_true(
+        a_dim == p_dim and p_dim == n_dim,
+        lambda: (
+            "The anchor, positive, and negative tensors are expected to have "
+            f"the same number of dimensions, but got: anchor {a_dim}D, "
+            f"positive {p_dim}D, and negative {n_dim}D inputs"
+        ),
+    )
+
+    dist_positive = distance_function(anchor, positive, p=p, eps=eps)
+    dist_negative = distance_function(anchor, negative, p=p, eps=eps)
+    if swap:
+        dist_swap = distance_function(positive, negative, p=p, eps=eps)
+        dist_negative = ivy.minimum(dist_negative, dist_swap)
+    loss = ivy.maximum(
+        dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)
+    )
+
+    loss = reduction(loss).astype(anchor.dtype)
     return loss
