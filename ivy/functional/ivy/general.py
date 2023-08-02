@@ -1927,7 +1927,7 @@ def einops_rearrange(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1994,7 +1994,11 @@ def einops_reduce(
 
 
 # IMPORTANT: assign attribute directly to function instead of wrapper here
-einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
+einops_reduce.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("complex",),
+    "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+}
 
 
 @handle_exceptions
@@ -2844,12 +2848,13 @@ def _parse_query(query, x_shape, scatter=False):
     # relevant only for gathering
     if not scatter:
         non_slice_q_idxs = [i for i, q in enumerate(query) if ivy.is_array(q)]
-        to_front = any(ivy.diff(non_slice_q_idxs) != 1) and len(non_slice_q_idxs) > 1
+        to_front = len(non_slice_q_idxs) > 1 and any(ivy.diff(non_slice_q_idxs) != 1)
     else:
         to_front = False
 
     # extract newaxis queries
-    new_axes = [i for i, q in enumerate(query) if q is None]
+    if not scatter:
+        new_axes = [i for i, q in enumerate(query) if q is None]
     query = [q for q in query if q is not None]
     query = [Ellipsis] if query == [] else query
 
@@ -2888,13 +2893,16 @@ def _parse_query(query, x_shape, scatter=False):
 
     # calculate target_shape, i.e. the shape the gathered values should be in
     if len(array_inds) and to_front:
-        target_shape = [list(new_arrays[0].shape)] + [
-            list(query[i].shape) for i in range(len(query)) if i not in array_inds
-        ]
+        target_shape = (
+            [list(new_arrays[0].shape)]
+            + [list(query[i].shape) for i in range(len(query)) if i not in array_inds]
+            + [[] for _ in range(len(array_inds) - 1)]
+        )
     elif len(array_inds):
         target_shape = (
             [list(query[i].shape) for i in range(0, array_inds[0])]
             + [list(new_arrays[0].shape)]
+            + [[] for _ in range(len(array_inds) - 1)]
             + [list(query[i].shape) for i in range(array_inds[-1] + 1, len(query))]
         )
     else:
@@ -2905,10 +2913,11 @@ def _parse_query(query, x_shape, scatter=False):
             + [target_shape[ellipsis_inds[0] : ellipsis_inds[1]]]
             + target_shape[ellipsis_inds[1] :]
         )
-    for ax in new_axes:
-        if len(array_inds) and to_front and ax <= array_inds[-1]:
-            ax = array_inds[0] + 1
-        target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
+    if not scatter:
+        for ax in new_axes:
+            if len(array_inds) and to_front and ax <= array_inds[-1]:
+                ax = array_inds[0] + 1
+            target_shape = [*target_shape[:ax], 1, *target_shape[ax:]]
     target_shape = _deep_flatten(target_shape)
 
     # calculate the indices mesh (indices in gather_nd/scatter_nd format)
