@@ -309,7 +309,7 @@ The model's output can be visualized as follows:
 .. raw:: html
 
    <div align="center">
-      <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
+      <img class="dark-light" width="50%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/regressor_lq.gif">
    </div>
 
 Last but not least, we are also working on specific extension totally written in Ivy and therefore usable within any framework, 

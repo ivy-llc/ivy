@@ -13,6 +13,11 @@ _slice = builtins.slice
 
 
 @to_ivy_arrays_and_back
+def imag(x):
+    return ivy.imag(x)
+
+
+@to_ivy_arrays_and_back
 def abs(x):
     return ivy.abs(x)
 
