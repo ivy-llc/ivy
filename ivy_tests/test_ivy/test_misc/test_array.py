@@ -1474,7 +1474,10 @@ def test_array__imatmul__(
     init_tree=CLASS_TREE,
     method_tree="Array.__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
 )
 def test_array__abs__(
