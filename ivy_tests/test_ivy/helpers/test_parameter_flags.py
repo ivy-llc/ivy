@@ -203,7 +203,7 @@ class FrontendFunctionTestFlags(TestFlags):
 
 
 @st.composite
-def frontend_function_flags(
+def build_frontend_function_flags(
     draw,
     *,
     num_positional_args,
