@@ -888,6 +888,50 @@ def test_torch_solve(
     )
 
 
+# solve triangular
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve_triangular",
+    dtype_and_data=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x + 1])),
+        safety_factor_scale="log",
+        small_abs_safety_factor=6,
+    ).filter(
+        lambda x: np.linalg.cond(x[1][0][:, :-1]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0][:, :-1]) != 0
+        and np.linalg.cond(x[1][0][:, -1].reshape(-1, 1)) < 1 / sys.float_info.epsilon
+    ),
+    upper=st.booleans(),
+)
+def test_torch_solve_triangular(
+    *,
+    dtype_and_data,
+    upper,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, data = dtype_and_data
+    input = data[0][:, :-1]
+    other = data[0][:, -1].reshape(-1, 1)
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[0]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=input,
+        b=other,
+        upper=upper,
+    )
+
+
 # tensorinv
 @st.composite
 def _tensorinv_helper(draw):
