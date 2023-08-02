@@ -32,6 +32,9 @@ class FrontendFunctionHandler(FunctionHandler):
         self.aliases = self._init_aliases(aliases)
         self._given_kwargs = _given_kwargs
 
+        if number_positional_args is None:
+            number_positional_args = self._build_num_positional_arguments_strategy()
+
         self._build_test_flags(
             number_positional_args=number_positional_args,
             test_with_out=test_with_out,
