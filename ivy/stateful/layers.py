@@ -2174,7 +2174,7 @@ class Embedding(Module):
 
 
 class Identity(Module):
-    def __init__(self, dtype=None):
+    def __init__(self):
         """
         Identity layer. The layer is argument insensitive and returns the input argument
         as output when called.
@@ -2182,7 +2182,7 @@ class Identity(Module):
         It's typically used as a placeholder when no operation is to be
         performed. It doesn't have any learnable parameter.
         """
-        Module.__init__(self, device=None, v=None, dtype=dtype)
+        Module.__init__(self)
 
     def _forward(self, x):
         """
