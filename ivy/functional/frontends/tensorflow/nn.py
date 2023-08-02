@@ -602,3 +602,21 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
         weighted_mean = ivy.squeeze(weighted_mean, axis=axes)
         weighted_variance = ivy.squeeze(weighted_variance, axis=axes)
     return weighted_mean, weighted_variance
+
+
+#dropout
+@to_ivy_arrays_and_back
+def dropout(
+    x,
+    rate,
+    noise_shape=None,
+    seed=None,
+    name=None,
+):
+    return ivy.dropout(
+        x,
+        rate,
+        noise_shape=noise_shape,
+        seed=seed,
+    )
+
