@@ -661,3 +661,31 @@ def test_paddle_assign(
         x=x[0],
         output=x[1],
     )
+
+
+# complex
+@handle_frontend_test(
+    fn_tree="paddle.complex",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"], shared_dtype=True, num_arrays=2
+    ),
+)
+def test_paddle_complex(
+    dtype_and_arrays,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, (real, imag) = dtype_and_arrays
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=real,
+        imag=imag,
+    )
