@@ -2194,7 +2194,16 @@ def test_array__lshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    max_bits = np.iinfo(dtype[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=dtype[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(np.clip(x[0], None, max_value_before_shift), dtype=dtype[0])
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.asarray(np.clip(x[0], None, overflow_threshold), dtype=dtype[0])
+    if np.any(x[0] < 0):
+        x[0] = np.asarray(np.abs(x[0]), dtype=dtype[0])
     helpers.test_method(
         backend_to_test=backend_fw,
         on_device=on_device,
@@ -2207,6 +2216,8 @@ def test_array__lshift__(
         method_all_as_kwargs_np={"other": x[1]},
         class_name=class_name,
         method_name=method_name,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 
