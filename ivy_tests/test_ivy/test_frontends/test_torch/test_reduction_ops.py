@@ -10,7 +10,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    _quantile_helper
+    _quantile_helper, _nanquantile_helper
 )
 
 
@@ -371,7 +371,7 @@ def test_torch_nanmean(
 
 @handle_frontend_test(
     fn_tree="torch.nanquantile",
-    dtype_and_x=_quantile_helper(),
+    dtype_and_x=_nanquantile_helper(),
     keepdims=st.booleans(),
 )
 def test_torch_nanquantile(
