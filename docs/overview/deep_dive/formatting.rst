@@ -178,8 +178,9 @@ as in the pre-commit process. Then the suggested changes produced in the checks 
 a new commit if there is any. 
 
 However, it is possible for the linters run in the ivy-gardener and the github action every day to face formatting 
-errors that need human intervention like typos and uninitialized arguments. In this case, an error will be thrown 
-by the linters while the fixes for other normal errors will still be applied.
+errors that need human intervention like typos and uninitialized arguments. In this case, errors will be thrown 
+by the linters and by the lint checks that runs later, while the fixes for other normal errors will still be applied 
+as the ivy-gardener is passing properly.
 
 On the other hand, ivy-gardener itself can fail if the bot handling it (ivy-branch) can not apply the changes 
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
