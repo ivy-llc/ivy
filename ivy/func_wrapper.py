@@ -304,9 +304,7 @@ def handle_backend_invalid(fn: Callable) -> Callable:
     def _handle_backend_invalid(*args, **kwargs):
         if args:
             indices = [
-                arg
-                for arg in args
-                if isinstance(arg, (ivy.Array, ivy.NativeArray, ivy.Dtype))
+                arg for arg in args if isinstance(arg, (ivy.Array, ivy.NativeArray))
             ]
         elif kwargs:
             indices = [
