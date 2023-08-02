@@ -368,7 +368,7 @@ class KaimingNormal(Initializer):
 
 
 class RandomNormal(Initializer):
-    def __init__(self, mean=0.0, stddev=0.05, shape=None, seed=None):
+    def __init__(self, mean=0.0, stddev=0.05, seed=None):
         """
         Initialize with Random Normal Distribution.
 
@@ -381,17 +381,11 @@ class RandomNormal(Initializer):
             Sets the expected value, average, and center of the normal distribution.
         stddev
             Sets the standard deviation of the normal distribution.
-        shape
-            If the given shape is, e.g (m, n, k), then m * n * k samples are drawn.
-            (default: None) Can only be specified when mean and std are numeric values,
-            else exception will be raised. Default is None, where a single value is
-            returned.
         seed
             Used to create a random seed distribution.(Default:None)
         """
         self._mean = mean
         self._stddev = stddev
-        self._shape = shape
         self._seed = seed
 
     def create_variables(
@@ -405,6 +399,10 @@ class RandomNormal(Initializer):
 
         Parameters
         ----------
+        var_shape
+            Tuple representing the shape of the desired array. If considering
+             the array as a rectangular matrix, this tuple is represented as
+             '(ROWS, COLUMNS)'.
         device
             Device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
             etc. Default is cpu.
@@ -415,7 +413,7 @@ class RandomNormal(Initializer):
             ivy.random_normal(
                 mean=self._mean,
                 std=self._stddev,
-                shape=self._shape if not var_shape else var_shape,
+                shape=var_shape,
                 seed=self._seed,
                 device=device,
                 dtype=dtype,
