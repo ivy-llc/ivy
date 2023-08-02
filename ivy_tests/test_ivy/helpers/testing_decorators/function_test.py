@@ -5,8 +5,7 @@ import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
 from abc import ABC, abstractmethod
-from hypothesis import given, strategies as st
-from ivy_tests.test_ivy.helpers import globals as test_globals
+from hypothesis import given
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
@@ -17,17 +16,6 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
 from typing import Callable, Any
 
 
-@st.composite
-def num_positional_args_from_dict(draw, backends_dict):
-    parameter_info = backends_dict[test_globals.CURRENT_BACKEND]
-    return draw(
-        st.integers(
-            min_value=parameter_info.positional_only,
-            max_value=(parameter_info.total - parameter_info.keyword_only),
-        )
-    )
-
-
 class FunctionHandler(ABC):
     @abstractmethod
     def __init__(self, fn_tree: str, test_flags, **_given_kwargs):
@@ -35,6 +23,7 @@ class FunctionHandler(ABC):
 
     def _build_parameter_info(self, fn):
         total = num_positional_only = num_keyword_only = 0
+        # TODO refactor out
         for param in inspect.signature(fn).parameters.values():
             if param.name == "self":
                 continue

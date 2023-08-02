@@ -2,7 +2,10 @@ import inspect
 
 from hypothesis import strategies as st
 from typing import Callable, Any
-from ..function_test import FunctionHandler, num_positional_args_from_dict
+from ivy_tests.test_ivy.helpers.testing_decorators.strategies import (
+    num_positional_args_from_dict,
+)
+from ..function_test import FunctionHandler
 from ...globals import TestData
 from ...test_parameter_flags import (
     build_function_flags_with_defaults,
