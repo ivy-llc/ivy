@@ -5,7 +5,7 @@ from typing import Callable, Any
 from ivy_tests.test_ivy.helpers.testing_decorators.strategies import (
     num_positional_args_from_dict,
 )
-from ..function_test import FunctionHandler
+from ..function_decorator_base import FunctionHandler
 from ...globals import TestData
 from ...test_parameter_flags import (
     build_function_flags_with_defaults,
