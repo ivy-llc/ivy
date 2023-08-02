@@ -392,14 +392,14 @@ class _ArrayWithLinearAlgebra(abc.ABC):
         Matrices of identical shapes
         >>> x = ivy.array([[1., 2.], [3., 4.]])
         >>> y = ivy.array([[5., 6.], [7., 8.]])
-        >>> d = ivy.inner(x, y)
+        >>> d = x.inner(y)
         >>> print(d)
         ivy.array([[17., 23.], [39., 53.]])
 
         Matrices of different shapes
         >>> x = ivy.array([[1., 2.], [3., 4.],[5., 6.]])
         >>> y = ivy.array([[5., 6.], [7., 8.]])
-        >>> d = ivy.inner(x, y)
+        >>> d = x.inner(y)
         >>> print(d)
         ivy.array([[17., 23.], [39., 53.], [61., 83.]])
 
@@ -408,7 +408,7 @@ class _ArrayWithLinearAlgebra(abc.ABC):
                            [[5., 6.], [7., 8.]]])
         >>> y = ivy.array([[[9., 10.], [11., 12.]],
                            [[13., 14.], [15., 16.]]])
-        >>> d = ivy.inner(x, y)
+        >>> d = x.inner(y)
         >>> print(d)
         ivy.array([[[[ 29.,  35.], [ 41.,  47.]],
                     [[ 67.,  81.], [ 95., 109.]]],
