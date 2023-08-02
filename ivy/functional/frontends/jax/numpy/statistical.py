@@ -1,5 +1,5 @@
 # local
-
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -486,3 +486,14 @@ def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=N
     return ivy.cov(
         m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
     )
+
+
+@to_ivy_arrays_and_back
+def histogram(
+    a: Union[ivy.Array, ivy.NativeArray],
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = 10,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    density: Optional[bool] = False,
+) -> ivy.Array:
+    return ivy.histogram(a, bins=bins, range=range, weights=weights, density=density)

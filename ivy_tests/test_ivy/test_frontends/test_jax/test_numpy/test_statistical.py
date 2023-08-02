@@ -13,6 +13,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
     _get_castable_dtype,
 )
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
+    _histogram_helper,
+)
 from ivy import inf
 
 
@@ -1184,4 +1187,41 @@ def test_jax_cov(
         ddof=ddof,
         fweights=fweights,
         aweights=aweights,
+    )
+
+
+@handle_frontend_test(fn_tree="jax.numpy.histogram", values=_histogram_helper())
+def test_jax_histogram(
+    *,
+    values,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    (
+        a,
+        bins,
+        axis,
+        extend_lower_interval,
+        extend_upper_interval,
+        dtype,
+        range,
+        weights,
+        density,
+        dtype_input,
+    ) = values
+    helpers.test_frontend_function(
+        a=a,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_dtypes=[dtype_input],
     )
