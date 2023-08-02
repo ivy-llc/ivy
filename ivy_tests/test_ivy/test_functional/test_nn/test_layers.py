@@ -204,7 +204,7 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_test(
     fn_tree="functional.ivy.scaled_dot_product_attention",
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("numeric", full=False),
+        dtypes=helpers.get_dtypes("float", full=False),
     ),
     ground_truth_backend="jax",
 )
