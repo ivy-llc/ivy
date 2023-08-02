@@ -179,12 +179,11 @@ a new commit if there is any.
 
 However, it is possible for the linters run in the ivy-gardener and the github action every day to face formatting 
 errors that need human intervention like typos and uninitialized arguments. In this case, an error will be thrown 
-by the linters while the fixes for other normal errors will still be applied. Similarly, ivy-gardener can fail if
-the bot handling it (ivy-branch) can not apply the changes suggested by the linters, like it may not have access 
-to edit the target branch. 
+by the linters while the fixes for other normal errors will still be applied.
 
-Thus, in case of ivy-gardener failing, you should check the logs of lint checks to manually resolve the formatting
-errors by commiting the changes yourself.
+On the other hand, ivy-gardener itself can fail if the bot handling it (ivy-branch) can not apply the changes 
+suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
+should check the logs of lint checks to manually resolve the formatting errors by commiting the changes yourself.
 
 **Round Up**
 
