@@ -12,7 +12,6 @@ from typing import (
 )
 from numbers import Number
 from functools import partial
-import itertools
 import math
 
 # local
@@ -968,8 +967,17 @@ def _check_arguments(
 def _ndindex(shape):
     # Create a range for each dimension based on the given shape
     ranges = [range(dim_size) for dim_size in shape]
-    # Create a cartesian product of the ranges
-    return itertools.product(*ranges)
+
+    def product(*args, repeat=1):
+        """Create a cartesian product of the ranges."""
+        pools = [tuple(pool) for pool in args] * repeat
+        result = [[]]
+        for pool in pools:
+            result = [x + [y] for x in result for y in pool]
+        for prod in result:
+            yield tuple(prod)
+
+    return product(*ranges)
 
 
 def _infer_broadcast_shape(arr, indices, axis):
