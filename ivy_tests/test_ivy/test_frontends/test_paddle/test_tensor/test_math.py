@@ -927,7 +927,7 @@ def test_paddle_neg(
 
 # lgamma
 @handle_frontend_test(
-    fn_tree="paddle.lgamma",
+    fn_tree="paddle.tensor.math.lgamma",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         safety_factor_scale="log",
