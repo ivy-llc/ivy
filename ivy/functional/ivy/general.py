@@ -1927,7 +1927,7 @@ def einops_rearrange(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1994,7 +1994,11 @@ def einops_reduce(
 
 
 # IMPORTANT: assign attribute directly to function instead of wrapper here
-einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
+einops_reduce.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("complex",),
+    "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+}
 
 
 @handle_exceptions
