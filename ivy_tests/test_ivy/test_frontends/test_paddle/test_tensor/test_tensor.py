@@ -2550,6 +2550,7 @@ def test_paddle_numel(
         on_device=on_device,
     )
 
+
 # svd
 @handle_frontend_method(
     class_tree=CLASS_TREE,

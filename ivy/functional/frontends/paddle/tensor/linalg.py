@@ -184,6 +184,7 @@ def dist(x, y, p=2):
     ret = ivy.vector_norm(ivy.subtract(x, y), ord=p)
     return ivy.reshape(ret, (1,))
 
+
 @to_ivy_arrays_and_back
 def svd(input, full_matrices=False, name=None):
     return ivy.svd(input, full_matrices=full_matrices)
