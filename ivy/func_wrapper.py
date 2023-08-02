@@ -814,7 +814,7 @@ def handle_device_shifting(fn: Callable) -> Callable:
         """
         dev = None
         if "device" in kwargs and kwargs["device"] is not None:
-            dev = ivy.dev(kwargs["device"], as_native=True)
+            dev = ivy.default_device(kwargs["device"], as_native=True)
         if ivy.soft_device_mode:
             return ivy.handle_soft_device_variable(*args, fn=fn, def_dev=dev, **kwargs)
         inputs = args + tuple(kwargs.values())
