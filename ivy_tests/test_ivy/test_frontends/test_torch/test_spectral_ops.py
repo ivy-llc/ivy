@@ -24,7 +24,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         max_value=5,
     ),
     dtype=helpers.get_dtypes("float"),
-    requires_grad=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_torch_hamming_window(
@@ -33,7 +32,6 @@ def test_torch_hamming_window(
     dtype_and_coefficients,
     *,
     dtype,
-    requires_grad,
     fn_tree,
     frontend,
     test_flags,
@@ -48,7 +46,6 @@ def test_torch_hamming_window(
         alpha=float(coefficients[0]),
         beta=float(coefficients[1]),
         dtype=dtype[0],
-        requires_grad=requires_grad,
         fn_tree=fn_tree,
         frontend=frontend,
     )

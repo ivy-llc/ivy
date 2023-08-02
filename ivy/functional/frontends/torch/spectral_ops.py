@@ -16,4 +16,4 @@ def hamming_window(
 ):
     return ivy.hamming_window(
         window_length, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype
-    ).requires_grad_(requires_grad)
+    )
