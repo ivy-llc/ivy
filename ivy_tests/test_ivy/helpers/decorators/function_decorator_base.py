@@ -13,6 +13,9 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
+from ivy_tests.test_ivy.helpers.decorators.strategies import (
+    num_positional_args_from_dict,
+)
 from typing import Callable, Any
 
 
@@ -55,6 +58,10 @@ class FunctionHandler(ABC):
                 ret[framework] = parameter_info
 
         return ret
+
+    def _build_num_positional_arguments_strategy(self):
+        dict_for_num_pos_strategy = self._build_parameters_info_dict(self.fn_tree)
+        return num_positional_args_from_dict(dict_for_num_pos_strategy)
 
     def _get_supported_devices_dtypes(self, fn_tree: str):
         """

@@ -3,9 +3,6 @@ import inspect
 from hypothesis import strategies as st
 from typing import Callable, Any
 from ivy_tests.test_ivy.helpers.globals import TestData
-from ivy_tests.test_ivy.helpers.decorators.strategies import (
-    num_positional_args_from_dict,
-)
 from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
     FunctionHandler,
 )
@@ -76,10 +73,6 @@ class BackendFunctionHandler(FunctionHandler):
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
-
-    def _build_num_positional_arguments_strategy(self):
-        dict_for_num_pos_strategy = self._build_parameters_info_dict(self.fn_tree)
-        return num_positional_args_from_dict(dict_for_num_pos_strategy)
 
     def _add_test_attrs_to_fn(self, fn: Callable[..., Any]):
         fn._is_ivy_backend_test = True
