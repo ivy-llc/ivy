@@ -187,3 +187,25 @@ def unify(
         with_numpy=with_numpy,
         **transpile_kwargs,
     )
+
+
+def autotune(
+    obj: Callable,
+    source: Optional[str] = None,
+    args: Optional[Tuple] = None,
+    kwargs: Optional[dict] = None,
+    k: float = 0,
+    save_fig: bool = False,
+    crop_fig: str = "full",
+) -> Callable:
+    from ._compiler import autotune as _autotune
+
+    return _autotune(
+        *obj,
+        source=source,
+        args=args,
+        kwargs=kwargs,
+        k=k,
+        save_fig=save_fig,
+        crop_fig=crop_fig,
+    )
