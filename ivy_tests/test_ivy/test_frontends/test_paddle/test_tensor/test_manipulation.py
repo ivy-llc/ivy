@@ -601,3 +601,43 @@ def test_paddle_roll(
         shifts=shift,
         axis=axis,
     )
+
+
+# unsqueeze
+@st.composite
+def _unsqueeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, _ in enumerate(shape):
+        valid_axes.append(index)
+        valid_axes.append(-index - 1)
+
+    valid_axes.append(index + 1)
+    valid_axes.append(-index - 2)
+
+    return draw(st.sampled_from(valid_axes))
+
+
+@handle_frontend_test(
+    fn_tree="paddle.unsqueeze",
+    dtype_param_and_indices=_unsqueeze_helper(),
+)
+def test_paddle_unsqueeze(
+    *,
+    dtype_and_x,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
