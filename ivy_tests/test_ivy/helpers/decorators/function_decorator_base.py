@@ -1,11 +1,7 @@
 import importlib
-import functools
-import pytest
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
-from abc import ABC, abstractmethod
-from hypothesis import given
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
@@ -13,20 +9,14 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
+from ivy_tests.test_ivy.helpers.decorators.decorator_base import HandlerBase
 from ivy_tests.test_ivy.helpers.decorators.strategies import (
     num_positional_args_from_dict,
 )
 from typing import Callable, Any
 
 
-class FunctionHandler(ABC):
-    @abstractmethod
-    def __init__(self, fn_tree: str, test_flags, **_given_kwargs):
-        pass
-
-    def _append_ivy_to_fn_tree(self, fn_tree):
-        return "ivy." + fn_tree
-
+class FunctionHandler(HandlerBase):
     def _build_parameter_info(self, fn):
         total = num_positional_only = num_keyword_only = 0
         # TODO refactor out
@@ -150,29 +140,3 @@ class FunctionHandler(ABC):
         module_tree, _, fn_name = fn_tree.rpartition(".")
         module = importlib.import_module(module_tree)
         return getattr(module, fn_name)
-
-    @property
-    def is_hypothesis_test(self) -> bool:
-        return len(self._given_kwargs.items()) > 0
-
-    @abstractmethod
-    def __call__(self, func: Callable[..., Any]):
-        pass
-
-    def _wrap_with_hypothesis(self, func: Callable[..., Any]):
-        return given(**self._given_kwargs)(func)
-
-    def _handle_not_implemented(self, func):
-        @functools.wraps(func)
-        def wrapped_test(*args, **kwargs):
-            try:
-                func(*args, **kwargs)
-            except Exception as e:
-                # A string matching is used instead of actual exception due to
-                # exception object in with_backend is different from global Ivy
-                if e.__class__.__qualname__ == "IvyNotImplementedException":
-                    pytest.skip("Function not implemented in backend.")
-                else:
-                    raise e
-
-        return wrapped_test
