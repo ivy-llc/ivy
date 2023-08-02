@@ -578,51 +578,51 @@ def test_paddle_scatter_nd(x, test_flags, backend_fw, fn_tree, on_device, fronte
     )
 
 
-# def _gather_helper(draw):
-#     dtype_and_param = draw(
-#         helpers.dtype_and_values(
-#             available_dtypes=helpers.get_dtypes("valid"),
-#             min_num_dims=1,
-#             max_num_dims=6,
-#         )
-#     )
+def _gather_helper(draw):
+    dtype_and_param = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
 
-#     dtype_and_indices = draw(
-#         helpers.dtype_and_values(
-#             available_dtypes=helpers.get_dtypes("valid"),
-#             min_num_dims=1,
-#             max_num_dims=6,
-#         )
-#     )
-#     dtype, param = dtype_and_param
-#     dtype, indices = dtype_and_indices
-#     return dtype, param, indices
+    dtype_and_indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            max_num_dims=6,
+        )
+    )
+    dtype, param = dtype_and_param
+    dtype, indices = dtype_and_indices
+    return dtype, param, indices
 
 
-# @handle_frontend_test(
-#     fn_tree="paddle.gather",
-#     dtype_param_and_indices=_gather_helper(),
-# )
-# def test_paddle_gather(
-#     *,
-#     dtype_param_and_indices,
-#     on_device,
-#     fn_tree,
-#     frontend,
-#     backend_fw,
-#     test_flags,
-# ):
-#     input_dtype, param, indices = dtype_param_and_indices
-#     helpers.test_frontend_function(
-#         input_dtypes=input_dtype,
-#         backend_to_test=backend_fw,
-#         frontend=frontend,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         param=param[0],
-#         indices=indices[0],
-#     )
+@handle_frontend_test(
+    fn_tree="paddle.gather",
+    dtype_param_and_indices=_gather_helper(),
+)
+def test_paddle_gather(
+    *,
+    dtype_param_and_indices,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, param, indices = dtype_param_and_indices
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        param=param[0],
+        indices=indices[0],
+    )
 
 
 # flip
