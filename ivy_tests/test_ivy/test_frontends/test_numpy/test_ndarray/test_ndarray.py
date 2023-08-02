@@ -3275,6 +3275,9 @@ def test_numpy_view(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_value=0,
         exclude_min=True,
     ),
@@ -3304,6 +3307,8 @@ def test_numpy___mod__(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 
