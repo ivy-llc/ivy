@@ -130,7 +130,7 @@ class FunctionTestFlags(TestFlags):
 
 
 @st.composite
-def function_flags(
+def build_backend_function_flags(
     draw,
     *,
     ground_truth_backend,
@@ -156,20 +156,6 @@ def function_flags(
             native_arrays=native_arrays,
             container=container_flags,
         )
-    )
-
-
-def build_function_flags_with_defaults(ground_truth_backend, num_positional_args):
-    return function_flags(
-        ground_truth_backend=ground_truth_backend,
-        num_positional_args=num_positional_args,
-        instance_method=BuiltInstanceStrategy,
-        with_out=BuiltWithOutStrategy,
-        test_gradients=BuiltGradientStrategy,
-        test_compile=BuiltCompileStrategy,
-        as_variable=BuiltAsVariableStrategy,
-        native_arrays=BuiltNativeArrayStrategy,
-        container_flags=BuiltContainerStrategy,
     )
 
 
