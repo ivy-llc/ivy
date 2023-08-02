@@ -1,3 +1,4 @@
+from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
     FunctionHandler,
 )
@@ -43,6 +44,19 @@ class FrontendFunctionHandler(FunctionHandler):
             native_array_flags=native_array_flags,
             generate_frontend_arrays=generate_frontend_arrays,
         )
+
+    def _build_fn_tree_strategy(self):
+        if self.aliases is None:
+            return st.just(self.fn_tree)
+        else:
+            return st.sampled_from([self.fn_tree] + self.aliases)
+
+    @property
+    def possible_args(self):
+        return {
+            "fn_tree": self._build_fn_tree_strategy(),
+            "test_flags": self.test_flags,
+        }
 
     def _init_aliases(self, aliases):
         if aliases is None:
