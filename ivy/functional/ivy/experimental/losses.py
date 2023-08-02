@@ -12,6 +12,77 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
+def _get_reduction_func(reduction):
+    if reduction == "none":
+        ret = lambda x: x
+    elif reduction == "mean":
+        ret = ivy.mean
+    elif reduction == "sum":
+        ret = ivy.sum
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            "{} is not a valid value for reduction".format(reduction)
+        )
+    return ret
+
+
+def _legacy_get_string(size_average, reduce):
+    if size_average is None:
+        size_average = True
+    if reduce is None:
+        reduce = True
+    if size_average and reduce:
+        ret = "mean"
+    elif reduce:
+        ret = "sum"
+    else:
+        ret = "none"
+    return ret
+
+
+def _get_reduction(reduction, size_average=None, reduce=None):
+    if size_average is not None or reduce is not None:
+        return _get_reduction_func(_legacy_get_string(size_average, reduce))
+    else:
+        return _get_reduction_func(reduction)
+
+
+def _get_reduction_method(reduction, to_reduce):
+    if reduction == "none":
+        ret = to_reduce
+    elif reduction == "mean":
+        ret = ivy.mean(to_reduce)
+    elif reduction == "sum":
+        ret = ivy.sum(to_reduce)
+    else:
+        raise ivy.utils.exceptions.IvyException(
+            f"{reduction} is not a valid value for reduction"
+        )
+    return ret
+
+
+def _get_reduction_string(size_average, reduce):
+    if size_average is None:
+        size_average = True
+    if reduce is None:
+        reduce = True
+    if size_average and reduce:
+        ret = "mean"
+    elif reduce:
+        ret = "sum"
+    else:
+        ret = "none"
+    return ret
+
+
+def _apply_reduction(reduction, size_average, reduce, to_reduce):
+    if size_average is not None or reduce is not None:
+        reduction = _get_reduction_string(size_average, reduce)
+        return _get_reduction_method(reduction, to_reduce)
+    else:
+        return _get_reduction_method(reduction, to_reduce)
+
+
 # log_poisson_loss
 @handle_exceptions
 @handle_nestable
@@ -96,3 +167,76 @@ def log_poisson_loss(
         return ivy.inplace_update(out, loss) if out is not None else loss
 
 
+# hinge_embedding_loss
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def hinge_embedding_loss(
+    input: Union[ivy.Array, ivy.NativeArray],
+    target: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    margin: float = 1.0,
+    size_average: Optional[bool] = None,
+    reduce: Optional[bool] = None,
+    reduction: str = "mean",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the Hinge Embedding Loss between the input and target.
+
+    Parameters
+    ----------
+    input
+        Model's raw output, typically logits or predicted scores for each sample.
+    target
+        Target variable representing true class labels.
+        Should be a binary tensor where elements are either
+        1 (positive class) or -1 (negative class).
+    margin
+        The margin value used in the hinge loss.
+        The loss will be computed based on the difference between
+        the predicted score and the margin for positive samples.
+        Default: 1.0
+    size_average
+        Whether to average the loss across the samples or not.
+        Default: None (delegates to the reduction parameter)
+    reduce
+        If True, the loss is summed over the samples. If False, it is returned as-is.
+        Default: None (delegates to the reduction parameter)
+    reduction
+        'none': No reduction will be applied to the output.
+        'mean': The output will be averaged.
+        'sum': The output will be summed.
+        Default: 'mean'
+    out
+      Optional output array, for writing the result to.
+      It must have a
+      shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The Hinge Embedding Loss between the input and target.
+
+    Examples
+    --------
+    >>> x = ivy.array([0.5, -0.2, 1.2])
+    >>> y = ivy.array([1, -1, 1])
+    >>> print(ivy.hinge_embedding_loss(x, y))
+    ivy.array(0.1)
+    """
+    margin = ivy.array(margin)
+
+    loss = ivy.where(
+        ivy.logical_or(target == -1, target == 1),
+        ivy.where(target == 1, input, ivy.maximum(0, margin - input)),
+        ivy.maximum(margin, input),
+    )
+
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)

@@ -59,3 +59,50 @@ def test_log_poisson_loss(
     )
 
 
+# hinge_embedding_loss
+@handle_test(
+    fn_tree="functional.ivy.experimental.hinge_embedding_loss",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-3,
+        max_value=3,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        min_value=-1,
+        max_value=1,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=3,
+    ),
+    margin=st.floats(min_value=0, max_value=3, allow_infinity=False),
+    test_with_out=st.just(False),
+)
+def test_hinge_embedding_loss(
+    *,
+    dtype_and_input,
+    dtype_and_target,
+    margin,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, input_data = dtype_and_input
+    target_dtype, target_data = dtype_and_target
+    helpers.test_function(
+        input_dtypes=input_dtype + target_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        input=input_data[0],
+        target=target_data[0],
+        margin=margin,
+        atol_=1e-2,
+    )
