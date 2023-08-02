@@ -1601,7 +1601,7 @@ def array_values(
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
             # cast the dtype into numpy supportable
-            dtype = floats_info[dtype]["cast_type"]
+            # dtype = floats_info[dtype]["cast_type"]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
 
