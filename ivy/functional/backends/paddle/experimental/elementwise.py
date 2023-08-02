@@ -3,6 +3,7 @@ import operator
 from typing import Optional, Union, Tuple, List
 from numbers import Number
 import paddle
+from paddle.fluid.framework import Variable
 from ivy.utils.exceptions import IvyNotImplementedException
 from ivy.func_wrapper import (
     with_supported_dtypes,
@@ -12,6 +13,7 @@ import ivy.functional.backends.paddle as paddle_backend
 import ivy
 from ivy import promote_types_of_inputs
 from ivy.functional.backends.paddle.elementwise import _elementwise_helper
+import warnings
 
 # local
 from .. import backend_version
@@ -626,3 +628,124 @@ def modf(
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     with ivy.ArrayMode(False):
         return paddle.modf(x, out=out)
+
+
+# --- erfc --- #
+# Polynomials for computing erf/erfc. Originally from cephes library.
+# https://netlib.org/cephes/doubldoc.html
+kErfcPCoefficient = paddle.to_tensor(
+    [
+        2.46196981473530512524e-10,
+        5.64189564831068821977e-1,
+        7.46321056442269912687e0,
+        4.86371970985681366614e1,
+        1.96520832956077098242e2,
+        5.26445194995477358631e2,
+        9.34528527171957607540e2,
+        1.02755188689515710272e3,
+        5.57535335369399327526e2,
+    ]
+)
+kErfcQCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        1.32281951154744992508e1,
+        8.67072140885989742329e1,
+        3.54937778887819891062e2,
+        9.75708501743205489753e2,
+        1.82390916687909736289e3,
+        2.24633760818710981792e3,
+        1.65666309194161350182e3,
+        5.57535340817727675546e2,
+    ]
+)
+kErfcRCoefficient = paddle.to_tensor(
+    [
+        5.64189583547755073984e-1,
+        1.27536670759978104416e0,
+        5.01905042251180477414e0,
+        6.16021097993053585195e0,
+        7.40974269950448939160e0,
+        2.97886665372100240670e0,
+    ]
+)
+kErfcSCoefficient = paddle.to_tensor(
+    [
+        1.00000000000000000000e0,
+        2.26052863220117276590e0,
+        9.39603524938001434673e0,
+        1.20489539808096656605e1,
+        1.70814450747565897222e1,
+        9.60896809063285878198e0,
+        3.36907645100081516050e0,
+    ]
+)
+
+
+# Evaluate the polynomial given coefficients and `x`.
+# N.B. Coefficients should be supplied in decreasing order.
+def _EvaluatePolynomial(x, coefficients):
+    poly = paddle.full_like(x, 0.0)
+    for c in coefficients:
+        poly = poly * x + c
+    return poly
+
+
+def _is_scalar_tensor(ele):
+    if isinstance(ele, Variable):
+        # NOTE(zoooo0820): For compatibility, if FLAGS_set_to_1d is set to True,
+        # 1-D tensor is still treated as a scalar, which means basic indexing.
+        # This will be removed in future.
+        if paddle.get_flags("FLAGS_set_to_1d")["FLAGS_set_to_1d"]:
+            if len(ele.shape) == 1 and ele.shape[0] == 1:
+                warnings.warn(
+                    "1-D Tensor will be treat as advanced indexing in future version."
+                    " Currently, 1-D Tensor means a scalar, not vector, and please"
+                    " modify it to 0-D Tensor. If advanced indexing is needed, please"
+                    " use `export FLAGS_set_to_1d=False` to set the flag."
+                )
+                return True
+        if len(ele.shape) == 0:
+            return True
+    return False
+
+
+# TODO: Repalce once native function becomes available.
+# Compute an approximation of the error function complement (1 - erf(x)).
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float64", "float32")},
+    backend_version,
+)
+def erfc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    if str(x.dtype) not in ["paddle.float16", "paddle.float32", "paddle.float64"]:
+        raise ValueError("Input must be of type float16, float32, or float64.")
+
+    abs_x = paddle.abs(x)
+    z = paddle.exp(-x * x)
+
+    pp = _EvaluatePolynomial(abs_x, kErfcPCoefficient)
+    pq = _EvaluatePolynomial(abs_x, kErfcQCoefficient)
+    pr = _EvaluatePolynomial(abs_x, kErfcRCoefficient)
+    ps = _EvaluatePolynomial(abs_x, kErfcSCoefficient)
+
+    abs_x_small = abs_x < 8.0
+    y = paddle.where(abs_x_small, z * pp / pq, z * pr / ps)
+    result_no_underflow = paddle.where(x < 0.0, 2.0 - y, y)
+
+    is_pos_inf = lambda op: paddle.logical_and(paddle.isinf(op), op > 0)
+    underflow = paddle.logical_or(
+        z == 0,
+        paddle.logical_or(
+            paddle.logical_and(is_pos_inf(pq), abs_x_small),
+            paddle.logical_and(is_pos_inf(ps), paddle.logical_not(abs_x_small)),
+        ),
+    )
+    result_underflow = paddle.where(
+        x < 0, paddle.full_like(x, 2), paddle.full_like(x, 0)
+    )
+
+    result = paddle.where(underflow, result_underflow, result_no_underflow)
+    if _is_scalar_tensor(result):
+        return result.squeeze()
+    else:
+        return result

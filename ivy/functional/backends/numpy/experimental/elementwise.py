@@ -417,3 +417,104 @@ def lgamma(
     # Vectorize 'func' for element-wise operations on 'x', output matching 'x' dtype.
     vfunc = np.vectorize(func, otypes=[x.dtype])
     return vfunc(x)
+
+
+# --- erfc --- #
+# Polynomials for computing erf/erfc. Originally from cephes library.
+# https://netlib.org/cephes/doubldoc.html
+kErfcPCoefficient = np.array(
+    [
+        2.46196981473530512524e-10,
+        5.64189564831068821977e-1,
+        7.46321056442269912687e0,
+        4.86371970985681366614e1,
+        1.96520832956077098242e2,
+        5.26445194995477358631e2,
+        9.34528527171957607540e2,
+        1.02755188689515710272e3,
+        5.57535335369399327526e2,
+    ]
+)
+kErfcQCoefficient = np.array(
+    [
+        1.00000000000000000000e0,
+        1.32281951154744992508e1,
+        8.67072140885989742329e1,
+        3.54937778887819891062e2,
+        9.75708501743205489753e2,
+        1.82390916687909736289e3,
+        2.24633760818710981792e3,
+        1.65666309194161350182e3,
+        5.57535340817727675546e2,
+    ]
+)
+kErfcRCoefficient = np.array(
+    [
+        5.64189583547755073984e-1,
+        1.27536670759978104416e0,
+        5.01905042251180477414e0,
+        6.16021097993053585195e0,
+        7.40974269950448939160e0,
+        2.97886665372100240670e0,
+    ]
+)
+kErfcSCoefficient = np.array(
+    [
+        1.00000000000000000000e0,
+        2.26052863220117276590e0,
+        9.39603524938001434673e0,
+        1.20489539808096656605e1,
+        1.70814450747565897222e1,
+        9.60896809063285878198e0,
+        3.36907645100081516050e0,
+    ]
+)
+
+
+# Evaluate the polynomial given coefficients and `x`.
+# N.B. Coefficients should be supplied in decreasing order.
+def _EvaluatePolynomial(x, coefficients):
+    poly = np.full_like(x, 0.0)
+    for c in coefficients:
+        poly = poly * x + c
+    return poly
+
+
+# TODO: Remove this once native function is avilable.
+# Compute an approximation of the error function complement (1 - erf(x)).
+def erfc(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if x.dtype not in [np.float16, np.float32, np.float64]:
+        raise ValueError("Input must be of type float16, float32, or float64.")
+
+    input_dtype = x.dtype
+
+    abs_x = np.abs(x)
+    z = np.exp(-x * x)
+
+    pp = _EvaluatePolynomial(abs_x, kErfcPCoefficient)
+    pq = _EvaluatePolynomial(abs_x, kErfcQCoefficient)
+    pr = _EvaluatePolynomial(abs_x, kErfcRCoefficient)
+    ps = _EvaluatePolynomial(abs_x, kErfcSCoefficient)
+
+    abs_x_small = abs_x < 8.0
+    y = np.where(abs_x_small, z * pp / pq, z * pr / ps)
+    result_no_underflow = np.where(x < 0.0, 2.0 - y, y)
+
+    is_pos_inf = lambda op: np.logical_and(np.isinf(op), op > 0)
+    underflow = np.logical_or(
+        z == 0,
+        np.logical_or(
+            np.logical_and(is_pos_inf(pq), abs_x_small),
+            np.logical_and(is_pos_inf(ps), np.logical_not(abs_x_small)),
+        ),
+    )
+    result_underflow = np.where(x < 0, np.full_like(x, 2), np.full_like(x, 0))
+
+    return np.where(underflow, result_underflow, result_no_underflow).astype(
+        input_dtype
+    )

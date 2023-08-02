@@ -1271,3 +1271,40 @@ def modf(
     (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
     """
     return ivy.current_backend(x).modf(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def erfc(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Complementary error function, 1 - erf(x)
+
+    Parameters
+    ----------
+    x
+        Input array of real or complex valued argument.
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Values of the complementary error function.
+
+    Examples
+    --------
+    >>> x = ivy.array([2, -1., 0])
+    >>> ivy.erfc(x)
+    ivy.array([0.00467773, 1.84270084, 1.        ])
+    """
+    return ivy.current_backend(x).erfc(x, out=out)

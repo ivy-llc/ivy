@@ -455,3 +455,12 @@ def modf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.modf(x)
+
+
+def erfc(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.erfc(x)

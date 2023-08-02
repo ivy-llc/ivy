@@ -791,3 +791,30 @@ def test_modf(
         on_device=on_device,
         x=x[0],
     )
+
+
+# erfc
+@handle_test(
+    fn_tree="functional.ivy.experimental.erfc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_erfc(
+    *,
+    dtype_and_x,
+    backend_fw,
+    test_flags,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
