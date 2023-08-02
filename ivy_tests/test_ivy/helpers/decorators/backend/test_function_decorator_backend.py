@@ -1,6 +1,6 @@
 import pytest
 
-from ivy_tests.test_ivy.helpers.testing_decorators.backend.function_handler import (
+from ivy_tests.test_ivy.helpers.decorators.backend.function_decorator_backend import (
     BackendFunctionHandler,
 )
 from hypothesis import strategies as st
