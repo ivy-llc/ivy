@@ -832,7 +832,7 @@ def test_numpy_instance_put(
         method_all_as_kwargs_np={
             "indices": ind,
             "values": v,
-            "mode": "raise",
+            "mode": mode,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,

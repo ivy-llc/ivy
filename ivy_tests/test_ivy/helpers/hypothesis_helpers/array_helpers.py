@@ -1813,6 +1813,7 @@ def dtype_array_query(
     allow_mask=True,
     allow_neg_step=True,
     supported_index_types=["int", "slice", "list", "array"],
+    flattened_array=False,
 ):
     dtype = draw(
         helpers.array_dtypes(
@@ -1852,14 +1853,15 @@ def dtype_array_query(
             max_size=len(shape),
         )
     )
-    print("shape before: ", shape)
+
     index = []
-    shape = (prod(shape),)
-    print("shape: ", shape)
+
+    if flattened_array:
+        shape = (prod(shape),)
+
     for s, index_type in zip(shape, index_types):
         if index_type == "int":
             new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
-        # not sure if this should be "seq" but "list"
         elif index_type == "seq":
             new_index = draw(
                 st.lists(
@@ -1966,7 +1968,7 @@ def dtype_array_index_value_mode(
     *,
     available_dtypes,
     min_num_dims=1,
-    max_num_dims=3,
+    max_num_dims=1,
     min_dim_size=1,
     max_dim_size=10,
     allow_mask=True,
@@ -1974,48 +1976,84 @@ def dtype_array_index_value_mode(
     supported_index_types=["int", "seq", "array"],
 ):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
-
-    input_dtype, x, index = draw(
-        helpers.dtype_array_query(
-            available_dtypes=available_dtypes,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
-            allow_mask=allow_mask,
-            allow_neg_step=allow_neg_step,
-            supported_index_types=supported_index_types,
+    if mode == "raise":
+        input_dtype, x, index = draw(
+            helpers.dtype_array_query(
+                available_dtypes=available_dtypes,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+                allow_mask=allow_mask,
+                allow_neg_step=allow_neg_step,
+                supported_index_types=supported_index_types,
+                flattened_array=True,
+            )
         )
-    )
+        # making sure the bool index values are in range
+        if ivy.is_array(index) or (type(index) != tuple):
+            if (ivy.prod(ivy.shape(x)) - 1 == 0) and (index is True):
+                index = False
+        else:
+            index = ivy.flatten(index)
+            for i in index:
+                if (ivy.prod(ivy.shape(x)) - 1 == 0) and (i is True):
+                    i = False
+        print("index ", index)
 
-    # making sure the bool index values are in range
-    if ivy.is_array(index) is False or type(index) != tuple:
-        if ivy.prod(ivy.shape(x)) - 1 == 0 and index is True:
-            index = False
-    else:
-        for i in index:
-            if ivy.prod(ivy.shape(x)) - 1 == 0 and i is True:
-                i = False
-
-    real_shape = x[index].shape
-    assume(math.prod(real_shape) > 0)
-    if len(real_shape):
-        val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
-    else:
-        val_shape = real_shape
-    value_dtype, value = draw(
-        helpers.dtype_and_values(
-            dtype=[input_dtype[0]],
-            shape=val_shape,
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
+        real_shape = x[index].shape
+        assume(math.prod(real_shape) > 0)
+        if len(real_shape):
+            val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
+        else:
+            val_shape = real_shape
+        value_dtype, value = draw(
+            helpers.dtype_and_values(
+                dtype=[input_dtype[0]],
+                shape=val_shape,
+                large_abs_safety_factor=2,
+                small_abs_safety_factor=2,
+            )
         )
-    )
-    value_dtype = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
-    )[-1]
-    value = value[0].astype(value_dtype)
-    return input_dtype + [value_dtype], x, index, value, mode
+        value_dtype = draw(
+            helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+        )[-1]
+        value = value[0].astype(value_dtype)
+        return input_dtype + [value_dtype], x, index, value, mode
+
+    else:
+        input_dtype, x = draw(
+            helpers.dtype_and_values(
+                available_dtypes=available_dtypes,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+        index_dtype, index = draw(
+            helpers.dtype_and_values(
+                available_dtypes=["int64"],
+                min_num_dims=1,
+                max_num_dims=1,
+            )
+        )
+        value_dtype, value = draw(
+            helpers.dtype_and_values(
+                available_dtypes=available_dtypes,
+                min_num_dims=1,
+                max_num_dims=1,
+            )
+        )
+        index = index[0]
+        value = value[0]
+        x = x[0]
+
+        value_dtype = draw(
+            helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
+        )[-1]
+
+        return input_dtype + index_dtype + [value_dtype], x, index, value, mode
 
 
 @st.composite
