@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes
 import ivy.functional.frontends.paddle as paddle
 from ivy.utils.exceptions import handle_exceptions
 from ivy.functional.frontends.paddle.func_wrapper import (
@@ -233,7 +233,7 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float32", "bfloat32")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def triplet_margin_loss(
     anchor,
     positive,
@@ -244,7 +244,18 @@ def triplet_margin_loss(
     swap=False,
     reduction="mean",
 ):
-    distance_function = paddle.nn.functional.distance.pairwise_distance
+    def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+        x1, x2 = paddle.promote_types_of_paddle_inputs(x1, x2)
+        x1_dim = len(x1.shape)
+        x2_dim = len(x2.shape)
+        if x1_dim > x2_dim:
+            output_dim = x1_dim
+        else:
+            output_dim = x2_dim
+
+        return ivy.vector_norm(
+            x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim
+        )
 
     reduction = _get_reduction_func(reduction)
 
@@ -261,10 +272,10 @@ def triplet_margin_loss(
         ),
     )
 
-    dist_positive = distance_function(anchor, positive, p=p, eps=eps)
-    dist_negative = distance_function(anchor, negative, p=p, eps=eps)
+    dist_positive = pairwise_distance(anchor, positive, p=p, eps=eps)
+    dist_negative = pairwise_distance(anchor, negative, p=p, eps=eps)
     if swap:
-        dist_swap = distance_function(positive, negative, p=p, eps=eps)
+        dist_swap = pairwise_distance(positive, negative, p=p, eps=eps)
         dist_negative = ivy.minimum(dist_negative, dist_swap)
     loss = ivy.maximum(
         dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)

@@ -414,7 +414,6 @@ def test_paddle_margin_ranking_loss(
     test_with_out=st.just(False),
 )
 def test_paddle_triplet_margin_loss(
-    *,
     dtype_and_inputs,
     margin,
     p,
