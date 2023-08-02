@@ -371,9 +371,7 @@ def test_torch_nanmean(
 
 @handle_frontend_test(
     fn_tree="torch.nanquantile",
-    dtype_and_x=_statistical_dtype_values(
-        function="nanquantile",
-    ),
+    dtype_and_x=_quantile_helper(),
     keepdims=st.booleans(),
 )
 def test_torch_nanquantile(
@@ -386,7 +384,9 @@ def test_torch_nanquantile(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    if type(axis) is tuple:
+        axis = axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -395,8 +395,10 @@ def test_torch_nanquantile(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
+        q=q,
         dim=axis,
         keepdim=keepdims,
+        interpolation=interpolation[0],
     )
 
 
