@@ -53,10 +53,6 @@ class BackendFunctionHandler(FunctionHandler):
             ),
         )
 
-    @property
-    def is_hypothesis_test(self) -> bool:
-        return len(self._given_kwargs.items()) > 0
-
     def _add_test_attrs_to_fn(self, fn: Callable[..., Any]):
         fn._is_ivy_backend_test = True
         fn.ground_truth_backend = self.ground_truth

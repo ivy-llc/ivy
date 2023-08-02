@@ -4,7 +4,7 @@ import pytest
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from hypothesis import given, strategies as st
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
@@ -14,7 +14,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from typing import List, Callable, Any
+from typing import Callable, Any
 
 
 @st.composite
@@ -152,9 +152,9 @@ class FunctionHandler(ABC):
         module = importlib.import_module(module_tree)
         return getattr(module, fn_name)
 
-    @abstractproperty
-    def is_hypothesis_test(self) -> List[str]:
-        pass
+    @property
+    def is_hypothesis_test(self) -> bool:
+        return len(self._given_kwargs.items()) > 0
 
     @abstractmethod
     def __call__(self, func: Callable[..., Any]):
