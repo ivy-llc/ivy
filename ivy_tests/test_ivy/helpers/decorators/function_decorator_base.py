@@ -21,6 +21,9 @@ class FunctionHandler(ABC):
     def __init__(self, fn_tree: str, test_flags, **_given_kwargs):
         pass
 
+    def _append_ivy_to_fn_tree(self, fn_tree):
+        return "ivy." + fn_tree
+
     def _build_parameter_info(self, fn):
         total = num_positional_only = num_keyword_only = 0
         # TODO refactor out

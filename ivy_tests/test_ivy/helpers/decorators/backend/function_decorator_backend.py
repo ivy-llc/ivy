@@ -17,7 +17,7 @@ class BackendFunctionHandler(FunctionHandler):
         self, fn_tree: str, ground_truth="tensorflow", test_flags=None, **_given_kwargs
     ):
         # Changing the order of init vars will likely break things. Change with caution!
-        self.fn_tree = fn_tree
+        self.fn_tree = self._append_ivy_to_fn_tree(fn_tree)
         self.ground_truth = ground_truth
         self._given_kwargs = _given_kwargs
         self.callable_fn = self.import_function(self.fn_tree)
