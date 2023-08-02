@@ -277,6 +277,35 @@ def solve(A, B, *, left=True, out=None):
 @with_supported_dtypes(
     {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
 )
+def solve_triangular(A, b, upper=False):
+    # TODO: This implementation will be simplified when ivy.solve_triangular() is added.
+
+    if upper:
+        A = A.T
+
+    n = A.shape[0]
+    L = ivy.tril(A, k=-1)
+    D = ivy.diag(ivy.diagonal(A))
+
+    # Solve Lx = b
+    y = ivy.zeros(n)
+    for i in range(n):
+        y[i] = (b[i] - ivy.vecdot(L[i, :i], y[:i])) / L[i, i]
+
+    # Solve Dx = y
+    x = ivy.zeros(n)
+    for i in range(n):
+        x[i] = y[i] / D[i, i]
+
+    if upper:
+        return x[::-1]  # Reverse the order for the upper triangular case
+    return x
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.0.1 and below": ("float32", "float64", "complex32", "complex64")}, "torch"
+)
 def tensorsolve(A, B, dims=None, *, out=None):
     return ivy.tensorsolve(A, B, axes=dims, out=out)
 
