@@ -2,7 +2,7 @@ import inspect
 
 from hypothesis import strategies as st
 from typing import Callable, Any
-from ivy_tests.test_ivy.helpers.testing_decorators.strategies import (
+from ivy_tests.test_ivy.helpers.decorators.strategies import (
     num_positional_args_from_dict,
 )
 from ..function_decorator_base import FunctionHandler
