@@ -45,6 +45,7 @@ class FrontendFunctionHandler(FunctionHandler):
         if aliases is None:
             return None
 
+        # TODO use enumeurate?
         for i in range(len(aliases)):
             aliases[i] = self._append_ivy_to_fn_tree(aliases[i])
 
