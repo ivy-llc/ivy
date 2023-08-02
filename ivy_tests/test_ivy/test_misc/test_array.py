@@ -224,8 +224,8 @@ def test_array_property_strides(dtype_x, backend_fw):
 )
 def test_array_property_mT(
     dtype_x,
-    ground_truth_backend,
     backend_fw,
+    test_flags,
 ):
     _, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
@@ -233,13 +233,13 @@ def test_array_property_mT(
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.mT, backend=backend_fw)
         ret_gt = helpers.flatten_and_to_np(
-            ret=ivy_backend.matrix_transpose(data), backend=ground_truth_backend
+            ret=ivy_backend.matrix_transpose(data), backend=backend_fw
         )
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             backend=backend_fw,
-            ground_truth_backend=ground_truth_backend,
+            ground_truth_backend=test_flags.ground_truth_backend,
         )
 
 
@@ -253,8 +253,8 @@ def test_array_property_mT(
 )
 def test_array_property_T(
     dtype_x,
-    ground_truth_backend,
     backend_fw,
+    test_flags,
 ):
     _, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
@@ -262,13 +262,13 @@ def test_array_property_T(
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.T, backend=backend_fw)
         ret_gt = helpers.flatten_and_to_np(
-            ret=ivy.matrix_transpose(data), backend=ground_truth_backend
+            ret=ivy_backend.matrix_transpose(data), backend=backend_fw
         )
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             backend=backend_fw,
-            ground_truth_backend=ground_truth_backend,
+            ground_truth_backend=test_flags.ground_truth_backend,
         )
 
 
@@ -286,7 +286,7 @@ def test_array_property_real(
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.real, backend=backend_fw)
-        ret_gt = helpers.flatten_and_to_np(ret=ivy.real(x), backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy_backend.real(x), backend=backend_fw)
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
@@ -309,7 +309,7 @@ def test_array_property_imag(
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.imag, backend=backend_fw)
-        ret_gt = helpers.flatten_and_to_np(ret=ivy.imag(x), backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy_backend.imag(x), backend=backend_fw)
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
