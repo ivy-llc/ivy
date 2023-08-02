@@ -4,6 +4,8 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import tensorflow as tf
+import numpy as np
 
 
 # kaiser_window
@@ -92,6 +94,53 @@ def test_tensorflow_idct(
         type=type,
         n=n,
         axis=axis,
+        norm=norm,
+        atol=1e-01,
+    )
+
+
+#inverse_mdct
+
+#Generating MDCT COEFF
+def generate_mdct_coefficients():
+    num_samples = np.random.randint(2, 100)
+    num_frequency_bins = np.random.randint(2, 128)
+    return tf.constant(np.random.randn(num_samples, num_frequency_bins), dtype=tf.float32)
+
+
+
+@st.composite
+def valid_inverse_mdct(draw):
+    input_dtype = draw(st.sampled_from([tf.float32]))
+    mdct_coefficients = generate_mdct_coefficients()
+    window_fn = draw(st.sampled_from([tf.signal.vorbis_window, tf.signal.hann_window]))
+    norm = draw(st.one_of(st.none(), st.floats(min_value=0.1, max_value=1.0)))
+    return [(input_dtype, mdct_coefficients, window_fn, norm)]
+
+@handle_frontend_test(
+    fn_tree="tensorflow.signal.inverse_mdct",
+    dtype_x_and_args=valid_inverse_mdct(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_inverse_mdct(
+    *,
+    dtype_x_and_args,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, mdct, window_fn, norm = dtype_x_and_args[0]
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        mdct=mdct,
+        window_fn=window_fn,
         norm=norm,
         atol=1e-01,
     )
