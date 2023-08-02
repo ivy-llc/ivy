@@ -64,18 +64,6 @@ class FunctionHandler(ABC):
 
         return ret
 
-    def _partition_fn_tree(self, fn_tree: str):
-        module_tree, _, fn_name = fn_tree.rpartition(".")
-        return module_tree, fn_name
-
-    def _partition_dtypes_into_kinds(self, framework: str, dtypes):
-        partitioned_dtypes = {}
-        for kind in _dtype_kind_keys:
-            partitioned_dtypes[kind] = set(
-                _get_type_dict(framework, kind)
-            ).intersection(dtypes)
-        return partitioned_dtypes
-
     def _get_supported_devices_dtypes(self, fn_tree: str):
         """
         Get supported devices and data types for a function in Ivy API.
@@ -103,17 +91,17 @@ class FunctionHandler(ABC):
 
         for backend_str in available_frameworks:
             with update_backend(backend_str) as ivy_backend:
-                _tmp_mod = ivy_backend.utils.dynamic_import.import_module(fn_module)
-                _fn = _tmp_mod.__dict__[fn_name]
+                module = ivy_backend.utils.dynamic_import.import_module(fn_module)
+                callable_fn = module.__dict__[fn_name]
                 # for partial mixed functions we should pass the backend function
                 # to ivy.function_supported_devices_and_dtypes
                 if (
-                    hasattr(_fn, "mixed_backend_wrappers")
-                    and ivy_backend.__dict__[fn_name] != _fn
+                    hasattr(callable_fn, "mixed_backend_wrappers")
+                    and ivy_backend.__dict__[fn_name] != callable_fn
                 ):
-                    _fn = ivy_backend.__dict__[fn_name]
+                    callable_fn = ivy_backend.__dict__[fn_name]
                 devices_and_dtypes = ivy_backend.function_supported_devices_and_dtypes(
-                    _fn
+                    callable_fn
                 )
                 devices_and_dtypes = (
                     tuple(devices_and_dtypes.values())
@@ -146,6 +134,18 @@ class FunctionHandler(ABC):
                     else all_organized_dtypes[0]
                 )
         return supported_device_dtypes
+
+    def _partition_fn_tree(self, fn_tree: str):
+        module_tree, _, fn_name = fn_tree.rpartition(".")
+        return module_tree, fn_name
+
+    def _partition_dtypes_into_kinds(self, framework: str, dtypes):
+        partitioned_dtypes = {}
+        for kind in _dtype_kind_keys:
+            partitioned_dtypes[kind] = set(
+                _get_type_dict(framework, kind)
+            ).intersection(dtypes)
+        return partitioned_dtypes
 
     def import_function(self, fn_tree: str) -> Callable[..., Any]:
         module_tree, _, fn_name = fn_tree.rpartition(".")
