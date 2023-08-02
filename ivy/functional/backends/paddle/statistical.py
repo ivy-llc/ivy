@@ -31,14 +31,14 @@ def min(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
         paddle.complex64,
         paddle.complex128,
         paddle.bool,
     ]:
         if paddle.is_complex(x):
             real = paddle.amin(x.real(), axis=axis, keepdim=keepdims)
-            masked_x = paddle_backend.greater_equal(x, paddle.amin(x.real())) * x
-            imag = paddle.amin(masked_x.imag(), axis=axis, keepdim=keepdims)
+            imag = paddle.amin(x.imag(), axis=axis, keepdim=keepdims)
             ret = paddle.complex(real, imag)
         else:
             ret = paddle.amin(x.cast("float32"), axis=axis, keepdim=keepdims)
@@ -67,16 +67,16 @@ def max(
         paddle.int8,
         paddle.int16,
         paddle.uint8,
+        paddle.bfloat16,
         paddle.float16,
         paddle.complex64,
         paddle.complex128,
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            real = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
-            masked_x = paddle_backend.greater_equal(x, paddle.amax(x.real())) * x
-            imag = paddle.amax(masked_x.imag(), axis=axis, keepdim=keepdims)
-            ret = paddle.complex(real, imag)
+            real_part = paddle.amax(x.real(), axis=axis, keepdim=keepdims)
+            imag_part = paddle.amax(x.imag(), axis=axis, keepdim=keepdims)
+            ret = paddle.complex(real_part, imag_part)
         else:
             ret = paddle.amax(x.cast("float32"), axis=axis, keepdim=keepdims)
     else:
