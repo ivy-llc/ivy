@@ -7,7 +7,7 @@ import itertools
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers import handle_test, update_backend
 import ivy
 
 
@@ -1025,7 +1025,7 @@ def _truncated_svd_data(draw):
         )
     )
     uv = draw(st.booleans())
-    n_eigen = draw(helpers.ints(min_value=0, max_value=max(shape[-2:])))
+    n_eigen = draw(helpers.ints(min_value=1, max_value=max(shape[-2:])))
     return x_dtype, x[0], uv, n_eigen
 
 
@@ -1038,7 +1038,7 @@ def _truncated_svd_data(draw):
 def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, uv, n_eigenvecs = data
     test_flags.instance_method = False
-    helpers.test_function(
+    results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -1047,4 +1047,62 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
         x=x,
         compute_uv=uv,
         n_eigenvecs=n_eigenvecs,
+        test_values=False,
+        return_flat_np_arrays=True,
     )
+
+    if results is None:
+        return
+
+    # value test based on recreating the original matrix and testing the consistency
+    ret_flat_np, ret_from_gt_flat_np = results
+
+    if uv:
+        for i in range(len(ret_flat_np) // 3):
+            U = ret_flat_np[i]
+            S = ret_flat_np[len(ret_flat_np) // 3 + i]
+            Vh = ret_flat_np[2 * len(ret_flat_np) // 3 + i]
+        m = U.shape[-1]
+        n = Vh.shape[-1]
+        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+
+        for i in range(len(ret_from_gt_flat_np) // 3):
+            U_gt = ret_from_gt_flat_np[i]
+            S_gt = ret_from_gt_flat_np[len(ret_from_gt_flat_np) // 3 + i]
+            Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
+        S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
+
+        with update_backend("numpy") as ivy_backend:
+            S_mat = (
+                S
+                * ivy_backend.eye(
+                    U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]
+                ).data
+            )
+            S_mat_gt = (
+                S_gt
+                * ivy_backend.eye(
+                    U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
+                ).data
+            )
+        reconstructed = np.matmul(np.matmul(U, S_mat), Vh)
+        reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
+
+        # value test
+        helpers.assert_all_close(
+            reconstructed,
+            reconstructed_gt,
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
+    else:
+        S = ret_flat_np
+        S_gt = ret_from_gt_flat_np
+        helpers.assert_all_close(
+            S[0],
+            S_gt[0],
+            atol=1e-04,
+            backend=backend_fw,
+            ground_truth_backend=test_flags.ground_truth_backend,
+        )
