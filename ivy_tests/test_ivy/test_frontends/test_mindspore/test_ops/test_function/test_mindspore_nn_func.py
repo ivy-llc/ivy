@@ -80,7 +80,7 @@
 
 # kl_div
 # @handle_frontend_test(
-#     fn_tree="kl_div",
+#     fn_tree="mindspore.ops.function.nn_func.kl_div",
 #     p=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
@@ -97,11 +97,13 @@
 #         max_value=5,
 #         min_dim_size=4,
 #     ),
+#     reduction=st.sampled_from(["none", "sum", "mean"]),
 # )
 # def test_mindspore_kl_div(
 #     *,
 #     p,
 #     q,
+#     reduction,
 #     on_device,
 #     fn_tree,
 #     frontend,
@@ -115,4 +117,5 @@
 #         on_device=on_device,
 #         p=p[1],
 #         q=q[1],
+#         reduction=reduction,
 #     )
