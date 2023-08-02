@@ -5,7 +5,7 @@ import functools
 import os
 import abc
 import copy
-import pickle
+import dill
 from typing import Optional, Tuple, Dict
 
 # local
@@ -739,7 +739,7 @@ class Module(ModuleConverters, ModuleHelpers):
         if ivy.current_backend_str() == "paddle":
             self._convert_tensors_to_numpy()
         with open(filename, "wb") as f:
-            pickle.dump(self, f)
+            dill.dump(self, f)
         if ivy.current_backend_str() == "paddle":
             self._convert_numpy_to_tensors()
 
@@ -759,7 +759,7 @@ class Module(ModuleConverters, ModuleHelpers):
             The loaded module object.
         """
         with open(filename, "rb") as f:
-            loaded = pickle.load(f)
+            loaded = dill.load(f)
         if ivy.current_backend_str() == "paddle":
             loaded._convert_numpy_to_tensors()
         return loaded
