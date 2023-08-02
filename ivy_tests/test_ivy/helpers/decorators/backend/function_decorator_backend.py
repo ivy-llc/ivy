@@ -2,12 +2,13 @@ import inspect
 
 from hypothesis import strategies as st
 from typing import Callable, Any
+from ivy_tests.test_ivy.helpers.globals import TestData
 from ivy_tests.test_ivy.helpers.decorators.strategies import (
     num_positional_args_from_dict,
 )
-from ..function_decorator_base import FunctionHandler
-from ...globals import TestData
-
+from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
+    FunctionHandler,
+)
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     build_backend_function_flags,
     BuiltInstanceStrategy,
