@@ -1355,7 +1355,7 @@ def test_jax_maxwell(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.ball",
     dtype_key=helpers.dtype_and_values(
@@ -1419,7 +1419,7 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
@@ -1451,7 +1451,7 @@ def test_jax_multivariate_normal(
     test_flags,
     fn_tree,
 ):
-    input_dtype, _ = dtype_key
+    input_dtype, key = dtype_key
 
     def call():
         return helpers.test_frontend_function(
@@ -1464,6 +1464,7 @@ def test_jax_multivariate_normal(
             mean=mean,
             cov=cov,
             shape=shape,
+            key=key[0],
             dtype=dtype[0],
             method=method,
         )
