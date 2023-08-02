@@ -19,3 +19,8 @@ kaiser_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
 def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
+
+# inverse_mdct
+def inverse_mdct(mdct, window_fn , norm = None , name = None):
+    return ivy.inverse_mdct(mdct,window_fn)
+
