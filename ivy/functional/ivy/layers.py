@@ -427,6 +427,8 @@ def scaled_dot_product_attention(
     /,
     *,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    dropout_p : Optional[float] = 0.0,
+    is_causal : Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -603,11 +605,27 @@ def scaled_dot_product_attention(
                     [4.3, 5.3]]])
     }
     """
+    ivy.assertions.check_all(
+        (not is_causal) or ( is_causal and mask is None),
+        (
+        "is_causal and attn_mask cannot be set at the same time"
+        ),
+    )
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
-
+    sim = ivy.dropout(sim, dropout_p)
+        
     if ivy.exists(mask):
         # BS x Q x K
+        sim = ivy.where(
+            ivy.logical_not(mask),
+            -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
+            sim,
+        )
+    elif is_causal:
+        L = q[-2] #Source sequence length
+        S = k[-2] #Target sequence length
+        mask = ivy.ones(L, S, dtype=ivy.bool).tril(diagonal=0)
         sim = ivy.where(
             ivy.logical_not(mask),
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
