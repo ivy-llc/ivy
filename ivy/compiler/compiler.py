@@ -1,4 +1,7 @@
+import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple
+
+python_version = platform.python_version_tuple()
 
 
 # TODO: create meaningful types for Graph and LazyGraph,
@@ -28,6 +31,10 @@ def compile(
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
 ) -> Union[Graph, LazyGraph]:
+    if python_version[1] == "8":
+        from ._compiler_38 import compile as _compile
+    else:
+        from ._compiler import compile as _compile
     """
     Take `fn` and compiles it into a more efficient composition of backend operations.
 
@@ -89,8 +96,6 @@ def compile(
     >>> print(time.time() - start)
     0.0001785755157470703
     """
-    from ._compiler import compile as _compile
-
     return _compile(
         *objs,
         stateful=stateful,
@@ -114,13 +119,16 @@ def transpile(
     *objs: Callable,
     source: Optional[str] = None,
     to: Optional[str] = None,
-    debug_mode: bool = False,
     with_numpy: bool = False,
     args: Optional[Tuple] = None,
     kwargs: Optional[dict] = None,
     params_v=None,
     v=None,  # Make this cleaner
 ) -> Union[Graph, LazyGraph]:
+    if python_version[1] == "8":
+        from ._compiler_38 import transpile as _transpile
+    else:
+        from ._compiler import transpile as _transpile
     """
     Transpile Callable objects passed as arguments. If args and kwargs are specified,
     transpilation is performed eagerly, otherwise, transpilation will happen lazily.
@@ -146,13 +154,10 @@ def transpile(
     -------
     Either a transpiled Graph or a non-initialized LazyGraph.
     """
-    from ._compiler import transpile as _transpile
-
     return _transpile(
         *objs,
         source=source,
         to=to,
-        debug_mode=debug_mode,
         with_numpy=with_numpy,
         args=args,
         kwargs=kwargs,
@@ -170,8 +175,10 @@ def unify(
     with_numpy: bool = False,
     **transpile_kwargs,
 ) -> Callable:
-    from ._compiler import unify as _unify
-
+    if python_version[1] == "8":
+        from ._compiler_38 import unify as _unify
+    else:
+        from ._compiler import unify as _unify
     return _unify(
         *objs,
         source=source,
