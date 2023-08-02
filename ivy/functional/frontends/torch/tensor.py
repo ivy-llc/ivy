@@ -911,6 +911,12 @@ class Tensor:
         self.ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("bool", "bfloat16", "float16", "complex")}, "torch"
+    )
+    def clamp_min(self, min=None):
+        return torch_frontend.clamp(self, min=min)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self)
@@ -1316,6 +1322,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log10_(self):
+        self.ivy_array = self.log10().ivy_array
+        return self
 
     def short(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
