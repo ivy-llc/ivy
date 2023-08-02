@@ -2,6 +2,8 @@ import platform
 from typing import Callable, Optional, List, Union, Iterable, Tuple
 
 python_version = platform.python_version_tuple()
+
+
 # TODO: create meaningful types for Graph and LazyGraph,
 # will probably need a seperate file for that
 class Graph:

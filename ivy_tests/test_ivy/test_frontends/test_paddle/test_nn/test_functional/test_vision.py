@@ -54,12 +54,13 @@ def _affine_grid_helper(draw):
     dtype_and_input_and_other=_affine_grid_helper(),
 )
 def test_paddle_affine_grid(
-    *, dtype_and_input_and_other, on_device, fn_tree, frontend, test_flags
+    *, dtype_and_input_and_other, on_device, backend_fw, fn_tree, frontend, test_flags
 ):
     dtype, theta, size, align_corners = dtype_and_input_and_other
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
