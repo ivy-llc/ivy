@@ -3399,7 +3399,13 @@ def _item_helper(draw):
     args_kwargs=_item_helper(),
 )
 def test_numpy_instance_item(
-    args_kwargs, frontend_method_data, init_flags, method_flags, frontend, on_device
+    args_kwargs,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
 ):
     input_dtype, x, method_all_as_kwargs_np, num_positional_args = args_kwargs
     method_flags.num_positional_args = num_positional_args
@@ -3407,6 +3413,7 @@ def test_numpy_instance_item(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
