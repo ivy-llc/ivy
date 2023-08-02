@@ -252,6 +252,70 @@ def nanmean(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+def nanprod(
+    a: ivy.Array,
+    /,
+    *,
+    axis: Optional[Union[Tuple[int], int]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the product of array elements over a given axis treating Not a Numbers
+    (NaNs) as ones.
+
+    Parameters
+    ----------
+    a
+        Input array.
+    axis
+        Axis or axes along which the product is computed.
+        The default is to compute the product of the flattened array.
+    dtype
+        The desired data type of returned array. Default is None.
+    out
+        optional output array, for writing the result to.
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one. With this option, the result will broadcast
+        correctly against the original a.
+    initial
+        The starting value for this product.
+    where
+        Elements to include in the product
+
+    Returns
+    -------
+    ret
+        The product of array elements over a given axis treating
+        Not a Numbers (NaNs) as ones
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([[1, ivy.nan], [3, 4]])
+    >>> ivy.nanprod(a)
+    12.0
+    """
+    return ivy.current_backend(a).nanprod(
+        a,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=dtype,
+        out=out,
+        initial=initial,
+        where=where,
+    )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
 @handle_device_shifting
 def quantile(
     a: ivy.Array,

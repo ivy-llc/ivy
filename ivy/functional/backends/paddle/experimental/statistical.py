@@ -95,6 +95,42 @@ def nanmean(
     return ret.astype(ret_dtype)
 
 
+def _infer_dtype(dtype: paddle.dtype):
+    default_dtype = ivy.infer_default_dtype(dtype)
+    if ivy.dtype_bits(dtype) < ivy.dtype_bits(default_dtype):
+        return default_dtype
+    return dtype
+
+
+def nanprod(
+    a: paddle.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[paddle.dtype] = None,
+    out: Optional[paddle.Tensor] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    if a.dtype not in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
+        a = paddle.nan_to_num(a.cast("float32"), nan=1.0)
+        ret = paddle.prod(a, axis=axis, keepdim=keepdims)
+    else:
+        a = paddle.nan_to_num(a, nan=1.0)
+        ret = paddle.prod(a, axis=axis, keepdim=keepdims)
+
+    if isinstance(axis, Sequence):
+        if len(axis) == a.ndim:
+            axis = None
+    if (a.ndim == 1 or axis is None) and not keepdims:
+        ret = ret.squeeze()
+    return ret.cast(dtype)
+
+
 def _compute_quantile(
     x, q, axis=None, keepdim=False, ignore_nan=False, interpolation="linear"
 ):

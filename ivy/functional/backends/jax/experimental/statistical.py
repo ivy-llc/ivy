@@ -162,6 +162,24 @@ def nanmean(
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
 
+def nanprod(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+    initial: Optional[Union[int, float, complex]] = None,
+    where: Optional[JaxArray] = None,
+) -> JaxArray:
+    dtype = ivy.as_native_dtype(dtype)
+    if dtype is None:
+        dtype = _infer_dtype(a.dtype)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    return jnp.nanprod(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
 def quantile(
     a: JaxArray,
     q: Union[float, JaxArray],

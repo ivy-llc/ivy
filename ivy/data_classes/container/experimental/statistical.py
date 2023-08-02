@@ -444,6 +444,140 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_nanprod(
+        input: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = 1,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nanprod. This method simply wraps the
+        function, and so the docstring for ivy.nanprod also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input container including arrays.
+        axis
+            Axis or axes along which the product is computed.
+            The default is to compute the product of the flattened array.
+        dtype
+            The desired data type of returned array. Default is None.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The starting value for this product.
+        where
+            Elements to include in the product
+
+        Returns
+        -------
+        ret
+            The product of array elements over a given axis treating
+            Not a Numbers (NaNs) as ones
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_moveaxis(a)
+        {
+            x: 12.0
+            y: 12.0
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "nanprod",
+            input,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    def nanprod(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[Tuple[int], int, ivy.Container]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype, ivy.Container]] = None,
+        keepdims: Optional[Union[bool, ivy.Container]] = False,
+        out: Optional[ivy.Container] = None,
+        initial: Optional[Union[int, float, complex, ivy.Container]] = None,
+        where: Optional[Union[ivy.Array, ivy.Container]] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nanprod. This method simply wraps
+        the function, and so the docstring for ivy.nanprod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the product is computed.
+            The default is to compute the product of the flattened array.
+        dtype
+            The desired data type of returned array. Default is None.
+        out
+            optional output array, for writing the result to.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. With this option, the result will broadcast
+            correctly against the original a.
+        initial
+            The starting value for this product.
+        where
+            Elements to include in the product
+
+        Returns
+        -------
+        ret
+            The product of array elements over a given axis treating
+            Not a Numbers (NaNs) as ones
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([[1, 2], [3, ivy.nan]]),\
+                                y=ivy.array([[ivy.nan, 1, 2], [1, 2, 3]])
+        >>> ivy.Container.static_moveaxis(a)
+        {
+            x: 12.0
+            y: 12.0
+        }
+        """
+        return self.static_nanprod(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            out=out,
+            initial=initial,
+            where=where,
+        )
+
+    @staticmethod
     def static_quantile(
         a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         q: Union[ivy.Array, float, ivy.Container],
