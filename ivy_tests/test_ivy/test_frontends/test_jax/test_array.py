@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
 
-CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
+CLASS_TREE = "ivy.functional.frontends.jax.numpy.ndarray"
 
 
 @given(

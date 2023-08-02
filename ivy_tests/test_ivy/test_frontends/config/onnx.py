@@ -1,6 +1,5 @@
-import jax.numpy as jnp
-import jax
-import numpy as np
+# import onnx
+# import onnxruntime as ort
 
 valid_devices = ("cpu", "gpu")
 invalid_devices = ("tpu",)
@@ -80,29 +79,31 @@ invalid_complex_dtypes = []
 # Helpers for function testing
 
 
-Dtype = jax.numpy.dtype
-Device = jax.Device
-
-
-def native_array(x):
-    return jnp.array(x)
-
-
-def is_native_array(x):
-    return isinstance(x, (jnp.ndarray))
-
-
-def to_numpy(x):
-    return np.asarray(x)
-
-
-def as_native_dtype(dtype: str):
-    return jnp.dtype(dtype)
-
-
-def as_native_dev(device: str):
-    return jax.devices(device)[0]
-
-
-def isscalar(x):
-    return is_native_array(x) and len(jnp.shape(x)) == 0
+# Dtype = mx.numpy.dtype
+# Device = mx.Context
+#
+#
+# def native_array(x):
+#     return mx.np.array(x)
+#
+#
+# def is_native_array(x):
+#     return isinstance(x, (mx.np.ndarray, mx.gluon.Parameter))
+#
+#
+# def to_numpy(x):
+#     return x.asnumpy()
+#
+#
+# def as_native_dtype(dtype: str):
+#     return mx.np.array([], dtype=dtype).dtype
+#
+#
+# def as_native_dev(device: str):
+#     return mx.Context(device)
+#
+#
+# def isscalar(x):
+#     return x.ndim == 0
+#
+#

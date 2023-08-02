@@ -10,11 +10,7 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if (
-        isinstance(x, jax_frontend.DeviceArray)
-        and x.weak_type
-        and x.ivy_array.shape == ()
-    ):
+    if isinstance(x, jax_frontend.Array) and x.weak_type and x.ivy_array.shape == ():
         setattr(x.ivy_array, "weak_type", True)
         return x.ivy_array
     if hasattr(x, "ivy_array"):
@@ -28,7 +24,7 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
             x, _from_ivy_array_to_jax_frontend_array, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x)
+        return jax_frontend.Array(x)
     return x
 
 
@@ -43,7 +39,7 @@ def _from_ivy_array_to_jax_frontend_array_weak_type(
             shallow=False,
         )
     elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x, weak_type=True)
+        return jax_frontend.Array(x, weak_type=True)
     return x
 
 
@@ -86,7 +82,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _outputs_to_frontend_arrays_jax(*args, **kwargs):
         weak_type = not any(
-            (isinstance(arg, jax_frontend.DeviceArray) and arg.weak_type is False)
+            (isinstance(arg, jax_frontend.Array) and arg.weak_type is False)
             or (isinstance(arg, ivy.Array) and arg.weak_type is False)
             or isinstance(arg, (tuple, list))
             for arg in args
@@ -106,7 +102,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ivy.unset_default_float_dtype()
         else:
             ret = fn(*args, **kwargs)
-        # convert all arrays in the return to `jax_frontend.DeviceArray` instances
+        # convert all arrays in the return to `jax_frontend.Array` instances
         if weak_type:
             return _from_ivy_array_to_jax_frontend_array_weak_type(
                 ret,
@@ -166,7 +162,7 @@ def outputs_to_native_arrays(fn: Callable):
     @functools.wraps(fn)
     def _outputs_to_native_arrays(*args, **kwargs):
         ret = fn(*args, **kwargs)
-        if isinstance(ret, jax_frontend.DeviceArray):
+        if isinstance(ret, jax_frontend.Array):
             ret = ret.ivy_array.data
         return ret
 

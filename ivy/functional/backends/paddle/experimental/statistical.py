@@ -374,6 +374,11 @@ def igamma(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     results = []
+    ret_dtype = a.dtype if out is None else out.dtype
+    if paddle.float16 in [a.dtype, x.dtype]:
+        a = a.astype("float32")
+        x = x.astype("float32")
+
     for ai, xi in zip(a.flatten(), x.flatten()):
         ai = ai.astype("float64")
         xi = xi.astype("float64")
@@ -388,7 +393,7 @@ def igamma(
         result = paddle.divide(paddle.sum(integral), paddle.exp(paddle.lgamma(ai)))
         results.append(result)
 
-    return paddle.to_tensor(results, dtype=a.dtype).reshape(a.shape)
+    return paddle.to_tensor(results, dtype=ret_dtype).reshape(a.shape)
 
 
 def cov(
