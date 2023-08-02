@@ -1548,6 +1548,7 @@ def array_values(
                 "complex64": {"cast_type": "complex64", "width": 32},
                 "complex128": {"cast_type": "complex128", "width": 64},
             }
+
             # The smallest possible value is determined by one of the arguments
             if min_value > -abs_smallest_val or max_value < abs_smallest_val:
                 float_strategy = st.floats(
@@ -1600,6 +1601,8 @@ def array_values(
             values = draw(list_of_size(x=float_strategy, size=size))
             if "complex" in dtype:
                 values = [complex(*v) for v in values]
+            # cast the dtype into numpy supportable
+            dtype = floats_info[dtype]["cast_type"]
     else:
         values = draw(list_of_size(x=st.booleans(), size=size))
 

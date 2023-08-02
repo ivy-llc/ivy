@@ -140,7 +140,7 @@ def to_numpy(
                     x = x.to(torch.float32)
                 else:
                     x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
+                return x.detach().cpu().numpy().astype("float32")
             return x.detach().cpu().numpy()
         else:
             raise ivy.utils.exceptions.IvyException(
