@@ -58,7 +58,7 @@ def _get_seed(key):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -74,7 +74,7 @@ def beta(key, a, b, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -98,7 +98,7 @@ def cauchy(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def poisson(key, lam, shape=None, dtype=None):
@@ -110,7 +110,7 @@ def poisson(key, lam, shape=None, dtype=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -126,7 +126,7 @@ def gamma(key, a, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -148,7 +148,7 @@ def gumbel(key, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def rademacher(key, shape, dtype="int64"):
@@ -162,7 +162,7 @@ def rademacher(key, shape, dtype="int64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -188,7 +188,7 @@ def t(key, df, shape=(), dtype="float64"):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("unsigned", "int8", "int16")},
+    {"0.4.14 and below": ("unsigned", "int8", "int16")},
     "jax",
 )
 def randint(key, shape, minval, maxval, dtype="int64"):
@@ -230,7 +230,7 @@ def permutation(key, x, axis=0, independent=False):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -253,7 +253,7 @@ def shuffle(key, x, axis=0):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -271,7 +271,7 @@ def exponential(key, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -290,7 +290,7 @@ def weibull_min(key, scale, concentration, shape=(), dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -332,7 +332,7 @@ def maxwell(key, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "0.4.13 and below": (
+        "0.4.14 and below": (
             "float32",
             "float64",
         )
