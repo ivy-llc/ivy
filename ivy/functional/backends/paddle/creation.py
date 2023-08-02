@@ -95,8 +95,13 @@ def asarray(
     device = ivy.as_native_dev(device)
     if isinstance(obj, paddle.Tensor):
         if copy:
-            ret = obj.clone().detach()
-            ret.stop_gradient = obj.stop_gradient
+            # Checking if the tensor is not empty
+            # As clone is not supported for empty tensors
+            if all(obj.shape):
+                ret = obj.clone().detach()
+                ret.stop_gradient = obj.stop_gradient
+            else:
+                ret = obj
         else:
             ret = obj
         return to_device(ret, device).astype(dtype)
@@ -134,7 +139,7 @@ def empty_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "uint8",
                 "int8",
@@ -337,7 +342,7 @@ def _slice_at_axis(sl, axis):
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("uint16", "bfloat16", "float16")}}, backend_version
 )
 def linspace(
     start: Union[paddle.Tensor, float],
@@ -395,7 +400,7 @@ def linspace(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -464,7 +469,7 @@ def ones_like(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -483,7 +488,7 @@ def tril(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -596,7 +601,7 @@ def one_hot(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def frombuffer(
