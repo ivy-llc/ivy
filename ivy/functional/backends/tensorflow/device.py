@@ -99,8 +99,8 @@ def tpu_is_available() -> bool:
         return False
 
 
-def handle_soft_device_variable(*args, fn, **kwargs):
-    default_device = ivy.default_device(as_native=True)
+def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
+    default_device = ivy.default_device(as_native=True) if def_dev is None else def_dev
     with tf.device(default_device):
         return fn(*args, **kwargs)
 

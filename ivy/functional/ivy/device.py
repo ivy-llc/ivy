@@ -135,9 +135,9 @@ class DefaultDevice:
         return self
 
 
-def handle_soft_device_variable(*args, fn, **kwargs):
+def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
     ivy.set_array_mode(False)
-    default_device = ivy.default_device()
+    default_device = ivy.default_device() if def_dev is None else def_dev
     args, kwargs = ivy.nested_map(
         [args, kwargs],
         lambda x: (
