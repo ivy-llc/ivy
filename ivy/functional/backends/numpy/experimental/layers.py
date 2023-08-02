@@ -886,16 +886,16 @@ def stft(
     if window is None:
         window = np.hanning(n_fft)
 
-    num_frames = 1 + (signal.shape[-1] - n_fft) // frame_step
+    num_frames = (signal.shape[-1] - n_fft) // frame_step + 1
     stft_result = np.empty(signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128)
 
     for i in range(num_frames):
         start = i * frame_step
         end = start + n_fft
-        frame = signal[..., start:end]
+        frame = signal[start:end]
         frame = frame * window
 
-        stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
+        stft_frame = np.fft.fft(frame, n=n_fft, axis=0) 
         stft_result[..., i, :n_fft // 2 + 1] = stft_frame[..., :n_fft // 2 + 1]
 
     return stft_result
