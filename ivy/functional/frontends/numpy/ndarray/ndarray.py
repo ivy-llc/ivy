@@ -602,7 +602,7 @@ class ndarray:
     def __complex__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.complex128))
+        return complex(self.ivy_array)
 
     def __contains__(self, key, /):
         return np_frontend.any(self == key)
