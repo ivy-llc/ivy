@@ -2711,23 +2711,19 @@ def test_paddle_cond(
     )
 
 
-
 # var
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="paddle.to_tensor",
     method_name="var",
-    dtype_and_x=_statistical_dtype_values(
-        function="var",
-        min_value=-1e04,
-        max_value=1e04,
-    ),
+    dtype_and_x=_statistical_dtype_values(function="var"),
     keepdim=st.booleans(),
 )
 def test_paddle_instance_var(
     dtype_and_x,
     keepdim,
     frontend,
+    backend_fw,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -2746,9 +2742,11 @@ def test_paddle_instance_var(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
+        backend_to_test=backend_fw,
         method_flags=method_flags,
         on_device=on_device,
     )
+
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
