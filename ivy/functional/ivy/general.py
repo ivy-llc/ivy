@@ -239,6 +239,7 @@ def get_referrers_recursive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -275,6 +276,7 @@ def is_native_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
@@ -308,6 +310,7 @@ def is_ivy_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """
     Determine whether the input x is either an Ivy Array or a Native Array.
@@ -598,6 +601,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -647,6 +651,7 @@ def array_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -738,6 +743,7 @@ def all_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -810,6 +816,7 @@ def isscalar(x: Any, /) -> bool:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -867,6 +874,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -940,6 +948,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1029,6 +1038,7 @@ def clip_vector_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_function
 @inputs_to_ivy_arrays
@@ -1111,6 +1121,7 @@ def clip_matrix_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1217,6 +1228,7 @@ def fourier_encode(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1279,6 +1291,7 @@ def value_is_nan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
