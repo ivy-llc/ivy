@@ -144,6 +144,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._target = None
         self._lazy_compiled = False
         self._dynamic_backend = dynamic_backend
+        if hasattr(self, "_create_buffers"):
+            self._create_buffers = self._buffer_tracker(self._create_buffers)
+
         if build_mode != "on_init":
             return
         if hasattr(Module, "_init_var"):
@@ -428,6 +431,60 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
+    def _buffer_tracker(self, func):
+        """Tracks the variables defined as buffer variables and stores them."""
+
+        def wrapper(*args, **kwargs):
+            initial_object_snapshot = self.__dict__.copy()
+            # initialise the buffers
+            func(*args, **kwargs)
+            final_object_snapshot = self.__dict__
+            getattr(self, "buffers", {}).update(
+                set(final_object_snapshot.keys()).difference(
+                    set(initial_object_snapshot.keys())
+                )
+            )
+
+        wrapper.buffers_tracked = True
+        return wrapper
+
+    def _get_buffers(self):
+        """Return the buffer variables, if any, of the given Module class instance."""
+        if self.buffers:
+            buffer_dict = {}
+            for buffer in self.buffers:
+                buffer_dict[buffer] = getattr(self, buffer)
+            return buffer_dict
+        return {}
+
+    def _set_buffers(self, buffers, override=False):
+        """
+        Set the buffers of the given class instance, according to the buffers
+        passed.
+        """
+        for buffer in buffers:
+            if hasattr(self, buffer):
+                print("which case 1")
+                print(self.buffers)
+                setattr(self, buffer, buffers[buffer])
+            elif not override:
+                print("which case 2")
+                raise ivy.exceptions.IvyNotImplementedException(
+                    f"{buffer} hasn't been defined for the given Module structure"
+                )
+            else:
+                print("which case 3")
+                setattr(self, buffer, buffers[buffer])
+                if hasattr(self, "buffers"):
+                    self.buffers[buffer] = buffers[buffer]
+                else:
+                    setattr(self, "buffers", {buffer})
+                print(self.buffers)
+
+    def _register_buffers(self, var_name, value):
+        """Set the buffer variables at any place within the class."""
+        self._set_buffers({var_name: value}, override=True)
+
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
@@ -440,6 +497,17 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         ----------
         device
             The device string, specifying the device on which to create the variables.
+
+        Returns
+        -------
+        ret
+            An empty set.
+        """
+        return {}
+
+    def _create_buffers(self):
+        """
+        Create buffers for this class.
 
         Returns
         -------
@@ -516,6 +584,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 from_call=True,
                 dtype=_get_first_array(*args, **kwargs).dtype,
             )
+        if kwargs["buffers"]:
+            buffers_orig = self._get_buffers()
+            self._set_buffers(kwargs["buffers"])
         if v is not None:
             v_orig = self.v
             self.v = (
@@ -525,6 +596,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
+            if kwargs["buffers"]:
+                self._set_buffers(buffers_orig)
             return ret
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
@@ -646,8 +719,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             True for successfully built a module.
         """
         self._dev = ivy.default(device, self._dev)
+        # build buffers if any
+        self._create_buffers()
         # return False if not from_call but build_mode is on_call
-
         if not from_call and self._build_mode == "on_call":
             return self.v
         if dtype:
