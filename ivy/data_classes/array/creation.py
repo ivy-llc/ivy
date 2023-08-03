@@ -12,6 +12,7 @@ import ivy
 
 
 class _ArrayWithCreation(abc.ABC):
+    @abc.abstractmethod
     def asarray(
         self: ivy.Array,
         /,

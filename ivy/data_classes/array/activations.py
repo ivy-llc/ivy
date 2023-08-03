@@ -10,6 +10,7 @@ import ivy
 
 
 class _ArrayWithActivations(abc.ABC):
+    @abc.abstractmethod
     def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the

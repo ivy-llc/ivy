@@ -51,7 +51,7 @@ if __name__ == "__main__":
                     if file_name not in tests:
                         tests[file_name] = []
                         with open(file_name) as f:
-                            for line in f:
+                            for _line in f:
                                 tests[file_name].append(set())
                     with open(file_name) as f:
                         i = 0

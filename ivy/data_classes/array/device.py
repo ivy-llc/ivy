@@ -9,6 +9,7 @@ import ivy
 
 
 class _ArrayWithDevice(abc.ABC):
+    @abc.abstractmethod
     def dev(
         self: ivy.Array, *, as_native: bool = False
     ) -> Union[ivy.Device, ivy.NativeDevice]:

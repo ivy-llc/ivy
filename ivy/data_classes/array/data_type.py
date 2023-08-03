@@ -10,6 +10,7 @@ Iinfo = None
 
 
 class _ArrayWithDataTypes(abc.ABC):
+    @abc.abstractmethod
     def astype(
         self: ivy.Array,
         dtype: ivy.Dtype,

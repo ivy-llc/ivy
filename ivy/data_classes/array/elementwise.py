@@ -8,6 +8,7 @@ import ivy
 
 # noinspection PyUnresolvedReferences
 class _ArrayWithElementwise(abc.ABC):
+    @abc.abstractmethod
     def abs(
         self: Union[float, ivy.Array, ivy.NativeArray],
         /,
