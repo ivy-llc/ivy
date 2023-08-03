@@ -177,7 +177,7 @@ class Tensor:
     def addmv_(self, mat, vec, *, beta=1, alpha=1):
         self.ivy_array = torch_frontend.addmv(
             self, mat, vec, beta=beta, alpha=alpha
-            ).ivy_array
+        ).ivy_array
         return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
