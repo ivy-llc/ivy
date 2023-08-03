@@ -4,6 +4,7 @@ import inspect
 
 from abc import abstractproperty, abstractmethod
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
+from ivy_tests.test_ivy.helpers.globals import TestData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
@@ -36,6 +37,15 @@ class FunctionHandler(HandlerBase):
         self._add_test_attributes_to_test_function(wrapped_fn)
         self._handle_not_implemented(wrapped_fn)
         return wrapped_fn
+
+    def _build_test_data(self):
+        module_tree, fn_name = self._partition_fn_tree(self.fn_tree)
+        supported_device_dtypes = self._get_supported_devices_dtypes(self.fn_tree)
+        self.test_data = TestData(
+            module_tree=module_tree,
+            fn_name=fn_name,
+            supported_device_dtypes=supported_device_dtypes,
+        )
 
     def _update_given_kwargs(self, fn):
         param_names = inspect.signature(fn).parameters.keys()
