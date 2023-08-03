@@ -531,3 +531,46 @@ class LAMB(Optimizer):
     @property
     def state(self):
         return ivy.Container({"mw": self._mw, "vw": self._vw})
+
+
+class AdaGrad(Optimizer):
+    def __init__(
+        self,
+        lr: float = 1e-4,
+        lr_decay: float = 0,
+        epsilon: float = 1e-07,
+        inplace: bool = True,
+        stop_gradients: bool = True,
+        compile_on_next_step: bool = False,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ):
+        self._epsilon = epsilon
+        self._lr_decay = lr_decay
+        self._vt = 0
+        self._should_compile = False
+
+        super().__init__(
+            lr, inplace, stop_gradients, True, compile_on_next_step, device=device
+        )
+
+    # Custom Step
+
+    def _step(self, v: ivy.Container, grads: ivy.Container):
+        new_v, self._vt = ivy.adagrad_update(
+            v,
+            grads,
+            self._lr,
+            self._vt,
+            self._count,
+            epsilon=self._epsilon,
+            lr_decay=self._lr_decay,
+            stop_gradients=self._stop_gradients,
+        )
+        return new_v
+
+    def set_state(self, state: ivy.Container):
+        self._vt = state.vt
+
+    @property
+    def state(self):
+        return ivy.Container({"vt": self._vt})

@@ -252,3 +252,60 @@ def test_lamb_optimizer(
         xs_grad_idxs=xs_grad_idxs,
         on_device=on_device,
     )
+
+
+@handle_method(
+    method_tree="AdaGrad._step",
+    dtype_x_lr=get_gradient_arguments_with_lr(
+        min_value=1e-05,
+        max_value=1e08,
+        num_arrays=2,
+        float_lr=True,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+    ),
+    epsilon=st.floats(min_value=1e-1, max_value=1),
+    inplace=st.booleans(),
+    stop_gradients=st.booleans(),
+    test_gradients=st.just(True),
+)
+def test_adagrad_optimizer(
+    dtype_x_lr,
+    epsilon,
+    inplace,
+    stop_gradients,
+    on_device,
+    class_name,
+    method_name,
+    backend_fw,
+    ground_truth_backend,
+    test_gradients,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, lr = dtype_x_lr
+    xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={
+            "lr": lr,
+            "epsilon": epsilon,
+            "inplace": inplace,
+            "stop_gradients": stop_gradients,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "v": x[0],
+            "grads": x[1],
+        },
+        class_name=class_name,
+        method_name=method_name,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=test_gradients,
+        xs_grad_idxs=xs_grad_idxs,
+        on_device=on_device,
+    )

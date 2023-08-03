@@ -334,6 +334,42 @@ def test_adam_step(
     )
 
 
+@handle_test(
+    fn_tree="functional.ivy.adagrad_step",
+    dtype_n_dcdw_n_vt=get_gradient_arguments_with_lr(
+        num_arrays=2,
+        no_lr=True,
+        min_value=1e-05,
+        max_value=1e08,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+    ),
+    epsilon=st.floats(min_value=1e-1, max_value=1),
+)
+def test_adagrad_step(
+    *,
+    dtype_n_dcdw_n_vt,
+    epsilon,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, [dcdw, vt] = dtype_n_dcdw_n_vt
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        dcdw=dcdw,
+        vt=vt,
+        epsilon=epsilon,
+    )
+
+
 # optimizer_update
 @handle_test(
     fn_tree="functional.ivy.optimizer_update",
@@ -551,5 +587,50 @@ def test_lamb_update(
         epsilon=epsilon,
         max_trust_ratio=max_trust_ratio,
         decay_lambda=decay_lambda,
+        stop_gradients=stop_gradients,
+    )
+
+
+# adagrad_update
+@handle_test(
+    fn_tree="functional.ivy.adagrad_update",
+    dtype_n_ws_n_dcdw_n_vt_n_lr=get_gradient_arguments_with_lr(
+        num_arrays=3,
+        min_value=1e-05,
+        max_value=1e08,
+        large_abs_safety_factor=2.0,
+        small_abs_safety_factor=2.0,
+    ),
+    step=st.integers(min_value=1, max_value=10),
+    epsilon=st.floats(min_value=1e-2, max_value=1),
+    stopgrad=st.booleans(),
+)
+def test_adagrad_update(
+    *,
+    dtype_n_ws_n_dcdw_n_vt_n_lr,
+    step,
+    epsilon,
+    stopgrad,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, [w, dcdw, vt], lr = dtype_n_ws_n_dcdw_n_vt_n_lr
+    stop_gradients = stopgrad
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        w=w,
+        dcdw=dcdw,
+        lr=lr,
+        vt_tm1=vt,
+        step=step,
+        epsilon=epsilon,
         stop_gradients=stop_gradients,
     )
