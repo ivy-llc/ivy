@@ -85,3 +85,29 @@ def indices(
     sparse: bool = False,
 ) -> Union[np.ndarray, Tuple[np.ndarray, ...]]:
     return np.indices(dimensions, dtype=dtype, sparse=sparse)
+
+
+def unsorted_segment_min(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    if data.dtype in [np.float32, np.float64]:
+        init_val = np.finfo(data.dtype).max
+    elif data.dtype in [np.int32, np.int64, np.int8, np.int16, np.uint8]:
+        init_val = np.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
+
+    res = np.full((num_segments,) + data.shape[1:], init_val, dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.min(data[mask_index], axis=0)
+
+    return res

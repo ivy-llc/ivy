@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_view,
+    handle_device_shifting,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -40,6 +41,7 @@ def _calculate_out_shape(axis, array_shape):
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def concat(
     xs: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -100,6 +102,7 @@ def concat(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def expand_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -237,6 +240,7 @@ def expand_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def flip(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -332,6 +336,7 @@ def flip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def permute_dims(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -432,6 +437,7 @@ def permute_dims(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def reshape(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -463,14 +469,20 @@ def reshape(
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
-        ‘C’ means to read / write the elements using C-like index order,
+        ``C`` means to read / write the elements using C-like index order,
         with the last axis index changing fastest, back to the first axis index
         changing slowest.
-        ‘F’ means to read / write the elements using Fortran-like index order, with
+        ``F`` means to read / write the elements using Fortran-like index order, with
         the first index changing fastest, and the last index changing slowest.
-        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        Note that the ``C`` and ``F`` options take no account of the memory layout
         of the underlying array, and only refer to the order of indexing.
-        Default order is 'C'
+        Default order is ``C``
+    allowzero
+        When ``allowzero=True``, any value in the ``shape`` argument that is equal to
+        zero, the zero value is honored. When ``allowzero=False``, any value in the
+        ``shape`` argument that is equal to zero the corresponding dimension value is
+        copied from the input tensor dynamically.
+        Default value is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -552,6 +564,7 @@ def reshape(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def roll(
     x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -664,6 +677,7 @@ def roll(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def squeeze(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -756,6 +770,7 @@ def squeeze(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def stack(
     arrays: Union[
         Tuple[Union[ivy.Array, ivy.NativeArray], ...],
@@ -844,6 +859,7 @@ def stack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def clip(
     x: Union[ivy.Array, ivy.NativeArray],
     x_min: Union[Number, ivy.Array, ivy.NativeArray],
@@ -970,6 +986,7 @@ def clip(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def constant_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1057,6 +1074,7 @@ def constant_pad(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1128,6 +1146,7 @@ def repeat(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def split(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1216,6 +1235,7 @@ def split(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def swapaxes(
     x: Union[ivy.Array, ivy.NativeArray],
     axis0: int,
@@ -1326,6 +1346,7 @@ def swapaxes(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def tile(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1406,6 +1427,7 @@ def tile(
 @handle_view
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def unstack(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1502,6 +1524,7 @@ def unstack(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def zero_pad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

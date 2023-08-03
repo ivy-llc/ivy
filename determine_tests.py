@@ -97,34 +97,33 @@ def main():
             for test in removed_tests:
                 f.write(test + "\n")
         added_tests = list(added_tests)
-        print(added_tests)
         # if it is a PR, we must check that the tests added were in the files_changes
         if len(sys.argv) >= 3 and sys.argv[2] == "pr":
             relevant_added_tests = []
-            subprocess.run(["git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"])
+            subprocess.run(
+                ["git", "remote", "add", "upstream", "https://github.com/unifyai/ivy"]
+            )
             subprocess.run(["git", "fetch", "upstream"])
-            lca_sha = subprocess.check_output(["git", "merge-base", "HEAD", "upstream/master"])
+            lca_sha = subprocess.check_output(
+                ["git", "merge-base", "HEAD", "upstream/master"]
+            )
             lca_hash = lca_sha.decode().strip()
             for commit in Repository(".", single=lca_hash).traverse_commits():
                 lca_commit = commit._c_object
                 break
             for commit in Repository(".", order="reverse").traverse_commits():
-                tests["commit"] = commit.hash
                 diff_index = lca_commit.diff(commit._c_object, create_patch=True)
                 modified_files = commit._parse_diff(diff_index)
                 break
-            for file in modified_files:
-                print(file.new_path)
             for test in added_tests:
-                test_path = test.split("::")[0]
                 for file in modified_files:
-                    if test_path in file.new_path:
+                    if file.new_path.strip() in test:
                         relevant_added_tests.append(test)
                         break
             added_tests = relevant_added_tests
-            print(added_tests)
-        if len(added_tests) > 10:
-            added_tests = added_tests[:10]
+        else:
+            if len(added_tests) > 50:
+                added_tests = added_tests[:50]
         # Add these new_tests in the Mapping
         old_num_tests = len(old_tests)
         tests["index_mapping"] += added_tests

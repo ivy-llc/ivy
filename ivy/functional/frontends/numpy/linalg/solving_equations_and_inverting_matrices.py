@@ -10,7 +10,7 @@ from ivy.functional.frontends.numpy.linalg.norms_and_other_numbers import matrix
 
 
 # solve
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def solve(a, b):
     a, b = promote_types_of_numpy_inputs(a, b)
@@ -18,7 +18,7 @@ def solve(a, b):
 
 
 # inv
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
@@ -26,14 +26,14 @@ def inv(a):
 
 # pinv
 # TODO: add hermitian functionality
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def pinv(a, rcond=1e-15, hermitian=False):
     return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.25.0 and below": ("float16", "blfloat16")}, "numpy")
+@with_unsupported_dtypes({"1.25.2 and below": ("float16", "blfloat16")}, "numpy")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
@@ -52,7 +52,7 @@ def tensorinv(a, ind=2):
 # TODO: replace this with function from API
 # As the compositon provides unstable results
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.25.0 and below": ("float16",)}, "numpy")
+@with_unsupported_dtypes({"1.25.2 and below": ("float16",)}, "numpy")
 def lstsq(a, b, rcond="warn"):
     solution = ivy.matmul(
         ivy.pinv(a, rtol=1e-15).astype(ivy.float64), b.astype(ivy.float64)

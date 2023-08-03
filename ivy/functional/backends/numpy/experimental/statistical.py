@@ -1,13 +1,14 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
-
+import math
 import ivy  # noqa
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"1.25.0 and below": ("bfloat16",)},
+    {"1.25.2 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -196,6 +197,10 @@ def corrcoef(
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"1.25.0 and below": ("bfloat16",)},
+    backend_version,
+)
 def nanmedian(
     input: np.ndarray,
     /,
@@ -231,3 +236,170 @@ def bincount(
 
 
 bincount.support_native_out = False
+
+
+def cov(
+    x1: np.ndarray,
+    x2: np.ndarray = None,
+    /,
+    *,
+    rowVar: bool = True,
+    bias: bool = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[np.ndarray] = None,
+    aweights: Optional[np.ndarray] = None,
+    dtype: Optional[np.dtype] = None,
+) -> np.ndarray:
+    if fweights is not None:
+        fweights = fweights.astype(np.int64)
+
+    return np.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
+    )
+
+
+cov.support_native_out = False
+
+
+def cummax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray, np.ndarray]:
+    if x.dtype in (np.bool_, np.float16):
+        x = x.astype(np.float64)
+    elif x.dtype in (np.int16, np.int8, np.uint8):
+        x = x.astype(np.int64)
+    elif x.dtype in (np.complex128, np.complex64):
+        x = np.real(x).astype(np.float64)
+
+    if exclusive or reverse:
+        if exclusive and reverse:
+            indices = __find_cummax_indices(np.flip(x, axis=axis), axis=axis)
+            x = np.maximum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=x.dtype)
+            x = np.swapaxes(x, axis, -1)
+            indices = np.swapaxes(indices, axis, -1)
+            x, indices = np.concatenate(
+                (np.zeros_like(x[..., -1:]), x[..., :-1]), -1
+            ), np.concatenate((np.zeros_like(indices[..., -1:]), indices[..., :-1]), -1)
+            x, indices = np.swapaxes(x, axis, -1), np.swapaxes(indices, axis, -1)
+            res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
+
+        elif exclusive:
+            x = np.swapaxes(x, axis, -1)
+            x = np.concatenate((np.zeros_like(x[..., -1:]), x[..., :-1]), -1)
+            x = np.swapaxes(x, axis, -1)
+            indices = __find_cummax_indices(x, axis=axis)
+            res = np.maximum.accumulate(x, axis=axis, dtype=x.dtype)
+        elif reverse:
+            x = np.flip(x, axis=axis)
+            indices = __find_cummax_indices(x, axis=axis)
+            x = np.maximum.accumulate(x, axis=axis)
+            res, indices = np.flip(x, axis=axis), np.flip(indices, axis=axis)
+        return res, indices
+    indices = __find_cummax_indices(x, axis=axis)
+    return np.maximum.accumulate(x, axis=axis, dtype=x.dtype), indices
+
+
+def __find_cummax_indices(
+    x: np.ndarray,
+    axis: int = 0,
+) -> np.ndarray:
+    indices = []
+    if type(x[0]) == np.ndarray:
+        if axis >= 1:
+            for ret1 in x:
+                indice = __find_cummax_indices(ret1, axis=axis - 1)
+                indices.append(indice)
+
+        else:
+            indice_list = __get_index(x.tolist())
+            indices, n1 = x.copy(), {}
+            indices.fill(0)
+            indice_list = sorted(indice_list, key=lambda i: i[1])
+            for y, y_index in indice_list:
+                multi_index = y_index
+                if tuple(multi_index[1:]) not in n1:
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                elif (
+                    y >= x[tuple([n1[tuple(multi_index[1:])]] + list(multi_index[1:]))]
+                ):
+                    n1[tuple(multi_index[1:])] = multi_index[0]
+                    indices[y_index] = multi_index[0]
+                else:
+                    indices[y_index] = n1[tuple(multi_index[1:])]
+    else:
+        n = 0
+        for index1, ret1 in enumerate(x):
+            if x[n] <= ret1 or index1 == 0:
+                n = index1
+            indices.append(n)
+    return np.array(indices, dtype=np.int64)
+
+
+def __get_index(lst, indices=None, prefix=None):
+    if indices is None:
+        indices = []
+    if prefix is None:
+        prefix = []
+
+    if isinstance(lst, list):
+        for i, sub_lst in enumerate(lst):
+            sub_indices = prefix + [i]
+            __get_index(sub_lst, indices, sub_indices)
+    else:
+        indices.append((lst, tuple(prefix)))
+    return indices
+
+
+@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
+def cummin(
+    x: np.ndarray,
+    /,
+    *,
+    axis: int = 0,
+    exclusive: bool = False,
+    reverse: bool = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if dtype is None:
+        if x.dtype == "bool":
+            dtype = ivy.default_int_dtype(as_native=True)
+        else:
+            dtype = _infer_dtype(x.dtype)
+    if not (reverse):
+        return np.minimum.accumulate(x, axis, dtype=dtype, out=out)
+    elif reverse:
+        x = np.minimum.accumulate(np.flip(x, axis=axis), axis=axis, dtype=dtype)
+        return np.flip(x, axis=axis)
+
+
+def igamma(
+    a: np.ndarray,
+    /,
+    *,
+    x: np.ndarray,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    def igamma_cal(a, x):
+        t = np.linspace(0, x, 10000, dtype=np.float64)
+        y = np.exp(-t) * (t ** (a - 1))
+        integral = np.trapz(y, t)
+        return integral / math.gamma(a)
+
+    igamma_vec = np.vectorize(igamma_cal)
+    return igamma_vec(a, x).astype(a.dtype)
