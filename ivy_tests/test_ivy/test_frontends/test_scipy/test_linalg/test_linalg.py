@@ -138,10 +138,12 @@ def test_scipy_tril(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -172,10 +174,12 @@ def test_scipy_triu(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -202,10 +206,12 @@ def test_scipy_inv(
     frontend,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -230,10 +236,12 @@ def test_scipy_pinv(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -256,16 +264,11 @@ def test_scipy_pinv(
     ),
     test_with_out=st.just(False),
 )
-def test_scipy_kron(
-    dtype_and_x,
-    frontend,
-    test_flags,
-    fn_tree,
-    on_device,
-):
+def test_scipy_kron(dtype_and_x, frontend, test_flags, fn_tree, on_device, backend_fw):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -287,10 +290,12 @@ def test_scipy_eigh_tridiagonal(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, alpha, beta, eigvals_only, select, select_range, tol = all_args
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -318,10 +323,12 @@ def test_scipy_norm(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, axis, ord, _ = dtype_values
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -354,6 +361,7 @@ def test_scipy_svd(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -361,6 +369,7 @@ def test_scipy_svd(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         test_values=False,
@@ -393,10 +402,12 @@ def test_scipy_svdvals(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -426,10 +437,12 @@ def test_scipy_lu_factor(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         test_values=False,
