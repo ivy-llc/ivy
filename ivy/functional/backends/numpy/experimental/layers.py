@@ -321,8 +321,9 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         x = np.swapaxes(x, 1, 2)
+
     x_shape = x.shape[1:-1]
     padding, pad_specific, c = _get_padded_values(
         x_shape, kernel, strides, padding, ceil_mode, 1
@@ -376,8 +377,9 @@ def avg_pool1d(
             num_padded_values[-1] = c[0]
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         return res.swapaxes(1, 2)
+
     return res
 
 
@@ -641,7 +643,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.25.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.2 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -903,7 +905,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,

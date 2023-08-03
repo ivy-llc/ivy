@@ -72,7 +72,7 @@ def test_moveaxis(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=a[0],
         source=source,
@@ -102,7 +102,7 @@ def test_heaviside(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[0],
@@ -129,7 +129,7 @@ def test_flipud(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         m=m[0],
     )
@@ -154,7 +154,7 @@ def test_vstack(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=m,
     )
@@ -179,7 +179,7 @@ def test_hstack(dtype_and_m, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         arrays=m,
     )
@@ -253,7 +253,7 @@ def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         m=m,
         k=k,
@@ -282,7 +282,7 @@ def test_top_k(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -307,7 +307,7 @@ def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         m=m[0],
@@ -333,7 +333,7 @@ def test_i0(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -384,7 +384,7 @@ def test_flatten(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -507,7 +507,7 @@ def test_pad(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input=input,
@@ -539,7 +539,7 @@ def test_vsplit(
         input_dtypes=input_dtype,
         on_device=on_device,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         indices_or_sections=indices_or_sections,
@@ -564,7 +564,7 @@ def test_dsplit(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -591,7 +591,7 @@ def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **kw,
@@ -616,7 +616,7 @@ def test_dstack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arrays=x,
@@ -642,7 +642,7 @@ def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **kw,
@@ -668,7 +668,7 @@ def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **arrys,
@@ -689,6 +689,7 @@ def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         valid_bounds=False,
     ),
     mode=st.sampled_from(["clip", "fill", "drop"]),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_take_along_axis(
@@ -702,10 +703,9 @@ def test_take_along_axis(
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         arr=x,
@@ -741,7 +741,7 @@ def test_hsplit(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -766,7 +766,7 @@ def test_broadcast_shapes(*, shapes, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=["int64"],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         **shapes,
@@ -807,7 +807,7 @@ def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -845,7 +845,7 @@ def test_as_strided(*, all_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -891,7 +891,7 @@ def test_concat_from_sequence(
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input_sequence=arrays,
@@ -949,7 +949,7 @@ def test_associative_scan(
     helpers.test_function(
         fn_name=fn_name,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         input_dtypes=dtype,
         elems=elems,
@@ -984,7 +984,7 @@ def test_unique_consecutive(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         axis=axis,
@@ -1014,15 +1014,13 @@ def test_fill_diagonal(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     dt, a = dt_a
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dt,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=a[0],
         v=v,
