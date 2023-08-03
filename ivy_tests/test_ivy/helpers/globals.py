@@ -6,7 +6,7 @@ Should not be used inside any of the test functions.
 """
 
 
-from dataclasses import dataclass
+from ivy_tests.test_ivy.helpers.structs import FunctionData
 from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
@@ -24,13 +24,6 @@ CURRENT_DEVICE_STRIPPED = _Notsetval
 CURRENT_FRONTEND_STR = None
 
 
-@dataclass(frozen=True)  # ToDo use kw_only=True when version is updated
-class TestData:
-    module_tree: str
-    fn_name: str
-    supported_device_dtypes: dict = None
-
-
 class InterruptedTest(BaseException):
     """Indicate that a test tried to write global attributes while a test is running."""
 
@@ -45,7 +38,7 @@ def setup_api_test(
     backend: str,
     ground_truth_backend: str,
     device: str,
-    test_data: TestData = None,
+    test_data: FunctionData = None,
 ):
     if test_data is not None:
         _set_test_data(test_data)
@@ -62,7 +55,9 @@ def teardown_api_test():
     _unset_device()
 
 
-def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
+def setup_frontend_test(
+    frontend: str, backend: str, device: str, test_data: FunctionData
+):
     if test_data is not None:
         _set_test_data(test_data)
     _set_frontend(frontend)
@@ -77,7 +72,7 @@ def teardown_frontend_test():
     _unset_device()
 
 
-def _set_test_data(test_data: TestData):
+def _set_test_data(test_data: FunctionData):
     global CURRENT_RUNNING_TEST
     if CURRENT_RUNNING_TEST is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
