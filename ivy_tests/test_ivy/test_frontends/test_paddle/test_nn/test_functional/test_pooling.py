@@ -132,11 +132,13 @@ def test_paddle_adaptive_avg_pool1d(
     test_flags,
     frontend,
     on_device,
+    backend_fw,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
@@ -172,11 +174,13 @@ def test_paddle_adaptive_avg_pool2d(
     test_flags,
     frontend,
     on_device,
+    backend_fw,
     fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
@@ -199,11 +203,13 @@ def test_paddle_max_unpool1d(
     test_flags,
     frontend,
     on_device,
+    backend_fw,
     fn_tree,
 ):
     (input_dtype, x, kernel_size, stride, padding) = x_k_s_p
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
