@@ -153,7 +153,7 @@ class AxisConcatenator:
 
 class RClass(AxisConcatenator):
     def __init__(self):
-        AxisConcatenator.__init__(self, 0)
+        super().__init__(0)
 
 
 r_ = RClass()
@@ -161,7 +161,7 @@ r_ = RClass()
 
 class CClass(AxisConcatenator):
     def __init__(self):
-        AxisConcatenator.__init__(self, -1, ndmin=2, trans1d=0)
+        super().__init__(-1, ndmin=2, trans1d=0)
 
 
 c_ = CClass()
