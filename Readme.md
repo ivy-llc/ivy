@@ -10,7 +10,6 @@
 
 ------------------------------------------------------------------------
 
-```{=html}
 <div style="display: block;" align="center">
 <a href="https://unify.ai/">
     <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/website_button.svg">
@@ -32,13 +31,11 @@
     <img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/faq_button.svg">
 </a>
 </div>
-```
 
 ------------------------------------------------------------------------
 
 # Status
 
-```{=html}
 <div>
 <a href="https://github.com/unifyai/ivy/issues">
     <img class="dark-light" style="padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/issues/unifyai/ivy">
@@ -66,13 +63,11 @@
 </a>
 </div>
 <br clear="all" />
-```
 
 ------------------------------------------------------------------------
 
 # Unified AI
 
-```{=html}
 <div style="display: block;" align="center">
     <div>
     <a href="https://jax.readthedocs.io">
@@ -100,7 +95,6 @@
 </div>
 
 <br clear="all" />
-```
 
 ------------------------------------------------------------------------
 
@@ -329,11 +323,10 @@ print('Finished training!')
 
 The model\'s output can be visualized as follows:
 
-```{=html}
 <div align="center">
-   <img width="50%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/regressor_lq.gif">
+   <img width="50%" class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/regressor_lq.gif">
 </div>
-```
+
 Last but not least, we are also working on specific extension totally
 written in Ivy and therefore usable within any framework, covering
 topics like [Mechanics](https://github.com/unifyai/mech), [Computer
@@ -345,7 +338,6 @@ various [Models](https://github.com/unifyai/models) or [Builder
 tools](https://github.com/unifyai/builder) with trainers, data loaders
 and more!
 
-```{=html}
 <br/>
 <div align="center">
 <a href="https://github.com/unifyai/mech">
@@ -392,7 +384,6 @@ and more!
 </a>
 </div>
 <br clear="all" />
-```
 As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
@@ -471,9 +462,8 @@ tutorials to do so are available!
 You can find quite a lot more examples in the corresponding section
 below, but using Ivy is as simple as:
 
-```{=html}
-<h4>Multi-backend Support</h4>
-```
+#### Multi-backend Support
+
 ``` python
 import ivy
 import torch
@@ -492,9 +482,8 @@ y = torch.tensor([3, 2, 1])
 z = ivy.add(x, y)
 ```
 
-```{=html}
-<h4>Transpilation API</h4>
-```
+#### Transpilation API
+
 ``` python
 import ivy
 import torch
@@ -547,7 +536,6 @@ demos and tutorials showcasing the functionalities of Ivy along with
 multiple use cases, but feel free to check out some shorter
 framework-specific examples here ⬇️
 
-```{=html}
 <details>
 <summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
    <blockquote>You can use Ivy to get PyTorch code from:
@@ -556,7 +544,7 @@ framework-specific examples here ⬇️
          <blockquote>
             <details>
                <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -587,11 +575,10 @@ classifier = Classifier()
 ret = classifier(torch.rand((1, 244, 244, 3)))
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import jax
@@ -627,7 +614,6 @@ classifier = PerceiverIOClassifier()
 ret = classifier(torch.rand((1, 3, 224, 224)))
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -637,7 +623,7 @@ ret = classifier(torch.rand((1, 3, 224, 224)))
 <blockquote>
 <details>
    <summary>From Tensorflow</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -656,11 +642,10 @@ target = torch.rand((1, 3, 512, 512))
 out = torch_sm.metrics.iou_score(output, target)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import rax
@@ -677,11 +662,10 @@ labels = torch.tensor([1.0, 0.0, 0.0])
 out = torch_rax.poly1_softmax_loss(scores, labels)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -697,7 +681,6 @@ freqs = torch.arange(20) * 10
 out = torch_madmom.audio.filters.hz2midi(freqs)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -707,7 +690,7 @@ out = torch_madmom.audio.filters.hz2midi(freqs)
 <blockquote>
 <details>
    <summary>From Tensorflow</summary>
-```
+
 ``` python
 import ivy
 import tensorflow as tf
@@ -727,11 +710,10 @@ t = torch.tensor([0.0, 0.0, 0.0])
 out = torch_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import jax.numpy as jnp
@@ -751,11 +733,10 @@ t = torch.tensor([0.0, 0.0, 0.0])
 out = torch_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import numpy as np
@@ -775,7 +756,6 @@ t = torch.tensor([0.0, 0.0, 0.0])
 out = torch_loss(p, t)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -791,7 +771,7 @@ out = torch_loss(p, t)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -822,11 +802,10 @@ model = Classifier()
 ret = model(x)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import jax
@@ -863,7 +842,6 @@ classifier = PerceiverIOClassifier()
 ret = classifier(x)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -873,7 +851,7 @@ ret = classifier(x)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import kornia
@@ -898,11 +876,10 @@ img = tf.expand_dims(img, 0) / 255
 out = tf_kornia.enhance.sharpness(img, 5)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import rax
@@ -919,11 +896,10 @@ labels = tf.constant([1.0, 0.0, 0.0])
 out = tf_rax.poly1_softmax_loss(scores, labels)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import madmom
@@ -939,7 +915,6 @@ freqs = tf.range(20) * 10
 out = tf_madmom.audio.filters.hz2midi(freqs)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -949,7 +924,7 @@ out = tf_madmom.audio.filters.hz2midi(freqs)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -969,11 +944,10 @@ t = tf.constant([0.0, 0.0, 0.0])
 out = tf_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import jax.numpy as jnp
@@ -993,11 +967,10 @@ t = tf.constant([0.0, 0.0, 0.0])
 out = tf_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import numpy as np
@@ -1017,7 +990,6 @@ t = tf.constant([0.0, 0.0, 0.0])
 out = tf_loss(p, t)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1033,7 +1005,7 @@ out = tf_loss(p, t)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import timm
@@ -1073,11 +1045,10 @@ params = forward_classifier.init(rng=rng_key, x=x)
 ret = forward_classifier.apply(params, None, x)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import jax
@@ -1118,7 +1089,6 @@ params = forward_classifier.init(rng=rng_key, x=dummy_x)
 ret = forward_classifier.apply(params, None, dummy_x)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1128,7 +1098,7 @@ ret = forward_classifier.apply(params, None, dummy_x)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import kornia
@@ -1151,11 +1121,10 @@ img = jnp.expand_dims(img, 0) / 255
 out = jax_kornia.enhance.sharpness(img, 5)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import jax
@@ -1176,11 +1145,10 @@ target = jax.random.uniform(key2, (1, 3, 512, 512))
 out = jax_sm.metrics.iou_score(output, target)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import madmom
@@ -1196,7 +1164,6 @@ freqs = jnp.arange(20) * 10
 out = jax_madmom.audio.filters.hz2midi(freqs)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1206,7 +1173,7 @@ out = jax_madmom.audio.filters.hz2midi(freqs)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -1226,11 +1193,10 @@ t = jnp.array([0.0, 0.0, 0.0])
 out = jax_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import tensorflow as tf
@@ -1250,11 +1216,10 @@ t = jnp.array([0.0, 0.0, 0.0])
 out = jax_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From NumPy</summary>
-```
+
 ``` python
 import ivy
 import numpy as np
@@ -1276,7 +1241,6 @@ t = jnp.array([0.0, 0.0, 0.0])
 out = jax_loss(p, t)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1292,7 +1256,7 @@ out = jax_loss(p, t)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import kornia
@@ -1315,11 +1279,10 @@ img = np.expand_dims(img, 0) / 255
 out = np_kornia.enhance.sharpness(img, 5)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import numpy as np
@@ -1338,11 +1301,10 @@ target = np.random.rand(1, 3, 512, 512).astype(dtype=np.float32)
 out = np_sm.metrics.iou_score(output, target)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From Jax</summary>
-```
+
 ``` python
 import ivy
 import rax
@@ -1359,7 +1321,6 @@ labels = np.array([1.0, 0.0, 0.0])
 out = np_rax.poly1_softmax_loss(scores, labels)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1369,7 +1330,7 @@ out = np_rax.poly1_softmax_loss(scores, labels)
 <blockquote>
 <details>
    <summary>From PyTorch</summary>
-```
+
 ``` python
 import ivy
 import torch
@@ -1389,11 +1350,10 @@ t = np.array([0.0, 0.0, 0.0])
 out = np_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From TensorFlow</summary>
-```
+
 ``` python
 import ivy
 import tensorflow as tf
@@ -1413,11 +1373,10 @@ t = np.array([0.0, 0.0, 0.0])
 out = np_loss(p, t)
 ```
 
-```{=html}
 </details>
 <details>
    <summary>From JAX</summary>
-```
+
 ``` python
 import ivy
 import jax.numpy as jnp
@@ -1437,7 +1396,6 @@ t = np.array([0.0, 0.0, 0.0])
 out = np_loss(p, t)
 ```
 
-```{=html}
 </details>
 </blockquote>
 </details>
@@ -1446,7 +1404,7 @@ out = np_loss(p, t)
 </details>
 
 <h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/ivy_logo_only_small.png"></h3>
-```
+
 Or you can use Ivy as a framework, breaking yourself (and your code)
 free from deciding which community to support, allowing anyone to run
 your code in their framework of choice!
@@ -1533,10 +1491,9 @@ logits, probs = model(x)
 Last but not least, we can also build the training pipeline in pure ivy
 ⬇️
 
-```{=html}
 <details>
 <summary><a>Let's define some helper functions first</a></summary>
-```
+
 ``` python
 # helper function for loading the dataset in batches
 def generate_batches(images, classes, dataset_size, batch_size=32):
@@ -1562,13 +1519,11 @@ def loss_fn(params):
     return ivy.cross_entropy(y, probs), probs
 ```
 
-```{=html}
 </details>
-```
-```{=html}
+
 <details>
 <summary><a>And train this model!</a></summary>
-```
+
 ``` python
 # train the model on gpu if it's available
 device = "cuda:0" if ivy.gpu_is_available() else "cpu"
@@ -1653,10 +1608,7 @@ def train(images, classes, epochs, model, device, num_classes=10, batch_size=32)
 train(images, classes, num_epochs, model, device, num_classes = num_classes, batch_size = batch_size)
 ```
 
-```{=html}
 </details>
-```
-| 
 
 ## Contributing
 
@@ -1672,12 +1624,9 @@ docs!
 Join our amazing community as a code contributor, and help accelerate
 our journey to unify all ML frameworks!
 
-```{=html}
 <a href="https://github.com/unifyai/ivy/graphs/contributors">
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
-```
-| 
 
 ## Community
 

@@ -1,40 +1,74 @@
-# Home
+.. title:: Home
 
-[Link to README](../README.md)
+.. include:: ../README.md
+  :parser: myst_parser.sphinx_
+
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Overview
+
+  overview/get_started.rst
+  Examples <https://unify.ai/demos/>
+  overview/glossary.rst
+  overview/faq.rst
 
 
-## Overview
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Users
 
-* [Get Started](overview/get_started.md)
-* [Examples](https://unify.ai/demos/)
-* [Glossary](overview/glossary.md)
-* [FAQ](overview/faq.md)
+  overview/background.rst
+  overview/design.rst
+  overview/related_work.rst
+  overview/extensions.rst
 
-## Users
 
-* [Background](overview/background.md)
-* [Design](overview/design.md)
-* [Related Work](overview/related_work.md)
-* [Extensions](overview/extensions.md)
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Contributors
 
-## Contributors
+  overview/deep_dive.rst
+  overview/contributing.rst
 
-* [Deep Dive](overview/deep_dive.md)
-* [Contributing](overview/contributing.md)
 
-## Compiling and Transpiling
+.. toctree::
+  :hidden:
+  :maxdepth: -1
+  :caption: Compiling and Transpiling
 
-* [Setting Up](compiler/setting_up.md)
-* [Compiler](compiler/compiler.md)
-* [Transpiler](compiler/transpiler.md)
+  compiler/setting_up.rst
+  compiler/compiler.rst
+  compiler/transpiler.rst
 
-## API Reference
 
-* [Functional](docs/functional/ivy.md)
-* [Data Classes](docs/data_classes.md)
+.. autosummary::
+  :toctree: docs/functional
+  :template: top_functional_toc.rst
+  :caption: API Reference
+  :recursive:
+  :hide-table:
 
-## Ivy
+  ivy.functional.ivy
 
-* [Stateful](docs/stateful.md)
-* [Utils](docs/utils.md)
-* [Helpers](docs/ivy_tests/test_ivy/helpers.md)
+
+.. autosummary::
+  :toctree: docs/data_classes
+  :template: top_data_toc.rst
+  :recursive:
+  :hide-table:
+
+  ivy.data_classes
+
+
+.. autosummary::
+  :toctree: docs
+  :template: top_ivy_toc.rst
+  :recursive:
+  :hide-table:
+
+  ivy.stateful
+  ivy.utils
+  ivy_tests.test_ivy.helpers
