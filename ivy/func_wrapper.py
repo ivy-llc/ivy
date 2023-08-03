@@ -29,6 +29,7 @@ FN_DECORATORS = [
     "handle_array_like_without_promotion",
     "handle_partial_mixed_function",
     "handle_nestable",
+    "handle_ragged",
     "handle_exceptions",
     "handle_nans",
 ]
@@ -311,43 +312,45 @@ def handle_array_function(fn):
         overloaded_args = []
 
         for arg in args + tuple(kwargs.values()):
-            if ivy.exists(arg) and (
-                not isinstance(arg, ivy.Container)
-                and hasattr(arg, "__ivy_array_function__")
-            ):
-                if type(arg) not in overloaded_types:
-                    overloaded_types.append(type(arg))
-                    if (
-                        arg.__ivy_array_function__
-                        is not ivy.Array.__ivy_array_function__
-                        and not isinstance(arg, (ivy.Array, ivy.NativeArray))
-                    ):
-                        index = len(overloaded_args)
-                        for i, old_arg in enumerate(overloaded_args):
-                            if issubclass(type(arg), type(old_arg)):
-                                index = i
-                                break
-                        overloaded_args.insert(index, arg)
-            if ivy.exists(arg) and isinstance(arg, ivy.Container):
-                arg = ivy.Container.cont_flatten_key_chains(arg)
-                indices = ivy.nested_argwhere(
-                    arg, lambda x: hasattr(x, "__ivy_array_function__")
-                )
-                for a in indices:
-                    if type(getattr(arg, a[0])) not in overloaded_types:
-                        overloaded_types.append(type(getattr(arg, a[0])))
-
-                        if getattr(
-                            arg, a[0]
-                        ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
-                            getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+            if ivy.exists(arg):
+                if not isinstance(arg, ivy.Container) and hasattr(
+                    arg, "__ivy_array_function__"
+                ):
+                    if type(arg) not in overloaded_types:
+                        overloaded_types.append(type(arg))
+                        if (
+                            arg.__ivy_array_function__
+                            is not ivy.Array.__ivy_array_function__
+                            and not isinstance(arg, (ivy.Array, ivy.NativeArray))
                         ):
                             index = len(overloaded_args)
                             for i, old_arg in enumerate(overloaded_args):
-                                if issubclass(type(getattr(arg, a[0])), type(old_arg)):
+                                if issubclass(type(arg), type(old_arg)):
                                     index = i
                                     break
                             overloaded_args.insert(index, arg)
+                elif isinstance(arg, ivy.Container):
+                    arg = ivy.Container.cont_flatten_key_chains(arg)
+                    indices = ivy.nested_argwhere(
+                        arg, lambda x: hasattr(x, "__ivy_array_function__")
+                    )
+                    for a in indices:
+                        if type(getattr(arg, a[0])) not in overloaded_types:
+                            overloaded_types.append(type(getattr(arg, a[0])))
+
+                            if getattr(
+                                arg, a[0]
+                            ).__ivy_array_function__ is not ivy.Array.__ivy_array_function__ and not isinstance(  # noqa: E501
+                                getattr(arg, a[0]), (ivy.Array, ivy.NativeArray)
+                            ):
+                                index = len(overloaded_args)
+                                for i, old_arg in enumerate(overloaded_args):
+                                    if issubclass(
+                                        type(getattr(arg, a[0])), type(old_arg)
+                                    ):
+                                        index = i
+                                        break
+                                overloaded_args.insert(index, arg)
 
         success, value = try_array_function_override(
             ivy.__dict__[fn.__name__], overloaded_args, overloaded_types, args, kwargs
@@ -978,6 +981,44 @@ def handle_nestable(fn: Callable) -> Callable:
     return _handle_nestable
 
 
+def handle_ragged(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def _handle_ragged(*args, **kwargs):
+        """
+        Call `fn` with the *ragged* property of the function correctly handled. This
+        means mapping the function to the RaggedArray arrays if any RaggedArrays are
+        passed in the input.
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with the ragged property handled correctly.
+        """
+        nested_fn = (
+            lambda *args, **kwargs: ivy.NestedArray.ragged_multi_map_in_function(
+                fn, *args, **kwargs
+            )
+        )
+        if ivy.nested_any(
+            args, ivy.is_ivy_nested_array, check_nests=True
+        ) or ivy.nested_any(kwargs, ivy.is_ivy_nested_array, check_nests=True):
+            return nested_fn(*args, **kwargs)
+
+        # if the passed arguments does not contain a container, the function using
+        # the passed arguments, returning an ivy or a native array.
+        return fn(*args, **kwargs)
+
+    _handle_ragged.handle_ragged = True
+    return _handle_ragged
+
+
 # Partial Mixed Function Handling #
 
 
@@ -1221,36 +1262,6 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version, exclusive=True):
-        typesets = {
-            "valid": ivy.valid_dtypes,
-            "numeric": ivy.valid_numeric_dtypes,
-            "float": ivy.valid_float_dtypes,
-            "integer": ivy.valid_int_dtypes,
-            "unsigned": ivy.valid_uint_dtypes,
-            "complex": ivy.valid_complex_dtypes,
-        }
-
-        for key, value in version_dict.items():
-            # check if value is a dict too, in case of device_dtype decorators
-            if isinstance(value, dict):
-                for key2, value2 in value.items():
-                    for i, v in enumerate(value2):
-                        if v in typesets:
-                            version_dict[key][key2] = (
-                                version_dict[key][key2][:i]
-                                + typesets[v]
-                                + version_dict[key][key2][i + 1 :]
-                            )
-            else:
-                # usual decorator case
-                for i, v in enumerate(value):
-                    if v in typesets:
-                        version_dict[key] = (
-                            version_dict[key][:i]
-                            + typesets[v]
-                            + version_dict[key][i + 1 :]
-                        )
-
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
