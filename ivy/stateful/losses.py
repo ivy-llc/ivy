@@ -161,3 +161,36 @@ class BinaryCrossEntropyLoss(Module):
             pos_weight=pos_weight,
             axis=axis,
         )
+
+
+class L1Loss(Module):
+    def __init__(
+        self,
+        *,
+        reduction: str = "mean",
+    ):
+        self._reduction = reduction
+        Module.__init__(self)
+
+    def _forward(self, true, pred, *, reduction=None):
+        """
+        Perform forward pass of the L1 Loss.
+
+        true
+            input array containing true labels.
+        pred
+            input array containing Predicted labels.
+        reduction
+            ``'mean'``: The output will be averaged.
+            ``'sum'``: The output will be summed. Default: ``'mean'``.
+
+        Returns
+        -------
+        ret
+            The L1 loss between the given distributions.
+        """
+        return ivy.l1_loss(
+            true,
+            pred,
+            reduction=ivy.default(reduction, self._reduction),
+        )
