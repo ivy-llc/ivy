@@ -2537,7 +2537,7 @@ def test_numpy___complex__(
     init_tree="numpy.array",
     method_name="__contains__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
 def test_numpy___contains__(
@@ -2550,7 +2550,7 @@ def test_numpy___contains__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    key = np.asarray(xs[0].reshape(-1)[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2559,7 +2559,7 @@ def test_numpy___contains__(
             "object": xs[0],
         },
         method_all_as_kwargs_np={
-            "key": xs[0].reshape(-1)[0],
+            "key": key,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,

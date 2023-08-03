@@ -596,7 +596,7 @@ class ndarray:
         return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.complex128))
 
     def __contains__(self, key, /):
-        return key in ivy.reshape(self.ivy_array, -1)
+        return np_frontend.any(self == key)
 
     def __iadd__(self, value, /):
         return np_frontend.add(self, value, out=self)
