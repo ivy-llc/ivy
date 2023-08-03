@@ -2162,7 +2162,7 @@ def test_numpy___ifloordiv__(
     init_tree="numpy.array",
     method_name="__bool__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_dim_size=1,
     ),
 )
