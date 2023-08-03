@@ -329,15 +329,4 @@ def test_numpy_require(
         dtype=np.dtype(dtype[0]),
         requirements=requirements,
         like=like,
-    )
-
-
-#flatten
-@handle_frontend_test(
-    fn_tree="numpy.ndarray.flatten",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    order=st.sampled_from(["C", "F", "A", "K"]),
-    test_with_out=st.just(False),
-)
+    ) 
