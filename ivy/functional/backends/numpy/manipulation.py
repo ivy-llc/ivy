@@ -309,17 +309,8 @@ def as_strided(
         strides=strides,
     )
 
-
-def flatten(
-    x: np.ndarray,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    order: str = 'C',
-    out: Optional[np.ndarray] = None,
+def block(
+    arrays: Union[List[np.ndarray]],
 ) -> np.ndarray:
-if x.shape == ():
-    return x.reshape(-1) 
-else:
-    return x
-return np.flatten(order=order)
+    return np.block(arrays)
+    
