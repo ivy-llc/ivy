@@ -48,3 +48,4 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
         result = ivy.reshape(result, ivy.Shape(oshape))
         return result
 
+channel_shuffle.supported_dtypes={"paddle":("float32","float64")}
