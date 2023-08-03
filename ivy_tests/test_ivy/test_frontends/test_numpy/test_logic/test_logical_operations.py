@@ -28,7 +28,6 @@ def test_numpy_logical_and(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -39,7 +38,6 @@ def test_numpy_logical_and(
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -79,7 +77,6 @@ def test_numpy_logical_or(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -89,7 +86,6 @@ def test_numpy_logical_or(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -128,7 +124,6 @@ def test_numpy_logical_not(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, _ = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -138,7 +133,6 @@ def test_numpy_logical_not(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -177,7 +171,6 @@ def test_numpy_logical_xor(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -187,7 +180,6 @@ def test_numpy_logical_xor(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

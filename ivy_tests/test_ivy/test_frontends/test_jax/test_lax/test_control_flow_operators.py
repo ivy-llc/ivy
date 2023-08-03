@@ -26,7 +26,6 @@ def test_jax_cond(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     def _test_true_fn(x):
         return x + x
@@ -37,7 +36,6 @@ def test_jax_cond(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -65,7 +63,6 @@ def test_jax_map(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     def _test_map_fn(x):
         return x + x
@@ -73,7 +70,6 @@ def test_jax_map(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -101,7 +97,6 @@ def test_jax_switch(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     def _test_branch_1(x):
         return x + x
@@ -112,7 +107,6 @@ def test_jax_switch(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -145,7 +139,6 @@ def test_jax_fori_loop(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     def _test_body_fn(x, y):
         return x + y
@@ -153,7 +146,6 @@ def test_jax_fori_loop(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -182,7 +174,6 @@ def test_jax_while_loop(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     def _test_cond_fn(x):
         def any_negative_real(arr):
@@ -204,7 +195,6 @@ def test_jax_while_loop(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,

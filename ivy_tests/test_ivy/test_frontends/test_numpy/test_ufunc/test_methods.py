@@ -19,7 +19,7 @@ def generate_ufunc(draw, ufuncs=ufuncs):
 @given(
     ufunc_name=generate_ufunc(),
 )
-def test_numpy_nargs(
+def test_numpy_ufunc_nargs(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
@@ -32,7 +32,7 @@ def test_numpy_nargs(
 @given(
     ufunc_name=generate_ufunc(),
 )
-def test_numpy_nin(
+def test_numpy_ufunc_nin(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
@@ -45,7 +45,7 @@ def test_numpy_nin(
 @given(
     ufunc_name=generate_ufunc(),
 )
-def test_numpy_nout(
+def test_numpy_ufunc_nout(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))
@@ -58,7 +58,7 @@ def test_numpy_nout(
 @given(
     ufunc_name=generate_ufunc(),
 )
-def test_numpy_identity(
+def test_numpy_ufunc_identity(
     ufunc_name,
 ):
     assume(hasattr(np_frontend, ufunc_name))

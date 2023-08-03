@@ -46,7 +46,6 @@ def test_jax_uniform(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     minval, maxval = dtype_minval_maxval
@@ -56,7 +55,6 @@ def test_jax_uniform(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -73,8 +71,8 @@ def test_jax_uniform(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -104,7 +102,6 @@ def test_jax_normal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -113,7 +110,6 @@ def test_jax_normal(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -128,8 +124,8 @@ def test_jax_normal(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -166,7 +162,6 @@ def test_jax_beta(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -175,7 +170,6 @@ def test_jax_beta(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -192,8 +186,8 @@ def test_jax_beta(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -236,7 +230,6 @@ def test_jax_dirichlet(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     _, alpha = dtype_alpha
@@ -246,7 +239,6 @@ def test_jax_dirichlet(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -262,8 +254,8 @@ def test_jax_dirichlet(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -293,7 +285,6 @@ def test_jax_cauchy(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -302,7 +293,6 @@ def test_jax_cauchy(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -317,8 +307,8 @@ def test_jax_cauchy(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -353,14 +343,12 @@ def test_jax_poisson(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
     def call():
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
-            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -378,14 +366,8 @@ def test_jax_poisson(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(
-        ret=ret_np,
-        backend=backend_fw,
-    )
-    ret_from_np = helpers.flatten_and_to_np(
-        ret=ret_from_np,
-        backend=backend_fw,
-    )
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -441,7 +423,6 @@ def test_jax_gamma(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -452,7 +433,6 @@ def test_jax_gamma(
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
-            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
@@ -467,8 +447,8 @@ def test_jax_gamma(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -500,7 +480,6 @@ def test_jax_gumbel(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -509,7 +488,6 @@ def test_jax_gumbel(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -524,8 +502,8 @@ def test_jax_gumbel(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -560,7 +538,6 @@ def test_jax_t(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -569,7 +546,6 @@ def test_jax_t(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -585,8 +561,8 @@ def test_jax_t(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -621,7 +597,6 @@ def test_jax_generalized_normal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -629,7 +604,6 @@ def test_jax_generalized_normal(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -646,8 +620,8 @@ def test_jax_generalized_normal(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -677,7 +651,6 @@ def test_jax_rademacher(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -685,7 +658,6 @@ def test_jax_rademacher(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -701,8 +673,8 @@ def test_jax_rademacher(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -734,7 +706,6 @@ def test_jax_randint(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     minval, maxval = min_max
@@ -744,7 +715,6 @@ def test_jax_randint(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -761,8 +731,8 @@ def test_jax_randint(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -803,7 +773,6 @@ def test_jax_bernoulli(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     dtype_p, shape = dtype_p_shape_
@@ -815,7 +784,6 @@ def test_jax_bernoulli(
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
-            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
@@ -829,8 +797,8 @@ def test_jax_bernoulli(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -858,7 +826,6 @@ def test_jax_fold_in(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -866,7 +833,6 @@ def test_jax_fold_in(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -881,8 +847,8 @@ def test_jax_fold_in(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -912,7 +878,6 @@ def test_jax_permutation(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -921,7 +886,6 @@ def test_jax_permutation(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -936,8 +900,8 @@ def test_jax_permutation(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -969,7 +933,6 @@ def test_jax_loggamma(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
     a, shape = a_shape
@@ -978,7 +941,6 @@ def test_jax_loggamma(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -995,8 +957,8 @@ def test_jax_loggamma(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1029,7 +991,6 @@ def test_jax_shuffle(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     key_dtype, key = dtype_key
     x_dtypes, x, axis = dtype_x_axis
@@ -1038,7 +999,6 @@ def test_jax_shuffle(
         return helpers.test_frontend_function(
             input_dtypes=key_dtype + x_dtypes,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -1054,8 +1014,8 @@ def test_jax_shuffle(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1085,7 +1045,6 @@ def test_jax_exponential(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, key = dtype_key
 
@@ -1093,7 +1052,6 @@ def test_jax_exponential(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -1109,8 +1067,8 @@ def test_jax_exponential(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1141,7 +1099,6 @@ def test_jax_weibull_min(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
@@ -1152,7 +1109,6 @@ def test_jax_weibull_min(
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
-            backend_to_test=backend_fw,
             on_device=on_device,
             test_values=False,
             key=key[0],
@@ -1168,8 +1124,8 @@ def test_jax_weibull_min(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1208,7 +1164,6 @@ def test_jax_pareto(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
@@ -1218,7 +1173,6 @@ def test_jax_pareto(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -1263,7 +1217,6 @@ def test_jax_maxwell(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
@@ -1272,7 +1225,6 @@ def test_jax_maxwell(
         return helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
-            backend_to_test=backend_fw,
             test_flags=test_flags,
             fn_tree=fn_tree,
             on_device=on_device,
@@ -1288,8 +1240,8 @@ def test_jax_maxwell(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
@@ -1325,7 +1277,6 @@ def test_jax_ball(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     input_dtype, key = dtype_key
@@ -1335,7 +1286,6 @@ def test_jax_ball(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
-            backend_to_test=backend_fw,
             fn_tree=fn_tree,
             on_device=on_device,
             test_values=False,
@@ -1352,8 +1302,8 @@ def test_jax_ball(
         return
 
     ret_np, ret_from_np = ret
-    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
-    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape

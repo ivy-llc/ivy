@@ -6,8 +6,9 @@ import numpy as np
 from hypothesis import assume, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
     matrix_is_stable,
 )
@@ -273,7 +274,7 @@ def test_vector_to_skew_symmetric_matrix(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         vector=x,
@@ -297,7 +298,7 @@ def test_matrix_power(*, dtype_x, n, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -319,7 +320,7 @@ def test_matmul(*, x, y, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -359,7 +360,7 @@ def test_det(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -380,7 +381,7 @@ def test_eigh(*, dtype_x, UPLO, test_flags, backend_fw, fn_name, on_device):
     results = helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -419,11 +420,7 @@ def test_eigh(*, dtype_x, UPLO, test_flags, backend_fw, fn_name, on_device):
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np,
-        reconstructed_from_np,
-        rtol=1e-1,
-        atol=1e-2,
-        backend=backend_fw,
+        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
     )
 
 
@@ -439,7 +436,7 @@ def test_eigvalsh(*, dtype_x, UPLO, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-3,
@@ -467,7 +464,7 @@ def test_inner(*, dtype_xy, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=types,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -494,7 +491,7 @@ def test_inv(*, dtype_x, adjoint, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -514,7 +511,7 @@ def test_matrix_transpose(*, dtype_x, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -539,7 +536,7 @@ def test_outer(*, dtype_xy, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=types,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=arrays[0],
@@ -564,7 +561,7 @@ def test_slogdet(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         rtol_=1e-1,
         atol_=1e-2,
         fn_name=fn_name,
@@ -585,7 +582,7 @@ def test_solve(*, x, y, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[input_dtype1, input_dtype2],
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -612,7 +609,7 @@ def test_svdvals(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -643,7 +640,7 @@ def test_tensordot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_devi
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=0.8,
@@ -676,7 +673,7 @@ def test_trace(*, dtype_x_axes, offset, test_flags, backend_fw, fn_name, on_devi
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -707,7 +704,7 @@ def test_vecdot(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=5e-1,
@@ -749,7 +746,7 @@ def test_vector_norm(
     helpers.test_function(
         input_dtypes=x_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -761,27 +758,15 @@ def test_vector_norm(
 
     # Specific value test to handle cases when ord is one of {inf, -inf}
 
-    with update_backend(backend_fw) as ivy_backend:
-        arr = ivy_backend.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
-        arr_normed_inf = ivy_backend.vector_norm(arr, axis=0, ord=float("inf"))
-        arr_normed_min_inf = ivy_backend.vector_norm(arr, axis=0, ord=float("-inf"))
+    arr = ivy.array([[1.0, 2.0, 3.0], [-1.0, 2.0, 4.0]])
+    arr_normed_inf = ivy.vector_norm(arr, axis=0, ord=float("inf"))
+    arr_normed_min_inf = ivy.vector_norm(arr, axis=0, ord=float("-inf"))
 
-    with update_backend(test_flags.ground_truth_backend) as gt_backend:
-        gt_arr_normed_inf = gt_backend.array([1.0, 2.0, 4.0])
-        gt_arr_normed_min_inf = gt_backend.array([1.0, 2.0, 3.0])
+    gt_arr_normed_inf = ivy.array([1.0, 2.0, 4.0])
+    gt_arr_normed_min_inf = ivy.array([1.0, 2.0, 3.0])
 
-    helpers.assert_all_close(
-        arr_normed_inf,
-        gt_arr_normed_inf,
-        backend=backend_fw,
-        ground_truth_backend=test_flags.ground_truth_backend,
-    )
-    helpers.assert_all_close(
-        arr_normed_min_inf,
-        gt_arr_normed_min_inf,
-        backend=backend_fw,
-        ground_truth_backend=test_flags.ground_truth_backend,
-    )
+    helpers.assert_all_close(arr_normed_inf, gt_arr_normed_inf)
+    helpers.assert_all_close(arr_normed_min_inf, gt_arr_normed_min_inf)
 
 
 # pinv
@@ -804,7 +789,7 @@ def test_pinv(*, dtype_x, rtol, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -827,7 +812,7 @@ def test_qr(*, dtype_x, mode, test_flags, backend_fw, fn_name, on_device):
     results = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -850,12 +835,7 @@ def test_qr(*, dtype_x, mode, test_flags, backend_fw, fn_name, on_device):
 
     # value test
     helpers.assert_all_close(
-        reconstructed_np_flat,
-        reconstructed_from_np_flat,
-        rtol=1e-1,
-        atol=1e-1,
-        backend=backend_fw,
-        ground_truth_backend=test_flags.ground_truth_backend,
+        reconstructed_np_flat, reconstructed_from_np_flat, rtol=1e-1, atol=1e-1
     )
 
 
@@ -882,7 +862,7 @@ def test_svd(*, dtype_x, uv, fm, test_flags, backend_fw, fn_name, on_device):
     results = helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -912,16 +892,13 @@ def test_svd(*, dtype_x, uv, fm, test_flags, backend_fw, fn_name, on_device):
             Vh_gt = ret_from_gt_flat_np[2 * len(ret_from_gt_flat_np) // 3 + i]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
-        with update_backend("numpy") as ivy_backend:
+        with ivy.functional.backends.numpy.use:
             S_mat = (
-                S
-                * ivy_backend.eye(
-                    U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]
-                ).data
+                S * ivy.eye(U.shape[-1], Vh.shape[-2], batch_shape=U.shape[:-2]).data
             )
             S_mat_gt = (
                 S_gt
-                * ivy_backend.eye(
+                * ivy.eye(
                     U_gt.shape[-1], Vh_gt.shape[-2], batch_shape=U_gt.shape[:-2]
                 ).data
             )
@@ -929,30 +906,12 @@ def test_svd(*, dtype_x, uv, fm, test_flags, backend_fw, fn_name, on_device):
         reconstructed_gt = np.matmul(np.matmul(U_gt, S_mat_gt), Vh_gt)
 
         # value test
-        helpers.assert_all_close(
-            reconstructed,
-            reconstructed_gt,
-            atol=1e-04,
-            backend=backend_fw,
-            ground_truth_backend=test_flags.ground_truth_backend,
-        )
-        helpers.assert_all_close(
-            reconstructed,
-            x[0],
-            atol=1e-04,
-            backend=backend_fw,
-            ground_truth_backend=test_flags.ground_truth_backend,
-        )
+        helpers.assert_all_close(reconstructed, reconstructed_gt, atol=1e-04)
+        helpers.assert_all_close(reconstructed, x[0], atol=1e-04)
     else:
         S = ret_flat_np
         S_gt = ret_from_gt_flat_np
-        helpers.assert_all_close(
-            S[0],
-            S_gt[0],
-            atol=1e-04,
-            backend=backend_fw,
-            ground_truth_backend=test_flags.ground_truth_backend,
-        )
+        helpers.assert_all_close(S[0], S_gt[0], atol=1e-04)
 
 
 # matrix_norm
@@ -979,7 +938,7 @@ def test_matrix_norm(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1045,7 +1004,7 @@ def test_matrix_rank(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -1075,7 +1034,7 @@ def test_cholesky(*, dtype_x, upper, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -1105,7 +1064,7 @@ def test_cross(*, dtype_x1_x2_axis, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1136,7 +1095,7 @@ def test_diagonal(*, dtype_x, offset, axes, test_flags, backend_fw, fn_name, on_
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1178,7 +1137,7 @@ def test_diag(*, dtype_x_k, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1208,7 +1167,7 @@ def test_vander(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,

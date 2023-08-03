@@ -39,7 +39,6 @@ def test_jax_diagonal(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     input_dtype, value = dtype_and_values
     axis1, axis2, offset = dims_and_offset
@@ -52,7 +51,6 @@ def test_jax_diagonal(
         assume(axis1 != axis2 + num_of_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -99,12 +97,10 @@ def test_jax_diag(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     dtype, x, k = dtype_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -127,13 +123,11 @@ def test_jax_diag_indices(
     dtype,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -165,14 +159,12 @@ def test_jax_take_along_axis(
     mode,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -198,13 +190,11 @@ def test_jax_tril_indices(
     dtype,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -228,7 +218,6 @@ def test_jax_triu_indices(
     input_dtypes,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -236,7 +225,6 @@ def test_jax_triu_indices(
         n=n,
         k=k,
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -261,14 +249,12 @@ def test_jax_triu_indices_from(
     k,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -295,14 +281,12 @@ def test_jax_tril_indices_from(
     k,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -343,7 +327,6 @@ def test_jax_unravel_index(
     dtype_x_shape,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -351,7 +334,6 @@ def test_jax_unravel_index(
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -377,13 +359,11 @@ def test_jax_mask_indices(
     input_dtype,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -414,14 +394,12 @@ def test_jax_diag_indices_from(
     dtype_x,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,

@@ -56,12 +56,10 @@ def test_torch_batch_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
 ):
     input_dtype, input, weight, bias, running_mean, running_var, momentum, eps = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         atol=1e-1,
@@ -90,12 +88,10 @@ def test_torch_instance_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
 ):
     input_dtype, input, weight, bias, running_mean, running_var, momentum, eps = data
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -216,12 +212,10 @@ def test_torch_layer_norm(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x, axis, weight, bias, new_std = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -256,12 +250,10 @@ def test_torch_group_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
 ):
     dtype, x, weight, bias, group_size = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

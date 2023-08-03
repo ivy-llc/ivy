@@ -581,6 +581,7 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -1268,7 +1269,7 @@ def _rfftn_helper(x, shape, axes, norm):
     {
         "2.5.0 and above": {
             "cpu": (
-                "float32",
+                "floar32",
                 "float64",
                 "complex128",
             )

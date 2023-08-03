@@ -32,7 +32,6 @@ def test_numpy_minimum(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
@@ -43,7 +42,6 @@ def test_numpy_minimum(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -79,7 +77,6 @@ def test_numpy_amin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -96,7 +93,6 @@ def test_numpy_amin(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -129,7 +125,6 @@ def test_numpy_amax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -145,7 +140,6 @@ def test_numpy_amax(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -180,7 +174,6 @@ def test_numpy_nanmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -197,7 +190,6 @@ def test_numpy_nanmin(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -234,7 +226,6 @@ def test_numpy_maximum(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
@@ -245,7 +236,6 @@ def test_numpy_maximum(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -283,7 +273,6 @@ def test_numpy_nanmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -300,7 +289,6 @@ def test_numpy_nanmax(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -335,7 +323,6 @@ def test_numpy_fmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_inputs
@@ -346,7 +333,6 @@ def test_numpy_fmax(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -381,7 +367,6 @@ def test_numpy_fmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
@@ -392,7 +377,6 @@ def test_numpy_fmin(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

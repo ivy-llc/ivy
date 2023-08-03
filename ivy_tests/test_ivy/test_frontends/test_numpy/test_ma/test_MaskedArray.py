@@ -26,7 +26,7 @@ def _array_mask(draw):
     fn_tree="numpy.add",  # dummy fn_tree
     args=_array_mask(),
 )
-def test_numpy_data(
+def test_numpy_maskedarray_property_data(
     args,
 ):
     dtype, data = args
@@ -39,7 +39,7 @@ def test_numpy_data(
     fn_tree="numpy.add",  # dummy fn_tree
     args=_array_mask(),
 )
-def test_numpy_mask(args):
+def test_numpy_maskedarray_property_mask(args):
     dtype, data = args
     x = MaskedArray(data[0], mask=ivy.array(data[1]), dtype=dtype, shrink=False)
     assert ivy.all(x.mask == ivy.array(data[1]))
@@ -51,7 +51,7 @@ def test_numpy_mask(args):
     dtype_x_mask=_array_mask(),
     fill=st.integers(),
 )
-def test_numpy_fill_value(
+def test_numpy_maskedarray_property_fill_value(
     dtype_x_mask,
     fill,
 ):
@@ -66,7 +66,7 @@ def test_numpy_fill_value(
     dtype_x_mask=_array_mask(),
     hard=st.booleans(),
 )
-def test_numpy_hardmask(dtype_x_mask, hard):
+def test_numpy_maskedarray_property_hardmask(dtype_x_mask, hard):
     dtype, data = dtype_x_mask
     x = MaskedArray(data[0], mask=data[1], dtype=dtype, hard_mask=hard)
     assert x.hardmask == hard
@@ -74,7 +74,7 @@ def test_numpy_hardmask(dtype_x_mask, hard):
 
 # dtype
 @handle_frontend_test(fn_tree="numpy.add", dtype_x_mask=_array_mask())  # dummy fn_tree
-def test_numpy_dtype(dtype_x_mask):
+def test_numpy_maskedarray_property_dtype(dtype_x_mask):
     dtype, data = dtype_x_mask
     x = MaskedArray(data[0], mask=data[1], dtype=dtype)
     assert x.dtype == dtype
@@ -104,7 +104,7 @@ def test_numpy_dtype(dtype_x_mask):
 #     fn_tree="numpy.add",  # dummy fn_tree
 #     args=_getitem_helper(),
 # )
-# def test_numpy___getitem__(
+# def test_numpy_maskedarray_special_getitem(
 #     args,
 # ):
 #     dtype, x, mask, index = args
@@ -151,7 +151,7 @@ def test_numpy_dtype(dtype_x_mask):
 #     fn_tree="numpy.add",  # dummy fn_tree
 #     args=_setitem_helper(),
 # )
-# def test_numpy___setitem__(
+# def test_numpy_maskedarray_special_setitem(
 #     args,
 # ):
 #     dtype, x, mask, index, value = args

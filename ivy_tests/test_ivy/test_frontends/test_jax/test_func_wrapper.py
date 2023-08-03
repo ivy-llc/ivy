@@ -29,8 +29,7 @@ def _fn(x, check_default=False):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_inputs_to_ivy_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -53,7 +52,6 @@ def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     assert isinstance(output, ivy.Array)
     assert input_frontend.dtype == output.dtype
     assert ivy.all(input_frontend.ivy_array == output)
-    ivy.previous_backend()
 
 
 @given(
@@ -61,8 +59,7 @@ def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_outputs_to_frontend_arrays(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -73,7 +70,6 @@ def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
     assert ivy.all(input_ivy == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
-    ivy.previous_backend()
 
 
 @given(
@@ -81,8 +77,7 @@ def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_jax_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_to_ivy_arrays_and_back(dtype_and_x):
     x_dtype, x = dtype_and_x
 
     # check for ivy array
@@ -107,4 +102,3 @@ def test_jax_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 
     assert ivy.default_float_dtype_stack == ivy.default_int_dtype_stack == []
-    ivy.previous_backend()

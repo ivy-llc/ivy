@@ -144,11 +144,3 @@ def svdvals(a, /, *, overwrite_a=False, check_finite=True):
     if check_finite:
         _check_finite(a)
     return ivy.svdvals(a)
-
-
-# lu_factor
-@to_ivy_arrays_and_back
-def lu_factor(a, /, *, overwrite_a=False, check_finite=True):
-    if check_finite:
-        _check_finite(a)
-    return ivy.lu_factor(a)

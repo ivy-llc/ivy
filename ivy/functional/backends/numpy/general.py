@@ -33,7 +33,7 @@ def current_backend_str() -> str:
 def get_item(
     x: np.ndarray,
     /,
-    query: Union[np.ndarray, Tuple],
+    query: np.ndarray,
     *,
     copy: bool = None,
 ) -> np.ndarray:
@@ -457,3 +457,7 @@ isin.support_native_out = True
 
 def itemsize(x: np.ndarray) -> int:
     return x.itemsize
+
+
+def strides(x: np.ndarray) -> Tuple[int]:
+    return x.strides

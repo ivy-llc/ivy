@@ -192,13 +192,11 @@ def test_paddle_cross(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, y, axis = dtype_x_y_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -233,13 +231,11 @@ def test_paddle_matmul(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -264,13 +260,11 @@ def test_paddle_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, axis, p = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -296,7 +290,6 @@ def test_paddle_eig(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
@@ -306,7 +299,6 @@ def test_paddle_eig(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -326,7 +318,6 @@ def test_paddle_eig(
         ret_from_gt_np=front_v @ np.diag(front_l) @ front_v.T,
         rtol=1e-2,
         atol=1e-2,
-        backend=backend_fw,
         ground_truth_backend=frontend,
     )
 
@@ -344,7 +335,6 @@ def test_paddle_eigvals(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_x
     x = np.array(x[0], dtype=dtype[0])
@@ -353,7 +343,6 @@ def test_paddle_eigvals(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -378,7 +367,6 @@ def test_paddle_eigvalsh(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -387,7 +375,6 @@ def test_paddle_eigvalsh(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -412,7 +399,6 @@ def test_paddle_eigh(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_input
@@ -422,7 +408,6 @@ def test_paddle_eigh(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -443,7 +428,6 @@ def test_paddle_eigh(
         ret_from_gt_np=front_v @ np.diag(front_l) @ front_v.T,
         rtol=1e-2,
         atol=1e-2,
-        backend=backend_fw,
         ground_truth_backend=frontend,
     )
 
@@ -471,7 +455,6 @@ def test_paddle_pinv(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     # TODO: paddle returns nan for all values if the input
@@ -481,7 +464,6 @@ def test_paddle_pinv(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -511,7 +493,6 @@ def test_paddle_solve(
     dtype_x,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -519,7 +500,6 @@ def test_paddle_solve(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -545,7 +525,6 @@ def test_paddle_cholesky(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -554,7 +533,6 @@ def test_paddle_cholesky(
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -583,7 +561,6 @@ def test_paddle_bmm(
     dtype_x,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -591,7 +568,6 @@ def test_paddle_bmm(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -616,7 +592,6 @@ def test_paddle_matrix_power(
     dtype_and_x,
     n,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -626,7 +601,6 @@ def test_paddle_matrix_power(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -666,9 +640,7 @@ def _get_dtype_and_matrix_non_singular(draw, dtypes):
     p=st.sampled_from([None, "fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     test_with_out=st.just(False),
 )
-def test_paddle_cond(
-    *, dtype_and_x, p, on_device, fn_tree, frontend, test_flags, backend_fw
-):
+def test_paddle_cond(*, dtype_and_x, p, on_device, fn_tree, frontend, test_flags):
     dtype, x = dtype_and_x
 
     assume(matrix_is_stable(x[0]))
@@ -677,7 +649,6 @@ def test_paddle_cond(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=True,
@@ -706,7 +677,6 @@ def test_paddle_dot(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_x
@@ -714,7 +684,6 @@ def test_paddle_dot(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -748,7 +717,6 @@ def test_paddle_transpose(
     dtype_and_x_perm,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -757,7 +725,6 @@ def test_paddle_transpose(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -787,7 +754,6 @@ def test_paddle_bincount(
     dtype_and_x,
     on_device,
     fn_tree,
-    backend_fw,
     frontend,
     test_flags,
 ):
@@ -796,46 +762,9 @@ def test_paddle_bincount(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
         weights=None,
         minlength=0,
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.dist",
-    dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-    ),
-    p=helpers.floats(min_value=1.0, max_value=10.0),
-)
-def test_paddle_dist(
-    *,
-    dtype_and_input,
-    p,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
-):
-    input_dtype, x = dtype_and_input
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        backend_to_test=backend_fw,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-        y=x[1],
-        p=p,
     )

@@ -25,12 +25,10 @@ def test_tensorflow_hard_sigmoid(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -53,12 +51,10 @@ def test_tensorflow_linear(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -80,12 +76,10 @@ def test_tensorflow_sigmoid(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -109,12 +103,10 @@ def test_tensorflow_tanh(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -144,12 +136,10 @@ def test_tensorflow_softmax(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -171,12 +161,17 @@ def test_tensorflow_softmax(
     test_with_out=st.just(False),
 )
 def test_tensorflow_gelu(
-    *, dtype_and_x, approximate, on_device, fn_tree, frontend, test_flags, backend_fw
+    *,
+    dtype_and_x,
+    approximate,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -202,12 +197,10 @@ def test_tensorflow_relu(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -229,12 +222,10 @@ def test_tensorflow_softplus(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -260,12 +251,10 @@ def test_tensorflow_softsign(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -289,12 +278,10 @@ def test_tensorflow_swish(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -333,12 +320,10 @@ def test_tensorflow_elu(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -369,12 +354,10 @@ def test_tensorflow_selu(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -426,7 +409,6 @@ def simple_test_two_function(
         atol=atol_,
         ground_truth_backend=frontend,
     )
-    ivy.previous_backend()
 
 
 # Helper function for deserialize.

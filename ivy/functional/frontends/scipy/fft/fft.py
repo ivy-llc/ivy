@@ -33,17 +33,3 @@ def idct(x, type=2, n=None, axis=-1, norm=None, overwrite_x=False, orthogonalize
 @to_ivy_arrays_and_back
 def fft2(x, s=None, axes=(-2, -1), norm=None, overwrite_x=False):
     return ivy.fft2(x, s=s, dim=axes, norm=norm)
-
-
-@to_ivy_arrays_and_back
-def ifftn(
-    x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
-):
-    return ivy.ifftn(x, s=s, dim=axes, norm=norm)
-
-
-@to_ivy_arrays_and_back
-def rfftn(
-    x, s=None, axes=None, norm=None, overwrite_x=False, workers=None, *, plan=None
-):
-    return ivy.rfftn(x, s=s, dim=axes, norm=norm)

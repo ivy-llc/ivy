@@ -42,7 +42,6 @@ def test_jax_einsum(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     kw = {}
     i = 0
@@ -52,7 +51,6 @@ def test_jax_einsum(
     test_flags.num_positional_args = i
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -83,7 +81,6 @@ def test_jax_mean(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -96,7 +93,6 @@ def test_jax_mean(
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -134,7 +130,6 @@ def test_jax_var(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -147,7 +142,6 @@ def test_jax_var(
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -183,12 +177,10 @@ def test_jax_argmin(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -224,12 +216,10 @@ def test_jax_bincount(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -255,11 +245,9 @@ def test_jax_cumprod(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        backend_to_test=backend_fw,
         input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
@@ -285,11 +273,9 @@ def test_jax_cumsum(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis, dtype = dtype_x_axis
     helpers.test_frontend_function(
-        backend_to_test=backend_fw,
         input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
@@ -319,7 +305,6 @@ def test_jax_sum(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis, castable_dtype = dtype_x_axis_castable
 
@@ -366,7 +351,6 @@ def test_jax_min(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -379,7 +363,6 @@ def test_jax_min(
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -409,7 +392,6 @@ def test_jax_max(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
@@ -422,7 +404,6 @@ def test_jax_max(
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -461,7 +442,6 @@ def test_jax_average(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -472,7 +452,6 @@ def test_jax_average(
         input_dtypes=x_dtype,
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         atol=2e-2,
@@ -507,7 +486,6 @@ def test_jax_nanmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -524,7 +502,6 @@ def test_jax_nanmax(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -560,7 +537,6 @@ def test_jax_nanmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     initial,
@@ -577,7 +553,6 @@ def test_jax_nanmin(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -606,7 +581,6 @@ def test_jax_nanstd(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
@@ -621,7 +595,6 @@ def test_jax_nanstd(
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -660,7 +633,6 @@ def test_jax_nanvar(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -673,7 +645,6 @@ def test_jax_nanvar(
     assume(np.dtype(dtype[0]) >= np.dtype(input_dtypes[0]))
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -725,7 +696,6 @@ def test_jax_nancumprod(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
@@ -733,7 +703,6 @@ def test_jax_nancumprod(
         assume(not test_flags.as_variable[0])
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -754,7 +723,6 @@ def test_jax_nancumsum(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
@@ -762,7 +730,6 @@ def test_jax_nancumsum(
         assume(not test_flags.as_variable[0])
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -791,7 +758,6 @@ def test_jax_std(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -804,7 +770,6 @@ def test_jax_std(
 
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -843,13 +808,11 @@ def test_jax_corrcoef(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, x = dtype_and_x
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -880,12 +843,10 @@ def test_jax_median(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -911,14 +872,12 @@ def test_jax_ptp(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtypes, x, axis, dtype = dtype_and_x_axis_dtype
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -965,7 +924,6 @@ def test_jax_nanmean(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     where,
     keepdims,
@@ -978,7 +936,6 @@ def test_jax_nanmean(
     )
     np_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
@@ -1011,15 +968,12 @@ def test_jax_nanmedian(
     keepdims,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
-    # TODO: overwrite as a boolean when \
-    #           there's a way around jax.numpy.nanquantile does not
-    #  support overwrite_input=True.
+    # TODO: overwrite as a boolean when there's a way around jax.numpy.nanquantile does
+    # not support overwrite_input=True.
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1053,13 +1007,11 @@ def test_jax_correlate(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
     mode,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1164,14 +1116,12 @@ def test_jax_cov(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     dtype, value1, value2, rowvar, bias, ddof, fweights, aweights = dtypes_args
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         rtol=1e-3,

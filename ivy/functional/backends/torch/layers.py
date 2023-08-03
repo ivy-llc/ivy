@@ -1,4 +1,5 @@
 """Collection of PyTorch network layers, wrapped to fit Ivy syntax and signature."""
+
 from typing import Optional, Tuple, Union, Sequence
 
 # global
@@ -27,27 +28,6 @@ def linear(
 
 
 linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
-
-
-def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
-    if filter_format == "channel_last":
-        filters = filters.permute(-1, -2, *range(dims))
-
-    # adding dilation to input
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    for i in range(dims):
-        if x_dilations[i] > 1:
-            h = x.shape[2 + i]
-            new_height = h + (h - 1) * (x_dilations[i] - 1)
-            h = torch.eye(
-                new_height,
-                dtype=x.dtype,
-                device=ivy.as_native_dev(ivy.default_device()),
-            )[:: x_dilations[i]]
-            x = torch.swapaxes(x, 2 + i, -1)
-            x = torch.matmul(x, h)
-            x = torch.swapaxes(x, -1, 2 + i)
-    return x, filters
 
 
 def _pad_before_conv(
@@ -139,19 +119,16 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
+    filters = filters.permute(2, 1, 0)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 1, dilations, "channel_first"
     )
-    res = torch.nn.functional.conv1d(x, filters, bias, strides, padding, dilations)
+    res = torch.nn.functional.conv1d(x, filters, None, strides, padding, dilations)
     if data_format == "NWC":
         res = res.permute(0, 2, 1)
     return res
@@ -178,21 +155,20 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NWC":
         x = x.permute(0, 2, 1)
-    filters = filters.permute(1, 2, 0)
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
+    filters = filters.permute(1, 2, 0)
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 1, dilations, output_shape, filters.shape[2:]
     )
     res = torch.nn.functional.conv_transpose1d(
         x,
         filters,
-        bias,
+        None,
         strides,
         padding_list,
         dilation=dilations,
@@ -218,19 +194,16 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
-    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
+    filters = filters.permute(3, 2, 0, 1)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 2, dilations, "channel_first"
     )
-    res = torch.nn.functional.conv2d(x, filters, bias, strides, padding, dilations)
+    res = torch.nn.functional.conv2d(x, filters, None, strides, padding, dilations)
     if data_format == "NHWC":
         return res.permute(0, 2, 3, 1)
     return res
@@ -257,7 +230,6 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NHWC":
@@ -268,23 +240,21 @@ def conv2d_transpose(
     not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
         x, filters, strides, padding, 2, dilations, output_shape, filters.shape[2:]
     )
-
     res = torch.nn.functional.conv_transpose2d(
         x,
         filters,
-        bias,
+        None,
         strides,
         padding_list,
         dilation=dilations,
         output_padding=output_padding,
     )
     if not_valid_pad[0]:
-        res = res[..., :-1, :]
+        res = res[:, :, 0:-1, :]
     if not_valid_pad[1]:
-        res = res[..., :-1]
+        res = res[:, :, :, 0:-1]
     if data_format == "NHWC":
-        res = res.permute(0, *range(2, 4), 1)
-
+        res = res.permute(0, 2, 3, 1)
     return res
 
 
@@ -342,19 +312,16 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ):
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
-    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
+    filters = filters.permute(4, 3, 0, 1, 2)
     x, padding = _pad_before_conv(
         x, filters, strides, padding, 3, dilations, "channel_first"
     )
-    res = torch.nn.functional.conv3d(x, filters, bias, strides, padding, dilations)
+    res = torch.nn.functional.conv3d(x, filters, None, strides, padding, dilations)
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res
@@ -375,7 +342,6 @@ def conv3d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    bias: Optional[torch.Tensor] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if data_format == "NDHWC":
@@ -389,7 +355,7 @@ def conv3d_transpose(
     res = torch.nn.functional.conv_transpose3d(
         x,
         filters,
-        bias,
+        None,
         strides,
         padding_list,
         dilation=dilations,

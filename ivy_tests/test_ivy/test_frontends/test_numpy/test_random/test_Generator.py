@@ -21,21 +21,18 @@ CLASS_TREE = "ivy.functional.frontends.numpy.random.Generator"
         st.integers(min_value=1, max_value=10), st.integers(min_value=2, max_value=2)
     ),
 )
-def test_numpy_multinomial(
+def test_numpy_Generator_multinomial(
     n,
     dtype,
-    on_device,
     size,
     init_flags,
     method_flags,
     frontend_method_data,
     frontend,
-    backend_fw,
 ):
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
         init_flags=init_flags,
-        backend_to_test=backend_fw,
         method_flags=method_flags,
         init_all_as_kwargs_np={
             # ToDo: to fix this temporary placeholder for BitGenerator
@@ -50,5 +47,4 @@ def test_numpy_multinomial(
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         test_values=False,
-        on_device=on_device,
     )

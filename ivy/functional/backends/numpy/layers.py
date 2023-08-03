@@ -101,18 +101,6 @@ def _dilate_pad_conv_tranpose(
     return x, filters
 
 
-def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
-    if filter_format == "channel_first":
-        filters = np.transpose(filters, (*range(2, dims + 2), 1, 0))
-
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-
-    for j in range(dims):
-        if x_dilations[j] > 1:
-            x = _add_dilations(x, x_dilations[j], axis=j + 1)
-    return x, filters
-
-
 def conv1d(
     x: np.ndarray,
     filters: np.ndarray,
@@ -121,17 +109,14 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     strides = [strides] if isinstance(strides, int) else strides
     dilations = [dilations] if isinstance(dilations, int) else dilations
     if data_format == "NCW":
         x = np.transpose(x, (0, 2, 1))
-    x, filters = _ff_xd_before_conv(x, filters, 1, filter_format, x_dilations)
+
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 1, dilations)
 
     x_shape = x.shape
@@ -160,7 +145,7 @@ def conv1d(
     )
     # B x OW x O
     res = np.sum(mult, (2, 3))
-    res = np.add(res, bias) if bias is not None else res
+
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
     return res
@@ -176,7 +161,6 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if data_format == "NCW":
@@ -189,7 +173,6 @@ def conv1d_transpose(
         conv1d(x, filters, 1, "VALID", data_format="NWC", dilations=1),
         (1,),
     )
-    res = np.add(res, bias) if bias is not None else res
     if data_format == "NCW":
         res = np.transpose(res, (0, 2, 1))
     return res
@@ -203,17 +186,14 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     strides = [strides] * 2 if isinstance(strides, int) else strides
     dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
-    x, filters = _ff_xd_before_conv(x, filters, 2, filter_format, x_dilations)
+
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 2, dilations)
 
     x_shape = x.shape
@@ -245,7 +225,7 @@ def conv2d(
     )
     # B x OH x OW x O
     res = np.sum(mult, (3, 4, 5))
-    res = np.add(res, bias) if bias is not None else res
+
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
     return res
@@ -261,7 +241,6 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCHW":
@@ -274,7 +253,6 @@ def conv2d_transpose(
         conv2d(x, filters, 1, "VALID", data_format="NHWC", dilations=1),
         (1, 2),
     )
-    res = np.add(res, bias) if bias is not None else res
     if data_format == "NCHW":
         res = np.transpose(res, (0, 3, 1, 2))
     return res
@@ -344,17 +322,14 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
-    filter_format: str = "channel_last",
-    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     strides = [strides] * 3 if isinstance(strides, int) else strides
     dilations = [dilations] * 3 if isinstance(dilations, int) else dilations
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
-    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
+
     x, filters = _dilate_pad_conv(x, filters, strides, padding, 3, dilations)
 
     x_shape = x.shape
@@ -389,7 +364,7 @@ def conv3d(
     )
     # B x OD X OH x OW x O
     res = np.sum(mult, (4, 5, 6, 7))
-    res = np.add(res, bias) if bias is not None else res
+
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -405,7 +380,6 @@ def conv3d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
-    bias: Optional[np.ndarray] = None,
     out: Optional[np.ndarray] = None,
 ):
     if data_format == "NCDHW":
@@ -418,7 +392,6 @@ def conv3d_transpose(
         conv3d(x, filters, 1, "VALID", data_format="NDHWC", dilations=1),
         (1, 2, 3),
     )
-    res = np.add(res, bias) if bias is not None else res
     if data_format == "NCDHW":
         res = np.transpose(res, (0, 4, 1, 2, 3))
     return res

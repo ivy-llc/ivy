@@ -32,7 +32,6 @@ def test_sgd_optimizer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -41,7 +40,6 @@ def test_sgd_optimizer(
     input_dtype, x, lr = dtype_x_lr
     xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -82,7 +80,6 @@ def test_lars_optimizer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -93,7 +90,6 @@ def test_lars_optimizer(
         test_gradients = False
     xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -145,7 +141,6 @@ def test_adam_optimizer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     test_gradients,
     init_flags,
@@ -155,7 +150,6 @@ def test_adam_optimizer(
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -215,7 +209,6 @@ def test_lamb_optimizer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -225,7 +218,6 @@ def test_lamb_optimizer(
     beta1, beta2, epsilon, decay_lambda = beta1_n_beta2_n_epsilon_n_lambda
     xs_grad_idxs = [[0, 0]] if method_flags.num_positional_args else [[1, "v"]]
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

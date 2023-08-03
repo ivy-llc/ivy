@@ -5,9 +5,9 @@ from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_test, update_backend
-import ivy_tests.test_ivy.helpers.globals as test_globals
+from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helper
 
 
@@ -31,7 +31,7 @@ def test_native_array(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -78,7 +78,7 @@ def test_linspace(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -134,7 +134,7 @@ def test_logspace(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1,  # if It's less than one it'll test for inf
@@ -177,7 +177,7 @@ def test_arange(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         start=start,
         stop=stop,
@@ -200,10 +200,9 @@ def _asarray_helper(draw):
             shared_dtype=True,
         )
     )
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        x_list = ivy_backend.nested_map(x, lambda x: x.tolist(), shallow=False)
-        sh = draw(helpers.get_shape(min_num_dims=1))
-        sh = ivy_backend.Shape(sh)
+    x_list = ivy.nested_map(x, lambda x: x.tolist(), shallow=False)
+    sh = draw(helpers.get_shape(min_num_dims=1))
+    sh = ivy.Shape(sh)
     # np_array = x[0]
     # dim = draw(helpers.get_shape(min_num_dims=1))
     # nested_values = draw(
@@ -255,7 +254,7 @@ def test_asarray(
         input_dtypes=x_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         object_in=x,
         dtype=dtype,
@@ -282,7 +281,7 @@ def test_empty(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -307,7 +306,7 @@ def test_empty_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -337,7 +336,7 @@ def test_eye(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=n_rows,
@@ -367,7 +366,7 @@ def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -376,11 +375,10 @@ def test_from_dlpack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
 @st.composite
 def _fill_value(draw):
     dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_uint_dtype(dtype):
-            return draw(helpers.ints(min_value=0, max_value=5))
-        if ivy_backend.is_int_dtype(dtype):
-            return draw(helpers.ints(min_value=-5, max_value=5))
+    if ivy.is_uint_dtype(dtype):
+        return draw(helpers.ints(min_value=0, max_value=5))
+    if ivy.is_int_dtype(dtype):
+        return draw(helpers.ints(min_value=-5, max_value=5))
     return draw(helpers.floats(min_value=-5, max_value=5))
 
 
@@ -404,7 +402,7 @@ def test_full(*, shape, fill_value, dtypes, test_flags, backend_fw, fn_name, on_
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         shape=shape,
         fill_value=fill_value,
@@ -440,7 +438,7 @@ def test_full_like(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         fill_value=fill_value,
@@ -477,7 +475,7 @@ def test_meshgrid(
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         **kw,
         sparse=sparse,
@@ -504,7 +502,7 @@ def test_ones(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -525,7 +523,7 @@ def test_ones_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -552,7 +550,7 @@ def test_tril(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -578,7 +576,7 @@ def test_triu(*, dtype_and_x, k, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         k=k,
@@ -604,7 +602,7 @@ def test_zeros(*, shape, dtype, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         shape=shape,
         dtype=dtype[0],
@@ -629,7 +627,7 @@ def test_zeros_like(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
         dtype=dtype[0],
@@ -648,7 +646,6 @@ def test_copy_array(
     test_flags,
     dtype_and_x,
     to_ivy_array_bool,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -656,42 +653,32 @@ def test_copy_array(
     if test_flags.as_variable[0]:
         assume("float" in dtype[0])
     # smoke test
-    with update_backend(backend_fw) as ivy_backend:
-        x = test_flags.apply_flags(
-            x, dtype, 0, backend=backend_fw, on_device=on_device
-        )[0]
-        test_flags.instance_method = (
-            test_flags.instance_method if not test_flags.native_arrays[0] else False
-        )
-        if test_flags.instance_method:
-            ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
-        else:
-            ret = ivy_backend.copy_array(x, to_ivy_array=to_ivy_array_bool)
-        # type test
-        test_ret = ret
-        test_x = x
-        if test_flags.container[0]:
-            assert ivy_backend.is_ivy_container(ret)
-            test_ret = ret["a"]
-            test_x = x["a"]
-        if to_ivy_array_bool:
-            assert ivy_backend.is_ivy_array(test_ret)
-        else:
-            assert ivy_backend.is_native_array(test_ret)
-        # cardinality test
-        assert test_ret.shape == test_x.shape
-        # value test
-        x, ret = ivy_backend.to_ivy(x), ivy_backend.to_ivy(ret)
-        x_np, ret_np = helpers.flatten_and_to_np(
-            backend=backend_fw, ret=x
-        ), helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
-        helpers.value_test(
-            backend=backend_fw,
-            ground_truth_backend=backend_fw,
-            ret_np_flat=ret_np,
-            ret_np_from_gt_flat=x_np,
-        )
-        assert id(x) != id(ret)
+    x = test_flags.apply_flags(x, dtype, on_device, 0)[0]
+    test_flags.instance_method = (
+        test_flags.instance_method if not test_flags.native_arrays[0] else False
+    )
+    if test_flags.instance_method:
+        ret = x.copy_array(to_ivy_array=to_ivy_array_bool)
+    else:
+        ret = ivy.copy_array(x, to_ivy_array=to_ivy_array_bool)
+    # type test
+    test_ret = ret
+    test_x = x
+    if test_flags.container[0]:
+        assert ivy.is_ivy_container(ret)
+        test_ret = ret["a"]
+        test_x = x["a"]
+    if to_ivy_array_bool:
+        assert ivy.is_ivy_array(test_ret)
+    else:
+        assert ivy.is_native_array(test_ret)
+    # cardinality test
+    assert test_ret.shape == test_x.shape
+    # value test
+    x, ret = ivy.to_ivy(x), ivy.to_ivy(ret)
+    x_np, ret_np = helpers.flatten_and_to_np(ret=x), helpers.flatten_and_to_np(ret=ret)
+    helpers.value_test(ret_np_flat=ret_np, ret_np_from_gt_flat=x_np)
+    assert id(x) != id(ret)
 
 
 @st.composite
@@ -740,7 +727,7 @@ def test_one_hot(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         indices=indices[0],
         depth=depth,
@@ -786,7 +773,7 @@ def test_frombuffer(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         buffer=buffer,
         dtype=input_dtype[0],
@@ -812,7 +799,7 @@ def test_triu_indices(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         n_rows=n_rows,

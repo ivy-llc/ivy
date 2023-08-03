@@ -26,11 +26,9 @@ def test_torch_can_cast(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -57,11 +55,9 @@ def test_torch_promote_types(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -78,7 +74,7 @@ def test_torch_promote_types(
     fn_tree="torch.set_default_dtype",
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_torch_set_default_dtype(
+def test_set_default_dtype(
     *,
     dtype,
 ):

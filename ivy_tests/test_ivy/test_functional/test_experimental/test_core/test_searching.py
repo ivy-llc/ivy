@@ -40,7 +40,7 @@ def test_unravel_index(*, dtype_x_shape, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         indices=np.asarray(x[0], dtype=input_dtype[0]),

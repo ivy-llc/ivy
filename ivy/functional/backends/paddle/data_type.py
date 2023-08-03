@@ -116,7 +116,7 @@ def astype(
 ) -> paddle.Tensor:
     dtype = ivy.as_native_dtype(dtype)
     if x.dtype == dtype:
-        return paddle_backend.copy_array(x).data if copy else x
+        return x.clone() if copy else x
     return x.cast(dtype)
 
 
@@ -161,7 +161,6 @@ def broadcast_to(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
-        paddle.bfloat16,
     ]:
         return paddle.broadcast_to(x.cast("float32"), shape).cast(x.dtype)
     elif x.dtype in [paddle.complex64, paddle.complex128]:

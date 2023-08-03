@@ -35,7 +35,6 @@ from ivy_tests.test_ivy.helpers import handle_test
     test_with_out=st.just(False),
 )
 def test_log_poisson_loss(
-    *,
     dtype_and_targets,
     dtype_and_log_input,
     compute_full_loss,

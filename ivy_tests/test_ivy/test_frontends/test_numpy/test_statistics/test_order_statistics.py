@@ -21,7 +21,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_numpy_ptp(
     dtype_values_axis,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     keep_dims,
@@ -36,7 +35,6 @@ def test_numpy_ptp(
         out=None,
         keepdims=keep_dims,
         frontend=frontend,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         input_dtypes=input_dtypes,
@@ -56,7 +54,6 @@ def test_numpy_nanpercentile(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
@@ -75,7 +72,6 @@ def test_numpy_nanpercentile(
         q=values[0][1],
         axis=axis,
         out=None,
-        backend_to_test=backend_fw,
         overwrite_input=None,
         method=None,
         keepdims=keep_dims,

@@ -25,7 +25,6 @@ def test_numpy_mean(
     dtype,
     where,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -44,7 +43,6 @@ def test_numpy_mean(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -73,7 +71,6 @@ def test_numpy_nanmean(
     dtype,
     where,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -92,7 +89,6 @@ def test_numpy_nanmean(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -121,7 +117,6 @@ def test_numpy_std(
     dtype,
     where,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -139,7 +134,6 @@ def test_numpy_std(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -170,7 +164,6 @@ def test_numpy_average(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     keep_dims,
     returned,
     on_device,
@@ -186,7 +179,6 @@ def test_numpy_average(
         helpers.test_frontend_function(
             a=a[0],
             input_dtypes=input_dtype,
-            backend_to_test=backend_fw,
             weights=xs[0],
             axis=axis,
             frontend=frontend,
@@ -217,7 +209,6 @@ def test_numpy_nanstd(
     dtype,
     where,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -235,7 +226,6 @@ def test_numpy_nanstd(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -362,7 +352,6 @@ def test_numpy_cov(
     test_flags,
     frontend,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x1, x2, rowvar, bias, ddof, fweights, aweights = dtype_x1_x2_cov
@@ -370,7 +359,6 @@ def test_numpy_cov(
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-2,
@@ -399,7 +387,6 @@ def test_numpy_nanvar(
     where,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
     keep_dims,
@@ -416,7 +403,6 @@ def test_numpy_nanvar(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -443,7 +429,6 @@ def test_numpy_nanmedian(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
     overwrite_input,
@@ -452,7 +437,6 @@ def test_numpy_nanmedian(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -476,7 +460,6 @@ def test_numpy_var(
     dtype,
     where,
     frontend,
-    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -494,7 +477,6 @@ def test_numpy_var(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

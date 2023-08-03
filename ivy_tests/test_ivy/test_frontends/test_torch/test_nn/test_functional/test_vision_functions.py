@@ -29,13 +29,11 @@ def test_torch_pixel_shuffle(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(ivy.shape(x[0])[1] % (factor**2) == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -64,13 +62,11 @@ def test_torch_pixel_unshuffle(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume((ivy.shape(x[0])[2] % factor == 0) & (ivy.shape(x[0])[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -147,12 +143,10 @@ def test_torch_pad(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, input, padding, value, mode = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -178,7 +172,6 @@ def test_torch_interpolate(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     (
         input_dtype,
@@ -191,7 +184,6 @@ def test_torch_interpolate(
     ) = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -219,12 +211,10 @@ def test_torch_upsample(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, mode, size, align_corners = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -248,12 +238,10 @@ def test_torch_upsample_nearest(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, _, size, _ = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -275,12 +263,10 @@ def test_torch_upsample_bilinear(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, _, size, _ = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

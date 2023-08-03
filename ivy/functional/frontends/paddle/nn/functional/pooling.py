@@ -9,7 +9,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def avg_pool2d(
     x,
     kernel_size,
@@ -53,7 +53,7 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
+@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 def avg_pool1d(
     x, kernel_size, stride=None, padding=0, exclusive=True, ceil_mode=False, name=None
 ):
@@ -72,19 +72,19 @@ def avg_pool1d(
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def adaptive_avg_pool1d(x, output_size, name=None):
     return ivy.adaptive_avg_pool1d(x, output_size)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def adaptive_avg_pool2d(x, output_size, data_format="NCHW", name=None):
     return ivy.adaptive_avg_pool2d(x, output_size)
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
 def max_unpool1d(
     x,
     indices,

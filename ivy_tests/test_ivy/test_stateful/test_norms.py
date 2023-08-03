@@ -28,14 +28,12 @@ def test_layer_norm_layer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -93,14 +91,12 @@ def test_batch_norm_2d_layer(
     on_device,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
 ):
     input_dtype, x, features = dtype_and_x_features
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,

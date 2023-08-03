@@ -23,12 +23,10 @@ def test_numpy_isneginf(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -53,12 +51,10 @@ def test_numpy_isposinf(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -85,12 +81,10 @@ def test_numpy_allclose(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -119,12 +113,10 @@ def test_numpy_isclose(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

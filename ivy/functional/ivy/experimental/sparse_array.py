@@ -290,7 +290,7 @@ def _is_data_not_indices_values_and_shape(
             row_indices,
             values,
             dense_shape,
-            format,
+            format=format,
             fn=ivy.exists,
             type="any",
             limit=[0],
@@ -570,10 +570,6 @@ class SparseArray:
     def dense_shape(self):
         return self._dense_shape
 
-    @property
-    def format(self):
-        return self._format
-
     # Setters #
     # --------#
 
@@ -680,10 +676,6 @@ class SparseArray:
             indices=self._coo_indices, values=self._values, dense_shape=dense_shape
         )
         self._dense_shape = dense_shape
-
-    @format.setter
-    def format(self, format):
-        self._format = format
 
     # Instance Methods #
     # ---------------- #

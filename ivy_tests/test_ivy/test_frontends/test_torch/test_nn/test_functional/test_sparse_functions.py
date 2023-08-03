@@ -29,12 +29,10 @@ def test_torch_embedding(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtypes, indices, weight, padding_idx = dtypes_indices_weights
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -76,7 +74,6 @@ def test_torch_one_hot(
     frontend,
     fn_tree,
     test_flags,
-    backend_fw,
     on_device,
 ):
     num_classes, values = num_classes_dtype_x_axis
@@ -84,7 +81,6 @@ def test_torch_one_hot(
     test_flags.num_positional_args += 1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,

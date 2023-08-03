@@ -26,11 +26,9 @@ def test_numpy_can_cast(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -58,11 +56,9 @@ def test_numpy_promote_types(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -90,13 +86,11 @@ def test_numpy_min_scalar_type(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):  # skip torch backend uint
     if ivy.current_backend_str() == "torch":
         assume(not isinstance(x, int))
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -373,15 +373,6 @@ def bincount(
     )
 
 
-@with_supported_device_and_dtypes(
-    {
-        "2.13.0 and below": {
-            "cpu": ("float32", "float64"),
-            "gpu": ("bfloat16", "float16", "float32", "float64"),
-        }
-    },
-    backend_version,
-)
 def igamma(
     a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:

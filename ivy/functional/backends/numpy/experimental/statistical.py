@@ -399,7 +399,7 @@ def igamma(
         t = np.linspace(0, x, 10000, dtype=np.float64)
         y = np.exp(-t) * (t ** (a - 1))
         integral = np.trapz(y, t)
-        return integral / math.gamma(a)
+        return np.float32(integral / math.gamma(a))
 
     igamma_vec = np.vectorize(igamma_cal)
-    return igamma_vec(a, x).astype(a.dtype)
+    return igamma_vec(a, x)

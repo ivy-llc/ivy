@@ -9,7 +9,6 @@
 
 # ### Helpers ###
 
-
 # @st.composite
 # def x_and_fft(draw, dtypes):
 #     min_fft_points = 2
@@ -128,15 +127,7 @@
 #     return dtype, x, s, dim, norm
 
 
-# @st.composite
-# def x_and_ifftn(draw):
-#     x_and_ifftn = draw(x_and_fft2())
-#     workers = draw(st.integers(1, 4))
-#     return x_and_ifftn + (workers,)
-
-
 # ### Tests ###
-
 
 # # fft
 # @handle_frontend_test(
@@ -144,7 +135,7 @@
 #     d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
 #     test_with_out=st.just(False),
 # )
-# def test_scipy_fft(
+# def test_fft(
 #     d_x_d_n_n,
 #     frontend,
 #     test_flags,
@@ -171,7 +162,7 @@
 #     d_x_d_n_n=x_and_ifft(),
 #     test_with_out=st.just(False),
 # )
-# def test_scipy_ifft(
+# def test_ifft(
 #     d_x_d_n_n,
 #     frontend,
 #     test_flags,
@@ -198,7 +189,7 @@
 #     dtype_x_and_args=valid_dct(),
 #     test_with_out=st.just(False),
 # )
-# def test_scipy_dct(
+# def test_dct(
 #     dtype_x_and_args,
 #     frontend,
 #     test_flags,
@@ -228,7 +219,7 @@
 #     dtype_x_and_args=valid_idct(),
 #     test_with_out=st.just(False),
 # )
-# def test_scipy_idct(
+# def test_idct(
 #     dtype_x_and_args,
 #     frontend,
 #     test_flags,
@@ -258,7 +249,7 @@
 #     d_x_d_s_n=x_and_fft2(),
 #     test_with_out=st.just(False),
 # )
-# def test_scipy_fft2(
+# def test_fft2(
 #     d_x_d_s_n,
 #     frontend,
 #     test_flags,
@@ -276,60 +267,4 @@
 #         s=s,
 #         axes=ax,
 #         norm=norm,
-#     )
-
-
-# # ifftn
-# @handle_frontend_test(
-#     fn_tree="scipy.fft.ifftn",
-#     d_x_d_s_n_workers=x_and_ifftn(),
-#     test_with_out=st.just(False),
-# )
-# def test_scipy_ifftn(
-#     d_x_d_s_n_workers,
-#     frontend,
-#     test_flags,
-#     fn_tree,
-#     on_device,
-# ):
-#     dtype, x, s, ax, norm, workers = d_x_d_s_n_workers
-#     helpers.test_frontend_function(
-#         input_dtypes=dtype,
-#         frontend=frontend,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         x=x[0],
-#         s=s,
-#         axes=ax,
-#         norm=norm,
-#         workers=workers,
-#     )
-
-
-# # rfftn
-# @handle_frontend_test(
-#     fn_tree="scipy.fft.rfftn",
-#     d_x_d_s_n_workers=x_and_ifftn(),
-#     test_with_out=st.just(False),
-# )
-# def test_scipy_rfftn(
-#     d_x_d_s_n_workers,
-#     frontend,
-#     test_flags,
-#     fn_tree,
-#     on_device,
-# ):
-#     dtype, x, s, ax, norm, workers = d_x_d_s_n_workers
-#     helpers.test_frontend_function(
-#         input_dtypes=dtype,
-#         frontend=frontend,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         x=x[0],
-#         s=s,
-#         axes=ax,
-#         norm=norm,
-#         workers=workers,
 #     )

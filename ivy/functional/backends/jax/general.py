@@ -63,7 +63,7 @@ def _mask_to_index(query, x):
 def get_item(
     x: JaxArray,
     /,
-    query: Union[JaxArray, Tuple],
+    query: JaxArray,
     *,
     copy: bool = None,
 ) -> JaxArray:
@@ -435,3 +435,8 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
+
+
+@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
+def strides(x: JaxArray) -> Tuple[int]:
+    return to_numpy(x).strides

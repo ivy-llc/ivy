@@ -28,13 +28,11 @@ def test_numpy_tril(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -64,13 +62,11 @@ def test_numpy_triu(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -97,12 +93,10 @@ def test_numpy_tri(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -124,13 +118,11 @@ def test_numpy_diag(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, k = dtype_and_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -156,12 +148,11 @@ def test_numpy_diag(
     test_with_out=st.just(False),
 )
 def test_numpy_vander(
-    *, fn_tree, dtype_and_x, N, increasing, test_flags, backend_fw, frontend, on_device
+    *, fn_tree, dtype_and_x, N, increasing, test_flags, frontend, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         frontend=frontend,
@@ -203,13 +194,11 @@ def test_numpy_diagflat(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, k = dtype_and_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -82,7 +82,7 @@ def _requires_grad(draw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_ivy_array(
+def test_torch_tensor_property_ivy_array(
     dtype_x,
 ):
     _, data = dtype_x
@@ -102,18 +102,15 @@ def test_torch_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_device(
+def test_torch_tensor_property_device(
     dtype_x,
-    backend_fw,
 ):
-    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(
         x.device, ivy.dev(ivy.array(data[0])), as_array=False
     )
-    ivy.previous_backend()
 
 
 @given(
@@ -121,13 +118,13 @@ def test_torch_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_dtype(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_dtype(
+    dtype_x,
+):
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
-    ivy.previous_backend()
 
 
 @given(
@@ -136,14 +133,12 @@ def test_torch_dtype(dtype_x, backend_fw):
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_shape(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_shape(dtype_x):
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
-    ivy.previous_backend()
 
 
 @given(
@@ -151,13 +146,13 @@ def test_torch_shape(dtype_x, backend_fw):
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_real(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_real(
+    dtype_x,
+):
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.real, ivy.real(data[0]))
-    ivy.previous_backend()
 
 
 @given(
@@ -165,13 +160,13 @@ def test_torch_real(dtype_x, backend_fw):
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ),
 )
-def test_torch_imag(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_imag(
+    dtype_x,
+):
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
-    ivy.previous_backend()
 
 
 @given(
@@ -180,21 +175,19 @@ def test_torch_imag(dtype_x, backend_fw):
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_ndim(dtype_x, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_ndim(
+    dtype_x,
+):
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
-    ivy.previous_backend()
 
 
-def test_torch_tensor_property_grad(backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_grad():
     x = Tensor(ivy.array([1.0, 2.0, 3.0]))
     grads = ivy.array([1.0, 2.0, 3.0])
     x._grads = grads
     assert ivy.array_equal(x.grad, grads)
-    ivy.previous_backend()
 
 
 @given(
@@ -203,32 +196,32 @@ def test_torch_tensor_property_grad(backend_fw):
     ),
     requires_grad=st.booleans(),
 )
-def test_torch_tensor_property_requires_grad(dtype_x, requires_grad, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_requires_grad(
+    dtype_x,
+    requires_grad,
+):
     _, data = dtype_x
     x = Tensor(data[0], requires_grad=requires_grad)
     ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
     x.requires_grad = not requires_grad
     ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
-    ivy.previous_backend()
 
 
 @given(
     requires_grad=st.booleans(),
 )
-def test_torch_tensor_property_is_leaf(requires_grad, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_is_leaf(
+    requires_grad,
+):
     x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
     ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
     y = x.pow(2)
     ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
     z = y.detach()
     ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
-    ivy.previous_backend()
 
 
-def test_torch_tensor_property_grad_fn(backend_fw):
-    ivy.set_backend(backend_fw)
+def test_torch_tensor_property_grad_fn():
     x = Tensor(ivy.array([3.0]), requires_grad=True)
     ivy.utils.assertions.check_equal(x.grad_fn, None, as_array=False)
     y = x.pow(2)
@@ -238,7 +231,6 @@ def test_torch_tensor_property_grad_fn(backend_fw):
     )
     z = y.detach()
     ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
-    ivy.previous_backend()
 
 
 @given(
@@ -250,9 +242,7 @@ def test_torch_tensor_property_grad_fn(backend_fw):
 def test_torch_tensor_requires_grad_(
     dtype_x,
     requires_grad,
-    backend_fw,
 ):
-    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     assert not x._requires_grad
@@ -260,7 +250,6 @@ def test_torch_tensor_requires_grad_(
     assert x._requires_grad
     x.requires_grad_(requires_grad)
     assert x._requires_grad == requires_grad
-    ivy.previous_backend()
 
 
 # chunk
@@ -282,7 +271,7 @@ def test_torch_tensor_requires_grad_(
         max_value=5,
     ),
 )
-def test_torch_chunk(
+def test_torch_instance_chunk(
     dtype_x_dim,
     chunks,
     frontend,
@@ -325,7 +314,7 @@ def test_torch_chunk(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_any(
+def test_torch_instance_any(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -368,7 +357,7 @@ def test_torch_any(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_all(
+def test_torch_instance_all(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -410,7 +399,7 @@ def test_torch_all(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_add(
+def test_torch_instance_add(
     dtype_and_x,
     alpha,
     frontend,
@@ -460,7 +449,7 @@ def test_torch_add(
         allow_infinity=False,
     ),
 )
-def test_torch_addmm(
+def test_torch_instance_addmm(
     dtype_and_matrices,
     beta,
     alpha,
@@ -513,7 +502,7 @@ def test_torch_addmm(
         allow_infinity=False,
     ),
 )
-def test_torch_addmm_(
+def test_torch_instance_addmm_(
     dtype_and_matrices,
     beta,
     alpha,
@@ -566,7 +555,7 @@ def test_torch_addmm_(
         allow_infinity=False,
     ),
 )
-def test_torch_addmv(
+def test_torch_instance_addmv(
     dtype_and_matrices,
     beta,
     alpha,
@@ -619,7 +608,7 @@ def test_torch_addmv(
         allow_infinity=False,
     ),
 )
-def test_torch_addbmm(
+def test_torch_instance_addbmm(
     dtype_and_matrices,
     beta,
     alpha,
@@ -672,7 +661,7 @@ def test_torch_addbmm(
         allow_infinity=False,
     ),
 )
-def test_torch_addbmm_(
+def test_torch_instance_addbmm_(
     dtype_and_matrices,
     beta,
     alpha,
@@ -718,7 +707,7 @@ def test_torch_addbmm_(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_sub(
+def test_torch_instance_sub(
     dtype_and_x,
     alpha,
     frontend,
@@ -763,7 +752,7 @@ def test_torch_sub(
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
 )
-def test_torch_new_ones(
+def test_torch_instance_new_ones(
     dtype_and_x,
     size,
     dtypes,
@@ -811,7 +800,7 @@ def test_torch_new_ones(
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
 )
-def test_torch_new_zeros(
+def test_torch_instance_new_zeros(
     dtype_and_x,
     size,
     dtypes,
@@ -856,7 +845,7 @@ def test_torch_new_zeros(
     ),
     unpack_shape=st.booleans(),
 )
-def test_torch_reshape(
+def test_torch_instance_reshape(
     dtype_x,
     shape,
     unpack_shape,
@@ -900,7 +889,7 @@ def test_torch_reshape(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
-def test_torch_reshape_as(
+def test_torch_instance_reshape_as(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -936,7 +925,7 @@ def test_torch_reshape_as(
         allow_inf=False,
     ),
 )
-def test_torch_sin(
+def test_torch_instance_sin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -970,7 +959,7 @@ def test_torch_sin(
         allow_inf=False,
     ),
 )
-def test_torch_arcsin(
+def test_torch_instance_arcsin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1005,7 +994,7 @@ def test_torch_arcsin(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_sum(
+def test_torch_instance_sum(
     dtype_x_dim,
     keepdim,
     frontend_method_data,
@@ -1047,7 +1036,7 @@ def test_torch_sum(
         allow_inf=False,
     ),
 )
-def test_torch_atan(
+def test_torch_instance_atan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1081,7 +1070,7 @@ def test_torch_atan(
         num_arrays=2,
     ),
 )
-def test_torch_atan2(
+def test_torch_instance_atan2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1117,7 +1106,7 @@ def test_torch_atan2(
         allow_inf=False,
     ),
 )
-def test_torch_sin_(
+def test_torch_instance_sin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1151,7 +1140,7 @@ def test_torch_sin_(
         allow_inf=False,
     ),
 )
-def test_torch_cos(
+def test_torch_instance_cos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1185,7 +1174,7 @@ def test_torch_cos(
         allow_inf=False,
     ),
 )
-def test_torch_cos_(
+def test_torch_instance_cos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1219,7 +1208,7 @@ def test_torch_cos_(
         allow_inf=False,
     ),
 )
-def test_torch_sinh(
+def test_torch_instance_sinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1253,7 +1242,7 @@ def test_torch_sinh(
         allow_inf=False,
     ),
 )
-def test_torch_sinh_(
+def test_torch_instance_sinh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1287,7 +1276,7 @@ def test_torch_sinh_(
         allow_inf=False,
     ),
 )
-def test_torch_cosh(
+def test_torch_instance_cosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1321,7 +1310,7 @@ def test_torch_cosh(
         allow_inf=False,
     ),
 )
-def test_torch_cosh_(
+def test_torch_instance_cosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1360,7 +1349,7 @@ def test_torch_cosh_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape")
     ),
 )
-def test_torch_view(
+def test_torch_instance_view(
     dtype_x,
     shape,
     frontend_method_data,
@@ -1395,7 +1384,7 @@ def test_torch_view(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_float(
+def test_torch_instance_float(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -1429,7 +1418,7 @@ def test_torch_float(
         allow_inf=False,
     ),
 )
-def test_torch_asinh(
+def test_torch_instance_asinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1465,7 +1454,7 @@ def test_torch_asinh(
         allow_inf=False,
     ),
 )
-def test_torch_asinh_(
+def test_torch_instance_asinh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1501,7 +1490,7 @@ def test_torch_asinh_(
         allow_inf=False,
     ),
 )
-def test_torch_tan(
+def test_torch_instance_tan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1535,7 +1524,7 @@ def test_torch_tan(
         allow_inf=False,
     ),
 )
-def test_torch_tanh(
+def test_torch_instance_tanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1569,7 +1558,7 @@ def test_torch_tanh(
         allow_inf=False,
     ),
 )
-def test_torch_tanh_(
+def test_torch_instance_tanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1603,7 +1592,7 @@ def test_torch_tanh_(
         allow_inf=False,
     ),
 )
-def test_torch_asin(
+def test_torch_instance_asin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1639,7 +1628,7 @@ def test_torch_asin(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_amax(
+def test_torch_instance_amax(
     dtype_x_axis,
     keepdim,
     frontend_method_data,
@@ -1676,7 +1665,7 @@ def test_torch_amax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_abs(
+def test_torch_instance_abs(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1709,7 +1698,7 @@ def test_torch_abs(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_abs_(
+def test_torch_instance_abs_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1745,7 +1734,7 @@ def test_torch_abs_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_amin(
+def test_torch_instance_amin(
     dtype_x_axis,
     keepdim,
     frontend_method_data,
@@ -1782,7 +1771,7 @@ def test_torch_amin(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_aminmax(
+def test_torch_instance_aminmax(
     dtype_input_axis,
     frontend_method_data,
     init_flags,
@@ -1848,7 +1837,7 @@ def test_torch_instance_bernoulli(
         allow_inf=False,
     ),
 )
-def test_torch_contiguous(
+def test_torch_instance_contiguous(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1882,7 +1871,7 @@ def test_torch_contiguous(
         allow_inf=False,
     ),
 )
-def test_torch_log(
+def test_torch_instance_log(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1916,7 +1905,7 @@ def test_torch_log(
         allow_inf=False,
     ),
 )
-def test_torch_log_(
+def test_torch_instance_log_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1950,7 +1939,7 @@ def test_torch_log_(
         allow_inf=False,
     ),
 )
-def test_torch_log2(
+def test_torch_instance_log2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1985,7 +1974,7 @@ def test_torch_log2(
         max_value=1e04,
     ),
 )
-def test_torch___bool__(
+def test_torch_special_bool(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2022,7 +2011,7 @@ def test_torch___bool__(
         allow_inf=False,
     ),
 )
-def test_torch___add__(
+def test_torch_special_add(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2059,7 +2048,7 @@ def test_torch___add__(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arcsinh(
+def test_torch_instance_arcsinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2095,7 +2084,7 @@ def test_torch_arcsinh(
         allow_inf=False,
     ),
 )
-def test_torch___long__(
+def test_torch_special_long(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2132,7 +2121,7 @@ def test_torch___long__(
         allow_inf=False,
     ),
 )
-def test_torch___radd__(
+def test_torch_special_radd(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2171,7 +2160,7 @@ def test_torch___radd__(
         allow_inf=False,
     ),
 )
-def test_torch___sub__(
+def test_torch_special_sub(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2210,7 +2199,7 @@ def test_torch___sub__(
         allow_inf=False,
     ),
 )
-def test_torch___mul__(
+def test_torch_special_mul(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2253,7 +2242,7 @@ def _get_dtype_and_multiplicative_matrices(draw):
     method_name="__matmul__",
     dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
-def test_torch___matmul__(
+def test_torch_special_matmul(
     dtype_tensor1_tensor2,
     frontend_method_data,
     init_flags,
@@ -2287,7 +2276,7 @@ def test_torch___matmul__(
         num_arrays=2,
     ),
 )
-def test_torch___rsub__(
+def test_torch_special_rsub(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2326,7 +2315,7 @@ def test_torch___rsub__(
         allow_inf=False,
     ),
 )
-def test_torch___rmul__(
+def test_torch_special_rmul(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2366,7 +2355,7 @@ def test_torch___rmul__(
         allow_inf=False,
     ),
 )
-def test_torch___truediv__(
+def test_torch_special_truediv(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2504,7 +2493,7 @@ def _to_helper(draw):
     method_name="to",
     args_kwargs=_to_helper(),
 )
-def test_torch_to(
+def test_torch_instance_to(
     args_kwargs,
     frontend_method_data,
     init_flags,
@@ -2539,7 +2528,7 @@ def test_torch_to(
         allow_inf=False,
     ),
 )
-def test_torch_arctan(
+def test_torch_instance_arctan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2573,7 +2562,7 @@ def test_torch_arctan(
         allow_inf=False,
     ),
 )
-def test_torch_arctan_(
+def test_torch_instance_arctan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2607,7 +2596,7 @@ def test_torch_arctan_(
         num_arrays=2,
     ),
 )
-def test_torch_arctan2(
+def test_torch_instance_arctan2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2643,7 +2632,7 @@ def test_torch_arctan2(
         num_arrays=2,
     ),
 )
-def test_torch_arctan2_(
+def test_torch_instance_arctan2_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2679,7 +2668,7 @@ def test_torch_arctan2_(
         allow_inf=False,
     ),
 )
-def test_torch_acos(
+def test_torch_instance_acos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2712,7 +2701,7 @@ def test_torch_acos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_floor(
+def test_torch_instance_floor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2746,7 +2735,7 @@ def test_torch_floor(
         num_arrays=2,
     ),
 )
-def test_torch_new_tensor(
+def test_torch_instance_new_tensor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2783,7 +2772,7 @@ def test_torch_new_tensor(
         allow_neg_step=False,
     ),
 )
-def test_torch_getitem(
+def test_torch_instance_getitem(
     dtype_x_index,
     frontend_method_data,
     init_flags,
@@ -2815,7 +2804,7 @@ def test_torch_getitem(
         allow_neg_step=False,
     ).filter(lambda x: x[0][0] == x[0][-1]),
 )
-def test_torch_setitem(
+def test_torch_instance_setitem(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
@@ -2848,7 +2837,7 @@ def test_torch_setitem(
         num_arrays=2,
     ),
 )
-def test_torch_view_as(
+def test_torch_instance_view_as(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -2889,7 +2878,7 @@ def test_torch_view_as(
         force_int=True,
     ),
 )
-def test_torch_unsqueeze(
+def test_torch_instance_unsqueeze(
     dtype_value,
     dim,
     frontend_method_data,
@@ -2931,7 +2920,7 @@ def test_torch_unsqueeze(
         force_int=True,
     ),
 )
-def test_torch_unsqueeze_(
+def test_torch_instance_unsqueeze_(
     dtype_value,
     dim,
     frontend_method_data,
@@ -2968,7 +2957,7 @@ def test_torch_unsqueeze_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_ravel(
+def test_torch_instance_ravel(
     dtype_value,
     frontend_method_data,
     init_flags,
@@ -3010,7 +2999,7 @@ def test_torch_ravel(
         key="target_axis",
     ),
 )
-def test_torch_split(
+def test_torch_instance_split(
     dtype_value,
     split_size,
     dim,
@@ -3060,7 +3049,7 @@ def test_torch_split(
     ),
     method_num_positional_args=st.just(1),
 )
-def test_torch_tensor_split(
+def test_torch_instance_tensor_split(
     dtype_value,
     indices_or_sections,
     dim,
@@ -3106,7 +3095,7 @@ def test_torch_tensor_split(
         is_mod_split=True,
     ),
 )
-def test_torch_vsplit(
+def test_torch_instance_vsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -3148,7 +3137,7 @@ def test_torch_vsplit(
         is_mod_split=True,
     ),
 )
-def test_torch_hsplit(
+def test_torch_instance_hsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -3190,7 +3179,7 @@ def test_torch_hsplit(
         is_mod_split=True,
     ),
 )
-def test_torch_dsplit(
+def test_torch_instance_dsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -3224,7 +3213,7 @@ def test_torch_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_detach(
+def test_torch_instance_detach(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3257,7 +3246,7 @@ def test_torch_detach(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_detach_(
+def test_torch_instance_detach_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3290,7 +3279,7 @@ def test_torch_detach_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_dim(
+def test_torch_instance_dim(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3323,7 +3312,7 @@ def test_torch_dim(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_ndimension(
+def test_torch_instance_ndimension(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3398,7 +3387,7 @@ def _fill_value_and_size(
     method_name="new_full",
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
-def test_torch_new_full(
+def test_torch_instance_new_full(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3438,7 +3427,7 @@ def test_torch_new_full(
         max_num_dims=3,
     ),
 )
-def test_torch_new_empty(
+def test_torch_instance_new_empty(
     dtype_and_x,
     size,
     frontend_method_data,
@@ -3494,7 +3483,7 @@ def _expand_helper(draw):
     dtype_x_shape=_expand_helper(),
     unpack_shape=st.booleans(),
 )
-def test_torch_expand(
+def test_torch_instance_expand(
     dtype_x_shape,
     unpack_shape,
     frontend_method_data,
@@ -3539,7 +3528,7 @@ def test_torch_expand(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
-def test_torch_expand_as(
+def test_torch_instance_expand_as(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -3603,7 +3592,7 @@ def _unfold_args(draw):
     method_name="unfold",
     dtype_values_args=_unfold_args(),
 )
-def test_torch_unfold(
+def test_torch_instance_unfold(
     dtype_values_args,
     frontend_method_data,
     init_flags,
@@ -3642,7 +3631,7 @@ def test_torch_unfold(
         num_arrays=2,
     ),
 )
-def test_torch___mod__(
+def test_torch_special_mod(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3677,7 +3666,7 @@ def test_torch___mod__(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_long(
+def test_torch_instance_long(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3710,7 +3699,7 @@ def test_torch_long(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_max(
+def test_torch_instance_max(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -3739,7 +3728,7 @@ def test_torch_max(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_is_quantized(
+def test_torch_tensor_property_is_quantized(
     dtype_x,
 ):
     _, data = dtype_x
@@ -3755,7 +3744,7 @@ def test_torch_is_quantized(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_is_cuda(
+def test_torch_tensor_property_is_cuda(
     dtype_x,
 ):
     _, data = dtype_x
@@ -3792,7 +3781,7 @@ def test_torch_tensor_property_is_meta(
         num_arrays=2,
     ),
 )
-def test_torch_logical_and(
+def test_torch_instance_logical_and(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3827,7 +3816,7 @@ def test_torch_logical_and(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
 )
-def test_torch_logical_not(
+def test_torch_instance_logical_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3861,7 +3850,7 @@ def test_torch_logical_not(
         num_arrays=2,
     ),
 )
-def test_torch_logical_or(
+def test_torch_instance_logical_or(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3897,7 +3886,7 @@ def test_torch_logical_or(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_not(
+def test_torch_instance_bitwise_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3931,7 +3920,7 @@ def test_torch_bitwise_not(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_and(
+def test_torch_instance_bitwise_and(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3967,7 +3956,7 @@ def test_torch_bitwise_and(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_or(
+def test_torch_instance_bitwise_or(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4003,7 +3992,7 @@ def test_torch_bitwise_or(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_or_(
+def test_torch_instance_bitwise_or_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4039,7 +4028,7 @@ def test_torch_bitwise_or_(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_left_shift(
+def test_torch_instance_bitwise_left_shift(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4075,7 +4064,7 @@ def test_torch_bitwise_left_shift(
         num_arrays=2,
     ),
 )
-def test_torch_add_(
+def test_torch_instance_add_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4111,7 +4100,7 @@ def test_torch_add_(
         num_arrays=2,
     ),
 )
-def test_torch_subtract_(
+def test_torch_instance_subtract_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4148,7 +4137,7 @@ def test_torch_subtract_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arccos_(
+def test_torch_instance_arccos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4183,7 +4172,7 @@ def test_torch_arccos_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arccos(
+def test_torch_instance_arccos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4218,7 +4207,7 @@ def test_torch_arccos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_acos_(
+def test_torch_instance_acos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4253,7 +4242,7 @@ def test_torch_acos_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_asin_(
+def test_torch_instance_asin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4288,7 +4277,7 @@ def test_torch_asin_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arcsin_(
+def test_torch_instance_arcsin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4322,7 +4311,7 @@ def test_torch_arcsin_(
         allow_inf=False,
     ),
 )
-def test_torch_atan_(
+def test_torch_instance_atan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4356,7 +4345,7 @@ def test_torch_atan_(
         allow_inf=False,
     ),
 )
-def test_torch_tan_(
+def test_torch_instance_tan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4391,7 +4380,7 @@ def test_torch_tan_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_atanh(
+def test_torch_instance_atanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4426,7 +4415,7 @@ def test_torch_atanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_atanh_(
+def test_torch_instance_atanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4461,7 +4450,7 @@ def test_torch_atanh_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arctanh(
+def test_torch_instance_arctanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4496,7 +4485,7 @@ def test_torch_arctanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arctanh_(
+def test_torch_instance_arctanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4533,7 +4522,7 @@ def test_torch_arctanh_(
         allow_inf=False,
     ),
 )
-def test_torch_pow(
+def test_torch_instance_pow(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4572,7 +4561,7 @@ def test_torch_pow(
         num_arrays=2,
     ),
 )
-def test_torch_pow_(
+def test_torch_instance_pow_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4611,7 +4600,7 @@ def test_torch_pow_(
         num_arrays=2,
     ),
 )
-def test_torch___pow__(
+def test_torch_special_pow(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4651,7 +4640,7 @@ def test_torch___pow__(
         min_value=1,
     ),
 )
-def test_torch___rpow__(
+def test_torch_special_rpow(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4691,7 +4680,7 @@ def test_torch___rpow__(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arccosh_(
+def test_torch_instance_arccosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4734,7 +4723,7 @@ def test_torch_arccosh_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_argmax(
+def test_torch_instance_argmax(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -4781,7 +4770,7 @@ def test_torch_argmax(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_argmin(
+def test_torch_instance_argmin(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -4828,7 +4817,7 @@ def test_torch_argmin(
     ),
     descending=st.booleans(),
 )
-def test_torch_argsort(
+def test_torch_instance_argsort(
     dtype_input_axis,
     descending,
     frontend_method_data,
@@ -4867,7 +4856,7 @@ def test_torch_argsort(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_arccosh(
+def test_torch_instance_arccosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4900,7 +4889,7 @@ def test_torch_arccosh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_ceil(
+def test_torch_instance_ceil(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4933,7 +4922,7 @@ def test_torch_ceil(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_argwhere(
+def test_torch_instance_argwhere(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -4971,7 +4960,7 @@ def test_torch_argwhere(
         force_int=True,
     ),
 )
-def test_torch_size(
+def test_torch_instance_size(
     dtype_and_x,
     dim,
     frontend_method_data,
@@ -5007,7 +4996,7 @@ def test_torch_size(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_min(
+def test_torch_instance_min(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -5048,7 +5037,7 @@ def _get_dtype_and_multiplicative_matrices(draw):
     method_name="matmul",
     dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
-def test_torch_matmul(
+def test_torch_instance_matmul(
     dtype_tensor1_tensor2,
     frontend_method_data,
     init_flags,
@@ -5100,7 +5089,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_permute(
+def test_torch_instance_permute(
     dtype_values_axis,
     frontend_method_data,
     init_flags,
@@ -5148,7 +5137,7 @@ def test_torch_permute(
     ),
     keepdims=st.booleans(),
 )
-def test_torch_mean(
+def test_torch_instance_mean(
     dtype_and_x,
     keepdims,
     frontend,
@@ -5187,7 +5176,7 @@ def test_torch_mean(
         max_value=1e04,
     ),
 )
-def test_torch_nanmean(
+def test_torch_instance_nanmean(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -5224,7 +5213,7 @@ def test_torch_nanmean(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_median(
+def test_torch_instance_median(
     dtype_input_axis,
     keepdim,
     frontend,
@@ -5272,7 +5261,7 @@ def test_torch_median(
         force_int=True,
     ),
 )
-def test_torch_transpose(
+def test_torch_instance_transpose(
     dtype_value,
     dim0,
     dim1,
@@ -5318,7 +5307,7 @@ def test_torch_transpose(
         force_int=True,
     ),
 )
-def test_torch_transpose_(
+def test_torch_instance_transpose_(
     dtype_value,
     dim0,
     dim1,
@@ -5357,7 +5346,7 @@ def test_torch_transpose_(
         shape=helpers.get_shape(min_num_dims=2, max_num_dims=2),
     ),
 )
-def test_torch_t(
+def test_torch_instance_t(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5398,7 +5387,7 @@ def test_torch_t(
         force_tuple=True,
     ),
 )
-def test_torch_flatten(
+def test_torch_instance_flatten(
     dtype_value,
     axes,
     frontend_method_data,
@@ -5442,7 +5431,7 @@ def test_torch_flatten(
     ),
     dtypes=_dtypes(),
 )
-def test_torch_cumsum(
+def test_torch_instance_cumsum(
     dtype_value,
     dim,
     dtypes,
@@ -5486,7 +5475,7 @@ def test_torch_cumsum(
         force_int=True,
     ),
 )
-def test_torch_cumsum_(
+def test_torch_instance_cumsum_(
     dtype_value,
     dim,
     frontend_method_data,
@@ -5530,7 +5519,7 @@ def test_torch_cumsum_(
     ),
     descending=st.booleans(),
 )
-def test_torch_sort(
+def test_torch_instance_sort(
     dtype_value,
     dim,
     descending,
@@ -5568,7 +5557,7 @@ def test_torch_sort(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_sigmoid(
+def test_torch_instance_sigmoid(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -5601,7 +5590,7 @@ def test_torch_sigmoid(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_sigmoid_(
+def test_torch_instance_sigmoid_(
     dtype_x,
     frontend_method_data,
     init_flags,
@@ -5639,7 +5628,7 @@ def test_torch_sigmoid_(
     ),
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_torch_softmax(
+def test_torch_instance_softmax(
     dtype_x_and_axis,
     dtype,
     frontend_method_data,
@@ -5694,7 +5683,7 @@ def _repeat_helper(draw):
     dtype_x_repeats=_repeat_helper(),
     unpack_repeat=st.booleans(),
 )
-def test_torch_repeat(
+def test_torch_instance_repeat(
     dtype_x_repeats,
     unpack_repeat,
     frontend_method_data,
@@ -5738,7 +5727,7 @@ def test_torch_repeat(
         force_int_axis=True,
     ),
 )
-def test_torch_unbind(
+def test_torch_instance_unbind(
     dtype_value_axis,
     frontend_method_data,
     init_flags,
@@ -5777,7 +5766,7 @@ def test_torch_unbind(
         allow_inf=False,
     ),
 )
-def test_torch___eq__(
+def test_torch_special_eq(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5813,7 +5802,7 @@ def test_torch___eq__(
         min_num_dims=2,
     ).filter(lambda s: s[1][0].shape[-1] == s[1][0].shape[-2]),
 )
-def test_torch_inverse(
+def test_torch_instance_inverse(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5849,7 +5838,7 @@ def test_torch_inverse(
         allow_inf=False,
     ),
 )
-def test_torch_neg(
+def test_torch_instance_neg(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -5885,7 +5874,7 @@ def test_torch_neg(
         allow_inf=False,
     ),
 )
-def test_torch___neg__(
+def test_torch_special_neg(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5918,7 +5907,7 @@ def test_torch___neg__(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_int(
+def test_torch_instance_int(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5951,7 +5940,7 @@ def test_torch_int(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_half(
+def test_torch_instance_half(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -5984,7 +5973,7 @@ def test_torch_half(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_bool(
+def test_torch_instance_bool(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6018,7 +6007,7 @@ def test_torch_bool(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_torch_type(
+def test_torch_instance_type(
     dtype_and_x,
     dtype,
     frontend_method_data,
@@ -6055,7 +6044,7 @@ def test_torch_type(
         num_arrays=2,
     ),
 )
-def test_torch_type_as(
+def test_torch_instance_type_as(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6090,7 +6079,7 @@ def test_torch_type_as(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_byte(
+def test_torch_instance_byte(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6127,7 +6116,7 @@ def test_torch_byte(
         allow_inf=False,
     ),
 )
-def test_torch_ne(
+def test_torch_instance_ne(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6166,7 +6155,7 @@ def test_torch_ne(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_squeeze(
+def test_torch_instance_squeeze(
     dtype_value_axis,
     frontend_method_data,
     init_flags,
@@ -6201,7 +6190,7 @@ def test_torch_squeeze(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_flip(
+def test_torch_instance_flip(
     dtype_values_axis,
     frontend_method_data,
     init_flags,
@@ -6237,7 +6226,7 @@ def test_torch_flip(
         min_num_dims=2,
     ),
 )
-def test_torch_fliplr(
+def test_torch_instance_fliplr(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6272,7 +6261,7 @@ def test_torch_fliplr(
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
 )
-def test_torch_tril(
+def test_torch_instance_tril(
     dtype_and_values,
     diagonal,
     frontend_method_data,
@@ -6346,7 +6335,7 @@ def test_torch_instance_tril_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_sqrt(
+def test_torch_instance_sqrt(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -6377,7 +6366,7 @@ def test_torch_sqrt(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_sqrt_(
+def test_torch_instance_sqrt_(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -6411,7 +6400,7 @@ def test_torch_sqrt_(
         indices_same_dims=True,
     ),
 )
-def test_torch_index_select(
+def test_torch_instance_index_select(
     params_indices_others,
     frontend_method_data,
     init_flags,
@@ -6501,7 +6490,7 @@ def _arrays_dim_idx_n_dtypes(draw):
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
     alpha=st.integers(min_value=1, max_value=2),
 )
-def test_torch_index_add_(
+def test_torch_instance_index_add_(
     *,
     xs_dtypes_dim_idx,
     alpha,
@@ -6544,7 +6533,7 @@ def test_torch_index_add_(
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
     alpha=st.integers(min_value=1, max_value=2),
 )
-def test_torch_index_add(
+def test_torch_instance_index_add(
     *,
     xs_dtypes_dim_idx,
     alpha,
@@ -6627,19 +6616,17 @@ def _get_clamp_inputs(draw):
     method_name="clamp",
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
-def test_torch_clamp(
+def test_torch_instance_clamp(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
-    backend_fw,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6660,7 +6647,7 @@ def test_torch_clamp(
     method_name="clamp_",
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
-def test_torch_clamp_(
+def test_torch_instance_clamp_(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,
@@ -6691,7 +6678,7 @@ def test_torch_clamp_(
     method_name="clip",
     input_and_ranges=_get_clamp_inputs(),
 )
-def test_torch_clip(
+def test_torch_instance_clip(
     input_and_ranges,
     frontend,
     frontend_method_data,
@@ -6722,7 +6709,7 @@ def test_torch_clip(
     method_name="clip_",
     input_and_ranges=_get_clamp_inputs(),
 )
-def test_torch_clip_(
+def test_torch_instance_clip_(
     input_and_ranges,
     frontend,
     frontend_method_data,
@@ -6759,7 +6746,7 @@ def test_torch_clip_(
         allow_inf=False,
     ),
 )
-def test_torch___gt__(
+def test_torch_special_gt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6798,7 +6785,7 @@ def test_torch___gt__(
         allow_inf=False,
     ),
 )
-def test_torch___ne__(
+def test_torch_special_ne(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6837,7 +6824,7 @@ def test_torch___ne__(
         allow_inf=False,
     ),
 )
-def test_torch___lt__(
+def test_torch_special_lt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6876,7 +6863,7 @@ def test_torch___lt__(
         allow_inf=False,
     ),
 )
-def test_torch___or__(
+def test_torch_special_or(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6909,7 +6896,7 @@ def test_torch___or__(
     method_name="where",
     broadcastables=_broadcastable_trio(),
 )
-def test_torch_where(
+def test_torch_instance_where(
     broadcastables,
     frontend_method_data,
     init_flags,
@@ -6946,7 +6933,7 @@ def test_torch_where(
         num_arrays=1,
     ),
 )
-def test_torch_clone(
+def test_torch_instance_clone(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -6980,7 +6967,7 @@ def test_torch_clone(
         num_arrays=1,
     ),
 )
-def test_torch___invert__(
+def test_torch_special_invert(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7014,7 +7001,7 @@ def test_torch___invert__(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_acosh(
+def test_torch_instance_acosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7057,7 +7044,7 @@ def _masked_fill_helper(draw):
     method_name="masked_fill",
     x_mask_val=_masked_fill_helper(),
 )
-def test_torch_masked_fill(
+def test_torch_instance_masked_fill(
     x_mask_val,
     frontend_method_data,
     init_flags,
@@ -7094,7 +7081,7 @@ def test_torch_masked_fill(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_acosh_(
+def test_torch_instance_acosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7127,7 +7114,7 @@ def test_torch_acosh_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_numpy(
+def test_torch_instance_numpy(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7168,7 +7155,7 @@ def test_torch_numpy(
         num_arrays=2,
     ),
 )
-def test_torch_atan2_(
+def test_torch_instance_atan2_(
     dtype_and_x, frontend_method_data, init_flags, method_flags, frontend, on_device
 ):
     input_dtype, x = dtype_and_x
@@ -7199,7 +7186,7 @@ def test_torch_atan2_(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_not_(
+def test_torch_instance_bitwise_not_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7233,7 +7220,7 @@ def test_torch_bitwise_not_(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_and_(
+def test_torch_instance_bitwise_and_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7272,7 +7259,7 @@ def test_torch_bitwise_and_(
         allow_inf=False,
     ),
 )
-def test_torch___and__(
+def test_torch_special_and(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7308,7 +7295,7 @@ def test_torch___and__(
         num_arrays=2,
     ),
 )
-def test_torch_bitwise_xor(
+def test_torch_instance_bitwise_xor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7350,7 +7337,7 @@ def test_torch_bitwise_xor(
     ),
     dtypes=_dtypes(),
 )
-def test_torch_cumprod(
+def test_torch_instance_cumprod(
     dtype_value,
     dim,
     dtypes,
@@ -7389,7 +7376,7 @@ def test_torch_cumprod(
         allow_inf=False,
     ),
 )
-def test_torch_relu(
+def test_torch_instance_relu(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7423,7 +7410,7 @@ def test_torch_relu(
         num_arrays=2,
     ),
 )
-def test_torch_fmin(
+def test_torch_instance_fmin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7464,7 +7451,7 @@ def test_torch_fmin(
         force_int=True,
     ),
 )
-def test_torch_count_nonzero(
+def test_torch_instance_count_nonzero(
     dtype_value,
     dim,
     frontend_method_data,
@@ -7498,7 +7485,7 @@ def test_torch_count_nonzero(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_exp(
+def test_torch_instance_exp(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7531,7 +7518,7 @@ def test_torch_exp(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_exp_(
+def test_torch_instance_exp_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7564,7 +7551,7 @@ def test_torch_exp_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_expm1(
+def test_torch_instance_expm1(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7598,7 +7585,7 @@ def test_torch_expm1(
         num_arrays=2,
     ),
 )
-def test_torch_mul(
+def test_torch_instance_mul(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7633,7 +7620,7 @@ def test_torch_mul(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_ceil_(
+def test_torch_instance_ceil_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7668,7 +7655,7 @@ def test_torch_ceil_(
         shared_dtype=True,
     ),
 )
-def test_torch_mul_(
+def test_torch_instance_mul_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7704,7 +7691,7 @@ def test_torch_mul_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_trunc(
+def test_torch_instance_trunc(
     dtype_value,
     frontend_method_data,
     init_flags,
@@ -7738,7 +7725,7 @@ def test_torch_trunc(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_trunc_(
+def test_torch_instance_trunc_(
     dtype_value,
     frontend_method_data,
     init_flags,
@@ -7772,7 +7759,7 @@ def test_torch_trunc_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_fix(
+def test_torch_instance_fix(
     dtype_value,
     frontend_method_data,
     init_flags,
@@ -7806,7 +7793,7 @@ def test_torch_fix(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_fix_(
+def test_torch_instance_fix_(
     dtype_value,
     frontend_method_data,
     init_flags,
@@ -7840,7 +7827,7 @@ def test_torch_fix_(
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
-def test_torch_round(
+def test_torch_instance_round(
     dtype_and_x,
     decimals,
     frontend_method_data,
@@ -7885,7 +7872,7 @@ def test_torch_round(
         safety_factor_scale="log",
     ),
 )
-def test_torch_cross(
+def test_torch_instance_cross(
     dtype_input_other_dim,
     frontend_method_data,
     init_flags,
@@ -7921,7 +7908,7 @@ def test_torch_cross(
     method_name="det",
     dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
-def test_torch_det(
+def test_torch_instance_det(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7955,7 +7942,7 @@ def test_torch_det(
         min_value=1,
     ),
 )
-def test_torch_reciprocal(
+def test_torch_instance_reciprocal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7989,7 +7976,7 @@ def test_torch_reciprocal(
     ),
     value=helpers.floats(min_value=1, max_value=10),
 )
-def test_torch_fill_(
+def test_torch_instance_fill_(
     dtype_and_x,
     value,
     frontend_method_data,
@@ -8025,7 +8012,7 @@ def test_torch_fill_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_nonzero(
+def test_torch_instance_nonzero(
     dtype_and_values,
     frontend_method_data,
     init_flags,
@@ -8056,7 +8043,7 @@ def test_torch_nonzero(
     method_name="mm",
     dtype_xy=_get_dtype_input_and_matrices(),
 )
-def test_torch_mm(
+def test_torch_instance_mm(
     dtype_xy,
     frontend_method_data,
     init_flags,
@@ -8091,7 +8078,7 @@ def test_torch_mm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_square(
+def test_torch_instance_square(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -8123,41 +8110,7 @@ def test_torch_square(
         allow_inf=False,
     ),
 )
-def test_torch_log10(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# log10_ tests
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="log10_",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
-    ),
-)
-def test_torch_instance_log10_(
+def test_torch_instance_log10(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8193,7 +8146,7 @@ def test_torch_instance_log10_(
         allow_inf=False,
     ),
 )
-def test_torch_short(
+def test_torch_instance_short(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8237,7 +8190,7 @@ def test_torch_short(
     dtype=helpers.get_dtypes("float", none=True, full=False),
     keepdims=st.booleans(),
 )
-def test_torch_prod(
+def test_torch_instance_prod(
     dtype_x_axis,
     dtype,
     keepdims,
@@ -8282,7 +8235,7 @@ def test_torch_prod(
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
-def test_torch_div(
+def test_torch_instance_div(
     dtype_and_x,
     rounding_mode,
     frontend,
@@ -8324,7 +8277,7 @@ def test_torch_div(
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
-def test_torch_div_(
+def test_torch_instance_div_(
     dtype_and_x,
     rounding_mode,
     frontend,
@@ -8363,7 +8316,7 @@ def test_torch_div_(
     mean=helpers.floats(min_value=-1, max_value=1),
     std=helpers.floats(min_value=0, max_value=1),
 )
-def test_torch_normal_(
+def test_torch_instance_normal_(
     dtype_and_x,
     mean,
     std,
@@ -8420,7 +8373,7 @@ def test_torch_normal_(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_addcdiv(
+def test_torch_instance_addcdiv(
     dtype_and_x,
     value,
     frontend,
@@ -8465,7 +8418,7 @@ def test_torch_addcdiv(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_addcmul(
+def test_torch_instance_addcmul(
     dtype_and_x,
     value,
     frontend,
@@ -8509,7 +8462,7 @@ def test_torch_addcmul(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_addcmul_(
+def test_torch_instance_addcmul_(
     dtype_and_x,
     value,
     frontend,
@@ -8547,7 +8500,7 @@ def test_torch_addcmul_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_sign(
+def test_torch_instance_sign(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -8578,7 +8531,7 @@ def test_torch_sign(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_sign_(
+def test_torch_instance_sign_(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -8607,7 +8560,7 @@ def test_torch_sign_(
     method_name="std",
     dtype_and_x=_statistical_dtype_values(function="std"),
 )
-def test_torch_std(
+def test_torch_instance_std(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -8645,7 +8598,7 @@ def test_torch_std(
         max_value=100,
     ),
 )
-def test_torch_fmod(
+def test_torch_instance_fmod(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -8681,7 +8634,7 @@ def test_torch_fmod(
         max_value=100,
     ),
 )
-def test_torch_fmod_(
+def test_torch_instance_fmod_(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -8714,7 +8667,7 @@ def test_torch_fmod_(
     largest=st.booleans(),
     sorted=st.booleans(),
 )
-def test_torch_topk(
+def test_torch_instance_topk(
     dtype_x_axis_k,
     largest,
     sorted,
@@ -8755,7 +8708,7 @@ def test_torch_topk(
         shared_dtype=True,
     ),
 )
-def test_torch_bitwise_right_shift(
+def test_torch_instance_bitwise_right_shift(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8793,7 +8746,7 @@ def test_torch_bitwise_right_shift(
     method_name="logdet",
     dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
-def test_torch_logdet(
+def test_torch_instance_logdet(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8829,7 +8782,7 @@ def test_torch_logdet(
         num_arrays=2,
     ),
 )
-def test_torch_multiply(
+def test_torch_instance_multiply(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8864,7 +8817,7 @@ def test_torch_multiply(
     keepdim=st.booleans(),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_torch_norm(
+def test_torch_instance_norm(
     p_dtype_x_axis,
     keepdim,
     dtype,
@@ -8903,7 +8856,7 @@ def test_torch_norm(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_isinf(
+def test_torch_instance_isinf(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8934,7 +8887,7 @@ def test_torch_isinf(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_is_complex(
+def test_torch_instance_is_complex(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8967,7 +8920,7 @@ def test_torch_is_complex(
         num_arrays=2,
     ),
 )
-def test_torch_copysign(
+def test_torch_instance_copysign(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9003,7 +8956,7 @@ def test_torch_copysign(
         num_arrays=2,
     ),
 )
-def test_torch_not_equal(
+def test_torch_instance_not_equal(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -9079,7 +9032,7 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
         allow_infinity=False,
     ),
 )
-def test_torch_addr(
+def test_torch_instance_addr(
     dtype_and_vecs,
     beta,
     alpha,
@@ -9122,7 +9075,7 @@ def test_torch_addr(
         large_abs_safety_factor=12,
     ),
 )
-def test_torch_logical_not_(
+def test_torch_instance_logical_not_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9155,7 +9108,7 @@ def test_torch_logical_not_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_rsqrt(
+def test_torch_instance_rsqrt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9193,7 +9146,7 @@ def test_torch_rsqrt(
         max_value=1e04,
     ),
 )
-def test_torch_equal(
+def test_torch_instance_equal(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -9267,7 +9220,7 @@ def test_torch_instance_erf(
         allow_inf=False,
     ),
 )
-def test_torch_greater(
+def test_torch_instance_greater(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9306,7 +9259,7 @@ def test_torch_greater(
         allow_inf=False,
     ),
 )
-def test_torch_greater_(
+def test_torch_instance_greater_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9345,7 +9298,7 @@ def test_torch_greater_(
         allow_inf=False,
     ),
 )
-def test_torch_greater_equal(
+def test_torch_instance_greater_equal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9384,7 +9337,7 @@ def test_torch_greater_equal(
         allow_inf=False,
     ),
 )
-def test_torch_greater_equal_(
+def test_torch_instance_greater_equal_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9423,7 +9376,7 @@ def test_torch_greater_equal_(
         allow_inf=False,
     ),
 )
-def test_torch_less(
+def test_torch_instance_less(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9462,7 +9415,7 @@ def test_torch_less(
         allow_inf=False,
     ),
 )
-def test_torch_less_(
+def test_torch_instance_less_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9501,7 +9454,7 @@ def test_torch_less_(
         allow_inf=False,
     ),
 )
-def test_torch_less_equal(
+def test_torch_instance_less_equal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9540,7 +9493,7 @@ def test_torch_less_equal(
         allow_inf=False,
     ),
 )
-def test_torch_less_equal_(
+def test_torch_instance_less_equal_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9587,7 +9540,7 @@ def test_torch_less_equal_(
         allow_infinity=False,
     ),
 )
-def test_torch_addr_(
+def test_torch_instance_addr_(
     dtype_and_vecs,
     beta,
     alpha,
@@ -9631,7 +9584,7 @@ def test_torch_addr_(
         allow_inf=False,
     ),
 )
-def test_torch_eq_(
+def test_torch_special_eq_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9668,7 +9621,7 @@ def test_torch_eq_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_var(
+def test_torch_instance_var(
     dtype_and_x,
     keepdim,
     frontend,
@@ -9701,7 +9654,7 @@ def test_torch_var(
     method_name="narrow",
     dtype_input_dim_start_length=_dtype_input_dim_start_length(),
 )
-def test_torch_narrow(
+def test_torch_instance_narrow(
     dtype_input_dim_start_length,
     frontend,
     frontend_method_data,
@@ -9733,7 +9686,7 @@ def test_torch_narrow(
     method_name="as_strided",
     dtype_x_and_other=_as_strided_helper(),
 )
-def test_torch_as_strided(
+def test_torch_instance_as_strided(
     dtype_x_and_other,
     frontend,
     frontend_method_data,
@@ -9770,7 +9723,7 @@ def test_torch_as_strided(
         force_int_axis=True,
     ),
 )
-def test_torch_stride(
+def test_torch_instance_stride(
     dtype_value_axis,
     frontend,
     frontend_method_data,
@@ -9800,7 +9753,7 @@ def test_torch_stride(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_log1p(
+def test_torch_instance_log1p(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -9842,7 +9795,7 @@ def test_torch_log1p(
         allow_infinity=False,
     ),
 )
-def test_torch_baddbmm(
+def test_torch_instance_baddbmm(
     dtype_and_matrices,
     beta,
     alpha,
@@ -9879,7 +9832,7 @@ def test_torch_baddbmm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_floor_(
+def test_torch_instance_floor_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9913,7 +9866,7 @@ def test_torch_floor_(
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
 )
-def test_torch_diag(
+def test_torch_instance_diag(
     dtype_and_values,
     diagonal,
     frontend_method_data,
@@ -9940,67 +9893,6 @@ def test_torch_diag(
     )
 
 
-# diagonal
-@st.composite
-def dims_and_offset(draw, shape):
-    shape_actual = draw(shape)
-    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
-    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
-    offset = draw(
-        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
-    )
-    return dim1, dim2, offset
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="diagonal",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ),
-    dims_and_offset=dims_and_offset(
-        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
-    ),
-)
-def test_torch_diagonal(
-    dtype_and_values,
-    dims_and_offset,
-    frontend,
-    frontend_method_data,
-    backend_fw,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, value = dtype_and_values
-    dim1, dim2, offset = dims_and_offset
-    input = value[0]
-    num_dims = len(np.shape(input))
-    assume(dim1 != dim2)
-    if dim1 < 0:
-        assume(dim1 + num_dims != dim2)
-    if dim2 < 0:
-        assume(dim1 != dim2 + num_dims)
-    helpers.test_frontend_method(
-        init_input_dtypes=[input_dtype[0]],
-        init_all_as_kwargs_np={"data": input},
-        method_input_dtypes=[input_dtype[0]],
-        method_all_as_kwargs_np={
-            "offset": offset,
-            "dim1": dim1,
-            "dim2": dim2,
-        },
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        backend_to_test=backend_fw,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        on_device=on_device,
-    )
-
-
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -10011,7 +9903,7 @@ def test_torch_diagonal(
         indices_same_dims=True,
     ),
 )
-def test_torch_gather(
+def test_torch_instance_gather(
     params_indices_others,
     frontend,
     frontend_method_data,
@@ -10050,7 +9942,7 @@ def test_torch_gather(
         indices_same_dims=True,
     ),
 )
-def test_torch_take_along_dim(
+def test_torch_instance_take_along_dim(
     dtype_indices_axis,
     frontend_method_data,
     init_flags,
@@ -10126,7 +10018,7 @@ def test_torch_take_along_dim(
         force_int=True,
     ),
 )
-def test_torch_movedim(
+def test_torch_instance_movedim(
     dtype_and_input,
     source,
     destination,
@@ -10167,7 +10059,7 @@ def test_torch_movedim(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_addcdiv_(
+def test_torch_instance_addcdiv_(
     dtype_and_x,
     value,
     frontend,
@@ -10204,7 +10096,7 @@ def test_torch_addcdiv_(
     dtype_and_x=_get_dtype_and_matrix(square=True),
     upper=st.booleans(),
 )
-def test_torch_cholesky(
+def test_torch_instance_cholesky(
     dtype_and_x,
     upper,
     frontend,
@@ -10245,7 +10137,7 @@ def test_torch_cholesky(
         num_arrays=2,
     ),
 )
-def test_torch_heaviside(
+def test_torch_instance_heaviside(
     dtype_and_values,
     frontend,
     frontend_method_data,
@@ -10281,7 +10173,7 @@ def test_torch_heaviside(
         shape=(1,),
     ),
 )
-def test_torch_dot(
+def test_torch_instance_dot(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -10320,7 +10212,7 @@ def test_torch_dot(
         allow_neg=False,
     ),
 )
-def test_torch_tile(
+def test_torch_instance_tile(
     dtype_and_values,
     reps,
     frontend,
@@ -10451,202 +10343,4 @@ def test_torch_instance_backward(
         rtol=1e-3,
         atol=1e-3,
         ground_truth_backend="torch",
-    )
-
-
-# angle
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="angle",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=["float64", "complex64", "complex128"],
-    ),
-)
-def test_torch_instance_angle(
-    dtype_and_values,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, values = dtype_and_values
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": values[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend_method_data=frontend_method_data,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-# logaddexp
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="logaddexp",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        min_num_dims=1,
-        min_value=-100,
-        max_value=100,
-        shared_dtype=True,
-    ),
-)
-def test_torch_instance_logaddexp(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-    backend_fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-            "other": x[1],
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="adjoint",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"),
-        min_num_dims=2,
-        min_dim_size=2,
-    ),
-)
-def test_torch_instance_adjoint(
-    dtype_and_values,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, values = dtype_and_values
-
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": values[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend_method_data=frontend_method_data,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="conj",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
-    ),
-)
-def test_torch_instance_conj(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
-    )
-
-
-@st.composite
-def _get_clip_min_inputs(draw):
-    shape = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
-        )
-    )
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=shape,
-        )
-    )
-
-    min = draw(
-        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=0, max_value=25)
-    )
-
-    return x_dtype, x, min
-
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="clamp_min",
-    input_and_ranges=_get_clip_min_inputs(),
-)
-def test_torch_instance_clamp_min(
-    input_and_ranges,
-    frontend_method_data,
-    init_flags,
-    backend_fw,
-    frontend,
-    on_device,
-    method_flags,
-):
-    x_dtype, x, min = input_and_ranges
-    helpers.test_frontend_method(
-        init_input_dtypes=x_dtype,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=x_dtype,
-        method_all_as_kwargs_np={
-            "min": min,
-        },
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
     )

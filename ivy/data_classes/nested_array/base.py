@@ -34,15 +34,11 @@ class NestedArrayBase(abc.ABC):
         # convert all the leaf lists to ivy arrays, determine inner_shape and depth
         det_inner_shape = list()
 
-        # ToDo: add check for depth being the same for all nests
         def _seq_to_ivy(x, depth=0):
             if nested_rank is not None and depth >= nested_rank:
                 x = ivy.array(x, dtype=dtype, device=device)
                 depth += x.ndim - 1
-                if x.ndim > 1:
-                    det_inner_shape.append(list(x.shape[1:]))
-                else:
-                    det_inner_shape.append(list())
+                det_inner_shape.append(list(x.shape[1:]))
             elif (
                 isinstance(x, (list, tuple))
                 and len(x) != 0
@@ -56,10 +52,7 @@ class NestedArrayBase(abc.ABC):
                 depth = depth_ret if depth_ret else depth
             else:
                 x = ivy.array(x, dtype=dtype, device=device)
-                if x.ndim > 1:
-                    det_inner_shape.append(list(x.shape[1:]))
-                else:
-                    det_inner_shape.append(list())
+                det_inner_shape.append(list(x.shape[1:]))
             return x, depth
 
         if isinstance(data, (list, tuple)):
@@ -103,77 +96,23 @@ class NestedArrayBase(abc.ABC):
         return cls(data, nested_rank, inner_shape, dtype, device, internal=True)
 
     @staticmethod
-    def ragged_multi_map_in_function(fn, *args, **kwargs):
+    def nested_multi_map_in_function(fn_name, *args, **kwargs):
         arg_nest_idxs = ivy.nested_argwhere(
-            args, ivy.is_ivy_nested_array, to_ignore=ivy.NestedArray
+            args, ivy.is_ivy_nested_array, to_ignore=ivy.Container
         )
         kwarg_nest_idxs = ivy.nested_argwhere(
-            kwargs, ivy.is_ivy_nested_array, to_ignore=ivy.NestedArray
+            kwargs, ivy.is_ivy_nested_array, to_ignore=ivy.Container
         )
         # retrieve all the nested_array in args and kwargs
         arg_nest = ivy.multi_index_nest(args, arg_nest_idxs)
         kwarg_nest = ivy.multi_index_nest(kwargs, kwarg_nest_idxs)
-        num_arg_nest, num_kwarg_nest = len(arg_nest), len(kwarg_nest)
-        num_nest = num_arg_nest + num_kwarg_nest
-        inspect_fn = fn
-        if isinstance(fn, str):
-            inspect_fn = ivy.__dict__[fn]
-        nests = arg_nest + kwarg_nest
+        num_nest = len(arg_nest) + len(kwarg_nest)
+        fn = ivy.__dict__[fn_name]
 
-        def map_fn(vals):
-            arg_vals = vals[:num_arg_nest]
-            a = ivy.copy_nest(args, to_mutable=True)
-            ivy.set_nest_at_indices(a, arg_nest_idxs, arg_vals)
-            kwarg_vals = vals[num_arg_nest:]
-            kw = ivy.copy_nest(kwargs, to_mutable=True)
-            ivy.set_nest_at_indices(kw, kwarg_nest_idxs, kwarg_vals)
-            return inspect_fn(*a, **kw)
-
-        if num_nest == 0:
-            raise Exception(
-                "No RaggedArrays found in args or kwargs of function {}".format(fn)
+        if num_nest == 1:
+            return ivy.nested_map(
+                fn,
             )
-        ret = ivy.NestedArray.ragged_multi_map(map_fn, nests)
-        return ret
-
-    @staticmethod
-    def ragged_multi_map(fn, ragged_arrays):
-        args = list()
-        for ragged in ragged_arrays:
-            args.append(ivy.copy_nest(ragged.data))
-        arg0 = ragged_arrays[0]
-        ret = ivy.nested_multi_map(lambda x, _: fn(x), args)
-        # infer dtype, shape, and device from the first array in the ret data
-        arr0_id = ivy.nested_argwhere(ret, ivy.is_ivy_array, stop_after_n_found=1)[0]
-        arr0 = ivy.index_nest(ret, arr0_id)
-        inner_shape = arr0.shape.as_list()[1:]
-        ragged_ret = ivy.NestedArray.nested_array(
-            ret, arg0.nested_rank, inner_shape, arr0.dtype, arr0.device
-        )
-        return ragged_ret
-
-    @staticmethod
-    def replace_ivy_arrays(ragged_array, arrays):
-        data = ragged_array.data
-        ivy_idxs = ivy.nested_argwhere(data, ivy.is_ivy_array)
-        arr0 = arrays[0]
-        inner_shape, dev, dtype = arr0.shape.as_list(), arr0.device, arr0.dtype
-        ret = ivy.set_nest_at_indices(data, ivy_idxs, arrays, shallow=False)
-        return ivy.NestedArray.nested_array(
-            ret, ragged_array.nested_rank, inner_shape, dtype, dev
-        )
-
-    def ragged_map(self, fn):
-        arg = ivy.copy_nest(self._data)
-        ivy.nested_map(arg, lambda x: fn(x), shallow=True)
-        # infer dtype, shape, and device from the first array in the ret data
-        arr0_id = ivy.nested_argwhere(arg, ivy.is_ivy_array, stop_after_n_found=1)[0]
-        arr0 = ivy.index_nest(arg, arr0_id)
-        inner_shape = arr0.shape.as_list()[1:]
-        ragged_ret = ivy.NestedArray.nested_array(
-            arg, self._nested_rank, inner_shape, arr0.dtype, arr0.device
-        )
-        return ragged_ret
 
     def unbind(self):
         return tuple(ivy.copy_nest(self._data))

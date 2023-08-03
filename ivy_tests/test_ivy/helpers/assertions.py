@@ -11,12 +11,7 @@ TOLERANCE_DICT = {
 
 
 def assert_all_close(
-    ret_np,
-    ret_from_gt_np,
-    backend: str,
-    rtol=1e-05,
-    atol=1e-08,
-    ground_truth_backend="TensorFlow",
+    ret_np, ret_from_gt_np, rtol=1e-05, atol=1e-08, ground_truth_backend="TensorFlow"
 ):
     """
     Match the ret_np and ret_from_gt_np inputs element-by-element to ensure that they
@@ -48,24 +43,23 @@ def assert_all_close(
         "the backend {} returned a {} datatype".format(
             ground_truth_backend,
             ret_from_gt_dtype,
-            backend,
+            ivy.current_backend_str(),
             ret_dtype,
         )
     )
-    # TODO eanble
-    # if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
-    #     ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
-    # else:
-    if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
-        ret_np = ret_np.astype("float64")
-        ret_from_gt_np = ret_from_gt_np.astype("float64")
-    assert np.allclose(
-        np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
-    ), (
-        f" the results from backend {backend} "
-        f"and ground truth framework {ground_truth_backend} "
-        f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
-    )
+    if ivy.is_ivy_container(ret_np) and ivy.is_ivy_container(ret_from_gt_np):
+        ivy.Container.cont_multi_map(assert_all_close, [ret_np, ret_from_gt_np])
+    else:
+        if ret_np.dtype == "bfloat16" or ret_from_gt_np.dtype == "bfloat16":
+            ret_np = ret_np.astype("float64")
+            ret_from_gt_np = ret_from_gt_np.astype("float64")
+        assert np.allclose(
+            np.nan_to_num(ret_np), np.nan_to_num(ret_from_gt_np), rtol=rtol, atol=atol
+        ), (
+            f" the results from backend {ivy.current_backend_str()} "
+            f"and ground truth framework {ground_truth_backend} "
+            f"do not match\n {ret_np}!={ret_from_gt_np} \n\n"
+        )
 
 
 def assert_same_type_and_shape(values, this_key_chain=None):
@@ -90,7 +84,6 @@ def value_test(
     ret_np_from_gt_flat,
     rtol=None,
     atol=1e-6,
-    backend: str,
     ground_truth_backend="TensorFlow",
 ):
     """
@@ -128,7 +121,7 @@ def value_test(
         "framework {} does not match\n\n"
         "len(ret_np_flat) != len(ret_np_from_gt_flat):\n\n"
         "ret_np_flat:\n\n{}\n\nret_np_from_gt_flat:\n\n{}".format(
-            backend,
+            ivy.current_backend_str(),
             ground_truth_backend,
             ret_np_flat,
             ret_np_from_gt_flat,
@@ -141,7 +134,6 @@ def value_test(
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
-                backend=backend,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,
@@ -151,7 +143,6 @@ def value_test(
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
-                backend=backend,
                 rtol=rtol,
                 atol=atol,
                 ground_truth_backend=ground_truth_backend,

@@ -193,7 +193,7 @@ are included as nodes or "baked" into the graph.
 
     def fn(x):
         a = torch.randint(0, 100, size=[1])
-        z = x ** a
+        z = x * a
         return z + torch.rand([1])
         
     comp_func = ivy.compile(fn, include_generators=True, args=(x,))

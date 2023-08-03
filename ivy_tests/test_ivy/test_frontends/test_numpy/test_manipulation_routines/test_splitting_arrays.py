@@ -38,12 +38,10 @@ def test_numpy_split(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, value = dtype_value
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -82,13 +80,11 @@ def test_numpy_array_split(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, value = dtype_value
     assume(isinstance(indices_or_sections, int))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -119,14 +115,12 @@ def test_numpy_dsplit(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, value = dtype_value
     if isinstance(indices_or_sections, np.ndarray):
         assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -156,14 +150,12 @@ def test_numpy_vsplit(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, value = dtype_value
     if isinstance(indices_or_sections, np.ndarray):
         assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -193,14 +185,12 @@ def test_numpy_hsplit(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, value = dtype_value
     if isinstance(indices_or_sections, np.ndarray):
         assume(indices_or_sections.ndim == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

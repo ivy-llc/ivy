@@ -28,7 +28,6 @@ def test_gelu(
     test_gradients,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -36,7 +35,6 @@ def test_gelu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -72,7 +70,6 @@ def test_geglu(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -82,7 +79,6 @@ def test_geglu(
     # last dim must be even, this could replaced with a private helper
     assume(x[0].shape[-1] % 2 == 0)
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -116,7 +112,6 @@ def test_relu(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -124,7 +119,6 @@ def test_relu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -162,7 +156,6 @@ def test_leaky_relu(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -170,7 +163,6 @@ def test_leaky_relu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -207,7 +199,6 @@ def test_softmax(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -215,7 +206,6 @@ def test_softmax(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -254,7 +244,6 @@ def test_log_softmax(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -262,7 +251,6 @@ def test_log_softmax(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -301,7 +289,6 @@ def test_softplus(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -309,7 +296,6 @@ def test_softplus(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -343,7 +329,6 @@ def test_mish(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -351,7 +336,6 @@ def test_mish(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -385,7 +369,6 @@ def test_silu(
     test_gradients,
     class_name,
     method_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -393,7 +376,6 @@ def test_silu(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -659,94 +641,6 @@ def test_prelu(
         method_input_dtypes=input_dtype,
         init_all_as_kwargs_np={},
         method_all_as_kwargs_np={"x": x[0], "slope": x[1]},
-        class_name=class_name,
-        method_name=method_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=test_gradients,
-        on_device=on_device,
-    )
-
-
-# SeLU
-@handle_method(
-    method_tree="stateful.activations.SeLU.__call__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-        min_num_dims=2,
-    ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="SeLU._forward"),
-    test_gradients=st.just(True),
-)
-def test_selu(
-    *,
-    dtype_and_x,
-    test_gradients,
-    class_name,
-    method_name,
-    ground_truth_backend,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_method(
-        ground_truth_backend=ground_truth_backend,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_input_dtypes=input_dtype,
-        method_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={},
-        method_all_as_kwargs_np={"x": x[0]},
-        class_name=class_name,
-        method_name=method_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=test_gradients,
-        on_device=on_device,
-    )
-
-
-# ELU
-@handle_method(
-    method_tree="stateful.activations.ELU.__call__",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=2,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
-    ),
-    method_num_positional_args=helpers.num_positional_args(fn_name="ELU._forward"),
-    test_gradients=st.just(True),
-    alpha=helpers.floats(min_value=0.1, max_value=1),
-)
-def test_elu(
-    *,
-    dtype_and_x,
-    alpha,
-    test_gradients,
-    class_name,
-    method_name,
-    ground_truth_backend,
-    init_flags,
-    method_flags,
-    on_device,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_method(
-        ground_truth_backend=ground_truth_backend,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        init_input_dtypes=input_dtype,
-        method_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={},
-        method_all_as_kwargs_np={"x": x[0], "alpha": alpha},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,

@@ -37,28 +37,28 @@ def test_memory_id(name, compiled_backends):
 
 
 def test_prevent_access(backend_fw):
-    local_ivy = ivy.with_backend(backend_fw)
+    local_ivy = ivy.with_backend(backend_fw.backend)
     with pytest.raises(RuntimeError):
-        local_ivy.with_backend(backend_fw)
+        local_ivy.with_backend(backend_fw.backend)
 
     with pytest.raises(RuntimeError):
-        local_ivy.set_backend(backend_fw)
+        local_ivy.set_backend(backend_fw.backend)
 
 
 def test_with_backend_cached(backend_fw):
-    non_cached_local_ivy = ivy.with_backend(backend_fw)
-    cached_local_ivy = ivy.with_backend(backend_fw, cached=True)
+    non_cached_local_ivy = ivy.with_backend(backend_fw.backend)
+    cached_local_ivy = ivy.with_backend(backend_fw.backend, cached=True)
     assert non_cached_local_ivy == cached_local_ivy
 
 
 def test_is_local(backend_fw):
-    local_ivy = ivy.with_backend(backend_fw, cached=True)
+    local_ivy = ivy.with_backend(backend_fw.backend, cached=True)
     assert local_ivy.is_local()
 
 
 def test_with_backend_array(backend_fw):
-    local_ivy = ivy.with_backend(backend_fw, cached=True)
+    local_ivy = ivy.with_backend(backend_fw.backend, cached=True)
     local_x = local_ivy.array([1, 2, 3, 4])
-    ivy.set_backend(backend_fw)
+    ivy.set_backend(backend_fw.backend)
     x = ivy.array([1, 2, 3, 4])
     assert np.allclose(x._data, local_x._data)

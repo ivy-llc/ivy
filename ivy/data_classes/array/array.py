@@ -156,7 +156,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self._backend = ivy.backend
+        self.backend = ivy.current_backend_str()
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -175,27 +175,27 @@ class Array(
     # ---------- #
 
     @property
-    def backend(self):
-        return self._backend
-
-    @property
     def dynamic_backend(self):
         return self._dynamic_backend
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
+        from ivy.functional.ivy.gradients import _variable
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
-            self._backend = _determine_backend_from_args(self).backend
+            self._backend = _determine_backend_from_args(self)
 
         else:
-            ivy_backend = ivy.with_backend(self._backend)
-            to_numpy = ivy_backend.to_numpy
+            is_variable = self._backend.is_variable
+            to_numpy = self._backend.to_numpy
+            variable_data = self._backend.variable_data
 
-            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
-                native_data = _variable_data(self.data)
+            if is_variable(self.data) and not (
+                str(self._backend).__contains__("jax")
+                or str(self._backend).__contains__("numpy")
+            ):
+                native_data = variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
                 self._data = _variable(new_arr).data
@@ -203,8 +203,6 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
-
-            self._backend = ivy.backend
 
         self._dynamic_backend = value
 
@@ -277,9 +275,7 @@ class Array(
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
         if self._strides is None:
-            # for this to work consistently for non-contiguous arrays
-            # we must pass self to ivy.strides, not self.data
-            self._strides = ivy.strides(self)
+            self._strides = ivy.strides(self._data)
         return self._strides
 
     @property

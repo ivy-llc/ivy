@@ -26,14 +26,12 @@ def test_numpy_take_along_axis(
     dtype_x_indices_axis,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -60,7 +58,6 @@ def test_numpy_diag(
     k,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -68,7 +65,6 @@ def test_numpy_diag(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -96,14 +92,12 @@ def test_numpy_diagonal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         on_device=on_device,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
@@ -132,13 +126,11 @@ def test_numpy_put_along_axis(
     frontend,
     fn_tree,
     on_device,
-    backend_fw,
 ):
     dtypes, x, indices, axis, values, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -172,7 +164,6 @@ def test_numpy_compress(
     condition,
     frontend,
     test_flags,
-    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -180,7 +171,6 @@ def test_numpy_compress(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

@@ -31,7 +31,6 @@ def test_numpy_equal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -41,7 +40,6 @@ def test_numpy_equal(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -72,12 +70,10 @@ def test_numpy_array_equal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -111,7 +107,6 @@ def test_numpy_greater(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -121,7 +116,6 @@ def test_numpy_greater(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -160,7 +154,6 @@ def test_numpy_greater_equal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -170,7 +163,6 @@ def test_numpy_greater_equal(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -209,7 +201,6 @@ def test_numpy_less(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -219,7 +210,6 @@ def test_numpy_less(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -258,7 +248,6 @@ def test_numpy_less_equal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -269,7 +258,6 @@ def test_numpy_less_equal(
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -308,7 +296,6 @@ def test_numpy_not_equal(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
     where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
@@ -319,7 +306,6 @@ def test_numpy_not_equal(
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -349,12 +335,10 @@ def test_numpy_array_equiv(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

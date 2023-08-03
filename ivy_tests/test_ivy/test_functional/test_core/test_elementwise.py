@@ -9,8 +9,6 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
-import ivy_tests.test_ivy.helpers.globals as test_globals
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
@@ -46,7 +44,7 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -68,7 +66,7 @@ def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -91,7 +89,7 @@ def test_acos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -118,7 +116,7 @@ def test_add(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -143,7 +141,7 @@ def test_asin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -166,7 +164,7 @@ def test_asinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -185,7 +183,7 @@ def test_atan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -212,7 +210,7 @@ def test_atan2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -232,7 +230,7 @@ def test_atanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -256,7 +254,7 @@ def test_bitwise_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -298,7 +296,7 @@ def test_bitwise_left_shift(*, dtype_and_x, test_flags, backend_fw, fn_name, on_
         # to dtype bits - 1 while other backends overflow to zero
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -320,7 +318,7 @@ def test_bitwise_invert(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devi
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -342,7 +340,7 @@ def test_bitwise_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -374,7 +372,7 @@ def test_bitwise_right_shift(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -397,7 +395,7 @@ def test_bitwise_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -419,7 +417,7 @@ def test_ceil(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -436,7 +434,7 @@ def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -453,7 +451,7 @@ def test_cosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -479,7 +477,7 @@ def test_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -500,7 +498,7 @@ def test_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -518,7 +516,7 @@ def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -545,7 +543,7 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
@@ -561,7 +559,7 @@ def test_expm1(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -583,7 +581,7 @@ def test_floor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -610,7 +608,7 @@ def test_floor_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -642,7 +640,7 @@ def test_fmin(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -664,7 +662,7 @@ def test_greater(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -689,7 +687,7 @@ def test_greater_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_devic
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -710,7 +708,7 @@ def test_isfinite(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -741,7 +739,7 @@ def test_isinf(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -763,7 +761,7 @@ def test_isnan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -789,7 +787,7 @@ def test_less(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -814,7 +812,7 @@ def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -834,7 +832,7 @@ def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -857,7 +855,7 @@ def test_log1p(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -876,7 +874,7 @@ def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -896,7 +894,7 @@ def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -921,7 +919,7 @@ def test_logaddexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -951,7 +949,7 @@ def test_logaddexp2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-02,
@@ -975,7 +973,7 @@ def test_logical_and(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -994,7 +992,7 @@ def test_logical_not(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1015,7 +1013,7 @@ def test_logical_or(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1037,7 +1035,7 @@ def test_logical_xor(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device)
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1058,7 +1056,7 @@ def test_multiply(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1078,7 +1076,7 @@ def test_negative(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1119,7 +1117,7 @@ def test_nan_to_num(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1144,7 +1142,7 @@ def test_not_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1164,7 +1162,7 @@ def test_positive(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1187,9 +1185,8 @@ def pow_helper(draw, available_dtypes=None):
 
     def cast_filter(dtype1_x1_dtype2):
         dtype1, _, dtype2 = dtype1_x1_dtype2
-        with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-            if ivy_backend.can_cast(dtype1, dtype2):
-                return True
+        if ivy.can_cast(dtype1, dtype2):
+            return True
         return False
 
     dtype1, x1, dtype2 = draw(
@@ -1197,12 +1194,10 @@ def pow_helper(draw, available_dtypes=None):
             cast_filter
         )
     )
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_int_dtype(dtype2):
-            max_val = ivy_backend.iinfo(dtype2).max
-        else:
-            max_val = ivy_backend.finfo(dtype2).max
-
+    if ivy.is_int_dtype(dtype2):
+        max_val = ivy.iinfo(dtype2).max
+    else:
+        max_val = ivy.finfo(dtype2).max
     max_x1 = np.max(np.abs(x1[0]))
     if max_x1 in [0, 1]:
         max_value = None
@@ -1252,7 +1247,7 @@ def test_pow(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1274,7 +1269,7 @@ def test_real(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1305,7 +1300,7 @@ def test_remainder(*, dtype_and_x, modulus, test_flags, backend_fw, fn_name, on_
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1330,7 +1325,7 @@ def test_round(*, dtype_and_x, decimals, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1355,7 +1350,7 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1373,7 +1368,7 @@ def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1390,7 +1385,7 @@ def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1411,7 +1406,7 @@ def test_square(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1430,7 +1425,7 @@ def test_sqrt(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1456,7 +1451,7 @@ def test_subtract(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_dev
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1477,7 +1472,7 @@ def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1496,7 +1491,7 @@ def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1564,7 +1559,7 @@ def test_trapz(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
@@ -1587,7 +1582,7 @@ def test_trunc(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1608,7 +1603,7 @@ def test_erf(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1655,7 +1650,7 @@ def test_minimum(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1678,7 +1673,7 @@ def test_maximum(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1705,7 +1700,7 @@ def test_reciprocal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -1725,7 +1720,7 @@ def test_deg2rad(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1743,7 +1738,7 @@ def test_rad2deg(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1768,7 +1763,7 @@ def test_trunc_divide(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -1791,7 +1786,7 @@ def test_isreal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -1824,7 +1819,7 @@ def test_fmod(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -1852,7 +1847,7 @@ def test_lcm(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -1879,7 +1874,7 @@ def test_gcd(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -1915,7 +1910,7 @@ def test_imag(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         val=x[0],
@@ -1952,7 +1947,7 @@ def test_angle(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         z=z[0],

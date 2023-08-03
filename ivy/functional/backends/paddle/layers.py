@@ -122,23 +122,6 @@ def _pad_before_conv_tranpose(
     return not_valid_pad, padding_list, output_padding
 
 
-def _ff_xd_before_conv(x, filters, dims, filter_format, x_dilations):
-    if filter_format == "channel_first":
-        filters = paddle.transpose(filters, (*range(2, dims + 2), 1, 0))
-
-    # adding dilation in input
-    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
-    for i in range(dims):
-        if x_dilations[i] > 1:
-            h = x.shape[1 + i]
-            new_height = h + (h - 1) * (x_dilations[i] - 1)
-            h = paddle.eye(new_height, dtype=x.dtype)[:: x_dilations[i]]
-            x = paddle_backend.swapaxes(x, 1 + i, -1)
-            x = paddle.matmul(x, h)
-            x = paddle_backend.swapaxes(x, -1, 1 + i)
-    return x, filters
-
-
 def conv1d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -147,10 +130,7 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int]]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
@@ -167,7 +147,6 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
     raise IvyNotImplementedException()
@@ -182,17 +161,14 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv2d_transpose(
@@ -205,7 +181,6 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: Optional[str] = "NHWC",
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
     if data_format == "NHWC":
@@ -219,7 +194,6 @@ def conv2d_transpose(
     res = paddle.nn.functional.conv2d_transpose(
         x,
         filters,
-        bias=bias,
         stride=strides,
         padding=padding_list,
         output_padding=output_padding,
@@ -251,7 +225,7 @@ def depthwise_conv2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv3d(
@@ -262,17 +236,13 @@ def conv3d(
     /,
     *,
     data_format: Optional[str] = "NDHWC",
-    filter_format: Optional[str] = "channel_last",
-    x_dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
     if data_format == "NCDHW":
         x = paddle.transpose(x, perm=(0, 2, 3, 4, 1))
 
     df = "NDHWC"
-    x, filters = _ff_xd_before_conv(x, filters, 3, filter_format, x_dilations)
     x = _pad_before_conv(x, filters, strides, padding, 3, dilations, df)
     filters = paddle.transpose(filters, perm=(4, 3, 0, 1, 2))
     padding = "VALID"
@@ -280,7 +250,6 @@ def conv3d(
     res = paddle.nn.functional.conv3d(
         x,
         filters,
-        bias=bias,
         data_format=df,
         stride=strides,
         padding=padding,
@@ -303,14 +272,13 @@ def conv3d_transpose(
     output_shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     data_format: Optional[str] = "NDHWC",
     dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
-    bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("float16",)}},
+    {"2.5.0 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def conv_general_dilated(

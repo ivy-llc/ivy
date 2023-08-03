@@ -1,12 +1,12 @@
 # global
+import ivy
 from hypothesis import strategies as st, assume
 import math
 import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # Helper functions
@@ -16,17 +16,16 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
 def _fill_value(draw):
     with_array = draw(st.sampled_from([True, False]))
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_uint_dtype(dtype):
-            ret = draw(helpers.ints(min_value=0, max_value=5))
-        elif ivy_backend.is_int_dtype(dtype):
-            ret = draw(helpers.ints(min_value=-5, max_value=5))
-        else:
-            ret = draw(helpers.floats(min_value=-5, max_value=5))
-        if with_array:
-            return np.array(ret, dtype=dtype)
-        else:
-            return ret
+    if ivy.is_uint_dtype(dtype):
+        ret = draw(helpers.ints(min_value=0, max_value=5))
+    elif ivy.is_int_dtype(dtype):
+        ret = draw(helpers.ints(min_value=-5, max_value=5))
+    else:
+        ret = draw(helpers.floats(min_value=-5, max_value=5))
+    if with_array:
+        return np.array(ret, dtype=dtype)
+    else:
+        return ret
 
 
 @st.composite
@@ -62,11 +61,9 @@ def test_torch_full(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         on_device=on_device,
         frontend=frontend,
         test_flags=test_flags,
@@ -92,12 +89,10 @@ def test_torch_ones_like(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -130,7 +125,6 @@ def test_torch_ones(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dims = {}
     size = (size,)
@@ -141,7 +135,6 @@ def test_torch_ones(
             i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -175,7 +168,6 @@ def test_torch_zeros(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dims = {}
     size = (size,)
@@ -186,7 +178,6 @@ def test_torch_zeros(
             i += 1
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -211,12 +202,10 @@ def test_torch_zeros_like(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -249,7 +238,6 @@ def test_torch_empty(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dims = {}
     size = (size,)
@@ -260,7 +248,6 @@ def test_torch_empty(
             i += 1
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -287,12 +274,10 @@ def test_torch_arange(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     start, stop, step = start_stop_step
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -321,12 +306,10 @@ def test_torch_range(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     start, stop, step = start_stop_step
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -357,11 +340,9 @@ def test_torch_linspace(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -393,11 +374,9 @@ def test_torch_logspace(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -425,12 +404,10 @@ def test_torch_empty_like(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, inputs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -461,12 +438,10 @@ def test_torch_full_like(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, inputs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         on_device=on_device,
         frontend=frontend,
         test_flags=test_flags,
@@ -493,12 +468,10 @@ def test_torch_as_tensor(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -521,12 +494,10 @@ def test_torch_from_numpy(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         on_device=on_device,
         frontend=frontend,
         test_flags=test_flags,
@@ -549,12 +520,10 @@ def test_torch_tensor(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -626,7 +595,6 @@ def test_torch_as_strided(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     x_dtype, x, size, stride, offset = dtype_x_and_other
     try:
@@ -658,14 +626,12 @@ def test_torch_heaviside(
     dtype_and_input,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     frontend,
 ):
     input_dtype, data, values = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -691,12 +657,10 @@ def test_torch_asarray(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -721,7 +685,6 @@ def test_torch_from_dlpack(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -762,14 +725,12 @@ def test_torch_frombuffer(
     dtype_buffer_count_offset,
     test_flags,
     frontend,
-    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, buffer, count, offset = dtype_buffer_count_offset
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         frontend=frontend,

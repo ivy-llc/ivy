@@ -1,8 +1,9 @@
 from hypothesis import assume, strategies as st
 import numpy as np
 
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method, update_backend
+from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.test_functional.test_core.test_elementwise import (
     not_too_close_to_zero,
     pow_helper,
@@ -22,14 +23,12 @@ def test_shape__getitem__(
     method_flags,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     on_device,
 ):
     dtypes, x, query = dtypes_x_query
     helpers.test_method(
         on_device=on_device,
-        backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -53,7 +52,6 @@ def test_shape__index__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -62,7 +60,6 @@ def test_shape__index__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -82,7 +79,6 @@ def test_shape__pow__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -94,29 +90,20 @@ def test_shape__pow__(
     assume(not ("bfloat16" in input_dtype))
 
     # Make sure x2 isn't a float when x1 is integer
-    with update_backend(backend_fw) as ivy_backend:
-        assume(
-            not (
-                ivy_backend.is_int_dtype(
-                    input_dtype[0] and ivy_backend.is_float_dtype(input_dtype[1])
-                )
-            )
-        )
+    assume(
+        not (ivy.is_int_dtype(input_dtype[0] and ivy.is_float_dtype(input_dtype[1])))
+    )
 
-        # Make sure x2 is non-negative when both is integer
-        if ivy_backend.is_int_dtype(input_dtype[1]) and ivy_backend.is_int_dtype(
-            input_dtype[0]
-        ):
-            x[1] = np.abs(x[1])
+    # Make sure x2 is non-negative when both is integer
+    if ivy.is_int_dtype(input_dtype[1]) and ivy.is_int_dtype(input_dtype[0]):
+        x[1] = np.abs(x[1])
 
-        x[0] = not_too_close_to_zero(x[0])
-        x[1] = not_too_close_to_zero(x[1])
-
+    x[0] = not_too_close_to_zero(x[0])
+    x[1] = not_too_close_to_zero(x[1])
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
-        backend_to_test=backend_fw,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=[input_dtype[0]],
@@ -143,7 +130,6 @@ def test_shape__add__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -152,7 +138,6 @@ def test_shape__add__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -179,7 +164,6 @@ def test_shape__radd__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -189,7 +173,6 @@ def test_shape__radd__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -217,7 +200,6 @@ def test_shape__sub__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -226,7 +208,6 @@ def test_shape__sub__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -253,7 +234,6 @@ def test_shape__rsub__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -263,7 +243,6 @@ def test_shape__rsub__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -290,7 +269,6 @@ def test_shape__mul__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -361,7 +339,6 @@ def test_shape__mod__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -372,7 +349,6 @@ def test_shape__mod__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -400,7 +376,6 @@ def test_shape__rmod__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -410,7 +385,6 @@ def test_shape__rmod__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -438,7 +412,6 @@ def test_shape__rdivmod__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -448,7 +421,6 @@ def test_shape__rdivmod__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -476,7 +448,6 @@ def test_shape__truediv__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -485,7 +456,6 @@ def test_shape__truediv__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -513,7 +483,6 @@ def test_shape__rtruediv__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -522,7 +491,6 @@ def test_shape__rtruediv__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -550,7 +518,6 @@ def test_shape__rfloordiv__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -560,7 +527,6 @@ def test_shape__rfloordiv__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -587,7 +553,6 @@ def test_shape__int__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -596,7 +561,6 @@ def test_shape__int__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -622,7 +586,6 @@ def test_shape__bool__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -631,7 +594,6 @@ def test_shape__bool__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -656,7 +618,6 @@ def test_shape__lt__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -665,7 +626,6 @@ def test_shape__lt__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -690,7 +650,6 @@ def test_shape__le__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -699,7 +658,6 @@ def test_shape__le__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -724,7 +682,6 @@ def test_shape__eq__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -733,7 +690,6 @@ def test_shape__eq__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -758,7 +714,6 @@ def test_shape__ne__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -767,7 +722,6 @@ def test_shape__ne__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -792,7 +746,6 @@ def test_shape__gt__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -801,7 +754,6 @@ def test_shape__gt__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -826,7 +778,6 @@ def test_shape__ge__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -835,7 +786,6 @@ def test_shape__ge__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -859,7 +809,6 @@ def test_shape__len__(
     dtype_and_x,
     method_name,
     class_name,
-    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
@@ -869,7 +818,6 @@ def test_shape__len__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},
@@ -894,7 +842,6 @@ def test_shape__iter__(
     method_name,
     class_name,
     ground_truth_backend,
-    backend_fw,
     init_flags,
     method_flags,
     on_device,
@@ -903,7 +850,6 @@ def test_shape__iter__(
     helpers.test_method(
         on_device=on_device,
         ground_truth_backend=ground_truth_backend,
-        backend_to_test=backend_fw,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={"data": x[0]},

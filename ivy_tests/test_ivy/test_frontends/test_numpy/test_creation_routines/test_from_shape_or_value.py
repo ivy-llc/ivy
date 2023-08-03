@@ -1,10 +1,10 @@
 # global
+import ivy
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.helpers.globals as test_globals
-from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # empty
@@ -26,12 +26,10 @@ def test_numpy_empty(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -65,13 +63,11 @@ def test_numpy_empty_like(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -102,12 +98,10 @@ def test_numpy_eye(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -132,12 +126,10 @@ def test_numpy_identity(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -166,12 +158,10 @@ def test_numpy_ones(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -204,13 +194,11 @@ def test_numpy_ones_like(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -242,12 +230,10 @@ def test_numpy_zeros(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -280,13 +266,11 @@ def test_numpy_zeros_like(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -304,22 +288,21 @@ def test_numpy_zeros_like(
 def _input_fill_and_dtype(draw):
     dtype = draw(helpers.get_dtypes("float", full=False))
     dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
-        if ivy_backend.is_uint_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=0, max_value=5))
-        elif ivy_backend.is_int_dtype(dtype[0]):
-            fill_values = draw(st.integers(min_value=-5, max_value=5))
-        else:
-            fill_values = draw(
-                helpers.floats(
-                    min_value=-5,
-                    max_value=5,
-                    large_abs_safety_factor=10,
-                    small_abs_safety_factor=10,
-                    safety_factor_scale="log",
-                )
+    if ivy.is_uint_dtype(dtype[0]):
+        fill_values = draw(st.integers(min_value=0, max_value=5))
+    elif ivy.is_int_dtype(dtype[0]):
+        fill_values = draw(st.integers(min_value=-5, max_value=5))
+    else:
+        fill_values = draw(
+            helpers.floats(
+                min_value=-5,
+                max_value=5,
+                large_abs_safety_factor=10,
+                small_abs_safety_factor=10,
+                safety_factor_scale="log",
             )
-        dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
+        )
+    dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
     return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
 
 
@@ -342,13 +325,11 @@ def test_numpy_full(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, fill, dtype_to_cast = input_fill_dtype
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -378,13 +359,11 @@ def test_numpy_full_like(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x, fill, dtype_to_cast = input_fill_dtype
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

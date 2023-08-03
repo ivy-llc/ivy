@@ -39,12 +39,10 @@ def test_numpy_reshape(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_function(
         input_dtypes=dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -71,13 +69,11 @@ def test_numpy_broadcast_to(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x, shape = dtype_x_shape
     broadcast_shape = (factor,) + shape
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -103,12 +99,10 @@ def test_numpy_ravel(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -176,12 +170,10 @@ def test_numpy_moveaxis(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -230,12 +222,10 @@ def test_numpy_resize(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, x, new_shape = dtypes_x_shape
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -257,12 +247,10 @@ def test_numpy_asfarray(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -284,12 +272,10 @@ def test_numpy_asarray_chkfinite(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -314,14 +300,12 @@ def test_numpy_require(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
     test_flags,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,

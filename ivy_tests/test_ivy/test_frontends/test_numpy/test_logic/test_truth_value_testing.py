@@ -29,7 +29,6 @@ def test_numpy_all(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
@@ -40,7 +39,6 @@ def test_numpy_all(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,7 +72,6 @@ def test_numpy_any(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
@@ -85,7 +82,6 @@ def test_numpy_any(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -110,11 +106,9 @@ def test_numpy_isscalar(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=ivy.all_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -137,14 +131,12 @@ def test_numpy_isfortran(
     on_device,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     if ivy.current_backend() != "numpy":
         return
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -166,12 +158,10 @@ def test_numpy_isreal(
     on_device,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -194,12 +184,10 @@ def test_numpy_isrealobj(
     on_device,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -222,7 +210,6 @@ def test_numpy_iscomplexobj(
     on_device,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     if ivy.current_backend_str() == "paddle":
@@ -230,7 +217,6 @@ def test_numpy_iscomplexobj(
         assume(input_dtype[0] not in ["int8", "uint8", "int16"])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -253,12 +239,10 @@ def test_numpy_iscomplex(
     on_device,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

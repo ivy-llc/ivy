@@ -31,13 +31,11 @@ def test_numpy_where(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
         input_dtypes=["bool", dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -61,13 +59,11 @@ def test_numpy_nonzero(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -94,14 +90,12 @@ def test_numpy_argmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -130,14 +124,12 @@ def test_numpy_argmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -161,13 +153,11 @@ def test_numpy_flatnonzero(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -245,14 +235,12 @@ def test_numpy_searchsorted(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
     helpers.test_frontend_function(
         input_dtypes=input_dtypes + ["int64"],
         frontend=frontend,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -276,13 +264,11 @@ def test_numpy_argwhere(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -309,14 +295,12 @@ def test_numpy_nanargmax(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -345,14 +329,12 @@ def test_numpy_nanargmin(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -389,7 +371,6 @@ def test_numpy_extract(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype_cond, cond = dtype_and_x[0]
@@ -397,7 +378,6 @@ def test_numpy_extract(
 
     helpers.test_frontend_function(
         input_dtypes=dtype_cond + dtype_arr,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

@@ -99,7 +99,7 @@ def test_layer_norm(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
+        fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=0.5,

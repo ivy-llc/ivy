@@ -78,7 +78,6 @@ def test_numpy_norm(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, axis, ord, check_stable = norm_values
@@ -86,7 +85,6 @@ def test_numpy_norm(
         assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -109,14 +107,12 @@ def test_numpy_matrix_rank(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
     assume(matrix_is_stable(x, cond_limit=10))
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -138,13 +134,11 @@ def test_numpy_det(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -176,14 +170,12 @@ def test_numpy_slogdet(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     assume(matrix_is_stable(x[0]))
     ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -194,17 +186,14 @@ def test_numpy_slogdet(
     for ret_f, ret_gtt in zip(ret, ret_gt):
         frontend_ret = ret_f
         frontend_ret_gt = ret_gtt
-        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret, backend=backend_fw)
-        ret_gt_flattened = helpers.flatten_and_to_np(
-            ret=frontend_ret_gt, backend=frontend
-        )
+        ret_flattened = helpers.flatten_and_to_np(ret=frontend_ret)
+        ret_gt_flattened = helpers.flatten_and_to_np(ret=frontend_ret_gt)
         helpers.value_test(
             ret_np_flat=ret_flattened,
             ret_np_from_gt_flat=ret_gt_flattened,
             rtol=1e-1,
             atol=1e-1,
-            backend=backend_fw,
-            ground_truth_backend=frontend,
+            ground_truth_backend="numpy",
         )
 
 
@@ -229,13 +218,11 @@ def test_numpy_trace(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x, axes = dtype_and_x_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

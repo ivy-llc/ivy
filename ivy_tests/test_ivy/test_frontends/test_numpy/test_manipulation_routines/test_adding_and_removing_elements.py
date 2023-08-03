@@ -33,14 +33,12 @@ def test_numpy_unique(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, xs, axis = dtype_x_axis
     if none_axis:
         axis = None
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -78,12 +76,10 @@ def test_numpy_append(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, values, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -109,14 +105,12 @@ def test_numpy_trim_zeros(
     trim,
     fn_tree,
     test_flags,
-    backend_fw,
 ):
     input_dtypes, x = dtype_and_x
     if ivy.current_backend_str() == "paddle":
         assume(input_dtypes[0] not in ["float16"])
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

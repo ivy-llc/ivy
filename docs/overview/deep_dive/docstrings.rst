@@ -145,7 +145,7 @@ Therefore, these docstrings should all simply contain the following text:
 
 .. code-block:: python
 
-    ivy.<Array|Container> <instance|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
+    ivy.<Array|Container> <instance|static|special|reverse special> method variant of ivy.<func_name>. This method simply wraps the
     function, and so the docstring for ivy.<func_name> also applies to this method
     with minimal changes.
 
@@ -178,7 +178,7 @@ which can be called on any types that support the corresponding special methods:
 
 Let's take :func:`ivy.add` as an example.
 The docstring for `ivy.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191>`_ is thorough, as explained above.
-However, the docstrings for `ivy.Array.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36>`_, `ivy.Container.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209>`_ all follow the succinct pattern outlined above.
+However, the docstrings for `ivy.Array.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36>`_, `ivy.Container.add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209>`_ and `ivy.Container.static_add <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125>`_ all follow the succinct pattern outlined above.
 Likewise, the docstrings for the special methods `ivy.Array.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310>`_, `ivy.Array.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359>`_, `ivy.Container.__add__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106>`_, and `ivy.Container.__radd__ <https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171>`_, also follow the succinct pattern outlined above.
 Note that these docstrings all *also* include examples, which we will cover in the next section.
 

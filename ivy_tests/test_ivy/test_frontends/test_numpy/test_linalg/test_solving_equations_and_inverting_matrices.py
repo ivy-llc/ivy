@@ -4,6 +4,7 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -21,14 +22,12 @@ def test_numpy_solve(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype1, x1, _ = x
     dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[dtype1, dtype2],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -54,13 +53,11 @@ def test_numpy_inv(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -84,13 +81,11 @@ def test_numpy_pinv(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -155,15 +150,13 @@ def test_numpy_tensorinv(
     on_device,
     fn_tree,
     frontend,
-    backend_fw,
 ):
     dtype, x, ind = params
-    if backend_fw == "paddle":
+    if ivy.current_backend_str() == "paddle":
         # Paddle only supports ndim from 0 to 9
         assume(x.ndim <= 9)
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         test_flags=test_flags,
         rtol=1e-01,
         atol=1e-01,
@@ -188,7 +181,6 @@ def test_numpy_lstsq(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     dtype1, a, _ = x
@@ -197,7 +189,6 @@ def test_numpy_lstsq(
         input_dtypes=[dtype1, dtype2],
         frontend=frontend,
         test_flags=test_flags,
-        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=a,

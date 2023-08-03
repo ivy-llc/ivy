@@ -35,8 +35,6 @@ def _fn2(
         (_fn2, [[(0, "a"), int], [(2, "cs"), "optional", str]]),
     ],
 )
-def test_fn_array_spec(fn_n_spec, backend_fw):
-    ivy.set_backend(backend_fw)
+def test_fn_array_spec(fn_n_spec):
     fn, spec = fn_n_spec
     assert ivy.fn_array_spec(fn) == spec
-    ivy.previous_backend()

@@ -148,12 +148,10 @@ def test_torch_conv1d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -179,12 +177,10 @@ def test_torch_conv2d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -210,14 +206,12 @@ def test_torch_conv3d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -260,7 +254,6 @@ def test_torch_conv_tranpose1d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     dilations = 1  # ToDo: remove this when support for dilation > 1 is added
@@ -274,7 +267,6 @@ def test_torch_conv_tranpose1d(
     )
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -301,7 +293,6 @@ def test_torch_conv_tranpose2d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     dilations = 1  # ToDo: remove this when support for dilation > 1 is added
@@ -315,7 +306,6 @@ def test_torch_conv_tranpose2d(
     )
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -342,7 +332,6 @@ def test_torch_conv_tranpose3d(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, output_pad, fc = dtype_vals
     dilations = 1  # ToDo: remove this when support for dilation > 1 is added
@@ -356,7 +345,6 @@ def test_torch_conv_tranpose3d(
     )
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -437,12 +425,10 @@ def test_torch_unfold(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, kernel_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -499,12 +485,10 @@ def test_torch_fold(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     dtype, vals, kernel_shape, output_shape, dilations, strides, padding = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

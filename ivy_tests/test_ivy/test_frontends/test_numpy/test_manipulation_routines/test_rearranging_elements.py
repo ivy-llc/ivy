@@ -26,12 +26,10 @@ def test_numpy_roll(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -65,12 +63,10 @@ def test_numpy_flip(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -96,12 +92,10 @@ def test_numpy_fliplr(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -131,12 +125,10 @@ def test_numpy_flipud(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -216,12 +208,10 @@ def test_numpy_rot90(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

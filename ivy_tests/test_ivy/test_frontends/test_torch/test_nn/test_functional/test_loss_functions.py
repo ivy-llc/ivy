@@ -54,14 +54,12 @@ def test_torch_cross_entropy(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
     weights_dtype, weights = dtype_and_weights
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype + target_dtype + weights_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -110,7 +108,6 @@ def test_torch_binary_cross_entropy(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x = dtype_and_vals
     pred_dtype, pred = input_dtype[0], x[0]
@@ -119,7 +116,6 @@ def test_torch_binary_cross_entropy(
 
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype, weight_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -206,7 +202,6 @@ def test_torch_binary_cross_entropy_with_logits(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -219,7 +214,6 @@ def test_torch_binary_cross_entropy_with_logits(
             weight_dtype[0],
             pos_weight_dtype[0],
         ],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -266,7 +260,6 @@ def test_torch_cosine_embedding_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -274,7 +267,6 @@ def test_torch_cosine_embedding_loss(
     input1_dtype, input1 = input_dtype[0], x[0]
     input2_dtype, input2 = input_dtype[1], x[1]
 
-    ivy.set_backend(backend_fw)
     if input1.ndim == input2.ndim == 1:
         tar = ivy.array(1.0)
     else:
@@ -286,7 +278,6 @@ def test_torch_cosine_embedding_loss(
 
     helpers.test_frontend_function(
         input_dtypes=[input1_dtype, input2_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -299,8 +290,6 @@ def test_torch_cosine_embedding_loss(
         reduce=reduce,
         reduction=reduction,
     )
-
-    ivy.previous_backend()
 
 
 # mse_loss
@@ -350,13 +339,11 @@ def test_torch_mse_loss(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype[0], true_dtype[0]],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -394,7 +381,6 @@ def test_torch_smooth_l1_loss(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -402,7 +388,6 @@ def test_torch_smooth_l1_loss(
     true_dtype, true = input_dtype[1], x[1]
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -437,7 +422,6 @@ def test_torch_huber_loss(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -445,7 +429,6 @@ def test_torch_huber_loss(
     true_dtype, true = input_dtype[1], x[1]
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -480,7 +463,6 @@ def test_torch_l1_loss(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -488,7 +470,6 @@ def test_torch_l1_loss(
     true_dtype, true = input_dtype[1], x[1]
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, true_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -548,14 +529,12 @@ def test_torch_nll_loss(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
     weights_dtype, weights = dtype_and_weights
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype + target_dtype + weights_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -602,12 +581,10 @@ def test_torch_gaussian_nll_loss(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -646,7 +623,6 @@ def test_torch_soft_margin_loss(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
@@ -654,7 +630,6 @@ def test_torch_soft_margin_loss(
     tar_dtype, tar = input_dtype[1], x[1]
     helpers.test_frontend_function(
         input_dtypes=[pred_dtype, tar_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -698,13 +673,11 @@ def test_torch_kl_div(
     frontend,
     test_flags,
     fn_tree,
-    backend_fw,
     on_device,
 ):
     inputs_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -742,7 +715,6 @@ def test_torch_margin_ranking_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -752,7 +724,6 @@ def test_torch_margin_ranking_loss(
     tar_dtype, tar = input_dtype[2], x[2]
     helpers.test_frontend_function(
         input_dtypes=[input1_dtype, input2_dtype, tar_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -798,12 +769,10 @@ def test_torch_poisson_nll_loss(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     inputs_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=inputs_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -842,7 +811,6 @@ def test_torch_hinge_embedding_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -851,7 +819,6 @@ def test_torch_hinge_embedding_loss(
 
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -900,7 +867,6 @@ def test_torch_triplet_margin_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -910,7 +876,6 @@ def test_torch_triplet_margin_loss(
     negative_dtype, negative = input_dtype[2], x[2]
     helpers.test_frontend_function(
         input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -950,14 +915,12 @@ def test_torch_multilabel_soft_margin_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -999,7 +962,6 @@ def test_torch_triplet_margin_with_distance_loss(
     reduction,
     test_flags,
     fn_tree,
-    backend_fw,
     frontend,
     on_device,
 ):
@@ -1010,7 +972,6 @@ def test_torch_triplet_margin_with_distance_loss(
     test_flags.num_positional_args = len(x)
     helpers.test_frontend_function(
         input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
-        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1022,47 +983,4 @@ def test_torch_triplet_margin_with_distance_loss(
         margin=margin,
         swap=swap,
         reduction=reduction,
-    )
-
-
-# multilabel_margin_loss
-
-
-@handle_frontend_test(
-    fn_tree="torch.nn.functional.multilabel_margin_loss",
-    dtype_and_inputs=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-        allow_inf=False,
-        shared_dtype=True,
-        min_num_dims=1,
-    ),
-    size_average=st.booleans(),
-    reduce=st.booleans(),
-    reduction=st.sampled_from(["none", "mean", "sum"]),
-    test_with_out=st.just(False),
-)
-def test_torch_multilabel_margin_loss(
-    *,
-    dtype_and_inputs,
-    reduction,
-    size_average,
-    reduce,
-    test_flags,
-    fn_tree,
-    frontend,
-    on_device,
-):
-    input_dtype, x = dtype_and_inputs
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        input=x[0],
-        target=x[1],
-        reduction=reduction,
-        size_average=size_average,
-        reduce=reduce,
     )

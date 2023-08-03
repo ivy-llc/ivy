@@ -569,6 +569,3 @@ class ndarray:
 
     def __rshift__(self, value, /):
         return ivy.bitwise_right_shift(self.ivy_array, value)
-
-    def __lshift__(self, value, /):
-        return ivy.bitwise_left_shift(self.ivy_array, value)

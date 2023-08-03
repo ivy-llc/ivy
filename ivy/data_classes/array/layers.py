@@ -421,10 +421,7 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int]] = 1,
         dilations: Union[int, Tuple[int]] = 1,
-        bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -445,14 +442,8 @@ class _ArrayWithLayers(abc.ABC):
             per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
-        filter_format
-            Either "channel_first" or "channel_last". Defaults to "channel_last".
-         x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -479,10 +470,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             data_format=data_format,
-            filter_format=filter_format,
-            x_dilations=x_dilations,
             dilations=dilations,
-            bias=bias,
             out=out,
         )
 
@@ -496,7 +484,6 @@ class _ArrayWithLayers(abc.ABC):
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NWC",
         dilations: Union[int, Tuple[int]] = 1,
-        bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -524,8 +511,6 @@ class _ArrayWithLayers(abc.ABC):
             corresponds to input with shape (batch_size, channels, width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -554,7 +539,6 @@ class _ArrayWithLayers(abc.ABC):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
-            bias=bias,
             out=out,
         )
 
@@ -624,10 +608,7 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NHWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int, int]] = 1,
         dilations: Union[int, Tuple[int, int]] = 1,
-        bias: Optional[ivy.Container] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -650,12 +631,6 @@ class _ArrayWithLayers(abc.ABC):
             "NHWC" or "NCHW". Defaults to "NHWC".
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        filter_format
-            Either "channel_first" or "channel_last". Defaults to "channel_last".
-        x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -688,10 +663,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             data_format=data_format,
-            filter_format=filter_format,
-            x_dilations=x_dilations,
             dilations=dilations,
-            bias=bias,
             out=out,
         )
 
@@ -706,7 +678,6 @@ class _ArrayWithLayers(abc.ABC):
         data_format: str = "NHWC",
         dilations: Union[int, Tuple[int, int]] = 1,
         out: Optional[ivy.Array] = None,
-        bias: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of `ivy.conv2d_transpose`. This method simply
@@ -733,8 +704,6 @@ class _ArrayWithLayers(abc.ABC):
             width). Default is ``"NHWC"``.
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             Optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -748,7 +717,7 @@ class _ArrayWithLayers(abc.ABC):
         --------
         >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
         >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> y = x.conv2d_transpose(filters,2,'SAME',)
+        >>> y = x.conv2d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         (1, 56, 56, 6)
         """
@@ -761,7 +730,6 @@ class _ArrayWithLayers(abc.ABC):
             data_format=data_format,
             dilations=dilations,
             out=out,
-            bias=bias,
         )
 
     def conv3d(
@@ -772,10 +740,7 @@ class _ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NDHWC",
-        filter_format: str = "channel_last",
-        x_dilations: Union[int, Tuple[int, int, int]] = 1,
         dilations: Union[int, Tuple[int, int, int]] = 1,
-        bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -796,14 +761,8 @@ class _ArrayWithLayers(abc.ABC):
             the per-dimension paddings.
         data_format
             "NDHWC" or "NCDHW". Defaults to "NDHWC".
-        filter_format
-            Either "channel_first" or "channel_last". Defaults to "channel_last".
-        x_dilations
-            The dilation factor for each dimension of input. (Default value = 1)
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -829,10 +788,7 @@ class _ArrayWithLayers(abc.ABC):
             strides,
             padding,
             data_format=data_format,
-            filter_format=filter_format,
-            x_dilations=x_dilations,
             dilations=dilations,
-            bias=bias,
             out=out,
         )
 
@@ -846,7 +802,6 @@ class _ArrayWithLayers(abc.ABC):
         output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         data_format: str = "NDHWC",
         dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
-        bias: Optional[ivy.Array] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -875,8 +830,6 @@ class _ArrayWithLayers(abc.ABC):
              width).
         dilations
             The dilation factor for each dimension of input. (Default value = 1)
-        bias
-            Bias array of shape *[d_out]*.
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -902,7 +855,6 @@ class _ArrayWithLayers(abc.ABC):
             output_shape=output_shape,
             data_format=data_format,
             dilations=dilations,
-            bias=bias,
             out=out,
         )
 
