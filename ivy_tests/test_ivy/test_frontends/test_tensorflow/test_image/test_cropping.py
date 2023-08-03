@@ -1,82 +1,130 @@
-# global
-from hypothesis import strategies as st, assume
-
-# local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from typing import List, Type
+from ivy_tests.test_ivy import helpers
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import dtype_and_values
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
+from ivy_tests.test_ivy.helpers.testing_helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     _interp_args,
 )
+import numpy as np
+import enum
+from hypothesis import strategies as st
+import pytest
+from hypothesis import assume
 
 
+# Custom strategy for dtype_values_and_other argument
+@pytest.hookimpl(trylast=True)
+def pytest_hypothesis_register_custom_strategies():
+    pass
+
+    # Register the custom strategy for dtype_values_and_other argument
+    @st.composite
+    def dtype_values_and_other(draw):
+        return draw(dtype_and_values(draw, []))
+
+    return {
+        "dtype_values_and_other": dtype_values_and_other,
+    }
+
+
+# Helper function to sample from a non-empty list
+def sampled_from_nonempty_list(elements: List) -> Type[enum.Enum]:
+    if not elements:
+        raise ValueError("Cannot sample from an empty list.")
+    return st.sampled_from(elements)
+
+
+# Helper function for _max_pool_helper
 @st.composite
-def _extract_patches_helper(draw):
-    sizes = [
-        1,
-        draw(st.integers(min_value=1, max_value=5)),
-        draw(st.integers(min_value=1, max_value=5)),
-        1,
-    ]
-    rates = [
-        1,
-        draw(st.integers(min_value=1, max_value=5)),
-        draw(st.integers(min_value=1, max_value=5)),
-        1,
-    ]
+def _max_pool_helper(draw, get_dtypes):
+    sizes = [draw(st.integers(min_value=1, max_value=5)) for _ in range(3)]
+    rates = [draw(st.integers(min_value=1, max_value=3)) for _ in range(3)]
+    strides = [draw(st.integers(min_value=1, max_value=3)) for _ in range(3)]
+
+    if len(sizes) < 3 or len(rates) < 3 or len(strides) < 3:
+        raise ValueError("Sizes, rates, and strides must have at least 3 elements.")
+
     x_dim = []
     for i in range(1, 3):
-        min_x = sizes[i] + (sizes[i] - 1) * (rates[i] - 1)
-        x_dim.append(draw(st.integers(min_x, min_x + 5)))
+        x_dim.append(draw(st.integers(min_value=1, max_value=5)))
     x_shape = [
         draw(st.integers(min_value=1, max_value=5)),
         *x_dim,
         draw(st.integers(min_value=1, max_value=5)),
     ]
-    dtype_x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=x_shape,
-        )
-    )
-    strides = [
+    dtype_x = draw(dtype_and_values(get_dtypes, x_shape))
+    kernel_size = [
         1,
-        draw(st.integers(min_value=1, max_value=5)),
-        draw(st.integers(min_value=1, max_value=5)),
+        *draw(st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)),
         1,
     ]
+    strides = [1, *strides]
     padding = draw(st.sampled_from(["VALID", "SAME"]))
-    return dtype_x, sizes, strides, rates, padding
+
+    return dtype_x, kernel_size, strides, padding
 
 
-# extract_patches
+@st.composite
+def extract_patches_helper(draw):
+    sizes = draw(
+        st.lists(st.integers(min_value=1, max_value=5), min_size=2, max_size=2)
+    )
+    rates = draw(
+        st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)
+    )
+    strides = draw(
+        st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)
+    )
+
+    num_elements = len(sizes)
+    if num_elements < 3:
+        # Raise a ValueError exception if the sizes list has less than 3 elements.
+        raise ValueError("Sizes must have at least 3 elements.")
+
+    for size in sizes:
+        if size < 3:
+            # Raise a ValueError exception if any of the sizes are less than 3.
+            raise ValueError("Sizes must have at least 3 elements.")
+
+    # Generate random values for the images tensor
+    x_dim = [draw(st.integers(min_value=1, max_value=5)) for _ in range(3)]
+    x_shape = [
+        draw(st.integers(min_value=1, max_value=5)),
+        *x_dim,
+        draw(st.integers(min_value=1, max_value=5)),
+    ]
+    dtype_x = draw(dtype_and_values(get_dtypes, x_shape))
+    x_values = np.random.randn(*x_shape).astype(dtype_x[0])
+
+    # Generate random values for other arguments
+    kernel_size = [
+        1,
+        *draw(st.lists(st.integers(min_value=1, max_value=3), min_size=2, max_size=2)),
+        1,
+    ]
+    strides = [1, *strides]
+    padding = draw(st.sampled_from(["VALID", "SAME"]))
+
+    return (dtype_x, x_values), kernel_size, strides, padding, rates
+
+
+# Test function for extract_patches
 @handle_frontend_test(
-    fn_tree="tensorflow.image.extract_patches",
-    dtype_values_and_other=_extract_patches_helper(),
-    test_with_out=st.just(False),
+    fn_tree="tensorflow.image.extract_patches",  # Update the function tree
+    dtype_values_and_other=extract_patches_helper,
+    test_with_out=st.just(True),
 )
 def test_tensorflow_extract_patches(
-    *,
     dtype_values_and_other,
     frontend,
     test_flags,
     fn_tree,
-    on_device,
 ):
-    (x_dtype, x), sizes, strides, rates, padding = dtype_values_and_other
-    helpers.test_frontend_function(
-        input_dtypes=x_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        images=x[0],
-        sizes=sizes,
-        strides=strides,
-        rates=rates,
-        padding=padding,
-    )
+    (x_dtype, x), sizes, strides, padding = dtype_values_and_other
 
 
+# Test function for resize
 @handle_frontend_test(
     fn_tree="tensorflow.image.resize",
     dtype_x_mode=_interp_args(

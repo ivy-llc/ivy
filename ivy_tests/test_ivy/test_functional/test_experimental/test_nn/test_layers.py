@@ -275,7 +275,7 @@ def test_dct(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
+    on_device=None,  # Modify the repetition of on_device here
     ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
@@ -293,7 +293,6 @@ def test_dct(
         norm=norm,
         rtol_=1e-3,
         atol_=1e-1,
-        on_device=on_device,
     )
 
 

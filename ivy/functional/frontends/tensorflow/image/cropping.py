@@ -2,6 +2,7 @@
 import functools
 
 # local
+import tensorflow as tf
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_supported_dtypes
@@ -59,3 +60,22 @@ def resize(
     if unsqueezed:
         return image.squeeze(0)
     return image
+
+
+@with_supported_dtypes({"2.9.0 and below": ("float",)}, "tensorflow")
+@to_ivy_arrays_and_back
+def max_pool2d(x, kernel_size, strides=None, padding="VALID"):
+    if strides is None:
+        strides = kernel_size
+    tf_x = ivy.to_numpy(x)
+    tf_kernel_size = ivy.to_numpy(kernel_size)
+    tf_strides = ivy.to_numpy(strides)
+    tf_padding = padding.upper()
+
+    tf_x = tf.transpose(tf_x, [0, 2, 3, 1])  # Convert to NHWC format
+    tf_pool = tf.nn.max_pool2d(
+        tf_x, ksize=tf_kernel_size, strides=tf_strides, padding=tf_padding
+    )
+    ivy_pool = ivy.array(tf_pool)
+    ivy_pool = ivy.transpose(ivy_pool, [0, 3, 1, 2])  # Convert back to NCHW format
+    return ivy_pool
