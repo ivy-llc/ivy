@@ -1,7 +1,6 @@
 # global
 # from hypothesis import strategies as st
 
-
 # local
 # TODO: uncomment after frontend is not required
 #  to be set as backend in test_frontend_function
@@ -135,13 +134,6 @@
 #     test_flags,
 # ):
 #     dtype, x = dtype_and_x
-
-#     if size is None and scale_factor is None:
-#         raise ValueError(
-#             "Both 'size' and 'scale_factor' cannot be None."
-#             "Please provide a valid value for either 'size' or 'scale_factor'."
-#         )
-
 #     if not recompute_scale_factor:
 #         if size is not None:
 #             scale_factor = None
