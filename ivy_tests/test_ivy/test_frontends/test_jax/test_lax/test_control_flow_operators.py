@@ -213,9 +213,9 @@ def test_jax_while_loop(
         max_value=1000,
         min_num_dims=1,
         min_dim_size=1,
+        unroll=st.sampled_from([1, 2, 3]),
+        reverse=st.booleans(),
     ),
-    unroll=st.sampled_from([1, 2, 3]),
-    reverse=st.booleans(),
 )
 def test_jax_lax_scan(
     *,
