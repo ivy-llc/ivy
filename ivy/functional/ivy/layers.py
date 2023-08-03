@@ -455,6 +455,12 @@ def scaled_dot_product_attention(
     mask
         The mask input array. The mask to apply to the query-key values. Default is
         None. The shape of mask input should be in *[batch_shape,num_queries,num_keys]*.
+    dropout_p
+        Specifies the dropout probablity, if greater than 0.0, dropout is applied
+    is_causal
+        If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+    training
+        If True, dropout is used, otherwise dropout is not activated.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -477,10 +483,9 @@ def scaled_dot_product_attention(
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True)
     >>> print(result)
-    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
-
+    ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -488,32 +493,31 @@ def scaled_dot_product_attention(
     >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
     >>> out = ivy.zeros(shape=(1, 3, 2))
-    >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
+    >>> ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True,out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,mask=mask)
     >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+    ivy.array([[[2.30000019, 3.23333359],[2.30000019, 3.23333359],[2.30000019, 3.23333359]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
     >>> out = ivy.zeros(shape=(1, 3, 2))
-    >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
+    >>> ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True,out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
-
+    ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
     With :class:`ivy.Container` input:
 
@@ -523,13 +527,12 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True)
     >>> print(result)
     {
-        a:ivy.array([[[4.27, 5.4],[4.4, 5.6],[4.4, 5.6]]]),
-        b:ivy.array([[[4.35, 5.54],[4.4, 5.6],[4.4, 5.6]]])
+        a: ivy.array([[[5.19999981, 1.], [2.59249449, 2.68226194], [4.4000001, 5.5999999]]]),
+        b: ivy.array([[[0.2, 1.], [2.19603825, 2.9960382], [4.4000001, 5.5999999]]])
     }
-
 
     >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
@@ -543,12 +546,8 @@ def scaled_dot_product_attention(
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
     >>> print(result)
     {
-        a: ivy.array([[[4.27, 5.4],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54],
-                       [4.4, 5.6],
-                       [4.4, 5.6]]])
+        a: ivy.array([[[4.26894283, 5.40236187], [4.39999437, 5.59999037], [4.4000001, 5.5999999]]]),
+        b: ivy.array([[[4.35046196, 5.54282808], [4.39989519, 5.5998764], [4.4000001, 5.5999999]]])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
@@ -556,13 +555,9 @@ def scaled_dot_product_attention(
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
     >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True)
     >>> print(result)
-    ivy.array([[
-            [4.04, 5.03],
-            [4.3 , 5.3 ],
-            [4.3 , 5.3 ]
-        ]])
+    ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
@@ -570,7 +565,7 @@ def scaled_dot_product_attention(
     >>> out = ivy.zeros(shape=(1, 3, 2))
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
-    ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
+    ivy.array([[[4.03946018, 5.0280633 ],[4.29981947, 5.29981089],[4.30000019, 5.30000019]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -578,15 +573,11 @@ def scaled_dot_product_attention(
     >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,is_causal=True)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13],
-                       [4.3, 5.3],
-                       [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08],
-                       [4.3, 5.3],
-                       [4.3, 5.3]]])
+        a: ivy.array([[[0.40000001, 1.29999995], [2.06345534, 2.9634552], [4.30000019, 5.30000019]]]),
+        b: ivy.array([[[0.40000001, 1.29999995], [2.19336844, 3.09336829], [4.30000019, 5.30000019]]])
     }
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -595,15 +586,11 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6],[4.0, 5.6]]]))
     >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
     >>> mask = ivy.native_array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
+    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,mask=mask,dropout_p=0.1,training=True)
     >>> print(result)
     {
-        a: ivy.array([[[4.14, 5.13],
-                    [4.3, 5.3],
-                    [4.3, 5.3]]]),
-        b: ivy.array([[[4.09, 5.08],
-                    [4.3, 5.3],
-                    [4.3, 5.3]]])
+        a: ivy.array([[[2.30000019, 3.23333359], [2.30000019, 3.23333359], [2.30000019, 3.23333359]]]),
+        b: ivy.array([[[2.30000019, 3.23333359], [2.30000019, 3.23333359], [2.30000019, 3.23333359]]])
     }
     """
     ivy.assertions.check_all(
