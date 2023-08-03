@@ -1820,7 +1820,7 @@ def test_numpy___pow__(
     init_tree="numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
@@ -1858,7 +1858,7 @@ def test_numpy___and__(
     init_tree="numpy.array",
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
@@ -1896,7 +1896,7 @@ def test_numpy___or__(
     init_tree="numpy.array",
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
@@ -2764,7 +2764,7 @@ def test_numpy___ipow__(
     init_tree="numpy.array",
     method_name="__iand__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
@@ -2802,7 +2802,7 @@ def test_numpy___iand__(
     init_tree="numpy.array",
     method_name="__ior__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
@@ -2840,7 +2840,7 @@ def test_numpy___ior__(
     init_tree="numpy.array",
     method_name="__ixor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
