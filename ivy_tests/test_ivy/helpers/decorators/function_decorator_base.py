@@ -2,6 +2,7 @@ import importlib
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
+from abc import abstractproperty, abstractmethod
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
@@ -17,6 +18,33 @@ from typing import Callable, Any
 
 
 class FunctionHandler(HandlerBase):
+    @abstractproperty
+    def possible_args():
+        pass
+
+    @abstractmethod
+    def _add_test_attributes_to_test_function(self, test_function: Callable[..., Any]):
+        pass
+
+    def __call__(self, fn: Callable[..., Any]):
+        if self.is_hypothesis_test:
+            self._update_given_kwargs(fn)
+            wrapped_fn = self._wrap_with_hypothesis(fn)
+        else:
+            wrapped_fn = fn
+
+        self._add_test_attributes_to_test_function(wrapped_fn)
+        self._handle_not_implemented(wrapped_fn)
+        return wrapped_fn
+
+    def _update_given_kwargs(self, fn):
+        param_names = inspect.signature(fn).parameters.keys()
+
+        # Check if these arguments are being asked for
+        filtered_args = set(param_names).intersection(self.possible_args.keys())
+        for key in filtered_args:
+            self._given_kwargs[key] = self.possible_args[key]
+
     def _build_parameter_info(self, fn):
         total = num_positional_only = num_keyword_only = 0
         # TODO refactor out

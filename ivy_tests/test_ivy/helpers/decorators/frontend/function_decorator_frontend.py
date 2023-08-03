@@ -1,4 +1,3 @@
-import inspect
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
     FunctionHandler,
@@ -99,26 +98,7 @@ class FrontendFunctionHandler(FunctionHandler):
             generate_frontend_arrays=generate_frontend_arrays,
         )
 
-    def _update_given_kwargs(self, fn):
-        param_names = inspect.signature(fn).parameters.keys()
-
-        # Check if these arguments are being asked for
-        filtered_args = set(param_names).intersection(self.possible_args.keys())
-        for key in filtered_args:
-            self._given_kwargs[key] = self.possible_args[key]
-
-    def _add_test_attrs_to_fn(self, fn: Callable[..., Any]):
+    def _add_test_attributes_to_test_function(self, fn: Callable[..., Any]):
         fn._is_ivy_frontend_test = True
         fn.test_data = self.test_data
         return fn
-
-    def __call__(self, fn: Callable[..., Any]):
-        if self.is_hypothesis_test:
-            self._update_given_kwargs(fn)
-            wrapped_fn = self._wrap_with_hypothesis(fn)
-        else:
-            wrapped_fn = fn
-
-        self._add_test_attrs_to_fn(wrapped_fn)
-        self._handle_not_implemented(wrapped_fn)
-        return wrapped_fn
