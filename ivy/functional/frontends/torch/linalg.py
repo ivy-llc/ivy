@@ -222,8 +222,8 @@ def inv_ex(A, *, check_errors=False, out=None):
             raise RuntimeError("Singular Matrix")
         else:
             inv = A * math.nan
-            # TODO: info should return an array containing the diagonal element of the LU decomposition
-            #  of the input matrix that is exactly zero
+            # TODO: info should return an array containing the diagonal element of the
+            # LU decomposition of the input matrix that is exactly zero
             info = ivy.ones(A.shape[:-2], dtype=ivy.int32)
     else:
         inv = ivy.inv(A, out=out)
