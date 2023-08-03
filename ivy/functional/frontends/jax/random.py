@@ -330,6 +330,31 @@ def maxwell(key, shape=None, dtype="float64"):
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "0.3.14 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "jax",
+)
+def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
+    seed = _get_seed(key)
+    x = ivy.random_normal(seed=seed, shape=shape, dtype=dtype)
+    z_1 = ivy.subtract(x, loc)
+    if scale != 0:
+        z = z_1 / scale
+        maxwell = (z**2) * ivy.exp(-(z**2) / 2)
+        coefficient = 1 / (2 * ivy.pi * scale)
+        double_maxwell = ivy.multiply(coefficient, maxwell)
+    else:
+        double_maxwell = ivy.full(shape, loc)
+    return double_maxwell
+
+
+@handle_jax_dtype
+@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
         "0.4.14 and below": (
