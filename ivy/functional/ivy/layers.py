@@ -625,6 +625,7 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_out_argument
