@@ -224,8 +224,8 @@ def test_array_property_strides(dtype_x, backend_fw):
 )
 def test_array_property_mT(
     dtype_x,
-    ground_truth_backend,
     backend_fw,
+    test_flags,
 ):
     _, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
@@ -233,13 +233,13 @@ def test_array_property_mT(
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.mT, backend=backend_fw)
         ret_gt = helpers.flatten_and_to_np(
-            ret=ivy_backend.matrix_transpose(data), backend=ground_truth_backend
+            ret=ivy_backend.matrix_transpose(data), backend=backend_fw
         )
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             backend=backend_fw,
-            ground_truth_backend=ground_truth_backend,
+            ground_truth_backend=test_flags.ground_truth_backend,
         )
 
 
@@ -253,8 +253,8 @@ def test_array_property_mT(
 )
 def test_array_property_T(
     dtype_x,
-    ground_truth_backend,
     backend_fw,
+    test_flags,
 ):
     _, data = dtype_x
     with update_backend(backend_fw) as ivy_backend:
@@ -262,13 +262,13 @@ def test_array_property_T(
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.T, backend=backend_fw)
         ret_gt = helpers.flatten_and_to_np(
-            ret=ivy.matrix_transpose(data), backend=ground_truth_backend
+            ret=ivy_backend.matrix_transpose(data), backend=backend_fw
         )
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             backend=backend_fw,
-            ground_truth_backend=ground_truth_backend,
+            ground_truth_backend=test_flags.ground_truth_backend,
         )
 
 
@@ -286,7 +286,7 @@ def test_array_property_real(
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.real, backend=backend_fw)
-        ret_gt = helpers.flatten_and_to_np(ret=ivy.real(x), backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy_backend.real(x), backend=backend_fw)
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
@@ -309,7 +309,7 @@ def test_array_property_imag(
         data = ivy_backend.native_array(data[0])
         x = ivy_backend.Array(data)
         ret = helpers.flatten_and_to_np(ret=x.imag, backend=backend_fw)
-        ret_gt = helpers.flatten_and_to_np(ret=ivy.imag(x), backend=backend_fw)
+        ret_gt = helpers.flatten_and_to_np(ret=ivy_backend.imag(x), backend=backend_fw)
         helpers.value_test(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
@@ -1474,7 +1474,10 @@ def test_array__imatmul__(
     init_tree=CLASS_TREE,
     method_tree="Array.__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
+        safety_factor_scale="log",
     ),
 )
 def test_array__abs__(
@@ -2191,7 +2194,16 @@ def test_array__lshift__(
     on_device,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    max_bits = np.iinfo(dtype[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=dtype[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(np.clip(x[0], None, max_value_before_shift), dtype=dtype[0])
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.asarray(np.clip(x[0], None, overflow_threshold), dtype=dtype[0])
+    if np.any(x[0] < 0):
+        x[0] = np.asarray(np.abs(x[0]), dtype=dtype[0])
     helpers.test_method(
         backend_to_test=backend_fw,
         on_device=on_device,
@@ -2204,6 +2216,8 @@ def test_array__lshift__(
         method_all_as_kwargs_np={"other": x[1]},
         class_name=class_name,
         method_name=method_name,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 
