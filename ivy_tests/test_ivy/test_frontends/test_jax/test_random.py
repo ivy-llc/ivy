@@ -1436,10 +1436,16 @@ def test_jax_ball(
     ),
     dtype=helpers.get_dtypes("float", full=False),
     mean=st.floats(min_value=-10, max_value=10),
-    cov=st.sampled_from([[[  0.19,  0.00, -0.13,  0.00],
-                     [  0.00,  0.29,  0.00, -0.23],
-                     [ -0.13,  0.00,  0.39,  0.00],
-                     [  0.00, -0.23,  0.00,  0.49]]]),
+    cov=st.sampled_from(
+        [
+            [
+                [  0.19,  0.00, -0.13,  0.00],
+                [  0.00,  0.29,  0.00, -0.23],
+                [ -0.13,  0.00,  0.39,  0.00],
+                [  0.00, -0.23,  0.00,  0.49]
+            ]
+        ]
+    ),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
 )
 def test_jax_multivariate_normal(
