@@ -35,6 +35,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -339,6 +340,7 @@ def unset_soft_device_mode() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def dev(
@@ -761,6 +763,7 @@ def tpu_is_available() -> bool:
 
 # noinspection PyShadowingNames
 @handle_exceptions
+@handle_backend_invalid
 def default_device(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     /,
@@ -888,6 +891,7 @@ def unset_default_device() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1024,6 +1028,7 @@ def set_split_factor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def split_func_call(
     func: Callable,
     inputs: Union[ivy.Array, ivy.NativeArray],
