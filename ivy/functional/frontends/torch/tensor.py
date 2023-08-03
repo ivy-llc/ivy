@@ -1516,6 +1516,12 @@ class Tensor:
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
+    
+    def baddbmm_(self, batch1, batch2, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.baddbmm(
+            self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
+        ).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self):
