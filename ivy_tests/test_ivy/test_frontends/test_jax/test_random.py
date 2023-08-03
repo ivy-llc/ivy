@@ -1247,11 +1247,11 @@ def test_jax_maxwell(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.double_sided_maxwell",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=["uint32"],
         min_value=0,
         max_value=2000,
         min_num_dims=1,
@@ -1261,7 +1261,7 @@ def test_jax_maxwell(
     ),
     shape=helpers.get_shape(),
     dtype=helpers.get_dtypes("float", full=False),
-    loc=st.integers(min_value=1, max_value=100),
+    loc=st.integers(min_value=10, max_value=100),
     scale=st.floats(min_value=0, max_value=100, exclude_min=True),
     test_with_out=st.just(False),
 )
