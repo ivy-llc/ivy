@@ -1901,8 +1901,6 @@ def dtype_array_query(
                 )
             )
             new_index = slice(start, end, step)
-
-        print("new index", new_index)
         index += [new_index]
     if len(index_types) and draw(st.booleans()):
         start = draw(st.integers(min_value=0, max_value=len(index) - 1))
