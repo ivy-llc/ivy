@@ -18,16 +18,12 @@ jobs:
               repo: context.repo.repo,
               
               body: `# Thanks for contributing to Ivy! 😊👏
-                
                 Here are some of the important points from our Contributing Guidelines 📝:
-                
                 1. Feel free to ignore the \`run_tests (1)\`, \`run_tests (2)\`, … jobs, and only look at the \`display_test_results\` job. 👀 It contains the following two sections:
                 - **Combined Test Results:** This shows the results of all the ivy tests that ran on the PR. ✔️
                 - **New Failures Introduced:** This lists the tests that are passing on master, but fail on the PR Fork. Please try to make sure that there are no such tests. 💪
-                
                 2. The \`lint / Check formatting / check-formatting\` tests check for the formatting of your code. 📜 If it fails, please check the exact error message in the logs and fix the same. ⚠️🔧
-                
-                3. Finally, the \`test-docstrings / run-docstring-tests\` check for the changes made in docstrings of the functions. This may be skipped, as well.📚
+                3. Finally, the \`test-docstrings / run-docstring-tests\` check for the changes made in docstrings of the functions. This may be skipped, as well. 📚
                 
                 Happy coding! 🎉👨‍💻`
             })
