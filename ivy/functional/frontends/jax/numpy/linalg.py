@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.functional.frontends.jax import DeviceArray
+from ivy.functional.frontends.jax import Array
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
@@ -85,8 +85,8 @@ def norm(x, ord=None, axis=None, keepdims=False):
     if ord is None:
         ord = 2
     if type(axis) in [list, tuple] and len(axis) == 2:
-        return DeviceArray(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
-    return DeviceArray(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
+        return Array(ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims))
+    return Array(ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims))
 
 
 norm.supported_dtypes = (
@@ -107,7 +107,7 @@ def tensorsolve(a, b, axes=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, "jax")
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, "jax")
 def tensorinv(a, ind=2):
     old_shape = ivy.shape(a)
     prod = 1
@@ -120,7 +120,7 @@ def tensorinv(a, ind=2):
     a = ivy.reshape(a, shape=(prod, -1))
     ia = ivy.inv(a)
     new_shape = tuple([*invshape])
-    return DeviceArray(ivy.reshape(ia, shape=new_shape))
+    return Array(ivy.reshape(ia, shape=new_shape))
 
 
 @to_ivy_arrays_and_back
