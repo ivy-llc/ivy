@@ -34,6 +34,9 @@ class FrontendMethodHandler(MethodHandlerBase):
         )
         self._given_kwargs = _given_kwargs
 
+    def _append_ivy_to_fn_tree(self, fn_tree):
+        return "ivy.functional.frontends." + fn_tree
+
     def _build_init_flags(
         self, init_num_positional_args, init_as_variable_flags, init_native_arrays
     ):
