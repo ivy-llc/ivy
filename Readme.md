@@ -32,7 +32,7 @@
 
 ------------------------------------------------------------------------
 
-## Status
+# Status
 
 <div>
     <a href="https://github.com/unifyai/ivy/issues">
@@ -64,7 +64,7 @@
 
 ------------------------------------------------------------------------
 
-## Unified AI
+# Unified AI
 
 <div style="display: block;" align="center">
     <div>
@@ -117,7 +117,7 @@ if you\'d like to dive straight in 🧑‍💻
 
 ------------------------------------------------------------------------
 
-### Ivy as a transpiler
+## Ivy as a transpiler
 
 Ivy\'s transpiler allows you to use code from any other framework (or
 from any other version of the same framework!) in your own code, by just
@@ -181,7 +181,7 @@ If you want to learn more, you can find more information in the [Ivy as
 a transpiler section of the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_transpiler.html)
 
-#### When should I use Ivy as a transpiler?
+### When should I use Ivy as a transpiler?
 
 If you want to use building blocks published in other frameworks (neural
 networks, layers, array computing libraries, training pipelines\...),
@@ -193,7 +193,7 @@ as if it was code originally developed in that framework, applying
 framework-specific optimizations or tools, instantly exposing your
 project to all of the unique perks of a different framework.
 
-### Ivy as a framework
+## Ivy as a framework
 
 The Ivy framework is built on top of various essential components,
 mainly the [Backend
@@ -384,7 +384,7 @@ As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
 
-#### When should I use Ivy as a framework?
+### When should I use Ivy as a framework?
 
 As Ivy supports multiple backends, writing code in Ivy breaks you free
 from framework limitations. If you want to publish highly flexible code
@@ -393,12 +393,12 @@ you plan to develop ML-related tools and want them to be interoperable
 with not only the already existing frameworks, but also with future
 frameworks, then Ivy is for you!
 
-### Setting up Ivy
+## Setting up Ivy
 
 There are various ways to use Ivy, depending on your preferred
 environment:
 
-#### Installing using pip
+### Installing using pip
 
 The easiest way to set up Ivy is to install it using pip with the
 following command:
@@ -413,7 +413,7 @@ or alternatively:
 python3 -m pip install ivy
 ```
 
-#### Docker
+### Docker
 
 If you prefer to use containers, we also have pre-built Docker images
 with all the supported frameworks and some relevant packages already
@@ -429,7 +429,7 @@ If you are working on a GPU device, you can pull from:
 docker pull unifyai/ivy:latest-gpu
 ```
 
-#### Installing from source
+### Installing from source
 
 You can also install Ivy from source if you want to take advantage of
 the latest changes, but we can\'t ensure everything will work as
@@ -453,7 +453,7 @@ Up](https://unify.ai/docs/ivy/overview/contributing/setting_up.html#setting-up)
 page, where OS-specific and IDE-specific instructions and video
 tutorials to do so are available!
 
-#### Using Ivy
+### Using Ivy
 
 You can find quite a lot more examples in the corresponding section
 below, but using Ivy is as simple as:
@@ -496,7 +496,7 @@ torch_fn = ivy.transpile(jax_fn, source="jax", to="torch", args=(jax_x,))
 ret = torch_fn(torch_x)
 ```
 
-### Documentation
+## Documentation
 
 The [Ivy Docs page](https://unify.ai/docs/ivy/) holds all the relevant
 information about Ivy and its framework API reference.
@@ -525,7 +525,7 @@ which paints a clear picture of the role Ivy plays in the ML stack,
 comparing it to other existing solutions in terms of functionalities and
 level.
 
-### Examples
+## Examples
 
 The [Examples page](https://unify.ai/demos/) features a wide range of
 demos and tutorials showcasing the functionalities of Ivy along with
@@ -1606,7 +1606,7 @@ train(images, classes, num_epochs, model, device, num_classes = num_classes, bat
 
 </details>
 
-### Contributing
+## Contributing
 
 We believe that everyone can contribute and make a difference. Whether
 it\'s writing code 💻, fixing bugs 🐛, or simply sharing feedback 💬,
@@ -1624,7 +1624,7 @@ our journey to unify all ML frameworks!
   <img class="dark-light" src="https://contrib.rocks/image?repo=unifyai/ivy&anon=0&columns=20&max=100&r=true" />
 </a>
 
-### Community
+## Community
 
 In order to achieve the ambitious goal of unifying AI we definitely need
 as many hands as possible on it! Whether you are a seasoned developer or
@@ -1640,18 +1640,16 @@ great way to stay in the loop 😄
 
 Can\'t wait to see you there!
 
-### Citation
+## Citation
 
 If you use Ivy for your work, please don\'t forget to give proper credit
 by including the accompanying [paper](https://arxiv.org/abs/2102.02886)
 📄 in your references. It\'s a small way to show appreciation and help
 to continue to support this and other open source projects 🙌
 
-```bibtex
-@article{lenton2021ivy,
-    title={Ivy: Templated deep learning for inter-framework portability},
-    author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
-    journal={arXiv preprint arXiv:2102.02886},
-    year={2021}
-}
-```
+    @article{lenton2021ivy,
+      title={Ivy: Templated deep learning for inter-framework portability},
+      author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
+      journal={arXiv preprint arXiv:2102.02886},
+      year={2021}
+    }
