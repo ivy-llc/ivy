@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.helpers.decorators.base.method_decorator_base import (
 )
 
 
-class FrontendMethodHandlerBase(MethodHandlerBase):
+class FrontendMethodHandler(MethodHandlerBase):
     def __init__(
         self,
         class_tree: str,
