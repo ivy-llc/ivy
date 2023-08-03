@@ -2,6 +2,13 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
+class FunctionData:
+    module_tree: str
+    fn_name: str
+    supported_device_dtypes: dict = None
+
+
+@dataclass(frozen=True)
 class FrontendMethodData:
     ivy_init_module: str
     framework_init_module: str
