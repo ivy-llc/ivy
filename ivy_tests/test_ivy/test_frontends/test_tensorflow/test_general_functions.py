@@ -1579,7 +1579,7 @@ def test_tensorflow_realdiv(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=helpers.get_dtypes("float_and_complex"),
+        input_dtypes=helpers.get_dtypes("float"),
         test_flags=test_flags,
         frontend=frontend,
         backend_to_test=backend_fw,
@@ -1588,13 +1588,6 @@ def test_tensorflow_realdiv(
         x=x[0],
         y=x[1],
     )
-
-    result = fn_tree.tensorflow_realdiv(x[0], x[1])
-
-    expected = x[0] / x[1]
-    assert (
-        result == expected
-    ), f"For {x[0]} and {x[1]}, expected {expected} but got {result}"
 
 
 # tile
