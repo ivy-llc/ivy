@@ -312,7 +312,7 @@ def pareto(key, b, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
@@ -332,7 +332,7 @@ def maxwell(key, shape=None, dtype="float64"):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {
-        "0.3.14 and below": (
+        "0.4.14 and below": (
             "float16",
             "bfloat16",
         )
