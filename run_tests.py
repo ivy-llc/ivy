@@ -65,7 +65,7 @@ def update_individual_test_results(
     test,
     result,
     backend_version=None,
-    frontend_version=None,
+    frontend_version=1,
     device=None,
 ):
     key = submod + "." + backend
