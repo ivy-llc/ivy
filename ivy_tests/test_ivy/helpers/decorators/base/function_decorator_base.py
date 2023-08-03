@@ -7,10 +7,6 @@ from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.globals import TestData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
-from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
-    _dtype_kind_keys,
-    _get_type_dict,
-)
 from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
 from ivy_tests.test_ivy.helpers.decorators.strategies import (
     num_positional_args_from_dict,
@@ -165,14 +161,6 @@ class FunctionHandler(HandlerBase):
     def _partition_fn_tree(self, fn_tree: str):
         module_tree, _, fn_name = fn_tree.rpartition(".")
         return module_tree, fn_name
-
-    def _partition_dtypes_into_kinds(self, framework: str, dtypes):
-        partitioned_dtypes = {}
-        for kind in _dtype_kind_keys:
-            partitioned_dtypes[kind] = set(
-                _get_type_dict(framework, kind)
-            ).intersection(dtypes)
-        return partitioned_dtypes
 
     def import_function(self, fn_tree: str) -> Callable[..., Any]:
         module_tree, _, fn_name = fn_tree.rpartition(".")

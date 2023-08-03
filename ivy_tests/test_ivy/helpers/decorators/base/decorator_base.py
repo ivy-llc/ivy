@@ -4,6 +4,11 @@ from abc import ABC, abstractmethod
 from hypothesis import given
 from typing import Callable, Any
 
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
+    _dtype_kind_keys,
+    _get_type_dict,
+)
+
 
 class HandlerBase(ABC):
     @abstractmethod
@@ -16,6 +21,14 @@ class HandlerBase(ABC):
     @property
     def is_hypothesis_test(self) -> bool:
         return len(self._given_kwargs.items()) > 0
+
+    def _partition_dtypes_into_kinds(self, framework: str, dtypes):
+        partitioned_dtypes = {}
+        for kind in _dtype_kind_keys:
+            partitioned_dtypes[kind] = set(
+                _get_type_dict(framework, kind)
+            ).intersection(dtypes)
+        return partitioned_dtypes
 
     @abstractmethod
     def __call__(self, func: Callable[..., Any]):
