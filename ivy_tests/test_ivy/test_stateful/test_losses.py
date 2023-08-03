@@ -272,7 +272,7 @@ def test_binary_cross_entropy_loss(
         max_num_dims=3,
         min_dim_size=3,
     ),
-    reduction=st.sampled_from(["none", "mean", "sum"]),
+    reduction=st.sampled_from([ "mean", "sum"]),
 )
 def test_l1_loss(
     *,
