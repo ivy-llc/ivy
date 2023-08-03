@@ -1,9 +1,11 @@
+import inspect
 from hypothesis import strategies as st
 from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
     FunctionHandler,
 )
 
-from typing import List
+from ivy_tests.test_ivy.helpers.structs import FunctionData
+from typing import List, Callable, Any
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     build_frontend_function_flags,
 )
@@ -43,6 +45,16 @@ class FrontendFunctionHandler(FunctionHandler):
             as_variable_flags=as_variable_flags,
             native_array_flags=native_array_flags,
             generate_frontend_arrays=generate_frontend_arrays,
+        )
+        self._build_test_data()
+
+    def _build_test_data(self):
+        module_tree, fn_name = self._partition_fn_tree(self.fn_tree)
+        supported_device_dtypes = self._get_supported_devices_dtypes(self.fn_tree)
+        self.test_data = FunctionData(
+            module_tree=module_tree,
+            fn_name=fn_name,
+            supported_device_dtypes=supported_device_dtypes,
         )
 
     def _build_fn_tree_strategy(self):
@@ -86,3 +98,27 @@ class FrontendFunctionHandler(FunctionHandler):
             native_arrays=native_array_flags,
             generate_frontend_arrays=generate_frontend_arrays,
         )
+
+    def _update_given_kwargs(self, fn):
+        param_names = inspect.signature(fn).parameters.keys()
+
+        # Check if these arguments are being asked for
+        filtered_args = set(param_names).intersection(self.possible_args.keys())
+        for key in filtered_args:
+            self._given_kwargs[key] = self.possible_args[key]
+
+    def _add_test_attrs_to_fn(self, fn: Callable[..., Any]):
+        fn._is_ivy_frontend_test = True
+        fn.test_data = self.test_data
+        return fn
+
+    def __call__(self, fn: Callable[..., Any]):
+        if self.is_hypothesis_test:
+            self._update_given_kwargs(fn)
+            wrapped_fn = self._wrap_with_hypothesis(fn)
+        else:
+            wrapped_fn = fn
+
+        self._add_test_attrs_to_fn(wrapped_fn)
+        self._handle_not_implemented(wrapped_fn)
+        return wrapped_fn
