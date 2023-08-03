@@ -52,6 +52,7 @@ def test_numpy_clip(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, min, max, casting, dtype = input_and_ranges
@@ -62,6 +63,7 @@ def test_numpy_clip(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -99,6 +101,7 @@ def test_numpy_cbrt(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -109,6 +112,7 @@ def test_numpy_cbrt(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -146,6 +150,7 @@ def test_numpy_sqrt(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -156,6 +161,7 @@ def test_numpy_sqrt(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -192,6 +198,7 @@ def test_numpy_reciprocal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -202,6 +209,7 @@ def test_numpy_reciprocal(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -238,6 +246,7 @@ def test_numpy_square(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -248,6 +257,7 @@ def test_numpy_square(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -283,6 +293,7 @@ def test_numpy_absolute(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -293,6 +304,7 @@ def test_numpy_absolute(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -328,6 +340,7 @@ def test_numpy_fabs(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -338,6 +351,7 @@ def test_numpy_fabs(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -373,6 +387,7 @@ def test_numpy_sign(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, x, casting, dtype = dtypes_values_casting
@@ -384,6 +399,7 @@ def test_numpy_sign(
 
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -421,6 +437,7 @@ def test_numpy_heaviside(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, (x1_list, x2_list), casting, dtype = dtypes_values_casting
@@ -431,6 +448,7 @@ def test_numpy_heaviside(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -468,6 +486,7 @@ def test_numpy_nan_to_num(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     on_device,
     posinf,
     neginf,
@@ -479,6 +498,7 @@ def test_numpy_nan_to_num(
         assume(posinf is not None and neginf is not None)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -502,12 +522,14 @@ def test_numpy_real_if_close(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -547,6 +569,7 @@ def test_numpy_interp(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     xp_and_fp,
     x,
@@ -568,6 +591,7 @@ def test_numpy_interp(
     x_dtype, x = x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes + x_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -601,11 +625,13 @@ def test_numpy_convolve(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -642,6 +668,7 @@ def test_numpy_copysign(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs, casting, dtype = dtypes_values_casting
@@ -652,6 +679,7 @@ def test_numpy_copysign(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -693,6 +721,7 @@ def test_numpy_lcm(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_inputs
@@ -703,6 +732,7 @@ def test_numpy_lcm(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -738,6 +768,7 @@ def test_numpy_gcd(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtypes, xs = dtype_and_inputs
@@ -748,6 +779,7 @@ def test_numpy_gcd(
     )
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
