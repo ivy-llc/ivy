@@ -426,3 +426,10 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+def histogram(input, bins, *, range=None, weight=None, density=False, out=None):
+    return ivy.histogram(
+        a=input, bins=bins, range=range, weights=weight, density=density, out=out
+    )
