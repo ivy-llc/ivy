@@ -23,7 +23,9 @@ class FrontendMethodHandler(MethodHandlerBase):
         method_as_variable_flags=BuiltAsVariableStrategy,
         **_given_kwargs,
     ):
-        self.method_tree = init_tree + method_name
+        self.init_tree = init_tree
+        self.class_tree = class_tree
+        self.method_name = method_name
         self._build_init_flags(
             init_num_positional_args, init_native_arrays, init_as_variable_flags
         )
