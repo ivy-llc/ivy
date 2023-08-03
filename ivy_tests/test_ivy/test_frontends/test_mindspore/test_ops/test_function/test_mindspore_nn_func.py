@@ -1,6 +1,5 @@
 # global
 # from hypothesis import strategies as st
-# from hypothesis import given
 
 
 # local
@@ -96,19 +95,31 @@
 #             st.integers(min_value=12, max_value=64),
 #         ),
 #     ),
-#     mode=st.sampled_from(['nearest', 'linear', 'bilinear', 'bicubic', 'trilinear', 'area', 'nearest-exact']),
+#     mode=st.sampled_from(
+#         [
+#             "nearest",
+#             "linear",
+#             "bilinear",
+#             "bicubic",
+#             "trilinear",
+#             "area",
+#             "nearest-exact",
+#         ]
+#     ),
 #     align_corners=st.booleans(),
 #     recompute_scale_factor=st.booleans(),
 #     size=st.one_of(
 #         st.integers(min_value=1, max_value=10),
 #         st.tuples(st.integers(min_value=1, max_value=10)),
 #         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
-#     ) | None,
+#     )
+#     | None,
 #     scale_factor=st.one_of(
 #         st.floats(min_value=0.1, max_value=2.0),
 #         st.tuples(st.floats(min_value=0.1, max_value=2.0)),
 #         st.lists(st.floats(min_value=0.1, max_value=2.0), min_size=3, max_size=3),
-#     ) | None,
+#     )
+#     | None,
 # )
 # def test_mindspore_interpolate(
 #     *,
@@ -125,10 +136,16 @@
 # ):
 #     dtype, x = dtype_and_x
 
+#     if size is None and scale_factor is None:
+#         raise ValueError(
+#             "Both 'size' and 'scale_factor' cannot be None."
+#             "Please provide a valid value for either 'size' or 'scale_factor'."
+#         )
+
 #     if not recompute_scale_factor:
 #         if size is not None:
 #             scale_factor = None
-#         else:
+#         elif scale_factor is not None:
 #             size = None
 
 #     helpers.test_frontend_function(
