@@ -164,7 +164,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self.ivy_array.dtype
+        return np_frontend.dtype(self.ivy_array.dtype)
 
     @property
     def ndim(self):
@@ -583,12 +583,21 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.int64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "int() argument must be a string, a bytes-like object or a number, not"
+                " 'complex"
+            )
+        return int(self.ivy_array)
 
     def __float__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.float64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "float() argument must be a string or a real number, not 'complex"
+            )
+        return float(self.ivy_array)
 
     def __complex__(
         self,

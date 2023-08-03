@@ -2427,8 +2427,9 @@ def test_numpy___lt__(
     method_name="__int__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
-        max_dim_size=1,
+        max_num_dims=0,
+        min_value=-1e15,
+        max_value=1e15,
     ),
 )
 def test_numpy___int__(
@@ -2441,7 +2442,8 @@ def test_numpy___int__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    # Numpy doesn't support complex to int conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2464,8 +2466,7 @@ def test_numpy___int__(
     method_name="__float__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
-        max_dim_size=1,
+        max_num_dims=0,
     ),
 )
 def test_numpy___float__(
@@ -2478,7 +2479,8 @@ def test_numpy___float__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    # Numpy doesn't support complex to float conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
