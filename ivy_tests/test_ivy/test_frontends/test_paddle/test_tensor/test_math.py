@@ -1700,10 +1700,12 @@ def test_paddle_rsqrt(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1730,6 +1732,7 @@ def test_paddle_prod(
     *,
     dtype_and_x,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -1744,7 +1747,7 @@ def test_paddle_prod(
         x=x[0],
         axis=axis,
         keepdim=False,
-        backend_to_test="paddle",
+        backend_to_test=backend_fw,
     )
 
 

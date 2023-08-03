@@ -617,9 +617,11 @@ def test_paddle_logspace(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
