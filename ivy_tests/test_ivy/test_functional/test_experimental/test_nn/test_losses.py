@@ -62,12 +62,12 @@ def test_log_poisson_loss(
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_loss",
     dtype_true_and_pred=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=1e-04,
         max_value=1,
         allow_inf=False,
     ),
-    reduction=st.sampled_from([ "sum", "mean"]),
+    reduction=st.sampled_from(["sum", "mean"]),
 )
 def test_l1_loss(
     dtype_true_and_pred,
