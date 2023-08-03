@@ -1419,23 +1419,27 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-@pytest.mark.xfail
+# @pytest.mark.xfail
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
         available_dtypes=["float32", "float64"],
+        min_value=0,
+        max_value=2000,
         min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=5,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
     ),
     shape=helpers.get_shape(
-        min_num_dims=1,
-        min_dim_size=1,
+        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
     ),
     dtype=helpers.get_dtypes("float", full=False),
     mean=st.floats(min_value=-10, max_value=10),
-    cov=st.floats(min_value=0, max_value=10),
+    cov=st.sampled_from([[[  0.19,  0.00, -0.13,  0.00],
+                     [  0.00,  0.29,  0.00, -0.23],
+                     [ -0.13,  0.00,  0.39,  0.00],
+                     [  0.00, -0.23,  0.00,  0.49]]]),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
 )
 def test_jax_multivariate_normal(
