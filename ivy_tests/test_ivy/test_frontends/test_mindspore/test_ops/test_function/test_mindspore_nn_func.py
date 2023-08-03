@@ -100,7 +100,7 @@
 #         st.tuples(size_strategy(), scale_factor_strategy()),
 #     )
 
-# scale_factor2 = size_and_scale_factor_strategy()
+# size_and_scale_factor = size_and_scale_factor_strategy()
 
 
 # # Use the composite strategy for size and scale_factor
@@ -133,8 +133,8 @@
 #     ),
 #     align_corners=st.booleans(),
 #     recompute_scale_factor=st.booleans(),
-#     size=scale_factor2[0],
-#     scale_factor=scale_factor2[1],
+#     size=size_and_scale_factor[0],
+#     scale_factor=size_and_scale_factor[1],
 # )
 # def test_mindspore_interpolate(
 #     *,
