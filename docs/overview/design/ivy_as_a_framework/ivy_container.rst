@@ -2,15 +2,15 @@ Ivy Container
 =============
 
 Here, we explain how the :class:`ivy.Container` class saves you a ton of time and cleans up code in almost all aspects of your ML workflow.
-So without further ado, let’s dive in!
+So without further ado, let's dive in!
 
 Firstly, Dictionaries are an incredibly powerful and useful data type in Python.
 They enable a clean, readable and efficient-access (via hashing) storage of arbitrarily hierarchical data.
 
 The :class:`ivy.Container` class can be seen as a souped-up Dict, with many useful features built on top.
-It’s the backbone of most high level operations in Ivy.
+It's the backbone of most high level operations in Ivy.
 
-Let’s walk through some of the most important features of the :class:`ivy.Container`!
+Let's walk through some of the most important features of the :class:`ivy.Container`!
 
 Construction
 ------------
@@ -106,7 +106,7 @@ Again, this does not happen with native Python Dicts.
 Recursive Methods
 -----------------
 
-All methods in Ivy’s functional API are implemented as recursive methods on the :class:`ivy.Container`.
+All methods in Ivy's functional API are implemented as recursive methods on the :class:`ivy.Container`.
 This means you can easily map a single method to all arrays in the container with a single line.
 
 Starting with the following container:
@@ -175,7 +175,7 @@ For example, performing a gradient update step for a set of network weights can 
         }
     }
 
-Check out the section below on Ivy’s stateful API to see how the :class:`ivy.Container` is used for storing all network weights in :class:`ivy.Module` instances!
+Check out the section below on Ivy's stateful API to see how the :class:`ivy.Container` is used for storing all network weights in :class:`ivy.Module` instances!
 
 Access
 ------
@@ -200,7 +200,7 @@ Both of these setting and accessing approaches are equivalent under the hood.
 
    assert cnt.c is cnt['c']
 
-Nested keys can also be set in one line, using either ‘/’ or ‘.’ as a delimiter.
+Nested keys can also be set in one line, using either ‘/' or ‘.' as a delimiter.
 
 .. code-block:: python
 
@@ -463,7 +463,7 @@ Check out the `docs <https://unify.ai/docs/ivy/docs/data_classes/data_classes/iv
 Use Cases
 ---------
 
-We’ll now just go through a few of the different use cases for the Ivy Container.
+We'll now just go through a few of the different use cases for the Ivy Container.
 The container is not limited to these use cases though, the container is the right choice whenever you are storing nested data!
 
 Compartmentalization
@@ -536,7 +536,7 @@ Our code will be much cleaner if we do something like the following, particularl
         cam_range = cam_max - cam_min
         agent.cams = (agent.cams - cam_min) / cam_range
 
-Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn’t only relevant for the Ivy container.
+Of course, this argument holds for the use of custom classes or built-in containers (Python list, dict, tuple etc.), and isn't only relevant for the Ivy container.
 However the recursive methods of the Ivy Container make things even more convenient, such as where we recursively normalize all five images in the final four lines of the :code:`update_agent` method.
 
 Configuration
@@ -551,7 +551,7 @@ Data loading
 The container can also be used for data loading.
 Our example uses single threaded loading, but incorporating multiprocessing with Queues is also pretty straightforward.
 
-To start with, let’s assume we have an image Dataset saved to disk with separate images for a front camera and a rear camera for each point in time.
+To start with, let's assume we have an image Dataset saved to disk with separate images for a front camera and a rear camera for each point in time.
 
 We can then load this Dataset with a configurable batch size like so, and we can easily iterate between each item in the batch.
 This is useful if we need to recursively unroll the entire batch in the time dimension for example.

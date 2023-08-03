@@ -108,16 +108,16 @@ There are multiple competing paradigms for parallelisation -- e.g. SPMD vs mixtu
 JAX and Tensorflow are very sophisticated in this department, and routinely run models on hundreds or thousands of devices.
 How will Ivy support multi-device training, if at all?
 
-**A:** This is not something we’re diving into too deeply at the moment.
-However, we have written our own `API for distributed training`_, which broadly follows PyTorch’s approach using a CUDA-enabled multiprocessing module.
+**A:** This is not something we're diving into too deeply at the moment.
+However, we have written our own `API for distributed training`_, which broadly follows PyTorch's approach using a CUDA-enabled multiprocessing module.
 
 If heavily distributed training is important.
 Then Ivy can be supplementary for the time being, rather than a total replacement.
-For example, someone can use TensorFlow’s distributed training tools, and just use Ivy to copy over a PyTorch model into their TF pipeline.
+For example, someone can use TensorFlow's distributed training tools, and just use Ivy to copy over a PyTorch model into their TF pipeline.
 
 We are not trying to encourage anyone to drop any existing tools and just use Ivy instead.
 Projects can use 1% Ivy code or 100%.
-We’re very happy in either case!
+We're very happy in either case!
 
 Support for Functions
 ---------------------

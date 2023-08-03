@@ -1,9 +1,9 @@
 Ivy Stateful API
 ================
 
-Here we explain how Ivy’s stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
+Here we explain how Ivy's stateful API builds on the functional API and the :class:`ivy.Container` class to provide other convenient classes in the form of optimizers, network layers and custom trainable modules, which help get your ML projects up and running very quickly!
 
-So, without further ado, let’s walk through what the stateful API has to offer!
+So, without further ado, let's walk through what the stateful API has to offer!
 
 Modules
 -------
@@ -75,7 +75,7 @@ For example, we can create a simple fully connected network with our linear laye
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear1(x))
 
-In this case, we don’t specify any variables manually using :code:`_create_variables`.
+In this case, we don't specify any variables manually using :code:`_create_variables`.
 This is because all variables in the network reside in the linear layers.
 These variables are all detected automatically.
 
@@ -372,7 +372,7 @@ The actual implementation for the :class:`ivy.Linear` layer exposed in the Ivy s
 The :class:`ivy.Initializer` class has a single abstract method, :code:`create_variables(var_shape, dev, fan_out=None, fan_in=None, *args, **kwargs)`.
 Check out the `code <https://github.com/unifyai/ivy/blob/master/ivy/stateful/initializers.py>`_ or `docs <https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework/ivy_stateful_api.html#initializers>`_ for more details.
 The default initializer for the weights is :class:`ivy.GlorotUniform` and for this bias is :class:`ivy.Zeros`.
-Let’s take a quick look at what these look like.
+Let's take a quick look at what these look like.
 :class:`ivy.GlorotUniform` derives from a more general :class:`ivy.Uniform` initializer class, and is then simply implemented as follows:
 
 .. code-block:: python
@@ -417,7 +417,7 @@ Recapping the example given above, we saw that :class:`ivy.Module` instances can
 
 However, what if we want to do something more complex than vanilla gradient descent? What about ADAM or other stateful optimizers such as LARS and LAMB? This is where the :class:`ivy.Optimizer` class comes in.
 
-Let’s take the class :class:`ivy.Adam` as an example.
+Let's take the class :class:`ivy.Adam` as an example.
 The implementation is as follows:
 
 .. code-block:: python
@@ -481,6 +481,6 @@ By changing only a couple of lines, we can use this optimizer to train our netwo
 
 **Round Up**
 
-That should hopefully be enough to get you started with Ivy’s stateful API 😊
+That should hopefully be enough to get you started with Ivy's stateful API 😊
 
 Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!
