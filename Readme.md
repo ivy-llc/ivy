@@ -379,6 +379,7 @@ and more!
 </a>
 </div>
 <br clear="all" />
+
 As always, you can find more information about [Ivy as a framework in
 the
 docs!](https://unify.ai/docs/ivy/overview/design/ivy_as_a_framework.html)
