@@ -1584,3 +1584,29 @@ def test_torch_view_as_real(
         on_device=on_device,
         input=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# histogram(makeshift)
+@handle_frontend_test(
+    fn_tree="torch.histogram",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_histogram(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
