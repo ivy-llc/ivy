@@ -401,7 +401,7 @@ def prod(x, axis=None, keepdim=False, dtype=None, name=None):
 def floor_divide(x, y, name=None):
     return ivy.floor_divide(x, y)
 
-  
+
 @with_supported_dtypes({"2.5.0 and below": "bool"}, "paddle")
 @to_ivy_arrays_and_back
 def any(x, axis=None, keepdim=False, name=None):
