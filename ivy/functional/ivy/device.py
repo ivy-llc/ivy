@@ -285,7 +285,7 @@ def print_all_ivy_arrays_on_dev(
         [print(arr) for arr in arrs]
 
 
-ivy.soft_device_mode = False
+ivy.soft_device_mode = soft_device_mode_stack[-1] if soft_device_mode_stack else False
 
 
 @handle_exceptions
@@ -1213,9 +1213,13 @@ def _get_devices(fn: Callable, complement: bool = True) -> Tuple:
 
 @handle_exceptions
 @handle_nestable
-def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_supported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the supported devices of the current backend's function.
+    Return the supported devices of the current backend's function. The function returns
+    a dict containing the supported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1227,7 +1231,7 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        Tuple containing the supported devices of the function
+        Tuple or dict containing the supported devices of the function
 
     Examples
     --------
@@ -1242,21 +1246,34 @@ def function_supported_devices(fn: Callable, recurse: bool = True) -> Tuple:
             "exist in a particular backend"
         ),
     )
-    supported_devices = set(_get_devices(fn, complement=False))
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_supported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=False),
+        }
+    else:
+        supported_devices = set(_get_devices(fn, complement=False))
+        if recurse:
+            supported_devices = ivy.functional.data_type._nested_get(
+                fn, supported_devices, set.intersection, function_supported_devices
+            )
 
-    if recurse:
-        supported_devices = ivy.functional.data_type._nested_get(
-            fn, supported_devices, set.intersection, function_supported_devices
-        )
-
-    return tuple(supported_devices)
+    return (
+        supported_devices
+        if isinstance(supported_devices, dict)
+        else tuple(supported_devices)
+    )
 
 
 @handle_exceptions
 @handle_nestable
-def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
+def function_unsupported_devices(
+    fn: Callable, recurse: bool = True
+) -> Union[Tuple, dict]:
     """
-    Return the unsupported devices of the current backend's function.
+    Return the unsupported devices of the current backend's function. The function
+    returns a dict containing the unsupported devices for the compositional and primary
+    implementations in case of partial mixed functions.
 
     Parameters
     ----------
@@ -1268,7 +1285,7 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
     Returns
     -------
     ret
-        Tuple containing the unsupported devices of the function
+        Tuple or dict containing the unsupported devices of the function
 
     Examples
     --------
@@ -1283,14 +1300,22 @@ def function_unsupported_devices(fn: Callable, recurse: bool = True) -> Tuple:
             "exist in a particular backend"
         ),
     )
-    unsupported_devices = set(_get_devices(fn, complement=True))
-
-    if recurse:
-        unsupported_devices = ivy.functional.data_type._nested_get(
-            fn, unsupported_devices, set.union, function_unsupported_devices
-        )
-
-    return tuple(unsupported_devices)
+    if hasattr(fn, "partial_mixed_handler"):
+        return {
+            "compositional": function_unsupported_devices(fn.compos, recurse=recurse),
+            "primary": _get_devices(fn, complement=True),
+        }
+    else:
+        unsupported_devices = set(_get_devices(fn, complement=True))
+        if recurse:
+            unsupported_devices = ivy.functional.data_type._nested_get(
+                fn, unsupported_devices, set.union, function_unsupported_devices
+            )
+    return (
+        unsupported_devices
+        if isinstance(unsupported_devices, dict)
+        else tuple(unsupported_devices)
+    )
 
 
 # Profiler #

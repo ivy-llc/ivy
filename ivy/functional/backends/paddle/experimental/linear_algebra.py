@@ -10,7 +10,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def diagflat(
     x: paddle.Tensor,
@@ -43,7 +43,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -62,7 +62,8 @@ def matrix_exp(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     # TODO: this is elementwise exp, should be changed to matrix exp ASAP
-    return paddle.exp(x)
+    # return paddle.exp(x)
+    raise IvyNotImplementedException()
 
 
 def eig(
@@ -90,6 +91,16 @@ def cond(
     /,
     *,
     p: Optional[Union[None, int, str]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> Any:
+    raise IvyNotImplementedException()
+
+
+def lu_factor(
+    x: paddle.Tensor,
+    /,
+    *,
+    pivot: Optional[bool] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()

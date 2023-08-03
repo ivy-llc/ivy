@@ -8,7 +8,7 @@ from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"1.25.1 and below": ("bfloat16",)},
+    {"1.25.2 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -197,6 +197,10 @@ def corrcoef(
     return np.corrcoef(x, y=y, rowvar=rowvar, dtype=x.dtype)
 
 
+@with_unsupported_dtypes(
+    {"1.25.0 and below": ("bfloat16",)},
+    backend_version,
+)
 def nanmedian(
     input: np.ndarray,
     /,
@@ -361,7 +365,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.25.1 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
@@ -395,7 +399,7 @@ def igamma(
         t = np.linspace(0, x, 10000, dtype=np.float64)
         y = np.exp(-t) * (t ** (a - 1))
         integral = np.trapz(y, t)
-        return np.float32(integral / math.gamma(a))
+        return integral / math.gamma(a)
 
     igamma_vec = np.vectorize(igamma_cal)
-    return igamma_vec(a, x)
+    return igamma_vec(a, x).astype(a.dtype)

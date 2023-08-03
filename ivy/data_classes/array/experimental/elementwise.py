@@ -8,6 +8,41 @@ import ivy
 
 
 class _ArrayWithElementWiseExperimental(abc.ABC):
+    def lgamma(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lgamma. This method simply wraps the
+        function, and so the docstring for ivy.lgamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data
+            type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1 , 2 , 3 ])
+        >>> y = x.lgamma()
+        >>> print(y)
+        ivy.array([0., 0., 0.69314718])
+
+        >>> x = ivy.array([4.5, -4, -5.6])
+        >>> x.lgamma(out = x)
+        >>> print(x)
+        ivy.array([2.45373654, inf, -4.6477685 ])
+        """
+        return ivy.lgamma(self._data, out=out)
+
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the

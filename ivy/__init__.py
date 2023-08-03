@@ -7,6 +7,7 @@ import numpy as np
 import sys
 import inspect
 import os
+from collections.abc import Sequence
 
 
 import ivy.utils.backend.handler
@@ -182,6 +183,10 @@ class Dtype(str):
         return as_native_dtype(self)
 
     @property
+    def name(self) -> str:
+        return str(self)
+
+    @property
     def info(self):
         if self.is_int_dtype or self.is_uint_dtype:
             return iinfo(self)
@@ -194,7 +199,7 @@ class Dtype(str):
         return can_cast(self, to)
 
 
-class Shape:
+class Shape(Sequence):
     def __init__(self, shape_tup):
         valid_types = (int, list, tuple, ivy.Array, ivy.Shape)
         if len(backend_stack) != 0:
@@ -957,8 +962,8 @@ def del_global_attr(attr_name):
     delattr(globals_vars, attr_name)
 
 
-backend = "none"
-backend_version = "none"
+backend = ""
+backend_version = {}
 
 native_inplace_support = None
 
@@ -986,7 +991,9 @@ def vec_sig_fig(x, sig_fig=3):
     return x
 
 
-ivy.array_significant_figures = 10
+ivy.array_significant_figures = (
+    array_significant_figures_stack[-1] if array_significant_figures_stack else 10
+)
 
 
 def set_array_significant_figures(sig_figs):
@@ -1025,7 +1032,9 @@ def _assert_array_decimal_values_formatting(dec_vals):
     ivy.utils.assertions.check_greater(dec_vals, 0, allow_equal=True, as_array=False)
 
 
-ivy.array_decimal_values = 8
+ivy.array_decimal_values = (
+    array_decimal_values_stack[-1] if array_decimal_values_stack else 8
+)
 
 
 def set_array_decimal_values(dec_vals):
@@ -1052,7 +1061,7 @@ def unset_array_decimal_values():
         ivy.__setattr__("array_decimal_values", dec_vals, True)
 
 
-ivy.warning_level = "ivy_only"
+ivy.warning_level = warning_level_stack[-1] if warning_level_stack else "ivy_only"
 
 
 def set_warning_level(warn_level):
@@ -1085,7 +1094,7 @@ def warn(warning_message, stacklevel=0):
 
 
 # nan policy #
-ivy.nan_policy = "nothing"
+ivy.nan_policy = nan_policy_stack[-1] if nan_policy_stack else "nothing"
 
 
 def set_nan_policy(warn_level):
@@ -1119,7 +1128,7 @@ def unset_nan_policy():
 # Dynamic Backend
 
 
-ivy.dynamic_backend = True
+ivy.dynamic_backend = dynamic_backend_stack[-1] if dynamic_backend_stack else True
 
 
 def set_dynamic_backend(flag):
@@ -1426,6 +1435,39 @@ def _is_from_internal(filename):
     return builtins.any([fn in filename for fn in INTERNAL_FILENAMES])
 
 
+class LoggingMode:
+    logging_modes = ["DEBUG", "INFO", "WARNING", "ERROR"]
+    logging_mode_stack = []
+
+    def __init__(self):
+        # Set up the initial logging mode
+        logging.basicConfig(level=logging.WARNING)
+        self.logging_mode_stack.append(logging.WARNING)
+
+    def set_logging_mode(self, mode):
+        """
+        Set the current logging mode for Ivy.
+
+        Possible modes are 'DEBUG', 'INFO', 'WARNING', 'ERROR'.
+        """
+        assert (
+            mode in self.logging_modes
+        ), "Invalid logging mode. Choose from: " + ", ".join(self.logging_modes)
+
+        # Update the logging level
+        logging.getLogger().setLevel(mode)
+        self.logging_mode_stack.append(mode)
+
+    def unset_logging_mode(self):
+        """Remove the most recently set logging mode, returning to the previous one."""
+        if len(self.logging_mode_stack) > 1:
+            # Remove the current mode
+            self.logging_mode_stack.pop()
+
+            # Set the previous mode
+            logging.getLogger().setLevel(self.logging_mode_stack[-1])
+
+
 class IvyWithGlobalProps(sys.modules[__name__].__class__):
     def __setattr__(self, name, value, internal=False):
         previous_frame = inspect.currentframe().f_back
@@ -1439,4 +1481,13 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-sys.modules[__name__].__class__ = IvyWithGlobalProps
+if (
+    "ivy" in sys.modules.keys()
+    and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND
+):
+    # Required for ivy.with_backend internal compilation
+    sys.modules["ivy"].utils._importlib.import_cache[
+        __name__
+    ].__class__ = IvyWithGlobalProps
+else:
+    sys.modules[__name__].__class__ = IvyWithGlobalProps

@@ -7,15 +7,27 @@ from ivy import (
     default_float_dtype,
     is_float_dtype,
 )
+from ivy.func_wrapper import (
+    with_supported_dtypes,
+)
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 import jax.scipy as js
+import jax.lax as jlax
+from .. import backend_version
 
 jax_ArrayLike = Union[JaxArray, Number]
 
 
 def sinc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.sinc(x)
+
+
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float16", "float32", "float64")}, backend_version
+)
+def lgamma(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jlax.lgamma(x)
 
 
 def fmax(
