@@ -841,7 +841,12 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value
+            in the container being compared to given that the strucutres are congruent
         Returns
         -------
         Boolean
@@ -1005,7 +1010,12 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value in
+            the container being compared to given that the strucutres are congruent
         Returns
         -------
             Boolean
@@ -1057,6 +1067,12 @@ class ContainerBase(dict, abc.ABC):
         partial
             Whether to also check for partially complete sub-containers.
             Default is ``False``.
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value in
+            the container being compared to given that the strucutres are congruent
         """
         ivy.utils.assertions.check_true(
             ivy.Container.cont_identical_structure(
