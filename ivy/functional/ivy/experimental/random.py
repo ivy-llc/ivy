@@ -319,3 +319,73 @@ def bernoulli(
         seed=seed,
         out=out,
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@inputs_to_native_shapes
+@to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+@infer_device
+def laplace(
+    *,
+    loc: Union[float, ivy.Array, ivy.NativeArray] = 0.0,
+    scale: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
+    size: Union[int, tuple] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    seed: Optional[int] = None,
+    device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.Array, float]:
+    """
+    Draw samples from the Laplace or double exponential distribution with specified
+    location (or mean) and scale (decay).
+
+    The Laplace distribution is similar to the Gaussian/normal distribution, but is
+    sharper at the peak and has fatter tails. It represents the difference between two 
+    independent, identically distributed exponential random variables.
+
+    Parameters
+    ----------
+    loc
+        float or array_like of floats, optional
+        The position, \u03bc, of the distribution peak. Default is 0.
+    scale
+        float or array_like of floats, optional, 
+        \u03BB, the exponential decay. Default is 1. Must be non- negative.
+    size
+        int or tuple of ints, optional
+        Output shape. If the given shape is, e.g., ``(m, n, k)``, then ``m * n * k``
+        samples are drawn.
+        If size is ``None`` (default), a single value is returned if ``loc`` and 
+        ``scale`` are both scalars. 
+        Otherwise, ``np.broadcast(loc, scale).size`` samples are drawn.
+    device
+        device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+        (Default value = None).
+    dtype
+        output array data type. If ``dtype`` is ``None``, the output array data
+        type will be the default floating-point data type. Default ``None``
+    seed
+        A python integer. Used to create a random seed distribution
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+       ndarray or scalar
+       Drawn samples from the parameterized Laplace distribution.
+    """
+    return ivy.current_backend().laplace(
+        loc=loc,
+        scale=scale,
+        size=size,
+        device=device,
+        dtype=dtype,
+        seed=seed,
+        out=out,
+    )

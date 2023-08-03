@@ -106,3 +106,22 @@ def bernoulli(
     if not _check_shapes_broadcastable(shape, probs.shape):
         shape = probs.shape
     return np.asarray(np.random.binomial(1, p=probs, size=shape), dtype=dtype)
+
+
+def laplace(
+    loc: Union[float, ivy.Array, ivy.NativeArray] = 0.0,
+    scale: Union[float, ivy.Array, ivy.NativeArray] = 1.0,
+    size: Union[int, tuple] = None,
+    seed: Optional[int] = None,
+) -> Union[ivy.Array, float]:
+    if seed is not None:
+        np.random.seed(seed)
+    if np.isscalar(loc):
+        loc = float(loc)
+    if np.isscalar(scale): 
+        scale = float(scale)
+    if isinstance(loc, np.ndarray):
+        loc = loc.astype(float)
+    if isinstance(scale, np.ndarray):
+        loc = scale.astype(float)
+    return np.random.laplace(loc=loc, scale=scale, size=size)
