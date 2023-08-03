@@ -644,6 +644,7 @@ def test_torch_addmv_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, mat, vec = dtype_and_matrices
     helpers.test_frontend_method(
@@ -652,6 +653,7 @@ def test_torch_addmv_(
             "data": x,
         },
         method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np={
             "mat": mat,
             "vec": vec,
