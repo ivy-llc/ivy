@@ -374,6 +374,48 @@ def test_torch_adaptive_avg_pool2d(
     )
 
 
+# adaptive_max_pool2d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.adaptive_max_pool2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=5,
+    ),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=10),
+            helpers.ints(min_value=1, max_value=10),
+        ),
+        helpers.ints(min_value=1, max_value=10),
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_adaptive_max_pool2d(
+    *,
+    dtype_and_x,
+    output_size,
+    on_device,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        output_size=output_size,
+        atol=1e-2,
+    )
+
+
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.lp_pool1d",

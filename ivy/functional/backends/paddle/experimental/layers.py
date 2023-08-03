@@ -381,6 +381,15 @@ def interpolate(
     raise IvyNotImplementedException()
 
 
+def adaptive_max_pool2d(
+    input: paddle.Tensor, output_size: Union[Sequence[int], int]
+) -> paddle.Tensor:
+    squeeze = input.ndim == 3
+    x = paddle.unsqueeze(input, axis=0) if squeeze else input
+    ret = paddle.nn.functional.adaptive_max_pool2d(x, output_size)
+    return paddle.squeeze(ret, axis=0) if squeeze else ret
+
+
 def ifftn(
     x: paddle.Tensor,
     s: Optional[Union[int, Tuple[int]]] = None,
