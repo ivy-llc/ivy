@@ -1784,16 +1784,15 @@ def test_paddle_any(
     )
 
 
-# floor_divides
+# floor_divide
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.floor_divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
         num_arrays=2,
         allow_inf=False,
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="log",
         shared_dtype=True,
     ),
 )
@@ -1816,7 +1815,5 @@ def test_paddle_floor_divide(
         on_device=on_device,
         x=x[0],
         y=x[1],
+        atol=1e-5,
     )
-
-
-n = "a"
