@@ -428,3 +428,34 @@ def test_jax_diag_indices_from(
         on_device=on_device,
         arr=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.indices",
+    dimensions=helpers.get_shape(min_num_dims=1),
+    dtype=helpers.get_dtypes(kind="float", full=False),
+    sparse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_indices(
+    *,
+    dimensions,
+    dtype,
+    sparse,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions,
+        dtype=dtype[0],
+        sparse=sparse,
+    )
