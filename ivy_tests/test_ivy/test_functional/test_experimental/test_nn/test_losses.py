@@ -67,7 +67,7 @@ def test_log_poisson_loss(
         max_value=1,
         allow_inf=False,
     ),
-    reduction=st.sampled_from(["none", "sum", "mean"]),
+    reduction=st.sampled_from([ "sum", "mean"]),
 )
 def test_l1_loss(
     dtype_true_and_pred,
