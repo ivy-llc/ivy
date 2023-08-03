@@ -1026,3 +1026,70 @@ def test_fill_diagonal(
         v=v,
         wrap=wrap,
     )
+
+
+@st.composite
+def put_along_ax_helper(draw):
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=2,
+            min_dim_size=2,
+            valid_axis=True,
+            ret_shape=True,
+        )
+    )
+
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+    idx_shape = tuple(idx_shape)
+
+    indices = draw(
+        helpers.array_values(
+            dtype="int32",
+            shape=idx_shape,
+            min_value=0,
+            max_value=len(shape) - 1,
+        )
+    )
+
+    values = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(),
+        )
+    )
+
+    return input_dtype, x, indices, values, axis
+
+
+# put_along_axis
+@handle_test(
+    fn_tree="put_along_axis",
+    dtype_x_idx_val_axis=put_along_ax_helper(),
+    mode=st.sampled_from(["assign", "add", "mul", "mean", "amax", "amin"]),
+    test_with_out=st.just(False),
+    test_gradients=st.just(False),
+)
+def test_put_along_axis(
+    *,
+    dtype_x_idx_val_axis,
+    mode,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, indices, values, axis = dtype_x_idx_val_axis
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        arr=x[0],
+        indices=indices,
+        values=values,
+        axis=axis,
+        mode=mode,
+    )
