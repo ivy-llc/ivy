@@ -864,6 +864,10 @@ def test_dft(
         min_num_dims=3,
         max_num_dims=4,
         min_dim_size=1,
+        # Setting max and min value because this operation in paddle is not
+        # numerically stable
+        max_value=100,
+        min_value=-100,
     ),
     output_size=st.one_of(
         st.tuples(
