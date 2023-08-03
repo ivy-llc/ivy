@@ -2128,6 +2128,8 @@ def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dim
         raise ValueError(
             f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
         )
+    if min(dilation) < 1:
+        raise ValueError("All values of `dilation` must be positive")
 
     # Other errors
     if isinstance(padding, str) and (padding.upper() == "VALID") and ceil_mode:

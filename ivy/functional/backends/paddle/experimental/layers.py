@@ -8,7 +8,6 @@ from ivy.functional.ivy.layers import (
 from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
-    with_supported_dtypes,
     with_unsupported_dtypes,
 )
 from .. import backend_version
@@ -26,7 +25,15 @@ def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_
     return x, kernel, strides, depth_pooling
 
 
-@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, backend_version)
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def max_pool1d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int, ...]],
@@ -156,6 +163,15 @@ def max_pool2d(
     return res
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.5.1 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def max_pool3d(
     x: paddle.Tensor,
     kernel: Union[int, Tuple[int, ...]],

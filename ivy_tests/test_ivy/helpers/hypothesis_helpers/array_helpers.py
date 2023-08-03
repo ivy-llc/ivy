@@ -1730,12 +1730,7 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            # TODO: Tests currently failing with tf backend with float64.
-            # Also not all 'float' variants are supported across all backends.
-            # Discuss with the team if we should implicitly cast to a supported dtype
-            available_dtypes=["float32"],  # get_dtypes("float")
-            # the tests are still failing with  the code below
-            # available_dtypes=get_dtypes("float", mixed_fn_compos=mixed_fn_compos),
+            available_dtypes=get_dtypes("float", mixed_fn_compos=mixed_fn_compos),
             shape=in_shape,
             num_arrays=1,
             max_value=100,
