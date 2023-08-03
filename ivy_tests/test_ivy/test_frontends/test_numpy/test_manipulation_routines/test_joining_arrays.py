@@ -152,3 +152,29 @@ def test_numpy_hstack(
         on_device=on_device,
         tup=xs,
     )
+
+
+#block
+@handle_frontend_test(
+    fn_tree="numpy.block",
+    dtype_and_x=helpers.get_dtypes("lists")
+)
+def test_numpy_block(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    xs, input_dtypes = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs,
+
+    )
