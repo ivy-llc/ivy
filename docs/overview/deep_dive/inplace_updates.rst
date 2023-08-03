@@ -508,7 +508,7 @@ Here's a brief description of what happens during an inplace operation with a Py
    It then checks if the functional view has a reference stack and continues recursively until it reaches a point where it exhausts all reference stacks.
 #. If the reference stack is empty or exhausted it checks if it has a manipulation stack.
    If populated it performs the reverse functional operation with itself as the input and inplace updates the view that made it (reverses the operation that made it).
-   If the manipulation stack is empty or already exhausted it goes to the array’s PyTorch base and repeats the recursively until everything is exhausted and the base is None.
+   If the manipulation stack is empty or already exhausted it goes to the array's PyTorch base and repeats the recursively until everything is exhausted and the base is None.
 #. All other views are expected to be updated automatically through PyTorch's native view handling.
 
 **Round Up**

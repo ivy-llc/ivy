@@ -63,7 +63,7 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    :code:`- [ ] #Issue_number`
 
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-   No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
+   No need to wait for this to happen before progressing to the next stage. Don't comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
 d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
@@ -328,7 +328,7 @@ If you want to try out your local version of ivy, with all of the local changes 
 * The :code:`develop` command means that the system-wide installation will still depend on the original source files, rather than creating a fresh copy.
 * Therefore, ivy can be imported into an interactive python shell from any directory inside the container, and it will still use the latest updates made to the source code.
 
-Clearly, running a container in interactive mode can be a helpful tool in a developer’s arsenal.
+Clearly, running a container in interactive mode can be a helpful tool in a developer's arsenal.
 
 Running Tests Locally
 ---------------------

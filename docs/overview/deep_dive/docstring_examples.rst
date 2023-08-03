@@ -139,9 +139,9 @@ If some backends do not support some :code:`dtype` for a function, then we shoul
 **All Possible Variants**
 
 Point 1 mentions that the examples should cover *all possible variations*.
-Let’s look at an example to make it more clear what is meant by *all possible variants* of each argument independently.
+Let's look at an example to make it more clear what is meant by *all possible variants* of each argument independently.
 
-Let’s take an imaginary function with the following argument spec:
+Let's take an imaginary function with the following argument spec:
 
 .. code-block:: python
 
@@ -171,8 +171,8 @@ For example, we could have three examples using the following arguments:
     my_func(x1, prod, False, True, [0, 1, 2])
     my_func(x2, var, True, False, 1)
 
-It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is included in the examples.
-These three examples procedurally go through the variations from left to right for each argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.
+It doesn't matter how the variations are combined for the examples, as long as every variation for every argument is included in the examples.
+These three examples procedurally go through the variations from left to right for each argument, but this doesn't need to be the case if you think other combinations make more sense for the examples.
 
 You can also add more examples if you think some important use cases are missed, this is just a lower limit on the examples that should be included in the docstring!
 

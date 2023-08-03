@@ -165,7 +165,7 @@ Framework-specific Considerations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * JAX treats duplicate arrays as distinct while computing gradients, so we need additional logic to replicate gradients computed w.r.t one array over all its duplicates.
-* Gradients computed for functions with undefined results are inconsistent across backends (NaN, Inf, 0). We handle all these inconsistencies by returning 0 for all backends. So if you’re debugging gradients and find a 0, there’s a possibility that it was NaN or an Inf before computing.
+* Gradients computed for functions with undefined results are inconsistent across backends (NaN, Inf, 0). We handle all these inconsistencies by returning 0 for all backends. So if you're debugging gradients and find a 0, there's a possibility that it was NaN or an Inf before computing.
 
 
 **Round Up**

@@ -20,7 +20,7 @@ Frontend Functional APIs 🚧
 While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
 But with frontend APIs, we can also achieve this!
 
-Let’s take a look at the how the implementation of :code:`clip` method would seem like in the frontends:
+Let's take a look at the how the implementation of :code:`clip` method would seem like in the frontends:
 
 
 .. code-block:: python
@@ -56,16 +56,16 @@ combined, we have the following situation:
 
 Importantly, we can select the backend and frontend **independently** from one another.
 For example, this means we can select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch functional API.
-In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:
+In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function with the equivalent function using Ivy's PyTorch frontend, and then run this PyTorch code using JAX:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true
    :align: center
    :width: 100%
 |
-For this example it’s very simple, the differences are only syntactic, but the above process works for **any** function.
+For this example it's very simple, the differences are only syntactic, but the above process works for **any** function.
 If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy functions as compositions of backend methods.
 
-Let’s take a more complex example and convert PyTorch method :func:`torch.nn.functional.one_hot` into NumPy code.
+Let's take a more complex example and convert PyTorch method :func:`torch.nn.functional.one_hot` into NumPy code.
 The frontend is implemented by wrapping a single Ivy method :func:`ivy.one_hot` as follows:
 
 .. code-block:: python
@@ -74,7 +74,7 @@ The frontend is implemented by wrapping a single Ivy method :func:`ivy.one_hot` 
    def one_hot(tensor, num_classes=-1):
        return ivy.one_hot(tensor, num_classes)
 
-Let’s look at the NumPy backend code for this Ivy method:
+Let's look at the NumPy backend code for this Ivy method:
 
 .. code-block:: python
 
@@ -97,7 +97,7 @@ By chaining these methods together, we can now call :func:`torch.nn.functional.o
    x = np.array([0., 1., 2.])
    ret = torch.nn.functional.one_hot(x, 3)
 
-Let’s take one more example and convert TensorFlow method :func:`tf.cumprod` into PyTorch code.
+Let's take one more example and convert TensorFlow method :func:`tf.cumprod` into PyTorch code.
 This time, the frontend is implemented by wrapping two Ivy methods :func:`ivy.cumprod`, and :func:`ivy.flip` as follows:
 
 .. code-block:: python
@@ -109,7 +109,7 @@ This time, the frontend is implemented by wrapping two Ivy methods :func:`ivy.cu
            return ivy.flip(ret, axis)
        return ret
 
-Let’s look at the PyTorch backend code for both of these Ivy methods:
+Let's look at the PyTorch backend code for both of these Ivy methods:
 
 .. code-block:: python
 
@@ -170,7 +170,7 @@ Role of the Graph Compiler 🚧
 The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph compiler plays a vital role.
 The graph compiler can convert any code into its constituent functions at the functional API level for any ML framework.
 
-For example, let’s take the following PyTorch code and run it using JAX:
+For example, let's take the following PyTorch code and run it using JAX:
 
 .. code-block:: python
 
@@ -192,7 +192,7 @@ For example, let’s take the following PyTorch code and run it using JAX:
 We cannot simply :code:`import ivy.frontends.torch` in place of :code:`import torch` as we did in the previous examples.
 This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the :mod:`torch.nn` namespace.
 
-In general, the way we convert code is by first compiling the code into its constituent functions in the core API using Ivy’s graph compiler, and then we convert this executable graph into the new framework.
+In general, the way we convert code is by first compiling the code into its constituent functions in the core API using Ivy's graph compiler, and then we convert this executable graph into the new framework.
 For the example above, this would look like:
 
 .. code-block:: python
@@ -207,7 +207,7 @@ For the example above, this would look like:
 However, when calling :func:`ivy.compile_graph` the graph only connects the inputs to the outputs.
 Any other tensors or variables which are not listed in the inputs are treated as constants in the graph.
 In this case, this means the learnable weights in the Module will be treated as constants.
-This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.
+This works fine if we only care about running inference on our graph post-training, but this won't enable training of the Module in JAX.
 
 Converting Network Models 🚧
 ----------------------------
@@ -219,7 +219,7 @@ In order to convert a model from PyTorch to JAX, we first must convert the :clas
    net = ivy.to_ivy_module(net)
 
 In its current form, the :class:`ivy.Module` instance thinly wraps the PyTorch model into the :class:`ivy.Module` interface, whilst preserving the pure PyTorch backend.
-We can compile this network into a graph using Ivy’s graph compiler like so:
+We can compile this network into a graph using Ivy's graph compiler like so:
 
 .. code-block:: python
 
@@ -233,7 +233,7 @@ Now, with a compiled graph under the hood of our model, we can call :meth:`to_ba
 
    net = net.to_backend('jax')
 
-The network can now be trained using Ivy’s optimizer classes with a JAX backend like so:
+The network can now be trained using Ivy's optimizer classes with a JAX backend like so:
 
 .. code-block:: python
 
@@ -285,7 +285,7 @@ If we want to remove Ivy from the pipeline entirely, we can then train the model
 
 Other JAX-specific network libraries such as Flax, Trax and Objax are also supported.
 
-Overall, we have taken a :class:`torch.nn.Module` instance, which can be trained using PyTorch’s optimizer classes, and converted this to a :class:`haiku.Module` instance which can be trained using Haiku’s optimizer classes.
+Overall, we have taken a :class:`torch.nn.Module` instance, which can be trained using PyTorch's optimizer classes, and converted this to a :class:`haiku.Module` instance which can be trained using Haiku's optimizer classes.
 The same is true for any combination of frameworks, and for any network architecture, regardless of its complexity!
 
 **Round Up**

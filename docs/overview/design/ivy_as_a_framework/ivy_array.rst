@@ -7,7 +7,7 @@ Every Ivy method returns :class:`ivy.Array` instances for all returned arrays.
 The Array Class
 ---------------
 
-Let’s dive straight in and check out what the :class:`ivy.Array` constructor looks like.
+Let's dive straight in and check out what the :class:`ivy.Array` constructor looks like.
 
 .. code-block:: python
 
@@ -238,7 +238,7 @@ For example:
     y = x.reshape((6, 20)).matrix_transpose().flip(axis=0).reshape((2, 10, 6))
 
 In the example above, not only is the :class:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments.
-It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
+It's hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
 In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :class:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API.
 Some examples are given below.
