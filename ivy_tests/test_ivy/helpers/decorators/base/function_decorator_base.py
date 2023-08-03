@@ -11,7 +11,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
     _dtype_kind_keys,
     _get_type_dict,
 )
-from ivy_tests.test_ivy.helpers.decorators.decorator_base import HandlerBase
+from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
 from ivy_tests.test_ivy.helpers.decorators.strategies import (
     num_positional_args_from_dict,
 )

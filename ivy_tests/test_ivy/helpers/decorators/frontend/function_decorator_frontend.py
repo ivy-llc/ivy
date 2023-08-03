@@ -1,5 +1,5 @@
 from hypothesis import strategies as st
-from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
+from ivy_tests.test_ivy.helpers.decorators.base.function_decorator_base import (
     FunctionHandler,
 )
 

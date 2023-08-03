@@ -1,6 +1,6 @@
 from hypothesis import strategies as st
 from typing import Callable, Any
-from ivy_tests.test_ivy.helpers.decorators.function_decorator_base import (
+from ivy_tests.test_ivy.helpers.decorators.base.function_decorator_base import (
     FunctionHandler,
 )
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
