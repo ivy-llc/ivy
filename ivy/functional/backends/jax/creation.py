@@ -154,10 +154,7 @@ def full_like(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return _to_device(
-        jnp.full_like(x, fill_value, dtype=dtype),
-        device=device,
-    )
+    return jnp.full_like(x, fill_value, dtype=dtype)
 
 
 # https://github.com/google/jax/blob/8b2e4f975c8c830502f5cc749b7253b02e78c9e8/jax/_src/numpy/lax_numpy.py#L2164

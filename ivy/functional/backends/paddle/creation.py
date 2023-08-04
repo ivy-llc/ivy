@@ -214,13 +214,9 @@ def full(
     if not isinstance(shape, Sequence):
         shape = [shape]
     if ivy.as_native_dtype(dtype) is paddle.int8:
-        return to_device(
-            paddle.full(shape=shape, fill_value=fill_value).cast(dtype), device
-        )
+        return paddle.full(shape=shape, fill_value=fill_value).cast(dtype)
     else:
-        return to_device(
-            paddle.full(shape=shape, fill_value=fill_value, dtype=dtype), device
-        )
+        return paddle.full(shape=shape, fill_value=fill_value, dtype=dtype)
 
 
 def full_like(
