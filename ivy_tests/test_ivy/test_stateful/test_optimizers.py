@@ -14,6 +14,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_gradients import (
 
 # sgd
 @handle_method(
+    init_tree="ivy.stateful.optimizers.SGD",
     method_tree="SGD._step",
     dtype_x_lr=get_gradient_arguments_with_lr(
         min_value=-1e5,
@@ -120,6 +121,7 @@ def test_lars_optimizer(
 
 # adam
 @handle_method(
+    init_tree="ivy.stateful.optimizers.Adam",
     method_tree="Adam._step",
     dtype_x_lr=get_gradient_arguments_with_lr(
         min_value=1e-05,
@@ -184,6 +186,7 @@ def test_adam_optimizer(
 
 # lamb
 @handle_method(
+    init_tree="ivy.stateful.optimizers.LAMB",
     method_tree="LAMB._step",
     dtype_x_lr=get_gradient_arguments_with_lr(
         min_value=-1e5,
@@ -255,6 +258,7 @@ def test_lamb_optimizer(
 
 
 @handle_method(
+    init_tree="ivy.stateful.optimizers.AdaGrad",
     method_tree="AdaGrad._step",
     dtype_x_lr=get_gradient_arguments_with_lr(
         min_value=1e-05,
