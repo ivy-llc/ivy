@@ -95,6 +95,26 @@ def tpu_is_available() -> bool:
     return False
 
 
+def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
+    with ivy.ArrayMode(False):
+        default_device = ivy.default_device() if def_dev is None else def_dev
+        args, kwargs = ivy.nested_map(
+            [args, kwargs],
+            lambda x: (
+                ivy.to_device(x, default_device)
+                if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
+                else x
+            ),
+        )
+    # since there is no context manager for device in Paddle, we need to manually set the device
+    # then set it back to prev default device after the function call
+    prev_def_dev = paddle.get_device()
+    paddle.device.set_device(default_device)
+    ret = fn(*args, **kwargs)
+    paddle.device.set_device(prev_def_dev)
+    return ret
+
+
 class Profiler(BaseProfiler):
     def __init__(self, save_dir: str):
         # ToDO: add proper Paddle profiler
