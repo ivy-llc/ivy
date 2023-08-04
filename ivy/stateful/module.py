@@ -180,7 +180,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 Module._init_var.pop()
 
             # do a final check if _init_var  becomes empty, then delete it all together
-            del Module._init_var
+            if not Module._init_var:
+                del Module._init_var
 
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
@@ -459,27 +460,29 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     def _set_buffers(self, buffers, override=False):
         """
-        Set the buffers of the given class instance, according to the buffers
-        passed.
+        Set the buffers of the given class instance, according to the buffers passed.
+
+        Parameters
+        ----------
+        buffers
+            a dictionary with variable names and corresponding values
+
+        override
+            if true, sets the variable as an attribute even if it doesn't exist
         """
         for buffer in buffers:
             if hasattr(self, buffer):
-                print("which case 1")
-                print(self.buffers)
                 setattr(self, buffer, buffers[buffer])
             elif not override:
-                print("which case 2")
                 raise ivy.exceptions.IvyNotImplementedException(
                     f"{buffer} hasn't been defined for the given Module structure"
                 )
             else:
-                print("which case 3")
                 setattr(self, buffer, buffers[buffer])
                 if hasattr(self, "buffers"):
-                    self.buffers[buffer] = buffers[buffer]
+                    self.buffers.update(buffer)
                 else:
                     setattr(self, "buffers", {buffer})
-                print(self.buffers)
 
     def _register_buffers(self, var_name, value):
         """Set the buffer variables at any place within the class."""
