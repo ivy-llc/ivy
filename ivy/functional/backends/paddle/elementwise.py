@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional
+from typing import Union, Optional, Dict, Type
 
 import paddle
 import math
@@ -255,26 +255,32 @@ def sign(
     return paddle.sgn(x)
 
 
+SQRT_DTYPE_CAST_MAP: Dict[Type[paddle.Tensor], str] = {
+    paddle.int8: "float32",
+    paddle.int16: "float32",
+    paddle.int32: "float32",
+    paddle.uint8: "float32",
+    paddle.float16: "float32",
+    paddle.bool: "float32",
+    paddle.int64: "float64",
+}
+
+
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.int32,
-        paddle.int64,
-        paddle.uint8,
-        paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
-        paddle.bool,
-    ]:
-        if paddle.is_complex(x):
-            angle = paddle.angle(x)
-            result = paddle.complex(
-                paddle.cos(angle / 2), paddle.sin(angle / 2)
-            ) * paddle.sqrt(paddle.abs(x))
-            return result
-        return paddle.sqrt(x.astype("float32")).astype(x.dtype)
-    return paddle.sqrt(x)
+    if paddle.is_complex(x):
+        angle = paddle.angle(x)
+        result = paddle.complex(
+            paddle.cos(angle / 2), paddle.sin(angle / 2)
+        ) * paddle.sqrt(paddle.abs(x))
+        return result
+    else:
+        if x.dtype in {paddle.float32, paddle.float64}:
+            return paddle.sqrt(x)
+        cast_type = SQRT_DTYPE_CAST_MAP.get(x.dtype, None)
+        if cast_type:
+            return paddle.sqrt(x.astype(cast_type))
+        else:
+            raise ValueError(f"Unsupported data type for sqrt: {x.dtype}")
 
 
 @with_unsupported_device_and_dtypes(
