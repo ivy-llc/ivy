@@ -793,6 +793,38 @@ def test_modf(
     )
 
 
+# digamma
+@handle_test(
+    fn_tree="functional.ivy.experimental.digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    ground_truth_backend="tensorflow",
+)
+def test_digamma(
+    dtype_and_x,
+    backend_fw,
+    test_flags,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # erfc
 @handle_test(
     fn_tree="functional.ivy.experimental.erfc",

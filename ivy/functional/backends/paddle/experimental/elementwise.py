@@ -630,6 +630,24 @@ def modf(
         return paddle.modf(x, out=out)
 
 
+@with_supported_dtypes(
+    {
+        "2.5.0 and below": (
+            "float32",
+            "float64",
+        )
+    },
+    backend_version,
+)
+def digamma(
+    x: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.digamma(x)
+
+
 # --- erfc --- #
 # Polynomials for computing erf/erfc. Originally from cephes library.
 # https://netlib.org/cephes/doubldoc.html

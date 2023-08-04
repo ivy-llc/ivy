@@ -301,6 +301,67 @@ def modf(
     return np.modf(x, out=out)
 
 
+# ---digamma---#
+kLanczosGamma = 7  # aka g
+kBaseLanczosCoeff = 0.99999999999980993227684700473478
+kLanczosCoefficients = np.array(
+    [
+        676.520368121885098567009190444019,
+        -1259.13921672240287047156078755283,
+        771.3234287776530788486528258894,
+        -176.61502916214059906584551354,
+        12.507343278686904814458936853,
+        -0.13857109526572011689554707,
+        9.984369578019570859563e-6,
+        1.50563273514931155834e-7,
+    ]
+)
+
+
+def digamma(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    # Using `np.errstate` to ignore divide by zero error
+    # to maintain the same behaviour as other frameworks.
+    with np.errstate(divide="ignore", invalid="ignore"):
+        x = np.asarray(x, dtype=x.dtype)
+        zero = np.zeros_like(x)
+        one_half = 0.5 * np.ones_like(x)
+        one = np.ones_like(x)
+        pi = np.pi * np.ones_like(x)
+        lanczos_gamma = kLanczosGamma * np.ones_like(x)
+        lanczos_gamma_plus_one_half = (kLanczosGamma + 0.5) * np.ones_like(x)
+        log_lanczos_gamma_plus_one_half = np.log(kLanczosGamma + 0.5) * np.ones_like(x)
+        base_lanczos_coeff = kBaseLanczosCoeff * np.ones_like(x)
+        need_to_reflect = x < one_half
+        z = np.where(need_to_reflect, -x, x - one)
+
+        num = zero
+        denom = base_lanczos_coeff
+        for i in range(len(kLanczosCoefficients)):
+            lanczos_coefficient = kLanczosCoefficients[i] * np.ones_like(x)
+            index = i * np.ones_like(x)
+            num = num - lanczos_coefficient / ((z + index + one) * (z + index + one))
+            denom = denom + lanczos_coefficient / (z + index + one)
+
+        t = lanczos_gamma_plus_one_half + z
+        log_t = log_lanczos_gamma_plus_one_half + np.log1p(
+            z / lanczos_gamma_plus_one_half
+        )
+        y = log_t + num / denom - lanczos_gamma / t
+
+        reduced_x = x + np.abs(np.floor(x + 0.5))
+        reflection = y - pi * np.cos(pi * reduced_x) / np.sin(pi * reduced_x)
+        real_result = np.where(need_to_reflect, reflection, y)
+
+        return np.where(
+            np.logical_and(x <= zero, x == np.floor(x)), np.nan, real_result
+        )
+
+
 # --- LGAMMA --- #
 LANCZOS_N = 13
 lanczos_g = 6.024680040776729583740234375

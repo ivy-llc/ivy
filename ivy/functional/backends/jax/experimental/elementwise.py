@@ -457,6 +457,15 @@ def modf(
     return jnp.modf(x)
 
 
+def digamma(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return js.special.digamma(x)
+
+
 def erfc(
     x: JaxArray,
     /,
