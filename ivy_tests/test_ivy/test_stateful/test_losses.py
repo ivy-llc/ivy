@@ -254,7 +254,7 @@ def test_binary_cross_entropy_loss(
 # L1 Loss (Mean Absolute Error)
 @handle_method(
     method_tree="stateful.losses.L1Loss.__call__",
-    dtype_and_targets=helpers.dtype_and_values(
+    dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=3,
@@ -273,10 +273,13 @@ def test_binary_cross_entropy_loss(
         min_dim_size=3,
     ),
     reduction=st.sampled_from([ "mean", "sum"]),
+    method_num_positional_args=helpers.num_positional_args(
+        fn_name="L1Loss._forward"
+    ),
 )
 def test_l1_loss(
     *,
-    dtype_and_targets,
+    dtype_and_true,
     dtype_and_predictions,
     reduction,
     class_name,
@@ -286,7 +289,7 @@ def test_l1_loss(
     method_flags,
     on_device,
 ):
-    targets_dtype, targets = dtype_and_targets
+    targets_dtype, targets = dtype_and_true
     predictions_dtype, predictions = dtype_and_predictions
     helpers.test_method(
         ground_truth_backend=ground_truth_backend,
