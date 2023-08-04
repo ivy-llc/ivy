@@ -358,3 +358,20 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+def complex(
+    real: torch.tensor,
+    imag: torch.tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.complex(
+        real,
+        imag,
+        out=out,
+    )
+
+
+complex.support_native_out = True

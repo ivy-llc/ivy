@@ -739,14 +739,15 @@ def test_torch_frombuffer(
 # complex
 @st.composite
 def _complex_helper(draw):
-    input_dtype, real, imag = draw(
+    input_dtype, real, imag, out = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
         )
     )
     real = (real(ivy.array),)
     imag = (imag(ivy.array),)
-    return input_dtype
+    out = (out(ivy.array),)
+    return input_dtype, real, imag, out
 
 
 @handle_frontend_test(
