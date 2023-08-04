@@ -170,7 +170,7 @@ var.support_native_out = True
 # ------#
 
 
-@with_unsupported_dtypes({"1.25.1 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
 def cumprod(
     x: np.ndarray,
     /,

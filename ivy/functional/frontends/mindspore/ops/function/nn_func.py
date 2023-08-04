@@ -36,3 +36,8 @@ def selu(input_x):
 @to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
+
+@with_supported_dtypes({"2.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def pad(input, pad_width, mode='constant', constant_values=0):
+    return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)

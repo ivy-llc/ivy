@@ -10,19 +10,35 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    ground_truth_backend="jax",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=3,
+        max_dims=3,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
+    ),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_max_pool1d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+    data_format = "NCW" if data_format == "channel_first" else "NWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -35,6 +51,9 @@ def test_max_pool1d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        data_format=data_format,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -58,7 +77,7 @@ def test_max_unpool1d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -80,13 +99,12 @@ def test_max_unpool1d(
         max_side=4,
         explicit_or_str_padding=True,
         return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
-    ceil_mode=st.just(True),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
     ground_truth_backend="jax",
-    # problem with containers converting tuple padding to
-    # lists which jax does not support
-    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
@@ -97,7 +115,7 @@ def test_max_pool2d(
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
     assume(
         not (
             backend_fw == "tensorflow"
@@ -110,6 +128,11 @@ def test_max_pool2d(
             )
         )
     )
+    data_format = "NCHW" if data_format == "channel_first" else "NHWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -124,24 +147,42 @@ def test_max_pool2d(
         padding=pad,
         dilation=dilation,
         ceil_mode=ceil_mode,
+        data_format=data_format,
     )
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
-    ground_truth_backend="jax",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
+    ),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_max_pool3d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+
+    data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
@@ -154,6 +195,9 @@ def test_max_pool3d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -854,6 +898,43 @@ def test_dft(
         onesided=onesided,
         dft_length=dft_length,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.adaptive_max_pool2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=1,
+        # Setting max and min value because this operation in paddle is not
+        # numerically stable
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+        ),
+        helpers.ints(min_value=1, max_value=5),
+    ),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_adaptive_max_pool2d(
+    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=x[0],
+        output_size=output_size,
     )
 
 
