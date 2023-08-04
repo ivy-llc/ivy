@@ -1020,7 +1020,7 @@ def test_jax_tril(
 @handle_frontend_test(
     fn_tree="jax.numpy.trim_zeros",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), min_num_dims=1, max_num_dims=1
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1, max_num_dims=1
     ),
     trim=st.sampled_from(["f", "b", "fb"]),
 )
