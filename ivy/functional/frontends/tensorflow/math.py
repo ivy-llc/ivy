@@ -441,7 +441,7 @@ def unsorted_segment_sum(
         list(segment_ids.shape), [list(data.shape)[0]], as_array=False
     )
     sum_array = ivy.zeros(
-        tuple([num_segments] + (list(data.shape))[1:]), 
+        tuple([num_segments.item()] + (list(data.shape))[1:]),
         dtype=ivy.int32
     )
     for i in range((segment_ids).shape[0]):
