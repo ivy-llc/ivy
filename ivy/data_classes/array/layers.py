@@ -287,11 +287,11 @@ class _ArrayWithLayers(abc.ABC):
 
     def scaled_dot_product_attention(
         self: ivy.Array,
-        k: Union[ivy.Array, ivy.NativeArray],
-        v: Union[ivy.Array, ivy.NativeArray],
-        scale: float,
+        key: Union[ivy.Array, ivy.NativeArray],
+        value: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        scale: Optional[float] = None,
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         dropout_p: Optional[float] = 0.0,
         is_causal: Optional[bool] = False,
@@ -310,11 +310,11 @@ class _ArrayWithLayers(abc.ABC):
             The queries input array. The shape of queries input array should be in
             *[batch_shape,num_queries,feat_dim]*. The queries input array should
             have the same size as keys and values.
-        k
+        key
             The keys input array. The shape of keys input array should be in
             *[batch_shape,num_keys,feat_dim]*. The keys input array should have
             the same size as queries and values.
-        v
+        value
             The values input array. The shape of values input should be in
             *[batch_shape,num_keys,feat_dim]*. The values input array should
             have the same size as queries and keys.
@@ -372,9 +372,9 @@ class _ArrayWithLayers(abc.ABC):
         """
         return ivy.scaled_dot_product_attention(
             self._data,
-            k,
-            v,
-            scale,
+            key,
+            value,
+            scale=scale,
             mask=mask,
             dropout_p=dropout_p,
             is_causal=is_causal,

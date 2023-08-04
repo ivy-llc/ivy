@@ -751,12 +751,12 @@ class _ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def _static_scaled_dot_product_attention(
-        q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: Union[float, ivy.Container],
+        query: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        value: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        scale: Union[float, ivy.Container],
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         dropout_p: Optional[float] = 0.0,
         is_causal: Optional[bool] = False,
@@ -775,15 +775,15 @@ class _ContainerWithLayers(ContainerBase):
 
         Parameters
         ----------
-        q
+        query
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
-        k
+        key
             The keys input array container. The shape of keys input array leaves
             should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
             leaves should have the same size as queries and values.
-        v
+        value
             The values input array container. The shape of values input array
             leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
             input array leaves should have the same size as queries and keys.
@@ -857,10 +857,10 @@ class _ContainerWithLayers(ContainerBase):
         """
         return ContainerBase.cont_multi_map_in_function(
             "scaled_dot_product_attention",
-            q,
-            k,
-            v,
-            scale,
+            query,
+            key,
+            value,
+            scale=scale,
             mask=mask,
             dropout_p=dropout_p,
             is_causal=is_causal,
@@ -874,11 +874,11 @@ class _ContainerWithLayers(ContainerBase):
 
     def scaled_dot_product_attention(
         self: ivy.Container,
-        k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        scale: Union[float, ivy.Container],
+        key: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        value: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
+        scale: Union[float, ivy.Container],
         mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
         dropout_p: Optional[float] = 0.0,
         is_causal: Optional[bool] = False,
@@ -901,11 +901,11 @@ class _ContainerWithLayers(ContainerBase):
             The queries input container. The shape of queries input array leaves should
             be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
             should have the same size as keys and values.
-        k
+        key
             The keys input array container. The shape of keys input array leaves
             should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
             leaves should have the same size as queries and values.
-        v
+        value
             The values input array container. The shape of values input array
             leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
             input array leaves should have the same size as queries and keys.
@@ -980,9 +980,9 @@ class _ContainerWithLayers(ContainerBase):
         """
         return self._static_scaled_dot_product_attention(
             self,
-            k,
-            v,
-            scale,
+            key,
+            value,
+            scale=scale,
             mask=mask,
             dropout_p=dropout_p,
             is_causal=is_causal,

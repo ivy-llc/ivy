@@ -177,7 +177,7 @@ def x_and_scaled_attention(draw, dtypes):
     v_shape = (batch_size,) + (num_keys,) + (feat_dim,)
     mask_shape = (batch_size,) + (num_queries,) + (num_keys,)
 
-    q = draw(
+    query = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=q_shape,
@@ -186,7 +186,7 @@ def x_and_scaled_attention(draw, dtypes):
             safety_factor_scale="linear",
         )
     )
-    k = draw(
+    key = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=k_shape,
@@ -195,7 +195,7 @@ def x_and_scaled_attention(draw, dtypes):
             safety_factor_scale="linear",
         )
     )
-    v = draw(
+    value = draw(
         helpers.array_values(
             dtype=dtype[0],
             shape=v_shape,
@@ -212,7 +212,7 @@ def x_and_scaled_attention(draw, dtypes):
         )
         | st.none()
     )
-    return dtype, q, k, v, mask
+    return dtype, query, key, value, mask
 
 
 # scaled_dot_product_attention
@@ -239,7 +239,7 @@ def test_scaled_dot_product_attention(
     fn_name,
     on_device,
 ):
-    (dtype, q, k, v, mask) = dtype_q_k_v_mask
+    (dtype, query, key, value, mask) = dtype_q_k_v_mask
     is_causal = is_causal if mask is None else False
     helpers.test_function(
         input_dtypes=dtype,
@@ -249,9 +249,9 @@ def test_scaled_dot_product_attention(
         on_device=on_device,
         atol_=1e-01,
         rtol_=1e-01,
-        q=q,
-        k=k,
-        v=v,
+        query=query,
+        key=key,
+        value=value,
         scale=scale,
         mask=mask,
         dropout_p=dropout_p,

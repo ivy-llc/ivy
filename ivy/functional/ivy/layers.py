@@ -420,12 +420,12 @@ dropout.mixed_backend_wrappers = {
 @handle_array_like_without_promotion
 @handle_array_function
 def scaled_dot_product_attention(
-    q: Union[ivy.Array, ivy.NativeArray],
-    k: Union[ivy.Array, ivy.NativeArray],
-    v: Union[ivy.Array, ivy.NativeArray],
-    scale: float,
+    query: Union[ivy.Array, ivy.NativeArray],
+    key: Union[ivy.Array, ivy.NativeArray],
+    value: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
+    scale: Optional[float] = None,
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     dropout_p: Optional[float] = 0.0,
     is_causal: Optional[bool] = False,
@@ -437,15 +437,15 @@ def scaled_dot_product_attention(
 
     Parameters
     ----------
-    q
+    query
         The queries input array. The shape of queries input array should be in
         *[batch_shape,num_queries,feat_dim]*. The queries input array should have the
         same size as keys and values.
-    k
+    key
         The keys input array. The shape of keys input array should be in
         *[batch_shape,num_keys,feat_dim]*. The keys input array should have the same
         size as queries and values.
-    v
+    value
         The values input array. The shape of values input should be in
         *[batch_shape,num_keys,feat_dim]*. The values input array should have the same
         size as queries and keys.
@@ -597,21 +597,20 @@ def scaled_dot_product_attention(
         (not is_causal) or (is_causal and mask is None),
         "is_causal and attn_mask cannot be set at the same time",
     )
-    # BS x Q x K
-    sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
+    embed_dim = query.shape[-1]
+    # scale = 1 / ivy.sqrt(ivy.astype(query.shape[-1],query.dtype)) if not scale else scale
+    scale = 1 / (embed_dim**0.5) if not scale else scale
+    sim = ivy.einsum("... q f, ... k f -> ... q k", query, key) * scale
     sim = ivy.dropout(sim, dropout_p, training=training)
-
     if ivy.exists(mask):
-        # BS x Q x K
         sim = ivy.where(
             ivy.logical_not(mask),
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
             sim,
         )
-
     elif is_causal:
-        L = q.shape[-2]  # Source sequence length
-        S = k.shape[-2]  # Target sequence length
+        L = query.shape[-2]  # Source sequence length
+        S = key.shape[-2]  # Target sequence length
         mask = ivy.tril(ivy.ones((L, S)), k=0)
         mask = ivy.astype(mask, ivy.bool)
         sim = ivy.where(
@@ -619,11 +618,8 @@ def scaled_dot_product_attention(
             -ivy.ones_like(sim) * ivy.finfo(ivy.dtype(sim)).max,
             sim,
         )
-
-    # BS x Q x K
     attn = ivy.softmax(sim, axis=-1)
-    # BS x Q x F
-    return ivy.einsum("... qk, ...kf -> ...qf", attn, v)
+    return ivy.einsum("... qk, ...kf -> ...qf", attn, value)
 
 
 @handle_array_function
