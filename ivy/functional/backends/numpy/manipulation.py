@@ -308,3 +308,9 @@ def as_strided(
         shape=shape,
         strides=strides,
     )
+
+def block(
+    arrays: Union[List[np.ndarray]],
+) -> np.ndarray:
+    return np.block(arrays)
+    
