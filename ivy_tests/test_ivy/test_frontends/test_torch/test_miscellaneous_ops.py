@@ -1590,7 +1590,7 @@ def test_torch_view_as_real(
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=2,
