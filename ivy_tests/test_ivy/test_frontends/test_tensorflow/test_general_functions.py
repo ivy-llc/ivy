@@ -1560,7 +1560,7 @@ def test_tensorflow_linspace(
 @handle_frontend_test(
     fn_tree="tensorflow.realdiv",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", "complex"),
         num_arrays=2,
         min_value=-20,
         max_value=20,
@@ -1579,7 +1579,7 @@ def test_tensorflow_realdiv(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=helpers.get_dtypes("float"),
+        input_dtypes=input_dtype,
         test_flags=test_flags,
         frontend=frontend,
         backend_to_test=backend_fw,
