@@ -299,7 +299,7 @@ def test_l1_loss(
         init_all_as_kwargs_np={
             "reduction": reduction,
         },
-        method_all_as_kwargs_np={"targets": targets[0], "predictions": predictions[0]},
+        method_all_as_kwargs_np={"true": targets[0], "pred": predictions[0]},
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,
