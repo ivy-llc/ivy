@@ -432,7 +432,8 @@ def view_as_real(input):
 def corrcoef(input):
     if len(ivy.shape(input)) > 2:
         raise ivy.exceptions.IvyError(
-            "corrcoef(): expected input to have two or fewer dimensions but got an input "
-            f"with {ivy.shape(input)} dimansions"
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+             f" input with {ivy.shape(input)} dimansions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
+    
