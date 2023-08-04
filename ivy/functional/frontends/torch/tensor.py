@@ -440,6 +440,10 @@ class Tensor:
         layout=None,
         pin_memory=False,
     ):
+        if dtype is None:
+            dtype = self.dtype
+        if device is None:
+            device = self.device
         if size is None:
             size = args[0] if isinstance(args[0], (tuple, list)) else args
         return torch_frontend.ones(
