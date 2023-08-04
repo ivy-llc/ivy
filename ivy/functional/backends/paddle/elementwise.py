@@ -27,7 +27,13 @@ def add(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+    if x1.dtype in [
+        paddle.int8,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+        paddle.bfloat16,
+    ]:
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
@@ -433,7 +439,7 @@ def divide(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.float16]:
+    if x1.dtype in [paddle.float16, paddle.bfloat16]:
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if not (ivy.is_float_dtype(ret_dtype) or ivy.is_complex_dtype(ret_dtype)):
         ret_dtype = ivy.default_float_dtype(as_native=True)
@@ -843,6 +849,7 @@ def abs(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
         paddle.bool,
     ]:
         return paddle.abs(x.astype("float32")).astype(x.dtype)
