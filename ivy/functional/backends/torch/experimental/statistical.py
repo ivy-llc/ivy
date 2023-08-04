@@ -261,8 +261,6 @@ def _quantile(a, q, axis=None):
         a = torch.moveaxis(a, axis, 0)
 
     indices = []
-    # ndim = a.ndim
-    # index_dims = [None for _ in range(ndim)]
     for q_num in q:
         index = q_num * (n - 1)
         indices.append(index)
@@ -288,12 +286,19 @@ def _quantile(a, q, axis=None):
 
 
 def _compute_quantile_wrapper(
-    x, q, axis=None, keepdims=False, interpolation="linear", out=None, nearest_jax=True
+    x, q, axis=None, keepdims=False, interpolation="linear", out=None
 ):
     if not _validate_quantile(q):
         raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation in ["linear", "lower", "higher", "midpoint", "nearest"]:
-        if interpolation == "nearest" and nearest_jax:
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
             return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
         else:
             return torch.quantile(
@@ -315,7 +320,6 @@ def quantile(
     keepdims: bool = False,
     interpolation: str = "linear",
     out: Optional[torch.Tensor] = None,
-    nearest_jax: Optional[bool] = True,
 ) -> torch.Tensor:
     # added the nearest_jax mode to enable jax-like calculations for method="nearest"
     return _compute_quantile_wrapper(
@@ -325,7 +329,6 @@ def quantile(
         keepdims=keepdims,
         interpolation=interpolation,
         out=out,
-        nearest_jax=nearest_jax,
     )
 
 

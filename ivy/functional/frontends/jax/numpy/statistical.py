@@ -505,6 +505,10 @@ def quantile(
     keepdims=False,
     interpolation=None,
 ):
+    if method == "nearest":
+        return ivy.quantile(
+            a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
+        )
     return ivy.quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )

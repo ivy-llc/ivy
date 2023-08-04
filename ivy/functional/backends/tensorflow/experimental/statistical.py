@@ -222,12 +222,18 @@ def _compute_quantile_wrapper(
     axis=None,
     keepdims=False,
     interpolation="linear",
-    nearest_jax=True,
 ):
     if not _validate_quantile(q):
         raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation in ["linear", "lower", "higher", "midpoint", "nearest"]:
-        if interpolation == "nearest" and nearest_jax:
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
             return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
         else:
             axis = tuple(axis) if isinstance(axis, list) else axis
@@ -254,7 +260,6 @@ def quantile(
     interpolation: str = "linear",
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-    nearest_jax: Optional[bool] = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     # added the nearest_jax mode to enable jax-like calculations for method="nearest"
     return _compute_quantile_wrapper(
@@ -263,7 +268,6 @@ def quantile(
         axis=axis,
         keepdims=keepdims,
         interpolation=interpolation,
-        nearest_jax=nearest_jax,
     )
 
 

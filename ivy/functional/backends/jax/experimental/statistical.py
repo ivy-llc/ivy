@@ -173,6 +173,7 @@ def quantile(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     axis = tuple(axis) if isinstance(axis, list) else axis
+    interpolation = "nearest" if interpolation == "nearest_jax" else interpolation
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )

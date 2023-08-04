@@ -125,9 +125,7 @@ def _to_positive_axis(axis, ndim):
     return axis
 
 
-def _handle_axis(
-    a, q, fn, keepdims=False, axis=None, interpolation="nearest", nearest_jax=True
-):
+def _handle_axis(a, q, fn, keepdims=False, axis=None, interpolation="nearest"):
     nd = a.ndim
     axis_arg = deepcopy(axis)
     if axis is not None:
@@ -149,7 +147,7 @@ def _handle_axis(
             )
             axis_arg = -1
 
-    ret = fn(a, q, axis=axis_arg, interpolation=interpolation, nearest_jax=nearest_jax)
+    ret = fn(a, q, axis=axis_arg, interpolation=interpolation)
 
     if keepdims:
         if axis is None:
@@ -161,7 +159,7 @@ def _handle_axis(
     return ret
 
 
-def _quantile(a, q, axis=None, interpolation="nearest", nearest_jax=True):
+def _quantile(a, q, axis=None, interpolation="nearest"):
     ret_dtype = a.dtype
     if q.ndim > 2:
         raise ValueError("q argument must be a scalar or 1-dimensional!")
@@ -186,7 +184,7 @@ def _quantile(a, q, axis=None, interpolation="nearest", nearest_jax=True):
             index = paddle.floor(index)
         elif interpolation == "higher":
             index = paddle.ceil(index)
-        elif interpolation == "nearest" and not nearest_jax:
+        elif interpolation == "nearest":
             index = paddle.round(index)
         elif interpolation == "midpoint":
             index_floor = paddle.floor(index)
@@ -196,7 +194,7 @@ def _quantile(a, q, axis=None, interpolation="nearest", nearest_jax=True):
         indices_below = paddle.floor(index).astype(paddle.int32)
         indices_upper = paddle.ceil(index).astype(paddle.int32)
 
-        if interpolation == "nearest" and nearest_jax:
+        if interpolation == "nearest_jax":
             weights = index - indices_below.astype(paddle.float64)
 
             indices_below = paddle.clip(indices_below, 0, n - 1)
@@ -225,11 +223,17 @@ def _compute_quantile_wrapper(
     axis=None,
     keepdims=False,
     interpolation="linear",
-    nearest_jax=True,
 ):
     if not _validate_quantile(q):
         raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation not in ["linear", "lower", "higher", "midpoint", "nearest"]:
+    if interpolation not in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
         raise ValueError(
             "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
         )
@@ -240,7 +244,6 @@ def _compute_quantile_wrapper(
         keepdims=keepdims,
         axis=axis,
         interpolation=interpolation,
-        nearest_jax=nearest_jax,
     )
 
 
@@ -268,7 +271,6 @@ def quantile(
     keepdims: Optional[bool] = False,
     interpolation: Optional[str] = "linear",
     out: Optional[paddle.Tensor] = None,
-    nearest_jax: Optional[bool] = True,
 ) -> paddle.Tensor:
     # added the nearest_jax mode to enable jax-like calculations for method="nearest"
     return _compute_quantile_wrapper(
@@ -277,7 +279,6 @@ def quantile(
         axis=axis,
         keepdims=keepdims,
         interpolation=interpolation,
-        nearest_jax=nearest_jax,
     )
 
 

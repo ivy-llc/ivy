@@ -263,12 +263,19 @@ def _quantile(a, q, axis=None):
 
 
 def _compute_quantile_wrapper(
-    x, q, axis=None, keepdims=False, interpolation="linear", out=None, nearest_jax=True
+    x, q, axis=None, keepdims=False, interpolation="linear", out=None
 ):
     if not _validate_quantile(q):
         raise ValueError("Quantiles must be in the range [0, 1]")
-    if interpolation in ["linear", "lower", "higher", "midpoint", "nearest"]:
-        if interpolation == "nearest" and nearest_jax:
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
             return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
         else:
             axis = tuple(axis) if isinstance(axis, list) else axis
@@ -291,7 +298,6 @@ def quantile(
     keepdims: bool = False,
     interpolation: str = "linear",
     out: Optional[np.ndarray] = None,
-    nearest_jax: Optional[bool] = True,
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
     # in other backends, the output is the same dtype as the input.
@@ -303,7 +309,6 @@ def quantile(
         keepdims=keepdims,
         interpolation=interpolation,
         out=out,
-        nearest_jax=nearest_jax,
     )
 
 
