@@ -1597,23 +1597,17 @@ def test_torch_view_as_real(
         min_dim_size=2,
         max_dim_size=2,
         min_value=1,
-        max_value=1e10,
-        abs_smallest_val=0.01,
-        large_abs_safety_factor=2,
-        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
 def test_torch_corrcoef(
-        dtypes_and_x,
-        frontend,
-        fn_tree,
-        on_device,
-        test_flags,
-        backend_fw,
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
 ):
-    # corrcoef in some backends internally use cov function
-    # Write tests similar to cov function
     input_dtypes, x = dtypes_and_x
     helpers.test_frontend_function(
         input_dtypes=["float64"],
@@ -1624,4 +1618,4 @@ def test_torch_corrcoef(
         backend_to_test=backend_fw,
         input=x[0],
     )
-    
+
