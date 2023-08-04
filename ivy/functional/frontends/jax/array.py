@@ -123,21 +123,26 @@ class Array:
             fill_value=fill_value,
         )
 
-    def prod(self, axis=None):
-        arr = self
-        if (
-            str(self.dtype) == "uint8"
-            or str(self.dtype) == "uint16"
-            or str(self.dtype) == "uint32"
-        ):
-            arr = jax_frontend.numpy.asarray(self, dtype="uint64")
-        if (
-            str(self.dtype) == "int8"
-            or str(self.dtype) == "int16"
-            or str(self.dtype) == "int32"
-        ):
-            arr = jax_frontend.numpy.asarray(self, dtype="int64")
-        return jax_frontend.numpy.product(arr, axis=axis)
+    def prod(
+        self,
+        axis=None,
+        dtype=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
+        out=None,
+    ):
+        return jax_frontend.numpy.product(
+            self,
+            axis=axis,
+            dtype=self.dtype,
+            keepdims=keepdims,
+            initial=initial,
+            where=where,
+            promote_integers=promote_integers,
+            out=out,
+        )
 
     def ravel(self, order="C"):
         return jax_frontend.numpy.ravel(
