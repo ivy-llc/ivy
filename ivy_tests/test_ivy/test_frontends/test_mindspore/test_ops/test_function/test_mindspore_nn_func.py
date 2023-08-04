@@ -101,7 +101,6 @@
 #     )
 
 
-# Use the composite strategy for size and scale_factor
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.interpolate",
 #     dtype_and_x=helpers.dtype_and_values(
@@ -131,8 +130,7 @@
 #     ),
 #     align_corners=st.booleans(),
 #     recompute_scale_factor=st.booleans(),
-#     size=size_and_scale_factor[0],
-#     scale_factor=size_and_scale_factor[1],
+#     size_and_scale_factor = _size_and_scale_factor_strategy()
 # )
 # def test_mindspore_interpolate(
 #     *,
