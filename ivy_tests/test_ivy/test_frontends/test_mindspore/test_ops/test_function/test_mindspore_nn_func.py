@@ -152,7 +152,7 @@
 #     dtype, x = dtype_and_x
 #     size_and_scale_factor = _size_and_scale_factor_strategy()
 #     size,scale_factor = size_and_scale_factor
-      
+
 
 #     helpers.test_frontend_function(
 #         input_dtypes=dtype,
