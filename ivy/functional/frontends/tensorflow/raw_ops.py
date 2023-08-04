@@ -527,6 +527,24 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
+SquaredDifference = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "complex",
+                "bfloat16",
+                "float16",
+                "float64",
+                "float32",
+                "int32",
+                "int64",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.squared_difference))
+)
+
+
 Squeeze = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.general_functions.squeeze)
 )
@@ -920,3 +938,22 @@ Svd.supported_dtypes = {
         "complex128",
     ),
 }
+
+
+Einsum = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "complex128 ",
+                "complex64",
+                "float64",
+                "float32",
+                "float16",
+                "int64",
+                "int32",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
+)

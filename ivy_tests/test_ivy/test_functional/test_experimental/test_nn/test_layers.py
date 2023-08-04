@@ -10,23 +10,39 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool1d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    ground_truth_backend="jax",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=3,
+        max_dims=3,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
+    ),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_max_pool1d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+    data_format = "NCW" if data_format == "channel_first" else "NWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -35,6 +51,9 @@ def test_max_pool1d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        dilation=dilation,
+        data_format=data_format,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -58,7 +77,7 @@ def test_max_unpool1d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -80,13 +99,12 @@ def test_max_unpool1d(
         max_side=4,
         explicit_or_str_padding=True,
         return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
     ),
-    ceil_mode=st.just(True),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
     ground_truth_backend="jax",
-    # problem with containers converting tuple padding to
-    # lists which jax does not support
-    container_flags=st.just([False]),
 )
 def test_max_pool2d(
     *,
@@ -97,10 +115,10 @@ def test_max_pool2d(
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
     assume(
         not (
-            backend_fw.current_backend_str() == "tensorflow"
+            backend_fw == "tensorflow"
             and (
                 (stride[0] > kernel[0] or stride[0] > kernel[1])
                 or (
@@ -110,10 +128,15 @@ def test_max_pool2d(
             )
         )
     )
+    data_format = "NCHW" if data_format == "channel_first" else "NHWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -124,28 +147,46 @@ def test_max_pool2d(
         padding=pad,
         dilation=dilation,
         ceil_mode=ceil_mode,
+        data_format=data_format,
     )
 
 
 @handle_test(
     fn_tree="functional.ivy.experimental.max_pool3d",
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
-    ground_truth_backend="jax",
+    x_k_s_p=helpers.arrays_for_pooling(
+        min_dims=5,
+        max_dims=5,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_dilation=True,
+        data_format=st.sampled_from(["channel_first", "channel_last"]),
+        return_data_format=True,
+    ),
+    ceil_mode=st.sampled_from([True, False]),
     test_gradients=st.just(False),
+    ground_truth_backend="torch",
 )
 def test_max_pool3d(
     *,
     x_k_s_p,
+    ceil_mode,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
 ):
-    dtype, x, kernel, stride, pad = x_k_s_p
+    dtype, x, kernel, stride, pad, dilation, data_format = x_k_s_p
+
+    data_format = "NCDHW" if data_format == "channel_first" else "NDHWC"
+    assume(not (isinstance(pad, str) and (pad.upper() == "VALID") and ceil_mode))
+    # TODO: Remove this once the paddle backend supports dilation
+    assume(not (backend_fw == "paddle" and max(list(dilation)) > 1))
+
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -154,6 +195,9 @@ def test_max_pool3d(
         kernel=kernel,
         strides=stride,
         padding=pad,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -178,7 +222,7 @@ def test_avg_pool1d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name="avg_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -225,7 +269,7 @@ def test_avg_pool2d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-2,
@@ -265,7 +309,7 @@ def test_avg_pool3d(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
@@ -318,7 +362,7 @@ def test_dct(*, dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -341,7 +385,7 @@ def test_idct(dtype_x_and_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         type=type,
@@ -525,7 +569,7 @@ def test_interpolate(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-01,
@@ -578,7 +622,7 @@ def test_fft(*, d_x_d_n_n, test_flags, backend_fw, on_device, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -625,7 +669,7 @@ def test_dropout1d(
         input_dtypes=dtype,
         test_flags=test_flags,
         test_values=False,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         x=x[0],
@@ -634,8 +678,10 @@ def test_dropout1d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -676,7 +722,7 @@ def test_dropout2d(
         test_flags=test_flags,
         test_values=False,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         prob=prob,
@@ -684,8 +730,10 @@ def test_dropout2d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -727,7 +775,7 @@ def test_dropout3d(
         test_flags=test_flags,
         test_values=False,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         prob=prob,
@@ -735,8 +783,10 @@ def test_dropout3d(
         data_format=data_format,
         return_flat_np_arrays=True,
     )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
+    ret = helpers.flatten_and_to_np(backend=backend_fw, ret=ret)
+    gt_ret = helpers.flatten_and_to_np(
+        backend=test_flags.ground_truth_backend, ret=gt_ret
+    )
     for u, v, w in zip(ret, gt_ret, x):
         # cardinality test
         assert u.shape == v.shape == w.shape
@@ -776,7 +826,7 @@ def test_ifft(*, d_x_d_n_n, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
@@ -804,7 +854,7 @@ def test_embedding(
         input_dtypes=dtypes,
         test_flags=test_flags,
         xs_grad_idxs=[[0, 0]],
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         weights=weights,
@@ -839,7 +889,7 @@ def test_dft(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x,
@@ -848,6 +898,43 @@ def test_dft(
         onesided=onesided,
         dft_length=dft_length,
         norm=norm,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.adaptive_max_pool2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=1,
+        # Setting max and min value because this operation in paddle is not
+        # numerically stable
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+        ),
+        helpers.ints(min_value=1, max_value=5),
+    ),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_adaptive_max_pool2d(
+    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=x[0],
+        output_size=output_size,
     )
 
 
@@ -872,7 +959,7 @@ def test_adaptive_avg_pool1d(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         input=x[0],
@@ -907,7 +994,7 @@ def test_adaptive_avg_pool2d(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         input=x[0],
@@ -987,7 +1074,7 @@ def test_reduce_window(*, all_args, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         operand=operand[0],
@@ -1043,7 +1130,7 @@ def test_fft2(*, d_x_d_s_n, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         # rtol_=1e-2,
@@ -1109,7 +1196,7 @@ def test_ifftn(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         x=x,
