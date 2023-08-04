@@ -225,11 +225,11 @@ class ContainerBase(dict, abc.ABC):
                 out = vals[-num_out_conts:]
                 del vals[-num_out_conts:]
             arg_vals = vals[:num_arg_conts]
-            a = ivy.copy_nest(args, to_mutable=True)
-            ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
+            a = ivy.copy_nest(args)
+            a = ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
             kwarg_vals = vals[num_arg_conts:]
-            kw = ivy.copy_nest(kwargs, to_mutable=True)
-            ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
+            kw = ivy.copy_nest(kwargs)
+            kw = ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
             if with_out:
                 out = out[0] if len(out) == 1 else out
                 return fn(*a, out=out, **kw)
