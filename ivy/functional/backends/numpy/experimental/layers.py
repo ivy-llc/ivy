@@ -643,7 +643,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.25.1 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.2 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -905,7 +905,7 @@ def ifftn(
     return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
 
 
-@with_unsupported_dtypes({"1.25.1 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
 def embedding(
     weights: np.ndarray,
     indices: np.ndarray,
