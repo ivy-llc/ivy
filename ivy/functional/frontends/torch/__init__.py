@@ -290,4 +290,9 @@ _frontend_array = tensor
 # setting to specific version #
 # --------------------------- #
 
-set_frontend_to_specific_version(sys.modules[__name__])
+if ivy.is_local():
+    module = ivy.utils._importlib.import_cache[__name__]
+else:
+    module = sys.modules[__name__]
+
+set_frontend_to_specific_version(module)

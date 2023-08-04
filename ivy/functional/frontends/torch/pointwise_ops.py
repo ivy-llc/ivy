@@ -537,6 +537,12 @@ def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erfc(input, *, out=None):
+    return 1.0 - ivy.erf(input, out=out)
+
+
 @to_ivy_arrays_and_back
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
@@ -560,3 +566,9 @@ def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
 @to_ivy_arrays_and_back
 def masked_fill(input, mask, value):
     return ivy.where(mask, value, input, out=input)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def igamma(input, other, *, out=None):
+    return ivy.igamma(input, x=other, out=out)

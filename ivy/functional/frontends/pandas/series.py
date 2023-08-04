@@ -10,6 +10,7 @@ class Series(NDFrame):
         name=None,
         copy=False,
         fastpath=False,
+        columns=None,
         *args,
         **kwargs,
     ):
@@ -31,3 +32,23 @@ class Series(NDFrame):
             f"frontends.pandas.Series {series_name}({self.array.to_list()},"
             f" index={self.index})"
         )
+
+    def __getitem__(self, index_val):
+        if isinstance(index_val, slice):
+            return Series(
+                self.array[index_val],
+                index=self.index[index_val],
+                name=self.name,
+                dtype=self.dtype,
+                copy=self.copy,
+            )
+        return self.array[self.index.index(index_val)].item()
+
+    def __getattr__(self, item):
+        if item in self.index:
+            return self[item]
+        else:
+            return super().__getattr__(item)
+
+    def __len__(self):
+        return len(self.array)
