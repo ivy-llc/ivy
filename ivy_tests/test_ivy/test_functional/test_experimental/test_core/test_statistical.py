@@ -327,8 +327,8 @@ def test_nanquantile(
         a=x[0],
         q=q,
         axis=axis,
-        interpolation=interpolation[0],
         keepdims=keep_dims,
+        interpolation=interpolation[0],
     )
 
 
