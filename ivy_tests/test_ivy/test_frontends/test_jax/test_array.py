@@ -656,16 +656,18 @@ def test_jax_sort(
         force_int_axis=True,
     ),
 )
-def test_jax_devicearray_sum(
+def test_jax_sum(
     dtype_and_x,
     on_device,
     frontend,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
+        backend_to_test=backend_fw,
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
             "object": x[0],
