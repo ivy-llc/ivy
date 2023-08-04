@@ -15,7 +15,6 @@ class FrontendMethodHandler(MethodHandlerBase):
         class_tree: str,
         method_name: str,
         init_tree: str,
-        init_name: str,
         init_num_positional_args=None,
         init_native_arrays=BuiltNativeArrayStrategy,
         init_as_variable_flags=BuiltAsVariableStrategy,
@@ -25,7 +24,6 @@ class FrontendMethodHandler(MethodHandlerBase):
         **_given_kwargs,
     ):
         self.init_tree = init_tree
-        self.init_name = init_name
         self.class_tree = class_tree
         self.method_name = method_name
 
