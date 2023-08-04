@@ -7,7 +7,10 @@ from typing import Union, Optional, Sequence
 import paddle
 import ivy
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_device_and_dtypes,
+    with_supported_device_and_dtypes,
+)
 import ivy.functional.backends.paddle as paddle_backend
 
 # local
@@ -92,6 +95,10 @@ def max(
     return ret.astype(ret_dtype)
 
 
+@with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float32", "float64")}},
+    backend_version,
+)
 def mean(
     x: paddle.Tensor,
     /,
