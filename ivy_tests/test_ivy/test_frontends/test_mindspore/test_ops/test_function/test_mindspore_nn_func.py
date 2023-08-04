@@ -79,21 +79,21 @@
 #     )
 
 
-# def size_strategy():
+# def _size_strategy():
 #     return st.one_of(
 #         st.integers(min_value=1, max_value=10),
 #         st.tuples(st.integers(min_value=1, max_value=10)),
 #         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
 #     )
 
-# def scale_factor_strategy():
+# def _scale_factor_strategy():
 #     return st.one_of(
 #         st.floats(min_value=0.1, max_value=2.0),
 #         st.tuples(st.floats(min_value=0.1, max_value=2.0)),
 #         st.lists(st.floats(min_value=0.1, max_value=2.0), min_size=3, max_size=3),
 #     )
 
-# def size_and_scale_factor_strategy():
+# def _size_and_scale_factor_strategy():
 #     return st.one_of(
 #         st.tuples(size_strategy(), st.just(None)),
 #         st.tuples(st.just(None), scale_factor_strategy()),
@@ -103,7 +103,7 @@
 # size_and_scale_factor = size_and_scale_factor_strategy()
 
 
-# # Use the composite strategy for size and scale_factor
+# Use the composite strategy for size and scale_factor
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.interpolate",
 #     dtype_and_x=helpers.dtype_and_values(
@@ -150,6 +150,9 @@
 #     test_flags,
 # ):
 #     dtype, x = dtype_and_x
+#     size_and_scale_factor = _size_and_scale_factor_strategy()
+#     size,scale_factor = size_and_scale_factor
+      
 
 #     helpers.test_frontend_function(
 #         input_dtypes=dtype,
