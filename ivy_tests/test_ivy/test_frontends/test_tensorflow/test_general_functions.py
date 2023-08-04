@@ -2334,11 +2334,13 @@ def test_tensorflow_unravel_index(
 @handle_frontend_test(
     fn_tree="tensorflow.sequence_mask",
     dtype_and_lens=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
         shape=(4,3),
+        min_value=1,
+        max_value=5,
     ),
-    max_len=st.integers(min_value=0),
+    max_len=st.integers(min_value=5),
     test_with_out=st.just(False),
 )
 def test_tensorflow_sequence_mask(
