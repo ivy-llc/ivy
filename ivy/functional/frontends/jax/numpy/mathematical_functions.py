@@ -695,6 +695,13 @@ def product(
     promote_integers=True,
     out=None,
 ):
+    if ivy.is_uint_dtype(a.dtype):
+        dtype = "uint64"
+        a = ivy.astype(a, "uint64")
+    elif ivy.is_int_dtype(a.dtype):
+        dtype = "int64"
+        a = ivy.astype(a, "int64")
+
     if ivy.is_array(where):
         a = ivy.where(where, a, ivy.default(out, ivy.ones_like(a)), out=out)
     if promote_integers:
