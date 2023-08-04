@@ -41,7 +41,7 @@ def arange(
     if dtype:
         dtype = as_native_dtype(dtype)
         ivy.utils.assertions._check_jax_x64_flag(dtype.name)
-    res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
+    res = jnp.arange(start, stop, step, dtype=dtype)
     if not dtype:
         if res.dtype == jnp.float64:
             return res.astype(jnp.float32)

@@ -64,9 +64,9 @@ def arange(
             )
 
         else:
-            return to_device(paddle.arange(start, stop, step), device)
+            return paddle.arange(start, stop, step)
     else:
-        return to_device(paddle.arange(start, stop, step).cast(dtype), device)
+        return paddle.arange(start, stop, step).cast(dtype)
 
 
 @asarray_to_native_arrays_and_back

@@ -52,24 +52,23 @@ def arange(
             stop = float(start)
         else:
             stop = start
-    with tf.device(device):
-        if dtype is None:
-            if (
-                isinstance(start, int)
-                and isinstance(stop, int)
-                and isinstance(step, int)
-            ):
-                return tf.cast(
-                    tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32
-                )
-            else:
-                return tf.range(start, stop, delta=step)
+    if dtype is None:
+        if (
+            isinstance(start, int)
+            and isinstance(stop, int)
+            and isinstance(step, int)
+        ):
+            return tf.cast(
+                tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32
+            )
         else:
-            dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-            if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
-                return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
-            else:
-                return tf.range(start, stop, delta=step, dtype=dtype)
+            return tf.range(start, stop, delta=step)
+    else:
+        dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
+        if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
+            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
+        else:
+            return tf.range(start, stop, delta=step, dtype=dtype)
 
 
 @asarray_to_native_arrays_and_back
