@@ -4348,7 +4348,7 @@ def test_tensorflow_Svd(
 
 
 @handle_frontend_test(
-    fn_tree="tensorflow.raw_ops.LeakyRelu",
+    fn_tree="tensorflow.raw_ops.Selu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
