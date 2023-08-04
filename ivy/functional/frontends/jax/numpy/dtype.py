@@ -86,7 +86,7 @@ def result_type(*args):
 
 
 @with_supported_dtypes(
-    {"2.13.0 and below": ("int32", "int64")},
+    {"2.13.0 and below": ("integer",)},
     "jax",
 )
 @to_ivy_arrays_and_back
