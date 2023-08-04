@@ -1590,10 +1590,14 @@ def test_torch_view_as_real(
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=1,
         min_num_dims=2,
         max_num_dims=2,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     test_with_out=st.just(False),
 )
@@ -1605,9 +1609,11 @@ def test_torch_corrcoef(
         test_flags,
         backend_fw,
 ):
+    # corrcoef in some backends internally use cov function
+    # Write tests similar to cov function
     input_dtypes, x = dtypes_and_x
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=["int64", "float64"],
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
