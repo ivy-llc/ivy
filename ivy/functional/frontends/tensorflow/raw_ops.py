@@ -967,8 +967,7 @@ def Selu(*, features, name="Selu"):
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
     return scale * (
-        tf_frontend.math.maximum(0, features)
-        + tf_frontend.math.minimum(0, alpha * (ivy.exp(features) - 1))
+        ivy.maximum(0, features) + ivy.minimum(0, alpha * (ivy.exp(features) - 1))
     )
 
 
