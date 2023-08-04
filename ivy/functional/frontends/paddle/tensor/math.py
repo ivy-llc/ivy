@@ -401,7 +401,15 @@ def any(x, axis=None, keepdim=False, name=None):
 
 
 @with_supported_dtypes(
-    {"2.5.0 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
+    return ivy.diff(x, n=n, axis=axis, prepend=prepend, append=append)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
 def mm(input, mat2, name=None):
