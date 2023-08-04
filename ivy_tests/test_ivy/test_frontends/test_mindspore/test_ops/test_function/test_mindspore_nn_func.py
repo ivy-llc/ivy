@@ -100,7 +100,7 @@
 #         st.tuples(size_strategy(), scale_factor_strategy()),
 #     )
 
-# size_and_scale_factor = size_and_scale_factor_strategy()
+
 
 
 # Use the composite strategy for size and scale_factor
