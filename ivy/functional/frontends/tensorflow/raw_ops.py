@@ -961,9 +961,33 @@ Einsum = to_ivy_arrays_and_back(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}
+    {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}, "tensorflow"
 )
 def Selu(*, features, name="Selu"):
     alpha = 1.6732632423543772848170429916717
     scale = 1.0507009873554804934193349852946
     return scale * (ivy.max(0, features) + ivy.min(0, alpha * (ivy.exp(features) - 1)))
+
+
+Selu.supported_dtypes = {
+    "numpy": (
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "bfloat16",
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
