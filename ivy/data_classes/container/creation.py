@@ -1583,7 +1583,7 @@ class _ContainerWithCreation(ContainerBase):
         ...     a = b'\x00\x00\x00\x00\x00\x00\xf0?',
         ...     b = b'\x00\x00\x00\x00\x00\x00\xf0?\x00\x00\x00\x00\x00\x00\x00@'
         ... )
-        >>> y = ivy.Container.frombuffer(x, dtype=ivy.float64)
+        >>> y = x.frombuffer(dtype=ivy.float64)
         >>> print(y)
         {
             a: ivy.array([1.]),
@@ -1594,7 +1594,7 @@ class _ContainerWithCreation(ContainerBase):
         ...     a = b'\x01\x02\x03\x04',
         ...     b = b'\x05\x04\x03\x03\x02'
         ... )
-        >>> y = ivy.frombuffer(x, dtype=ivy.int8, count=3, offset=1)
+        >>> y = x.frombuffer(dtype=ivy.int8, count=3, offset=1)
         >>> print(y)
         {
             a: ivy.array([2, 3, 4]),
