@@ -551,6 +551,9 @@ def _get_cholesky_matrix(draw):
     )
     spd = np.matmul(gen.T, gen) + np.identity(gen.shape[0])
     spd_chol = np.linalg.cholesky(spd)
+    probability = draw(st.floats(min_value=0, max_value=1))
+    if probability > 0.5:
+        spd_chol = spd_chol.T  # randomly transpose the matrix
     return input_dtype, spd_chol
 
 
@@ -578,13 +581,11 @@ def _get_second_matrix(draw):
     x=_get_cholesky_matrix(),
     y=_get_second_matrix(),
     test_with_out=st.just(False),
-    upper=st.booleans(),
 )
 def test_paddle_cholesky_solve(
     *,
     x,
     y,
-    upper,
     frontend,
     backend_fw,
     test_flags,
@@ -604,7 +605,7 @@ def test_paddle_cholesky_solve(
         atol=1e-3,
         x=x2,
         y=x1,
-        upper=upper,
+        upper=np.array_equal(x1, np.triu(x1)),  # check whether the matrix is upper
     )
 
 
