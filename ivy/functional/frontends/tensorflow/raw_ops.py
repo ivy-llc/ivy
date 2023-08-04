@@ -959,7 +959,6 @@ Einsum = to_ivy_arrays_and_back(
 )
 
 
-@to_ivy_arrays_and_back
 @with_supported_dtypes(
     {"2.13.0 and below": ("float16", "bfloat16", "float32", "float64")}, "tensorflow"
 )
