@@ -16,7 +16,7 @@ Compiler Infrastructure
 .. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
 Compiler infrastructure generally provides carefully thought through frameworks and principles to simplify the lives of compiler designers, maximizing the reusability of tools and interoperability when deploying to various different hardware targets.
-This infrastructure doesn’t provide “full” solutions for compiling to hardware, but instead provides the general scaffolding to make the design of such compilers as principled and interoperable as possible, with maximal code sharing and interoperability being at the heart of their design.
+This infrastructure doesn't provide “full” solutions for compiling to hardware, but instead provides the general scaffolding to make the design of such compilers as principled and interoperable as possible, with maximal code sharing and interoperability being at the heart of their design.
 
 LLVM
 ----

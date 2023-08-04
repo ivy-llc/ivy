@@ -8,7 +8,7 @@ With our central goal being to unify all ML frameworks, you would be entirely fo
 
 “You want to try and somehow unify: TensorFlow, PyTorch, JAX, NumPy and others, all of which have strong industrial backing, huge user momentum, and significant API differences?”
 
-Won’t adding a new “unified” framework just make the problem even worse…
+Won't adding a new “unified” framework just make the problem even worse…
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/background/standardization/how_standards_proliferate.png?raw=true
    :align: center
@@ -19,9 +19,9 @@ Complimentary vs Competitive
 ----------------------------
 
 
-When considering this rather funny comic strip, it’s easy to question the feasibility of standardization in this ML space.
+When considering this rather funny comic strip, it's easy to question the feasibility of standardization in this ML space.
 However, there is a very important difference in the case of Ivy.
-Unlike `A/C Chargers <https://en.wikipedia.org/wiki/AC_adapter#Problems>`_, `Character Encodings <https://en.wikipedia.org/wiki/Character_encoding>`_ and `Instant Messaging <https://en.wikipedia.org/wiki/Comparison_of_instant_messaging_protocols>`_ where it’s very much one standard **or** the other, with Ivy this is not the case.
+Unlike `A/C Chargers <https://en.wikipedia.org/wiki/AC_adapter#Problems>`_, `Character Encodings <https://en.wikipedia.org/wiki/Character_encoding>`_ and `Instant Messaging <https://en.wikipedia.org/wiki/Comparison_of_instant_messaging_protocols>`_ where it's very much one standard **or** the other, with Ivy this is not the case.
 
 While Ivy does adhere to the `Python Array API Standard <https://data-apis.org/array-api/latest/>`_, **Ivy does not mandate adoption of the standard**.
 Ivy is entirely complimentary to existing frameworks, each of which can and will continue to have their own syntax and call signatures.
@@ -32,7 +32,7 @@ This is entirely up to you!
 Do Standards Work?
 ------------------
 
-Despite making this distinction with Ivy, we do still believe that the adoption of a shared standard by each ML framework would bring huge benefits, unrelated to what we’re doing at Ivy.
+Despite making this distinction with Ivy, we do still believe that the adoption of a shared standard by each ML framework would bring huge benefits, unrelated to what we're doing at Ivy.
 
 Again, contrary to `A/C Chargers <https://en.wikipedia.org/wiki/AC_adapter#Problems>`_, `Character Encodings <https://en.wikipedia.org/wiki/Character_encoding>`_, `Instant Messaging <https://en.wikipedia.org/wiki/Comparison_of_instant_messaging_protocols>`_ and other bumpy roads alluded to in the comic, most of the technology sector is full of successful standards.
 The reason we can “build” custom computers is thanks to many essential standards for the interoperability of different computer components, such as: `BIOS <https://en.wikipedia.org/wiki/BIOS#BIOS_Boot_Specification>`_ for hardware initialization, `PCIe <https://en.wikipedia.org/wiki/PCI_Express>`_ for interfacing components on the motherboard, `RAID <https://en.wikipedia.org/wiki/RAID>`_ for storage virtualization, `Bluetooth <https://en.wikipedia.org/wiki/Bluetooth>`_ for wireless data exchange, `BTX <https://en.wikipedia.org/wiki/BTX_(form_factor)>`_ for motherboard form factors and `SATA <https://en.wikipedia.org/wiki/Serial_ATA>`_ for connecting host bus adapters to storage devices.

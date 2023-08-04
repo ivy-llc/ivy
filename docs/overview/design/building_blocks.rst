@@ -76,7 +76,7 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
 There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
-For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
+For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy's API.
 For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
 Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 

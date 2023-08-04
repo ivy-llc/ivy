@@ -252,7 +252,7 @@ Extending the Ivy API
 
 We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
 
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy's GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
 
 In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
 

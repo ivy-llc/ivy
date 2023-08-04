@@ -50,7 +50,7 @@ The intermediate representation is the container for the operations that were re
 It consists of a list of Nodes that represent function inputs, call-sites (to functions, methods, or :code:`torch.nn.Module` instances), and return values.
 The IR is the format in which transformations are applied.
 Python code generation is what makes FX a Python-to-Python (or Module-to-Module) transformation toolkit.
-For each Graph IR, valid Python code matching the Graph’s semantics can be created.
+For each Graph IR, valid Python code matching the Graph's semantics can be created.
 This functionality is wrapped up in GraphModule, which is a :code:`torch.nn.Module` instance that holds a Graph as well as a forward method generated from the Graph.
 
 Taken together, this pipeline of components (symbolic tracing -> intermediate representation -> transforms -> Python code generation) constitutes the Python-to-Python transformation pipeline of FX.

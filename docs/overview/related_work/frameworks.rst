@@ -262,7 +262,7 @@ With `PyTorch`_ showing clear advantages and gaining in popularity in the Python
 However, because TensorFlow was not an eager framework by design, the eager-mode was very inefficient compared to compiled mode, and therefore was targeted mainly at ease of debugging, rather than a default mode in which TensorFlow should be run.
 Without a clear niche, TensorFlow seems to have now focused more on edge and mobile devices, with the introduction of `TensorFlow Lite`_, making it the go-to for industrial enterprise users looking to deploy ML models.
 Overall, TensorFlow 2 is a mature language which has been around in some form since 2015, has already needed to reinvent itself a couple of times, and one of the main advantages currently is the very strong bindings for edge and mobile devices via TensorFlow Lite.
-Another advantage is the inertia it has with industrial users who adopted TensorFlow in the past years and haven’t transitioned.
+Another advantage is the inertia it has with industrial users who adopted TensorFlow in the past years and haven't transitioned.
 
 DEX Language |dex-language|
 ---------------------------

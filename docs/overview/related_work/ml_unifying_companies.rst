@@ -34,7 +34,7 @@ Modular
 -------
 `Modular`_ is a Startup company founded by the creators of `MLIR`_.
 Their observation is that fragmentation and technical complexity have held back the impact of AI to a privileged few.
-The rest of the world isn’t benefiting as it should be from this transformational technology.
+The rest of the world isn't benefiting as it should be from this transformational technology.
 Their mission is to have real, positive impact in the world by reinventing the way AI technology is developed and deployed into production with a next-generation developer platform.
 There are very little extra details about their developer platform, but presumably it will provide a modular solution at a relatively low level of abstraction, given the `LLVM`_ and `MLIR`_ background of the founders.
 

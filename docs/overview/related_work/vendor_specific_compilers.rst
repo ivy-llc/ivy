@@ -25,15 +25,15 @@ Of course, we could talk about assembly languages and byte code, but this is out
 
 ICC
 ---
-`Intel C++ Compiler Classic (ICC)`_ is the first of `Intel`_’s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems.
+`Intel C++ Compiler Classic (ICC)`_ is the first of `Intel`_'s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems.
 It is available for Windows, Linux, and macOS operating systems.
 It targets general-purpose Intel x86-64 architecture CPUs.
 
 ICX
 ---
-`Intel oneAPI DPC++/C++ Compiler (ICX)`_ is the second of `Intel`_’s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems.
+`Intel oneAPI DPC++/C++ Compiler (ICX)`_ is the second of `Intel`_'s two C, C++, SYCL, and Data Parallel C++ (DPC++) compilers for Intel processor-based systems.
 Again, it is available for Windows, Linux, and macOS operating systems.
-Unlike `ICC`_, It generates code for both Intel’s general-purpose x86-64 CPUs and also GPUs.
+Unlike `ICC`_, It generates code for both Intel's general-purpose x86-64 CPUs and also GPUs.
 Specifically, it targets Intel IA-32, Intel 64 (aka x86-64), Core, Xeon, and Xeon Scalable processors, as well as GPUs including Intel Processor Graphics Gen9 and above, Intel Xe architecture, and Intel Programmable Acceleration Card with Intel Arria 10 GX FPGA.
 It builds on the SYCL specification from The `Khronos Group`_.
 It is designed to allow developers to reuse code across hardware targets (CPUs and accelerators such as GPUs and FPGAs) and perform custom tuning for a specific accelerator.

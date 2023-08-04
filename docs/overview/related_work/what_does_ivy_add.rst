@@ -53,18 +53,18 @@ It therefore extends what is possible in any of the specific individual framewor
 
 Graph Tracers
 -------------
-Ivy’s :ref:`Graph Compiler` exhibits similar properties to many of the framework-specific graph tracers.
-Ivy’s graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
-Of all the graph tracers, Ivy’s graph compiler is most similar to `torch.fx`_.
+Ivy's :ref:`Graph Compiler` exhibits similar properties to many of the framework-specific graph tracers.
+Ivy's graph compiler employs function tracing for computing the graph, and uses this graph as an intermediate representation during the transpilation process.
+Of all the graph tracers, Ivy's graph compiler is most similar to `torch.fx`_.
 This is because :code:`torch.fx` also operates entirely in Python, without deferring to lower level languages for tracing and extracting the computation graph or the intermediate representation.
-The main difference is that Ivy’s graph compiler is fully framework-agnostic; Ivy’s compiler is able to compile graphs from any framework, while framework-specific compilers are of course bound to their particular framework.
+The main difference is that Ivy's graph compiler is fully framework-agnostic; Ivy's compiler is able to compile graphs from any framework, while framework-specific compilers are of course bound to their particular framework.
 
 Exchange Formats
 ----------------
 The neural network exchange formats have particular relevance to Ivy, given their utility for sharing networks between frameworks.
 For example, models can be exported to the `ONNX`_ format from `TensorFlow`_, and then the ONNX model can be loaded into `PyTorch`_.
 This could be seen as a form of transpilation, which is one of the central goals of Ivy.
-However, there are some important differences between Ivy’s approach and that of exchange formats.
+However, there are some important differences between Ivy's approach and that of exchange formats.
 Firstly, Ivy requires no third-party "buy in" whatsoever.
 We take the initiative of wrapping the functional APIs of each framework and each framework version ourselves, such that Ivy can transpile between any framework and version without any need for the existing frameworks to put their own time and effort into supporting Ivy.
 Additionally, Ivy also enables transpilations for training, not only for deployment.

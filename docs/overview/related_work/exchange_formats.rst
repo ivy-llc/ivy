@@ -45,7 +45,7 @@ CoreML |coreml|
 ---------------
 `CoreML`_ itself is not an exchange format, it is a framework which enables models to be trained and deployed on `Apple`_ devices with a simple zero-code interactive interface.
 However, CoreML is built upon its own Core ML format, and Apple have open sourced :code:`coremltools`, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
-The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple’s CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.
+The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple's CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.
 
 **Round Up**
 
