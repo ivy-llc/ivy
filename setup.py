@@ -18,6 +18,7 @@ __version__ = None
 import setuptools
 from setuptools import setup
 from pathlib import Path
+import re
 
 
 def _strip(line):
@@ -26,6 +27,14 @@ def _strip(line):
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
+
+# Remove img tags that have class "only-dark"
+long_description = re.sub(
+    r"<img [^>]*class=\"only-dark\"[^>]*>",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
 
 setup(
     name="ivy",
