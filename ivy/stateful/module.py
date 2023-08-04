@@ -587,7 +587,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 from_call=True,
                 dtype=_get_first_array(*args, **kwargs).dtype,
             )
-        if kwargs["buffers"]:
+        if getattr(kwargs, "buffers", None):
             buffers_orig = self._get_buffers()
             self._set_buffers(kwargs["buffers"])
         if v is not None:
@@ -599,7 +599,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
-            if kwargs["buffers"]:
+            if getattr(kwargs, "buffers", None):
                 self._set_buffers(buffers_orig)
             return ret
         elif hasattr(self.__call__, "wrapped"):
