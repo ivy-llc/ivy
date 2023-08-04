@@ -1,6 +1,6 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -10,8 +10,9 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_complex_input,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -21,8 +22,8 @@ from ivy.utils.exceptions import handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -77,21 +78,48 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
+def _leaky_relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    alpha: float = 0.2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.astype(x * alpha, x.dtype),
+        x,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
+@handle_complex_input
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the leaky rectified linear unit function element-wise.
+
+    If the input is complex, then by default each element is scaled by `alpha` if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
 
     Parameters
     ----------
@@ -102,6 +130,9 @@ def leaky_relu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -143,12 +174,16 @@ def leaky_relu(
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
 
+leaky_relu.jax_like = _leaky_relu_jax_like
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -221,6 +256,7 @@ def log_softmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def relu(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -274,8 +310,8 @@ def relu(
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def sigmoid(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -295,6 +331,7 @@ def sigmoid(
     -------
     ret
         an array containing the sigmoid activation of each element in ``x``.
+        sigmoid activation of x is defined as 1/(1+exp(-x)).
 
     Examples
     --------
@@ -306,15 +343,41 @@ def sigmoid(
     ivy.array([0.269, 0.731, 0.881])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
-    >>> y = x.sigmoid()
+    >>> y = ivy.zeros(3)
+    >>> ivy.sigmoid(x,out=y)
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
+    With :class:`ivy.Container` input:
 
-    >>> x = ivy.array([[-1.3, 3.8, 2.1], [1.7, 4.2, -6.6]])
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.])))
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([[0.214, 0.978, 0.891], [0.846,0.985,0.001]] )
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
+
+    >>> x = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([1.]),
+                                          d=ivy.array([2.]))))
+    >>> y = ivy.Container(a=ivy.array([0.]),
+                          b=ivy.Container(c=ivy.array([0.]),
+                                          d=ivy.array([0.]))))
+    >>> ivy.sigmoid(x,out=y)
+    >>> print(y)
+    {
+        a: ivy.array([0.]),
+        b: {
+            c: ivy.array([1.]),
+            d: ivy.array([2.])
+        }
+    }
     """
     return current_backend(x).sigmoid(x, out=out)
 
@@ -325,6 +388,7 @@ def sigmoid(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -375,6 +439,7 @@ def softmax(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -432,6 +497,7 @@ def softplus(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def mish(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:

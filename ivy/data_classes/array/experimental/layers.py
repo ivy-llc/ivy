@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 
 # local
 import ivy
@@ -9,12 +9,14 @@ import ivy
 class _ArrayWithLayersExperimental(abc.ABC):
     def max_pool1d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int]],
-        strides: Union[int, Tuple[int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NWC",
+        dilation: Union[int, Tuple[int]] = 1,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -35,6 +37,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -63,18 +70,20 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             out=out,
         )
 
     def max_pool2d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NHWC",
-        dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+        dilation: Union[int, Tuple[int, ...]] = 1,
         ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -96,6 +105,11 @@ class _ArrayWithLayersExperimental(abc.ABC):
             the per-dimension paddings.
         data_format
             "NHWC" or "NCHW". Defaults to "NHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -136,12 +150,14 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def max_pool3d(
         self: ivy.Array,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
-        padding: str,
+        kernel: Union[int, Tuple[int, ...]],
+        strides: Union[int, Tuple[int, ...]],
+        padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
         /,
         *,
         data_format: str = "NDHWC",
+        dilation: Union[int, Tuple[int, ...]] = 1,
+        ceil_mode: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -156,10 +172,15 @@ class _ArrayWithLayersExperimental(abc.ABC):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating
+            "SAME" or "VALID" indicating the algorithm, or list indicating
             the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every element is covered by a sliding window.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -187,6 +208,8 @@ class _ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            dilation=dilation,
+            ceil_mode=ceil_mode,
             out=out,
         )
 
@@ -832,6 +855,33 @@ class _ArrayWithLayersExperimental(abc.ABC):
             output_size,
         )
 
+    def adaptive_max_pool2d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        """
+        Apply a 2D adaptive maximum pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+        """
+        return ivy.adaptive_max_pool2d(
+            self._data,
+            output_size,
+        )
+
     def reduce_window(
         self: ivy.Array,
         init_value: Union[int, float],
@@ -1024,3 +1074,35 @@ class _ArrayWithLayersExperimental(abc.ABC):
                 [-0.48472244+0.30233797j]])
         """
         return ivy.ifftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+    def rfftn(
+        self: ivy.Array,
+        s: Sequence[int] = None,
+        axes: Sequence[int] = None,
+        *,
+        norm: str = "backward",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Compute the n-dimensional discrete Fourier Transform.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        s
+            Shape (length of each transformed axis) of the output.
+        axes
+            Axes over which to compute the RFFT. If not given, the last len(s) axes are
+            used.
+        norm
+            Normalization mode: "backward", "ortho", or "forward".
+        out
+            Optional output array for writing the result.
+
+        Returns
+        -------
+        ret
+            The result of the RFFT operation.
+        """
+        return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
