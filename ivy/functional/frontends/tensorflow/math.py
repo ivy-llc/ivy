@@ -432,6 +432,24 @@ def unsorted_segment_mean(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_sum(
+    data, segment_ids, num_segments, name="unsorted_segment_sum"
+):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    sum_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]),
+        dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
+    return sum_array
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):

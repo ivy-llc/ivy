@@ -1521,6 +1521,9 @@ class Tensor:
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
 
+    def bmm(self, mat2):
+        return torch_frontend.bmm(self, mat2=mat2)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self):
         self.ivy_array = self.floor().ivy_array
