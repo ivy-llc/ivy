@@ -1,6 +1,6 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable, Literal
 
 # local
 import ivy
@@ -12,6 +12,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_complex_input,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -77,6 +78,25 @@ def gelu(
     return current_backend(x).gelu(x, approximate=approximate, out=out)
 
 
+def _leaky_relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original: Optional[Callable] = None,
+    alpha: float = 0.2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.astype(x * alpha, x.dtype),
+        x,
+    )
+
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -84,15 +104,22 @@ def gelu(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def leaky_relu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     alpha: float = 0.2,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the leaky rectified linear unit function element-wise.
+
+    If the input is complex, then by default each element is scaled by `alpha` if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
 
     Parameters
     ----------
@@ -103,6 +130,9 @@ def leaky_relu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -142,6 +172,9 @@ def leaky_relu(
     }
     """
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
+
+
+leaky_relu.jax_like = _leaky_relu_jax_like
 
 
 @handle_exceptions
