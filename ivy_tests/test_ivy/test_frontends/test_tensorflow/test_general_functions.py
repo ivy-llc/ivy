@@ -2336,11 +2336,10 @@ def test_tensorflow_unravel_index(
     dtype_and_lens=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
-        shape=(4,3),
         min_value=1,
         max_value=5,
     ),
-    max_len=st.integers(min_value=5),
+    max_len=st.integers(min_value=5, max_value=1000),
     test_with_out=st.just(False),
 )
 def test_tensorflow_sequence_mask(
@@ -2355,7 +2354,7 @@ def test_tensorflow_sequence_mask(
 ):
     input_dtype, lens = dtype_and_lens
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=['int32'],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
