@@ -1016,6 +1016,39 @@ def test_jax_tril(
     )
 
 
+# trim_zeros
+@handle_frontend_test(
+    fn_tree="jax.numpy.trim_zeros",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=1
+    ),
+    trim=st.sampled_from(['f', 'b', 'fb']),
+)
+def test_jax_numpy_trim_zeros(
+        frontend,
+        on_device,
+        *,
+        dtype_and_x,
+        backend_fw,
+        trim,
+        fn_tree,
+        test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        filt=x[0],
+        trim=trim
+    )
+
+
 # block
 @st.composite
 def _get_input_and_block(draw):
