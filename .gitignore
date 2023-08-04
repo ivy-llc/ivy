@@ -43,3 +43,4 @@ venv.bak/
 ivy_dev/
 *venv/
 venv*
+ivy_dev

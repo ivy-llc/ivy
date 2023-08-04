@@ -62,6 +62,15 @@ def split(x, num_or_sections, axis=0, name=None):
 
 
 @with_unsupported_dtypes(
+    {"2.5.1 and below": ("int16", "complex64", "complex128")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def tolist(x):
+    return ivy.tolist(x)
+
+
+@with_unsupported_dtypes(
     {"2.5.1 and below": ("float16", "bfloat16", "int8", "int16")},
     "paddle",
 )
@@ -132,3 +141,8 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def to_list(x):
+    return x.tolist()
