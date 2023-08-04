@@ -1202,7 +1202,7 @@ def _get_array_axes_probs(draw):
             valid_axis=True,
             force_int_axis=True,
             min_value=1,
-            max_value=10,
+            max_value=300,
         )
     )
     q = np.round(
@@ -1219,7 +1219,7 @@ def _get_array_axes_probs(draw):
                         mixed_fn_compos=False,
                     ),
                     min_size=1,
-                    max_size=5,
+                    max_size=10,
                 )
             )
         ),
@@ -1233,20 +1233,19 @@ def _get_array_axes_probs(draw):
     fn_tree="jax.numpy.quantile",
     dtype_array_axes_q=_get_array_axes_probs(),
     overwrite_input=st.just(False),
+    keepdims=st.booleans(),
     method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
-    keepdims=st.just(False),
-    test_with_out=st.just(False),
 )
 def test_jax_quantile(
     *,
     dtype_array_axes_q,
     overwrite_input,
+    keepdims,
+    method,
     on_device,
     fn_tree,
     frontend,
     test_flags,
-    method,
-    keepdims,
     backend_fw,
 ):
     dtypes, array, axes, q = dtype_array_axes_q
@@ -1260,7 +1259,6 @@ def test_jax_quantile(
         a=array[0],
         q=q,
         axis=axes,
-        out=None,
         overwrite_input=overwrite_input,
         method=method,
         keepdims=keepdims,

@@ -172,9 +172,7 @@ def quantile(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
-
+    axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )

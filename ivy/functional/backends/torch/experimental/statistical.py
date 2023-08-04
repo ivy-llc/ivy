@@ -7,6 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 import ivy
 from ..statistical import _infer_dtype
+from copy import deepcopy
 
 
 @with_unsupported_dtypes(
@@ -184,6 +185,126 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def _validate_quantile(q):
+    if q.ndim == 1 and torch.numel(q) < 10:
+        for i in range(torch.numel(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (torch.all(0 <= q) and torch.all(q <= 1)):
+            return False
+    return True
+
+
+def _to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = a.ndim
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = _to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = torch.moveaxis(a, s, i)
+            a = a.view(
+                [
+                    *a.shape[:nkeep],
+                    -1,
+                ]
+            )
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if q.ndim > 2:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = a.flatten()
+
+    n = a.shape[axis]
+    if axis != 0:
+        a = torch.moveaxis(a, axis, 0)
+
+    indices = []
+    # ndim = a.ndim
+    # index_dims = [None for _ in range(ndim)]
+    for q_num in q:
+        index = q_num * (n - 1)
+        indices.append(index)
+
+    a = torch.sort(a, 0)[0]
+    outputs = []
+
+    for index in indices:
+        indices_below = torch.floor(index).to(torch.int64)
+        indices_upper = torch.ceil(index).to(torch.int64)
+
+        weights = index - indices_below.to(torch.float64)
+
+        indices_below = torch.clip(indices_below, 0, n - 1)
+        indices_upper = torch.clip(indices_upper, 0, n - 1)
+        tensor_upper = torch.index_select(a, 0, indices_upper)
+        tensor_below = torch.index_select(a, 0, indices_below)
+
+        pred = weights <= 0.5
+        out = torch.where(pred, tensor_below, tensor_upper)
+        outputs.append(out)
+    return torch.concat(outputs, dim=0).to(ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x, q, axis=None, keepdims=False, interpolation="linear", out=None, nearest_jax=True
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in ["linear", "lower", "higher", "midpoint", "nearest"]:
+        if interpolation == "nearest" and nearest_jax:
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            return torch.quantile(
+                x, q, dim=axis, keepdim=keepdims, interpolation=interpolation, out=out
+            )
+    else:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def quantile(
     a: torch.Tensor,
@@ -194,39 +315,18 @@ def quantile(
     keepdims: bool = False,
     interpolation: str = "linear",
     out: Optional[torch.Tensor] = None,
+    nearest_jax: Optional[bool] = True,
 ) -> torch.Tensor:
-    temp = a.to(torch.float64)
-    num_dim = len(temp.size())
-    keepdim_shape = list(temp.size())
-    if isinstance(axis, int):
-        axis = [axis]
-    if isinstance(axis, tuple):
-        axis = list(axis)
-    if isinstance(q, torch.Tensor):
-        qt = q.to(torch.float64)
-    else:
-        qt = q
-    for i in axis:
-        keepdim_shape[i] = 1
-    axis = [num_dim + x if x < 0 else x for x in axis]
-    axis.sort()
-    dimension = len(a.size())
-    while len(axis) > 0:
-        axis1 = axis[0]
-        for axis2 in range(axis1 + 1, dimension):
-            temp = torch.transpose(temp, axis1, axis2)
-            axis1 = axis2
-        axis = [x - 1 for x in axis]
-        axis.pop(0)
-        dimension = dimension - 1
-    temp = torch.flatten(temp, start_dim=dimension - len(axis))
-    ret = torch.quantile(
-        temp, qt, dim=-1, keepdim=keepdims, interpolation=interpolation, out=out
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+        out=out,
+        nearest_jax=nearest_jax,
     )
-    if keepdims:
-        keepdim_shape = tuple(keepdim_shape)
-        ret = ret.reshape(keepdim_shape)
-    return ret.to(a.dtype)
 
 
 quantile.support_native_out = True
