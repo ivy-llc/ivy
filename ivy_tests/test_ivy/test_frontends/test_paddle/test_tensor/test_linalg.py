@@ -7,7 +7,10 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test, matrix_is_stable
-
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_linalg import (
+    _get_cholesky_matrix,
+    _get_second_matrix,
+)
 
 # Helpers #
 # ------ #
@@ -525,6 +528,42 @@ def test_paddle_solve(
         on_device=on_device,
         x=x[0],
         y=x[1],
+    )
+
+
+# cholesky_solve
+@handle_frontend_test(
+    fn_tree="paddle.tensor.linalg.cholesky_solve",
+    x=_get_cholesky_matrix(),
+    y=_get_second_matrix(),
+    test_with_out=st.just(False),
+    upper=st.booleans(),
+)
+def test_paddle_cholesky_solve(
+    *,
+    x,
+    y,
+    upper,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    input_dtype1, x1 = x
+    input_dtype2, x2 = y
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype1, input_dtype2],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        x=x1,
+        y=x2,
+        upper=upper,
     )
 
 
