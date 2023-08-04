@@ -461,8 +461,19 @@ class Tensor:
         return torch_frontend.erf(self, out=out)
 
     def new_zeros(
-        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
     ):
+        if dtype is None:
+            dtype = self.dtype
+        if device is None:
+            device = self.device
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
                 size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
