@@ -101,8 +101,6 @@
 #     )
 
 
-
-
 # Use the composite strategy for size and scale_factor
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.interpolate",
