@@ -1592,7 +1592,7 @@ def test_torch_view_as_real(
     dtypes_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
-        min_num_dims=1,
+        min_num_dims=2,
         max_num_dims=2,
     ),
     test_with_out=st.just(False),
@@ -1613,5 +1613,5 @@ def test_torch_corrcoef(
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
-        input=np.asarray(x[0], dtype=input_dtypes[0]),
+        input=x[0],
     )

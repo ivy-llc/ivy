@@ -435,4 +435,4 @@ def corrcoef(input):
             "corrcoef(): expected input to have two or fewer dimensions but got an input "
             f"with {ivy.shape(input)} dimansions"
         )
-    return ivy.corrcoef(input, y=None, rowvar=True)
+    return ivy.corrcoef(input, y=None, rowvar=False)
