@@ -13,6 +13,11 @@ _slice = builtins.slice
 
 
 @to_ivy_arrays_and_back
+def imag(x):
+    return ivy.imag(x)
+
+
+@to_ivy_arrays_and_back
 def abs(x):
     return ivy.abs(x)
 
@@ -647,3 +652,8 @@ def conj(x):
 @to_ivy_arrays_and_back
 def is_finite(x):
     return ivy.isfinite(x)
+
+
+@to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)

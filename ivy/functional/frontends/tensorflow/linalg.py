@@ -383,7 +383,7 @@ def tensor_diag(diagonal, /, *, name=None):
     },
     "tensorflow",
 )
-def set_diag(input, diagonal, /, *, k=0, align='RIGHT_LEFT', name=None):
+def set_diag(input, diagonal, /, *, k=0, align="RIGHT_LEFT", name=None):
     # TODO:
     #  1. Add support for different k values and align options
     #  2. Add support for input tensors with ranks larger than 3
@@ -394,21 +394,26 @@ def set_diag(input, diagonal, /, *, k=0, align='RIGHT_LEFT', name=None):
     # Check if the input tensor has a rank larger than 3
     if input.ndim > 3:
         raise ivy.utils.exceptions.IvyNotImplementedException(
-            f"Input tensor must have rank less than or equal to 3.\nInput shape: {input.shape}")
+            "Input tensor must have rank less than or equal to 3.\nInput shape:"
+            f" {input.shape}"
+        )
 
     # Check if the first dimension of the input and diagonal match
     if input.shape[0] != diagonal.shape[0]:
         raise ivy.utils.exceptions.IvyValueError(
-            f"Number of diagonal vectors must match the number of matrices in the input.\n"
-            f"Input shape: {input.shape}, Diagonal shape: {diagonal.shape}")
+            "Number of diagonal vectors must match the number of matrices in the"
+            f" input.\nInput shape: {input.shape}, Diagonal shape: {diagonal.shape}"
+        )
 
     # Handle the case where input is a 2D matrix
     if input.ndim < 3:
         # Check the diagonal length matches the first dimension of the matrix
         if input.shape[0] != diagonal.shape[0]:
             raise ivy.utils.exceptions.IvyValueError(
-                f"Length of the diagonal vector must match the first dimension of the matrix.\n"
-                f"Matrix shape: {input.shape}, Diagonal shape: {diagonal.shape}")
+                "Length of the diagonal vector must match the first dimension of the"
+                f" matrix.\nMatrix shape: {input.shape}, Diagonal shape:"
+                f" {diagonal.shape}"
+            )
 
         input[range(input.shape[0]), range(input.shape[0])] = diagonal
     else:
@@ -416,13 +421,15 @@ def set_diag(input, diagonal, /, *, k=0, align='RIGHT_LEFT', name=None):
             # Check the diagonal length matches the first dimension of the matrix
             if matrix.shape[0] != new_diagonal.shape[0]:
                 raise ivy.utils.exceptions.IvyValueError(
-                    f"Length of the diagonal vector must match the first dimension of the matrix.\n"
-                    f"Matrix shape: {matrix.shape}, Diagonal shape: {new_diagonal.shape}")
-            
+                    "Length of the diagonal vector must match the first dimension of"
+                    f" the matrix.\nMatrix shape: {matrix.shape}, Diagonal shape:"
+                    f" {new_diagonal.shape}"
+                )
+
             matrix[range(matrix.shape[0]), range(matrix.shape[0])] = new_diagonal
 
     return input
-  
-  
+
+
 def expm(input, name=None):
     return ivy.matrix_exp(input)
