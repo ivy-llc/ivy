@@ -177,14 +177,15 @@ Under the hood, when ``ivy-gardener`` is found in a comment, a ivy bot will trig
 as in the pre-commit process. Then the suggested changes produced in the checks will be applied automatically as
 a new commit if there is any. 
 
-However, it is possible for the linters run in the ivy-gardener and the github action every day to face formatting 
-errors that need human intervention like typos and uninitialized arguments. In this case, errors will be thrown 
-by the linters and by the lint checks that runs later, while the fixes for other normal errors will still be applied 
-as the ivy-gardener is passing properly.
+However, it is possible for the linters run in the ``ivy-gardener`` and the GitHub action every day to face 
+formatting errors that need human intervention like typos and uninitialized arguments. In this case, errors will 
+be thrown by the linters and by the lint checks that runs later, while fixes to other simpler errors will still 
+be applied by the ``ivy-gardener`` properly.
 
-On the other hand, ivy-gardener itself can fail if the bot handling it (ivy-branch) can not apply the changes 
+On the other hand, ``ivy-gardener`` itself can fail if the bot handling it (ivy-branch) can not apply the changes 
 suggested by the linters, for example, when it does not have access to edit the target branch. In this case, you 
-should check the logs of lint checks to manually resolve the formatting errors by commiting the changes yourself.
+should try give the maintainer bot the access to your branch (which is an option shown in GitHub UI) and give it 
+another try, or manually resolve the formatting errors by commiting the changes yourself.
 
 **Round Up**
 
