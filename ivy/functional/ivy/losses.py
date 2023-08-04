@@ -315,7 +315,7 @@ def sparse_cross_entropy(
     >> x = ivy.array([2])
     >> y = ivy.array([0.1, 0.1, 0.7, 0.1])
     >> print(ivy.sparse_cross_entropy(x, y))
-    vy.array([0.35667494])
+    ivy.array([0.35667494])
 
     >>> x = ivy.array([3])
     >>> y = ivy.array([0.1, 0.1, 0.7, 0.1])
