@@ -655,6 +655,11 @@ def is_finite(x):
 
 
 @to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)
+
+
+@to_ivy_arrays_and_back
 def erfc(x):
     value = ivy.erf(x)
     value = (1.0 - value) if value is not None else None

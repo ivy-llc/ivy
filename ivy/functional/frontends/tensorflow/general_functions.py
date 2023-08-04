@@ -468,6 +468,9 @@ def slice(input_, begin, size, name=None):
 def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
+@to_ivy_arrays_and_back
+def no_op(name=None):
+    return
 
 @with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
