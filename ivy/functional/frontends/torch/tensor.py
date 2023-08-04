@@ -303,6 +303,9 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.float32, copy=False)
         return self
 
+    def double(self):
+        return self.to(torch_frontend.float64)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def asinh(self):
         return torch_frontend.asinh(self)
