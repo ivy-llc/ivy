@@ -809,6 +809,8 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
         key_chain="",
+        build_callable=False,
+        assert_and_assign=False,
     ):
         """
         Return a single boolean as to whether the input containers have identical key-
@@ -839,7 +841,12 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value
+            in the container being compared to given that the strucutres are congruent
         Returns
         -------
         Boolean
@@ -852,10 +859,15 @@ class ContainerBase(dict, abc.ABC):
                 cont.cont_at_key_chains(common_key_chains) for cont in containers
             ]
         keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+
         # noinspection PyProtectedMember
         for key in keys:
             if not min([key in cont for cont in containers]):
                 return False
+            if build_callable:
+                # call the callable if encountered
+                for cont in containers:
+                    cont[key] = cont[key]() if callable(cont[key]) else cont[key]
             values = [cont[key] for cont in containers]
             value_0 = values[0]
             type_0 = type(value_0)
@@ -877,6 +889,10 @@ class ContainerBase(dict, abc.ABC):
                 elif arrays_equal:
                     if not ivy.all_equal(*values):
                         return False
+                if assert_and_assign:
+                    containers[0].cont_set_at_key_chain(
+                        key, containers[1][key], inplace=True
+                    )
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
                 ret = ivy.Container.cont_identical(
@@ -889,9 +905,18 @@ class ContainerBase(dict, abc.ABC):
                     to_apply,
                     partial,
                     this_key_chain,
+                    build_callable=build_callable,
+                    assert_and_assign=assert_and_assign,
                 )
                 if not ret:
                     return False
+                if assert_and_assign:
+                    # TODO optimise this further, such that keys are assigned
+                    # without waiting for more building
+                    containers[0][key].cont_set_at_key_chains(
+                        target_dict=containers[1][key], inplace=True
+                    )
+
         return True
 
     @staticmethod
@@ -958,6 +983,8 @@ class ContainerBase(dict, abc.ABC):
         to_apply=True,
         partial=False,
         key_chain="",
+        build_callable=False,
+        assert_and_assign=False,
     ):
         """
         Return a single boolean as to whether the input containers have identical
@@ -983,7 +1010,12 @@ class ContainerBase(dict, abc.ABC):
             Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
-
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value in
+            the container being compared to given that the strucutres are congruent
         Returns
         -------
             Boolean
@@ -998,6 +1030,8 @@ class ContainerBase(dict, abc.ABC):
             to_apply,
             partial,
             key_chain,
+            build_callable=build_callable,
+            assert_and_assign=assert_and_assign,
         )
 
     @staticmethod
@@ -1008,6 +1042,8 @@ class ContainerBase(dict, abc.ABC):
         key_chains=None,
         to_apply=True,
         partial=False,
+        build_callable=False,
+        assert_and_assign=False,
     ):
         """
         Assert whether the input containers have identical structure. Otherwise, the
@@ -1031,10 +1067,23 @@ class ContainerBase(dict, abc.ABC):
         partial
             Whether to also check for partially complete sub-containers.
             Default is ``False``.
+        build_callable
+            if true, the leaf nodes which are callables are assumed to be called to
+            build further nested layers
+        assert_and_assign
+            if true, then the container being compared with is updated with the value in
+            the container being compared to given that the strucutres are congruent
         """
         ivy.utils.assertions.check_true(
             ivy.Container.cont_identical_structure(
-                containers, check_types, check_shapes, key_chains, to_apply, partial
+                containers,
+                check_types,
+                check_shapes,
+                key_chains,
+                to_apply,
+                partial,
+                build_callable=build_callable,
+                assert_and_assign=assert_and_assign,
             ),
             "Containers did not have identical structure:\n\n{}".format(
                 ivy.Container.cont_structural_diff(*containers)
@@ -2753,7 +2802,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[k] = self.cont_set_at_key_chains(v, return_dict[k], inplace)
             else:
                 return_dict[k] = v
-        return ivy.Container(return_dict, **self._config)
+        return return_dict
 
     def cont_overwrite_at_key_chains(
         self, target_dict, return_dict=None, inplace=False

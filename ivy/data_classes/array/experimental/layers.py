@@ -832,6 +832,33 @@ class _ArrayWithLayersExperimental(abc.ABC):
             output_size,
         )
 
+    def adaptive_max_pool2d(
+        self: ivy.Array,
+        output_size: Union[Sequence[int], int],
+    ) -> ivy.Array:
+        """
+        Apply a 2D adaptive maximum pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+        """
+        return ivy.adaptive_max_pool2d(
+            self._data,
+            output_size,
+        )
+
     def reduce_window(
         self: ivy.Array,
         init_value: Union[int, float],

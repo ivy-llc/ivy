@@ -1911,6 +1911,78 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_adaptive_max_pool2d(
+        input: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        output_size: Union[Sequence[int], int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.adaptive_max_pool2d. This method
+        simply wraps the function, and so the docstring for ivy.adaptive_max_pool2d also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        input
+            Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N
+            is the batch dimension, C is the feature dimension, and H_in and W_in are
+            the 2 spatial dimensions.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+            (C, S_0, S_1), where S = `output_size`
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "adaptive_max_pool2d",
+            input,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def adaptive_max_pool2d(
+        self: ivy.Container,
+        output_size: Union[int, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        Apply a 2D adaptive maximum pooling over an input signal composed of several
+        input planes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        output_size
+            Spatial output size.
+
+        Returns
+        -------
+            The result of the pooling operation.
+        """
+        return self.static_adaptive_max_pool2d(
+            self,
+            output_size,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_ifftn(
         x: ivy.Container,
         s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,

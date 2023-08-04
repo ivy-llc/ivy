@@ -632,6 +632,7 @@ def test_torch_as_strided(
     try:
         helpers.test_frontend_function(
             input_dtypes=x_dtype,
+            backend_to_test=backend_fw,
             frontend=frontend,
             test_flags=test_flags,
             fn_tree=fn_tree,
@@ -726,6 +727,7 @@ def test_torch_from_dlpack(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         ext_tensor=x[0],
+        backend_to_test=backend_fw,
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,

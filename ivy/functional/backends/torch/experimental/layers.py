@@ -866,6 +866,13 @@ interpolate.partial_mixed_handler = lambda *args, mode="linear", **kwargs: mode 
 
 
 @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def adaptive_max_pool2d(
+    input: torch.Tensor, output_size: Union[Sequence[int], int]
+) -> torch.Tensor:
+    return torch.nn.functional.adaptive_max_pool2d(input, output_size)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
 def adaptive_avg_pool1d(input, output_size):
     return torch.nn.functional.adaptive_avg_pool1d(input, output_size)
 
