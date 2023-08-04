@@ -255,6 +255,7 @@ def _compute_quantile_wrapper(
                 "int16",
                 "uint8",
                 "float16",
+                "bfloat16",
                 "complex64",
                 "complex128",
             )
