@@ -117,6 +117,7 @@
 #         constant_values=constant_values,
 #     )
 
+
 # adaptive_avg_pool2d
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.adaptive_avg_pool2d",

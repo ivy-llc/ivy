@@ -43,7 +43,7 @@ def pad(input, pad_width, mode='constant', constant_values=0):
     return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)
 
 
-@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore")
 @to_ivy_arrays_and_back
-def adaptive_avg_pool2d(x, output_size):
-    return ivy.adaptive_avg_pool2d(x, output_size)
+def adaptive_avg_pool2d(input, output_size):
+    return ivy.adaptive_avg_pool2d(input, output_size)
