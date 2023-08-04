@@ -388,9 +388,18 @@ def vector_norm(
     elif ord == -inf:
         return np.min(abs_x, axis=axis, keepdims=keepdims, out=out)
     else:
-        return (
+        # There is a rounding error whenever the input is a 0-dim
+        # The solution at the moment is to convert the 0-dim array to 1-dim
+        # and then convert it back to 0-dim in case of keepdims=True
+        abs_x = np.array(np.abs(x), ndmin=1)
+        res = (
             np.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
         ).astype(abs_x.dtype)
+
+        if keepdims and x.ndim == 0:
+            res = res.reshape(x.shape)
+
+        return res
 
 
 # Extra #
