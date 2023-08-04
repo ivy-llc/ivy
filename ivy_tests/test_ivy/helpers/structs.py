@@ -9,11 +9,13 @@ class FunctionData:
 
 
 @dataclass(frozen=True)
-class FrontendMethodData:
-    ivy_init_module: str
-    framework_init_module: str
-    init_name: str
+class MethodData:
+    class_module_tree: str
+    class_name: str
     method_name: str
+    init_module_tree: str
+    init_name: str
+    method_supported_device_dtypes: dict = None
 
 
 @dataclass(frozen=True, kw_only=True)
