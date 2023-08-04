@@ -31,7 +31,6 @@ class Tensor:
         self._grads = None
         self._requires_grad = requires_grad
         self.grad_fn = None
-        self._grads = None
         if not _init_overload:
             self._is_leaf = True
         else:
@@ -907,6 +906,12 @@ class Tensor:
         self.ivy_array = self.clamp(min=min, max=max).ivy_array
         return self
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("bool", "bfloat16", "float16", "complex")}, "torch"
+    )
+    def clamp_min(self, min=None):
+        return torch_frontend.clamp(self, min=min)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt(self):
         return torch_frontend.sqrt(self)
@@ -1313,6 +1318,11 @@ class Tensor:
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def log10_(self):
+        self.ivy_array = self.log10().ivy_array
+        return self
+
     def short(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
         return self
@@ -1506,6 +1516,9 @@ class Tensor:
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
+
+    def bmm(self, mat2):
+        return torch_frontend.bmm(self, mat2=mat2)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def floor_(self):
