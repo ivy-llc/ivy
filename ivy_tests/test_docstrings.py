@@ -114,8 +114,8 @@ def check_docstring_examples_run(
          "deserialize",
          "set_split_factor",
     ]
-    # # the temp skip list consists of functions which have an issue with their
-    # # implementation
+    # the temp skip list consists of functions
+    # which have an issue with their implementation
     skip_list_temp = [
         "outer",
         "argmax",
@@ -165,6 +165,25 @@ def check_docstring_examples_run(
         "conv2d_transpose",
     ]
 
+    # skip list for array and container docstrings
+    skip_arr_cont = [
+        # generates different results due to randomization
+        "cumprod",
+        "supports_inplace_updates",
+        "shuffle",
+        "dropout",
+        "dropout1d",
+        "dropout2d",
+        "dropout3",
+        "svd",
+        "unique_all",
+        # exec and self run generates diff results
+        "dev",
+        "scaled_dot_product_attention",
+        # temp list for array/container methods
+        "einops_reduce",
+    ]
+
     # comment out the line below in future to check for the functions in temp skip list
     to_skip += skip_list_temp  # + currently_being_worked_on
 
@@ -186,7 +205,7 @@ def check_docstring_examples_run(
         docstring = ivy.utils.backend.handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
-    if fn_name in to_skip:
+    if fn_name in to_skip or fn_name in skip_arr_cont:
         return True
     # removing extra new lines and trailing white spaces from the docstrings
 
@@ -293,9 +312,6 @@ def check_docstring_examples_run(
         "ivy.Shape",
         "logabsdet=",
         "torch.Size",
-        "tf.Tensor:shape=(),dtype=int32,numpy=",
-        "shape=",
-        "tf.Tensor",
     ]
 
     num_output = output.replace("ivy.array", "")
@@ -348,32 +364,13 @@ def test_docstrings(backend):
     failures = list()
     success = True
 
-    # skip list for array and container docstrings
-    skip_arr_cont = [
-        # generates different results due to randomization
-        "cumprod",
-        "supports_inplace_updates",
-        "shuffle",
-        "dropout",
-        "dropout1d",
-        "dropout2d",
-        "dropout3",
-        "svd",
-        "unique_all",
-        # exec and self run generates diff results
-        "dev",
-        "scaled_dot_product_attention",
-        # temp list for array/container methods
-        "einops_reduce",
-    ]
     for k, v in ivy.__dict__.copy().items():
         if k == "Array":
             for method_name in dir(v):
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Array, method_name)
                     if (
-                        method_name in skip_arr_cont
-                        or helpers.gradient_incompatible_function(
+                        helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
                         or check_docstring_examples_run(fn=method, from_array=True)
@@ -396,8 +393,7 @@ def test_docstrings(backend):
                 if hasattr(ivy.functional, method_name):
                     method = getattr(ivy.Container, method_name)
                     if (
-                        method_name in skip_arr_cont
-                        or helpers.gradient_incompatible_function(
+                        helpers.gradient_incompatible_function(
                             fn=getattr(ivy.functional, method_name)
                         )
                         or check_docstring_examples_run(fn=method, from_container=True)
@@ -408,8 +404,7 @@ def test_docstrings(backend):
                 else:
                     method = getattr(ivy.Container, method_name)
                     if (
-                        method_name in skip_arr_cont
-                        or helpers.gradient_incompatible_function(fn=method)
+                        helpers.gradient_incompatible_function(fn=method)
                         or check_docstring_examples_run(fn=method, from_container=True)
                     ):
                         continue
