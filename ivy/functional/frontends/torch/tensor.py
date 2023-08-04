@@ -303,6 +303,9 @@ class Tensor:
         self.ivy_array = ivy.astype(self.ivy_array, ivy.float32, copy=False)
         return self
 
+    def double(self):
+        return self.to(torch_frontend.float64)
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def asinh(self):
         return torch_frontend.asinh(self)
@@ -461,8 +464,19 @@ class Tensor:
         return torch_frontend.erf(self, out=out)
 
     def new_zeros(
-        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
     ):
+        if dtype is None:
+            dtype = self.dtype
+        if device is None:
+            device = self.device
         if isinstance(size[0], tuple):
             return torch_frontend.zeros(
                 size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
