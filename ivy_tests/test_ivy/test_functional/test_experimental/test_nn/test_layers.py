@@ -858,6 +858,43 @@ def test_dft(
 
 
 @handle_test(
+    fn_tree="functional.ivy.experimental.adaptive_max_pool2d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=3,
+        max_num_dims=4,
+        min_dim_size=1,
+        # Setting max and min value because this operation in paddle is not
+        # numerically stable
+        max_value=100,
+        min_value=-100,
+    ),
+    output_size=st.one_of(
+        st.tuples(
+            helpers.ints(min_value=1, max_value=5),
+            helpers.ints(min_value=1, max_value=5),
+        ),
+        helpers.ints(min_value=1, max_value=5),
+    ),
+    test_with_out=st.just(False),
+    ground_truth_backend="torch",
+)
+def test_adaptive_max_pool2d(
+    *, dtype_and_x, output_size, test_flags, backend_fw, fn_name, on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        input=x[0],
+        output_size=output_size,
+    )
+
+
+@handle_test(
     fn_tree="functional.ivy.experimental.adaptive_avg_pool1d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
