@@ -97,7 +97,7 @@ def tpu_is_available() -> bool:
 
 def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device() if def_dev is None else def_dev
+        default_device = ivy.default_device(def_dev, as_native=True)
         args, kwargs = ivy.nested_map(
             [args, kwargs],
             lambda x: (
@@ -109,9 +109,9 @@ def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
     # since there is no context manager for device in Paddle, we need to manually set the device
     # then set it back to prev default device after the function call
     prev_def_dev = paddle.get_device()
-    paddle.device.set_device(default_device)
+    paddle.device.set_device(ivy.as_ivy_dev(default_device))
     ret = fn(*args, **kwargs)
-    paddle.device.set_device(prev_def_dev)
+    paddle.device.set_device(ivy.as_ivy_dev(prev_def_dev))
     return ret
 
 

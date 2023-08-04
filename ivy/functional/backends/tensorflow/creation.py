@@ -95,13 +95,12 @@ def asarray(
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        # convert the input to a tensor using the appropriate function
-        try:
-            ret = tf.convert_to_tensor(obj, dtype)
-        except (TypeError, ValueError):
-            ret = tf.cast(obj, dtype)
-        return tf.identity(ret) if copy else ret
+    # convert the input to a tensor using the appropriate function
+    try:
+        ret = tf.convert_to_tensor(obj, dtype)
+    except (TypeError, ValueError):
+        ret = tf.cast(obj, dtype)
+    return tf.identity(ret) if copy else ret
 
 
 def empty(

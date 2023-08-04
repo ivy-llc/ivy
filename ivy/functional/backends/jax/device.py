@@ -98,7 +98,7 @@ def as_native_dev(device, /):
 
 def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
     with ivy.ArrayMode(False):
-        default_device = ivy.default_device() if def_dev is None else def_dev
+        default_device = ivy.default_device(def_dev, as_native=True)
         args, kwargs = ivy.nested_map(
             [args, kwargs],
             lambda x: (

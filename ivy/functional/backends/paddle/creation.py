@@ -92,14 +92,13 @@ def asarray(
     device: core.Place,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    device = ivy.as_native_dev(device)
     if isinstance(obj, paddle.Tensor):
         if copy:
             ret = obj.clone().detach()
             ret.stop_gradient = obj.stop_gradient
         else:
             ret = obj
-        return to_device(ret, device).astype(dtype)
+        return ret.astype(dtype)
 
     elif isinstance(obj, (Number, bool, complex)):
         return paddle_backend.squeeze(

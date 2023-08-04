@@ -814,7 +814,7 @@ def handle_device_shifting(fn: Callable) -> Callable:
         """
         dev = None
         if "device" in kwargs and kwargs["device"] is not None:
-            dev = ivy.default_device(kwargs["device"], as_native=True)
+            dev = ivy.as_native_dev(kwargs["device"])
         if ivy.soft_device_mode:
             return ivy.handle_soft_device_variable(*args, fn=fn, def_dev=dev, **kwargs)
         inputs = args + tuple(kwargs.values())
@@ -823,8 +823,8 @@ def handle_device_shifting(fn: Callable) -> Callable:
         # check if arrays are on the same device
         if len(unique_devices) <= 1:
             # len(unique_devices) == 0 when there are no arrays
-            dev = dev if dev is not None else None if len(unique_devices) == 0 else next(iter(unique_devices))
-            return ivy.handle_soft_device_variable(*args, fn=fn, def_dev=dev, **kwargs)
+            def_dev = dev if dev is not None else None if len(unique_devices) == 0 else next(iter(unique_devices))
+            return ivy.handle_soft_device_variable(*args, fn=fn, def_dev=def_dev, **kwargs)
         # raise when arrays are on different devices
         elif len(unique_devices) > 1:
             raise ivy.utils.exceptions.IvyException(

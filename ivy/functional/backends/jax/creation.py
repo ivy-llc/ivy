@@ -75,9 +75,9 @@ def asarray(
 ) -> JaxArray:
     ivy.utils.assertions._check_jax_x64_flag(dtype)
     if copy is True:
-        return _to_device(jnp.array(obj, dtype=dtype, copy=True), device=device)
+        return jnp.array(obj, dtype=dtype, copy=True)
     else:
-        return _to_device(jnp.asarray(obj, dtype=dtype), device=device)
+        return jnp.asarray(obj, dtype=dtype)
 
 
 def empty(
