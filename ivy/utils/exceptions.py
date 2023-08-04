@@ -313,6 +313,11 @@ class IvyDtypePromotionError(IvyException):
         super().__init__(*messages, include_backend=include_backend)
 
 
+class IvyDeviceError(IvyException):
+    def __init__(self, *messages, include_backend=False):
+        super().__init__(*messages, include_backend=include_backend)
+
+
 def handle_exceptions(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def _handle_exceptions(*args, **kwargs):
@@ -365,6 +370,11 @@ def handle_exceptions(fn: Callable) -> Callable:
         except (ValueError, IvyValueError) as e:
             _configure_stack_trace(e.__traceback__)
             raise ivy.utils.exceptions.IvyValueError(
+                fn.__name__, str(e), include_backend=True
+            )
+        except IvyDeviceError as e:
+            _configure_stack_trace(e.__traceback__)
+            raise ivy.utils.exceptions.IvyDeviceError(
                 fn.__name__, str(e), include_backend=True
             )
         except (Exception, IvyBackendException) as e:

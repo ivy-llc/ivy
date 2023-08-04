@@ -203,15 +203,32 @@ def _get_dtypes(fn, complement=True):
         ("supported_dtypes", set.intersection, ivy.valid_dtypes),
         ("unsupported_dtypes", set.difference, ivy.invalid_dtypes),
     ]
+
+    # allow passing "integer" if all integer dtypes are supported/unsupported for e.g.
+    typesets = {
+        "valid": ivy.valid_dtypes,
+        "numeric": ivy.valid_numeric_dtypes,
+        "float": ivy.valid_float_dtypes,
+        "integer": ivy.valid_int_dtypes,
+        "unsigned": ivy.valid_uint_dtypes,
+        "complex": ivy.valid_complex_dtypes,
+    }
+
     for key, merge_fn, base in basic:
         if hasattr(fn, key):
-            v = getattr(fn, key)
+            dtypes = getattr(fn, key)
             # only einops allowed to be a dictionary
-            if isinstance(v, dict):
-                v = v.get(ivy.current_backend_str(), base)
-
-            ivy.utils.assertions.check_isinstance(v, tuple)
-            supported = merge_fn(supported, set(v))
+            if isinstance(dtypes, dict):
+                dtypes = dtypes.get(ivy.current_backend_str(), base)
+            ivy.utils.assertions.check_isinstance(dtypes, tuple)
+            dtypes = list(dtypes)
+            typeset_list = []
+            for i, dtype in reversed(list(enumerate(dtypes))):
+                if dtype in typesets:
+                    typeset_list.extend(typesets[dtype])
+                    dtypes.pop(i)
+            dtypes = dtypes + typeset_list
+            supported = merge_fn(supported, set(dtypes))
 
     if complement:
         supported = set(ivy.all_dtypes).difference(supported)
@@ -559,8 +576,8 @@ def can_cast(
     if isinstance(from_, (ivy.Array, ivy.NativeArray)):
         from_ = from_.dtype
     try:
-        ivy.promote_types(from_, to)
-        return True
+        dtype = ivy.promote_types(from_, to)
+        return dtype == to
     except KeyError:
         return False
 
@@ -790,7 +807,7 @@ def result_type(
         a: float64
     }
     """
-    return current_backend(arrays_and_dtypes[0]).result_type(arrays_and_dtypes)
+    return current_backend(arrays_and_dtypes[0]).result_type(*arrays_and_dtypes)
 
 
 # Extra #
@@ -2475,34 +2492,24 @@ def promote_types_of_inputs(
         # check for float number and integer array case
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
+    def _get_target_dtype(scalar, arr):
+        # identify a good dtype to give the scalar value,
+        # based on it's own type and that of the arr value
+        if _special_case(scalar, arr):
+            return "float64"
+        elif arr.dtype == bool and not isinstance(scalar, bool):
+            return None  # let ivy infer a dtype
+        elif isinstance(scalar, complex) and not ivy.is_complex_dtype(arr):
+            return "complex128"
+        else:
+            return arr.dtype
+
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
         device = ivy.default_device(item=x1, as_native=True)
-        if x1.dtype == bool and not isinstance(x2, bool):
-            x2 = (
-                ivy.asarray(x2, device=device)
-                if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64", device=device)
-            )
-        else:
-            x2 = (
-                ivy.asarray(x2, dtype=x1.dtype, device=device)
-                if not _special_case(x2, x1)
-                else ivy.asarray(x2, dtype="float64", device=device)
-            )
+        x2 = ivy.asarray(x2, dtype=_get_target_dtype(x2, x1), device=device)
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
         device = ivy.default_device(item=x2, as_native=True)
-        if x2.dtype == bool and not isinstance(x1, bool):
-            x1 = (
-                ivy.asarray(x1, device=device)
-                if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64", device=device)
-            )
-        else:
-            x1 = (
-                ivy.asarray(x1, dtype=x2.dtype, device=device)
-                if not _special_case(x1, x2)
-                else ivy.asarray(x1, dtype="float64", device=device)
-            )
+        x1 = ivy.asarray(x1, dtype=_get_target_dtype(x1, x2), device=device)
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)

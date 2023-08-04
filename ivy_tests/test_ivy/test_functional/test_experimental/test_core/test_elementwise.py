@@ -29,6 +29,7 @@ def test_lgamma(
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
@@ -54,7 +55,7 @@ def test_sinc(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         test_flags=test_flags,
         atol_=1e-02,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -78,7 +79,7 @@ def test_fmax(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -125,7 +126,7 @@ def test_float_power(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -152,7 +153,7 @@ def test_copysign(dtype_x1_x2, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=[x1_dtype, x2_dtype],
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x1=x1,
         x2=x2,
@@ -207,7 +208,7 @@ def test_count_nonzero(
         input_dtypes=i_o_dtype[0],
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=a[0],
         axis=axis,
@@ -255,7 +256,7 @@ def test_nansum(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         x=x[0],
@@ -294,7 +295,7 @@ def test_isclose(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=x[0],
         b=x[1],
@@ -333,7 +334,7 @@ def test_allclose(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -361,7 +362,7 @@ def test_fix(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -387,7 +388,7 @@ def test_nextafter(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -434,7 +435,7 @@ def test_diff(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -470,7 +471,7 @@ def test_zeta(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-02,
@@ -506,7 +507,7 @@ def test_gradient(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         x=x[0],
@@ -533,7 +534,7 @@ def test_xlogy(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -560,7 +561,7 @@ def test_hypot(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         atol_=1e-2,
@@ -584,7 +585,7 @@ def test_binarizer(
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -605,7 +606,7 @@ def test_conj(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -650,7 +651,7 @@ def test_ldexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x[0],
@@ -725,7 +726,7 @@ def test_lerp(
     helpers.test_function(
         input_dtypes=input_dtypes,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         atol_=1e-01,
         rtol_=1e-01,
@@ -755,7 +756,7 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x=x[0],
@@ -775,6 +776,38 @@ def test_frexp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 )
 def test_modf(
     *,
+    dtype_and_x,
+    backend_fw,
+    test_flags,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# digamma
+@handle_test(
+    fn_tree="functional.ivy.experimental.digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    ground_truth_backend="tensorflow",
+)
+def test_digamma(
     dtype_and_x,
     backend_fw,
     test_flags,
