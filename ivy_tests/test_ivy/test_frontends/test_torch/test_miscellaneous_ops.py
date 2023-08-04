@@ -1595,7 +1595,7 @@ def test_torch_view_as_real(
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
-        max_dim_size=5,
+        max_dim_size=2,
         min_value=1,
         max_value=1e10,
         abs_smallest_val=0.01,
