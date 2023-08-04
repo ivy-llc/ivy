@@ -568,17 +568,19 @@ def test_jax_nonzero(
         min_num_dims=2,
     ),
 )
-def test_jax_devicearray_prod(
+def test_jax_prod(
     dtype_x_axis,
     on_device,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
