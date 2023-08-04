@@ -95,7 +95,7 @@ def test_l1_loss(
         on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        true=true[0],
-        pred=pred[0],
+        true=true,
+        pred=pred,
         reduction=reduction,
     )
