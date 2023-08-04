@@ -148,24 +148,11 @@ class Array:
         where=None,
         promote_integers=True,
     ):
-        arr = self
-
-        if (
-            str(self.dtype) == "uint8"
-            or str(self.dtype) == "uint16"
-            or str(self.dtype) == "uint32"
-        ):
-            arr = jax_frontend.numpy.asarray(self, dtype="uint64")
-        elif (
-            str(self.dtype) == "int8"
-            or str(self.dtype) == "int16"
-            or str(self.dtype) == "int32"
-        ):
-            arr = jax_frontend.numpy.asarray(self, dtype="int64")
+        jax_frontend.config.update("jax_enable_x64", True)
         return jax_frontend.numpy.sum(
-            arr,
+            self,
             axis=axis,
-            dtype=arr.dtype,
+            dtype=self.dtype,
             out=out,
             keepdims=keepdims,
             initial=initial,
