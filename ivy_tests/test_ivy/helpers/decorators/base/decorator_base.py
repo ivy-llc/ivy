@@ -18,6 +18,10 @@ class HandlerBase(ABC):
     def _append_ivy_to_fn_tree(self, fn_tree):
         return "ivy." + fn_tree
 
+    @abstractmethod
+    def _add_test_attributes_to_test_function(self, test_function: Callable[..., Any]):
+        pass
+
     @property
     def is_hypothesis_test(self) -> bool:
         return len(self._given_kwargs.items()) > 0

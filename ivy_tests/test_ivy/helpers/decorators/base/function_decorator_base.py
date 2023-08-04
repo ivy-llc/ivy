@@ -2,7 +2,7 @@ import importlib
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
-from abc import abstractproperty, abstractmethod
+from abc import abstractproperty
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.globals import TestData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -17,10 +17,6 @@ from typing import Callable, Any
 class FunctionHandler(HandlerBase):
     @abstractproperty
     def possible_args():
-        pass
-
-    @abstractmethod
-    def _add_test_attributes_to_test_function(self, test_function: Callable[..., Any]):
         pass
 
     def __call__(self, fn: Callable[..., Any]):
