@@ -36,6 +36,10 @@ long_description = re.sub(
     flags=re.MULTILINE,
 )
 
+# Apply version
+with open("ivy/_version.py") as f:
+    exec(f.read(), __version__)
+
 setup(
     name="ivy",
     version=__version__,
