@@ -1590,7 +1590,7 @@ def test_torch_view_as_real(
 @handle_frontend_test(
     fn_tree="torch.corrcoef",
     dtypes_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
         min_num_dims=1,
         max_num_dims=2,
@@ -1613,5 +1613,5 @@ def test_torch_corrcoef(
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,
-        input=x[0],
+        input=np.asarray(x[0], dtype=input_dtypes[0]),
     )
