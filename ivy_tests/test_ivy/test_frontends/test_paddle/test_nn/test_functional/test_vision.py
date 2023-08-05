@@ -1,11 +1,8 @@
 # global
 import ivy
 from hypothesis import assume, strategies as st
-import ivy
-from hypothesis import assume, strategies as st
 
 # local
-import ivy.functional.frontends.paddle as paddle_frontend
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 import math
@@ -41,8 +38,6 @@ def test_paddle_channel_shuffle(
         x=x[0],
         groups=groups
     )
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # pixel_shuffle

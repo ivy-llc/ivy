@@ -1,8 +1,14 @@
-# local
+#global
 import ivy
-from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
 
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.paddle.func_wrapper import (
+    to_ivy_arrays_and_back,
+)
+from ivy.utils.assertions import check_equal
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def channel_shuffle(x, groups, data_format="NCHW", name=None):
     # ToDo ivy.channel_shuffle  # 21235
     # Issue Link: https://github.com/unifyai/ivy/issues/21235
@@ -13,13 +19,40 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
                 x.shape
             )
         )
+    if not isinstance(groups, int):
+        raise TypeError("groups must be int type")
 
-import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.paddle.func_wrapper import (
-    to_ivy_arrays_and_back,
-)
-from ivy.utils.assertions import check_equal
+    if groups <= 0:
+        raise ValueError("groups must be positive")
+        # assert (channels % groups == 0)
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    if data_format == "NCHW":
+        n, c, h, w = x.shape
+        if c % groups != 0:
+            raise ValueError('channels must be divisible by groups')
+        new_shape = (n, groups, c // groups, h, w)
+        reshaped_result = ivy.reshape(x, ivy.Shape(new_shape))
+        permuted_result = ivy.permute_dims(reshaped_result, (0, 2, 1, 3, 4))
+        original_shape = [n, c, h, w]
+        result = ivy.reshape(permuted_result,ivy.Shape(original_shape))
+        return result
+    else:
+        n, h, w, c = x.shape
+        if c % groups != 0:
+            raise ValueError('channels must be divisible by groups')
+        new_shape = (n, h, w, groups, c // groups)
+        reshaped_input = ivy.reshape(x, ivy.Shape(new_shape))
+        permuted_result = ivy.permute_dims(reshaped_input,(0, 1, 2, 4, 3))
+        original_shape = [n, h, w, c]
+        result = ivy.reshape(permuted_result, ivy.Shape(original_shape))
+        return result
+
 
 
 @to_ivy_arrays_and_back
@@ -150,38 +183,3 @@ def affine_grid(theta, out_shape, align_corners=True):
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
 
-    if not isinstance(groups, int):
-        raise TypeError("groups must be int type")
-
-    if groups <= 0:
-        raise ValueError("groups must be positive")
-        # assert (channels % groups == 0)
-
-    if data_format not in ["NCHW", "NHWC"]:
-        raise ValueError(
-            "Attr(data_format) should be 'NCHW' or 'NHWC'."
-            "But recevie Attr(data_format): {} ".format(data_format)
-        )
-
-    if data_format == "NCHW":
-        n, c, h, w = x.shape
-        if c % groups != 0:
-            raise ValueError('channels must be divisible by groups')
-        new_shape = (n, groups, c // groups, h, w)
-        result = ivy.reshape(x, ivy.Shape(new_shape))
-        result = ivy.permute_dims(result, (0, 2, 1, 3, 4))
-        oshape = [n, c, h, w]
-        result = ivy.reshape(result,ivy.Shape(oshape))
-        return result
-    else:
-        n, h, w, c = x.shape
-        if c % groups != 0:
-            raise ValueError('channels must be divisible by groups')
-        new_shape = (n, h, w, groups, c // groups)
-        result = ivy.reshape(x, ivy.Shape(new_shape))
-        result = ivy.permute_dims(result,(0, 1, 2, 4, 3))
-        oshape = [n, h, w, c]
-        result = ivy.reshape(result, ivy.Shape(oshape))
-        return result
-
-channel_shuffle.supported_dtypes={"paddle":("float32","float64")}
