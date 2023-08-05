@@ -11203,6 +11203,78 @@ def test_torch_instance_conj(
     )
 
 
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    some=st.booleans(),
+    compute_uv=st.booleans(),
+)
+def test_torch_instance_svd(
+    dtype_and_x,
+    some,
+    compute_uv,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=input_dtype[0])
+
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "some": some,
+            "compute_uv": compute_uv,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        test_values=False,
+    )
+    with helpers.update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, vh = ret
+    frontend_u, frontend_s, frontend_vh = frontend_ret
+
+    if compute_uv:
+        helpers.assert_all_close(
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
+            ret_from_gt_np=u @ np.diag(s) @ vh,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=frontend_s,
+            ret_from_gt_np=s,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+
+
 @st.composite
 def _get_clip_min_inputs(draw):
     shape = draw(
