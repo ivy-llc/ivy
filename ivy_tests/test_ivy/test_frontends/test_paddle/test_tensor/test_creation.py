@@ -522,6 +522,81 @@ def test_paddle_meshgrid(
     )
 
 
+# tril_indices
+@handle_frontend_test(
+    fn_tree="paddle.tril_indices",
+    dtype=helpers.get_dtypes("valid", full=False),
+    row=st.integers(min_value=1, max_value=5),
+    col=st.integers(min_value=1, max_value=5),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_paddle_tril_indices(
+    row,
+    col,
+    offset,
+    dtype,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
+    )
+
+
+# diag
+@handle_frontend_test(
+    fn_tree="paddle.diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-1, max_value=1),
+    p=st.one_of(
+        helpers.ints(min_value=-25, max_value=25),
+        helpers.floats(min_value=-25, max_value=25),
+    ),
+)
+def test_paddle_diag(
+    dtype_and_x,
+    k,
+    p,
+    backend_fw,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        offset=k,
+        padding_value=p,
+    )
+
+
 # logspace
 @handle_frontend_test(
     fn_tree="paddle.logspace",
@@ -542,9 +617,11 @@ def test_paddle_logspace(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -554,4 +631,63 @@ def test_paddle_logspace(
         num=num,
         base=base,
         dtype=dtype[0],
+    )
+
+
+# assign
+@handle_frontend_test(
+    fn_tree="paddle.assign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(True),
+)
+def test_paddle_assign(
+    dtype_and_x,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        output=x[1],
+    )
+
+
+# complex
+@handle_frontend_test(
+    fn_tree="paddle.complex",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"], shared_dtype=True, num_arrays=2
+    ),
+)
+def test_paddle_complex(
+    dtype_and_arrays,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, (real, imag) = dtype_and_arrays
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=real,
+        imag=imag,
     )
