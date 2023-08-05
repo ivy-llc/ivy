@@ -125,7 +125,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self, shape)
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 shape = args[0]
                 return torch_frontend.reshape(self, shape)
             else:
@@ -285,8 +285,7 @@ class Tensor:
             shape_tup = size
         elif args and not ivy.exists(size):
             if (
-                isinstance(args[0], tuple)
-                or isinstance(args[0], list)
+                isinstance(args[0], (tuple, list, ivy.Shape))
                 or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
                 shape_tup = args[0]
@@ -445,7 +444,7 @@ class Tensor:
         if device is None:
             device = self.device
         if size is None:
-            size = args[0] if isinstance(args[0], (tuple, list)) else args
+            size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -481,7 +480,7 @@ class Tensor:
             dtype = self.dtype
         if device is None:
             device = self.device
-        if isinstance(size[0], tuple):
+        if isinstance(size[0], (tuple, list, ivy.Shape)):
             return torch_frontend.zeros(
                 size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
@@ -804,7 +803,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self, dims)
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 dims = args[0]
                 return torch_frontend.permute(self, dims)
             else:
@@ -1006,7 +1005,7 @@ class Tensor:
                 "repeat() got multiple values for argument 'repeats'"
             )
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 repeats = args[0]
             else:
                 repeats = args
