@@ -433,3 +433,11 @@ def histogram(input, bins, *, range=None, weight=None, density=False, out=None):
     return ivy.histogram(
         a=input, bins=bins, range=range, weights=weight, density=density, out=out
     )
+
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)
