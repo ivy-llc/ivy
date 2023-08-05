@@ -39,8 +39,8 @@ def softsign(x):
 
 @with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
-def log_softmax(logits, axis=-1):
-    return ivy.log_softmax(logits)
+def log_softmax(input, axis=-1):
+    return ivy.log_softmax(input)
 
 @with_supported_dtypes(
     {
