@@ -361,7 +361,6 @@ def test_unsorted_segment_min(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
         fn_name=fn_name,
         data=data,
         segment_ids=segment_ids,

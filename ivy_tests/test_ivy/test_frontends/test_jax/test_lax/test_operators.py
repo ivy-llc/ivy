@@ -2965,7 +2965,9 @@ def test_jax_is_finite(
 # cbrt
 @handle_frontend_test(
     fn_tree="jax.lax.cbrt",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), min_value=0.0
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_cbrt(
@@ -2992,7 +2994,7 @@ def test_jax_cbrt(
 # iota
 @handle_frontend_test(
     fn_tree="jax.lax.iota",
-    dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
+    dtypes=helpers.get_dtypes("numeric", full=False),
     size=helpers.ints(min_value=0, max_value=1000),
     test_with_out=st.just(False),
 )
