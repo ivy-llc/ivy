@@ -267,8 +267,3 @@ def size(a, axis=None):
 @to_ivy_arrays_and_back
 def frombuffer(buffer, dtype="float", count=-1, offset=0):
     return ivy.frombuffer(buffer, dtype, count, offset)
-
-
-@to_ivy_arrays_and_back
-def floating():
-    return ivy.floating()
