@@ -1,3 +1,6 @@
+import ivy
+from ivy.functional.frontends.cv2.func_wrapper import to_ivy_arrays_and_back
+
 # CONSTANTS
 ACCESS_FAST = 67108864
 ACCESS_MASK = 50331648
@@ -1679,3 +1682,8 @@ _OutputArray_DEPTH_MASK_ALL_16F = 255
 _OutputArray_DEPTH_MASK_ALL_BUT_8S = 125
 _OutputArray_DEPTH_MASK_FLT = 96
 __UMAT_USAGE_FLAGS_32BIT = 2147483647
+
+
+@to_ivy_arrays_and_back
+def split(m, mv=None):
+    return tuple(ivy.squeeze(ivy.split(m, axis=-1)))
