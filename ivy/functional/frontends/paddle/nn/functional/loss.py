@@ -230,3 +230,30 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     out = ivy.atleast_1d(out)
 
     return out
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def nll_loss(input, label, weight=None, size_average=None, ignore_index=-100, reduce=None, reduction='mean'):
+    ''' refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss '''
+    if weight is not None:
+        weight=weight
+    else:
+        weight=ivy.ones(ivy.shape(input[0]))
+    input=ivy.log(input)
+    loss=ivy.zeros(ivy.shape(label))
+    den=0
+    for i in range(0,ivy.shape(loss)[0]):
+        den=den+weight[label[i]]
+        loss[i]=-weight[label[i]]*input[i][label[i]]
+    output=0.0
+    if reduction=='sum':
+        output=ivy.sum(loss)
+        if ignore_index!=-100:
+            output=output-loss[ignore_index]
+    else:
+        num=ivy.sum(loss)
+        output=num/den
+        if ignore_index!=-100:
+            output=output-loss[ignore_index]/den
+    return output
