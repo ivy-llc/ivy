@@ -444,12 +444,7 @@ def test_jax_diag_indices_from(
     number_positional_args=st.just(3),
 )
 def test_jax_apply_along_axis(
-    dtype_x_axis,
-    test_flags,
-    frontend,
-    fn_tree,
-    on_device,
-    backend_fw
+    dtype_x_axis, test_flags, frontend, fn_tree, on_device, backend_fw
 ):
     x_dtype, x, axis = dtype_x_axis
 
