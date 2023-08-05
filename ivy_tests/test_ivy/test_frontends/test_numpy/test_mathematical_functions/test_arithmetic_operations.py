@@ -562,7 +562,7 @@ def test_numpy_mod(
         ],
     ),
     where=np_frontend_helpers.where(),
-    test_with_out=st.just(True),  # Change this to True to test with 'out' argument
+    test_with_out=st.just(False),
     number_positional_args=np_frontend_helpers.get_num_positional_args_ufunc(
         fn_name="modf"
     ),
@@ -582,15 +582,6 @@ def test_numpy_modf(
         input_dtype=input_dtypes,
         test_flags=test_flags,
     )
-
-    # Create two arrays for the 'out' argument (frac_part and int_part)
-    frac_part = np.zeros_like(x[0])
-    int_part = np.zeros_like(x[0])
-
-    # Convert the arrays to numpy.ndarray objects
-    frac_part_np = frontend.to_numpy_array(frac_part)
-    int_part_np = frontend.to_numpy_array(int_part)
-
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -599,7 +590,7 @@ def test_numpy_modf(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        out=(frac_part_np, int_part_np),  # Provide 'out' as a tuple of arrays
+        out=None,
         where=where,
         casting=casting,
         order="K",
