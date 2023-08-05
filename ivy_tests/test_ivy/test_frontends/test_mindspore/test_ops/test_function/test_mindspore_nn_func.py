@@ -88,7 +88,6 @@
 #         min_value=2,
 #         max_value=5,
 #         min_dim_size=4,
-#         shape=st.lists(st.integers(min_value=2, max_value=10), min_size=3, max_size=3),
 #     ),
 # )
 # def test_mindspore_flatten(
@@ -107,4 +106,7 @@
 #         fn_tree=fn_tree,
 #         on_device=on_device,
 #         input=x[0],
+#         order='C ',
+#         start_dim=1,
+#         end_dim=-1,
 #     )

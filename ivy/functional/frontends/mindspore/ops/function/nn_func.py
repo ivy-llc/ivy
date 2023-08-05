@@ -37,10 +37,7 @@ def selu(input_x):
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
-@with_supported_dtypes(
-    {"2.0.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")},
-    "mindspore",
-)
+
 @to_ivy_arrays_and_back
-def flatten(input, start_dim=0, end_dim=-1):
-    return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
+def flatten(input, order='C ', *, start_dim=1, end_dim=-1):
+    return ivy.flatten(input, order=order, start_dim=start_dim, end_dim=end_dim)
