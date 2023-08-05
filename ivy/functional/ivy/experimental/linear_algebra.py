@@ -1,7 +1,6 @@
 # global
 import logging
 from typing import Union, Optional, Tuple, List, Sequence, Literal
-import warnings
 
 # local
 import ivy
@@ -859,7 +858,7 @@ def _svd_checks(x, n_eigenvecs=None):
         n_eigenvecs = max_dim
 
     if n_eigenvecs > max_dim:
-        warnings.warn(
+        logging.warning(
             f"Trying to compute SVD with n_eigenvecs={n_eigenvecs}, which is larger "
             f"than max(matrix.shape)={max_dim}. Setting n_eigenvecs to {max_dim}."
         )
@@ -954,7 +953,7 @@ def make_svd_non_negative(
     /,
     *,
     nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
-) -> ivy.Array:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Use NNDSVD method to transform SVD results into a non-negative form. This method
     leads to more efficient solving with NNMF [1].
@@ -962,18 +961,19 @@ def make_svd_non_negative(
     Parameters
     ----------
     x
-      tensor being decomposed
-    U, S, V: SVD factorization results
-    nntype : {'nndsvd', 'nndsvda'}
-        Whether to fill small values with 0.0 (nndsvd),
+        tensor being decomposed.
+    U
+        left singular matrix from SVD.
+    S
+        diagonal matrix from SVD.
+    V
+        right singular matrix from SVD.
+    nntype
+        whether to fill small values with 0.0 (nndsvd),
           or the tensor mean (nndsvda, default).
 
     [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
     """
-    # In tensorly only U is updated and returned.
-    # TODO look into why that's the case. For now,
-    # https://github.com/tensorly/tensorly/issues/515
-    # NNDSVD initialization
     W = ivy.zeros_like(U)
     H = ivy.zeros_like(V)
 
@@ -982,12 +982,10 @@ def make_svd_non_negative(
     W[:, 0] = ivy.sqrt(S[0]) * ivy.abs(U[:, 0])
     H[0, :] = ivy.sqrt(S[0]) * ivy.abs(V[0, :])
 
-    for j in range(1, ivy.shape(U)[1]):
+    for j in range(1, len(S)):
         a, b = U[:, j], V[j, :]
 
         # extract positive and negative parts of column vectors
-        # TODO ivy.clip requires x_max as a compulsary argument,
-        # the following code will throw an error.
         a_p, b_p = ivy.where(a < 0.0, 0, a), ivy.where(b < 0.0, 0.0, b)
         # a_p, b_p = ivy.clip(a, 0.0), ivy.clip(b, 0.0)
         # a_n, b_n = ivy.abs(ivy.clip(a, 0.0)), ivy.abs(ivy.clip(b, 0.0))
@@ -996,8 +994,8 @@ def make_svd_non_negative(
         )
 
         # and their norms
-        a_p_nrm, b_p_nrm = int(ivy.vector_norm(a_p)), int(ivy.vector_norm(b_p))
-        a_n_nrm, b_n_nrm = int(ivy.vector_norm(a_n)), int(ivy.vector_norm(b_n))
+        a_p_nrm, b_p_nrm = float(ivy.vector_norm(a_p)), float(ivy.vector_norm(b_p))
+        a_n_nrm, b_n_nrm = float(ivy.vector_norm(a_n)), float(ivy.vector_norm(b_n))
 
         m_p, m_n = a_p_nrm * b_p_nrm, a_n_nrm * b_n_nrm
 
@@ -1011,7 +1009,7 @@ def make_svd_non_negative(
             v = b_n / b_n_nrm
             sigma = m_n
 
-        lbd = int(ivy.sqrt(S[j] * sigma))
+        lbd = float(ivy.sqrt(S[j] * sigma))
         W[:, j] = lbd * u
         H[j, :] = lbd * v
 
@@ -1020,16 +1018,18 @@ def make_svd_non_negative(
 
     if nntype == "nndsvd":
         W = ivy.soft_thresholding(W, eps)
+        H = ivy.soft_thresholding(H, eps)
     elif nntype == "nndsvda":
         avg = ivy.mean(x)
         W = ivy.where(W < eps, ivy.ones(ivy.shape(W)) * avg, W)
+        H = ivy.where(H < eps, ivy.ones(ivy.shape(H)) * avg, H)
     else:
         raise ValueError(
             f'Invalid nntype parameter: got {nntype} instead of one of ("nndsvd",'
             ' "nndsvda")'
         )
 
-    return W
+    return W, H
 
 
 @handle_nestable
@@ -1045,7 +1045,7 @@ def truncated_svd(
     compute_uv: bool = True,
     n_eigenvecs: Optional[int] = None,
     **kwargs,
-) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
+) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
     """
     Compute a truncated SVD on `x` using the standard SVD.
 
@@ -1079,6 +1079,8 @@ def truncated_svd(
         return S[:n_eigenvecs]
 
 
+# TODO uncommment the code below when these svd
+# methods have been added
 def _svd_interface(
     matrix,
     method="truncated_svd",
@@ -1090,48 +1092,6 @@ def _svd_interface(
     n_iter_mask_imputation=5,
     **kwargs,
 ):
-    """
-    Dispatching function to various SVD algorithms, alongside additional properties such
-    as resolving sign invariance, imputation, and non-negativity.
-
-    Parameters
-    ----------
-    matrix : tensor
-        A 2D tensor.
-    method : str, default is 'truncated_svd'
-        Function to use to compute the SVD,
-          acceptable values in tensorly.SVD_FUNS or a callable.
-    n_eigenvecs : int, optional, default is None
-        If specified, number of eigen[vectors-values] to return.
-    flip_sign : bool, optional, default is True
-        Whether to resolve the sign indeterminacy of SVD.
-    u_based_flip_sign : bool, optional, default is True
-        Whether the sign indeterminacy should be resolved using U (vs. V).
-    non_negative : bool, optional, default is False
-        Whether to make the SVD results non-negative.
-    nn_type : str, default is 'nndsvd'
-        Algorithm to use for converting U to be non-negative.
-    mask : tensor, default is None.
-        Array of booleans with the same shape as ``matrix``.
-          Should be 0 where
-        the values are missing and 1 everywhere else. None if nothing is missing.
-        Imputation is done by iterative low rank approximation,
-          so n_eigenvecs should be provided
-        and be lower than the rank of the matrix.
-    n_iter_mask_imputation : int, default is 5
-        Number of repetitions to apply in missing value imputation.
-    **kwargs : optional
-        Arguments passed along to individual SVD algorithms.
-
-    Returns
-    -------
-    U : 2-D tensor, shape (matrix.shape[0], n_eigenvecs)
-        Contains the right singular vectors of `matrix`
-    S : 1-D tensor, shape (n_eigenvecs, )
-        Contains the singular values of `matrix`
-    V : 2-D tensor, shape (n_eigenvecs, matrix.shape[1])
-        Contains the left singular vectors of `matrix`
-    """
     if method == "truncated_svd":
         svd_fun = truncated_svd
     # elif method == "symeig_svd":

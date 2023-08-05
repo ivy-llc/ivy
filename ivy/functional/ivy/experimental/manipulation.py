@@ -2509,11 +2509,9 @@ def soft_thresholding(
     --------
     svd_thresholding : SVD-thresholding operator
     """
-    # TODO x_max in clip should be None ideally
-    # update when ivy.clip has been updated
-    x_max = int(ivy.max(x))
+    res = ivy.abs(x) - threshold
+    res = ivy.where(res < 0.0, 0.0, res) * ivy.sign(x)
 
-    res = ivy.sign(x) * ivy.clip(ivy.abs(x) - threshold, 0, x_max)
     if ivy.exists(out):
         return ivy.inplace_update(out, res)
     return res

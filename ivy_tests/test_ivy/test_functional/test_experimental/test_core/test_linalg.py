@@ -958,23 +958,24 @@ def _make_svd_nn_data(draw):
         )
     )
     n, m = shape
-    U_dtype, U = draw(
+    _, U = draw(
         helpers.dtype_and_values(
+            dtype=x_dtype,
             available_dtypes=helpers.get_dtypes("float"),
-            shape=(n, n),
+            shape=(n, m),
             min_value=1.0,
             max_value=10.0,
         )
     )
-    S_dtype, S = draw(
+    _, S = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            dtype=x_dtype,
             shape=(m,),
             min_value=1.0,
             max_value=10.0,
         )
     )
-    V_dtype, V = draw(
+    _, V = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             shape=(m, m),
@@ -983,7 +984,7 @@ def _make_svd_nn_data(draw):
         )
     )
     nntype = draw(st.sampled_from(["nndsvd", "nndsvda"]))
-    return x_dtype + U_dtype + S_dtype + V_dtype, x[0], U[0], S[0], V[0], nntype
+    return x_dtype, x[0], U[0], S[0], V[0], nntype
 
 
 @handle_test(
@@ -995,7 +996,7 @@ def _make_svd_nn_data(draw):
 def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, U, S, V, nntype = data
     test_flags.instance_method = False
-    helpers.test_function(
+    results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
@@ -1006,6 +1007,33 @@ def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_devi
         S=S,
         V=V,
         nntype=nntype,
+        test_values=False,
+        return_flat_np_arrays=True,
+    )
+    if results is None:
+        return
+
+    # returned values should be non negative
+    ret_flat_np, ret_from_gt_flat_np = results
+    W_flat_np, H_flat_np = ret_flat_np[0], ret_flat_np[1]
+    W_flat_np_gt, H_flat_np_gt = ret_from_gt_flat_np[0], ret_from_gt_flat_np[1]
+    assert np.all(W_flat_np >= 0)
+    assert np.all(H_flat_np >= 0)
+    assert np.all(W_flat_np_gt >= 0)
+    assert np.all(H_flat_np_gt >= 0)
+    helpers.assert_all_close(
+        W_flat_np,
+        W_flat_np_gt,
+        atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
+    )
+    helpers.assert_all_close(
+        H_flat_np,
+        H_flat_np_gt,
+        atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
