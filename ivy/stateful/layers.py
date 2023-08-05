@@ -226,27 +226,29 @@ class MultiHeadAttention(Module):
             Default None.
         num_heads:
             Number of parallel attention heads. Note that ``embed_dim`` will be split
-            across ``num_heads`` (i.e. each head will have dimension ``embed_dim // num_heads``).
+            across ``num_heads``
+            (i.e. each head will have dimension ``embed_dim // num_heads``).
             Default is 8.
         head_dim
             Size of each attention head for query and key.
-            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``) should be provided
-            Default is None.
+            Note that only two out of (``embed_dim``, ``num_heads``, and ``head_dim``)
+            should be provided. Default is None.
         dropout_rate
-            The dropout probability used on attention weights to drop some attention targets. 0 for no dropout.
-            Default is 0.
+            The dropout probability used on attention weights to drop some attention
+            targets. 0 for no dropout. Default is 0.
         use_proj_bias
             If specified, adds bias to input / output projection layers.
             Default is True.
         attention_axes
-            axes over which the attention is applied. `None` means attention over all axes, but batch, heads, and features.
+            axes over which the attention is applied.
+            `None` means attention over all axes, but batch, heads, and features.
             Default is None.
         scale
             The value by which to scale the query-key similarity measure.
             Default is head_dim^-0.5
         device
-            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-            Default is cpu.
+            device on which to create the layer's variables
+            'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
         v
             the variables for the attention layer, as a container,
             constructed internally by default.
@@ -256,8 +258,8 @@ class MultiHeadAttention(Module):
             build(), or the first time the __call__ method is run.
             Default is on initialization.
         dtype
-            the desired data type of the internal variables to be created if not provided.
-            Default is ``None``.
+            the desired data type of the internal variables to be created
+            if not provided. Default is ``None``.
         """
         # proj
 
@@ -393,9 +395,12 @@ class MultiHeadAttention(Module):
             If True, returns attention_weights alongside the output
             as a tuple (output, attenion_weights). Defaults to `False`.
         average_attention_weights
-            If true, indicates that the returned ``attention_weights`` should be averaged across
-            heads. Otherwise, ``attention_weights`` are provided separately per head. Note that this flag only has an
-            effect when ``return_attention_weights=True``. Default: ``True`` (i.e. average weights across heads)
+            If true, indicates that the returned ``attention_weights``
+            should be averaged across heads.
+            Otherwise, ``attention_weights`` are provided separately per head.
+            Note that this flag only has an effect when
+            ``return_attention_weights=True``.
+            Default: ``True`` (i.e. average weights across heads)
         training
             If True, dropout is used, otherwise dropout is not activated.
 
@@ -1572,6 +1577,8 @@ class MaxPool2D(Module):
         /,
         *,
         data_format="NHWC",
+        dilation=1,
+        ceil_mode=False,
         device=None,
         v=None,
         dtype=None,
@@ -1587,6 +1594,13 @@ class MaxPool2D(Module):
             The stride of the window. Default value: 1
         padding
             Implicit zero padding to be added on both sides.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every input element is covered by a sliding window.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
@@ -1594,6 +1608,8 @@ class MaxPool2D(Module):
         self._stride = stride
         self._padding = padding
         self._data_format = data_format
+        self._dilation = dilation
+        self._ceil_mode = ceil_mode
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1615,6 +1631,8 @@ class MaxPool2D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+            dilation=self._dilation,
+            ceil_mode=self._ceil_mode,
         )
 
 
@@ -1682,6 +1700,8 @@ class MaxPool1D(Module):
         /,
         *,
         data_format="NWC",
+        dilation=1,
+        ceil_mode=False,
         device=None,
         v=None,
         dtype=None,
@@ -1697,6 +1717,13 @@ class MaxPool1D(Module):
             The stride of the window. Default value: 1
         padding
             Implicit zero padding to be added on both sides.
+        data_format
+            "NWC" or "NCW". Defaults to "NWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every input element is covered by a sliding window.
         device
             device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
         """
@@ -1704,6 +1731,8 @@ class MaxPool1D(Module):
         self._stride = stride
         self._padding = padding
         self._data_format = data_format
+        self._dilation = dilation
+        self._ceil_mode = ceil_mode
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, inputs):
@@ -1725,6 +1754,8 @@ class MaxPool1D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+            dilation=self._dilation,
+            ceil_mode=self._ceil_mode,
         )
 
 
@@ -1737,6 +1768,8 @@ class MaxPool3D(Module):
         /,
         *,
         data_format="NDHWC",
+        dilation=1,
+        ceil_mode=False,
         device=None,
         dtype=None,
     ):
@@ -1751,11 +1784,20 @@ class MaxPool3D(Module):
             The stride of the window.
         padding
             Implicit zero padding to be added on both sides.
+        data_format
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilaton
+            The stride between elements within a sliding window, must be > 0.
+        ceil_mode
+            If True, ceil is used instead of floor to compute the output shape.
+            This ensures that every input element is covered by a sliding window.
         """
         self._kernel_size = kernel_size
         self._stride = stride
         self._padding = padding
         self._data_format = data_format
+        self._dilation = dilation
+        self._ceil_mode = ceil_mode
         Module.__init__(self, device=device, dtype=dtype)
 
     def _forward(self, x):
@@ -1777,6 +1819,8 @@ class MaxPool3D(Module):
             self._stride,
             self._padding,
             data_format=self._data_format,
+            dilation=self._dilation,
+            ceil_mode=self._ceil_mode,
         )
 
 
@@ -2098,40 +2142,80 @@ class Dct(Module):
 
 
 class Embedding(Module):
-    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx=None,
+        max_norm=None,
+        /,
+        *,
+        weight_initializer=GlorotUniform(),
+        device=None,
+        v=None,
+        dtype=None,
+    ):
         """
-        Class for embedding indices into a dense representation.
+        Class for embedding layer.
 
         Parameters
         ----------
-        indices
-            The indices to embed.
-        max_norm
+        num_embeddingss : int
+            Number of embeddings.
+        embedding_dim : int
+            Dimension of the embeddings.
+        padding_idx : int
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm : float
             If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
-        out
-            If given, the result will be inserted into this tensor. Default: None
+        weight_initializer : Initializer
+            Initializer for the weights.
+        device : str
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        v : dict
+            the variables for the embedding layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        self._indices = indices
+        self._num_embeddings = num_embeddings
+        self._embedding_dim = embedding_dim
+        self._padding_idx = padding_idx
         self._max_norm = max_norm
-        self._out = out
-        Module.__init__(self, device=device, dtype=dtype)
+        self._weight_initializer = weight_initializer
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _create_variables(self, device, dtype=None):
         """
-        Forward pass of the layer.
+        Create internal variables for the layer.
 
         Parameters
         ----------
-        inputs
-            The input array to the layer.
-
-        Returns
-        -------
-            The output array of the layer.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        return ivy.embedding(
-            inputs,
-            self._indices,
-            max_norm=self._max_norm,
-            out=self._out,
-        )
+        v = {
+            "w": self._weight_initializer.create_variables(
+                (self._num_embeddings, self._embedding_dim),
+                device,
+                self._embedding_dim,
+                self._num_embeddings,
+                dtype=dtype,
+            )
+        }
+        return v
+
+    def _pad_embd(self, indices, embd):
+        mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
+        return ivy.where(mask, 0, embd)
+
+    def _forward(self, indices):
+        emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
+        if self._padding_idx is not None:
+            emb = self._pad_embd(indices, emb)
+        return emb
