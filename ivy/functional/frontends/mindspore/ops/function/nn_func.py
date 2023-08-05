@@ -55,3 +55,15 @@ def softsign(x):
 @to_ivy_arrays_and_back
 def hardswish(x):
     return ivy.hardswish(x)
+
+  
+@with_supported_dtypes({"2.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def pad(input, pad_width, mode='constant', constant_values=0):
+    return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def adaptive_avg_pool2d(input, output_size):
+    return ivy.adaptive_avg_pool2d(input, output_size)

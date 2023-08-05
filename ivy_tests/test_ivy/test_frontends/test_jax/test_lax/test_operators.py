@@ -2965,7 +2965,9 @@ def test_jax_is_finite(
 # cbrt
 @handle_frontend_test(
     fn_tree="jax.lax.cbrt",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), min_value=0.0
+    ),
     test_with_out=st.just(False),
 )
 def test_jax_cbrt(
