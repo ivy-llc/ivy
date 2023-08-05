@@ -84,11 +84,7 @@ def eigvalsh(
 
 @_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
