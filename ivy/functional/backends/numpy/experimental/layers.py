@@ -968,7 +968,7 @@ def stft(
         window = np.hanning(n_fft)
     else:
         window = np.asarray(window)
-    
+
     if center:
         pad = (n_fft - frame_step) // 2
         signal = np.pad(signal, [(0, 0)] * (signal.ndim - 1) + [(pad, pad)], mode=pad_mode)
@@ -980,17 +980,23 @@ def stft(
         start = i * frame_step
         end = start + n_fft
         frame = signal[..., start:end]
-        
-        # Apply windowing
+
         if win_length is not None:
             frame = frame * window[:len(frame)]
         else:
             frame = frame * window
 
-        # Perform FFT using numpy's FFT function
         stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
         if onesided:
             stft_frame = stft_frame[..., :n_fft // 2 + 1]
+
+        if detrend:
+            detrend_func = np.poly1d if isinstance(detrend, bool) else detrend
+            detrended = detrend_func(np.arange(len(frame)))(frame)
+            stft_frame = np.fft.fft(detrended, n=n_fft, axis=-1)
+            if onesided:
+                stft_frame = stft_frame[..., :n_fft // 2 + 1]
+
         stft_result[..., i, :n_fft // 2 + 1] = stft_frame
 
     return stft_result
