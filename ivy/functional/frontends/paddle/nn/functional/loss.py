@@ -239,25 +239,25 @@ def nll_loss(
     label, 
     weight=None, 
     ignore_index=-100, 
-    reduction='mean',
+    reduction="mean",
 ):
-    'Refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss.'
+    "Refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss."
     if weight is None:
-        weight=ivy.ones(ivy.shape(input[0]))
-    input=ivy.log(input)
-    loss=ivy.zeros(ivy.shape(label))
-    den=0
-    for i in range(0,ivy.shape(loss)[0]):
-        den=den+weight[label[i]]
-        loss[i]=-weight[label[i]]*input[i][label[i]]
-    output=0.0
-    if reduction=='sum':
-        output=ivy.sum(loss)
-        if ignore_index!=-100:
-            output=output-loss[ignore_index]
+        weight = ivy.ones(ivy.shape(input[0]))
+    input = ivy.log(input)
+    loss = ivy.zeros(ivy.shape(label))
+    den = 0
+    for i in range(0, ivy.shape(loss)[0]):
+        den = den + weight[label[i]]
+        loss[i] = -weight[label[i]] * input[i][label[i]]
+    output = 0.0
+    if reduction == "sum":
+        output = ivy.sum(loss)
+        if ignore_index != -100:
+            output = output - loss[ignore_index]
         return output
-    num=ivy.sum(loss)
-    output=num/den
-    if ignore_index!=-100:
-        output=output-loss[ignore_index]/den
+    num = ivy.sum(loss)
+    output = num / den
+    if ignore_index != -100:
+        output = output - loss[ignore_index] / den
     return output
