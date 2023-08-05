@@ -179,9 +179,6 @@ def rayleigh(scale, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def permuted(x, axes=None, out=None):#, copy=None):
-    if out != x:  #when out is not x or is None, shuffle in the result
-        result = ivy.copy_array(x, result)
-        result = ivy.matrix_transpose(result, axes)
-        return result
-    result = ivy.matrix_transpose(x, axes)
-    return ivy.permute_dims(x, axes, copy = None, out = result) #copy is kept at default
+result = ivy.matrix_transpose(x, axes)
+out = result
+return ivy.permute_dims(x, axes, copy = None, out) #copy is kept at default
