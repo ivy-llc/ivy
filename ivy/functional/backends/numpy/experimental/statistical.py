@@ -5,10 +5,11 @@ import ivy  # noqa
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ..statistical import _infer_dtype
+from copy import deepcopy
 
 
 @with_unsupported_dtypes(
-    {"1.25.1 and below": ("bfloat16",)},
+    {"1.25.2 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -166,6 +167,128 @@ def nanmean(
 nanmean.support_native_out = True
 
 
+def _validate_quantile(q):
+    if q.ndim == 1 and q.size < 10:
+        for i in range(q.size):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (np.all(0 <= q) and np.all(q <= 1)):
+            return False
+    return True
+
+
+def _to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = a.ndim
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = _to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = np.moveaxis(a, s, i)
+            a = a.reshape(a.shape[:nkeep] + (-1,))
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if q.ndim > 2:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = a.flatten()
+
+    n = a.shape[axis]
+    if axis != 0:
+        a = np.moveaxis(a, axis, 0)
+
+    indices = []
+    for q_num in q:
+        index = q_num * (n - 1)
+        indices.append(index)
+
+    a.sort(0)
+    outputs = []
+
+    for index in indices:
+        indices_below = np.floor(index).astype(np.int32)
+        indices_upper = np.ceil(index).astype(np.int32)
+
+        weights = index - indices_below.astype("float64")
+
+        indices_below = np.clip(indices_below, 0, n - 1)
+        indices_upper = np.clip(indices_upper, 0, n - 1)
+        tensor_upper = np.take(a, indices_upper, axis=0)  # , mode="clip")
+        tensor_below = np.take(a, indices_below, axis=0)  # , mode="clip")
+
+        pred = weights <= 0.5
+        out = np.where(pred, tensor_below, tensor_upper)
+        outputs.append(out)
+    return np.array(outputs, dtype=ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x, q, axis=None, keepdims=False, interpolation="linear", out=None
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            axis = tuple(axis) if isinstance(axis, list) else axis
+
+            return np.quantile(
+                x, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+            ).astype(x.dtype)
+    else:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+
+
 def quantile(
     a: np.ndarray,
     q: Union[float, np.ndarray],
@@ -178,12 +301,15 @@ def quantile(
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
     # in other backends, the output is the same dtype as the input.
-
-    (tuple(axis) if isinstance(axis, list) else axis)
-
-    return np.quantile(
-        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
-    ).astype(a.dtype)
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+        out=out,
+    )
 
 
 def corrcoef(
@@ -365,7 +491,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"1.25.1 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": "bfloat16"}, backend_version)
 def cummin(
     x: np.ndarray,
     /,
