@@ -1291,7 +1291,7 @@ def ifftn(
 
 
 """
-RFFTN Function implementation
+RFFTN Function
 """
 
 
@@ -1321,15 +1321,14 @@ def rfft_operations(x, rank, norm_factor):
                 2: lambda: tf.signal.rfft3d(x),
             },
         )
-    # norm_factor = tf.cast(norm_factor, tf.complex64)
     norm_factor = tf.cast(norm_factor, tf.complex128)
-    x = x * norm_factor
+    x = x / norm_factor
+    x = tf.cast(x, tf.complex128)
     return x
 
 
 def _rfftn_helper(x, shape, axes, norm):
     x = rfft_input_validation(tf.convert_to_tensor(x))
-    # x = rfft_input_validation(x)
     input_shape = x.shape
     input_rank_tensor = tf.rank(x)
 
@@ -1391,57 +1390,3 @@ def rfftn(
     else:
         # return result
         return tf.cast(result, tf.complex128)
-
-# def rfftn(
-#     x: Union[tf.Tensor, tf.Variable],
-#     s: Sequence[int] = None,
-#     axes: Sequence[int] = None,
-#     *,
-#     norm: str = "backward",
-#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-# ) -> Union[tf.Tensor, tf.Variable]:
-#     x = rfft_input_validation(tf.convert_to_tensor(x))
-#     if x.dtype != tf.float32 and x.dtype != tf.float64:
-#         x = tf.cast(x, tf.float64)
-#     if not isinstance(x, tf.Tensor):
-#         raise TypeError("Input `x` must be a TensorFlow tensor.")
-#         # Convert the input tensor x to float32 or float64 if it's not already
-
-#     if s is None:
-#         s = [x.shape[axis] for axis in axes]
-#     if norm != "backward" and norm != "ortho" and norm != "forward":
-#         raise ValueError(
-#             "Invalid value for 'norm'. Must be one of 'backward', 'ortho', or"
-#             " 'forward'."
-#         )
-
-#     # Determine the number of dimensions and reshape x to 1D or 2D if necessary
-#     # x.shape
-#     x_rank = x.shape.rank
-
-#     # if x_rank > 3:
-#     #     raise ValueError(
-#     #         "Invalid number of dimensions in `x`. Maximum supported dimensions is 3"
-#     #     )
-
-#     # if x_rank == 1:
-#     #     x_fft = tf.signal.rfft(x, s)
-#     if x_rank == 2:
-#         x_fft = tf.signal.rfft2d(x, s)
-#     # else:  # x_rank == 3
-#     #     x_fft = tf.signal.rfft3d(x, s)
-
-#     if norm == "backward":
-#         pass
-#     elif norm == "ortho":
-#         x_fft /= tf.cast(tf.math.sqrt(tf.reduce_prod(s)), x_fft.dtype)
-#     elif norm == "forward":
-#         x_fft /= tf.cast(tf.reduce_prod(s), x_fft.dtype)
-
-#     x_fft = tf.cast(x_fft, tf.complex128)
-#     # If an output tensor is provided, assign the computed result to it
-#     if out is not None:
-#         out.assign(x_fft)
-#         return out
-#     else:
-#         return x_fft
