@@ -656,6 +656,22 @@ def round(
 round.support_native_out = True
 
 
+@_scalar_output_to_0d_array
+def around(
+    x: np.ndarray, /, *, decimals: int = 0, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    if "int" in str(x.dtype):
+        ret = np.copy(x)
+    else:
+        ret = np.around(x, decimals=decimals, out=out)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
+
+
+around.support_native_out = True
+
+
 def _abs_variant_sign(x):
     return np.divide(x, np.abs(x), where=x != 0)
 

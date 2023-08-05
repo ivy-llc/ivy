@@ -114,9 +114,7 @@ def _rint(
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def around(a, decimals=0, out=None):
-    if ivy.shape(a) == ():
-        a = ivy.expand_dims(a, axis=0)
-    return ivy.round(a, decimals=decimals, out=out)
+    return ivy.around(a, decimals=decimals, out=out)
 
 
 @handle_numpy_out

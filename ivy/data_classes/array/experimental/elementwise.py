@@ -1020,3 +1020,51 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
+
+    def around(
+        self: ivy.Array, *, decimals: int = 0, out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.around. This method simply wraps the
+        function, and so the docstring for ivy.around also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([1.2, 2.4, 3.6])
+        >>> y = x.around(x)
+        >>> print(y)
+        ivy.array([1.,2.,4.])
+
+
+        >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
+        >>> y = ivy.zeros(4)
+        >>> x.around(out=y)
+        >>> print(y)
+        ivy.array([2.,2.,15.,-5.])
+
+        >>> x = ivy.array([[0, 5.433, -343.3, 1.5],
+        ...                [-5.5, 44.2, 11.5, 12.01]])
+        >>> x.around(out=x)
+        >>> print(x)
+        ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
+        """
+        return ivy.around(self._data, decimals=decimals, out=out)

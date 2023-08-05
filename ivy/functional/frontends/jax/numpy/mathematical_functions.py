@@ -542,7 +542,7 @@ def subtract(x1, x2, /):
 @to_ivy_arrays_and_back
 def around(a, decimals=0, out=None):
     ret_dtype = a.dtype
-    return ivy.round(a, decimals=decimals, out=out).astype(ret_dtype, copy=False)
+    return ivy.around(a, decimals=decimals, out=out).astype(ret_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back

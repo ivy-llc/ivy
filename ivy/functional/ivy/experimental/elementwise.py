@@ -1311,3 +1311,125 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def around(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    decimals: Optional[int] = 0,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Round each element ``x_i`` of the input array ``x`` to the given
+    number of decimals.
+
+    `around` is an alias of `~ivy.round`.
+
+    .. note::
+       For complex floating-point operands, real and imaginary components
+       must be independently rounded to the number of decimals.
+
+       Rounded real and imaginary components must be equal
+       to their equivalent rounded real-valued floating-point
+       counterparts (i.e., for complex-valued ``x``, ``real(round(x))``
+       must equal ``round(real(x)))`` and ``imag(round(x))`` must equal
+       ``round(imag(x))``).
+
+    **Special cases**
+
+    - If ``x_i`` is already an integer-valued, the result is ``x_i``.
+
+    For floating-point operands,
+
+    - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+    - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If two integers are equally close to ``x_i``, the result is
+      the even integer closest to ``x_i``.
+
+    .. note::
+       For complex floating-point operands, the following special
+       cases apply to real and imaginary components independently
+       (e.g., if ``real(x_i)`` is ``NaN``, the rounded
+       real component is ``NaN``).
+
+    - If ``x_i`` is already integer-valued, the result is ``x_i``.
+
+    Parameters
+    ----------
+    x
+        input array containing elements to round.
+    decimals
+        number of decimal places to round to. Default is ``0``.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        An array of the same shape and type as x, with the elements rounded to integers.
+
+
+    Note: PyTorch supports an additional argument :code:`decimals` for the
+    `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
+    It has been deliberately omitted here due to the imprecise
+    nature of the argument in :code:`torch.round`.
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.round.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1.2, 2.4, 3.6])
+    >>> y = ivy.around(x)
+    >>> print(y)
+    ivy.array([1.,2.,4.])
+
+    >>> x = ivy.array([-0, 5, 4.5])
+    >>> y = ivy.around(x)
+    >>> print(y)
+    ivy.array([0.,5.,4.])
+
+    >>> x = ivy.array([1.5654, 2.034, 15.1, -5.0])
+    >>> y = ivy.zeros(4)
+    >>> ivy.around(x, out=y)
+    >>> print(y)
+    ivy.array([2.,2.,15.,-5.])
+
+    >>> x = ivy.array([[0, 5.433, -343.3, 1.5],
+    ...                [-5.5, 44.2, 11.5, 12.01]])
+    >>> ivy.around(x, out=x)
+    >>> print(x)
+    ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+    ...                   b=ivy.array([-300.9, -527.3, 4.5]))
+    >>> y = ivy.around(x)
+    >>> print(y)
+    {
+        a: ivy.array([4.,9.,7.,0.]),
+        b: ivy.array([-301.,-527.,4.])
+    }
+    """
+    return ivy.current_backend(x).around(x, decimals=decimals, out=out)

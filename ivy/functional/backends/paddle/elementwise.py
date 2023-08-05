@@ -770,6 +770,44 @@ def round(
     return _np_round(x, decimals).astype(x.dtype)
 
 
+def around(
+    x: paddle.Tensor, /, *, decimals: int = 0, out: Optional[paddle.Tensor] = None
+) -> paddle.Tensor:
+    def _np_round(x, decimals):
+        # this is a logic to mimic np.round behaviour
+        # which rounds odd numbers up and even numbers down at limits like 0.5
+        eps = 1e-6 * paddle.sign(x)
+
+        # check if the integer is even or odd
+        candidate_ints = paddle_backend.remainder(paddle_backend.trunc(x), 2.0).astype(
+            bool
+        )
+        # check if the fraction is exactly half
+        candidate_fractions = paddle_backend.equal(
+            paddle_backend.abs(paddle_backend.subtract(x, paddle_backend.trunc(x))),
+            0.5,
+        )
+        x = paddle_backend.where(
+            paddle.logical_and(~candidate_ints, candidate_fractions),
+            x - eps,
+            x,
+        )
+        factor = paddle_backend.pow(10.0, decimals).astype(x.dtype)
+        factor_denom = ivy.where(ivy.isinf(x), 1.0, factor)
+        return paddle_backend.divide(
+            paddle.round(paddle_backend.multiply(x, factor)), factor_denom
+        )
+
+    if x.dtype not in [paddle.float32, paddle.float64]:
+        if paddle.is_complex(x):
+            return paddle.complex(
+                _np_round(x.real(), decimals), _np_round(x.imag(), decimals)
+            )
+        return _np_round(x.astype("float32"), decimals).astype(x.dtype)
+    return _np_round(x, decimals).astype(x.dtype)
+
+
+
 def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,

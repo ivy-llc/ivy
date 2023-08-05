@@ -442,6 +442,16 @@ def round(
     return ret
 
 
+def around(
+    x: JaxArray, /, *, decimals: int = 0, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if "int" in str(x.dtype):
+        ret = jnp.copy(x)
+    else:
+        ret = jnp.around(x, decimals=decimals)
+    return ret
+
+
 def _abs_variant_sign(x):
     return jnp.where(x != 0, x / jnp.abs(x), 0)
 

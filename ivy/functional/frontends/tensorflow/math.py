@@ -525,6 +525,11 @@ def round(x, name=None):
 
 
 @to_ivy_arrays_and_back
+def around(x, name=None):
+    return ivy.around(x)
+
+
+@to_ivy_arrays_and_back
 def minimum(x, y, name=None):
     return ivy.minimum(x, y)
 

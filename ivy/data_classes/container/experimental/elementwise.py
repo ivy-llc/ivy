@@ -2975,3 +2975,115 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_around(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        decimals: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.around. This method simply wraps
+        the function, and so the docstring for ivy.around also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = ivy.Container.static_around(x)
+        >>> print(y)
+        {
+            a: ivy.array([4.,9.,7.,0.]),
+            b: ivy.array([-301.,-527.,4.])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "around",
+            x,
+            decimals=decimals,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def around(
+        self: ivy.Container,
+        /,
+        *,
+        decimals: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.around. This method simply wraps
+        the function, and so the docstring for ivy.around also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+        decimals
+            number of decimal places to round to. Default is ``0``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the rounded result for each element in ``self``. The
+            returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
+        ...                   b=ivy.array([-300.9, -527.3, 4.5]))
+        >>> y = x.around()
+        >>> print(y)
+        {
+            a: ivy.array([4.,9.,7.,0.]),
+            b: ivy.array([-301.,-527.,4.])
+        }
+        """
+        return self.static_around(
+            self,
+            decimals=decimals,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
+        )

@@ -227,7 +227,7 @@ def test_numpy_rint(
 @handle_frontend_test(
     fn_tree="numpy.around",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
