@@ -12,8 +12,7 @@ import math
     fn_tree="paddle.nn.functional.channel_shuffle",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=["float32","float64"],
     min_num_dims=4,
-    max_num_dims=4,
-    ret_shape=True
+    max_num_dims=4
     ),
     groups=helpers.number_helpers.ints(min_value=1),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
@@ -30,7 +29,10 @@ def test_paddle_channel_shuffle(
     test_flags,
 ):
     input_dtype, x,shape = dtype_and_x
-    groups=math.gcd(groups,shape[1])
+    if data_format=="NHWC":
+        groups=math.gcd(groups,shape[3])
+    else:
+        groups = math.gcd(groups, shape[1])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
