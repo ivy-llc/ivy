@@ -27,8 +27,15 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
 
 @to_ivy_arrays_and_back
 def avg_pool1d(
-    input, kernel_size, stride=None, padding=0, ceil_mode=False, count_include_pad=True
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    count_include_pad=True,
 ):
+    if stride is None:
+        stride = kernel_size
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "1d", name="stride")
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
@@ -48,8 +55,13 @@ def avg_pool1d(
         padding_str = "VALID"
 
     return ivy.avg_pool1d(
-        input, kernel_size, stride, padding_str, data_format=data_format,
-        count_include_pad=count_include_pad, ceil_mode=ceil_mode
+        input,
+        kernel_size,
+        stride,
+        padding_str,
+        data_format=data_format,
+        count_include_pad=count_include_pad,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -63,16 +75,9 @@ def avg_pool2d(
     count_include_pad=True,
     divisor_override=None,
 ):
-    # Figure out input dims N
-    input_rank = input.ndim
-
-    if input_rank == 3:
-        # CHW
-        data_format = "CHW"
-    elif input_rank == 4:
-        # NCHW
-        data_format = "NCHW"
-
+    if stride is None:
+        stride = kernel_size
+    data_format = "NCHW"
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "2d", name="stride")
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
@@ -104,13 +109,17 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-def max_pool1d(input,
-               kernel_size,
-               stride=None,
-               padding=0,
-               ceil_mode=False,
-               dilation=1,
-               return_indices=False):
+def max_pool1d(
+    input,
+    kernel_size,
+    stride=None,
+    padding=0,
+    ceil_mode=False,
+    dilation=1,
+    return_indices=False,
+):
+    if stride is None:
+        stride = kernel_size
     kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "1d", name="stride")
     padding = _broadcast_pooling_helper(padding, "1d", name="padding")
@@ -280,7 +289,9 @@ def avg_pool3d(
     kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
     stride = _broadcast_pooling_helper(stride, "3d", name="stride")
     padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
+    if all(
+        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
+    ):
         padding = "SAME"
     else:
         padding = "VALID"
