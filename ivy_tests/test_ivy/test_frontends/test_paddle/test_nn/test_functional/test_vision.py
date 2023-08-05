@@ -16,12 +16,14 @@ import math
     ret_shape=True
     ),
     groups=helpers.number_helpers.ints(min_value=1),
+    data_format=st.sampled_from(["NCHW", "NHWC"]),
     test_with_out=st.just(False)
 )
 def test_paddle_channel_shuffle(
     *,
     dtype_and_x,
     groups,
+    data_format,
     on_device,
     fn_tree,
     frontend,
@@ -36,7 +38,8 @@ def test_paddle_channel_shuffle(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        groups=groups
+        groups=groups,
+        data_format=data_format
     )
 
 
