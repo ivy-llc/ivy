@@ -453,7 +453,7 @@ def test_jax_apply_along_axis(
 
     if isinstance(axis, tuple):
         axis = axis[0]
-    if axis == None:
+    if axis is None:
         axis = 0
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
