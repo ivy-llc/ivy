@@ -832,3 +832,35 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
+    
+#permuted
+@handle_frontend_test(
+    fn_tree="ivy.functional.frontends.numpy.random.functions.permuted",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape")
+    ),
+)
+def test_permuted(
+    *,
+    dtype_value,
+    permutation,
+    x,
+    out,
+    copy,
+    test_flags,
+    fn_name,
+):
+    dtype, value = dtype_value
+    shape = dtype_value.shape
+    dims = [x for x in range(len(shape))]
+    permutation = shape(st.permutations(dims))
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        x=value[0],
+        axes=permutation,
+        out=dtype,
+        copy=None
+    )
