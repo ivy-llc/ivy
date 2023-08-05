@@ -345,7 +345,8 @@ def quantile(
         as dimensions with size one. With this option, the result will broadcast
         correctly against the original array a.
     interpolation
-        {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
+        {'nearest', 'linear', 'lower', 'higher', 'midpoint', 'nearest_jax'}.
+        Default value: 'linear'.
         This specifies the interpolation method to use when the desired quantile lies
         between two data points i < j:
         - linear: i + (j - i) * fraction, where fraction is the fractional part of the
@@ -355,6 +356,7 @@ def quantile(
         - nearest: i or j, whichever is nearest.
         - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
         integer dtypes.
+        - nearest_jax: provides jax-like computation for interpolation='nearest'.
     out
         optional output array, for writing the result to.
 

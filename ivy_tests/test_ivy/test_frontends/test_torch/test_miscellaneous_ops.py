@@ -1557,3 +1557,64 @@ def test_torch_cov(
         fweights=fweights,
         aweights=aweights,
     )
+
+
+# view_as_real
+@handle_frontend_test(
+    fn_tree="torch.view_as_real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+    ),
+)
+def test_torch_view_as_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# corrcoef
+@handle_frontend_test(
+    fn_tree="torch.corrcoef",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_corrcoef(
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=["float64"],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x[0],
+    )
