@@ -1657,4 +1657,3 @@ class Size(tuple):
 )
 def gcd(self, other, *, out=None):
     return torch_frontend.gcd(self, other, out=out)
-
