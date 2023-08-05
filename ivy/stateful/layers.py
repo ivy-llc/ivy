@@ -2142,40 +2142,80 @@ class Dct(Module):
 
 
 class Embedding(Module):
-    def __init__(self, indices, /, *, max_norm=None, out=None, device=None, dtype=None):
+    def __init__(
+        self,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx=None,
+        max_norm=None,
+        /,
+        *,
+        weight_initializer=GlorotUniform(),
+        device=None,
+        v=None,
+        dtype=None,
+    ):
         """
-        Class for embedding indices into a dense representation.
+        Class for embedding layer.
 
         Parameters
         ----------
-        indices
-            The indices to embed.
-        max_norm
+        num_embeddingss : int
+            Number of embeddings.
+        embedding_dim : int
+            Dimension of the embeddings.
+        padding_idx : int
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm : float
             If given, each embedding vector with norm larger than max_norm is renormalized to have norm max_norm.
-        out
-            If given, the result will be inserted into this tensor. Default: None
+        weight_initializer : Initializer
+            Initializer for the weights.
+        device : str
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        v : dict
+            the variables for the embedding layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        self._indices = indices
+        self._num_embeddings = num_embeddings
+        self._embedding_dim = embedding_dim
+        self._padding_idx = padding_idx
         self._max_norm = max_norm
-        self._out = out
-        Module.__init__(self, device=device, dtype=dtype)
+        self._weight_initializer = weight_initializer
+        Module.__init__(self, device=device, v=v, dtype=dtype)
 
-    def _forward(self, inputs):
+    def _create_variables(self, device, dtype=None):
         """
-        Forward pass of the layer.
+        Create internal variables for the layer.
 
         Parameters
         ----------
-        inputs
-            The input array to the layer.
-
-        Returns
-        -------
-            The output array of the layer.
+        device
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+            etc. Default is cpu.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        return ivy.embedding(
-            inputs,
-            self._indices,
-            max_norm=self._max_norm,
-            out=self._out,
-        )
+        v = {
+            "w": self._weight_initializer.create_variables(
+                (self._num_embeddings, self._embedding_dim),
+                device,
+                self._embedding_dim,
+                self._num_embeddings,
+                dtype=dtype,
+            )
+        }
+        return v
+
+    def _pad_embd(self, indices, embd):
+        mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
+        return ivy.where(mask, 0, embd)
+
+    def _forward(self, indices):
+        emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
+        if self._padding_idx is not None:
+            emb = self._pad_embd(indices, emb)
+        return emb
