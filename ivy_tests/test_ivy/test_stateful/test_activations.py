@@ -144,7 +144,9 @@ def test_relu(
 @handle_method(
     method_tree="stateful.activations.LeakyReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        available_dtypes=helpers.get_dtypes(
+            "float_and_complex", full=False, key="leaky_relu"
+        ),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",
