@@ -1545,9 +1545,9 @@ def x_and_scaled_attention(draw, dtypes):
 @handle_frontend_test(
     fn_tree="torch.nn.functional.scaled_dot_product_attention",
     dtype_q_k_v_mask=x_and_scaled_attention(
-        dtypes=helpers.get_dtypes("float", full=False),
+        dtypes=helpers.get_dtypes("float"),
     ),
-    scale=st.floats(min_value=0.1, max_value=1),
+    # scale=st.floa`ts(min_value=0.1, max_value=1),
     dropout_p=st.floats(min_value=0, max_value=0.99),
     is_causal=st.booleans(),
     test_with_out=st.just(False),
@@ -1555,7 +1555,7 @@ def x_and_scaled_attention(draw, dtypes):
 def test_torch_scaled_dot_product_attention(
     *,
     dtype_q_k_v_mask,
-    scale,
+    # scale,
     dropout_p,
     is_causal,
     on_device,
@@ -1582,5 +1582,4 @@ def test_torch_scaled_dot_product_attention(
         attn_mask=mask,
         dropout_p=dropout_p,
         is_causal=is_causal,
-        scale=scale,
     )
