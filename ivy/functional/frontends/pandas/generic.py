@@ -54,8 +54,8 @@ class NDFrame:
             pass  # TODO: implement string series
         else:
             raise TypeError(
-                "Data must be one of array, dict, iterables, scalar value or Series. Got"
-                f" {type(data)}"
+                "Data must be one of array, dict, iterables, scalar value or Series."
+                f" Got {type(data)}"
             )
 
     @property
@@ -88,3 +88,6 @@ class NDFrame:
     @outputs_to_self_class
     def __array_wrap__(self, array):
         return array
+
+    def __getattr__(self, item):
+        raise NotImplementedError
