@@ -1555,7 +1555,8 @@ def test_tensorflow_linspace(
         on_device=on_device,
     )
 
-#no_op
+
+# no_op
 @handle_frontend_test(
     fn_tree="tensorflow.no_op",
     dtype=helpers.dtype_and_values(
@@ -1578,6 +1579,7 @@ def test_tensorflow_no_op(
         test_flags=test_flags,
         fn_tree=fn_tree,
     )
+
 
 # realdiv
 @handle_frontend_test(
