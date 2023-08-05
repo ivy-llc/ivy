@@ -2,6 +2,8 @@
 import pytest
 from hypothesis import strategies as st
 import ivy
+import numpy as np
+import sys
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1419,11 +1421,28 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-# @pytest.mark.xfail
+
+# Define the helper function to sample mean and covariance matrix
+def get_mean_cov_vector(shape, dtype):
+    mean_dim_size = shape[-1]
+
+    @st.composite
+    def mean_strategy(draw):
+        mean_size = draw(st.integers(min_value=1, max_value=mean_dim_size))
+        mean_values = draw(st.lists(st.floats(min_value=-10, max_value=10), min_size=mean_size, max_size=mean_size))
+        return np.array(mean_values, dtype=dtype)
+
+    mean = mean_strategy()
+
+    return mean
+
+# Sample the mean
+mean = get_mean_cov_vector(shape=(4,), dtype=np.float64)
+
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
+        available_dtypes=["uint32"],
         min_value=0,
         max_value=2000,
         min_num_dims=1,
@@ -1435,16 +1454,17 @@ def test_jax_ball(
         min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    mean=st.floats(min_value=-10, max_value=10),
-    cov=st.sampled_from(
-        [
-            [
-                [0.19, 0.00, -0.13, 0.00],
-                [0.00, 0.29, 0.00, -0.23],
-                [-0.13, 0.00, 0.39, 0.00],
-                [0.00, -0.23, 0.00, 0.49],
-            ]
-        ]
+    mean=st.lists(st.floats(min_value=-10, max_value=10), min_size=1, max_size=10).map(np.array),
+    cov=helpers.dtype_and_values(
+        available_dtypes=("float32","float64"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(x[1][0]) != 0
     ),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
 )
@@ -1461,10 +1481,14 @@ def test_jax_multivariate_normal(
     test_flags,
     fn_tree,
 ):
-    input_dtype, key = dtype_key
-
+    input_dtype, key= dtype_key
+    x = cov
+    x = np.asarray(x[0], dtype=dtype[0])
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+    
     def call():
-        return helpers.test_frontend_function(
+        # nonlocal ret  # Use nonlocal to modify the 'ret' variable defined in the outer scope
+        helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
             test_flags=test_flags,
@@ -1472,7 +1496,7 @@ def test_jax_multivariate_normal(
             fn_tree=fn_tree,
             test_values=False,
             mean=mean,
-            cov=cov,
+            cov=x,
             shape=shape,
             key=key[0],
             dtype=dtype[0],
@@ -1490,3 +1514,4 @@ def test_jax_multivariate_normal(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+

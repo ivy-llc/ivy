@@ -377,5 +377,5 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     elif method == "svd":
         (u, s, _) = ivy.svd(cov)
         cov_factor = u * ivy.sqrt(s[..., None, :])
-    rand_normal = ivy.random_normal(seed, shape=shape + mean.shape[-1:], dtype=dtype)
+    rand_normal = ivy.random_normal(seed=seed, shape=shape + mean.shape[-1:], dtype=dtype)
     return mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal)
