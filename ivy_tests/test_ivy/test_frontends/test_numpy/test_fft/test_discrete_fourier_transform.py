@@ -6,6 +6,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_experimental.test_nn.test_layers import (
     x_and_ifft,
+    x_and_rfftn,
 )
 
 # ivy_tests/test_ivy/test_functional/test_experimental/test_nn/test_layers.py
@@ -229,5 +230,26 @@ def test_numpy_ifftn(dtype_and_x, backend_fw, frontend, test_flags, fn_tree, on_
         a=x,
         s=None,
         axes=None,
+        norm=norm,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.rfftn",
+    dtype_and_x=x_and_rfftn(),
+)
+def test_numpy_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_device):
+    dtype, x, s, axes, norm = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=s,
+        axes=axes,
         norm=norm,
     )
