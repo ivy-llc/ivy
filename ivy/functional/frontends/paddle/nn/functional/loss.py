@@ -238,14 +238,10 @@ def nll_loss(
     input, 
     label, 
     weight=None, 
-    size_average=None, 
     ignore_index=-100, 
-    reduce=None, 
     reduction='mean',
 ):
-    '''
-    Refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss 
-    '''
+    'Refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss.'
     if weight is None:
         weight=ivy.ones(ivy.shape(input[0]))
     input=ivy.log(input)
