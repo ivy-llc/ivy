@@ -1,6 +1,5 @@
 # local
 import ivy
-from ivy import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_jax_dtype,
