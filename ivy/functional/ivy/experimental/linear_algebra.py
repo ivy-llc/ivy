@@ -1104,16 +1104,415 @@ def _svd_interface(
         raise ValueError("Invalid Choice")
 
     U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
-
     if mask is not None and n_eigenvecs is not None:
         for _ in range(n_iter_mask_imputation):
-            matrix = matrix * mask + (U @ ivy.diag(S) @ V) * (1 - mask)
+            S = S * ivy.eye(U.shape[-1], V.shape[-2])
+            matrix = matrix * mask + (U @ S @ V) * (1 - mask)
             U, S, V = svd_fun(matrix, n_eigenvecs=n_eigenvecs, **kwargs)
 
     if flip_sign:
         U, V = svd_flip(U, V, u_based_decision=u_based_flip_sign)
 
-    # if non_negative is not False and non_negative is not None:
-    #    U = make_svd_non_negative(matrix, U, S, V, non_negative)
+    if non_negative is not False and non_negative is not None:
+        U, V = make_svd_non_negative(matrix, U, S, V)
 
     return U, S, V
+
+
+# TODO update svd type hints when other svd methods have been added
+# also update the test
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def initialize_tucker(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Sequence[int],
+    modes: Sequence[int],
+    /,
+    *,
+    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+    seed: Optional[int] = None,
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    non_negative: Optional[bool] = False,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    svd_mask_repeats: Optional[int] = 5,
+) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+    """
+    Initialize core and factors used in `tucker`. The type of initialization is set
+    using `init`. If `init == 'random'` then initialize factor matrices using
+    `random_state`. If `init == 'svd'` then initialize the `m`th factor matrix using the
+    `rank` left singular vectors of the `m`th unfolding of the input tensor.
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+           number of components
+    modes
+        modes to consider in the input tensor
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    init
+        initialization scheme for tucker decomposition.
+    svd
+          function to use to compute the SVD
+    non_negative
+        if True, non-negative factors are returned
+    mask
+        array of booleans with the same shape as ``tensor`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+
+    Returns
+    -------
+    core
+        initialized core tensor
+    factors
+        list of factors
+    """
+    try:
+        assert len(x.shape) >= 2
+    except ValueError:
+        raise ValueError(
+            "expected x to have atleast 2 dimensions but it has only"
+            f" {len(x.shape)} dimension(s)"
+        )
+
+    # Initialisation
+    if init == "svd":
+        factors = []
+        for index, mode in enumerate(modes):
+            mask_unfold = None if mask is None else ivy.unfold(mask, mode)
+            U, _, _ = _svd_interface(
+                ivy.unfold(x, mode),
+                n_eigenvecs=rank[index],
+                method=svd,
+                non_negative=non_negative,
+                mask=mask_unfold,
+                n_iter_mask_imputation=svd_mask_repeats,
+                # random_state=random_state,
+            )
+            factors.append(U)
+
+        # The initial core approximation is needed here for the masking step
+        core = multi_mode_dot(x, factors, modes=modes, transpose=True)
+
+    elif init == "random":
+        core = ivy.random_uniform(shape=rank, dtype=x.dtype, seed=seed) + 0.01
+        factors = [
+            ivy.random_uniform(shape=(i, j), dtype=x.dtype, seed=seed)
+            for i, j in zip(x.shape, rank)
+        ]
+
+    else:
+        (core, factors) = init
+
+    if non_negative is True:
+        factors = [ivy.abs(f) for f in factors]
+        core = ivy.abs(core)
+
+    return (core, factors)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def partial_tucker(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Optional[Sequence[int]] = None,
+    modes: Optional[Sequence[int]] = None,
+    /,
+    *,
+    n_iter_max: Optional[int] = 100,
+    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    seed: Optional[int] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    svd_mask_repeats: Optional[int] = 5,
+    tol: Optional[float] = 10e-5,
+    verbose: Optional[bool] = False,
+    return_errors: Optional[bool] = False,
+) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+    """
+    Partial tucker decomposition via Higher Order Orthogonal Iteration (HOI)
+
+        Decomposes `tensor` into a Tucker decomposition
+        exclusively along the provided modes.
+
+    Parameters
+    ----------
+    x
+        the  input tensor
+    rank
+        size of the core tensor, ``(len(ranks) == tensor.ndim)``
+        if int, the same rank is used for all modes
+        if None, original tensors size will be preserved.
+    modes
+        list of the modes on which to perform the decomposition
+    n_iter_max
+        maximum number of iteration
+    init
+        {'svd', 'random'}, or TuckerTensor optional
+        if a TuckerTensor is provided, this is used for initialization
+    svd
+        str, default is 'truncated_svd'
+        function to use to compute the SVD,
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    mask
+        array of booleans with the same shape as ``tensor`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+    tol
+        tolerance: the algorithm stops when the variation in
+        the reconstruction error is less than the tolerance.
+    verbose
+        if True, different in reconstruction errors are returned at each
+        iteration.
+    return_erros
+        if True, list of reconstruction errors are returned.
+
+    Returns
+    -------
+    core : ndarray
+            core tensor of the Tucker decomposition
+    factors : ndarray list
+            list of factors of the Tucker decomposition.
+            with ``core.shape[i] == (tensor.shape[i], ranks[i]) for i in modes``
+    """
+    if modes is None:
+        modes = list(range(len(x.shape)))
+
+    if rank is None:
+        logging.warning(
+            "No value given for 'rank'. The decomposition will preserve the original"
+            " size."
+        )
+        rank = [ivy.shape(x)[mode] for mode in modes]
+    elif isinstance(rank, int):
+        logging.warning(
+            f"Given only one int for 'rank' instead of a list of {len(modes)} modes."
+            " Using this rank for all modes."
+        )
+        rank = tuple(rank for _ in modes)
+    else:
+        rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)
+
+    # SVD init
+    core, factors = initialize_tucker(
+        x,
+        rank,
+        modes,
+        init=init,
+        svd=svd,
+        seed=seed,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+    )
+
+    rec_errors = []
+    norm_tensor = ivy.sqrt(ivy.sum(x**2))
+
+    for iteration in range(n_iter_max):
+        if mask is not None:
+            x = x * mask + multi_mode_dot(
+                core, factors, modes=modes, transpose=False
+            ) * (1 - mask)
+
+        for index, mode in enumerate(modes):
+            core_approximation = multi_mode_dot(
+                x, factors, modes=modes, skip=index, transpose=True
+            )
+            eigenvecs, _, _ = _svd_interface(
+                ivy.unfold(core_approximation, mode),
+                n_eigenvecs=rank[index],
+                # random_state=random_state,
+            )
+            factors[index] = eigenvecs
+
+        core = multi_mode_dot(x, factors, modes=modes, transpose=True)
+
+        # The factors are orthonormal and
+        #  therefore do not affect the reconstructed tensor's norm
+        norm_core = ivy.sqrt(ivy.sum(core**2))
+        rec_error = ivy.sqrt(abs(norm_tensor**2 - norm_core**2)) / norm_tensor
+        rec_errors.append(rec_error)
+
+        if iteration > 1:
+            if verbose:
+                print(
+                    f"reconstruction error={rec_errors[-1]},"
+                    f" variation={rec_errors[-2] - rec_errors[-1]}."
+                )
+
+            if tol and abs(rec_errors[-2] - rec_errors[-1]) < tol:
+                if verbose:
+                    print(f"converged in {iteration} iterations.")
+                break
+
+    if return_errors:
+        return (core, factors), rec_errors
+    return (core, factors)
+
+
+@handle_nestable
+@handle_exceptions
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+@handle_device_shifting
+def tucker(
+    x: Union[ivy.Array, ivy.NativeArray],
+    rank: Optional[Sequence[int]] = None,
+    /,
+    *,
+    fixed_factors: Optional[Sequence[int]] = None,
+    n_iter_max: Optional[int] = 100,
+    init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+    svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+    seed: Optional[int] = None,
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    svd_mask_repeats: Optional[int] = 5,
+    tol: Optional[float] = 10e-5,
+    verbose: Optional[bool] = False,
+    return_errors: Optional[bool] = False,
+):
+    """
+    Tucker decomposition via Higher Order Orthogonal Iteration (HOI)
+
+        Decomposes `tensor` into a Tucker decomposition:
+        ``tensor = [| core; factors[0], ...factors[-1] |]`` [1]_
+
+    Parameters
+    ----------
+    x
+        input tensor
+    rank
+        size of the core tensor, ``(len(ranks) == tensor.ndim)``
+        if int, the same rank is used for all modes
+    fixed_factors
+        if not None, list of modes for which to keep the factors fixed.
+        Only valid if a Tucker tensor is provided as init.
+    n_iter_max
+        maximum number of iteration
+    init
+        {'svd', 'random'}, or TuckerTensor optional
+        if a TuckerTensor is provided, this is used for initialization
+    return_errors
+        Indicates whether the algorithm should return all reconstruction errors
+        and computation time of each iteration or not
+        Default: False
+    svd
+        str, default is 'truncated_svd'
+        function to use to compute the SVD,
+    svd_mask_repeats
+        number of iterations for imputing the values in the SVD matrix when
+        mask is not None
+    tol
+          tolerance: the algorithm stops when the variation in
+          the reconstruction error is less than the tolerance
+    mask
+        array of booleans with the same shape as ``tensor`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
+    verbose
+        if True, different in reconstruction errors are returned at each
+        iteration.
+
+    Returns
+    -------
+        ivy.TuckerTensor or ivy.TuckerTensor and
+        list of reconstruction errors if return_erros is True.
+
+    References
+    ----------
+    .. [1] tl.G.Kolda and B.W.Bader, "Tensor Decompositions and Applications",
+       SIAM REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
+    """
+    if fixed_factors:
+        try:
+            (core, factors) = init
+        except ValueError:
+            raise ValueError(
+                f"Got fixed_factor={fixed_factors} but no appropriate Tucker tensor was"
+                ' passed for "init".'
+            )
+        if len(fixed_factors) == len(factors):
+            return ivy.TuckerTensor(core, factors)
+
+        fixed_factors = sorted(fixed_factors)
+        modes_fixed, factors_fixed = zip(
+            *[(i, f) for (i, f) in enumerate(factors) if i in fixed_factors]
+        )
+        core = multi_mode_dot(core, factors_fixed, modes=modes_fixed)
+        modes, factors = zip(
+            *[(i, f) for (i, f) in enumerate(factors) if i not in fixed_factors]
+        )
+        init = (core, list(factors))
+        print("hello")
+
+        rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)
+        (core, new_factors), rec_errors = partial_tucker(
+            x,
+            rank,
+            modes,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            tol=tol,
+            seed=seed,
+            mask=mask,
+            verbose=verbose,
+            svd_mask_repeats=svd_mask_repeats,
+            return_errors=True,
+        )
+
+        factors = list(new_factors)
+        for i, e in enumerate(fixed_factors):
+            factors.insert(e, factors_fixed[i])
+        core = multi_mode_dot(core, factors_fixed, modes=modes_fixed, transpose=True)
+
+        print("hello")
+        if return_errors:
+            return ivy.TuckerTensor((core, factors)), rec_errors
+        return ivy.TuckerTensor((core, factors))
+
+    else:
+        modes = list(range(len(x.shape)))
+        rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)
+
+        (core, factors), rec_errors = partial_tucker(
+            x,
+            rank,
+            modes,
+            n_iter_max=n_iter_max,
+            init=init,
+            svd=svd,
+            tol=tol,
+            seed=seed,
+            mask=mask,
+            verbose=verbose,
+            return_errors=True,
+        )
+        if return_errors:
+            return ivy.TuckerTensor((core, factors)), rec_errors
+        else:
+            return ivy.TuckerTensor((core, factors))

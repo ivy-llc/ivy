@@ -1134,3 +1134,309 @@ def test_truncated_svd(*, data, test_flags, backend_fw, fn_name, on_device):
             backend=backend_fw,
             ground_truth_backend=test_flags.ground_truth_backend,
         )
+
+
+# intialize tucker
+@st.composite
+def _initialize_tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    n_modes = draw(helpers.ints(min_value=2, max_value=dims))
+    modes = [*range(dims)][:n_modes]
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=3))
+    non_negative = draw(st.booleans())
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        modes,
+        non_negative,
+        mask[0],
+        svd_mask_repeats,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.initialize_tucker",
+    data=_initialize_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_initialize_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, rank, modes, non_negative, mask, svd_mask_repeats = data
+    test_flags.instance_method = False
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        modes=modes,
+        non_negative=non_negative,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    with update_backend(backend_fw) as ivy_backend:
+        n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
+            ivy_backend.prod(x.shape[len(modes) :])
+        )
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# partial tucker
+@st.composite
+def _partial_tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=5,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    n_modes = draw(helpers.ints(min_value=2, max_value=dims))
+    modes = [*range(dims)][:n_modes]
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=3))
+    n_iter_max = draw(helpers.ints(min_value=1, max_value=7))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        modes,
+        n_iter_max,
+        mask[0],
+        svd_mask_repeats,
+        tol,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_tucker",
+    data=_partial_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, x, rank, modes, n_iter_max, mask, svd_mask_repeats, tol = data
+    test_flags.instance_method = False
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        modes=modes,
+        n_iter_max=n_iter_max,
+        tol=tol,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    with update_backend(backend_fw) as ivy_backend:
+        n_elem = int(ivy_backend.prod(rank[: len(modes)])) * int(
+            ivy_backend.prod(x.shape[len(modes) :])
+        )
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# tucker
+@st.composite
+def _tucker_data(draw):
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            max_num_dims=4,
+            min_dim_size=2,
+            max_dim_size=3,
+            min_value=0.1,
+            max_value=10.0,
+            ret_shape=True,
+        )
+    )
+    dims = len(shape)
+    rank = []
+    for i in range(dims):
+        rank.append(draw(helpers.ints(min_value=1, max_value=shape[i])))
+    mask_dtype, mask = draw(
+        helpers.dtype_and_values(
+            dtype=["int32"],
+            shape=shape,
+            min_value=0,
+            max_value=1,
+        )
+    )
+    svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=1))
+    n_iter_max = draw(helpers.ints(min_value=0, max_value=2))
+    tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
+    init = "svd"
+    fixed_factors = draw(st.booleans())
+    if fixed_factors:
+        _, core = draw(
+            helpers.dtype_and_values(
+                dtype=x_dtype,
+                min_value=0.1,
+                max_value=10.0,
+                shape=rank,
+            )
+        )
+        factors = []
+        for i in range(dims):
+            _, factor = draw(
+                helpers.dtype_and_values(
+                    dtype=x_dtype,
+                    min_value=0.1,
+                    max_value=10.0,
+                    shape=(shape[i], rank[i]),
+                )
+            )
+            factors.append(factor[0])
+        fixed_factors = draw(
+            st.lists(helpers.ints(min_value=0, max_value=dims - 1), unique=True)
+        )
+        init = ivy.TuckerTensor((core[0], factors))
+    return (
+        x_dtype + mask_dtype,
+        x[0],
+        rank,
+        fixed_factors,
+        init,
+        n_iter_max,
+        mask[0],
+        svd_mask_repeats,
+        tol,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.tucker",
+    data=_tucker_data(),
+    test_with_out=st.just(False),
+)
+def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
+    (
+        input_dtypes,
+        x,
+        rank,
+        fixed_factors,
+        init,
+        n_iter_max,
+        mask,
+        svd_mask_repeats,
+        tol,
+    ) = data
+    test_flags.instance_method = False
+    test_flags.test_container = False
+    results = helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        input_dtypes=input_dtypes,
+        x=x,
+        rank=rank,
+        fixed_factors=fixed_factors,
+        n_iter_max=n_iter_max,
+        init=init,
+        tol=tol,
+        mask=mask,
+        svd_mask_repeats=svd_mask_repeats,
+        test_values=False,
+    )
+
+    ret_np, ret_from_gt_np = results
+
+    core = helpers.flatten_and_to_np(ret=ret_np[0], backend=backend_fw)
+    factors = helpers.flatten_and_to_np(ret=ret_np[1], backend=backend_fw)
+    core_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[0], backend=test_flags.ground_truth_backend
+    )
+    factors_gt = helpers.flatten_and_to_np(
+        ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
+    )
+
+    with update_backend(backend_fw) as ivy_backend:
+        n_elem = int(ivy_backend.prod(rank))
+
+    for c, c_gt in zip(core, core_gt):
+        assert np.prod(c.shape) == n_elem
+        assert np.prod(c_gt.shape) == n_elem
+
+    for f, f_gt in zip(factors, factors_gt):
+        assert np.prod(f.shape) == np.prod(f_gt.shape)
