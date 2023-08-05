@@ -19,7 +19,6 @@ from ivy.func_wrapper import (
 )
 from ivy.utils.exceptions import handle_exceptions
 
-
 # Extra #
 # ------#
 
@@ -821,7 +820,10 @@ def conv1d(
     /,
     *,
     data_format: str = "NWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int]] = 1,
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -843,8 +845,15 @@ def conv1d(
         The ordering of the dimensions in the input, one of "NWC" or "NCW". "NWC"
         corresponds to input with shape (batch_size, width, channels), while "NCW"
         corresponds to input with shape (batch_size, channels, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIW",
+         input data formats, while "channel_last" corresponds to "WIO", "HWIO", "DHWIO".
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -897,7 +906,10 @@ def conv1d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -920,6 +932,7 @@ def conv1d_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NWC",
     dilations: Union[int, Tuple[int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -944,6 +957,8 @@ def conv1d_transpose(
         corresponds to input with shape (batch_size, channels, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1034,6 +1049,7 @@ def conv1d_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1052,7 +1068,10 @@ def conv2d(
     /,
     *,
     data_format: str = "NHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1074,8 +1093,15 @@ def conv2d(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to "OIHW",
+         input data formats, while "channel_last" corresponds to "HWIO".
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1161,7 +1187,10 @@ def conv2d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1184,6 +1213,7 @@ def conv2d_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NHWC",
     dilations: Union[int, Tuple[int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1206,8 +1236,15 @@ def conv2d_transpose(
         The ordering of the dimensions in the input, one of "NHWC" or "NCHW". "NHWC"
         corresponds to inputs with shape (batch_size, height, width, channels), while
         "NCHW" corresponds to input with shape (batch_size, channels, height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds to
+        "OIDHW" input data formats, while "channel_last" corresponds to "DHWIO" .
+    x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1226,20 +1263,20 @@ def conv2d_transpose(
     With :class:`ivy.Array` input:
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     (1, 56, 56, 6)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 128, 128, 64])
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[1, 1, 64, 64])
-    >>> ivy.conv2d_transpose(x, filters, 1, 'VALID', out=x)
+    >>> ivy.conv2d_transpose(x,filters,1,'VALID',out=x)
     >>> print(x.shape)
     (1, 128, 128, 64)
 
     >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 256, 256, 64])
     >>> y = ivy.zeros_like(x)
     >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 64, 32])
-    >>> ivy.conv2d_transpose(x, filters, [1, 1, 1], 'VALID', out=y)
+    >>> ivy.conv2d_transpose(x,filters,[1, 1, 1],'VALID',out=y)
     >>> print(y.shape)
     (1, 258, 258, 32)
 
@@ -1248,7 +1285,7 @@ def conv2d_transpose(
     >>> a = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
     >>> b = ivy.random_normal(mean=0, std=1, shape=[3, 3, 1, 1])
     >>> filters = ivy.Container(a=a, b=b)
-    >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=2)
+    >>> y = ivy.conv2d_transpose(x,filters,1,'VALID',dilations=2)
     >>> print(y.shape)
     {
         a: [1,10,10,1],
@@ -1262,7 +1299,7 @@ def conv2d_transpose(
     >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
     >>> x = ivy.Container(a=a, b=b)
     >>> filters = ivy.Container(c=c, d=d)
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
+    >>> y = ivy.conv2d_transpose(x,filters,2,'SAME')
     >>> print(y.shape)
     {
         a: {
@@ -1283,6 +1320,7 @@ def conv2d_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1441,7 +1479,10 @@ def conv3d(
     /,
     *,
     data_format: str = "NDHWC",
+    filter_format: str = "channel_last",
+    x_dilations: Union[int, Tuple[int, int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1464,8 +1505,15 @@ def conv3d(
         corresponds to inputs with shape (batch_size, depth, height, width, channels),
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
         height, width).
+    filter_format
+        Either "channel_first" or "channel_last". "channel_first" corresponds 
+        to "OIDHW",input data formats, while "channel_last" corresponds to "DHWIO".
+     x_dilations
+        The dilation factor for each dimension of input. (Default value = 1)    
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1538,7 +1586,10 @@ def conv3d(
         strides,
         padding,
         data_format=data_format,
+        filter_format=filter_format,
+        x_dilations=x_dilations,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -1561,6 +1612,7 @@ def conv3d_transpose(
     output_shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
     data_format: str = "NDHWC",
     dilations: Union[int, Tuple[int, int, int]] = 1,
+    bias: Optional[ivy.Array] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -1586,6 +1638,8 @@ def conv3d_transpose(
         height, width).
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
+    bias
+        Bias array of shape *[d_out]*
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1650,6 +1704,7 @@ def conv3d_transpose(
         output_shape=output_shape,
         data_format=data_format,
         dilations=dilations,
+        bias=bias,
         out=out,
     )
 
@@ -2020,7 +2075,7 @@ def lstm_update(
 
 
 def _handle_padding(x, strides, filters, padding):
-    if padding == "SAME":
+    if isinstance(padding, str) and padding.upper() == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
         else:
@@ -2028,6 +2083,103 @@ def _handle_padding(x, strides, filters, padding):
     else:
         pad = 0
     return pad
+
+
+def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dims):
+    if isinstance(kernel, int):
+        kernel = (kernel,) * dims
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * dims
+    elif (len(kernel) != dims) and (len(kernel) != dims + 2):
+        raise ValueError(
+            "The kernel should be an integer, or a tuple of length"
+            f" {list(set((1, dims, dims+2)))}"
+        )
+
+    if isinstance(strides, int):
+        strides = (strides,) * dims
+    elif len(strides) == 1:
+        strides = (strides[0],) * dims
+    elif (len(strides) != dims) and (len(strides) != dims + 2):
+        raise ValueError(
+            "The stride should be an integer, or a tuple of length"
+            f" {list(set((1, dims, dims+2)))}"
+        )
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * dims
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * dims
+    elif isinstance(padding, tuple) and len(padding) == dims:
+        padding = [(padding[i],) * 2 for i in range(dims)]
+    elif isinstance(padding, list) and len(padding) == dims:
+        if not all([isinstance(p, tuple) and len(p) == 2 for p in padding]):
+            raise ValueError("Explicit padding must be a list of tuple of two integers")
+    if isinstance(padding, str) and padding.upper() not in ["VALID", "SAME"]:
+        raise ValueError(
+            f"Invalid padding arg {padding}Must be one of: 'VALID' or 'SAME'"
+        )
+
+    if isinstance(dilation, int):
+        dilation = (dilation,) * dims
+    elif len(dilation) == 1:
+        dilation = (dilation[0],) * dims
+    elif len(dilation) != dims:
+        raise ValueError(
+            f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
+        )
+    if min(dilation) < 1:
+        raise ValueError("All values of `dilation` must be positive")
+
+    # Other errors
+    if isinstance(padding, str) and (padding.upper() == "VALID") and ceil_mode:
+        raise ValueError("When 'padding' is 'VALID', 'ceil_mode' must be False")
+    assert len(kernel) == len(strides), f"len({kernel}) must equal len({strides})"
+
+    # Account for dilation when padding > kernel/2. Not the case in torch by default.
+    new_kernel = tuple(
+        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
+    )
+    if isinstance(padding, list) and len(padding) == len(new_kernel):
+        ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
+
+    return kernel, strides, padding, dilation
+
+
+def _depth_max_pooling_helper(
+    x_shape, kernel, strides, dims, data_format="channel_last"
+):
+    # Determine depth pooling.
+    # We assume that the kernel and the data have the same data_format.
+    depth_pooling = False
+    CHANNEL_LAST = "channel_last"
+    channel_idx = -1 if data_format == CHANNEL_LAST else 1
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1] if data_format == CHANNEL_LAST else kernel[2:]
+        if kernel[channel_idx] != 1:
+            depth_pooling = True
+            if any(i != 1 for i in spatial_kernel):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[channel_idx] != kernel[channel_idx]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x_shape[channel_idx] % kernel[channel_idx] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            kernel = [kernel[channel_idx], *[1] * (dims - 1)]
+            strides = [strides[channel_idx], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = strides[1:-1] if data_format == CHANNEL_LAST else strides[2:]
+    return kernel, strides, depth_pooling
 
 
 def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
