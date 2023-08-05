@@ -96,6 +96,7 @@ def test_tensorflow_eigvals(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_input
     assume(matrix_is_stable(x[0]))
@@ -104,6 +105,7 @@ def test_tensorflow_eigvals(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1123,10 +1125,12 @@ def test_tensorflow_tensor_diag(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
