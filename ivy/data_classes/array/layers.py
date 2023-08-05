@@ -350,7 +350,7 @@ class _ArrayWithLayers(abc.ABC):
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-        >>> result = ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True)
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
         >>> print(result)
         ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
@@ -358,7 +358,7 @@ class _ArrayWithLayers(abc.ABC):
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
         >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
-        >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1, mask=mask)
         >>> print(result)
         ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
@@ -366,7 +366,7 @@ class _ArrayWithLayers(abc.ABC):
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
         >>> out = ivy.zeros(shape=(1, 3, 2))
-        >>> ivy.scaled_dot_product_attention(q, k, v, 1,dropout_p=0.1,is_causal=True,training=True,out=out)
+        >>> ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True,out=out)
         >>> print(out)
         ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
         """

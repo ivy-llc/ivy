@@ -1507,6 +1507,8 @@ def x_and_scaled_attention(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=q_shape,
+            min_value=0,
+            max_value=1e2,
             large_abs_safety_factor=7,
             small_abs_safety_factor=7,
             safety_factor_scale="linear",
@@ -1516,6 +1518,8 @@ def x_and_scaled_attention(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=k_shape,
+            min_value=0,
+            max_value=1e2,
             large_abs_safety_factor=7,
             small_abs_safety_factor=7,
             safety_factor_scale="linear",
@@ -1525,12 +1529,13 @@ def x_and_scaled_attention(draw, dtypes):
         helpers.array_values(
             dtype=dtype[0],
             shape=v_shape,
+            min_value=0,
+            max_value=1e2,
             large_abs_safety_factor=7,
             small_abs_safety_factor=7,
             safety_factor_scale="linear",
         )
     )
-
     mask = draw(
         helpers.array_values(
             dtype="bool",
@@ -1548,8 +1553,7 @@ def x_and_scaled_attention(draw, dtypes):
         dtypes=helpers.get_dtypes("float"),
     ),
     dropout_p=st.floats(min_value=0, max_value=0.99),
-    is_causal=st.booleans(),
-    test_with_out=st.just(False),
+    is_causal=st.booleans()
 )
 def test_torch_scaled_dot_product_attention(
     *,
@@ -1562,7 +1566,7 @@ def test_torch_scaled_dot_product_attention(
     test_flags,
     backend_fw,
 ):
-    (dtype, query, key, value, mask) = dtype_q_k_v_mask
+    (dtype, query, key, value,mask) = dtype_q_k_v_mask
     is_causal = is_causal if mask is None else False
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -1572,8 +1576,8 @@ def test_torch_scaled_dot_product_attention(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=dropout_p == 0.0,
-        rtol=1e-02,
-        atol=1e-02,
+        rtol=1e-05,
+        atol=1e-05,
         query=query,
         key=key,
         value=value,
