@@ -891,7 +891,9 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self, other)
 
-    @numpy_to_torch_style_args
+    numpy_to_torch_style_args
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
