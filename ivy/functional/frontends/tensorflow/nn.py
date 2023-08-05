@@ -604,7 +604,7 @@ def weighted_moments(x, axes, frequency_weights, keepdims=False, name=None):
     return weighted_mean, weighted_variance
 
 
-#dropout
+# dropout
 @to_ivy_arrays_and_back
 def dropout(
     x,
@@ -619,4 +619,3 @@ def dropout(
         noise_shape=noise_shape,
         seed=seed,
     )
-

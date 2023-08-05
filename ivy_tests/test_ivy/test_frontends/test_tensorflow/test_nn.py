@@ -1901,7 +1901,7 @@ def test_tensorflow_weighted_moments(
     )
 
 
-#dropout
+# dropout
 @st.composite
 def _dropout_helper(draw):
     shape = draw(helpers.get_shape(min_num_dims=1))
@@ -1962,4 +1962,3 @@ def test_tensorflow_dropout(
     frontend_ret = helpers.flatten_and_to_np(ret=frontend_ret)
     for u, v, w in zip(ret, frontend_ret, x):
         assert u.shape == v.shape == w.shape
-
