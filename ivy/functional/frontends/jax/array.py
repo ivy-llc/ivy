@@ -299,16 +299,14 @@ class Array:
             where=where,
         )
     
-
     def ptp(
         self,
-        /,
         *,
         axis=None,
         out=None,
         keepdims=False,
-        where=None,
     ):
         return jax_frontend.numpy.ptp(
-            self, axis=axis, out=out, keepdims=keepdims, where=where
+            self, axis=axis, out=out, keepdims=keepdims
         )
+    
