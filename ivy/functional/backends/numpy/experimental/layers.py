@@ -966,6 +966,12 @@ def stft(
 ) -> np.ndarray:
     if window is None:
         window = np.hanning(n_fft)
+    else:
+        window = np.asarray(window)
+    
+    if center:
+        pad = (n_fft - frame_step) // 2
+        signal = np.pad(signal, [(0, 0)] * (signal.ndim - 1) + [(pad, pad)], mode=pad_mode)
 
     num_frames = (signal.shape[-1] - n_fft) // frame_step + 1
     stft_result = np.empty(signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128)
@@ -973,11 +979,19 @@ def stft(
     for i in range(num_frames):
         start = i * frame_step
         end = start + n_fft
-        frame = signal[start:end]
-        frame = frame * window
+        frame = signal[..., start:end]
+        
+        # Apply windowing
+        if win_length is not None:
+            frame = frame * window[:len(frame)]
+        else:
+            frame = frame * window
 
-        stft_frame = np.fft.fft(frame, n=n_fft, axis=0) 
-        stft_result[..., i, :n_fft // 2 + 1] = stft_frame[..., :n_fft // 2 + 1]
+        # Perform FFT using numpy's FFT function
+        stft_frame = np.fft.fft(frame, n=n_fft, axis=-1)
+        if onesided:
+            stft_frame = stft_frame[..., :n_fft // 2 + 1]
+        stft_result[..., i, :n_fft // 2 + 1] = stft_frame
 
     return stft_result
         
