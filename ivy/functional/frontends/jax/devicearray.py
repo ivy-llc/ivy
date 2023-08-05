@@ -299,6 +299,7 @@ class DeviceArray:
             where=where,
         )
     
+
     def ptp(
         self,
         /,
