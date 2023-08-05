@@ -11285,12 +11285,6 @@ def test_torch_instance_gcd(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
-    if backend_fw == "paddle" and (
-        "uint8" in input_dtype or "int16" in input_dtype or "int8" in input_dtype
-    ):
-        return
-    if backend_fw == "tensorflow" and "uint8" in input_dtype:
-        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
