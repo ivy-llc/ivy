@@ -11258,7 +11258,7 @@ def test_torch_instance_clamp_min(
     )
 
 
-#gcd
+# gcd
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -11277,10 +11277,10 @@ def test_torch_instance_clamp_min(
 )
 def test_torch_instance_gcd(
     dtype_and_x,
+    frontend,
     frontend_method_data,
     init_flags,
     method_flags,
-    frontend,
     on_device,
     backend_fw,
 ):
@@ -11301,9 +11301,9 @@ def test_torch_instance_gcd(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
-        frontend=frontend,
         on_device=on_device,
     )
