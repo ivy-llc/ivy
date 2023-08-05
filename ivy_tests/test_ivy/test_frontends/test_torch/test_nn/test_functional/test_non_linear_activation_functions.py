@@ -1553,7 +1553,7 @@ def x_and_scaled_attention(draw, dtypes):
         dtypes=helpers.get_dtypes("float"),
     ),
     dropout_p=st.floats(min_value=0, max_value=0.99),
-    is_causal=st.booleans()
+    is_causal=st.booleans(),
 )
 def test_torch_scaled_dot_product_attention(
     *,
@@ -1566,7 +1566,7 @@ def test_torch_scaled_dot_product_attention(
     test_flags,
     backend_fw,
 ):
-    (dtype, query, key, value,mask) = dtype_q_k_v_mask
+    (dtype, query, key, value, mask) = dtype_q_k_v_mask
     is_causal = is_causal if mask is None else False
     helpers.test_frontend_function(
         input_dtypes=dtype,

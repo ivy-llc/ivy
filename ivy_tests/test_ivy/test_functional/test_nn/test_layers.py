@@ -231,7 +231,7 @@ def x_and_scaled_attention(draw, dtypes):
     is_causal=st.booleans(),
     training=st.just(False),  # st.booleans(), disabled until proper testing is used
     ground_truth_backend="jax",
-    test_with_out=st.just(True)
+    test_with_out=st.just(True),
 )
 def test_scaled_dot_product_attention(
     *,
