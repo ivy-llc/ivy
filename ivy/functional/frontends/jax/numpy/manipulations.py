@@ -171,10 +171,6 @@ def tril(m, k=0):
 
 
 @to_ivy_arrays_and_back
-@with_supported_dtypes(
-    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
-    "paddle"
-)
 def trim_zeros(flit, trim="fb"):
     start_index = 0
     end_index = ivy.shape(flit)[0]
