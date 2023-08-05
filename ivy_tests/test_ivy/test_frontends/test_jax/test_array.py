@@ -2248,7 +2248,7 @@ def test_jax_array_min(
         indices_same_dims=True,
     ),
 )
-def test_jax_devicearray_take(
+def test_jax_array_take(
     dtype_indices_axis,
     frontend,
     frontend_method_data,
