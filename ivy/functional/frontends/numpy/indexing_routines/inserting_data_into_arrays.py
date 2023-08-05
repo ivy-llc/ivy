@@ -106,10 +106,9 @@ class AxisConcatenator:
                 newobj = item
             else:
                 item = ivy.array(item)
-                item_ndim = item.ndim
                 newobj = np_frontend.array(item, copy=False, ndmin=ndmin).ivy_array
-                if trans1d != -1 and item_ndim < ndmin:
-                    k2 = ndmin - item_ndim
+                if trans1d != -1 and item.ndim < ndmin:
+                    k2 = ndmin - item.ndim
                     k1 = trans1d
                     if k1 < 0:
                         k1 += k2 + 1
