@@ -235,10 +235,10 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def nll_loss(
-    input, 
-    label, 
-    weight=None, 
-    ignore_index=-100, 
+    input,
+    label,
+    weight=None,
+    ignore_index=-100,
     reduction="mean",
 ):
     "Refer https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for more on NLL(Negative log likelihood) Loss."
