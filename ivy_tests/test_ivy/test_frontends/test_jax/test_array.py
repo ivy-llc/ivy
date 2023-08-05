@@ -2246,7 +2246,7 @@ def test_jax_array_min(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_devicearray_ptp(
+def test_jax_array_ptp(
     dtype_and_x,
     keepdims,
     on_device,
@@ -2274,4 +2274,3 @@ def test_jax_devicearray_ptp(
         method_flags=method_flags,
         on_device=on_device,
     )
-

@@ -312,4 +312,3 @@ class Array:
         return jax_frontend.numpy.ptp(
             self, axis=axis, out=out, keepdims=keepdims, where=where
         )
-
