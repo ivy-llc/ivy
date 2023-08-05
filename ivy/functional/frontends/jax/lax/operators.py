@@ -668,3 +668,12 @@ def is_finite(x):
 @to_ivy_arrays_and_back
 def cbrt(x):
     return ivy.pow(x, 1 / 3)
+
+
+@with_unsupported_dtypes(
+    {"9.5.1 and below": ("float16", "bfloat16")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def cummin(operand, axis=0, reverse=False):
+    return ivy.cummin(operand, axis=axis, reverse=reverse, dtype=operand.dtype)
