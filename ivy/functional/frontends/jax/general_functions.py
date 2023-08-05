@@ -24,4 +24,9 @@ def device_get(x):
 
 @to_ivy_arrays_and_back
 def device_put(x, device=None, *, src=None):
-    return ivy.to_device(x, device)
+    if device is not None:
+        cur_dev = ivy.dev(x)
+        device = ivy.as_ivy_dev(device)
+        if cur_dev != device:
+            x = ivy.to_device(x, device)
+    return x

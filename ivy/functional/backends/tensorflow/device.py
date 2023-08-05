@@ -15,6 +15,14 @@ import ivy
 from ivy.functional.ivy.device import Profiler as BaseProfiler
 
 
+def _same_device(dev_a, dev_b):
+    if dev_a is None or dev_b is None:
+        return False
+    return "/" + ":".join(dev_a[1:].split(":")[-2:]) == "/" + ":".join(
+        dev_b[1:].split(":")[-2:]
+    )
+
+
 def dev(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -35,64 +43,36 @@ def to_device(
     stream: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if device is not None:
-        native_device = as_native_dev(device)
-        current_dev = dev(x, as_native=True)
-        if not _same_device(current_dev, native_device):
-            with tf.device(native_device):
-                return tf.identity(x)
+    if device is None:
+        return x
+    device = as_native_dev(device)
+    current_dev = dev(x)
+    if not _same_device(current_dev, device):
+        with tf.device("/" + device.upper()):
+            return tf.identity(x)
     return x
 
 
 def as_ivy_dev(device: str, /):
     if isinstance(device, str) and "/" not in device:
         return ivy.Device(device)
-    if is_native_dev(device):
-        dev_in_split = device[1:].split(":")[-2:]
-        dev_type, dev_idx = dev_in_split
-        dev_type = dev_type.lower()
-        if dev_type == "cpu" and dev_idx == "0":
-            return ivy.Device("cpu")
-        return ivy.Device(":".join([dev_type, dev_idx]))
-    else:
-        raise ivy.utils.exceptions.IvyException(
-            f"Cannot convert {device} to an ivy device. Expected a "
-            f"str, got {type(device)}"
-        )
+    dev_in_split = device[1:].split(":")[-2:]
+    if len(dev_in_split) == 1:
+        return ivy.Device(dev_in_split[0])
+    dev_type, dev_idx = dev_in_split
+    dev_type = dev_type.lower()
+    if dev_type == "cpu":
+        return ivy.Device(dev_type)
+    return ivy.Device(":".join([dev_type, dev_idx]))
 
 
 def as_native_dev(device: str, /):
-    if is_native_dev(device):
-        return _shorten_device(device)
-    if isinstance(device, str) and "/" not in device:
-        ret = "/" + ivy.Device(device).upper()
-        if not ret[-1].isnumeric():
-            ret += ":0"
-        return ret
-    else:
-        raise ivy.utils.exceptions.IvyError(
-            f"Cannot convert {device} to an ivy device. Expected a "
-            f"str, got {type(device)}"
-        )
-
-
-def is_native_dev(device: str, /):
-    if isinstance(device, str) and device[0] == "/":
-        dev_in_split = device[1:].split(":")[-2:]
-        if len(dev_in_split) == 2:
-            if dev_in_split[0] in ["CPU", "GPU", "TPU"] and dev_in_split[1].isnumeric():
-                return True
-    return False
-
-
-def _shorten_device(device: str):
-    return "/" + ":".join(device[1:].split(":")[-2:])
-
-
-def _same_device(dev_a, dev_b):
-    if dev_a is None or dev_b is None:
-        return False
-    return _shorten_device(dev_a) == _shorten_device(dev_b)
+    if isinstance(device, str) and "/" in device:
+        return device
+    ret = "/" + ivy.Device(device).upper()
+    if not ret[-1].isnumeric():
+        ret += ":0"
+    return ret
 
 
 def clear_cached_mem_on_dev(device: str, /):
@@ -117,6 +97,12 @@ def tpu_is_available() -> bool:
         return True
     except ValueError:
         return False
+
+
+def handle_soft_device_variable(*args, fn, **kwargs):
+    default_device = ivy.default_device(as_native=True)
+    with tf.device(default_device):
+        return fn(*args, **kwargs)
 
 
 class Profiler(BaseProfiler):
