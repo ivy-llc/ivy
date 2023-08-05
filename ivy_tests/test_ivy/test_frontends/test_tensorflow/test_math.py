@@ -1461,6 +1461,38 @@ def test_tensorflow_unsorted_segment_mean(
     )
 
 
+# unsorted_segment_sum
+@handle_frontend_test(
+    fn_tree="tensorflow.math.unsorted_segment_sum",
+    data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
+    segment_ids=helpers.array_values(
+        dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_unsorted_segment_sum(
+    *,
+    data,
+    segment_ids,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=["int32", "int64"],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=data,
+        segment_ids=segment_ids,
+        num_segments=np.max(segment_ids) + 1,
+    )
+
+
 # unsorted_segment_sqrt_n
 @handle_frontend_test(
     fn_tree="tensorflow.math.unsorted_segment_sqrt_n",
@@ -2873,6 +2905,7 @@ def test_tensorflow_bincount(
     *,
     dtype_and_x,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -2880,6 +2913,7 @@ def test_tensorflow_bincount(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
