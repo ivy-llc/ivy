@@ -2274,10 +2274,12 @@ def test_jax_searchsorted(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": xs[0],
         },
