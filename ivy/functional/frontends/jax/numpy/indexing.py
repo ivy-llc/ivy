@@ -86,6 +86,13 @@ def diag_indices_from(arr):
 @to_ivy_arrays_and_back
 def apply_along_axis(func1d: Callable, axis: int, arr, *args, **kwargs):
     ndim = ivy.get_num_dims(arr)
+    if axis is None:
+        raise ValueError("Axis must be an integer.")
+    if not -ndim <= axis < ndim:
+        raise ValueError(f"axis {axis} is out of bounds for array of dimension {ndim}")
+    if axis < 0:
+        axis = axis + ndim
+
     func = lambda elem: func1d(elem, *args, **kwargs)
     # apply from the back (out_axes=-1)
     for i in range(1, ndim - axis):

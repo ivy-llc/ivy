@@ -435,12 +435,9 @@ def test_jax_diag_indices_from(
     dtype_x_axis=helpers.dtype_values_axis(
         num_arrays=1,
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=5,
+        min_num_dims=1,
         valid_axis=True,
-        allow_neg_axes=False,
+        allow_neg_axes=True,
         force_int_axis=True,
     ),
     test_with_out=st.just(True),
@@ -452,6 +449,7 @@ def test_jax_apply_along_axis(
     frontend,
     fn_tree,
     on_device,
+    backend_fw
 ):
     x_dtype, x, axis = dtype_x_axis
 
@@ -460,9 +458,11 @@ def test_jax_apply_along_axis(
 
     if isinstance(axis, tuple):
         axis = axis[0]
-
+    if axis == None:
+        axis = 0
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
