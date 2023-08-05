@@ -38,7 +38,7 @@ def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
 
-@with_supported_dtypes({"2.0.0 and below": "float16"}, "mindspore")
+@with_supported_dtypes({"2.0.0 and below": ("float32", "float16")}, "mindspore")
 @to_ivy_arrays_and_back
 def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
     gumbels = -ivy.empty_like(logits).exponential().log()
@@ -57,13 +57,29 @@ def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
 
     return ret
 
-@with_supported_dtypes({"2.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")}, "mindspore")
+
+@with_supported_dtypes(
+    {
+        "2.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
 @to_ivy_arrays_and_back
-def pad(input, pad_width, mode='constant', constant_values=0):
+def pad(input, pad_width, mode="constant", constant_values=0):
     return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)
 
 
-@with_supported_dtypes({"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore")
+@with_supported_dtypes(
+    {"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore"
+)
 @to_ivy_arrays_and_back
 def adaptive_avg_pool2d(input, output_size):
     return ivy.adaptive_avg_pool2d(input, output_size)

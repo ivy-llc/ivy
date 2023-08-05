@@ -81,48 +81,47 @@
 # gumbel_softmax
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.gumbel_softmax",
-#     logits=helpers.dtype_and_values(
+#     dtype_and_logits=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
 #         shared_dtype=True,
 #     ),
 #     tau=st.floats(min_value=0.1, max_value=10.0),
 #     hard=st.booleans(),
-#     eps=st.floats(min_value=1e-12, max_value=1e-6),
 #     dim=st.integers(min_value=-1, max_value=1),
 # )
 # def test_mindspore_gumbel_softmax(
 #     *,
-#     logits,
+#     dtype_and_logits,
 #     tau,
 #     hard,
-#     eps,
 #     dim,
 #     on_device,
 #     fn_tree,
 #     frontend,
 #     test_flags,
 # ):
-#     input_logits = logits
+#     input_dtype, logits = dtype_and_logits
 #     gumbel_tau = tau
 #     gumbel_hard = hard
-#     gumbel_eps = eps
 #     gumbel_dim = dim
 
 #     helpers.test_frontend_function(
-#         input_logits=input_logits,
+#         logits=input_dtype,
+#         test_values=False,
 #         frontend=frontend,
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
-#         gumbel_tau=gumbel_tau,
-#         gumbel_hard=gumbel_hard,
-#         gumbel_eps=gumbel_eps,
-#         gumbel_dim=gumbel_dim,
+#         tau=gumbel_tau,
+#         hard=gumbel_hard,
+#         dim=gumbel_dim,
 #     )
 
 
 # pad
+
+
 # @handle_frontend_test(
 #     fn_tree="pad",
 #     input=helpers.dtype_and_values(
@@ -133,8 +132,13 @@
 #         max_value=5,
 #         min_dim_size=4,
 #     ),
-#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5), st.integers(min_value=0, max_value=5))),
-#     mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
+#     pad_width=st.lists(
+#         st.tuples(
+#             st.integers(min_value=0, max_value=5),
+#             st.integers(min_value=0, max_value=5)
+#         )
+#     ),
+#     mode=st.sampled_from(["constant", "reflect", "replicate", "circular"]),
 #     constant_values=st.floats(min_value=0.0, max_value=1.0),
 # )
 # def test_mindspore_pad(
