@@ -951,7 +951,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
+        atol=1e-4,
         x=x[0],
     )
 
