@@ -215,6 +215,13 @@ class Tensor:
     def isinf(self, name=None):
         return paddle_frontend.Tensor(ivy.isinf(self._ivy_array))
 
+    @with_supported_dtypes(
+        {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")},
+        "paddle",
+    )
+    def isreal(self, name=None):
+        return paddle_frontend.Tensor(ivy.isreal(self._ivy_array))
+
     @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def square(self, name=None):
         return paddle_frontend.Tensor(ivy.square(self._ivy_array))

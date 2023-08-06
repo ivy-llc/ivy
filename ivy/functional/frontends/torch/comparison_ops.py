@@ -122,6 +122,11 @@ def isinf(input):
 
 
 @to_ivy_arrays_and_back
+def isreal(input):
+    return ivy.isreal(input)
+
+
+@to_ivy_arrays_and_back
 def isposinf(input, *, out=None):
     is_inf = ivy.isinf(input)
     pos_sign_bit = ivy.bitwise_invert(ivy.less(input, 0))
