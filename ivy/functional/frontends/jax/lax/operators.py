@@ -668,3 +668,8 @@ def is_finite(x):
 @to_ivy_arrays_and_back
 def cbrt(x):
     return ivy.pow(x, 1 / 3)
+
+
+@to_ivy_arrays_and_back
+def igamma(a, x, name=None):
+    return ivy.igamma(a, x=x)
