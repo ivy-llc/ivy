@@ -822,3 +822,34 @@ def test_digamma(
         on_device=on_device,
         x=x[0],
     )
+
+
+#amax
+@handle_test(
+    fn_tree="functional.ivy.experimental.amax",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=0,
+        exclude_min=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_amax(
+    *,
+    dtype_and_x,
+    backend_fw,
+    test_flags,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    result = ivy.functional.amax(x, axis=None)
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        fw=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
