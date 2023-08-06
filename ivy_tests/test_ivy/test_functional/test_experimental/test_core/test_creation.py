@@ -387,7 +387,7 @@ def test_unsorted_segment_sum(
         input_dtypes=dtypes,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         data=data,
         segment_ids=segment_ids,
