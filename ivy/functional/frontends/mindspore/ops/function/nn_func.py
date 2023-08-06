@@ -44,6 +44,9 @@ def softsign(x):
 @to_ivy_arrays_and_back
 def mish(x):
     return ivy.mish(x)
+
+
+@with_supported_dtypes(    
     {
         "2.0 and below": (
             "int8",
