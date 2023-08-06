@@ -92,6 +92,6 @@ def fromfunction(function, shape, *, dtype="float64", like=None, **kwargs):
     base = ivy.empty(shape=shape, dtype=dtype)
     for idx in ivy.ndindex(shape):
         ivy.set_nest_at_index(
-            base, idx, ivy.array(function(*idx, **kwargs), dtype=dtype)
+            base, idx, ivy.astype(ivy.array(function(*idx, **kwargs)), dtype)
         )
     return base
