@@ -213,3 +213,29 @@ def test_jax_while_loop(
         body_fun=_test_body_fn,
         init_val=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.scan",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes()),
+    test_with_out=st.just(False),
+)
+def test_jax_scan(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
