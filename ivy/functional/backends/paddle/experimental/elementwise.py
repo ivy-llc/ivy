@@ -644,3 +644,15 @@ def digamma(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.digamma(x)
+
+
+def amax(
+    x: paddle.Tensor, 
+    /, 
+    *, 
+    out: Optional[paddle.Tensor] = None,
+    axis: Optional[Union[int, tuple]] = None,
+    keepdims: Optional[bool] = False
+) -> paddle.Tensor:
+    with ivy.ArrayMode(False):
+        return paddle.reduce_max(x, out=out, axis=axis, keepdims=keepdims)
