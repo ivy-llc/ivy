@@ -22,6 +22,25 @@ from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
     "mindspore",
 )
 @to_ivy_arrays_and_back
+def dropout(input, p=0.5, training=True, seed=None):
+    return ivy.dropout(input, p, training=training, seed=seed)
+
+
+@with_supported_dtypes(
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "mindspore",
+)
+@to_ivy_arrays_and_back
 def dropout2d(input, p=0.5, training=True):
     return ivy.dropout2d(input, p, training=training, data_format="NCHW")
 
