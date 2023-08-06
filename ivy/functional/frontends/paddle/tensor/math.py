@@ -390,8 +390,3 @@ def rsqrt(x, name=None):
 def floor_mod(input, div):
     result = input - ivy.floor(input / div) * div
     return result 
-
-input_tensor = ([10, 20, 30, 40])
-divisor_tensor = ([3, 7, 15, 5])
-result = floor_mod(input_tensor, divisor_tensor)
-print(result)  
