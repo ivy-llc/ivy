@@ -13,3 +13,8 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
     return Tensor(array)
+
+
+@to_ivy_arrays_and_back
+def vflip(img):
+    return ivy.flip(ivy.array(img), axis=0)
