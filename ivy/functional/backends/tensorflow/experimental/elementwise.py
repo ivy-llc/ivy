@@ -516,3 +516,14 @@ def digamma(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.digamma(x)
+
+
+def amax(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[int] = None,
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.amax(x, axis=axis, keepdims=keepdims, out=out)
