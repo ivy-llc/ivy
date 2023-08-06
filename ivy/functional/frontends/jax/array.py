@@ -299,7 +299,6 @@ class Array:
             where=where,
         )
     
-
     def ptp(
         self,
         *,
@@ -308,4 +307,3 @@ class Array:
         keepdims=False,
     ):
         return jax_frontend.numpy.ptp(self, axis=axis, out=out, keepdims=keepdims)
-    
