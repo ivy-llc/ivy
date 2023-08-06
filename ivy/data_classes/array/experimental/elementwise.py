@@ -1020,3 +1020,38 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
+    
+    def amax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[int] = None,
+        keepdims: Optional[bool] = False,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.amax. This method simply wraps the
+        function, and so the docstring for ivy.amax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which to operate. The default is None.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one. The default is False.
+
+        Returns
+        -------
+        ret
+            The maximum values along the specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3], [4, 5, 6]])
+        >>> x.amax(axis=1)
+        ivy.array([3, 6])
+        """
+        return ivy.amax(self._data, axis=axis, keepdims=keepdims)
