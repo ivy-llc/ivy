@@ -232,10 +232,10 @@ def margin_ranking_loss(input, other, label, margin=0.0, reduction="mean", name=
     return out
 
 
-@to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
 def triplet_margin_loss(
-    anchor,
+    input,
     positive,
     negative,
     margin=1.0,
@@ -259,7 +259,7 @@ def triplet_margin_loss(
 
     reduction = _get_reduction_func(reduction)
 
-    a_dim = anchor.ndim
+    a_dim = input.ndim
     p_dim = positive.ndim
     n_dim = negative.ndim
 
@@ -272,8 +272,8 @@ def triplet_margin_loss(
         ),
     )
 
-    dist_positive = pairwise_distance(anchor, positive, p=p, eps=eps)
-    dist_negative = pairwise_distance(anchor, negative, p=p, eps=eps)
+    dist_positive = pairwise_distance(input, positive, p=p, eps=eps)
+    dist_negative = pairwise_distance(input, negative, p=p, eps=eps)
     if swap:
         dist_swap = pairwise_distance(positive, negative, p=p, eps=eps)
         dist_negative = ivy.minimum(dist_negative, dist_swap)
@@ -281,5 +281,5 @@ def triplet_margin_loss(
         dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)
     )
 
-    loss = reduction(loss).astype(anchor.dtype)
+    loss = reduction(loss).astype(input.dtype)
     return loss

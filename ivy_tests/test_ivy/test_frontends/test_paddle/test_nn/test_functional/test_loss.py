@@ -406,7 +406,11 @@ def test_paddle_margin_ranking_loss(
         max_num_dims=2,
         min_dim_size=1,
     ),
+    margin=st.floats(min_value=1e-6, max_value=1e6),
+    p=st.integers(min_value=0, max_value=2),
+    swap=st.booleans(),
     reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
 )
 def test_paddle_triplet_margin_loss(
     dtype_and_inputs,
@@ -421,7 +425,7 @@ def test_paddle_triplet_margin_loss(
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
-    anchor_dtype, anchor = input_dtype[0], x[0]
+    anchor_dtype, input = input_dtype[0], x[0]
     positive_dtype, positive = input_dtype[1], x[1]
     negative_dtype, negative = input_dtype[2], x[2]
     helpers.test_frontend_function(
@@ -431,7 +435,7 @@ def test_paddle_triplet_margin_loss(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        anchor=anchor,
+        input=input,
         positive=positive,
         negative=negative,
         margin=margin,
