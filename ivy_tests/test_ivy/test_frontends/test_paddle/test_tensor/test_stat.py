@@ -133,7 +133,7 @@ def test_paddle_median(
     )
 
 
-#var
+# var
 @handle_frontend_test(
     fn_tree="paddle.var",
     dtype_and_x=_statistical_dtype_values(function="var"),
