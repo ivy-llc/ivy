@@ -272,3 +272,37 @@ def test_paddle_randint_like(
         high=high,
         dtype=dtype[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.tensor.random.exponential_",
+    lam=helpers.floats(min_value=0.1, max_value=1.0),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+)
+def test_paddle_exponential_(
+    fn_tree,
+    lam,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        x=x[0],
+        lam=lam,
+    )
