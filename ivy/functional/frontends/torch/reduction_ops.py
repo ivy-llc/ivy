@@ -360,3 +360,19 @@ def unique_consecutive(input, return_inverse, return_counts, dim):
     if return_counts:
         ret += (counts,)
     return ret
+
+
+# nanquantile
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
+def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
+nanquantile.unsupported_dtypes = {
+    "torch": ("float16", "bfloat16"),
+    "numpy": ("float16", "bfloat16"),
+    "jax": ("float16", "bfloat16"),
+    "tensorflow": ("float16", "bfloat16"),
+}
