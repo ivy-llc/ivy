@@ -24,7 +24,7 @@ class matrix:
             data = ivy.array(data, dtype=dtype, copy=copy)
             self._data = data
         elif ivy.isscalar(data):
-            self._data = ivy.array(data)
+            self._data = ivy.asarray(data, dtype=dtype)
         else:
             raise ivy.utils.exceptions.IvyException(
                 "data must be an array, list, or scalar"
