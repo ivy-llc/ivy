@@ -301,6 +301,34 @@ class Array(
         """Original array referenced by view."""
         return self._base
 
+    @property
+    def real(self) -> ivy.Array:
+        """
+        Real part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the real part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.real(self._data)
+
+    @property
+    def imag(self) -> ivy.Array:
+        """
+        Imaginary part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the imaginary part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.imag(self._data)
+
     # Setters #
     # --------#
 
@@ -731,16 +759,31 @@ class Array(
         return ivy.abs(self._data)
 
     def __float__(self):
-        res = self._data.__float__()
+        if hasattr(self._data, "__float__"):
+            if "complex" in self.dtype:
+                res = float(self.real)
+            else:
+                res = self._data.__float__()
+        else:
+            res = float(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            res = self._data.__int__()
+            if "complex" in self.dtype:
+                res = int(self.real)
+            else:
+                res = self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
