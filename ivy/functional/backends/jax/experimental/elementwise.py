@@ -464,3 +464,13 @@ def digamma(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return js.special.digamma(x)
+
+
+def amax(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.amax(x)
