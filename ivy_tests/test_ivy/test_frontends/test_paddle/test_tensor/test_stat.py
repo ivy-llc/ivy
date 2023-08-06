@@ -132,6 +132,7 @@ def test_paddle_median(
         keepdim=keepdim,
     )
 
+
 #var
 @handle_frontend_test(
     fn_tree="paddle.var",
