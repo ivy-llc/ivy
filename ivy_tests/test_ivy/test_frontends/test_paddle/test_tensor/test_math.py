@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import _get_dtype_input_and_matrices
 
 
 # sin
@@ -951,7 +952,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
+        atol=1e-4,
         x=x[0],
     )
 
@@ -1863,4 +1864,31 @@ def test_paddle_diff(
         axis=axis,
         prepend=prepend[0],
         append=append[0],
+    )
+
+
+# mm
+@handle_frontend_test(
+    fn_tree="paddle.tensor.math.mm",
+    dtype_xy=_get_dtype_input_and_matrices(),
+)
+def test_paddle_mm(
+    *,
+    dtype_xy,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, y = dtype_xy
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        mat2=y,
     )
