@@ -566,3 +566,33 @@ def embedding_helper(draw, mixed_fn_compos=True):
     )
     padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
     return dtype_indices + dtype_weight, indices[0], weight[0], padding_idx
+
+
+@st.composite
+def shape_and_function(
+    draw,
+    *,
+    allow_none=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    shape = draw(
+        get_shape(
+            allow_none=allow_none,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    VARS = "abcdefghijklmnopqrstuvw"
+    args = ""
+    out = ""
+    for i in range(len(shape)):
+        args += f"{VARS[i]},"
+        out += f"{VARS[i]}+"
+    fn_str = f"lambda {args[:-1]}: {out[:-1]}"
+    function = draw(st.functions(like=eval(fn_str)))
+    return shape, function
