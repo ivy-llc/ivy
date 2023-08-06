@@ -2399,13 +2399,11 @@ def angle(
 
     Examples
     --------
-    >>> ivy.set_backend('tensorflow')
     >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
     >>> z
     ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
     >>> ivy.angle(z)
     ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.set_backend('numpy')
     >>> ivy.angle(z,deg=True)
     ivy.array([135., 135., -45.])
     """

@@ -9,7 +9,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     outputs_to_frontend_arrays,
     to_ivy_arrays_and_back,
 )
-from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.jax.array import Array
 import ivy.functional.frontends.jax as jax_frontend
 
 
@@ -29,7 +29,7 @@ def _fn(x, check_default=False):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
+def test_jax_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
@@ -48,7 +48,7 @@ def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
     assert ivy.all(ivy.equal(input_native, output.data))
 
     # check for frontend array
-    input_frontend = DeviceArray(x[0])
+    input_frontend = Array(x[0])
     output = inputs_to_ivy_arrays(_fn)(input_frontend)
     assert isinstance(output, ivy.Array)
     assert input_frontend.dtype == output.dtype
@@ -61,14 +61,14 @@ def test_inputs_to_ivy_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
+def test_jax_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
     output = outputs_to_frontend_arrays(_fn)(input_ivy, check_default=True)
-    assert isinstance(output, DeviceArray)
+    assert isinstance(output, Array)
     assert input_ivy.dtype == output.dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
@@ -81,28 +81,28 @@ def test_outputs_to_frontend_arrays(dtype_and_x, backend_fw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
+def test_jax_to_ivy_arrays_and_back(dtype_and_x, backend_fw):
     ivy.set_backend(backend_fw)
     x_dtype, x = dtype_and_x
 
     # check for ivy array
     input_ivy = ivy.array(x[0], dtype=x_dtype[0])
     output = to_ivy_arrays_and_back(_fn)(input_ivy, check_default=True)
-    assert isinstance(output, DeviceArray)
+    assert isinstance(output, Array)
     assert input_ivy.dtype == output.dtype
     assert ivy.all(input_ivy == output.ivy_array)
 
     # check for native array
     input_native = ivy.native_array(input_ivy)
     output = to_ivy_arrays_and_back(_fn)(input_native, check_default=True)
-    assert isinstance(output, DeviceArray)
+    assert isinstance(output, Array)
     assert ivy.as_ivy_dtype(input_native.dtype) == output.dtype
     assert ivy.all(ivy.equal(input_native, output.ivy_array.data))
 
     # check for frontend array
-    input_frontend = DeviceArray(x[0])
+    input_frontend = Array(x[0])
     output = to_ivy_arrays_and_back(_fn)(input_frontend, check_default=True)
-    assert isinstance(output, DeviceArray)
+    assert isinstance(output, Array)
     assert str(input_frontend.dtype) == str(output.dtype)
     assert ivy.all(input_frontend.ivy_array == output.ivy_array)
 

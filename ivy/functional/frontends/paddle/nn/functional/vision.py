@@ -6,10 +6,69 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
+from ivy.utils.assertions import check_equal
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
+def pixel_shuffle(x, upscale_factor, data_format="NCHW"):
+    input_shape = ivy.shape(x)
+    check_equal(
+        len(input_shape),
+        4,
+        message="pixel shuffle requires a 4D input, but got input size {}".format(
+            input_shape
+        ),
+    )
+
+    if not isinstance(upscale_factor, int):
+        raise ValueError("upscale factor must be int type")
+
+    if data_format not in ["NCHW", "NHWC"]:
+        raise ValueError(
+            "Attr(data_format) should be 'NCHW' or 'NHWC'."
+            "But recevie Attr(data_format): {} ".format(data_format)
+        )
+
+    b = input_shape[0]
+    c = input_shape[1] if data_format == "NCHW" else input_shape[3]
+    h = input_shape[2] if data_format == "NCHW" else input_shape[1]
+    w = input_shape[3] if data_format == "NCHW" else input_shape[2]
+
+    upscale_factor_squared = upscale_factor**2
+
+    check_equal(
+        c % upscale_factor_squared,
+        0,
+        message=(
+            "pixel shuffle expects input channel to be divisible by square of upscale"
+            " factor, but got input with sizes {}, upscale factor={}, and"
+            " self.size(1)={}, is not divisible by {}".format(
+                input_shape, upscale_factor, c, upscale_factor_squared
+            )
+        ),
+        as_array=False,
+    )
+
+    oc = int(c / upscale_factor_squared)
+    oh = h * upscale_factor
+    ow = w * upscale_factor
+
+    if data_format == "NCHW":
+        input_reshaped = ivy.reshape(x, (b, oc, upscale_factor, upscale_factor, h, w))
+    else:
+        input_reshaped = ivy.reshape(x, (b, h, w, upscale_factor, upscale_factor, oc))
+
+    if data_format == "NCHW":
+        return ivy.reshape(
+            ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oc, oh, ow)
+        )
+    return ivy.reshape(
+        ivy.permute_dims(input_reshaped, (0, 1, 4, 2, 5, 3)), (b, oh, ow, oc)
+    )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def affine_grid(theta, out_shape, align_corners=True):
     if len(out_shape) == 4:
         N, C, H, W = out_shape
