@@ -46,7 +46,7 @@ def mish(x):
     return ivy.mish(x)
 
 
-@with_supported_dtypes(    
+@with_supported_dtypes(
     {
         "2.0 and below": (
             "int8",
