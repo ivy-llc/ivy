@@ -1,7 +1,7 @@
 # global
 from typing import Optional, Union, Sequence
 import paddle
-
+from ivy.functional.backends.paddle.device import to_device
 from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
@@ -9,13 +9,14 @@ from ivy.utils.exceptions import IvyNotImplementedException
 # local
 import ivy
 from paddle.device import core
+from ivy import with_supported_device_and_dtypes
 
 # dirichlet
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -90,6 +91,23 @@ def poisson(
     raise IvyNotImplementedException()
 
 
+# bernoulli
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        },
+        "2.4.2 and below": {
+            "cpu": (
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16", "float32", "float64"),
+        },
+    },
+    backend_version,
+)
 def bernoulli(
     probs: Union[float, paddle.Tensor],
     *,
@@ -100,4 +118,14 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if seed is not None:
+        paddle.seed(seed)
+    if probs is not None:
+        probs = probs
+    elif logits is not None:
+        probs = ivy.softmax(logits)
+    probs = paddle.cast(probs, dtype)
+    probs = paddle.unsqueeze(probs, 0) if len(probs.shape) == 0 else probs
+    probs = paddle.maximum(probs, paddle.full_like(probs, 1e-6))
+    sample = paddle.bernoulli(probs)
+    return to_device(sample, device)

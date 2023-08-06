@@ -10,6 +10,9 @@ from ivy import (
 )
 from .. import backend_version
 
+# from ivy.functional.backends.paddle.experimental.statistical import to_positive_axis
+from copy import deepcopy
+
 
 def histogram(
     a: tf.Tensor,
@@ -112,6 +115,142 @@ def nanmean(
     return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
 
 
+def _validate_quantile(q):
+    if tf.experimental.numpy.ndim(q) == 1 and tf.size(q) < 10:
+        for i in range(tf.size(q)):
+            if not (0.0 <= q[i] <= 1.0):
+                return False
+    else:
+        if not (tf.math.reduce_all(0 <= q) and tf.math.reduce_all(q <= 1)):
+            return False
+    return True
+
+
+def to_positive_axis(axis, ndim):
+    if not isinstance(axis, (list, tuple)):
+        axis = [axis]
+
+    if len(axis) == 0:
+        raise ValueError("Axis can't be empty!")
+
+    if len(set(axis)) != len(axis):
+        raise ValueError("Duplicated axis!")
+
+    for i in range(len(axis)):
+        if not (isinstance(axis[i], int) and (ndim > axis[i] >= -ndim)):
+            raise ValueError("Axis must be int in range [-rank(x), rank(x))")
+        if axis[i] < 0:
+            axis[i] += ndim
+    return axis
+
+
+def _handle_axis(a, q, fn, keepdims=False, axis=None):
+    nd = tf.experimental.numpy.ndim(a)
+    axis_arg = deepcopy(axis)
+    if axis is not None:
+        axis = to_positive_axis(axis, nd)
+
+        if len(axis) == 1:
+            axis_arg = axis[0]
+        else:
+            keep = set(range(nd)) - set(axis)
+            nkeep = len(keep)
+
+            for i, s in enumerate(sorted(keep)):
+                a = tf.experimental.numpy.moveaxis(a, s, i)
+            a = tf.reshape(
+                a,
+                [
+                    *a.shape[:nkeep],
+                    -1,
+                ],
+            )
+            axis_arg = -1
+
+    ret = fn(a, q, axis=axis_arg)
+
+    if keepdims:
+        if axis is None:
+            index_ret = (None,) * nd
+        else:
+            index_ret = tuple(None if i in axis else slice(None) for i in range(nd))
+        ret = ret[(Ellipsis,) + index_ret]
+
+    return ret
+
+
+def _quantile(a, q, axis=None):
+    ret_dtype = a.dtype
+    if tf.experimental.numpy.ndim(q) > 2:
+        raise ValueError("q argument must be a scalar or 1-dimensional!")
+    if axis is None:
+        axis = 0
+        a = tf.reshape(a, [-1])
+
+    n = a.shape[axis]
+    if axis != 0:
+        a = tf.experimental.numpy.moveaxis(a, axis, 0)
+
+    indices = []
+    for q_num in q:
+        index = q_num * (n - 1)
+        indices.append(index)
+
+    a = tf.sort(a, 0)
+    outputs = []
+
+    for index in indices:
+        indices_below = tf.cast(tf.math.floor(index), dtype=tf.int32)
+        indices_upper = tf.cast(tf.math.ceil(index), dtype=tf.int32)
+
+        weights = index - tf.cast(indices_below, dtype=ret_dtype)
+
+        indices_below = tf.clip_by_value(indices_below, 0, n - 1)
+        indices_upper = tf.clip_by_value(indices_upper, 0, n - 1)
+        tensor_upper = tf.gather(a, indices_upper, axis=0)
+        tensor_below = tf.gather(a, indices_below, axis=0)
+
+        pred = weights <= 0.5
+        out = tf.where(pred, tensor_below, tensor_upper)
+        outputs.append(out)
+    return tf.convert_to_tensor(outputs, dtype=ret_dtype)
+
+
+def _compute_quantile_wrapper(
+    x,
+    q,
+    axis=None,
+    keepdims=False,
+    interpolation="linear",
+):
+    if not _validate_quantile(q):
+        raise ValueError("Quantiles must be in the range [0, 1]")
+    if interpolation in [
+        "linear",
+        "lower",
+        "higher",
+        "midpoint",
+        "nearest",
+        "nearest_jax",
+    ]:
+        if interpolation == "nearest_jax":
+            return _handle_axis(x, q, _quantile, keepdims=keepdims, axis=axis)
+        else:
+            axis = tuple(axis) if isinstance(axis, list) else axis
+
+            return tfp.stats.percentile(
+                x,
+                tf.math.multiply(q, 100),
+                axis=axis,
+                interpolation=interpolation,
+                keepdims=keepdims,
+            )
+    else:
+        raise ValueError(
+            "Interpolation must be 'linear', 'lower', 'higher', 'midpoint' or 'nearest'"
+        )
+
+
 def quantile(
     a: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, float],
@@ -122,16 +261,14 @@ def quantile(
     keepdims: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    axis = tuple(axis) if isinstance(axis, list) else axis
-
-    result = tfp.stats.percentile(
+    # added the nearest_jax mode to enable jax-like calculations for method="nearest"
+    return _compute_quantile_wrapper(
         a,
-        tf.math.multiply(q, 100),
+        q,
         axis=axis,
-        interpolation=interpolation,
         keepdims=keepdims,
+        interpolation=interpolation,
     )
-    return result
 
 
 def corrcoef(
@@ -161,65 +298,64 @@ def corrcoef(
 
 
 def _nanmedian_helper(input, axis=None, keepdims=False):
+    """
+    The approach to Handle Nans in single dimensional plus multi-dimensional inputs are
+    composed on two-parts.
 
-    '''
+    PART 1:  In this part, you have axis=None, it means we have to work on
+    flattened data, we don't need to work on different axis.there are two cases here
 
-    The approach to Handle Nans in single dimensional plus multi-dimensional inputs
-    are composed on two-parts.
-
-    PART 1:  In this part, you have axis=None, it means we have to work on 
-    flattened data, we don't need to work on different axis.there are two cases here 
-    
     Case 1: which is if our input data does contain all the Nans or not,
-    if our input have just Nans (means no numbers) then we'll not use temp[~tf.math.is_nan(temp)]
-    function with our input because it will remove all Nans and we get empty tensor and this 
-    raise an error when it sent to percentile function, in this case we need to keep this input
-    but just we flatten the input and percentile function returns nan if it find nan 
-    in median and here all the input is nan then we get our result.
+    if our input have just Nans (means no numbers) then we'll not use
+    temp[~tf.math.is_nan(temp)] function with our input because it will remove all Nans
+    and we get empty tensor and this raise an error when it sent to percentile function,
+    in this case we need to keep this input but just we flatten the input and percentile
+    function returns nan if it find nan in median and here all the input is nan then we
+    get our result.
 
-    Case 2: if we have a number (0.4, 0.3, 0. ,1., 2., .....) with nans then we use this function
-    temp[~tf.math.is_nan(temp)], it will return a tensor by extracting the nans and just keeping the 
-    values, but remember the returned tensor will be flattened and axis=None work on flattene inputs, so
-    in this case we are also on same page :) 
+    Case 2: if we have a number (0.4, 0.3, 0. ,1., 2., .....) with nans then we use this
+    function temp[~tf.math.is_nan(temp)], it will return a tensor by extracting the nans
+    and just keeping the values, but remember the returned tensor will be flattened and
+    axis=None work on flattene inputs, so in this case we are also on same page :)
 
-    for example: [[12.0 ,4.0 ,ivy.nan], [ivy.nan, ivy.nan,2.2]] => returned: [12.0 ,4.0, 2.2]
-    now this will be our new input in percentile function.
+    for example: [[12.0 ,4.0 ,ivy.nan], [ivy.nan, ivy.nan,2.2]] => returned:
+    [12.0 ,4.0, 2.2] now this will be our new input in percentile function.
 
-    PART 2: In this case you have to do more work because we now don't allow to work directly on 
-    flattened data, Here are two cases also.
+    PART 2: In this case you have to do more work because we now don't allow to work
+    directly on flattened data, Here are two cases also.
 
-    CASE 1: we need to consider axis parameter here, but percentile axis does work differently and
-    we don't have median function in tensorflow yet, so we need to make our input data compatible to
-    the axis, then we compute nanmedian along that specific axis. we transpose the input data according
-    to our axis, axis can be (0,), (1,), (0,1), (0,1,2) and input can be multi-dimensional, so we need
-    to take care of edge cases before making it compatible.
+    CASE 1: we need to consider axis parameter here, but percentile axis does work
+    differently and we don't have median function in tensorflow yet, so we need to make
+    our input data compatible to the axis, then we compute nanmedian along that specific
+    axis. we transpose the input data according to our axis, axis can be (0,), (1,),
+    (0,1), (0,1,2) and input can be multi-dimensional, so we need to take care of edge
+    cases before making it compatible.
 
-    CASE 2: Here the main Nan handling part comes, you can only use 1D inputs here so we have
-    to flatten the input then we have jump parameter which is use to say how many iterations
-    we want to make because we have to calculate the row-wise median along axis=None now, so 
-    we slice out some data from the flattened input and then we use that 1D Input to remove 
-    the nans and use it in our percentile. 
+    CASE 2: Here the main Nan handling part comes, you can only use 1D inputs here so we
+    have to flatten the input then we have jump parameter which is use to say how many
+    iterations we want to make because we have to calculate the row-wise median along
+    axis=None now, so we slice out some data from the flattened input and then we use
+    that 1D Input to remove the nans and use it in our percentile.
 
     For example: input = [[ivy.nan, 3, ivy.nan, 7],[4, ivy.nan,6, 9]], axis=1
 
     flatten data -> [[nan  3. nan  7.  4. nan  6.  9.]]
-    num_jumps -> 2 because we have to slice out this in (1, 4) and (1,4), 
+    num_jumps -> 2 because we have to slice out this in (1, 4) and (1,4),
     then it works same as PART 1 CASE 1 AND CASE 2.
-    now for first slice we get -> 5.0 and for second we get -> 6.0, these calculated along axis=1
-    now we append the data into result, so to make the shape of result compatible with the numpy
-    output, we reshaped it.
+    now for first slice we get -> 5.0 and for second we get -> 6.0, these calculated
+    along axis=1 now we append the data into result, so to make the shape of result
+    compatible with the numpy output, we reshaped it.
 
     the result which we get from our _nanmedian_helper = [5., 6.]
-    
-    '''
-    
+    """
+
     dtype = input.dtype
     temp = tf.cast(input, tf.float64)
     num_dim = tf.rank(temp)
     keepdim_shape = tf.shape(temp)
     q = 50.0
 
-    # PART 1 
+    # PART 1
     if axis is None:
         # PART 1 CASE 1
         if tf.reduce_all(tf.math.is_nan(temp)):
@@ -304,7 +440,7 @@ def _nanmedian_helper(input, axis=None, keepdims=False):
             ret = tf.squeeze(ret)
 
         result.append(ret)
-    
+
     result = tf.reshape(result, shape=shape[:-1])
 
     if keepdims:
@@ -374,6 +510,15 @@ def bincount(
     )
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    backend_version,
+)
 def igamma(
     a: tf.Tensor, /, *, x: tf.Tensor, out: Optional[tf.Tensor] = None
 ) -> tf.Tensor:
