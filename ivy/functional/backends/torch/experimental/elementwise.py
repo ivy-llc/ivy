@@ -383,3 +383,15 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+def amax(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    amax_x = torch.reduce_max(x, axis=axis, keepdims=keepdims)
+    return torch.resolve_max(input=amax_x, out=out)
