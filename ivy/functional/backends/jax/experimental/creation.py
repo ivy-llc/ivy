@@ -106,3 +106,11 @@ def unsorted_segment_sum(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_sum(data, segment_ids, num_segments)
+
+
+def trilu(
+    x: JaxArray, /, *, k: int = 0, upper: bool = True, out: Optional[JaxArray] = None
+) -> JaxArray:
+    if upper:
+        return jnp.triu(x, k)
+    return jnp.tril(x, k)

@@ -393,3 +393,30 @@ def test_unsorted_segment_sum(
         segment_ids=segment_ids,
         num_segments=num_segments,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.trilu",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    k=helpers.ints(min_value=-10, max_value=10),
+    upper=st.booleans(),
+)
+def test_trilu(*, dtype_and_x, k, upper, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        upper=upper,
+        k=k,
+    )

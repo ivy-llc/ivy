@@ -7,6 +7,7 @@ from paddle.device import core
 from ivy.functional.backends.paddle.device import to_device
 from ivy.func_wrapper import (
     with_supported_dtypes,
+    with_unsupported_device_and_dtypes,
 )
 
 
@@ -165,3 +166,29 @@ def unsorted_segment_sum(
         res = paddle.cast(res, "int32")
 
     return res
+
+
+@with_unsupported_device_and_dtypes(
+    {
+        "2.5.0 and below": {
+            "cpu": (
+                "int8",
+                "int16",
+                "uint8",
+                "complex",
+            )
+        }
+    },
+    backend_version,
+)
+def trilu(
+    x: paddle.Tensor,
+    /,
+    *,
+    k: int = 0,
+    upper: bool = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if upper:
+        return paddle.triu(x=x, diagonal=k)
+    return paddle.tril(x=x, diagonal=k)
