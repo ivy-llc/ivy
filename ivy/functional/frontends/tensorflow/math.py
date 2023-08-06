@@ -762,3 +762,9 @@ def bincount(
 @to_ivy_arrays_and_back
 def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
+
+
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16",)}, "paddle")
+@to_ivy_arrays_and_back
+def softsign(features, name=None):
+    return ivy.divide(features, ivy.abs(features) + 1)
