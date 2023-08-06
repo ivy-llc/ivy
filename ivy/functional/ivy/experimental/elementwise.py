@@ -1311,3 +1311,50 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+def amax(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+    keepdims: bool = False,
+) -> ivy.Array:
+    """
+    Return the maximum of an array or maximum along an axis.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis or axes along which to operate.
+        By default, flattened input is used.
+    out
+        Optional output array for writing the result to.
+    keepdims
+        If this is set to True, the reduced axis is left
+        in the result with size one.
+
+    Returns
+    -------
+    ret
+        Maximum of `x`, or maximum along axis if `axis` is not None.
+
+    Examples
+    --------
+    >>> x = ivy.array([[3, 1, 4], [1, 5, 9]])
+    >>> ivy.amax(x)
+    ivy.array(9)
+
+    >>> ivy.amax(x, axis=0)
+    ivy.array([3, 5, 9])
+
+    >>> ivy.amax(x, axis=1)
+    ivy.array([4, 9])
+    """
+    return ivy.current_backend(x).amax(x, axis=axis, out=out, keepdims=keepdims)
