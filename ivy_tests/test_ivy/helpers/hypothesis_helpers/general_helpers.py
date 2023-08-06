@@ -594,5 +594,5 @@ def shape_and_function(
         args += f"{VARS[i]},"
         out += f"{VARS[i]}+"
     fn_str = f"lambda {args[:-1]}: {out[:-1]}"
-    function = draw(st.functions(like=eval(fn_str)))
+    function = draw(st.functions(like=eval(fn_str), returns=int))
     return shape, function
