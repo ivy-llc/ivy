@@ -384,3 +384,14 @@ def lerp(x, y, weight, name=None):
 @to_ivy_arrays_and_back
 def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
+
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def floor_mod(input, div):
+    result = input - ivy.floor(input / div) * div
+    return result 
+
+input_tensor = ([10, 20, 30, 40])
+divisor_tensor = ([3, 7, 15, 5])
+result = floor_mod(input_tensor, divisor_tensor)
+print(result)  
