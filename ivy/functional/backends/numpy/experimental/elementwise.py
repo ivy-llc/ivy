@@ -301,6 +301,17 @@ def modf(
     return np.modf(x, out=out)
 
 
+def amax(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, tuple]] = None,
+    out: Optional[np.ndarray] = None,
+    keepdims: bool = False,
+) -> np.ndarray:
+    return np.amax(x, axis=axis, out=out, keepdims=keepdims)
+
+
 # ---digamma---#
 kLanczosGamma = 7  # aka g
 kBaseLanczosCoeff = 0.99999999999980993227684700473478
