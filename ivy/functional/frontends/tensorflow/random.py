@@ -1,3 +1,5 @@
+import numpy as np
+import tensorflow as tf
 import ivy
 
 from ivy.functional.frontends.tensorflow.func_wrapper import (
@@ -89,9 +91,48 @@ def gamma(shape, alpha, beta=None, dtype=ivy.float32, seed=None, name=None):
 # Implement create_rng_state function
 def create_rng_state(
     seed=None,
-    algorithm="auto_select",
+    algorithm=tf.random.Algorithm.AUTO_SELECT,
     dtype=ivy.int32,
     name=None,
 ):
-    seed_value = seed if seed is not None else 0  # Default seed to 0 if None
-    return ivy.array([seed_value, 0], dtype=dtype)
+    # Allowed algorithms and their descriptions
+    ALLOWED_ALGORITHMS = {
+        tf.random.Algorithm.PHILOX: "Philox",
+        tf.random.Algorithm.THREEFRY: "ThreeFry",
+        tf.random.Algorithm.AUTO_SELECT: "Auto-Select",
+    }
+
+    # Validate algorithm
+    if algorithm not in ALLOWED_ALGORITHMS:
+        alg_value = (
+            algorithm.value if isinstance(algorithm, tf.random.Algorithm) else algorithm
+        )
+        alg_messages = ", ".join(
+            [
+                f"{algo.value} for the {desc} algorithm"
+                for algo, desc in ALLOWED_ALGORITHMS.items()
+            ]
+        )
+        raise ValueError(
+            f"Argument `algorithm` got unsupported value {alg_value}. Supported values"
+            f" are {alg_messages}."
+        )
+
+    # No seed provided
+    if seed is None:
+        state_array = [0, algorithm.value]
+
+    # Integer seed
+    elif isinstance(seed, (int, float)):
+        state_array = [seed, algorithm.value]
+
+    # Array seed
+    elif isinstance(seed, (list, np.ndarray)):
+        seed_flat = np.array(seed).flatten()
+        state_array = list(seed_flat) + [algorithm.value]
+
+    # Unknown seed type
+    else:
+        raise ValueError(f"Unsupported seed type {type(seed)}.")
+
+    return ivy.array(state_array, dtype=dtype)
