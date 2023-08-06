@@ -70,8 +70,7 @@ def beta(
     dist = paddle.distribution.Beta(alpha, beta)
     sample = dist.sample(shape)
     sample = paddle.cast(sample, dtype)
-    sample = to_device(sample, device) if device is not None else sample
-    return sample
+    return to_device(sample, device) if device is not None else sample
 
 
 def gamma(
