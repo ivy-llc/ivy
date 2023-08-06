@@ -1,4 +1,4 @@
-#global
+# global
 import ivy
 
 # local
@@ -40,7 +40,7 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
         reshaped_result = ivy.reshape(x, ivy.Shape(new_shape))
         permuted_result = ivy.permute_dims(reshaped_result, (0, 2, 1, 3, 4))
         original_shape = [n, c, h, w]
-        result = ivy.reshape(permuted_result,ivy.Shape(original_shape))
+        result = ivy.reshape(permuted_result, ivy.Shape(original_shape))
         return result
     else:
         n, h, w, c = x.shape
