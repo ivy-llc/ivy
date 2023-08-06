@@ -524,3 +524,36 @@ def test_torch_randint_like(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+# set_rng_state
+@handle_frontend_test(
+    fn_tree="torch.set_rng_state",
+    new_state=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("uint8"),
+        min_value=0,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+)
+def test_torch_set_rng_state(
+    *,
+    new_state,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    dtype, new_state = new_state
+    helpers.test_frontend_function(
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        input_dtypes=dtype,
+        test_values=False,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        new_state=new_state[0],
+    )
