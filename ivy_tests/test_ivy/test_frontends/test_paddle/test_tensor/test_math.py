@@ -951,7 +951,7 @@ def test_paddle_lgamma(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        atol=1E-4,
+        atol=1e-4,
         x=x[0],
     )
 
@@ -1863,4 +1863,25 @@ def test_paddle_diff(
         axis=axis,
         prepend=prepend[0],
         append=append[0],
+    )
+
+
+def test_paddle_increment(
+    *,
+    dtype_and_input_and_label,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, input_and_label = dtype_and_input_and_label
+    input, label = input_and_label
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        input=input,
+        label=label,
     )
