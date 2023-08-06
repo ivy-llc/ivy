@@ -116,3 +116,43 @@
 #         mode=mode,
 #         constant_values=constant_values,
 #     )
+
+
+# adaptive_avg_pool2d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.adaptive_avg_pool2d",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         min_num_dims=4,
+#         max_num_dims=4,
+#         min_dim_size=1,
+#         max_value=100,
+#         min_value=-100,
+#     ),
+#     output_size=st.one_of(
+#         st.tuples(
+#             helpers.ints(min_value=1, max_value=5),
+#             helpers.ints(min_value=1, max_value=5),
+#         ),
+#         helpers.ints(min_value=1, max_value=5),
+#     ),
+# )
+# def test_mindspore_adaptive_avg_pool2d(
+#     *,
+#     dtype_and_x,
+#     output_size,
+#     test_flags,
+#     frontend,
+#     on_device,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         on_device=on_device,
+#         fn_tree=fn_tree,
+#         x=x[0],
+#         output_size=output_size,
+#     )
