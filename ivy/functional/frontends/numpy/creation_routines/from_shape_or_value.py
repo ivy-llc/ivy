@@ -79,5 +79,5 @@ def full_like(a, fill_value, dtype=None, order="K", subok=True, shape=None):
 def fromfunction(function, shape, *, dtype="float64", like=None):
     base = ivy.empty(shape=shape, dtype=dtype)
     for pos, _ in ivy.ndenumerate(base):
-        base[pos] = function(*pos)
+        base[pos] = ivy.array(function(*pos)).astype(dtype)
     return base
