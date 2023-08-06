@@ -396,3 +396,39 @@ def test_numpy_full_like(
         subok=True,
         shape=shape,
     )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.fromfunction",
+    shape_and_function=helpers.shape_and_function(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_fromfunction(
+    shape_and_function,
+    dtype,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    shape, function = shape_and_function
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        function=function,
+        shape=shape,
+        dtype=dtype[0],
+    )
