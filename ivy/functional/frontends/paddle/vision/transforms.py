@@ -16,5 +16,4 @@ def to_tensor(pic, data_format="CHW"):
 
 @to_ivy_arrays_and_back
 def vflip(img):
-  x= ivy.array(img)
-  return ivy.flip(x,axis=0)
+  return ivy.flip(ivy.array(img),axis=0)
