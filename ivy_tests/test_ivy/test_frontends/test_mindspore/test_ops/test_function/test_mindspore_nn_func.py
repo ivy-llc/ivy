@@ -77,8 +77,8 @@
 #         on_device=on_device,
 #         x=x[0],
 #     )
-#
-#
+
+
 # mish
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.mish",
@@ -167,9 +167,6 @@
 #         input_dtypes=input_dtype,
 #         frontend=frontend,
 #         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         x=x[0],
 #         on_device=on_device,
 #         fn_tree=fn_tree,
 #         x=x[0],
