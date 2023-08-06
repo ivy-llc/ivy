@@ -370,6 +370,7 @@ def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", ou
         input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
     )
 
+
 nanquantile.unsupported_dtypes = {
     "torch": ("float16", "bfloat16"),
     "numpy": ("float16", "bfloat16"),
