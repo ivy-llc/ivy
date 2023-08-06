@@ -2,11 +2,13 @@
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_convolution_functions import x_and_filters
-from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_convolution_functions import _output_shape
+from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.\
+    test_convolution_functions import (
+        x_and_filters,
+        _output_shape
+    )
 
 # conv1d
 @handle_frontend_test(
@@ -39,6 +41,7 @@ def test_paddle_conv1d(
         groups=fc,
     )
 
+
 # conv2d
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.conv2d",
@@ -69,6 +72,7 @@ def test_paddle_conv2d(
         dilation=dilations,
         groups=fc,
     )
+
 
 # conv3d
 @handle_frontend_test(
@@ -101,6 +105,7 @@ def test_paddle_conv3d(
         groups=fc,
     )
 
+# conv1d_transpose
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.conv1d_transpose",
     dtype_vals=x_and_filters(dim=1, transpose=True),
@@ -141,7 +146,7 @@ def test_paddle_conv1d_tranpose(
         dilation=dilations,
     )
 
-
+# conv2d_transpose
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.conv2d_transpose",
     dtype_vals=x_and_filters(dim=2, transpose=True),
@@ -178,11 +183,11 @@ def test_paddle_conv2d_tranpose(
         stride=strides,
         padding=padding,
         output_padding=output_pad,
-        groups=fc,
         dilation=dilations,
+        groups=fc,
     )
 
-
+# conv3d_transpose
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.conv3d_transpose",
     dtype_vals=x_and_filters(dim=3, transpose=True),
