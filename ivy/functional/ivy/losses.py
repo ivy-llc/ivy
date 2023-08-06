@@ -383,3 +383,22 @@ def sparse_cross_entropy(
     return ivy.cross_entropy(
         true, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
     )
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
+@handle_array_function
+def mean_squared_error(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = None,
+    reduction: str = "none",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    loss = ivy.square(ivy.subtract(true, pred))
+    return _reduce_loss(reduction, loss, axis, out)
