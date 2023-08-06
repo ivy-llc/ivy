@@ -3,7 +3,7 @@ import ivy.functional.frontends.tensorflow as tf_frontend
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 @to_ivy_arrays_and_back
-def flatten(x,copy=None,start_dim=0, end_dim=-1, order='C', out=None):
+def flatten(x,/,*,copy=None,start_dim=0, end_dim=-1, order='C', out=None):
     ivy.utils.assertions.check_elem_in_list(
             order,
             ["C", "F", "A", "K"],
