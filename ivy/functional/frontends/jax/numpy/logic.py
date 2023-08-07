@@ -287,3 +287,30 @@ def setxor1d(ar1, ar2, assume_unique=False):
 
 alltrue = all
 sometrue = any
+
+@with_supported_dtypes(
+    {"0.4.14 and below": ("int64", "float64", "float32", "int32", "uint8")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def fromfunction(function, shape, *, dtype=float, **kwargs):
+    def canonicalize_shape(shape, context="shape argument"):
+        if isinstance(shape, int):
+            return (shape,)
+        elif isinstance(shape, list):
+            return tuple(shape)
+        elif isinstance(shape, tuple):
+            return shape
+        else:
+            msg = "{} must be an int, list, or tuple, but got {}."
+            raise TypeError(msg.format(context, type(shape)))
+
+    arr = ivy.zeros(shape, dtype=dtype)
+    shape = canonicalize_shape(shape)
+    # Iterate over the indices of the array
+    for indices in ivy.ndindex(shape):
+        f_indices = indices
+        ivy.set_nest_at_index(
+            arr, f_indices, ivy.asarray(function(*indices, **kwargs), dtype=dtype)
+        )
+    return arr
