@@ -439,7 +439,7 @@ def test_paddle_nll_loss(
         on_device=on_device,
         input=x[0],
         label=x[1],
-        weight=weight[0]
+        weight=weight[0],
         ignore_index=ignore_index,
         reduction=reduction,
     )
