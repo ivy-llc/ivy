@@ -394,4 +394,4 @@ def amax(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     amax_x = torch.reduce_max(x, axis=axis, keepdims=keepdims)
-    return torch.resolve_max(input=amax_x, out=out)
+    return torch.amax(input=amax_x, out=out)
