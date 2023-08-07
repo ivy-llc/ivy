@@ -1564,8 +1564,9 @@ def test_frontend_method(
             shallow=False,
         )
 
+        # TODO prefix concatenation should be encapulsated in the method data
         frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
-            frontend_method_data.init_module_tree
+            frontend_method_data.prefix_to_tree + frontend_method_data.init_module_tree
         )
         ivy_frontend_creation_fn = getattr(
             frontend_fw_module, frontend_method_data.init_name

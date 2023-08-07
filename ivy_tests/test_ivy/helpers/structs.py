@@ -10,6 +10,7 @@ class FunctionData:
 
 @dataclass(frozen=True)
 class MethodData:
+    prefix_to_tree = "ivy.functional.frontends."
     class_module_tree: str
     class_name: str
     method_name: str

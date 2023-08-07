@@ -93,7 +93,7 @@ class FrontendMethodHandler(MethodHandlerBase):
 
     def _build_test_data(self):
         class_module_tree, _, class_name = self.class_tree.rpartition(".")
-        init_tree, _, init_name = self.init_tree.rpartition(".")
+        init_tree, _, init_name = self._init_tree.rpartition(".")
         supported_device_dtypes = self._build_supported_devices_dtypes()
         self.test_data = MethodData(
             class_module_tree=class_module_tree,
