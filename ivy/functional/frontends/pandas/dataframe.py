@@ -41,15 +41,31 @@ class DataFrame(NDFrame):
 
         assert self.array.ndim == 2, "DataFrame Data must be 2-dimensional"
 
+    def __getitem__(self, col):
+        # turn labels (strings) into numbered indexing so that self.array columns can
+        # be accessed.
+        if isinstance(col, (tuple, list)):
+            numbered_col = [self.columns.index(i) for i in col]
+            return DataFrame(
+                self.array[:, numbered_col],
+                index=self.index,
+                dtype=self.dtype,
+                columns=col,
+            )
+        col = self.columns.index(col)
+        return Series(
+            self.array[:, col],
+            index=self.index,
+            dtype=self.dtype,
+        )
+
     def __getattr__(self, item):
         if item in self.columns:
             item_index = self.columns.index(item)
             return Series(
                 self.array[:, item_index],
                 index=self.index,
-                name=self.name,
                 dtype=self.dtype,
-                copy=self.copy,
             )
         else:
             return super().__getattr__(item)
