@@ -298,7 +298,7 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
-    
+
     def ptp(
         self,
         *,
