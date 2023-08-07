@@ -1687,3 +1687,19 @@ __UMAT_USAGE_FLAGS_32BIT = 2147483647
 @to_ivy_arrays_and_back
 def split(m, mv=None):
     return tuple(ivy.squeeze(ivy.split(m, axis=-1)))
+
+
+@to_ivy_arrays_and_back
+def cvtColor(src, code: int, dst=None, dstCn: int = 0):
+    if code == COLOR_RGB2GRAY or code == COLOR_RGBA2GRAY:
+        channels = split(src)
+        r, g, b = channels[0], channels[1], channels[2]
+        gray = 0.299 * r + 0.587 * g + 0.114 * b
+
+        res = ivy.asarray(gray).astype(src.dtype)
+
+        return res
+    else:
+        raise ivy.exceptions.IvyNotImplementedException(
+            "not implemented for this type of conversion yet"
+        )
