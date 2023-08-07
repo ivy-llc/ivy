@@ -49,7 +49,8 @@ class DataFrame(NDFrame):
             return DataFrame(
                 self.array[:, numbered_col],
                 index=self.index,
-                dtype=self.dtype
+                dtype=self.dtype,
+                columns=col,
             )
         col = self.columns.index(col)
         return Series(
