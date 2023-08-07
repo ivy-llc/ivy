@@ -320,3 +320,15 @@ def einsum(
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)
+
+def percentile(
+    input: torch.Tensor,
+    /,
+    *,
+    q: torch.Tensor,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    method: str = 'linear',
+    keepdims: bool = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.quantile(input, q, dim=axis, keepdim=keepdims, interpolation=method, out=out)

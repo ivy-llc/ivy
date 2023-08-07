@@ -1,5 +1,6 @@
 # global
 import tensorflow as tf
+from tensorflow_probability import stats
 from typing import Union, Optional, Sequence
 
 # local
@@ -204,3 +205,20 @@ def einsum(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
     return tf.cast(tf.einsum(equation, *operands), dtype)
+
+def percentile(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    q: Union[float, Sequence[float]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    method: str = 'linear',
+    keepdims: bool = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    result = stats.percentile(input, q, axis=axis, interpolation=method, keepdims=keepdims)
+    if out is not None:
+        out = result
+        return out
+
+    return result

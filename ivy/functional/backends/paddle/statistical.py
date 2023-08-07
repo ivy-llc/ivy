@@ -329,3 +329,67 @@ def einsum(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     raise IvyNotImplementedException()
+
+def percentile(
+    input: paddle.Tensor,
+    /,
+    *,
+    q: Union[float, Sequence[float]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    method: str = "linear",
+    keepdims: bool = False,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    if isinstance(q, int):
+        q = [q]
+    
+    input_shape = input.shape
+    if axis is None:
+        input = input.reshape([-1])
+        axis = 0
+
+    sorted_input = paddle.sort(input, axis=axis)
+    rank = paddle.arange(start=0, end=input_shape[axis], dtype="float32") / (input_shape[axis] - 1)
+    rank = rank * 100
+
+    if method == "linear":
+        lower = paddle.floor(rank).astype("int32")
+        upper = paddle.ceil(rank).astype("int32")
+        weights_upper = rank - lower
+        weights_lower = 1 - weights_upper
+
+        lower_values = paddle.gather(sorted_input, paddle.clip(lower, 0, len(rank)-1), axis=axis)
+        upper_values = paddle.gather(sorted_input, paddle.clip(upper, 0, len(rank)-1), axis=axis)
+        
+        result = weights_lower.unsqueeze(-1) * lower_values + weights_upper.unsqueeze(-1) * upper_values
+
+    if method == "lower":
+        index = paddle.floor(rank/100. * (input_shape[axis] - 1)).astype("int32")
+        result = paddle.gather(sorted_input, index, axis=axis)
+
+    if method == "higher":
+        index = paddle.ceil(rank/100. * (input_shape[axis] - 1)).astype("int32")
+        result = paddle.gather(sorted_input, index, axis=axis)
+
+    if method == "midpoint":
+        lower_index = paddle.floor(rank/100. * (input_shape[axis] - 1)).astype("int32")
+        upper_index = paddle.ceil(rank/100. * (input_shape[axis] - 1)).astype("int32")
+
+        lower_values = paddle.gather(sorted_input, lower_index, axis=axis)
+        upper_values = paddle.gather(sorted_input, upper_index, axis=axis)
+
+        result = (lower_values + upper_values) / 2.0
+
+    if method == "nearest":
+        index = paddle.round(rank/100. * (input_shape[axis] - 1)).astype("int32")
+        result = paddle.gather(sorted_input, index, axis=axis)
+
+
+    if not keepdims and axis is not None:
+        result = paddle.squeeze(result, axis=axis)
+
+    if out is not None:
+        out = result
+        return out
+
+    return result

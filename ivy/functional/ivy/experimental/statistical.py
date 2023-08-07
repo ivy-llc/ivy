@@ -914,3 +914,61 @@ def cummin(
     return ivy.current_backend(x).cummin(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
+
+@handle_array_function
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_array_like_without_promotion
+@handle_nestable
+@handle_exceptions
+def percentile(
+    input: ivy.Array,
+    q: Union[float, ivy.Array, Sequence[float]],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    method: str = 'linear',
+    keepdims: bool = False,
+    out: Optional[ivy.Array] = None,
+) -> Union[ivy.float64, ivy.Array]:
+    """
+    Compute the q-th percentile of the data along the specified axis.
+
+    Parameters
+    ----------
+    input
+        Input array.
+    q
+        Percentile or sequence of percentiles to compute, which must be between
+        0 and 100 inclusive.
+    axis
+        Axis or axes along which the percentiles are computed. The default is to compute
+        the percentile along a flattened version of the array.
+    method
+        Method to use when the desired percentile lies between two data points:
+        {'linear'(Default), 'lower', 'higher', 'midpoint', 'nearest'}
+    keepdims
+        If this is set to True, the axes which are reduced are left in the result
+        as dimensions with size one.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The q-th percentile of the array elements.
+
+    Functional Examples
+    -------------------
+    >>> a = ivy.array([1, 2, 3, 4])
+    >>> ivy.percentile(a, q=50)
+    2.5
+    >>> ivy.percentile(a, q=[25, 50, 75])
+    ivy.array([1.75, 2.5, 3.25])
+    >>> a = ivy.array([[10, 20, 30], [40, 50, 60]])
+    >>> ivy.percentile(a, q=[25, 50], axis=1)
+    ivy.array([[15., 25.],
+        [45., 55.]])
+    """
+    return ivy.current_backend(input).percentile(input, q=q, axis=axis, interpolation=method, keepdims=keepdims, out=out)
+

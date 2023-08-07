@@ -1483,3 +1483,73 @@ class _ContainerWithStatistical(ContainerBase):
             ),
             out=out,
         )
+
+    def percentile(
+        self: ivy.Container,
+        q: Union[ivy.float64, ivy.Array],
+        /,
+        *,
+        axis: Optional[Union[int, Sequence[int], ivy.Container]] = None,
+        method: str = 'linear',
+        keepdims: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.percentile. This method simply wraps the
+        function, and so the docstring for ivy.percentile also applies to this method with
+        minimal changes.
+        
+        Compute the q-th percentile of the data along the specified axis.
+
+        Parameters
+        ----------
+        q
+            Percentile or sequence of percentiles to compute, which must be between
+            0 and 100 inclusive.
+        axis
+            Axis or axes along which the percentiles are computed. The default is to compute
+            the percentile along a flattened version of the array.
+        method
+            Method to use when the desired percentile lies between two data points:
+            {'linear'(Default), 'lower', 'higher', 'midpoint', 'nearest'}
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result
+            as dimensions with size one.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The q-th percentile of the array elements.
+
+        Functional Examples
+        -------------------
+        >>> a = ivy.array([1, 2, 3, 4])
+        >>> ivy.percentile(a, q=50)
+        2.5
+        >>> ivy.percentile(a, q=[25, 50, 75])
+        ivy.array([1.75, 2.5, 3.25])
+        >>> a = ivy.array([[10, 20, 30], [40, 50, 60]])
+        >>> ivy.percentile(a, q=[25, 50], axis=1)
+        ivy.array([[15., 25.],
+            [45., 55.]])
+        """
+        return self.cont_handle_inplace(
+            self.cont_map(
+                lambda x_, _: (
+                    ivy.percentile(x_, q, method=method, axis=axis, keepdims=keepdims)
+                    if ivy.is_array(x_)
+                    else x_
+                ),
+                key_chains=key_chains,
+                to_apply=to_apply,
+                prune_unapplied=prune_unapplied,
+                map_sequences=map_sequences,
+            ),
+            out=out,
+        )

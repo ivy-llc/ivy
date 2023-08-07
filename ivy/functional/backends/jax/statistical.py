@@ -215,3 +215,20 @@ def einsum(
     equation: str, *operands: JaxArray, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.einsum(equation, *operands)
+
+def percentile(
+    input: JaxArray,
+    /,
+    *,
+    q: Union[float, Sequence[float]],
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    method: str = 'linear',
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> Union[float, JaxArray]:
+    result = jnp.percentile(input, q, axis=axis, method=method, keepdims=keepdims)
+    if out is not None:
+        out = result
+        return out
+
+    return result

@@ -143,3 +143,15 @@ def einsum(
     out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
+
+def percentile(
+    input: Union[(None, mx.ndarray.NDArray)],
+    /,
+    *,
+    q: Union[(float, Sequence[float])],
+    axis: Optional[Union[(int, Sequence[int])]] = None,
+    method: str = 'linear',
+    keepdims: bool = False,
+    out: Optional[Union[(None, mx.ndarray.NDArray)]] = None,
+) -> Union[(None, mx.ndarray.NDArray)]:
+    return mx.np.percentile(input, q, axis=axis, out=out, interpolation=method, keepdims=keepdims)
