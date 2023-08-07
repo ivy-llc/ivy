@@ -368,7 +368,7 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
 def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
     seed = _get_seed(key)
     if shape is None:
-        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2]) + mean.shape[-1:]
+        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
     if method == "cholesky":
         cov_factor = ivy.cholesky(cov)
     elif method == "eigh":

@@ -1422,27 +1422,43 @@ def test_jax_ball(
 
 
 
-# Define the helper function to sample mean and covariance matrix
-def get_mean_cov_vector(shape, dtype):
-    mean_dim_size = shape[-1]
+@st.composite
+def get_mean_cov_vector(draw):
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
+    shape = draw(helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])))
 
-    @st.composite
-    def mean_strategy(draw):
-        mean_size = draw(st.integers(min_value=1, max_value=mean_dim_size))
-        mean_values = draw(st.lists(st.floats(min_value=-10, max_value=10), min_size=mean_size, max_size=mean_size))
-        return np.array(mean_values, dtype=dtype)
+    mean = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=1, shape=shape
+        )
+    )
 
-    mean = mean_strategy()
+    cov = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=1, shape=shape,
+        ).filter(
+            lambda x: "float16" not in x[0]
+            and "bfloat16" not in x[0]
+            and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+            and np.linalg.det(x[1][0]) != 0
+        )
+    )
 
-    return mean
+    batch_size = draw(st.integers(min_value=1, max_value=5))
+    cov_matrix_shape = tuple(list(shape) + [batch_size, batch_size])
 
-# Sample the mean
-mean = get_mean_cov_vector(shape=(4,), dtype=np.float64)
+    # Ensure that the batch shape of cov_matrix_shape is broadcast compatible with mean's batch shape
+    mean_batch_shape = np.array(mean[0]).shape[:-1]
+    if mean_batch_shape != cov_matrix_shape[:-2]:
+        common_batch_shape = ivy.broadcast_shapes(mean_batch_shape, cov_matrix_shape[:-2])
+        cov_matrix_shape = common_batch_shape + cov_matrix_shape[-2:]
+
+    return mean, cov, cov_matrix_shape
 
 @handle_frontend_test(
     fn_tree="jax.random.multivariate_normal",
     dtype_key=helpers.dtype_and_values(
-        available_dtypes=["uint32"],
+        available_dtypes=["float32", "float64"],
         min_value=0,
         max_value=2000,
         min_num_dims=1,
@@ -1450,31 +1466,17 @@ mean = get_mean_cov_vector(shape=(4,), dtype=np.float64)
         min_dim_size=2,
         max_dim_size=2,
     ),
-    shape=helpers.get_shape(
-        min_num_dims=1, max_num_dims=6, min_dim_size=1, max_dim_size=6
-    ),
     dtype=helpers.get_dtypes("float", full=False),
-    mean=st.lists(st.floats(min_value=-10, max_value=10), min_size=1, max_size=10).map(np.array),
-    cov=helpers.dtype_and_values(
-        available_dtypes=("float32","float64"),
-        min_value=0,
-        max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
-    ).filter(
-        lambda x: "float16" not in x[0]
-        and "bfloat16" not in x[0]
-        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
-        and np.linalg.det(x[1][0]) != 0
-    ),
+    shape = helpers.get_shape(allow_none=False, min_num_dims=1, max_num_dims=3),
+    mean_cov_vector = get_mean_cov_vector(),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
 )
 def test_jax_multivariate_normal(
     *,
     dtype_key,
-    mean,
-    cov,
-    shape,
+    mean_cov_vector,
     dtype,
+    shape,
     method,
     frontend,
     backend_fw,
@@ -1482,12 +1484,14 @@ def test_jax_multivariate_normal(
     fn_tree,
 ):
     input_dtype, key= dtype_key
-    x = cov
-    x = np.asarray(x[0], dtype=dtype[0])
+    mean, cov, cov_matrix_shape = mean_cov_vector
+    mean_dtype, mean_matrix_shape = mean
+    mean_matrix_shape = np.asarray(mean_matrix_shape[0], dtype=mean_dtype[0])
+    cov_dtype, x = cov
+    x = np.asarray(x[0], dtype=cov_dtype[0])
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     
     def call():
-        # nonlocal ret  # Use nonlocal to modify the 'ret' variable defined in the outer scope
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
             frontend=frontend,
@@ -1495,7 +1499,8 @@ def test_jax_multivariate_normal(
             backend_to_test=backend_fw,
             fn_tree=fn_tree,
             test_values=False,
-            mean=mean,
+            mean=mean_matrix_shape,
+            rtol=1e-02,
             cov=x,
             shape=shape,
             key=key[0],
