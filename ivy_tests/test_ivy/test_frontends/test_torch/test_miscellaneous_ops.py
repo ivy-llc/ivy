@@ -1577,6 +1577,7 @@ def test_torch_block_diag(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtypes, tensors = dtype_and_tensors
     if isinstance(dtypes, list):  # If more than one value was generated
@@ -1590,6 +1591,7 @@ def test_torch_block_diag(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
+        backend_to_test=backend_fw,
         **args,
     )
 
