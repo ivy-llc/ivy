@@ -96,23 +96,23 @@ def test_tensorflow_idct(
         atol=1e-01,
     )
 
+
 # dct
 @handle_frontend_test(
     fn_tree="tensorflow.signal.dct",
-    dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            min_dim_size=2,
-            shared_dtype=True,
-        ),
-    n=helpers.ints(min_value=1,max_value=3),
-    norm =st.sampled_from([None, "ortho"]),
-    type = helpers.ints(min_value=1, max_value=4),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        max_value=65280,
+        min_value=-65280,
+        min_num_dims=1,
+        min_dim_size=2,
+        shared_dtype=True,
+    ),
+    n=helpers.ints(min_value=1, max_value=3),
+    norm=st.sampled_from([None, "ortho"]),
+    type=helpers.ints(min_value=1, max_value=4),
     test_with_out=st.just(False),
 )
-
 def test_tensorflow_dct(
     *,
     dtype_and_x,
@@ -125,10 +125,13 @@ def test_tensorflow_dct(
     backend_fw,
     on_device,
 ):
-    input_dtype, x,= dtype_and_x
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
     if norm == "ortho" and type == 1:
         norm = None
-    axis=-1
+    axis = -1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
