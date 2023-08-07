@@ -93,3 +93,20 @@ def apply_over_axes(func, a, axes):
         else:
             raise ValueError("function is not returning an array of the correct shape")
     return a
+
+
+@to_ivy_arrays_and_back
+def apply_over_axes(func, a, axes):
+    if isinstance(a, ivy.Array):
+        a = a.to_native()
+    for axis in axes:
+        b = func(a, axis=axis)
+        if isinstance(b, ivy.Array):
+            b = b.to_native()
+        if ivy.get_num_dims(b) == ivy.get_num_dims(a):
+            a = b
+        elif ivy.get_num_dims(b) == ivy.get_num_dims(a) - 1:
+            a = ivy.expand_dims(b, axis=axis)
+        else:
+            raise ValueError("function is not returning an array of the correct shape")
+    return a

@@ -439,3 +439,43 @@ def test_jax_numpy_apply_over_axes(
         func=func,
         axes=axes,
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.apply_over_axes",
+    dtype_x_axis=helpers.dtype_values_axis(
+        num_arrays=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    ),
+    test_with_out=st.just(False),
+    func=st.just(lambda x, axis: ivy.sum(x, axis=axis)),  # example function to apply
+    axes=st.just([1]),  # example axes
+)
+def test_jax_numpy_apply_over_axes(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    func,
+    axes,
+):
+    input_dtype, (a,), axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        func=func,
+        axes=axes,
+    )
