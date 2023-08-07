@@ -673,8 +673,3 @@ def cbrt(x):
 @to_ivy_arrays_and_back
 def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
-
-
-@to_ivy_arrays_and_back
-def digamma(x, name=None):
-    return ivy.digamma(x)
