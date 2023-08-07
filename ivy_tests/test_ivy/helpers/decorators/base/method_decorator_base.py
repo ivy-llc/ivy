@@ -1,4 +1,5 @@
 from abc import abstractproperty
+import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
 from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -13,33 +14,17 @@ class MethodHandlerBase(HandlerBase):
     def method_tree():
         pass
 
-    def _partition_method_tree(self, method_tree: str):
-        class_module_and_name, _, method_name = method_tree.rpartition(".")
-        class_module, _, class_name = class_module_and_name.rpartition(".")
-        return class_module, class_name, method_name
-
-    def _import_method(self, method_tree: str, framework: str):
-        class_module, class_name, method_name = self._partition_method_tree(method_tree)
-        with update_backend(framework) as ivy_backend:
-            module = ivy_backend.utils.dynamic_import.import_module(class_module)
-            cls = getattr(module, class_name)
-            method = getattr(cls, method_name)
-        return method
-
-    def _import_function(self, function_tree: str, framework: str):
-        function_module_tree, _, function_name = function_tree.rpartition(".")
-        with update_backend(framework) as ivy_backend:
-            module = ivy_backend.utils.dynamic_import.import_module(
-                function_module_tree
-            )
-            fn = getattr(module, function_name)
-        return fn
-
     def _build_supported_devices_dtypes(self):
         supported_device_dtypes = {}
+        module_tree, class_name, method_name = import_helpers.partition_method_tree(
+            self.method_tree
+        )
         for backend_str in available_frameworks:
             with update_backend(backend_str) as backend:
-                method = self._import_method(self.method_tree, backend_str)
+                # TODO ineffecient due to calling context manager twice
+                method = import_helpers.import_method_from_ivy(
+                    module_tree, class_name, method_name, backend_str
+                )
                 devices_and_dtypes = backend.function_supported_devices_and_dtypes(
                     method
                 )

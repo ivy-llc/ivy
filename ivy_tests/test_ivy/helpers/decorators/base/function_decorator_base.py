@@ -1,24 +1,23 @@
-import importlib
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
+import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
 
 from ivy_tests.test_ivy.helpers.globals import FunctionData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
-from typing import Callable, Any
 
 
 class FunctionHandler(HandlerBase):
     def _build_test_data(self):
-        module_tree, fn_name = self._partition_fn_tree(self.fn_tree)
-        supported_device_dtypes = self._get_supported_devices_dtypes(self.fn_tree)
+        module_tree, fn_name = import_helpers.partition_function_tree(self.fn_tree)
+        supported_device_dtypes = self._get_supported_devices_dtypes()
         self.test_data = FunctionData(
             module_tree=module_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
 
-    def _get_supported_devices_dtypes(self, fn_tree: str):
+    def _get_supported_devices_dtypes(self):
         """
         Get supported devices and data types for a function in Ivy API.
 
@@ -34,11 +33,11 @@ class FunctionHandler(HandlerBase):
         """
         supported_device_dtypes = {}
 
-        fn_module, fn_name = self._partition_fn_tree(fn_tree)
+        fn_module, fn_name = import_helpers.partition_function_tree(self.fn_tree)
 
         # This is for getting a private function from numpy frontend where we have
         # a ufunc object as we can't refer to them as functions
-        if fn_tree.startswith("ivy.functional.frontends.numpy"):
+        if self.fn_tree.startswith("ivy.functional.frontends.numpy"):
             fn_module_ = np_frontend
             if isinstance(getattr(fn_module_, fn_name), fn_module_.ufunc):
                 fn_name = "_" + fn_name
@@ -88,12 +87,3 @@ class FunctionHandler(HandlerBase):
                     else all_organized_dtypes[0]
                 )
         return supported_device_dtypes
-
-    def _partition_fn_tree(self, fn_tree: str):
-        module_tree, _, fn_name = fn_tree.rpartition(".")
-        return module_tree, fn_name
-
-    def import_function(self, fn_tree: str) -> Callable[..., Any]:
-        module_tree, _, fn_name = fn_tree.rpartition(".")
-        module = importlib.import_module(module_tree)
-        return getattr(module, fn_name)
