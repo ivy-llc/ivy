@@ -1,6 +1,7 @@
+import inspect
 import functools
 import pytest
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from hypothesis import given
 from typing import Callable, Any
 
@@ -22,9 +23,17 @@ class HandlerBase(ABC):
     def _add_test_attributes_to_test_function(self, test_function: Callable[..., Any]):
         pass
 
+    @abstractproperty
+    def given_kwargs(self):
+        pass
+
+    @abstractproperty
+    def possible_arguments(self):
+        pass
+
     @property
     def is_hypothesis_test(self) -> bool:
-        return len(self._given_kwargs.items()) > 0
+        return len(self.given_kwargs.items()) > 0
 
     def _partition_dtypes_into_kinds(self, framework: str, dtypes):
         partitioned_dtypes = {}
@@ -34,12 +43,16 @@ class HandlerBase(ABC):
             ).intersection(dtypes)
         return partitioned_dtypes
 
-    @abstractmethod
-    def __call__(self, func: Callable[..., Any]):
-        pass
+    def _update_given_kwargs(self, fn):
+        param_names = inspect.signature(fn).parameters.keys()
+
+        # Check if these arguments are being asked for
+        filtered_args = set(param_names).intersection(self.possible_arguments.keys())
+        for key in filtered_args:
+            self.given_kwargs[key] = self.possible_arguments[key]
 
     def _wrap_with_hypothesis(self, func: Callable[..., Any]):
-        return given(**self._given_kwargs)(func)
+        return given(**self.given_kwargs)(func)
 
     def _handle_not_implemented(self, func):
         @functools.wraps(func)
@@ -55,3 +68,14 @@ class HandlerBase(ABC):
                     raise e
 
         return wrapped_test
+
+    def __call__(self, fn: Callable[..., Any]):
+        if self.is_hypothesis_test:
+            self._update_given_kwargs(fn)
+            wrapped_fn = self._wrap_with_hypothesis(fn)
+        else:
+            wrapped_fn = fn
+
+        self._add_test_attributes_to_test_function(wrapped_fn)
+        self._handle_not_implemented(wrapped_fn)
+        return wrapped_fn

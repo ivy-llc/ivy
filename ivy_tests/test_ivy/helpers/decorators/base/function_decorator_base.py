@@ -2,7 +2,6 @@ import importlib
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
 import inspect
 
-from abc import abstractproperty
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.globals import FunctionData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -15,21 +14,6 @@ from typing import Callable, Any
 
 
 class FunctionHandler(HandlerBase):
-    @abstractproperty
-    def possible_args():
-        pass
-
-    def __call__(self, fn: Callable[..., Any]):
-        if self.is_hypothesis_test:
-            self._update_given_kwargs(fn)
-            wrapped_fn = self._wrap_with_hypothesis(fn)
-        else:
-            wrapped_fn = fn
-
-        self._add_test_attributes_to_test_function(wrapped_fn)
-        self._handle_not_implemented(wrapped_fn)
-        return wrapped_fn
-
     def _build_test_data(self):
         module_tree, fn_name = self._partition_fn_tree(self.fn_tree)
         supported_device_dtypes = self._get_supported_devices_dtypes(self.fn_tree)
@@ -38,14 +22,6 @@ class FunctionHandler(HandlerBase):
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
-
-    def _update_given_kwargs(self, fn):
-        param_names = inspect.signature(fn).parameters.keys()
-
-        # Check if these arguments are being asked for
-        filtered_args = set(param_names).intersection(self.possible_args.keys())
-        for key in filtered_args:
-            self._given_kwargs[key] = self.possible_args[key]
 
     def _build_parameter_info(self, fn):
         total = num_positional_only = num_keyword_only = 0

@@ -105,7 +105,11 @@ class FrontendMethodHandler(MethodHandlerBase):
         )
 
     @property
-    def possible_args(self):
+    def given_kwargs(self):
+        return self._given_kwargs
+
+    @property
+    def possible_arguments(self):
         return {
             "init_flags": self.init_flags,
             "method_flags": self.method_flags,

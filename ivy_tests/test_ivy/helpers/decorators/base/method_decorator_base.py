@@ -1,5 +1,4 @@
 import inspect
-from typing import Any, Callable
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 
 from abc import abstractproperty
@@ -108,22 +107,3 @@ class MethodHandlerBase(HandlerBase):
                     )
                 supported_device_dtypes[backend_str] = organized_dtypes
         return supported_device_dtypes
-
-    def _update_given_kwargs(self, fn):
-        param_names = inspect.signature(fn).parameters.keys()
-
-        # Check if these arguments are being asked for
-        filtered_args = set(param_names).intersection(self.possible_args.keys())
-        for key in filtered_args:
-            self._given_kwargs[key] = self.possible_args[key]
-
-    def __call__(self, fn: Callable[..., Any]):
-        if self.is_hypothesis_test:
-            self._update_given_kwargs(fn)
-            wrapped_fn = self._wrap_with_hypothesis(fn)
-        else:
-            wrapped_fn = fn
-
-        self._add_test_attributes_to_test_function(wrapped_fn)
-        self._handle_not_implemented(wrapped_fn)
-        return wrapped_fn

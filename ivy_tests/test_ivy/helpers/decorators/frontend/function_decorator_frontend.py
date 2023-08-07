@@ -53,7 +53,11 @@ class FrontendFunctionHandler(FunctionHandler):
             return st.sampled_from([self.fn_tree] + self.aliases)
 
     @property
-    def possible_args(self):
+    def given_kwargs(self):
+        return self._given_kwargs
+
+    @property
+    def possible_arguments(self):
         return {
             "fn_tree": self._build_fn_tree_strategy(),
             "test_flags": self.test_flags,

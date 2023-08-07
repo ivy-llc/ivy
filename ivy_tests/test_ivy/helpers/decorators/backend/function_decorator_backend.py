@@ -53,7 +53,11 @@ class BackendFunctionHandler(FunctionHandler):
         )
 
     @property
-    def possible_args(self):
+    def given_kwargs(self):
+        return self._given_kwargs
+
+    @property
+    def possible_arguments(self):
         return {
             "ground_truth_backend": st.just(self.ground_truth_backend),
             "fn_name": st.just(self.test_data.fn_name),
