@@ -79,6 +79,82 @@
 #     )
 
 
+# def _size_strategy():
+#     return st.one_of(
+#         st.integers(min_value=1, max_value=10),
+#         st.tuples(st.integers(min_value=1, max_value=10)),
+#         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
+#     )
+
+# def _scale_factor_strategy():
+#     return st.one_of(
+#         st.floats(min_value=0.1, max_value=2.0),
+#         st.tuples(st.floats(min_value=0.1, max_value=2.0)),
+#         st.lists(st.floats(min_value=0.1, max_value=2.0), min_size=3, max_size=3),
+#     )
+
+# def _size_and_scale_factor_strategy():
+#     return st.one_of(
+#         st.tuples(size_strategy(), st.just(None)),
+#         st.tuples(st.just(None), scale_factor_strategy()),
+#         st.tuples(size_strategy(), scale_factor_strategy()),
+#     )
+
+
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.interpolate",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#     ),
+#     mode=st.sampled_from(
+#         [
+#             "nearest",
+#             "linear",
+#             "bilinear",
+#             "bicubic",
+#             "trilinear",
+#             "area",
+#             "nearest-exact",
+#         ]
+#     ),
+#     align_corners=st.booleans(),
+#     recompute_scale_factor=st.booleans(),
+#     size_and_scale_factor = _size_and_scale_factor_strategy()
+# )
+# def test_mindspore_interpolate(
+#     *,
+#     dtype_and_x,
+#     size,
+#     scale_factor,
+#     mode,
+#     align_corners,
+#     recompute_scale_factor,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = dtype_and_x
+#     size,scale_factor = size_and_scale_factor
+
+
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         size=size,
+#         scale_factor=scale_factor,
+#         mode=mode,
+#         align_corners=align_corners,
+#         recompute_scale_factor=recompute_scale_factor,
+#     )
+
+
 # pad
 # @handle_frontend_test(
 #     fn_tree="pad",
