@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
 
 
 class HandlerBase(ABC):
-    IVY_PREFIX = None
+    IVY_PREFIX = ""
 
     @abstractmethod
     def __init__(self, fn_tree: str, test_flags, **_given_kwargs):
