@@ -9,6 +9,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 from ivy.functional.frontends.numpy.func_wrapper import from_zero_dim_arrays_to_scalar
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
+    with_supported_dtypes,
 )
 
 
@@ -99,6 +100,9 @@ def nanargmin(a, /, *, axis=None, out=None, keepdims=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"0.4.14 and below": ("float32", "int32", "float64", "int64")}, "jax"
+)
 def lexsort(keys, /, *, axis=-1):
     return ivy.lexsort(keys, axis=axis)
 
