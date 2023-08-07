@@ -208,7 +208,7 @@ class Tensor:
     def sum(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.sum(self, dim=dim, keepdim=keepdim, dtype=dtype)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sin(self):
         return torch_frontend.sin(self)
 
