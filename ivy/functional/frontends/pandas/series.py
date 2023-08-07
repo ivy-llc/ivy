@@ -66,3 +66,8 @@ class Series(NDFrame):
         if skipna:
             return ivy.nansum(_array)
         return _array.sum()
+
+    def mean(self, axis=None, skipna=True, numeric_only=False, **kwargs):
+        if skipna:
+            return ivy.nanmean(self.array)
+        return self.array.mean()
