@@ -112,6 +112,7 @@ def test_tensorflow_idct(
     type = helpers.ints(min_value=1, max_value=4),
     test_with_out=st.just(False),
 )
+
 def test_tensorflow_dct(
     *,
     dtype_and_x,
