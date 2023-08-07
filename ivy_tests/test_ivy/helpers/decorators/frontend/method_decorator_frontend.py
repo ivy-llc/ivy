@@ -4,6 +4,9 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltNativeArrayStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import MethodData
+from ivy_tests.test_ivy.helpers.decorators.base.parameter_info_builder import (
+    ParameterInfoStrategyBuilder,
+)
 from ivy_tests.test_ivy.helpers.test_parameter_flags import frontend_method_flags
 from ivy_tests.test_ivy.helpers.decorators.base.method_decorator_base import (
     MethodHandlerBase,
@@ -29,16 +32,20 @@ class FrontendMethodHandler(MethodHandlerBase):
         self.method_name = method_name
 
         if init_num_positional_args is None:
-            init_num_positional_args = self._build_init_num_positional_args_strategy()
+            init_strategy_builder = ParameterInfoStrategyBuilder.from_function(
+                self.init_tree
+            )
+            init_num_positional_args = init_strategy_builder.build()
 
         self._build_init_flags(
             init_num_positional_args, init_native_arrays, init_as_variable_flags
         )
 
         if method_num_positional_args is None:
-            method_num_positional_args = (
-                self._build_method_num_positional_args_strategy()
+            method_strategy_builder = ParameterInfoStrategyBuilder.from_method(
+                self.method_tree
             )
+            method_num_positional_args = method_strategy_builder.build()
 
         self._build_method_flags(
             method_num_positional_args,
@@ -70,15 +77,6 @@ class FrontendMethodHandler(MethodHandlerBase):
 
     def _append_ivy_to_fn_tree(self, fn_tree):
         return "ivy.functional.frontends." + fn_tree
-
-    def _build_init_num_positional_args_strategy(self):
-        return self._build_num_positional_arguments_strategy_from_function(
-            self.init_tree
-        )
-
-    def _build_method_num_positional_args_strategy(self):
-        method_tree = f"{self.class_tree}.{self.method_name}"
-        return self._build_num_positional_arguments_strategy_from_method(method_tree)
 
     def _build_init_flags(
         self, init_num_positional_args, init_as_variable_flags, init_native_arrays

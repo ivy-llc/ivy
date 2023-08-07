@@ -1,4 +1,7 @@
 from hypothesis import strategies as st
+from ivy_tests.test_ivy.helpers.decorators.base.parameter_info_builder import (
+    ParameterInfoStrategyBuilder,
+)
 from ivy_tests.test_ivy.helpers.decorators.base.function_decorator_base import (
     FunctionHandler,
 )
@@ -34,7 +37,8 @@ class FrontendFunctionHandler(FunctionHandler):
         self._given_kwargs = _given_kwargs
 
         if number_positional_args is None:
-            number_positional_args = self._build_num_positional_arguments_strategy()
+            strategy_builder = ParameterInfoStrategyBuilder.from_function(self.fn_tree)
+            number_positional_args = strategy_builder.build()
 
         self._build_test_flags(
             number_positional_args=number_positional_args,

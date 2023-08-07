@@ -1,5 +1,8 @@
 from hypothesis import strategies as st
 from typing import Callable, Any
+from ivy_tests.test_ivy.helpers.decorators.base.parameter_info_builder import (
+    ParameterInfoStrategyBuilder,
+)
 from ivy_tests.test_ivy.helpers.decorators.base.function_decorator_base import (
     FunctionHandler,
 )
@@ -38,7 +41,8 @@ class BackendFunctionHandler(FunctionHandler):
         self._build_test_data()
 
         if num_positional_args is None:
-            num_positional_args = self._build_num_positional_arguments_strategy()
+            strategy_builder = ParameterInfoStrategyBuilder.from_function(self.fn_tree)
+            num_positional_args = strategy_builder.build()
 
         self.test_flags = build_backend_function_flags(
             ground_truth_backend=st.just(ground_truth_backend),

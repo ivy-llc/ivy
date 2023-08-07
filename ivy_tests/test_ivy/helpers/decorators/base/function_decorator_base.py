@@ -1,15 +1,10 @@
 import importlib
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
-import inspect
 
-from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.globals import FunctionData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
-from ivy_tests.test_ivy.helpers.decorators.strategies import (
-    num_positional_args_from_dict,
-)
 from typing import Callable, Any
 
 
@@ -22,42 +17,6 @@ class FunctionHandler(HandlerBase):
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
-
-    def _build_parameter_info(self, fn):
-        total = num_positional_only = num_keyword_only = 0
-        # TODO refactor out
-        for param in inspect.signature(fn).parameters.values():
-            if param.name == "self":
-                continue
-            total += 1
-            if param.kind == param.POSITIONAL_ONLY:
-                num_positional_only += 1
-            elif param.kind == param.KEYWORD_ONLY:
-                num_keyword_only += 1
-            elif param.kind == param.VAR_KEYWORD:
-                num_keyword_only += 1
-        return ParametersInfo(
-            total=total,
-            positional_only=num_positional_only,
-            keyword_only=num_keyword_only,
-        )
-
-    def _build_parameters_info_dict(self, fn_tree):
-        ret = {}
-
-        for framework in available_frameworks:
-            with update_backend(framework) as ivy_backend:
-                module_tree, fn_name = self._partition_fn_tree(fn_tree)
-                module = ivy_backend.utils.dynamic_import.import_module(module_tree)
-                fn = getattr(module, fn_name)
-                parameter_info = self._build_parameter_info(fn)
-                ret[framework] = parameter_info
-
-        return ret
-
-    def _build_num_positional_arguments_strategy(self):
-        dict_for_num_pos_strategy = self._build_parameters_info_dict(self.fn_tree)
-        return num_positional_args_from_dict(dict_for_num_pos_strategy)
 
     def _get_supported_devices_dtypes(self, fn_tree: str):
         """
