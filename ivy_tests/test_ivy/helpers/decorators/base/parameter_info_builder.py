@@ -1,6 +1,7 @@
 import inspect
+import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
 
-from typing import Any, Callable
+from typing import Dict
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.decorators.strategies import (
@@ -9,20 +10,42 @@ from ivy_tests.test_ivy.helpers.decorators.strategies import (
 
 
 class ParameterInfoStrategyBuilder:
-    def __init__(self, fn: Callable[..., Any]):
-        self._fn = fn
+    def __init__(self, routine_tree: str, routines: Dict):
+        self.routine_tree = routine_tree
+        self.routines = routines
 
     @classmethod
     def from_function(cls, fn_tree: str):
-        pass
+        functions = {}
+        module_tree, fn_name = import_helpers.partition_function_tree(fn_tree)
+
+        for framework in available_frameworks:
+            fn = import_helpers.import_function_from_ivy(
+                module_tree, fn_name, framework
+            )
+            functions[framework] = fn
+
+        return cls(fn_name, functions)
 
     @classmethod
     def from_method(cls, method_tree: str):
-        pass
+        methods = {}
+        module_tree, class_name, method_name = import_helpers.partition_method_tree(
+            method_tree
+        )
 
-    def _build_parameters_info_struct(self):
+        for framework in available_frameworks:
+            fn = import_helpers.import_method_from_ivy(
+                module_tree, class_name, method_name, framework
+            )
+            methods[framework] = fn
+
+        return cls(method_tree, methods)
+
+    def _build_parameters_info_struct(self, framework: str):
         total = num_positional_only = num_keyword_only = 0
-        for param in inspect.signature(self._fn).parameters.values():
+        routine = self.routines[framework]
+        for param in inspect.signature(routine).parameters.values():
             if param.name == "self":
                 continue
             total += 1
@@ -42,7 +65,7 @@ class ParameterInfoStrategyBuilder:
         ret = {}
 
         for framework in available_frameworks:
-            parameter_info = self(self._fn)
+            parameter_info = self._build_parameters_info_struct(framework)
             ret[framework] = parameter_info
 
         return ret
