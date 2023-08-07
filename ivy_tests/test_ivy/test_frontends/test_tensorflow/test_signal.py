@@ -125,21 +125,22 @@ def test_tensorflow_idct(
 #         norm = None
 #     return dtype, x, type, n, axis, norm
 
+
 # dct
 @handle_frontend_test(
     fn_tree="tensorflow.signal.dct",
-    dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=["float32", "float64"],
-            max_value=65280,
-            min_value=-65280,
-            min_num_dims=1,
-            min_dim_size=2,
-            shared_dtype=True,
-        ),
-    n=helpers.ints(min_value=1,max_value=3),
-    norm =st.sampled_from([None, "ortho"]),
-    type = helpers.ints(min_value=1, max_value=4),
-    #dtype_x_and_args=valid_idct(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        max_value=65280,
+        min_value=-65280,
+        min_num_dims=1,
+        min_dim_size=2,
+        shared_dtype=True,
+    ),
+    n=helpers.ints(min_value=1, max_value=3),
+    norm=st.sampled_from([None, "ortho"]),
+    type=helpers.ints(min_value=1, max_value=4),
+    # dtype_x_and_args=valid_idct(),
     test_with_out=st.just(False),
 )
 def test_tensorflow_dct(
@@ -154,10 +155,13 @@ def test_tensorflow_dct(
     backend_fw,
     on_device,
 ):
-    input_dtype, x,= dtype_and_x
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
     if norm == "ortho" and type == 1:
         norm = None
-    axis=-1
+    axis = -1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -170,8 +174,9 @@ def test_tensorflow_dct(
         n=n,
         axis=axis,
         norm=norm,
-        #atol=1e-01,
+        # atol=1e-01,
     )
+
 
 # vorbis_window
 @handle_frontend_test(
@@ -182,11 +187,11 @@ def test_tensorflow_dct(
         min_value=1,
         max_value=10,
     ),
-    #dtype=helpers.get_dtypes("float", full=False),
+    # dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
 def test_tensorflow_vorbis_window(
-    *, dtype_and_x,  test_flags, backend_fw, fn_tree, on_device,frontend #,dtype
+    *, dtype_and_x, test_flags, backend_fw, fn_tree, on_device, frontend  # ,dtype
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -198,5 +203,5 @@ def test_tensorflow_vorbis_window(
         on_device=on_device,
         atol=1e-02,
         window_length=int(x[0]),
-       #dtype=dtype[0],
+        # dtype=dtype[0],
     )
