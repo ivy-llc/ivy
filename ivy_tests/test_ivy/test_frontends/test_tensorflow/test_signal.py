@@ -95,7 +95,8 @@ def test_tensorflow_idct(
         norm=norm,
         atol=1e-01,
     )
-    
+
+
 # dct
 @handle_frontend_test(
     fn_tree="tensorflow.signal.dct",
