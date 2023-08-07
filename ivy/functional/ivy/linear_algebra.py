@@ -1881,60 +1881,46 @@ def slogdet(
     return current_backend(x).slogdet(x)
 
 
-@handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def solve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+def solve(x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray],
+          *,
+          out: Optional[ivy.Array] = None) -> ivy.Array:
     """
-    Return the solution to the system of linear equations represented by the well-
-    determined (i.e., full rank) linear matrix equation AX = B.
+    Solve the system of linear equations represented by the matrix equation AX = B.
 
     Parameters
     ----------
-    x1
-        coefficient array A having shape (..., M, M) and whose innermost two dimensions
-        form square matrices. Must be of full rank (i.e., all rows or, equivalently,
-        columns must be linearly independent). Should have a floating-point data type.
-    x2
-        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is
-        equivalent to an array having shape (..., M, 1). If x2 has shape (..., M, K),
-        each column k defines a set of ordinate values for which to compute a solution,
-        and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).
-        Should have a floating-point data type.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+    x1 : Union[ivy.Array, ivy.NativeArray]
+        Coefficient array A of shape (..., M, M) forming square matrices. Must be full rank
+        (all rows or columns linearly independent) and have a floating-point data type.
+    
+    x2 : Union[ivy.Array, ivy.NativeArray]
+        Ordinate array B. If shape is (M,), it's equivalent to (..., M, 1). If shape is
+        (..., M, K), each column k defines a set of ordinate values. Shape(x2)[:-1] must
+        be compatible with shape(x1)[:-1]. Should have a floating-point data type.
+    
+    out : Optional[ivy.Array], optional
+        Output array for writing the result. Must have a shape that the inputs broadcast to.
 
     Returns
     -------
-    ret
-        an array containing the solution to the system AX = B for each square matrix.
-        The returned array must have the same shape as x2 (i.e., the array corresponding
-        to B) and must have a floating-point data type determined by Type Promotion
-        Rules.
+    ivy.Array
+        Solution to the system AX = B for each square matrix. Has the same shape as x2.
 
-
+    Notes
+    -----
     This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    <https://data-apis.org/array-api/latest/>`_. This docstring extends the
     `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.solve.html>`_
-    in the standard.
+    extensions/generated/array_api.linalg.solve.html>`_ in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
+    Both the description and type hints assume array input for simplicity, but this
+    function is *nestable* and also accepts :class:`ivy.Container` instances for any argument.
     """
-    return current_backend(x1, x2).solve(x1, x2, out=out)
+    # Implementation
+    backend = current_backend(x1, x2)
+    return backend.solve(x1, x2, out=out)
+
 
 
 @handle_exceptions
