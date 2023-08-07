@@ -3,6 +3,7 @@ from typing import Callable
 
 import ivy
 import ivy.functional.frontends.numpy as np_frontend
+import numpy as np
 
 
 def _native_to_ivy_array(x):
@@ -65,7 +66,7 @@ def _from_ivy_array_to_cv2_frontend_array(x, nested=False, include_derived=None)
             x, _from_ivy_array_to_cv2_frontend_array, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array):
-        return np_frontend.array(x)
+        return np.array(x)
     return x
 
 
