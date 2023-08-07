@@ -660,6 +660,7 @@ class Tensor:
         self.ivy_array = self.unsqueeze(dim).ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     def ravel(self):
         return torch_frontend.ravel(self)
 
