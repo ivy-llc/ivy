@@ -405,7 +405,7 @@ class ELU(Module):
 
 class LogSigmoid(Module):
     def __init__(self):
-        """Apply the LogSigmoid activation function."""
+        """Apply the LogSigmoid activation function ."""
         Module.__init__(self)
 
     def _forward(self, x):

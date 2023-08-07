@@ -758,7 +758,7 @@ def test_elu(
     )
 
 
-#  Logsigmoid
+# Logsigmoid
 @handle_method(
     method_tree="stateful.activations.LogSigmoid.__call__",
     dtype_and_x=helpers.dtype_and_values(
