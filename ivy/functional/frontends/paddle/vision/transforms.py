@@ -13,3 +13,12 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
     return Tensor(array)
+
+
+@to_ivy_arrays_and_back
+def vflip(img, data_format="CHW"):
+    if data_format.lower() == "chw":
+        axis = -2
+    elif data_format.lower() == "hwc":
+        axis = -3
+    return ivy.flip(img, axis=axis)
