@@ -824,7 +824,7 @@ def test_digamma(
     )
 
 
-#amax
+# amax
 @handle_test(
     fn_tree="functional.ivy.experimental.amax",
     dtype_and_x=helpers.dtype_and_values(
@@ -844,7 +844,6 @@ def test_amax(
     on_device,
 ):
     input_dtype, x = dtype_and_x
-    result = ivy.functional.amax(x, axis=None)
     helpers.test_function(
         input_dtypes=input_dtype,
         fw=backend_fw,
