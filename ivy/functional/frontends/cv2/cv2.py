@@ -1696,9 +1696,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         r, g, b = channels[0], channels[1], channels[2]
         gray = 0.299 * r + 0.587 * g + 0.114 * b
 
-        res = ivy.asarray(gray).astype(src.dtype)
-
-        return res
+        return ivy.asarray(gray).astype(src.dtype)
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
