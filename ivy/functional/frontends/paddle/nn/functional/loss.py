@@ -238,7 +238,7 @@ def nll_loss(
     input,
     label,
     weight=None,
-    ignore_index=-100,
+    ignore_index=-1,
     reduction="mean",
 ):
     """Refer
@@ -255,11 +255,11 @@ def nll_loss(
     output = 0.0
     if reduction == "sum":
         output = ivy.sum(loss)
-        if ignore_index != -100:
+        if ignore_index != -1:
             output = output - loss[ignore_index]
         return output
     num = ivy.sum(loss)
     output = num / den
-    if ignore_index != -100:
+    if ignore_index != -1:
         output = output - loss[ignore_index] / den
     return output
