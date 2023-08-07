@@ -262,7 +262,7 @@ def relu6(x):
 @to_ivy_arrays_and_back
 def sigmoid(x):
     x = _type_conversion(x)
-    ret = ivy.sigmoid(x)
+    ret = ivy.sigmoid(x, complex_mode="jax")
     return ivy.astype(ret, x.dtype)
 
 

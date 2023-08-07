@@ -115,7 +115,13 @@ class _ArrayWithActivations(abc.ABC):
         """
         return ivy.gelu(self._data, approximate=approximate, out=out)
 
-    def sigmoid(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def sigmoid(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sigmoid.
 
@@ -143,7 +149,7 @@ class _ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.269, 0.731, 0.881])
         """
-        return ivy.sigmoid(self._data, out=out)
+        return ivy.sigmoid(self._data, complex_mode=complex_mode, out=out)
 
     def softmax(
         self: ivy.Array,
