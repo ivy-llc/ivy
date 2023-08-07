@@ -694,6 +694,7 @@ def mel_weight_matrix(
     Generate a MelWeightMatrix that can be used to re-weight a Tensor containing a
     linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins frequency
     information based on the [lower_edge_hertz, upper_edge_hertz]
+
     range on the mel scale. This function defines the mel scale in terms of a frequency
     in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
     Parameters
@@ -708,10 +709,12 @@ def mel_weight_matrix(
         Lower bound on the frequencies to be included in the mel spectrum.
     upper_edge_hertz
         The desired top edge of the highest frequency band.
+
     Returns
     -------
     ret
         MelWeightMatrix of shape:  [frames, num_mel_bins].
+
     Examples
     --------
     >>> ivy.mel_weight_matrix(3,3,8000)
