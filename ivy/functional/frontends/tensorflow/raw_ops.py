@@ -938,3 +938,22 @@ Svd.supported_dtypes = {
         "complex128",
     ),
 }
+
+
+Einsum = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "complex128 ",
+                "complex64",
+                "float64",
+                "float32",
+                "float16",
+                "int64",
+                "int32",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
+)
