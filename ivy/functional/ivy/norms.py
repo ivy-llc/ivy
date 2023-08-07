@@ -9,7 +9,6 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_function,
     inputs_to_ivy_arrays,
-    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -19,7 +18,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -142,6 +140,7 @@ def layer_norm(
 
 layer_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",

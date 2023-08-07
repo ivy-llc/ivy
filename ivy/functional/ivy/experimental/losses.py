@@ -7,14 +7,12 @@ from ivy.func_wrapper import (
     handle_nestable,
     inputs_to_ivy_arrays,
     handle_array_function,
-    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 # log_poisson_loss
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function

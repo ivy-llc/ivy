@@ -591,7 +591,6 @@ grad.computes_gradients = True
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -746,7 +745,6 @@ adam_step.out_index = 0
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -870,7 +868,6 @@ def optimizer_update(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -964,7 +961,6 @@ def gradient_descent_update(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1016,7 +1012,6 @@ def lars_update(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1182,7 +1177,6 @@ adam_update.out_index = 0
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function

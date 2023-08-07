@@ -7057,7 +7057,6 @@ def rad2deg(
 
 @handle_nestable
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -7104,10 +7103,12 @@ def trunc_divide(
 
 trunc_divide.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
+        "handle_backend_invalid",
     ),
     "to_skip": ("inputs_to_ivy_arrays",),
 }

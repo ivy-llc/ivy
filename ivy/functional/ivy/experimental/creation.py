@@ -161,7 +161,6 @@ def kaiser_window(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @infer_dtype
@@ -215,7 +214,6 @@ def kaiser_bessel_derived_window(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @infer_dtype
 def hamming_window(
@@ -274,6 +272,7 @@ def hamming_window(
 
 hamming_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "handle_device_shifting",
     ),
@@ -376,7 +375,6 @@ def tril_indices(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

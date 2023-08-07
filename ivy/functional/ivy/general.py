@@ -651,7 +651,6 @@ def array_equal(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -948,7 +947,6 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -1038,7 +1036,6 @@ def clip_vector_norm(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_function
 @inputs_to_ivy_arrays
@@ -1121,7 +1118,6 @@ def clip_matrix_norm(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1228,7 +1224,6 @@ def fourier_encode(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1291,7 +1286,6 @@ def value_is_nan(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1814,7 +1808,6 @@ def current_backend_str() -> Union[str, None]:
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1940,7 +1933,6 @@ def einops_rearrange(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -2197,7 +2189,6 @@ def unset_min_base() -> None:
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2299,7 +2290,6 @@ def stable_divide(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -2570,7 +2560,6 @@ def inplace_variables_supported() -> bool:
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
@@ -2638,7 +2627,6 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_array_function
@@ -2699,7 +2687,6 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     return True
 
 
-@handle_backend_invalid
 @handle_nestable
 @handle_view_indexing
 @handle_partial_mixed_function
@@ -2774,6 +2761,7 @@ def get_item(
 
 get_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -2781,7 +2769,6 @@ get_item.mixed_backend_wrappers = {
 }
 
 
-@handle_backend_invalid
 @handle_nestable
 @handle_view_indexing
 @handle_partial_mixed_function
@@ -2852,6 +2839,7 @@ def set_item(
 
 set_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -4287,7 +4275,6 @@ def itemsize(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_device_shifting
 def strides(

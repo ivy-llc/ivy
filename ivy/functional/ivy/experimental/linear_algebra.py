@@ -24,7 +24,6 @@ def _check_valid_dimension_size(std):
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_array_function

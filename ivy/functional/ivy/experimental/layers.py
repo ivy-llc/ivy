@@ -1272,7 +1272,6 @@ def embedding(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_ivy_arrays
@@ -1799,7 +1798,6 @@ def _interpolate_with_kernel(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @inputs_to_ivy_arrays
@@ -2006,7 +2004,10 @@ def interpolate(
 
 
 interpolate.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -2113,7 +2114,6 @@ def _mask(vals, length, range_max, dim, mask_value=0.0):
         return vals, length
 
 
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 def adaptive_max_pool2d(
@@ -2198,6 +2198,7 @@ def adaptive_max_pool2d(
 
 adaptive_max_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2277,6 +2278,7 @@ def adaptive_avg_pool1d(
 
 adaptive_avg_pool1d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2286,7 +2288,6 @@ adaptive_avg_pool1d.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2367,6 +2368,7 @@ def adaptive_avg_pool2d(
 
 adaptive_avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2499,7 +2501,6 @@ avg_pool2d.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2577,6 +2578,7 @@ def reduce_window(
 
 reduce_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",

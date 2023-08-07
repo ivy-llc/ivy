@@ -34,7 +34,6 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -186,6 +185,7 @@ def flatten(
 
 flatten.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -976,7 +976,6 @@ def _check_arguments(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -1235,6 +1234,7 @@ def pad(
 
 pad.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -1733,7 +1733,6 @@ def expand(
     return ivy.current_backend(x).expand(x, shape, out=out, copy=copy)
 
 
-@handle_backend_invalid
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -1827,7 +1826,6 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_shapes
@@ -1893,6 +1891,7 @@ def as_strided(
 as_strided.unsupported_dtypes = ("bfloat16",)
 as_strided.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2015,7 +2014,6 @@ def _interleave(a, b, axis):
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function

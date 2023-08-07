@@ -930,7 +930,6 @@ def xlogy(
     return ivy.current_backend(x, y).xlogy(x, y, out=out)
 
 
-@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1098,7 +1097,6 @@ def ldexp(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -1214,6 +1212,7 @@ def lerp(
 
 lerp.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",

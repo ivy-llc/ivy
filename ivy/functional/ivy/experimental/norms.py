@@ -101,7 +101,6 @@ def l2_normalize(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -213,6 +212,7 @@ def batch_norm(
 
 batch_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -223,7 +223,6 @@ batch_norm.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -343,6 +342,7 @@ def instance_norm(
 
 instance_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -353,7 +353,6 @@ instance_norm.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -431,6 +430,7 @@ def group_norm(
 
 group_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",

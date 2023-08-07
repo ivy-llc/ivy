@@ -74,7 +74,6 @@ def _in_projection(
 
 # Linear #
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -220,6 +219,7 @@ def linear(
 
 linear.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -233,7 +233,6 @@ linear.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_partial_mixed_function
 @handle_array_like_without_promotion
@@ -407,6 +406,7 @@ def dropout(
 
 dropout.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -420,7 +420,6 @@ dropout.mixed_backend_wrappers = {
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_array_function
 def scaled_dot_product_attention(
@@ -625,7 +624,6 @@ def scaled_dot_product_attention(
     return ivy.einsum("... q k, ... k f -> ... q f", attn, v, out=out)
 
 
-@handle_backend_invalid
 @handle_array_function
 @inputs_to_ivy_arrays
 @handle_out_argument
@@ -1883,7 +1881,6 @@ def conv_general_transpose(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
@@ -1991,7 +1988,6 @@ def conv(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
