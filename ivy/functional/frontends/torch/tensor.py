@@ -174,6 +174,13 @@ class Tensor:
         return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv_(self, mat, vec, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.addmv(
+            self, mat, vec, beta=beta, alpha=alpha
+        ).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -1632,6 +1639,10 @@ class Tensor:
     )
     def conj(self):
         return torch_frontend.conj(self)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def svd(self, some=True, compute_uv=True, *, out=None):
+        return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
 
 
 class Size(tuple):
