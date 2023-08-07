@@ -1312,6 +1312,7 @@ def digamma(
     """
     return ivy.current_backend(x).digamma(x, out=out)
 
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

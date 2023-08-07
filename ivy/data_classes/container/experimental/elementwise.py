@@ -3071,4 +3071,3 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_amax(self, out=out)
-    
