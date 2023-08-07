@@ -1353,6 +1353,11 @@ class Tensor:
         self.ivy_array = self.log10().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def zero_(self):
+        self.ivy_array = torch_frontend.zeros_like(self).ivy_array
+        return self
+
     def short(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.int16, copy=False)
         return self
