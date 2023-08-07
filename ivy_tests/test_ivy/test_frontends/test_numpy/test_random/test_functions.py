@@ -2,6 +2,8 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -836,10 +838,14 @@ def test_numpy_logistic(
 
 # hypergeometric
 @st.composite
-def _good_bad_sample(blank):
-    ngood = st.draw(st.integers(min_value=0, max_value=10000))
-    nbad = st.draw(st.integers(min_value=0, max_value=10000))
-    nsample = st.draw(st.integers(min_value=1, max_value=ngood + nbad))
+def _good_bad_sample(draw: st.DrawFn):
+    ngood = draw(st.integers(min_value=0, max_value=10000))
+    nbad = draw(st.integers(min_value=0, max_value=10000))
+    if ngood == 0 and nbad == 0:
+        lst = ivy.shuffle(ivy.array([0, 1]))
+        ngood = int(lst[0])
+        nbad = int(lst[1])
+    nsample = draw(st.integers(min_value=1, max_value=ngood + nbad))
     return ngood, nbad, nsample
 
 
