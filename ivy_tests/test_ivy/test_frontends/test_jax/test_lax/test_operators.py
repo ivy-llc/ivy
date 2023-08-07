@@ -3029,3 +3029,40 @@ def test_jax_lax_igamma(
         a=xs[0],
         x=xs[1],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.digamma",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        num_arrays=2,
+        shared_dtype=True,
+        abs_smallest_val=1e-5,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=3,
+        max_dim_size=3,
+        allow_nan=False,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_digamma(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-04,
+        x=xs[0],
+    )
