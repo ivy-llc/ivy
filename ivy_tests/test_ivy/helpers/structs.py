@@ -5,7 +5,6 @@ from dataclasses import dataclass
 class FunctionData:
     module_tree: str
     fn_name: str
-    supported_device_dtypes: dict = None
 
 
 @dataclass(frozen=True)
@@ -16,7 +15,6 @@ class MethodData:
     method_name: str
     init_module_tree: str
     init_name: str
-    supported_device_dtypes: dict = None
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -24,3 +22,8 @@ class ParametersInfo:
     total: int
     positional_only: int
     keyword_only: int
+
+
+@dataclass(frozen=True)
+class SupportedDevicesDtypes:
+    supported_device_dtypes: dict = None

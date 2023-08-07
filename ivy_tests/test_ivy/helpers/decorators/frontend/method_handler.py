@@ -3,7 +3,7 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltAsVariableStrategy,
     BuiltNativeArrayStrategy,
 )
-from ivy_tests.test_ivy.helpers.structs import MethodData
+from ivy_tests.test_ivy.helpers.structs import MethodData, SupportedDevicesDtypes
 from ivy_tests.test_ivy.helpers.decorators.parameter_info_builder import (
     ParameterInfoStrategyBuilder,
 )
@@ -56,6 +56,7 @@ class FrontendMethodHandler(MethodHandlerBase):
         )
         self._given_kwargs = _given_kwargs
         self._build_test_data()
+        self._build_extra_test_data()
 
     @property
     def init_tree(self):
@@ -74,7 +75,7 @@ class FrontendMethodHandler(MethodHandlerBase):
         return {
             "init_flags": self.init_flags,
             "method_flags": self.method_flags,
-            "frontend_method_data": st.just(self.test_data),
+            "frontend_method_data": st.just(self.extra_test_data),
         }
 
     def _build_init_flags(
@@ -95,18 +96,20 @@ class FrontendMethodHandler(MethodHandlerBase):
             native_arrays=method_native_arrays,
         )
 
-    def _build_test_data(self):
+    def _build_extra_test_data(self):
         class_module_tree, _, class_name = self.class_tree.rpartition(".")
         init_tree, _, init_name = self._init_tree.rpartition(".")
-        supported_device_dtypes = self._build_supported_devices_dtypes()
-        self.test_data = MethodData(
+        self.extra_test_data = MethodData(
             class_module_tree=class_module_tree,
             class_name=class_name,
             method_name=self.method_name,
             init_module_tree=init_tree,
             init_name=init_name,
-            supported_device_dtypes=supported_device_dtypes,
         )
+
+    def _build_test_data(self):
+        supported_device_dtypes = self._build_supported_devices_dtypes()
+        self.test_data = SupportedDevicesDtypes(supported_device_dtypes)
 
     def _add_test_attributes_to_test_function(self, fn):
         fn.test_data = self.test_data

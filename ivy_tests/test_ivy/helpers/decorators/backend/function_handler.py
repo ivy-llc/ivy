@@ -1,3 +1,4 @@
+import ivy_tests.test_ivy.helpers.decorators.import_helpers as import_helpers
 from hypothesis import strategies as st
 from typing import Callable, Any
 from ivy_tests.test_ivy.helpers.decorators.parameter_info_builder import (
@@ -36,6 +37,9 @@ class BackendFunctionHandler(FunctionHandler):
         **_given_kwargs
     ):
         # Changing the order of init vars will likely break things. Change with caution!
+        self._module_tree, self._function_name = import_helpers.partition_function_tree(
+            fn_tree
+        )
         self.fn_tree = self._append_ivy_prefix_to_tree(fn_tree)
         self.ground_truth_backend = ground_truth_backend
         self._given_kwargs = _given_kwargs
@@ -65,8 +69,7 @@ class BackendFunctionHandler(FunctionHandler):
     def possible_arguments(self):
         return {
             "ground_truth_backend": st.just(self.ground_truth_backend),
-            "fn_name": st.just(self.test_data.fn_name),
-            "test_data": self.test_data,
+            "fn_name": st.just(self._function_name),
             "test_flags": self.test_flags,
         }
 
