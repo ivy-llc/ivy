@@ -19,6 +19,8 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
 
 
 class BackendFunctionHandler(FunctionHandler):
+    IVY_PREFIX = "ivy"
+
     def __init__(
         self,
         fn_tree: str,
@@ -34,7 +36,7 @@ class BackendFunctionHandler(FunctionHandler):
         **_given_kwargs
     ):
         # Changing the order of init vars will likely break things. Change with caution!
-        self.fn_tree = self._append_ivy_to_fn_tree(fn_tree)
+        self.fn_tree = self._append_ivy_prefix_to_tree(fn_tree)
         self.ground_truth_backend = ground_truth_backend
         self._given_kwargs = _given_kwargs
         self.callable_fn = self.import_function(self.fn_tree)

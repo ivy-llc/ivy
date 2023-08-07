@@ -12,12 +12,14 @@ from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import (
 
 
 class HandlerBase(ABC):
+    IVY_PREFIX = None
+
     @abstractmethod
     def __init__(self, fn_tree: str, test_flags, **_given_kwargs):
         pass
 
-    def _append_ivy_to_fn_tree(self, fn_tree):
-        return "ivy." + fn_tree
+    def _append_ivy_prefix_to_tree(self, routine_tree):
+        return f"{self.IVY_PREFIX}.{routine_tree}"
 
     @abstractmethod
     def _add_test_attributes_to_test_function(self, test_function: Callable[..., Any]):

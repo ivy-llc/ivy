@@ -14,6 +14,8 @@ from ivy_tests.test_ivy.helpers.decorators.base.method_decorator_base import (
 
 
 class FrontendMethodHandler(MethodHandlerBase):
+    IVY_PREFIX = "ivy.functional.frontends"
+
     def __init__(
         self,
         class_tree: str,
@@ -57,7 +59,7 @@ class FrontendMethodHandler(MethodHandlerBase):
 
     @property
     def init_tree(self):
-        return self._append_ivy_to_fn_tree(self._init_tree)
+        return self._append_ivy_prefix_to_tree(self._init_tree)
 
     @property
     def method_tree(self):
@@ -74,9 +76,6 @@ class FrontendMethodHandler(MethodHandlerBase):
             "method_flags": self.method_flags,
             "frontend_method_data": st.just(self.test_data),
         }
-
-    def _append_ivy_to_fn_tree(self, fn_tree):
-        return "ivy.functional.frontends." + fn_tree
 
     def _build_init_flags(
         self, init_num_positional_args, init_as_variable_flags, init_native_arrays
