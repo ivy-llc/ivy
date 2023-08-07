@@ -28,6 +28,7 @@ CURRENT_FRONTEND_STR = None
 class TestData:
     test_fn: callable
     fn_tree: str
+    gt_fn_tree: str
     fn_name: str
     supported_device_dtypes: dict = None
     is_method: bool = False
