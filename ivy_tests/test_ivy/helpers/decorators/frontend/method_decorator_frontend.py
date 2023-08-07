@@ -57,11 +57,11 @@ class FrontendMethodHandler(MethodHandlerBase):
         return f"{self.class_tree}.{self.method_name}"
 
     def _build_init_num_positional_args_strategy(self):
-        return self._build_num_positional_arguments_strategy(self.init_tree)
+        return self._build_parameters_info_dict_from_function(self.init_tree)
 
     def _build_method_num_positional_args_strategy(self):
         method_tree = f"{self.class_tree}.{self.method_name}"
-        return self._build_num_positional_arguments_strategy(method_tree)
+        return self._build_parameters_info_dict_from_method(method_tree)
 
     def _append_ivy_to_fn_tree(self, fn_tree):
         return "ivy.functional.frontends." + fn_tree
