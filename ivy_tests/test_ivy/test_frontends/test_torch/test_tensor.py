@@ -6593,6 +6593,7 @@ def test_torch_squeeze(
         on_device=on_device,
     )
 
+
 # squeeze_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
