@@ -99,7 +99,7 @@ class FrontendMethodHandler(MethodHandlerBase):
             method_name=self.method_name,
             init_module_tree=init_tree,
             init_name=init_name,
-            method_supported_device_dtypes=supported_device_dtypes,
+            supported_device_dtypes=supported_device_dtypes,
         )
 
     @property

@@ -15,7 +15,7 @@ class MethodData:
     method_name: str
     init_module_tree: str
     init_name: str
-    method_supported_device_dtypes: dict = None
+    supported_device_dtypes: dict = None
 
 
 @dataclass(frozen=True, kw_only=True)
