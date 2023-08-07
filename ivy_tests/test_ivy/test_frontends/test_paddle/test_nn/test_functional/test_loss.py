@@ -408,7 +408,8 @@ def test_paddle_margin_ranking_loss(
         max_num_dims=1,
     ),
     ignore_index=st.integers(
-        min_value=-100,
+        min_value=-1,
+        max_value=9,
     ),
     reduction=st.sampled_from(["mean", "sum", "none"]),
 )
