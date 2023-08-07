@@ -56,6 +56,21 @@ class FrontendMethodHandler(MethodHandlerBase):
     def method_tree(self):
         return f"{self.class_tree}.{self.method_name}"
 
+    @property
+    def given_kwargs(self):
+        return self._given_kwargs
+
+    @property
+    def possible_arguments(self):
+        return {
+            "init_flags": self.init_flags,
+            "method_flags": self.method_flags,
+            "frontend_method_data": st.just(self.test_data),
+        }
+
+    def _append_ivy_to_fn_tree(self, fn_tree):
+        return "ivy.functional.frontends." + fn_tree
+
     def _build_init_num_positional_args_strategy(self):
         return self._build_num_positional_arguments_strategy_from_function(
             self.init_tree
@@ -64,9 +79,6 @@ class FrontendMethodHandler(MethodHandlerBase):
     def _build_method_num_positional_args_strategy(self):
         method_tree = f"{self.class_tree}.{self.method_name}"
         return self._build_num_positional_arguments_strategy_from_method(method_tree)
-
-    def _append_ivy_to_fn_tree(self, fn_tree):
-        return "ivy.functional.frontends." + fn_tree
 
     def _build_init_flags(
         self, init_num_positional_args, init_as_variable_flags, init_native_arrays
@@ -86,11 +98,6 @@ class FrontendMethodHandler(MethodHandlerBase):
             native_arrays=method_native_arrays,
         )
 
-    def _add_test_attributes_to_test_function(self, fn):
-        fn.test_data = self.test_data
-        fn._is_ivy_method_test = True
-        return fn
-
     def _build_test_data(self):
         class_module_tree, _, class_name = self.class_tree.rpartition(".")
         init_tree, _, init_name = self._init_tree.rpartition(".")
@@ -104,14 +111,7 @@ class FrontendMethodHandler(MethodHandlerBase):
             supported_device_dtypes=supported_device_dtypes,
         )
 
-    @property
-    def given_kwargs(self):
-        return self._given_kwargs
-
-    @property
-    def possible_arguments(self):
-        return {
-            "init_flags": self.init_flags,
-            "method_flags": self.method_flags,
-            "frontend_method_data": st.just(self.test_data),
-        }
+    def _add_test_attributes_to_test_function(self, fn):
+        fn.test_data = self.test_data
+        fn._is_ivy_method_test = True
+        return fn
