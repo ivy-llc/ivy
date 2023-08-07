@@ -179,10 +179,10 @@ def test_paddle_searchsorted(
 @st.composite
 def _dtypes_input_mask(draw):
     _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
-    _mask = draw(helpers.array_values(dtype=helpers.get_dtypes("bool"), shape=_shape))
+    _mask = draw(helpers.array_values(dtype="bool", shape=_shape))
     _dtype, _x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=1,
             shape=_shape,
         )
@@ -217,6 +217,6 @@ def test_paddle_masked_select(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        x=x[0],
         mask=mask,
     )
