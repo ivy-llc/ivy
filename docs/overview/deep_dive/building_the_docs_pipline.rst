@@ -4,6 +4,7 @@ Building the Docs Pipeline
 .. _Sphinx: http://sphinx-doc.org/
 .. _Sphinx configuration file: https://www.sphinx-doc.org/en/master/usage/configuration.html
 .. _autosummary: https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html
+.. _doc-builder repository: https://github.com/unifyai/doc-builder
 
 To build our docs, we use `Sphinx`_. Sphinx is an extendable documentation generator
 for Python. As our building pipeline is complex, we heavily customize Sphinx using 
@@ -23,9 +24,9 @@ We will go through how they work in the following sections.
 The convenience script
 ~~~~~~~~~~~~~~~~~~~~~~
 
-``make_docs_without_docker.sh`` is a convenience script to build the docs. It takes 
-one argument, the path to a project to document. The project should have the following
-characteristics:
+``make_docs_without_docker.sh`` is a convenience script to build the docs, which can be
+found in the `doc-builder repository`_. It takes one argument, the path to a project to
+document. The project should have the following characteristics:
 
 1. It should have a ``requirements.txt``, or alternatively a ``requirements`` folder,
    which includes a ``requirements.txt`` and an optional ``optional.txt`` file.
@@ -52,7 +53,7 @@ Running the script:
     ./make_docs_without_docker.sh /path/to/project
 
 will result in the creation of documentation for the project in the directory 
-``doc/build``.
+``docs/build``.
 
 Options
 """""""

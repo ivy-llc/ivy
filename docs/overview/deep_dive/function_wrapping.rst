@@ -20,6 +20,7 @@ Function Wrapping
 .. _`handle_view`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L627
 .. _`handle_view_indexing`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L659 
 .. _`handle_array_function`: https://github.com/unifyai/ivy/blob/5658401b266352d3bf72c95e4af6ae9233115722/ivy/func_wrapper.py#L299
+.. _`handle_complex_input`: https://github.com/unifyai/ivy/blob/bd9b5b1080d33004e821a48c486b3a879b9d6616/ivy/func_wrapper.py#L1393
 .. _`repo`: https://github.com/unifyai/ivy
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 .. _`function wrapping channel`: https://discord.com/channels/799879767196958751/982737993028755496
@@ -47,22 +48,23 @@ Decorator order
 The order in which Ivy decorators are applied is important. It is important to follow this order, as the functionality of many functions depends on it. If the decorators are applied in the wrong order, the test may fail or the function may not behave as expected.
 The following is the recommended order to follow :
 
-1.  :code:`@infer_device`
-2.  :code:`@infer_dtype`
-3.  :code:`@handle_array_function`
-4.  :code:`@outputs_to_ivy_arrays`
-5.  :code:`@outputs_to_native_arrays`
-6.  :code:`@inputs_to_native_arrays`
-7.  :code:`@inputs_to_ivy_arrays`
-8.  :code:`@handle_out_argument`
-9.  :code:`@handle_view_indexing`
-10.  :code:`@handle_view`
-11.  :code:`@handle_array_like_without_promotion`
-12.  :code:`@handle_nestable`
-13.  :code:`@handle_exceptions`
-14.  :code:`@with_unsupported_dtypes`
-15.  :code:`@handle_nans`
-16.  :code:`@handle_mixed_function`
+#.  :code:`@handle_complex_input`
+#.  :code:`@infer_device`
+#.  :code:`@infer_dtype`
+#.  :code:`@handle_array_function`
+#.  :code:`@outputs_to_ivy_arrays`
+#.  :code:`@outputs_to_native_arrays`
+#.  :code:`@inputs_to_native_arrays`
+#.  :code:`@inputs_to_ivy_arrays`
+#.  :code:`@handle_out_argument`
+#.  :code:`@handle_view_indexing`
+#.  :code:`@handle_view`
+#.  :code:`@handle_array_like_without_promotion`
+#.  :code:`@handle_nestable`
+#.  :code:`@handle_exceptions`
+#.  :code:`@with_unsupported_dtypes`
+#.  :code:`@handle_nans`
+#.  :code:`@handle_mixed_function`
 
 This recommended order is followed to ensure that tests are efficient and accurate. It is important to follow this order because the decorators depend on each other. For example, the :code:`@infer_device` decorator needs to be applied before the :code:`@infer_dtype` decorator, because the :code:`@infer_dtype` decorator needs to know the device of the function in order to infer the data type.
 
@@ -127,9 +129,10 @@ Miscellaneous Wrappers
 ^^^^^^^^^^^^^^^^^^^^^^
 
 #.  `handle_array_function`_ : This wrapping function enables :ref:`Integrating custom classes with Ivy`
+#.  `handle_complex_input`_ : This wrapping function enables handling of complex numbers. It introduces a keyword argument :code:`complex_mode`, which is used to choose the function's behaviour as per the wrapper's docstring.
 
 
-When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked to get all the wrapping functions for a particular functions.
+When calling `_wrap_function`_ during :ref:`Backend Setting`, firstly the attributes of the functions are checked to get all the wrapping functions for a particular function.
 Then all the wrapping functions applicable to a function are used to wrap the function.
 
 Each of these topics and each associated piece of logic added by the various wrapper functions are covered in more detail in the next sections.
