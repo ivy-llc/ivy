@@ -417,14 +417,32 @@ def _shape_and_function(
             max_dim_size=max_dim_size,
         )
     )
-    VARS = "abcdefghijklmnopqrstuvw"
-    args = ""
-    out = ""
-    for i in range(len(shape)):
-        args += f"{VARS[i]},"
-        out += f"{VARS[i]}+"
-    fn_str = f"lambda {args[:-1]}: {out[:-1]}"
-    function = draw(st.functions(like=eval(fn_str), returns=st.integers()))
+
+    def fn1(*args):
+        return sum(*args)
+
+    def fn2(*args):
+        return args[0]
+
+    if len(shape) > 1:
+
+        def fn3(*args):
+            return args[0] == args[1]
+
+    else:
+
+        def fn3(*args):
+            return args[0] > 10
+
+    function = st.sampled_from([fn1, fn2, fn3])
+    # VARS = "abcdefghijklmnopqrstuvw"
+    # args = ""
+    # out = ""
+    # for i in range(len(shape)):
+    #    args += f"{VARS[i]},"
+    #    out += f"{VARS[i]}+"
+    # fn_str = f"lambda {args[:-1]}: {out[:-1]}"
+    # function = draw(st.functions(like=eval(fn_str), returns=st.integers()))
     return shape, function
 
 
