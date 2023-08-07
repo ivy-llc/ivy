@@ -129,7 +129,7 @@ def elu(x, alpha=1.0):
 
 @to_ivy_arrays_and_back
 def gelu(x, approximate=True):
-    return ivy.gelu(x, approximate=approximate)
+    return ivy.gelu(x, approximate=approximate, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back

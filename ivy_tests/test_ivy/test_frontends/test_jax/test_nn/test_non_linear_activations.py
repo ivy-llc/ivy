@@ -169,10 +169,12 @@ def test_jax_leaky_relu(
 @handle_frontend_test(
     fn_tree="jax.nn.gelu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        large_abs_safety_factor=1,
+        small_abs_safety_factor=1,
+        safety_factor_scale="linear",
+        min_value=-1e4,
+        max_value=1e4,
     ),
     approximate=st.booleans(),
     test_with_out=st.just(False),
@@ -188,6 +190,9 @@ def test_jax_gelu(
     backend_fw,
 ):
     input_dtype, x = dtype_and_x
+    # As erf function doesn't support complex dtype
+    if "complex" in str(x[0].dtype):
+        approximate = True
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,

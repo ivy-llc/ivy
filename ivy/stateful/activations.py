@@ -7,12 +7,25 @@ from typing import Literal
 
 
 class GELU(Module):
-    def __init__(self, *, approximate: bool = False):
+    def __init__(
+        self,
+        *,
+        approximate: bool = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """Apply the GELU activation function."""
         self._approximate = approximate
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, /, *, approximate=None):
+    def _forward(
+        self,
+        x,
+        /,
+        *,
+        approximate=None,
+        complex_mode=None,
+    ):
         """
         Perform forward pass of the GELU activation.
 
@@ -26,7 +39,11 @@ class GELU(Module):
         ret
             The outputs following the GELU activation *[batch_shape, d]*
         """
-        return ivy.gelu(x, approximate=ivy.default(approximate, self._approximate))
+        return ivy.gelu(
+            x,
+            approximate=ivy.default(approximate, self._approximate),
+            complex_mode=ivy.default(complex_mode, self._complex_mode),
+        )
 
 
 class GEGLU(Module):
