@@ -22,7 +22,7 @@ def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Ten
     return torch.relu(x)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("complex", "float16")}, backend_version)
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def leaky_relu(
     x: torch.Tensor,
     /,
