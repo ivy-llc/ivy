@@ -109,3 +109,19 @@ def unsorted_segment_sum(
     num_segments: Union[int, tf.Tensor],
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 125.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    return tf.signal.linear_to_mel_weight_matrix(
+        num_mel_bins,
+        dft_length,
+        sample_rate,
+        lower_edge_hertz=lower_edge_hertz,
+        upper_edge_hertz=upper_edge_hertz,
+    )

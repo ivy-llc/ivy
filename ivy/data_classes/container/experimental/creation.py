@@ -952,3 +952,98 @@ class _ContainerWithCreationExperimental(ContainerBase):
             segment_ids,
             num_segments,
         )
+
+    @staticmethod
+    def static_mel_weight_matrix(
+        num_mel_bins: Union[int, ivy.Container],
+        dft_length: Union[int, ivy.Container],
+        sample_rate: Union[int, ivy.Container],
+        lower_edge_hertz: Optional[Union[float, ivy.Container]] = 0.0,
+        upper_edge_hertz: Optional[Union[float, ivy.Container]] = 3000.0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
+        Parameters
+        ----------
+        num_mel_bins
+            The number of bands in the mel spectrum.
+        dft_length
+            The size of the original DFT obtained from (n_fft / 2 + 1).
+        sample_rate
+            Samples per second of the input signal.
+        lower_edge_hertz
+            Lower bound on the frequencies to be included in the mel spectrum.
+        upper_edge_hertz
+            The desired top edge of the highest frequency band.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        Returns
+        -------
+        ret
+            MelWeightMatrix of shape:  [frames, num_mel_bins]
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "mel_weight_matrix",
+            num_mel_bins,
+            dft_length,
+            sample_rate,
+            lower_edge_hertz,
+            upper_edge_hertz,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def mel_weight_matrix(
+        self: ivy.Container,
+        num_mel_bins: int,
+        dft_length: int,
+        sample_rate: int,
+        lower_edge_hertz: Optional[float] = 0.0,
+        upper_edge_hertz: Optional[float] = 3000.0,
+    ):
+        r"""
+        ivy.Container instance method variant of ivy.mel_weight_matrix. This method
+        simply wraps the function, and so the docstring for ivy.mel_weight_matrix also
+        applies to this method with minimal changes.
+        Parameters
+        ----------
+        num_mel_bins
+            The number of bands in the mel spectrum.
+        dft_length
+            The size of the original DFT obtained from (n_fft / 2 + 1).
+        sample_rate
+            Samples per second of the input signal.
+        lower_edge_hertz
+            Lower bound on the frequencies to be included in the mel spectrum.
+        upper_edge_hertz
+            The desired top edge of the highest frequency band.
+        Returns
+        -------
+        ret
+            MelWeightMatrix of shape:  [frames, num_mel_bins]
+        """
+        return self.static_mel_weight_matrix(
+            num_mel_bins,
+            dft_length,
+            sample_rate,
+            lower_edge_hertz,
+            upper_edge_hertz,
+        )
