@@ -1565,7 +1565,7 @@ def test_frontend_method(
         )
 
         frontend_fw_module = ivy_backend.utils.dynamic_import.import_module(
-            frontend_method_data.ivy_init_module
+            frontend_method_data.init_module_tree
         )
         ivy_frontend_creation_fn = getattr(
             frontend_fw_module, frontend_method_data.init_name
@@ -1627,7 +1627,7 @@ def test_frontend_method(
             kwargs_method_frontend["device"]
         )
     frontend_creation_fn = getattr(
-        importlib.import_module(frontend_method_data.framework_init_module),
+        importlib.import_module(frontend_method_data.init_module_tree),
         frontend_method_data.init_name,
     )
     ins_gt = frontend_creation_fn(
