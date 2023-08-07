@@ -94,7 +94,7 @@ def adaptive_max_pool2d(x, output_size, return_mask=None, name=None):
 def adaptive_max_pool3d(x, output_size, return_mask=None, name=None):
     return ivy.adaptive_max_pool3d(x, output_size)
 
-@to_ivy_arrays_and_back
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def max_unpool1d(
     x,
