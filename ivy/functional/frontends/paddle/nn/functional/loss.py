@@ -242,7 +242,6 @@ def nll_loss(
     """Refer
     https://pytorch.org/docs/stable/generated/torch.nn.NLLLoss.html#torch.nn.NLLLoss for
     more on NLL(Negative log likelihood) Loss."""
-    input = ivy.log(input)
     loss = ivy.zeros(ivy.shape(label))
     den = 0
     for i in range(0, ivy.shape(loss)[0]):
