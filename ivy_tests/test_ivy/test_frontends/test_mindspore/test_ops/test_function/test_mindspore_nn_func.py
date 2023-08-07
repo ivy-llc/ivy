@@ -92,7 +92,8 @@
 #         max_value=5,
 #         min_dim_size=4,
 #     ),
-#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5), st.integers(min_value=0, max_value=5))),
+#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5),
+#                                  st.integers(min_value=0, max_value=5))),
 #     mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
 #     constant_values=st.floats(min_value=0.0, max_value=1.0),
 # )
@@ -158,8 +159,6 @@
 #         x=x[0],
 #         output_size=output_size,
 #     )
-
-
 # def _is_same_padding(padding, stride, kernel_size, input_shape):
 #     output_shape = tuple(
 #         [
