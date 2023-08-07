@@ -625,6 +625,7 @@ from ivy.functional.frontends.numpy.logic.logical_operations import (
 from ivy.functional.frontends.numpy.linalg.matrix_and_vector_products import (
     _matmul,
     dot,
+    einsum,
 )
 
 from ivy.functional.frontends.numpy.mathematical_functions.extrema_finding import (
