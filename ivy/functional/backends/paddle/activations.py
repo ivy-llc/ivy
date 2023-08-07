@@ -57,7 +57,9 @@ def leaky_relu(
         return F.leaky_relu(x.cast("float32"), negative_slope=alpha).cast(x.dtype)
     return F.leaky_relu(x, negative_slope=alpha)
 
-
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+)
 def gelu(
     x: paddle.Tensor,
     /,
