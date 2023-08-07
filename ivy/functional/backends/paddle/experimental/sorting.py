@@ -19,6 +19,13 @@ def invert_permutation(
 def lexsort(
     keys: paddle.Tensor, /, *, axis: int = -1, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
+    if keys.dtype in [
+        paddle.int8,
+        paddle.int16,
+        paddle.uint8,
+        paddle.float16,
+    ]:
+        keys = keys.cast("float32")
     shape = keys.shape
     if len(shape) == 1:
         return paddle.argsort(keys, axis=axis)
