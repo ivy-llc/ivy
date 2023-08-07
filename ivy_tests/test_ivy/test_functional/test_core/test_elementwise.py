@@ -1489,7 +1489,9 @@ def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # tanh
 @handle_test(
     fn_tree="functional.ivy.tanh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_tanh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x

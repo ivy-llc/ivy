@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -2552,7 +2552,12 @@ class _ArrayWithElementwise(abc.ABC):
         """
         return ivy.tan(self._data, out=out)
 
-    def tanh(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def tanh(
+        self: ivy.Array,
+        *,
+        out: Optional[ivy.Array] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.tanh. This method simply wraps the
         function, and so the docstring for ivy.tanh also applies to this method with
@@ -2566,6 +2571,8 @@ class _ArrayWithElementwise(abc.ABC):
         out
             optional output, for writing the result to. It must have a shape that the
             inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -2581,7 +2588,7 @@ class _ArrayWithElementwise(abc.ABC):
         >>> print(y)
         ivy.array([0., 0.762, 0.964])
         """
-        return ivy.tanh(self._data, out=out)
+        return ivy.tanh(self._data, out=out, complex_mode=complex_mode)
 
     def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """

@@ -254,24 +254,34 @@ class Sigmoid(Module):
 
 
 class Tanh(Module):
-    def __init__(self):
-        """Apply the TANH activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the TANH activation function.
+
+        Parameters
+        ----------
+        complex_mode
+            Specifies how to handle complex input.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x):
+    def _forward(self, x, complex_mode=None):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
+        complex_mode
+             Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the TANH activation *[batch_shape, d]*
         """
-        return ivy.tanh(x)
+        return ivy.tanh(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
 
 
 class ReLU6(Module):

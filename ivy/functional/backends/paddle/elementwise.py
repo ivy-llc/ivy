@@ -627,7 +627,7 @@ def not_equal(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -640,6 +640,10 @@ def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         return paddle.tanh(x.astype("float32")).astype(x.dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        tanh_a = paddle.tanh(paddle.real(x))
+        tan_b = paddle.tan(paddle.imag(x))
+        return (tanh_a + 1j * tan_b) / (1 + 1j * (tanh_a * tan_b))
     return paddle.tanh(x)
 
 
