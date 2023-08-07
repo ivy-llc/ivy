@@ -1045,12 +1045,15 @@ def put_along_ax_helper(draw):
     idx_shape[axis] = 1
     idx_shape = tuple(idx_shape)
 
-    indices = np.random.randint(low=0, high=3, size=idx_shape, dtype=np.int64)
+    idx_strategy = nph.arrays(
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
+    )
+    indices = draw(idx_strategy)
 
-    values = np.random.randint(low=0, high=1e3, size=(), dtype=input_dtype[0])
-
-    # print(f"input_dtype: {input_dtype}, x: {x}, indices: {indices}, values: {values}, axis: {axis}") # noqa: E501
-    # print("\n")
+    values_strategy = nph.arrays(
+        dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
+    )
+    values = draw(values_strategy)
 
     return input_dtype, x[0], indices, values, axis
 
