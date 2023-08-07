@@ -1344,7 +1344,7 @@ class Tensor:
     def square(self):
         return torch_frontend.square(self._ivy_array)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
 
