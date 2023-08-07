@@ -172,7 +172,7 @@ def tril(m, k=0):
 @to_ivy_arrays_and_back
 def block(arrays):
     return arrays
-    
+
 
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
