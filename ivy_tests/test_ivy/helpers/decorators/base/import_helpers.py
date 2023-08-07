@@ -8,7 +8,7 @@ def partition_function_tree(fn_tree: str):
 
 def partition_method_tree(method_tree: str):
     module_class_tree, _, method_name = method_tree.rpartition(".")
-    module_tree, class_name = module_class_tree
+    module_tree, _, class_name = module_class_tree.rpartition(".")
     return module_tree, class_name, method_name
 
 
