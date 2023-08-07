@@ -1,3 +1,4 @@
+import ivy
 from .generic import NDFrame
 
 
@@ -52,3 +53,16 @@ class Series(NDFrame):
 
     def __len__(self):
         return len(self.array)
+
+    def sum(self, axis=None, skipna=True, numeric_only=False, min_count=0, **kwargs):
+        _array = self.array
+        if min_count > 0:
+            if ivy.has_nans(_array):
+                number_values = _array.size - ivy.sum(ivy.isnan(_array))
+            else:
+                number_values = _array.size
+            if min_count > number_values:
+                return ivy.nan
+        if skipna:
+            return ivy.nansum(_array)
+        return _array.sum()
