@@ -1,10 +1,10 @@
 import ivy.functional.frontends.numpy as np_frontend  # TODO wtf?
-import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
+import ivy_tests.test_ivy.helpers.decorators.import_helpers as import_helpers
 
 from ivy_tests.test_ivy.helpers.globals import FunctionData
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
-from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
+from ivy_tests.test_ivy.helpers.decorators.base.handler_base import HandlerBase
 
 
 class FunctionHandler(HandlerBase):

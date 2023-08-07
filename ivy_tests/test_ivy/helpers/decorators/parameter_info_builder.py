@@ -1,5 +1,5 @@
 import inspect
-import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
+import ivy_tests.test_ivy.helpers.decorators.import_helpers as import_helpers
 
 from typing import Dict
 from ivy_tests.test_ivy.helpers.structs import ParametersInfo

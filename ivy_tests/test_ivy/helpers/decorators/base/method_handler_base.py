@@ -1,6 +1,6 @@
 from abc import abstractproperty
-import ivy_tests.test_ivy.helpers.decorators.base.import_helpers as import_helpers
-from ivy_tests.test_ivy.helpers.decorators.base.decorator_base import HandlerBase
+import ivy_tests.test_ivy.helpers.decorators.import_helpers as import_helpers
+from ivy_tests.test_ivy.helpers.decorators.base.handler_base import HandlerBase
 from ivy_tests.test_ivy.helpers.pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 

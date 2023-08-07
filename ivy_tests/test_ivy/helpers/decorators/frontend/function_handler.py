@@ -1,8 +1,8 @@
 from hypothesis import strategies as st
-from ivy_tests.test_ivy.helpers.decorators.base.parameter_info_builder import (
+from ivy_tests.test_ivy.helpers.decorators.parameter_info_builder import (
     ParameterInfoStrategyBuilder,
 )
-from ivy_tests.test_ivy.helpers.decorators.base.function_decorator_base import (
+from ivy_tests.test_ivy.helpers.decorators.base.function_handler_base import (
     FunctionHandler,
 )
 

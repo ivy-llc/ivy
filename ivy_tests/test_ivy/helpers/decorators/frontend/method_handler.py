@@ -4,11 +4,11 @@ from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltNativeArrayStrategy,
 )
 from ivy_tests.test_ivy.helpers.structs import MethodData
-from ivy_tests.test_ivy.helpers.decorators.base.parameter_info_builder import (
+from ivy_tests.test_ivy.helpers.decorators.parameter_info_builder import (
     ParameterInfoStrategyBuilder,
 )
 from ivy_tests.test_ivy.helpers.test_parameter_flags import frontend_method_flags
-from ivy_tests.test_ivy.helpers.decorators.base.method_decorator_base import (
+from ivy_tests.test_ivy.helpers.decorators.base.method_handler_base import (
     MethodHandlerBase,
 )
 
