@@ -42,10 +42,12 @@ class DataFrame(NDFrame):
         assert self.array.ndim == 2, "DataFrame Data must be 2-dimensional"
 
     def __getitem__(self, col):
+        # turn labels (strings) into numbered indexing so that self.array columns can
+        # be accessed.
         if isinstance(col, (tuple, list)):
-            indexed_col = [self.columns.index(i) for i in col]
+            numbered_col = [self.columns.index(i) for i in col]
             return DataFrame(
-                self.array[:, indexed_col],
+                self.array[:, numbered_col],
                 index=self.index,
                 dtype=self.dtype
             )
