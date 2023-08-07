@@ -183,6 +183,10 @@ class Dtype(str):
         return as_native_dtype(self)
 
     @property
+    def name(self) -> str:
+        return str(self)
+
+    @property
     def info(self):
         if self.is_int_dtype or self.is_uint_dtype:
             return iinfo(self)
