@@ -174,7 +174,6 @@ def block(arrays):
     return arrays
     
 
-
 @to_ivy_arrays_and_back
 def squeeze(a, axis=None):
     return ivy.squeeze(a, axis=axis)
