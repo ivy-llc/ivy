@@ -1,0 +1,60 @@
+name: Comment-to-Checklist
+
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  pr_commented:
+    name: PR comment
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, 'add_reformatting_checklist_') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Get Category Substring
+        uses: bhowell2/github-substring-action@v1.0.0
+        id: category
+        with:
+          value: ${{ github.event.comment.body }}
+          index_of_str: "add_reformatting_checklist_"
+
+      - name: Render template
+        id: template
+        uses: chuhlomin/render-template@v1.4
+        with:
+          template: ivy/automation_tools/checklists/reformat_checklist.md
+          vars: |
+            category_name: ${{ steps.category.outputs.substring }}
+
+      - name: Update Comment
+        uses: peter-evans/create-or-update-comment@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-id: ${{ github.event.comment.id }}
+          body: ${{ steps.template.outputs.result }}
+          edit-mode: replace
+  
+  frontend_pr_commented:
+    name: Frontend PR comment
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == 'add_frontend_checklist' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Update Comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          comment-id: ${{ github.event.comment.id }}
+          body-path: ivy/automation_tools/checklists/frontend_checklist.md
+          edit-mode: replace

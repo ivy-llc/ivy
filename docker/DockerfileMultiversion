@@ -1,0 +1,56 @@
+FROM debian:buster
+WORKDIR /ivy
+
+
+
+
+ARG fw
+ARG pycon=3.8.10
+# Install miniconda
+ENV CONDA_DIR /opt/miniconda/
+
+RUN apt clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y wget && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/miniconda
+
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN conda create --name multienv python==$pycon
+
+# to fix protobuf conflicts
+ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION python
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-tk && \
+    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
+    apt-get install -y git && \
+    apt-get install -y rsync && \
+    apt-get install -y libusb-1.0-0 && \
+    apt-get install -y libglib2.0-0 && \
+    pip3 install --upgrade pip && \
+    pip3 install setuptools==58.5.3
+
+
+# Install Ivy Upstream
+RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --depth 1 && \
+    cd ivy && \
+    cd ivy_tests/array_api_testing/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+
+COPY /docker/multiversion_framework_directory.py .
+COPY /docker/requirement_mappings_multiversion.json .
+
+# requirement mappings directs which dependency to be installed and where
+SHELL ["/bin/bash", "-c"]
+RUN python3 multiversion_framework_directory.py  $fw
+
+
+ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
+
+
+
+
+

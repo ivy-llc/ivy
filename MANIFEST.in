@@ -1,0 +1,4 @@
+include requirements/requirements.txt
+include ivy/compiler/utils/*.so
+include ivy/compiler/*.so
+include ivy/compiler/*.py

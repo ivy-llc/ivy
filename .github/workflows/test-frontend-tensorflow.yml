@@ -1,0 +1,73 @@
+name: test-frontend-tensorflow
+on:
+  workflow_dispatch:
+#  pull_request:
+#    types: [labeled, opened, synchronize, reopened, review_requested]
+
+jobs:
+  run-nightly-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'TensorFlow Frontend')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+
+      - name: Download artifact
+        if: github.event_name == 'pull_request'
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-frontend-tensorflow.yml
+          workflow_conclusion: completed
+          name: hypothesis_frontend_tensorflow_zip
+          path: |
+            ivy/.hypothesis/
+        continue-on-error: true
+
+      - name: Unzip Hypothesis Examples
+        if: github.event_name == 'pull_request'
+        id: unzip
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+        continue-on-error: true
+
+      - name: Create Hypothesis Directory
+        if: steps.unzip.outcome != 'success' &&  github.event_name == 'pull_request'
+        run: |
+          cd ivy
+          mkdir -p .hypothesis
+          cd .hypothesis
+          mkdir -p examples
+        continue-on-error: true
+
+      - name: Run Frontend Tests
+        id: tests
+        run: |
+          cd ivy
+          docker run --rm -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend all ivy_tests/test_ivy/test_frontends/test_tensorflow
+        continue-on-error: true
+
+      - name: Zip Hypothesis Examples
+        if: github.event_name == 'pull_request'
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+        continue-on-error: true
+
+      - name: Upload hypothesis
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: hypothesis_frontend_tensorflow_zip
+          path: |
+            ivy/.hypothesis/examples.zip
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

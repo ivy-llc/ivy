@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.236.0/containers/docker-existing-dockerfile
+
+//update the fw arg to add as many versions to add
+{
+	"name": "Ivy Development Environment for Multiverison(build)",
+
+	"build": {
+		"dockerfile": "../../docker/DockerfileMultiversion",
+		"context": "../..",
+      "args": {
+    "fw": ["numpy/1.24.2  tensorflow/2.11.0 tensorflow/2.12.0 jax/0.4.10 jax/0.4.8"]
+
+  }
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/opt/miniconda/envs/multienv/bin/python3"
+			}
+		}
+	},
+
+	"postCreateCommand": {
+        "post_create": "bash .devcontainer/post_create_commands.sh",
+        "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
+    },
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Uncomment the next line to run commands after the container is created - for example installing curl.
+
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+
+	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
+	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode",
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2": {
+			"installZsh": true,
+			"configureZshAsDefaultShell": true,
+			"installOhMyZsh": true,
+			"upgradePackages": false
+		},
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"installDockerBuildx": true,
+			"version": "20.10",
+			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		}
+    }
+}
+

@@ -1,0 +1,37 @@
+name: test-ivy-cron-multi-version
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 * * * *'
+permissions:
+  actions: read
+jobs:
+  run-nightly-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+
+      - name: Get Job URL
+        uses: Tiryoh/gha-jobid-action@v0
+        id: jobs
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          job_name: ${{ github.job }}
+
+      - name: Run Tests
+        id: tests
+        run: |
+          cd ivy
+          pip3 install pymongo
+          python run_tests_CLI/cron_tests_multi_version.py ${{ github.run_number }}
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'true' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+        continue-on-error: true
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1

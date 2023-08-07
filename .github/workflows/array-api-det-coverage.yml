@@ -1,0 +1,37 @@
+name: array-api-determine-test-coverage
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+jobs:
+  determine_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ivy 🛎
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: "recursive"
+          fetch-depth: 150
+
+      - name: Determine Test Coverage
+        run: |
+          pip install pydriller tqdm
+          cd ivy
+          python run_tests_CLI/array_api_det_coverage.py
+          cd ..
+          mkdir tests
+          cp ivy/tests.pbz2 tests/
+
+      - name: Push Mapping
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: tests/
+          destination-github-username: 'unifyai'
+          destination-repository-name: 'Mapping'
+          user-email: rashul.chutani@gmail.com
+          commit-message: Update Array API Tests Mapping
+          target-branch: master

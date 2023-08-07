@@ -1,0 +1,43 @@
+name: manual-tests-pr
+on:
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Test:'
+        default: 'ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py::test_torch_instance_arctan_,tensorflow'
+        required: true
+permissions:
+  actions: read
+jobs:
+   run_tests:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+           job_name: ${{ github.job }}
+
+       - name: Run Tests
+         id: tests
+         run: |
+           pip3 install pymongo
+           cd ivy
+           mkdir .ivy
+           touch .ivy/key.pem
+           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
+           python setup_tests.py ${{ github.event.inputs.test }} 
+           python run_tests_pr.py
+         continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1

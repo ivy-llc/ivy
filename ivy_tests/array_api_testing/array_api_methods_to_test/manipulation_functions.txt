@@ -1,0 +1,8 @@
+concat
+expand_dims
+flip
+permute_dims
+reshape
+roll
+squeeze
+stack

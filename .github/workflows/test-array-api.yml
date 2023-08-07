@@ -1,0 +1,81 @@
+name: test-array-api
+on:
+  workflow_dispatch:
+
+jobs:
+  run-array-api-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'Array API')
+    strategy:
+      matrix:
+        backends: [numpy, torch, jax, tensorflow]
+        submodules: [array_object, constants, creation_functions, data_type_functions,
+                    has_names, linalg, manipulation_functions, operators_and_elementwise_functions,
+                    searching_functions, set_functions, signatures, sorting_functions,
+                    special_cases, statistical_functions, utility_functions]
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: 'recursive'
+
+      - name: Download artifact
+        if: github.event_name == 'pull_request'
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: test-array-api.yml
+          workflow_conclusion: completed
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
+          path: |
+            ivy/.hypothesis/
+        continue-on-error: true
+
+      - name: Unzip Hypothesis Examples
+        if: github.event_name == 'pull_request'
+        id: unzip
+        run: |
+          cd ivy/.hypothesis
+          unzip examples.zip
+          rm examples.zip
+        continue-on-error: true
+
+      - name: Create Hypothesis Directory
+        if: steps.unzip.outcome != 'success' && github.event_name == 'pull_request'
+        run: |
+          cd ivy
+          mkdir -p .hypothesis
+          cd .hypothesis
+          mkdir -p examples
+        continue-on-error: true
+
+      - name: Run Array API Tests
+        id: tests
+        run: |
+          cd ivy
+          ./run_tests_CLI/test_array_api.sh ${{matrix.backends}} test_${{matrix.submodules}} ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD}}
+        continue-on-error: true
+
+      - name: Zip Hypothesis Examples
+        if: github.event_name == 'pull_request'
+        run: |
+          cd ivy/.hypothesis
+          zip -r examples.zip examples
+        continue-on-error: true
+
+      - name: Upload hypothesis
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: 'hypothesis_${{ matrix.backends }}_${{ matrix.submodules }}_zip'
+          path: |
+            ivy/.hypothesis/examples.zip
+        continue-on-error: true
+
+
+      - name: Check on failures
+        if: steps.tests.outcome != 'success'
+        run: exit 1
+

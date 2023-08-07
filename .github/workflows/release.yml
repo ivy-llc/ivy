@@ -1,0 +1,16 @@
+name: Release Workflow
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  publish-release-docs:
+    name: Publish Release Docs
+    uses: unifyai/workflows/.github/workflows/docs.yml@master
+    secrets: inherit
+
+  deploy:
+    name: Deploy to PyPI
+    uses: ./.github/workflows/pypi.yml
+    secrets: inherit
