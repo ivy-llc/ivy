@@ -850,14 +850,14 @@ def test_numpy_logistic(
     test_with_out=st.just(False),
 )
 def test_numpy_pareto(
-        input_dtypes,
-        frontend,
-        test_flags,
-        backend_fw,
-        fn_tree,
-        on_device,
-        a,
-        size,
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+    size,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,

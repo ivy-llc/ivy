@@ -198,6 +198,7 @@ def logistic(loc=0.0, scale=1.0, size=None):
     x = loc + scale * ivy.log(u / (1 - u))
     return x
 
+
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def pareto(a, size=None):
