@@ -655,3 +655,8 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+
+@to_ivy_arrays_and_back
+def block(arrays):
+    return ivy.block(arrays)

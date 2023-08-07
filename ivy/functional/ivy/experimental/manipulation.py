@@ -518,6 +518,129 @@ def rot90(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
+@handle_view
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def block(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+) -> ivy.Array:
+    """
+    Assemble an nd-array from nested lists of blocks.
+
+    Blocks in the innermost lists are concatenated along the last dimension (-1), then these
+    are concatenated along the second-last dimension (-2), and so on until the outermost list
+    is reached.
+
+    Blocks can be of any dimension, but will not be broadcasted using the normal rules.
+    Instead, leading axes of size 1 are inserted, to make ``block.ndim`` the same for all blocks.
+    This is primarily useful for working with scalars, and means that code like ``ivy.block([v, 1])``
+    is valid, where ``v.ndim == 1``.
+
+    When the nested list is two levels deep, this allows block matrices to be constructed from
+    their components.
+
+    Parameters
+    ----------
+    arrays
+        If passed a single ndarray or scalar (a nested list of depth 0), this
+        is returned unmodified (and not copied).
+
+        Elements shapes must match along the appropriate axes (without
+        broadcasting), but leading 1s will be prepended to the shape as
+        necessary to make the dimensions match.
+
+    Returns
+    -------
+    block_array
+        The array assembled from the given blocks.
+
+        The dimensionality of the output is equal to the greatest of:
+        * the dimensionality of all the inputs
+        * the depth to which the input list is nested
+
+    Raises
+    ------
+    ValueError
+        * If list depths are mismatched - for instance, ``[[a, b], c]`` is
+          illegal, and should be spelt ``[[a, b], [c]]``
+        * If lists are empty - for instance, ``[[a, b], []]``
+
+    ...note::
+        When called with only scalars, ``ivy.block`` is equivalent to an ``array`` call.
+        So ``ivy.block([[1, 2], [3, 4]])`` is equivalent to ``ivy.array([[1, 2], [3, 4]])``.
+
+    Examples
+    --------
+    The most common use of this function is to build a block matrix
+
+    With :class:`ivy.Array` input:
+
+    >>> A = ivy.eye(2) * 2
+    >>> B = ivy.eye(3) * 3
+    >>> ivy.array([
+    ...     [A,               ivy.zeros((2, 3))],
+    ...     [ivy.ones((3, 2)), B               ]
+    ... ])
+    ivy.array([[2., 0., 0., 0., 0.],
+               [0., 2., 0., 0., 0.],
+               [1., 1., 3., 0., 0.],
+               [1., 1., 0., 3., 0.],
+               [1., 1., 0., 0., 3.]])
+
+    With a list of depth 1, `block` can be used as `hstack`
+
+    >>> ivy.block([1, 2, 3])              # hstack([1, 2, 3])
+    ivy.array([1, 2, 3])
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> ivy.block([a, b, 10])             # hstack([a, b, 10])
+    ivy.array([ 1,  2,  3,  4,  5,  6, 10])
+
+    >>> A = ivy.ones((2, 2), dtype=int)
+    >>> B = 2 * A
+    >>> ivy.block([A, B])                 # hstack([A, B])
+    ivy.array([[1, 1, 2, 2],
+               [1, 1, 2, 2]])
+
+    With a list of depth 2, `block` can be used in place of `vstack`:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> ivy.block([[a], [b]])             # vstack([a, b])
+    ivy.array([[1, 2, 3],
+               [4, 5, 6]])
+
+    >>> A = ivy.ones((2, 2), dtype=int)
+    >>> B = 2 * A
+    >>> ivy.block([[A], [B]])             # vstack([A, B])
+    ivy.array([[1, 1],
+               [1, 1],
+               [2, 2],
+               [2, 2]])
+
+    It can also be used in places of `atleast_1d` and `atleast_2d`
+
+    >>> a = ivy.array(0)
+    >>> b = ivy.array([1])
+    >>> ivy.block([a])                    # atleast_1d(a)
+    ivy.array([0])
+    >>> ivy.block([b])                    # atleast_1d(b)
+    ivy.array([1])
+
+    >>> ivy.block([[a]])                  # atleast_2d(a)
+    ivy.array([[0]])
+    >>> ivy.block([[b]])                  # atleast_2d(b)
+    ivy.array([[1]])
+    """
+    return current_backend(x).block(x)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting

@@ -114,6 +114,12 @@ def roll(
     return jnp.roll(x, shift, axis)
 
 
+def block(
+    x: JaxArray, /
+) -> JaxArray:
+    return jnp.block(x)
+
+
 def squeeze(
     x: JaxArray,
     /,

@@ -1,6 +1,6 @@
 # global
 from collections import namedtuple
-from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
+from typing import Union, Optional, Sequence, Tuple, NamedTuple, List, Iterable, Any
 from numbers import Number
 import tensorflow as tf
 
@@ -59,6 +59,55 @@ def hstack(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.hstack(arrays)
+
+
+def _unzip2(
+    xys: Iterable[tuple[Any, Any]]
+):
+    xs = []
+    ys = []
+    for x, y in xys:
+        xs.append(x)
+        ys.append(y)
+    return tuple(xs), tuple(ys)
+
+
+def _atleast_nd(
+    x: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+    n: int
+) -> Union[Sequence[tf.Tensor], Sequence[tf.Variable]]:
+    m = len(tf.shape(x))
+    return tf.broadcast_to(x, (1,) * (n - m)) if m < n else tf.convert_to_tensor(x)
+
+
+def _block(
+    xs: Union[
+            Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+            list[Union[Sequence[tf.Tensor], Sequence[tf.Variable]]]
+        ]
+) -> tuple[Union[Sequence[tf.Tensor], Sequence[tf.Variable]], int]:
+    if isinstance(xs, tuple):
+        raise ValueError("tf.block does not allow tuples, got {}"
+                         .format(xs))
+    elif isinstance(xs, list):
+        if len(xs) == 0:
+            raise ValueError("tf.block does not allow empty list arguments")
+        xs_tup, depths = _unzip2([_block(x) for x in xs])
+        if any(d != depths[0] for d in depths[1:]):
+            raise ValueError("Mismatched list depths in tf.block")
+        rank = max(depths[0], max(len(tf.shape(x)) for x in xs_tup))
+        xs_tup = tuple(_atleast_nd(x, rank) for x in xs_tup)
+        return tf.concat(xs_tup, axis=-depths[0]), depths[0] + 1
+    else:
+        return tf.convert_to_tensor(xs), 1
+
+
+def block(
+    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+    /
+) -> Union[tf.Tensor, tf.Variable]:
+    out, _ = _block(arrays)
+    return out
 
 
 def rot90(

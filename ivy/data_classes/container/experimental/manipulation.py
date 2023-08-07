@@ -657,6 +657,104 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             out=out,
         )
 
+
+    @staticmethod
+    def static_block(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.block. This method simply wraps the
+        function, and so the docstring for ivy.block also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        out
+            Optional output container to write the result to.
+
+        Returns
+        -------
+            The result of the block function call, i.e., assembled leaves of ivy container.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> A = ivy.Container(a=[a, b, 10], b=[[a], [b]])
+        >>> print(ivy.Container.static_block(A))
+        {
+            a: ivy.array([1, 2, 3, 4, 5, 6, 10]),
+            b: ivy.array([[1, 2, 3],
+                          [4, 5, 6]])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "block",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def block(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.block. This method simply wraps the
+        function, and so the docstring for ivy.block also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        out
+            Optional output container to write the result to.
+
+        Returns
+        -------
+            The result of the block function call, i.e., assembled leaves of ivy container.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([4, 5, 6])
+        >>> A = ivy.Container(a=[a, b, 10], b=[[a], [b]])
+        >>> print(A.block())
+        {
+            a: ivy.array([1, 2, 3, 4, 5, 6, 10]),
+            b: ivy.array([[1, 2, 3],
+                          [4, 5, 6]])
+        }
+        """
+        return self.static_block(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+
     @staticmethod
     def static_top_k(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],

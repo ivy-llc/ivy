@@ -1080,3 +1080,26 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+
+    def block(
+        self: ivy.Array,
+        /
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.block. This method simply wraps the
+        function, and so the docstring for ivy.hsplit also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Optional output array to write the result to.
+
+        Returns
+        -------
+            The result of the block function call, i.e., a assembled ivy array.
+        """
+        return ivy.block(self._data)

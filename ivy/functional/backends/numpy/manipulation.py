@@ -130,6 +130,13 @@ def roll(
     return np.roll(x, shift, axis)
 
 
+def block(
+    x: np.ndarray,
+    /,
+) -> np.ndarray:
+    return np.block(x)
+
+
 def squeeze(
     x: np.ndarray,
     /,

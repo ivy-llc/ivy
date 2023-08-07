@@ -59,3 +59,8 @@ def hstack(tup):
             np_frontend.promote_numpy_dtypes(i.dtype, out_dtype)
         )
     return ivy.hstack(tup)
+
+
+@to_ivy_arrays_and_back
+def block(arr, /):
+    return ivy.block(arr)

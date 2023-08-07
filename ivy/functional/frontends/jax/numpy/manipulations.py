@@ -171,8 +171,7 @@ def tril(m, k=0):
 
 @to_ivy_arrays_and_back
 def block(arr):
-    # TODO: reimplement block
-    raise ivy.utils.exceptions.IvyNotImplementedError()
+    raise ivy.block(arr)
 
 
 @to_ivy_arrays_and_back

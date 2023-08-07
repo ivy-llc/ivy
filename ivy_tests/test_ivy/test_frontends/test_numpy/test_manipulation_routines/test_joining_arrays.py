@@ -152,3 +152,72 @@ def test_numpy_hstack(
         on_device=on_device,
         tup=xs,
     )
+
+
+# block
+@st.composite
+def _get_input_dtypes_and_shape(draw):
+    shapes = draw(
+        st.lists(
+            helpers.get_shape(
+                min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+            ),
+            min_size=2,
+            max_size=10,
+        )
+    )
+    x_dtypes, xs = zip(
+        *[
+            draw(
+                helpers.dtype_and_values(
+                    available_dtypes=helpers.get_dtypes("valid"),
+                    min_num_dims=1,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                    shape=shape,
+                )
+            )
+            for shape in shapes
+        ]
+    )
+
+    unpacked_x_dtypes = []
+    for dtype in x_dtypes:
+        if isinstance(dtype, (tuple, list)):
+            unpacked_x_dtypes = [*unpacked_x_dtypes, *dtype]
+        else:
+            unpacked_x_dtypes = [*unpacked_x_dtypes, dtype]
+    unpacked_xs = []
+    for x in xs:
+        if isinstance(x, (tuple, list)):
+            unpacked_xs = [*unpacked_xs, *x]
+        else:
+            unpacked_xs = [*unpacked_xs, x]
+    return unpacked_x_dtypes, unpacked_xs
+
+
+@handle_frontend_test(
+    fn_tree="numpy.block",
+    dtype_and_x=_get_input_dtypes_and_shape(),
+    test_with_out=st.just(False),
+)
+def test_numpy_block(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    x_dtypes, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs,
+    )
