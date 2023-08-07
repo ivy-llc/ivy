@@ -137,8 +137,9 @@ class _ArrayWithCreationExperimental(abc.ABC):
         linearly sampled frequency spectra (from DFT or STFT) into num_mel_bins
         frequency information based on the [lower_edge_hertz, upper_edge_hertz]
 
-        range on the mel scale. This function defines the mel scale in terms of frequency
-        in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+        range on the mel scale. This function defines the mel scale in terms of
+        frequency in hertz according to the following formula:
+                       mel(f) = 2595 * log10(1 + f/700)
 
         Parameters
         ----------
