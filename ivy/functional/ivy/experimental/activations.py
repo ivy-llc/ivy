@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Sequence
+from typing import Union, Optional
 
 # local
 import ivy
@@ -460,14 +460,16 @@ def elu(
     return current_backend(x).elu(x, alpha=alpha, out=out)
 
 def sequence_length(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None) -> ivy.int64:
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+) -> ivy.int64:
     """
-    Produces a scalar (tensor of empty shape) containing the number of tensors in the ivy array input. 
+    Produces a scalar (tensor of empty shape) containing the number of tensors in the
+    ivy array input. 
 
     Parameters
     ----------
     x
-        Can be a sequence of any tensor type: bool, complex128, complex64, double, float, 
+        Can be a sequence of any tensor type: bool, complex128, complex64, double, float,
         float16, int16, int32, int64, int8, string, uint16, uint32, uint64, uint8
 
     Returns
