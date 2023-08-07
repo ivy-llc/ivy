@@ -832,3 +832,45 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
+
+
+# hypergeometric
+@st.composite
+def _good_bad_sample(blank):
+    ngood = st.draw(st.integers(min_value=0, max_value=10000))
+    nbad = st.draw(st.integers(min_value=0, max_value=10000))
+    nsample = st.draw(st.integers(min_value=1, max_value=ngood + nbad))
+    return ngood, nbad, nsample
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.hypergeometric",
+    input_dtypes=helpers.get_dtypes("integer", full=False),
+    good_bad_sample=_good_bad_sample(),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_hypergeometric(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    good_bad_sample,
+):
+    ngood, nbad, nsample = good_bad_sample
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        ngood=ngood,
+        nbad=nbad,
+        nsample=nsample,
+        test_values=False,
+        size=size,
+    )

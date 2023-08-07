@@ -197,3 +197,34 @@ def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
     return x
+
+
+import random
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def hypergeometric(ngood, nbad, nsample, size=None):
+    lb = nsample - nbad if 0 < nsample - nbad else 0
+    ub = nsample if nsample < ngood else ngood
+    print(
+        "lb=",
+        lb,
+        " ub=",
+        ub,
+        " ngood=",
+        ngood,
+        " nbad=",
+        nbad,
+        " nsample=",
+        nsample,
+        " size=",
+        size,
+    )
+    u = []
+    if size is None:
+        size = 1
+    for i in range(size):
+        u.append(random.randint(lb, ub))
+    # u = ivy.randint(lb, ub, shape=size)
+    return u
