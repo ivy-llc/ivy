@@ -92,6 +92,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
@@ -475,3 +476,12 @@ def view_as_real(input):
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
 
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)
