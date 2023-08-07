@@ -1020,7 +1020,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
-    
+
     def amax(
         self: ivy.Array,
         /,
