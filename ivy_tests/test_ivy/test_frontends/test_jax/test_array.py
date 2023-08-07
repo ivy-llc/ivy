@@ -2249,7 +2249,7 @@ def test_jax_array_min(
     ),
     keep_dims=st.booleans(),
 )
-def test_jax_devicearray_ptp(
+def test_jax_array_ptp(
     dtype_and_x_axis_dtype,
     keep_dims,
     frontend,
@@ -2262,14 +2262,6 @@ def test_jax_devicearray_ptp(
     input_dtypes, x, axis = dtype_and_x_axis_dtype
     if backend_fw == "torch" and (
         "complex128" in input_dtypes or "complex64" in input_dtypes
-    ):
-        return
-    if backend_fw == "tensorflow" and (
-        "complex128" in input_dtypes or "complex64" in input_dtypes
-    ):
-        return
-    if backend_fw == "paddle" and (
-        "bfloat16" in input_dtypes or "bool" in input_dtypes
     ):
         return
     helpers.test_frontend_method(
