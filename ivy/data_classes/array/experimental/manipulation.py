@@ -1080,3 +1080,22 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+    def put_along_axis(
+        self: ivy.Array,
+        indices: ivy.Array,
+        values: ivy.Array,
+        axis: int,
+        /,
+        *,
+        mode: Optional[str] = "assign",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ivy.put_along_axis(self._data, indices, values, axis, mode=mode, out=out)

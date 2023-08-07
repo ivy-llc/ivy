@@ -1038,9 +1038,13 @@ def put_along_ax_helper(draw):
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
+            min_axis=0,
+            max_axis=1,
         )
     )
 
+    if axis < 0:
+        axis = 0
     idx_shape = list(shape)
     idx_shape[axis] = 1
     idx_shape = tuple(idx_shape)
@@ -1054,6 +1058,9 @@ def put_along_ax_helper(draw):
         dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
     )
     values = draw(values_strategy)
+
+    # print(input_dtype, x, indices, values, axis)
+    # print("\n")
 
     return input_dtype, x[0], indices, values, axis
 

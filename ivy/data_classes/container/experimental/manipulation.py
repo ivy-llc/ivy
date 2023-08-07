@@ -2996,3 +2996,57 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             v,
             wrap=wrap,
         )
+
+    @staticmethod
+    def _static_put_along_axis(
+        arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        values: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: Union[int, ivy.Container],
+        /,
+        *,
+        mode: Optional[Union[str, ivy.Container]] = "assign",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "put_along_axis",
+            arr,
+            indices,
+            values,
+            axis,
+            mode=mode,
+            out=out,
+        )
+
+    def put_along_axis(
+        self: ivy.Container,
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        values: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: Union[int, ivy.Container],
+        /,
+        *,
+        mode: Optional[Union[str, ivy.Container]] = "assign",
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.put_along_axis.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.put_along_axis also applies to this method with minimal
+        changes.
+        """
+        return self._static_put_along_axis(
+            self,
+            indices,
+            values,
+            axis,
+            mode=mode,
+            out=out,
+        )
