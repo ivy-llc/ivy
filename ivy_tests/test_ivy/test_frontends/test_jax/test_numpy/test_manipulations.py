@@ -1046,29 +1046,30 @@ def _get_input_and_block(draw):
     return x_dtypes, xs
 
 
-# TODO: uncomment when block is reimplemented
-# @handle_frontend_test(
-#     fn_tree="jax.numpy.block",
-#     input_x_shape=_get_input_and_block(),
-#     test_with_out=st.just(False),
-# )
-# def test_jax_block(
-#     *,
-#     input_x_shape,
-#     on_device,
-#     fn_tree,
-#     frontend,
-#     test_flags,
-# ):
-#     x_dtypes, xs = input_x_shape
-#     helpers.test_frontend_function(
-#         input_dtypes=x_dtypes,
-#         frontend=frontend,
-#         test_flags=test_flags,
-#         fn_tree=fn_tree,
-#         on_device=on_device,
-#         arrays=xs,
-#     )
+@handle_frontend_test(
+    fn_tree="jax.numpy.block",
+    input_x_shape=_get_input_and_block(),
+    test_with_out=st.just(False),
+)
+def test_jax_block(
+    *,
+    input_x_shape,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    x_dtypes, xs = input_x_shape
+    helpers.test_frontend_function(
+        input_dtypes=x_dtypes[0],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arrays=xs[0],
+    )
 
 
 @st.composite
