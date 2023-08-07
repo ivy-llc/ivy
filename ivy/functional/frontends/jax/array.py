@@ -301,3 +301,12 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+    
+    def ptp(
+        self,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.ptp(self, axis=axis, out=out, keepdims=keepdims)

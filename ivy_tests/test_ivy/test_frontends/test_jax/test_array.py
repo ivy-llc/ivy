@@ -2234,7 +2234,7 @@ def test_jax_array_min(
 
 
 # ptp
-@handle_frontend_method(
+ @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="ptp",
