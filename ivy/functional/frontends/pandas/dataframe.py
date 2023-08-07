@@ -41,6 +41,19 @@ class DataFrame(NDFrame):
 
         assert self.array.ndim == 2, "DataFrame Data must be 2-dimensional"
 
+    def __getattr__(self, item):
+        if item in self.columns:
+            item_index = self.columns.index(item)
+            return Series(
+                self.array[:, item_index],
+                index=self.index,
+                name=self.name,
+                dtype=self.dtype,
+                copy=self.copy,
+            )
+        else:
+            return super().__getattr__(item)
+
     def __repr__(self):
         return (
             f"frontends.pandas.DataFrame ({self.array.to_list()}, "
