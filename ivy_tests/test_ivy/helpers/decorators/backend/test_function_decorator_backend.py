@@ -14,7 +14,7 @@ def test_returns_no_hypothesis_func():
     original_fn_id = id(fake_test_fn)
     wrapped_fn_id = id(
         BackendFunctionHandler(
-            fn_tree="ivy.functional.ivy.add",
+            fn_tree="functional.ivy.add",
             ground_truth="tensorflow",
         )(fake_test_fn)
     )
@@ -28,7 +28,7 @@ def test_returns_hypothesis_func():
         pass
 
     wrapped_fn = BackendFunctionHandler(
-        fn_tree="ivy.functional.ivy.add",
+        fn_tree="functional.ivy.add",
         ground_truth="tensorflow",
         x=st.integers(),
     )(fake_test_fn)
@@ -44,7 +44,7 @@ def test_has_test_attrs():
         pass
 
     wrapped_fn = BackendFunctionHandler(
-        fn_tree="ivy.functional.ivy.add",
+        fn_tree="functional.ivy.add",
         ground_truth="tensorflow",
         x=st.integers(),
     )(fake_test_fn)
