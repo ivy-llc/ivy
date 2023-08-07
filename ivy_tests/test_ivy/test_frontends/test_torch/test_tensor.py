@@ -10508,6 +10508,7 @@ def test_torch_baddbmm(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -10555,7 +10556,8 @@ def test_torch_baddbmm_(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
