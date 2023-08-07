@@ -755,7 +755,6 @@ def dct(
 
 
 @handle_exceptions
-@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -860,7 +859,13 @@ def idct(
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-idct.mixed_backend_wrappers = {"to_add": ("handle_device_shifting",), "to_skip": ()}
+idct.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
