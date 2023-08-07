@@ -668,3 +668,8 @@ def is_finite(x):
 @to_ivy_arrays_and_back
 def cbrt(x):
     return ivy.pow(x, 1 / 3)
+
+
+@to_ivy_arrays_and_back
+def tie_in(x, y):
+    return y
