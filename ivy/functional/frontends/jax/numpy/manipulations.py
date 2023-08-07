@@ -169,24 +169,24 @@ def tril(m, k=0):
     return ivy.tril(m, k=k)
 
 
-# @to_ivy_arrays_and_back
-# def trim_zeros(flit, trim="fb"):
-#     start_index = 0
-#     end_index = ivy.shape(flit)[0]
-#     trim = trim.lower()
-#     if "f" in trim:
-#         for item in flit:
-#             if item == 0:
-#                 start_index += 1
-#             else:
-#                 break
-#     if "b" in trim:
-#         for item in flit[::-1]:
-#             if item == 0:
-#                 end_index -= 1
-#             else:
-#                 break
-#     return flit[start_index:end_index]
+@to_ivy_arrays_and_back
+def trim_zeros(flit, trim="fb"):
+    start_index = 0
+    end_index = ivy.shape(flit)[0]
+    trim = trim.lower()
+    if "f" in trim:
+        for item in flit:
+            if item == 0:
+                start_index += 1
+            else:
+                break
+    if "b" in trim:
+        for item in flit[::-1]:
+            if item == 0:
+                end_index -= 1
+            else:
+                break
+    return flit[start_index:end_index]
 
 
 @to_ivy_arrays_and_back
