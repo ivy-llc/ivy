@@ -3008,7 +3008,7 @@ def test_jax_cbrt(
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax_igamma(
+def test_jax_lax__igamma(
     *,
     dtype_and_x,
     on_device,
