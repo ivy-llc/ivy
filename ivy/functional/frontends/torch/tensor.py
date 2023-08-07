@@ -902,6 +902,12 @@ class Tensor:
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
 
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def squeeze_(self, dim=None):
+        self.ivy_array = self.squeeze(dim).ivy_array
+        return self
+
     def flip(self, dims):
         return torch_frontend.flip(self, dims)
 
@@ -1660,3 +1666,11 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
+    "torch",
+)
+def gcd(self, other, *, out=None):
+    return torch_frontend.gcd(self, other, out=out)
