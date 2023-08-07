@@ -697,6 +697,7 @@ def mel_weight_matrix(
 
     range on the mel scale. This function defines the mel scale in terms of a frequency
     in hertz according to the following formula: mel(f) = 2595 * log10(1 + f/700)
+
     Parameters
     ----------
     num_mel_bins
