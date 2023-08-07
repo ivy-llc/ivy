@@ -82,8 +82,6 @@ def diag_indices_from(arr):
     return (idx,) * ndim
 
 
-
-
 @to_ivy_arrays_and_back
 def indices(dimensions, dtype=int, sparse=False):
     dimensions = tuple(dimensions)
