@@ -2,9 +2,9 @@
 > to some users, [join the waitlist](https://console.unify.ai/) if you
 > want to test them out!
 
-<img class="only-dark" width="100%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only"/>
+<img class="only-dark" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logo_dark.png#gh-dark-mode-only"/>
 
-<img class="only-light" width="100%" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
+<img class="only-light" width="100%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logo.png?raw=true#gh-light-mode-only"/>
 
 ------------------------------------------------------------------------
 
