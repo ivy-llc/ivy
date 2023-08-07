@@ -125,7 +125,7 @@ class Tensor:
         if shape is not None:
             return torch_frontend.reshape(self, shape)
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 shape = args[0]
                 return torch_frontend.reshape(self, shape)
             else:
@@ -172,6 +172,13 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addmv(self, mat, vec, *, beta=1, alpha=1):
         return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv_(self, mat, vec, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.addmv(
+            self, mat, vec, beta=beta, alpha=alpha
+        ).ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
@@ -285,8 +292,7 @@ class Tensor:
             shape_tup = size
         elif args and not ivy.exists(size):
             if (
-                isinstance(args[0], tuple)
-                or isinstance(args[0], list)
+                isinstance(args[0], (tuple, list, ivy.Shape))
                 or type(args[0]).__name__ == "Size"
             ) and len(args) == 1:
                 shape_tup = args[0]
@@ -302,6 +308,9 @@ class Tensor:
     def float(self, memory_format=None):
         self.ivy_array = ivy.astype(self.ivy_array, ivy.float32, copy=False)
         return self
+
+    def double(self):
+        return self.to(torch_frontend.float64)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def asinh(self):
@@ -437,8 +446,12 @@ class Tensor:
         layout=None,
         pin_memory=False,
     ):
+        if dtype is None:
+            dtype = self.dtype
+        if device is None:
+            device = self.device
         if size is None:
-            size = args[0] if isinstance(args[0], (tuple, list)) else args
+            size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
         return torch_frontend.ones(
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -461,9 +474,20 @@ class Tensor:
         return torch_frontend.erf(self, out=out)
 
     def new_zeros(
-        self, size, *, dtype=None, device=None, requires_grad=False, layout=None
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False,
     ):
-        if isinstance(size[0], tuple):
+        if dtype is None:
+            dtype = self.dtype
+        if device is None:
+            device = self.device
+        if isinstance(size[0], (tuple, list, ivy.Shape)):
             return torch_frontend.zeros(
                 size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
             )
@@ -786,7 +810,7 @@ class Tensor:
         if dims is not None:
             return torch_frontend.permute(self, dims)
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 dims = args[0]
                 return torch_frontend.permute(self, dims)
             else:
@@ -877,6 +901,12 @@ class Tensor:
     @numpy_to_torch_style_args
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
+
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def squeeze_(self, dim=None):
+        self.ivy_array = self.squeeze(dim).ivy_array
+        return self
 
     def flip(self, dims):
         return torch_frontend.flip(self, dims)
@@ -988,7 +1018,7 @@ class Tensor:
                 "repeat() got multiple values for argument 'repeats'"
             )
         if args:
-            if isinstance(args[0], (tuple, list)):
+            if isinstance(args[0], (tuple, list, ivy.Shape)):
                 repeats = args[0]
             else:
                 repeats = args
@@ -1620,6 +1650,10 @@ class Tensor:
     def conj(self):
         return torch_frontend.conj(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def svd(self, some=True, compute_uv=True, *, out=None):
+        return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1636,3 +1670,11 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
+    "torch",
+)
+def gcd(self, other, *, out=None):
+    return torch_frontend.gcd(self, other, out=out)
