@@ -444,3 +444,13 @@ def view_as_complex(input):
     imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1).astype(dtype)
     complex_ = real + imag * 1j
     return ivy.array(complex_, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)
