@@ -174,6 +174,13 @@ class Tensor:
         return torch_frontend.addmv(self, mat, vec, beta=beta, alpha=alpha)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def addmv_(self, mat, vec, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.addmv(
+            self, mat, vec, beta=beta, alpha=alpha
+        ).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def addbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.addbmm(self, batch1, batch2, beta=beta, alpha=alpha)
 
@@ -894,6 +901,12 @@ class Tensor:
     @numpy_to_torch_style_args
     def squeeze(self, dim=None):
         return torch_frontend.squeeze(self, dim)
+
+    @numpy_to_torch_style_args
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def squeeze_(self, dim=None):
+        self.ivy_array = self.squeeze(dim).ivy_array
+        return self
 
     def flip(self, dims):
         return torch_frontend.flip(self, dims)
@@ -1633,6 +1646,10 @@ class Tensor:
     def conj(self):
         return torch_frontend.conj(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def svd(self, some=True, compute_uv=True, *, out=None):
+        return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1649,3 +1666,11 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+
+@with_unsupported_dtypes(
+    {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
+    "torch",
+)
+def gcd(self, other, *, out=None):
+    return torch_frontend.gcd(self, other, out=out)
