@@ -1736,7 +1736,14 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
                 [0.055648, -0.204043, 1.057311],
             ]
         )
-        return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
+        # Convert all the arrays to float16 because the proper way to handle 8bit
+        # color conversion is by clipping out of range values instead of going back
+        # to the other end of the range like it is by default in case of range overflow
+        return (
+            ivy.vecdot(src.astype(ivy.float16), conversion_matrix)
+            .clip(0, 255)
+            .astype(src.dtype)
+        )
     elif code == COLOR_RGB2YCrCb:
         DELTA = 128
         channels = split(src)
