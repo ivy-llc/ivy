@@ -2076,7 +2076,7 @@ def lstm_update(
 
 
 def _handle_padding(x, strides, filters, padding):
-    if padding == "SAME":
+    if isinstance(padding, str) and padding.upper() == "SAME":
         if x % strides == 0:
             pad = max(filters - strides, 0)
         else:
@@ -2084,6 +2084,103 @@ def _handle_padding(x, strides, filters, padding):
     else:
         pad = 0
     return pad
+
+
+def _validate_max_pool_params(kernel, strides, padding, dilation, ceil_mode, dims):
+    if isinstance(kernel, int):
+        kernel = (kernel,) * dims
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * dims
+    elif (len(kernel) != dims) and (len(kernel) != dims + 2):
+        raise ValueError(
+            "The kernel should be an integer, or a tuple of length"
+            f" {list(set((1, dims, dims+2)))}"
+        )
+
+    if isinstance(strides, int):
+        strides = (strides,) * dims
+    elif len(strides) == 1:
+        strides = (strides[0],) * dims
+    elif (len(strides) != dims) and (len(strides) != dims + 2):
+        raise ValueError(
+            "The stride should be an integer, or a tuple of length"
+            f" {list(set((1, dims, dims+2)))}"
+        )
+
+    if isinstance(padding, int):
+        padding = [(padding,) * 2] * dims
+    elif isinstance(padding, tuple) and len(padding) == 1:
+        padding = [(padding[0],) * 2] * dims
+    elif isinstance(padding, tuple) and len(padding) == dims:
+        padding = [(padding[i],) * 2 for i in range(dims)]
+    elif isinstance(padding, list) and len(padding) == dims:
+        if not all([isinstance(p, tuple) and len(p) == 2 for p in padding]):
+            raise ValueError("Explicit padding must be a list of tuple of two integers")
+    if isinstance(padding, str) and padding.upper() not in ["VALID", "SAME"]:
+        raise ValueError(
+            f"Invalid padding arg {padding}Must be one of: 'VALID' or 'SAME'"
+        )
+
+    if isinstance(dilation, int):
+        dilation = (dilation,) * dims
+    elif len(dilation) == 1:
+        dilation = (dilation[0],) * dims
+    elif len(dilation) != dims:
+        raise ValueError(
+            f"Dilation must be an integer or a tuple of length {list(set((1, dims)))}"
+        )
+    if min(dilation) < 1:
+        raise ValueError("All values of `dilation` must be positive")
+
+    # Other errors
+    if isinstance(padding, str) and (padding.upper() == "VALID") and ceil_mode:
+        raise ValueError("When 'padding' is 'VALID', 'ceil_mode' must be False")
+    assert len(kernel) == len(strides), f"len({kernel}) must equal len({strides})"
+
+    # Account for dilation when padding > kernel/2. Not the case in torch by default.
+    new_kernel = tuple(
+        [dilation[i] * (kernel[i] - 1) + 1 for i in range(1, len(kernel))]
+    )
+    if isinstance(padding, list) and len(padding) == len(new_kernel):
+        ivy.utils.assertions.check_kernel_padding_size(new_kernel, padding)
+
+    return kernel, strides, padding, dilation
+
+
+def _depth_max_pooling_helper(
+    x_shape, kernel, strides, dims, data_format="channel_last"
+):
+    # Determine depth pooling.
+    # We assume that the kernel and the data have the same data_format.
+    depth_pooling = False
+    CHANNEL_LAST = "channel_last"
+    channel_idx = -1 if data_format == CHANNEL_LAST else 1
+    if len(kernel) == dims + 2:
+        spatial_kernel = kernel[1:-1] if data_format == CHANNEL_LAST else kernel[2:]
+        if kernel[channel_idx] != 1:
+            depth_pooling = True
+            if any(i != 1 for i in spatial_kernel):
+                raise NotImplementedError(
+                    "MaxPooling supports exactly one of pooling across"
+                    " depth or pooling across width/height."
+                )
+            if len(strides) != dims + 2 or strides[channel_idx] != kernel[channel_idx]:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to equal the depth"
+                    " stride"
+                )
+            if x_shape[channel_idx] % kernel[channel_idx] != 0:
+                raise NotImplementedError(
+                    "Depthwise max pooling requires the depth window to evenly divide"
+                    " the input depth"
+                )
+            kernel = [kernel[channel_idx], *[1] * (dims - 1)]
+            strides = [strides[channel_idx], *[1] * (dims - 1)]
+        else:
+            kernel = spatial_kernel
+            if len(strides) == dims + 2:
+                strides = strides[1:-1] if data_format == CHANNEL_LAST else strides[2:]
+    return kernel, strides, depth_pooling
 
 
 def _deconv_length(dim_size, stride_size, kernel_size, padding, dilation=1):
