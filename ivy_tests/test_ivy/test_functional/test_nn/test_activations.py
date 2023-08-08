@@ -63,9 +63,6 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
     fn_tree="functional.ivy.gelu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
-        large_abs_safety_factor=1,
-        small_abs_safety_factor=1,
-        safety_factor_scale="linear",
         min_value=-1e4,
         max_value=1e4,
     ),
@@ -73,7 +70,7 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
 )
 def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
-    if "complex" in str(x[0].dtype):
+    if "complex" in str(dtype):
         approximate = True
     helpers.test_function(
         input_dtypes=dtype,

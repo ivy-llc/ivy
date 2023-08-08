@@ -6369,6 +6369,9 @@ def tanh(
     out
         optional output, for writing the result to. It must have a shape that the inputs
         broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------

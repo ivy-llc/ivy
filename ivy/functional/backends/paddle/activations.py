@@ -59,7 +59,7 @@ def leaky_relu(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex128", "complex64")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("bfloat16",)}}, backend_version
 )
 def gelu(
     x: paddle.Tensor,
@@ -69,17 +69,6 @@ def gelu(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if x.dtype in unsupported_dtypes:
-        if paddle.is_complex(x):
-            if approximate:
-                return (
-                    0.5
-                    * x
-                    * (
-                        1
-                        + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x))
-                    )
-                )
-            return 0.5 * x * (1 + paddle_backend.erf(x / paddle_backend.sqrt(2)))
         return F.gelu(x.cast("float32"), approximate=approximate).cast(x.dtype)
     return F.gelu(x, approximate=approximate)
 

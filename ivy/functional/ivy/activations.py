@@ -27,10 +27,19 @@ def _gelu_jax_like(
 ) -> ivy.Array:
     # We don't have the exact implementation
     # cuz the erf function doesn't work on complex numbers
-    sqrt_2_over_pi = ivy.sqrt(2 / ivy.pi).astype(x.dtype)
-    x_pw = ivy.pow(x, 3)
-    cdf = 0.5 * (1.0 + ivy.tanh(sqrt_2_over_pi * (x + 0.044715 * x_pw)))
-    return x * cdf
+    # Magic number #1 is sqrt(2/pi)
+    # Magic number #2 is from https://arxiv.org/abs/1606.08415v5
+    return ivy.multiply(
+        ivy.multiply(x, 0.5),
+        ivy.add(
+            1.0,
+            ivy.tanh(
+                ivy.multiply(
+                    0.7978845608, ivy.add(x, ivy.multiply(0.044715, ivy.pow(x, 3)))
+                )
+            ),
+        ),
+    )
 
 
 @handle_exceptions
