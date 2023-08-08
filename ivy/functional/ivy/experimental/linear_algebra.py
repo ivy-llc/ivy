@@ -559,3 +559,61 @@ def cond(
         ivy.array(21.0)
     """
     return current_backend(x).cond(x, p=p, out=out)
+
+
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_exceptions
+def dot(
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the dot product between two arrays `a` and `b` using the
+    current backend's implementation. The dot product is defined as the sum of the
+    element-wise product of the input arrays.
+
+    Parameters:
+    ----------
+    a
+        First input array.
+    b
+        Second input array.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns:
+    -------
+    ret
+        The dot product of the input arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.dot(a, b)
+    >>> print(result)
+    32
+
+    >>> c = ivy.array([[1, 2], [3, 4]])
+    >>> d = ivy.array([[5, 6], [7, 8]])
+    >>> e = ivy.empty_like(d)
+    >>> results_matrix = ivy.dot(c, d, out=e)
+    >>> print(results_matrix)
+    ivy.array([[19, 22],
+           [43, 50]])
+
+    >>> f = ivy.array([[1.1, 2.3, -3.6]])
+    >>> g = ivy.array([[-4.8], [5.2], [6.1]])
+    >>> h = np.zeros((1,1))
+    >>> result_ = ivy.dot(f, g, out=h)
+    >>> print(result_)
+    ivy.array([[-15.28]])
+    """
+    return current_backend(a, b).dot(a=a, b=b, out=out)
