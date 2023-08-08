@@ -577,9 +577,7 @@ class Tensor:
     def sign(self, name=None):
         return ivy.sign(self._ivy_array)
 
-    @with_supported_dtypes(
-        {"2.5.1 and below": ("float16", "float32", "float64")}, "paddle"
-    )
+    @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
     def var(self, axis=None, unbiased=True, keepdim=False, name=None):
         return paddle_frontend.Tensor(
             ivy.var(
