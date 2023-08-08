@@ -428,3 +428,17 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
 @to_ivy_arrays_and_back
 def mm(input, mat2, name=None):
     return ivy.matmul(input, mat2)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def take(
+    x,
+    index,
+    mode=None,
+    name=None,
+):
+    x = ivy.reshape(x, (-1,))
+    return ivy.gather(x, index, axis=0)

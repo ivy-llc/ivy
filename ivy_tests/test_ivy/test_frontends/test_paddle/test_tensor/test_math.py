@@ -1926,3 +1926,32 @@ def test_paddle_kron(
         x=x[0],
         y=x[1],
     )
+
+
+# take
+@handle_frontend_test(
+    fn_tree="paddle.take",
+    dtype_and_x=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(), indices_dtypes=["int32", "int64"]
+    ),
+)
+def test_paddle_take(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtypes, xs, indices, _, _ = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs,
+        index=indices,
+    )
