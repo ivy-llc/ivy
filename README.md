@@ -336,46 +336,46 @@ and more!
 <br/>
 <div align="center">
 <a class="only-dark" href="https://github.com/unifyai/mech#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/mech#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/vision#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/vision#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/robot#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/robot#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/gym#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/gym#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/memory#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/memory#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/builder#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/builder#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png#gh-light-mode-only">
 </a>
 <a class="only-dark" href="https://github.com/unifyai/models#gh-dark-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png#gh-dark-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png#gh-dark-mode-only">
 </a>
 <a class="only-light" href="https://github.com/unifyai/models#gh-light-mode-only">
-    <img width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png#gh-light-mode-only">
+    <img class="only-dark" width="12.5%" style="padding-right: 4px; padding-bottom: 4px;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png#gh-light-mode-only">
 </a>
 </div>
 <br clear="all" />
@@ -1399,7 +1399,7 @@ out = np_loss(p, t)
 </blockquote>
 </details>
 
-<h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/ivy_logo_only_small.png"></h3>
+<h3>I'm using Ivy&ensp;<img class="dark-light" style="height: 1.75em; vertical-align:-40%" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/logos/ivy_logo_only.svg"></h3>
 
 Or you can use Ivy as a framework, breaking yourself (and your code)
 free from deciding which community to support, allowing anyone to run
