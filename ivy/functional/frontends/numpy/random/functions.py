@@ -206,6 +206,6 @@ def logseries(p=0.5, size=None):
         raise ValueError("p must be in the open interval (0, 1)")
 
     u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
-    result = (ivy.log(1 - git reu) / ivy.log(1 - p))
+    result = (ivy.log(1 - u) / ivy.log(1 - p))
 
     return result
