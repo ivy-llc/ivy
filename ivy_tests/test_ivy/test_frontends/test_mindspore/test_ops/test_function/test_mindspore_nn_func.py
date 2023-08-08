@@ -1,202 +1,402 @@
-"""Includes Mindspore Frontend functions listed in the TODO list
-https://github.com/unifyai/ivy/issues/14951."""
+# global
+# from hypothesis import strategies as st
 
 # local
-import ivy
-from ivy.func_wrapper import with_supported_dtypes
-from ivy.functional.frontends.paddle.func_wrapper import to_ivy_arrays_and_back
+# TODO: uncomment after frontend is not required
+#  to be set as backend in test_frontend_function
+
+# import ivy_tests.test_ivy.helpers as helpers
+# from ivy_tests.test_ivy.helpers import handle_frontend_test
+
+# import math
+#
+# #dropout2d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.dropout2d",
+#     d_type_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#         shape=(
+#             st.integers(min_value=2, max_value=10),
+#             4,
+#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=12, max_value=64),
+#         ),
+#     ),
+#     p=st.floats(min_value=0.0, max_value=1.0),
+#     training=st.booleans(),
+# )
+# def test_mindspore_dropout2d(
+#     *,
+#     d_type_and_x,
+#     p,
+#     training,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = d_type_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         p=p,
+#         training=training,
+#     )
 
 
-def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
-    dims = {"1d": 1, "2d": 2, "3d": 3}
+# selu
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.selu",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         safety_factor_scale="log",
+#         small_abs_safety_factor=20,
+#     ),
+# )
+# def test_mindspore_selu(
+#     *,
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#     )
 
-    if isinstance(x, int):
-        return tuple([x for _ in range(dims[pool_dims])])
-
-    if len(x) == 1:
-        return tuple([x[0] for _ in range(dims[pool_dims])])
-    elif len(x) == dims[pool_dims]:
-        return tuple(x)
-    elif len(x) != dims[pool_dims]:
-        raise ValueError(
-            f"`{name}` must either be a single int, "
-            f"or a tuple of {dims[pool_dims]} ints. "
-        )
-
-
-@with_supported_dtypes(
-    {
-        "2.0.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "mindspore",
-)
-@to_ivy_arrays_and_back
-def dropout2d(input, p=0.5, training=True):
-    return ivy.dropout2d(input, p, training=training, data_format="NCHW")
-
-
-@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
-@to_ivy_arrays_and_back
-def selu(input_x):
-    return ivy.selu(input_x)
-
-
-@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
-@to_ivy_arrays_and_back
-def softsign(x):
-    return ivy.divide(x, ivy.add(1, ivy.abs(x)))
-
-
-@with_supported_dtypes(
-    {
-        "2.0.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "mindspore",
-)
-@to_ivy_arrays_and_back
-def dropout3d(input, p=0.5, training=True):
-    return ivy.dropout3d(input, p, training=training, data_format="NCDHW")
-
-
-@with_supported_dtypes(
-    {
-        "2.0.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "mindspore",
-)
-@to_ivy_arrays_and_back
-def interpolate(
-    input,
-    size=None,
-    scale_factor=None,
-    mode="nearest",
-    align_corners=False,
-    recompute_scale_factor=False,
-):
-    return ivy.interpolate(
-        input,
-        size=size,
-        scale_factor=scale_factor,
-        mode=mode,
-        align_corners=align_corners,
-        recompute_scale_factor=recompute_scale_factor,
-    )
+# dropout3d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.dropout3d",
+#     d_type_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=5,
+#         shape=(
+#             st.integers(min_value=2, max_value=10),
+#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=12, max_value=64),
+#             st.integers(min_value=12, max_value=64),
+#         ),
+#     ),
+#     p=st.floats(min_value=0.0, max_value=1.0),
+#     training=st.booleans(),
+# )
+# def test_mindspore_dropout3d(
+#     *,
+#     d_type_and_x,
+#     p,
+#     training,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = d_type_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         p=p,
+#         training=training,
+#     )
 
 
-@with_supported_dtypes(
-    {
-        "2.0 and below": (
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-            "float16",
-            "float32",
-            "float64",
-        )
-    },
-    "mindspore",
-)
-@to_ivy_arrays_and_back
-def pad(input, pad_width, mode="constant", constant_values=0):
-    return ivy.pad(input, pad_width, mode=mode, constant_values=constant_values)
+# def _size_strategy():
+#     return st.one_of(
+#         st.integers(min_value=1, max_value=10),
+#         st.tuples(st.integers(min_value=1, max_value=10)),
+#         st.lists(st.integers(min_value=1, max_value=10), min_size=3, max_size=3),
+#     )
+
+# def _scale_factor_strategy():
+#     return st.one_of(
+#         st.floats(min_value=0.1, max_value=2.0),
+#         st.tuples(st.floats(min_value=0.1, max_value=2.0)),
+#         st.lists(st.floats(min_value=0.1, max_value=2.0), min_size=3, max_size=3),
+#     )
+
+# def _size_and_scale_factor_strategy():
+#     return st.one_of(
+#         st.tuples(size_strategy(), st.just(None)),
+#         st.tuples(st.just(None), scale_factor_strategy()),
+#         st.tuples(size_strategy(), scale_factor_strategy()),
+#     )
 
 
-@with_supported_dtypes(
-    {"2.0.0 and below": ("float16", "float32", "float64")}, "mindspore"
-)
-@to_ivy_arrays_and_back
-def adaptive_avg_pool2d(input, output_size):
-    return ivy.adaptive_avg_pool2d(input, output_size)
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.interpolate",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#     ),
+#     mode=st.sampled_from(
+#         [
+#             "nearest",
+#             "linear",
+#             "bilinear",
+#             "bicubic",
+#             "trilinear",
+#             "area",
+#             "nearest-exact",
+#         ]
+#     ),
+#     align_corners=st.booleans(),
+#     recompute_scale_factor=st.booleans(),
+#     size_and_scale_factor = _size_and_scale_factor_strategy()
+# )
+# def test_mindspore_interpolate(
+#     *,
+#     dtype_and_x,
+#     size,
+#     scale_factor,
+#     mode,
+#     align_corners,
+#     recompute_scale_factor,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     dtype, x = dtype_and_x
+#     size,scale_factor = size_and_scale_factor
 
 
-@to_ivy_arrays_and_back
-def avg_pool2d(
-    input,
-    kernel_size,
-    stride=None,
-    padding=0,
-    pad_mode=False,
-    count_include_pad=True,
-    divisor_override=None,
-):
-    # Figure out input dims N
-    input_rank = input.ndim
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         size=size,
+#         scale_factor=scale_factor,
+#         mode=mode,
+#         align_corners=align_corners,
+#         recompute_scale_factor=recompute_scale_factor,
+#     )
 
-    if input_rank == 4:
-        # NCHW
-        data_format = "NCHW"
 
-    kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "2d", name="stride")
-    padding = _broadcast_pooling_helper(padding, "2d", name="padding")
-    kernel_pads = list(zip(kernel_size, padding))
+# pad
+# @handle_frontend_test(
+#     fn_tree="pad",
+#     input=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5),
+#                                  st.integers(min_value=0, max_value=5))),
+#     mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
+#     constant_values=st.floats(min_value=0.0, max_value=1.0),
+# )
+# def test_mindspore_pad(
+#     *,
+#     input,
+#     pad_width,
+#     mode,
+#     constant_values,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     helpers.test_frontend_function(
+#         input_dtypes=input[0],
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=input[1],
+#         pad_width=pad_width,
+#         mode=mode,
+#         constant_values=constant_values,
+#     )
 
-    # Padding should be less than or equal to half of kernel size
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
 
-    # Figure out padding string
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        padding_str = "SAME"
-    else:
-        padding_str = "VALID"
+# adaptive_avg_pool2d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.adaptive_avg_pool2d",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         min_num_dims=4,
+#         max_num_dims=4,
+#         min_dim_size=1,
+#         max_value=100,
+#         min_value=-100,
+#     ),
+#     output_size=st.one_of(
+#         st.tuples(
+#             helpers.ints(min_value=1, max_value=5),
+#             helpers.ints(min_value=1, max_value=5),
+#         ),
+#         helpers.ints(min_value=1, max_value=5),
+#     ),
+# )
+# def test_mindspore_adaptive_avg_pool2d(
+#     *,
+#     dtype_and_x,
+#     output_size,
+#     test_flags,
+#     frontend,
+#     on_device,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         on_device=on_device,
+#         fn_tree=fn_tree,
+#         x=x[0],
+#         output_size=output_size,
+#     )
+# def _is_same_padding(padding, stride, kernel_size, input_shape):
+#     output_shape = tuple(
+#         [
+#             (input_shape[i] + 2 * padding[i] - kernel_size[i]) // stride[i] + 1
+#             for i in range(len(padding))
+#         ]
+#     )
+#     return all(
+#         [
+#             output_shape[i] == math.ceil(input_shape[i] / stride[i])
+#             for i in range(len(padding))
+#         ]
+#     )
 
-    return ivy.avg_pool2d(
-        input,
-        kernel_size,
-        stride,
-        padding_str,
-        data_format=data_format,
-        pad_mode=pad_mode,
-        count_include_pad=count_include_pad,
-        divisor_override=divisor_override,
-    )
 
+# def _calculate_same_padding(kernel_size, stride, shape):
+#     padding = tuple(
+#         [
+#             max(
+#                 0,
+#                 math.ceil(((shape[i] - 1) * stride[i] +
+#                            kernel_size[i] - shape[i]) / 2),
+#             )
+#             for i in range(len(kernel_size))
+#         ]
+#     )
+#     if all([kernel_size[i] / 2 >= padding[i] for i in range(len(kernel_size))]):
+#         if _is_same_padding(padding, stride, kernel_size, shape):
+#             return padding
+#     return (0, 0)
+
+
+# # avg_pool2d
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.avg_pool2d",
+#     dtype_x_k_s=helpers.arrays_for_pooling(
+#         min_dims=4,
+#         max_dims=4,
+#         min_side=1,
+#         max_side=4,
+#     ),
+#     pad_mode=st.booleans(),
+#     count_include_pad=st.booleans(),
+#     test_with_out=st.just(False),
+# )
+# def test_torch_avg_pool2d(
+#     dtype_x_k_s,
+#     count_include_pad,
+#     pad_mode,
+#     *,
+#     test_flags,
+#     frontend,
+#     backend_fw,
+#     fn_tree,
+#     on_device,
+# ):
+#     input_dtype, x, kernel_size, stride, pad_name = dtype_x_k_s
+
+#     if len(stride) == 1:
+#         stride = (stride[0], stride[0])
+
+#     if pad_name == "SAME":
+#         padding = _calculate_same_padding(kernel_size, stride, x[0].shape[2:])
+#     else:
+#         padding = (0, 0)
+
+#     x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
+
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         backend_to_test=backend_fw,
+#         test_flags=test_flags,
+#         frontend=frontend,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#         kernel_size=kernel_size,
+#         stride=stride,
+#         padding=padding,
+#         pad_mode=pad_mode,
+#         count_include_pad=count_include_pad,
+#         divisor_override=None,
+#     )
 
 # gumbel_softmax
-@with_supported_dtypes({"2.0.0 and below": ("float32", "float16")}, "mindspore")
-@to_ivy_arrays_and_back
-def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
-    gumbels = -ivy.empty_like(logits).exponential().log()
-    gumbels = (logits + gumbels) / tau
-    y_soft = ivy.softmax(x=gumbels, axis=dim)
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.gumbel_softmax",
+#     dtype_and_logits=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#     ),
+#     tau=st.floats(min_value=0.1, max_value=10.0),
+#     hard=st.booleans(),
+#     dim=st.integers(min_value=-1, max_value=1),
+# )
+# def test_mindspore_gumbel_softmax(
+#     *,
+#     dtype_and_logits,
+#     tau,
+#     hard,
+#     dim,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, logits = dtype_and_logits
+#     gumbel_tau = tau
+#     gumbel_hard = hard
+#     gumbel_dim = dim
 
-    if hard:
-        indices = y_soft.max(axis=dim, keepdims=True)[1]
-        y_hard = ivy.zeros_like(logits)
-        updates = ivy.ones_like(indices)
-        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
-
-        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
-    else:
-        ret = y_soft
-
-    return ret
+#     helpers.test_frontend_function(
+#         logits=input_dtype,
+#         test_values=False,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         tau=gumbel_tau,
+#         hard=gumbel_hard,
+#         dim=gumbel_dim,
+#     )
