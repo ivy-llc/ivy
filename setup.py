@@ -26,11 +26,19 @@ def _strip(line):
 
 
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 # Remove img tags that have class "only-dark"
 long_description = re.sub(
     r"<img [^>]*class=\"only-dark\"[^>]*>",
+    "",
+    long_description,
+    flags=re.MULTILINE,
+)
+
+# Remove a tags that have class "only-dark"
+long_description = re.sub(
+    r"<a [^>]*class=\"only-dark\"[^>]*>((?:(?!<\/a>).)|\s)*<\/a>\n",
     "",
     long_description,
     flags=re.MULTILINE,
