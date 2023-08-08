@@ -183,6 +183,8 @@ def test_paddle_topk(
     fn_tree,
     frontend,
     test_flags,
+    on_device,
+    backend_fw,
 ):
     input_dtypes, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
@@ -190,6 +192,8 @@ def test_paddle_topk(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
+        on_device=on_device,
+        fw=backend_fw,
         k=k,
         sorted=sorted,
         largest=largest,
