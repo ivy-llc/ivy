@@ -51,6 +51,7 @@ def get_submodule(test_path):
                 coll = db_dict["test_experimental/" + test_path[-2]]
             else:
                 coll = db_dict[name]
+            break
     submod_test = test_path[-1]
     submod, test_fn = submod_test.split("::")
     submod = submod.replace("test_", "").replace(".py", "")
