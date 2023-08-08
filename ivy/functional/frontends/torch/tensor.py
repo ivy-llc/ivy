@@ -996,7 +996,7 @@ class Tensor:
     def numpy(self):
         return np_frontend_array(self.ivy_array)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sigmoid(self):
         return torch_frontend.sigmoid(self)
 
