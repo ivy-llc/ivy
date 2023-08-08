@@ -262,7 +262,6 @@ def test_jac(x, dtype, func_str, backend_fw):
             ret=jacobian_gt, backend="tensorflow"
         )
         for jacobian, jacobian_from_gt in zip(jacobian_np, jacobian_np_from_gt):
-            print(jacobian.shape, "====", jacobian_from_gt.shape)
             assert jacobian.shape == jacobian_from_gt.shape
             assert np.allclose(jacobian, jacobian_from_gt)
 
