@@ -29,6 +29,14 @@ def fill_diagonal(a, val, wrap=False):
     temp = ivy.flatten(a)
     temp[:end:step] = val
     a = ivy.reshape(temp, shape)
+    
+    
+def put(arr, indices, values):
+    """Inserts the value of the desired location of indices"""
+    flat_arr = ivy.flatten(arr)
+    flat_arr[indices] = values
+    reshape_arr = ivy.reshape(flat_arr,arr.shape)
+    arr[...] = reshape_arr
 
 
 class AxisConcatenator:
