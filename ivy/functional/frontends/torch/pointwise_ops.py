@@ -265,7 +265,7 @@ def ceil(input, *, out=None):
     return ivy.ceil(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "complex")}, "torch")
 @to_ivy_arrays_and_back
 def clamp(input, min=None, max=None, *, out=None):
     ivy.utils.assertions.check_all_or_any_fn(
