@@ -286,6 +286,7 @@ def clamp(input, min=None, max=None, *, out=None):
 clip = clamp
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -330,7 +331,6 @@ def deg2rad(input, *, out=None):
 
 
 arcsinh = asinh
-
 
 divide = div
 
