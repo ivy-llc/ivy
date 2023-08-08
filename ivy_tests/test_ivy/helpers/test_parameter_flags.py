@@ -261,7 +261,7 @@ class InitMethodTestFlags(TestFlags):
 
 
 @st.composite
-def init_method_flags(
+def build_init_method_backend_flags(
     draw,
     *,
     num_positional_args,
@@ -318,7 +318,7 @@ class MethodTestFlags(TestFlags):
 
 
 @st.composite
-def method_flags(
+def build_backend_method_flags(
     draw,
     *,
     num_positional_args,
