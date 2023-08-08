@@ -1080,3 +1080,29 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         ivy.fill_diag also applies to this method with minimal changes.
         """
         return ivy.fill_diagonal(self._data, v, wrap=wrap)
+
+    def unfold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: Optional[int] = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.unfold. This method simply wraps the
+        function, and so the docstring for ivy.unfold also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+
+        Returns
+        -------
+        ret
+            unfolded_tensor of shape ``(tensor.shape[mode], -1)``
+        """
+        return ivy.unfold(self._data, mode, out=out)

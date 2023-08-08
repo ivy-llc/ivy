@@ -1020,29 +1020,3 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
-
-    def unfold(
-        self: Union[ivy.Array, ivy.NativeArray],
-        /,
-        mode: Optional[int] = 0,
-        *,
-        out: Optional[ivy.Array] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.unfold. This method simply wraps the
-        function, and so the docstring for ivy.unfold also applies to this method with
-        minimal changes.
-
-        Parameters
-        ----------
-        self
-            input tensor to be unfolded
-        mode
-            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
-
-        Returns
-        -------
-        ret
-            unfolded_tensor of shape ``(tensor.shape[mode], -1)``
-        """
-        return ivy.unfold(self._data, mode, out=out)
