@@ -1151,7 +1151,7 @@ def initialize_tucker(
     x
         input tensor
     rank
-           number of components
+        number of components
     modes
         modes to consider in the input tensor
     seed
@@ -1160,7 +1160,7 @@ def initialize_tucker(
     init
         initialization scheme for tucker decomposition.
     svd
-          function to use to compute the SVD
+        function to use to compute the SVD
     non_negative
         if True, non-negative factors are returned
     mask
@@ -1207,10 +1207,19 @@ def initialize_tucker(
         core = multi_mode_dot(x, factors, modes=modes, transpose=True)
 
     elif init == "random":
-        core = ivy.random_uniform(shape=rank, dtype=x.dtype, seed=seed) + 0.01
+        core = (
+            ivy.random_uniform(
+                shape=[rank[index] for index in range(len(modes))],
+                dtype=x.dtype,
+                seed=seed,
+            )
+            + 0.01
+        )
         factors = [
-            ivy.random_uniform(shape=(i, j), dtype=x.dtype, seed=seed)
-            for i, j in zip(x.shape, rank)
+            ivy.random_uniform(
+                shape=(x.shape[mode], rank[index]), dtype=x.dtype, seed=seed
+            )
+            for index, mode in enumerate(modes)
         ]
 
     else:
