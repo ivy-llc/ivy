@@ -250,7 +250,7 @@ cumsum.support_native_out = True
 def einsum(
     equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    equation = legalise_einsum_expr(*[equation,*operands])
+    equation = legalise_einsum_expr(*[equation, *operands])
     return np.einsum(equation, *operands, out=out)
 
 
