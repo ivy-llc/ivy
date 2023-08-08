@@ -96,15 +96,11 @@ def linear(x, weight, bias=None, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
-def bilinear(input1, input2, weight, bias=None):
-    # Transpose weight for the second input
+def bilinear(x1, x2, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
-
-    # Apply linear transformation to both inputs
-    output1 = linear(input1, weight, bias)
-    output2 = linear(input2, weight, bias)
-
-    # Element-wise product of the two outputs
-    output = ivy.multiply(output1, output2)
-
+    bilinear_prod = ivy.expand_dims(x1, -1) * ivy.expand_dims(x2, -2)
+    bilinear_prod_flat = ivy.reshape(
+        bilinear_prod, (-1, ivy.shape(x1)[-1] * ivy.shape(x2)[-1])
+    )
+    output = ivy.linear(bilinear_prod_flat, weight, bias=bias)
     return output
