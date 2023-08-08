@@ -163,3 +163,11 @@ class CClass(AxisConcatenator):
 
 
 c_ = CClass()
+
+@to_ivy_arrays_and_back  
+def put(arr, indices, values):
+    """Inserts the value of the desired location of indices"""
+    flat_arr = ivy.flatten(arr)
+    flat_arr[indices] = values
+    reshape_arr = ivy.reshape(flat_arr,arr.shape)
+    arr[...] = reshape_arr
