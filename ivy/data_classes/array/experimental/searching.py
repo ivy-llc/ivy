@@ -7,6 +7,7 @@ import ivy
 
 
 class _ArrayWithSearchingExperimental(abc.ABC):
+    @abc.abstractmethod
     def unravel_index(
         self: ivy.Array,
         shape: Tuple[int],

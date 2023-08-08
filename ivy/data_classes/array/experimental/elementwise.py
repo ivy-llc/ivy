@@ -8,6 +8,7 @@ import ivy
 
 
 class _ArrayWithElementWiseExperimental(abc.ABC):
+    @abc.abstractmethod
     def lgamma(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.lgamma. This method simply wraps the

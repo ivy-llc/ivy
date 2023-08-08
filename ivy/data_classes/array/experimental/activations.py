@@ -7,6 +7,7 @@ import ivy
 
 
 class _ArrayWithActivationsExperimental(abc.ABC):
+    @abc.abstractmethod
     def logit(
         self, /, *, eps: Optional[float] = None, out: Optional[ivy.Array] = None
     ) -> ivy.Array:

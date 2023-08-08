@@ -7,6 +7,7 @@ import ivy
 
 
 class _ArrayWithCreationExperimental(abc.ABC):
+    @abc.abstractmethod
     def eye_like(
         self: ivy.Array,
         /,

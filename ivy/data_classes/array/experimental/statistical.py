@@ -7,6 +7,7 @@ import ivy
 
 
 class _ArrayWithStatisticalExperimental(abc.ABC):
+    @abc.abstractmethod
     def histogram(
         self: ivy.Array,
         /,
