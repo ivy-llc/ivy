@@ -153,7 +153,7 @@ def test_tensorflow_dct(
 @handle_frontend_test(
     fn_tree="tensorflow.signal.vorbis_window",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_num_dims=0,
         min_value=1,
         max_value=10,
