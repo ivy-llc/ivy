@@ -248,7 +248,7 @@ class Tensor:
     def arcsinh(self):
         return torch_frontend.arcsinh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def arcsin(self):
         return torch_frontend.arcsin(self)
 
