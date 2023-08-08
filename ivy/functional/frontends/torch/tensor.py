@@ -566,7 +566,7 @@ class Tensor:
                 )
                 return cast_tensor
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def arctan(self):
         return torch_frontend.atan(self)
 
