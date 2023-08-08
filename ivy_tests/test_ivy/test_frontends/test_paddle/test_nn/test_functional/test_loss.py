@@ -425,19 +425,16 @@ def test_paddle_triplet_margin_loss(
     on_device,
 ):
     input_dtype, x = dtype_and_inputs
-    anchor_dtype, input = input_dtype[0], x[0]
-    positive_dtype, positive = input_dtype[1], x[1]
-    negative_dtype, negative = input_dtype[2], x[2]
     helpers.test_frontend_function(
-        input_dtypes=[anchor_dtype, positive_dtype, negative_dtype],
+        input_dtypes=[input_dtype[0], input_dtype[1], input_dtype[2]],
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=input,
-        positive=positive,
-        negative=negative,
+        input=x[0],
+        positive=x[1],
+        negative=x[2],
         margin=margin,
         p=p,
         swap=swap,

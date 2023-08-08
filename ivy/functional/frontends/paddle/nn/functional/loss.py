@@ -24,6 +24,18 @@ def _get_reduction_func(reduction):
     return ret
 
 
+def _pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
+    x1, x2 = paddle.promote_types_of_paddle_inputs(x1, x2)
+    x1_dim = len(x1.shape)
+    x2_dim = len(x2.shape)
+    if x1_dim > x2_dim:
+        output_dim = x1_dim
+    else:
+        output_dim = x2_dim
+
+    return ivy.vector_norm(x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim)
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32",)},
     "paddle",
@@ -244,19 +256,6 @@ def triplet_margin_loss(
     swap=False,
     reduction="mean",
 ):
-    def pairwise_distance(x1, x2, *, p=2.0, eps=1e-06, keepdim=False):
-        x1, x2 = paddle.promote_types_of_paddle_inputs(x1, x2)
-        x1_dim = len(x1.shape)
-        x2_dim = len(x2.shape)
-        if x1_dim > x2_dim:
-            output_dim = x1_dim
-        else:
-            output_dim = x2_dim
-
-        return ivy.vector_norm(
-            x1 - x2 + eps, ord=p, axis=output_dim - 1, keepdims=keepdim
-        )
-
     reduction = _get_reduction_func(reduction)
 
     a_dim = input.ndim
@@ -266,16 +265,16 @@ def triplet_margin_loss(
     ivy.assertions.check_true(
         a_dim == p_dim and p_dim == n_dim,
         lambda: (
-            "The anchor, positive, and negative tensors are expected to have "
-            f"the same number of dimensions, but got: anchor {a_dim}D, "
+            "The input, positive, and negative tensors are expected to have "
+            f"the same number of dimensions, but got: input {a_dim}D, "
             f"positive {p_dim}D, and negative {n_dim}D inputs"
         ),
     )
 
-    dist_positive = pairwise_distance(input, positive, p=p, eps=eps)
-    dist_negative = pairwise_distance(input, negative, p=p, eps=eps)
+    dist_positive = _pairwise_distance(input, positive, p=p, eps=eps)
+    dist_negative = _pairwise_distance(input, negative, p=p, eps=eps)
     if swap:
-        dist_swap = pairwise_distance(positive, negative, p=p, eps=eps)
+        dist_swap = _pairwise_distance(positive, negative, p=p, eps=eps)
         dist_negative = ivy.minimum(dist_negative, dist_swap)
     loss = ivy.maximum(
         dist_positive - dist_negative + ivy.array(margin), ivy.array(0.0)
