@@ -164,10 +164,10 @@ invalid_numeric_dtypes = {
     ),
 }
 
-invalid_int_dtypes = {"2.4.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_int_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
 invalid_float_dtypes = {"2.4.0 and below": (ivy.bfloat16,), "2.4.1 and above": ()}
-invalid_uint_dtypes = {"2.4.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
-invalid_complex_dtypes = {"2.4.1 and below": ()}
+invalid_uint_dtypes = {"2.5.1 and below": (ivy.uint16, ivy.uint32, ivy.uint64)}
+invalid_complex_dtypes = {"2.5.1 and below": ()}
 
 # leave these untouched
 invalid_dtypes = _dtype_from_version(invalid_dtypes, backend_version)
