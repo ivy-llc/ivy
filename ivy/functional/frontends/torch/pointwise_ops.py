@@ -559,6 +559,13 @@ def masked_fill(input, mask, value):
     return ivy.where(mask, value, input, out=input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def igamma(input, other, *, out=None):
     return ivy.igamma(input, x=other, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def lgamma(input, *, out=None):
+    return ivy.lgamma(input, out=out)

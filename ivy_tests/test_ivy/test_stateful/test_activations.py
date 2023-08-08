@@ -13,9 +13,9 @@ from ivy_tests.test_ivy.helpers import handle_method
     method_tree="stateful.activations.GELU.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
-        safety_factor_scale="log",
+        large_abs_safety_factor=1,
+        small_abs_safety_factor=1,
+        safety_factor_scale="linear",
     ),
     approximate=st.booleans(),
     method_num_positional_args=helpers.num_positional_args(fn_name="GELU._forward"),
@@ -144,7 +144,9 @@ def test_relu(
 @handle_method(
     method_tree="stateful.activations.LeakyReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False, key="leaky_relu"),
+        available_dtypes=helpers.get_dtypes(
+            "float_and_complex", full=False, key="leaky_relu"
+        ),
         large_abs_safety_factor=16,
         small_abs_safety_factor=16,
         safety_factor_scale="log",

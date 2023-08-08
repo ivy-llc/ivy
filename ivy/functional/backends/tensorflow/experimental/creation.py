@@ -101,3 +101,11 @@ def unsorted_segment_min(
     num_segments: Union[int, tf.Tensor],
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_min(data, segment_ids, num_segments)
+
+
+def unsorted_segment_sum(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)

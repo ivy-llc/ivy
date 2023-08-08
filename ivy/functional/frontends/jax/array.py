@@ -5,7 +5,7 @@ import ivy
 import ivy.functional.frontends.jax as jax_frontend
 
 
-class DeviceArray:
+class Array:
     def __init__(self, array, weak_type=False):
         self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
         self.weak_type = weak_type
@@ -13,7 +13,7 @@ class DeviceArray:
     def __repr__(self):
         main = (
             str(self.ivy_array.__repr__())
-            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace("ivy.array", "ivy.frontends.jax.Array")
             .replace(")", "")
             + ", dtype="
             + str(self.ivy_array.dtype)
@@ -260,13 +260,13 @@ class DeviceArray:
 
     def __setitem__(self, idx, val):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.jax.DeviceArray object doesn't support assignment"
+            "ivy.functional.frontends.jax.Array object doesn't support assignment"
         )
 
     def __iter__(self):
         ndim = len(self.shape)
         if ndim == 0:
-            raise TypeError("iteration over a 0-d devicearray not supported")
+            raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]
 
@@ -298,3 +298,12 @@ class DeviceArray:
             keepdims=keepdims,
             where=where,
         )
+
+    def ptp(
+        self,
+        *,
+        axis=None,
+        out=None,
+        keepdims=False,
+    ):
+        return jax_frontend.numpy.ptp(self, axis=axis, out=out, keepdims=keepdims)

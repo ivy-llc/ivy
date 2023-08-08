@@ -9,7 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
 
-CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
+CLASS_TREE = "ivy.functional.frontends.jax.numpy.ndarray"
 
 
 @given(
@@ -26,7 +26,7 @@ def test_jax_ivy_array(
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
-        x = jax_frontend.DeviceArray(data[0])
+        x = jax_frontend.Array(data[0])
         ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
         ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=backend_fw)
         helpers.value_test(
@@ -51,7 +51,7 @@ def test_jax_dtype(
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
-        x = jax_frontend.DeviceArray(data[0])
+        x = jax_frontend.Array(data[0])
         assert x.dtype == dtype[0]
 
 
@@ -70,7 +70,7 @@ def test_jax_shape(
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
-        x = jax_frontend.DeviceArray(data[0])
+        x = jax_frontend.Array(data[0])
         assert x.shape == shape
 
 
@@ -92,13 +92,13 @@ def _transpose_helper(draw):
 
 
 @given(x_transpose=_transpose_helper())
-def test_jax_devicearray_property_T(x_transpose, backend_fw):
+def test_jax_array_property_T(x_transpose, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         x, xT = x_transpose
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
         )
-        x = jax_frontend.DeviceArray(x)
+        x = jax_frontend.Array(x)
         assert np.array_equal(x.T, xT)
 
 
@@ -129,8 +129,8 @@ def test_jax_at(x_y_index, backend_fw):
             "ivy.functional.frontends.jax"
         )
         xy, idx = x_y_index
-        x = jax_frontend.DeviceArray(xy[0])
-        y = jax_frontend.DeviceArray(xy[1])
+        x = jax_frontend.Array(xy[0])
+        y = jax_frontend.Array(xy[1])
         idx = idx[0]
         x_set = x.at[idx].set(y[idx])
         assert x_set[idx] == y[idx]
@@ -146,7 +146,7 @@ def test_jax_at(x_y_index, backend_fw):
         min_num_dims=1,
     ),
 )
-def test_jax_devicearray_copy(
+def test_jax_array_copy(
     dtype_x,
     on_device,
     frontend,
@@ -181,7 +181,7 @@ def test_jax_devicearray_copy(
         min_num_dims=2,
     ),
 )
-def test_jax_devicearray_diagonal(
+def test_jax_array_diagonal(
     dtype_and_x,
     on_device,
     frontend,
@@ -255,7 +255,7 @@ def test_jax_all(
     method_name="astype",
     dtype_and_x=_get_castable_dtype(),
 )
-def test_jax_devicearray_astype(
+def test_jax_array_astype(
     dtype_and_x,
     on_device,
     frontend,
@@ -654,7 +654,7 @@ def test_jax_sort(
         force_int_axis=True,
     ),
 )
-def test_jax_devicearray_argsort(
+def test_jax_array_argsort(
     dtype_x_axis,
     on_device,
     frontend,
@@ -694,7 +694,7 @@ def test_jax_devicearray_argsort(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_devicearray_any(
+def test_jax_array_any(
     dtype_x_axis,
     keepdims,
     on_device,
@@ -2156,7 +2156,7 @@ def test_jax_round(
     ddof=st.booleans(),
     keepdims=st.booleans(),
 )
-def test_jax_devicearray_var(
+def test_jax_array_var(
     dtype_and_x,
     keepdims,
     on_device,
@@ -2203,7 +2203,50 @@ def test_jax_devicearray_var(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_devicearray_min(
+def test_jax_array_min(
+    dtype_and_x,
+    keepdims,
+    on_device,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "keepdims": keepdims,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# ptp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="ptp",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keepdims=st.booleans(),
+)
+def test_jax_array_ptp(
     dtype_and_x,
     keepdims,
     on_device,
