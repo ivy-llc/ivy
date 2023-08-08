@@ -1738,7 +1738,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         )
 
         return ivy.vecdot(src, rgb_to_xyz_conversion_matrix).astype(src.dtype)
-    elif code == COLOR_XYZ2RGB:
+    elif code == COLOR_XYZ2RGB or code == COLOR_XYZ2BGR:
         conversion_matrix = ivy.array(
             [
                 [3.240479, -1.53715, -0.498535],
@@ -1746,11 +1746,16 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
                 [0.055648, -0.204043, 1.057311],
             ]
         )
-        return (
+        res = (
             ivy.vecdot(src.astype(ivy.float16), conversion_matrix)
             .clip(0, 255)
             .astype(src.dtype)
         )
+        if code == COLOR_XYZ2BGR:
+            res = res[:, :, [2, 1, 0]]
+
+        return res
+
     elif code == COLOR_RGB2YCrCb or code == COLOR_BGR2YCrCb:
         DELTA = 128
         channels = split(src)
