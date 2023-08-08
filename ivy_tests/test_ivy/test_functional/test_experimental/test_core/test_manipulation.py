@@ -1031,7 +1031,8 @@ def test_fill_diagonal(
 @handle_test(
     fn_tree="functional.ivy.experimental.unfold",
     dtype_values_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
         valid_axis=True,
         allow_neg_axes=False,
         force_int_axis=True,
@@ -1041,7 +1042,6 @@ def test_unfold(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device
     input_dtype, input, axis = dtype_values_axis
     if axis is None:
         axis = 0
-    test_flags.instance_method = False
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -1050,7 +1050,7 @@ def test_unfold(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtype,
-        input=input,
+        x=input[0],
         mode=axis,
     )
 
@@ -1067,29 +1067,27 @@ def _fold_data(draw):
     unfolded_shape = (shape[mode], reduced_dims)
     dtype, input = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"), shape=unfolded_shape
+            available_dtypes=helpers.get_dtypes("valid"), shape=unfolded_shape
         )
     )
     return dtype, input, shape, mode
 
 
-# TODO Add container and instance methods
 @handle_test(
     fn_tree="functional.ivy.experimental.fold",
     data=_fold_data(),
 )
 def test_fold(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, input, shape, mode = data
-    test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtype,
-        input=input,
+        x=input[0],
         mode=mode,
         shape=shape,
     )
@@ -1176,7 +1174,6 @@ def _partial_fold_data(draw):
         )
         unfolded_shape = (*shape[:skip_begin], shape[skip_begin + mode], reduced_dims)
 
-    print(skip_begin, mode, reduced_dims, skip_end)
     dtype, input = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"), shape=unfolded_shape
@@ -1185,16 +1182,14 @@ def _partial_fold_data(draw):
     return dtype, input, skip_begin, shape, mode
 
 
-# TODO Add container and instance methods
 @handle_test(
     fn_tree="functional.ivy.experimental.partial_fold",
     data=_partial_fold_data(),
 )
 def test_partial_fold(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, input, skip_begin, shape, mode = data
-    test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,

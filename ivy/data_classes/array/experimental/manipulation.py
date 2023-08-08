@@ -1106,3 +1106,32 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             unfolded_tensor of shape ``(tensor.shape[mode], -1)``
         """
         return ivy.unfold(self._data, mode, out=out)
+
+    def fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: int,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.fold. This method simply wraps the
+        function, and so the docstring for ivy.fold also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        input
+            unfolded tensor of shape ``(shape[mode], -1)``
+        mode
+            the mode of the unfolding
+        shape
+            shape of the original tensor before unfolding
+
+        Returns
+        -------
+        ret
+            folded_tensor of shape `shape`
+        """
+        return ivy.fold(self._data, mode, shape, out=out)

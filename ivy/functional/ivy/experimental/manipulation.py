@@ -2193,7 +2193,7 @@ def unfold(
 @handle_array_function
 @handle_device_shifting
 def fold(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     mode: int,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
@@ -2221,7 +2221,7 @@ def fold(
     full_shape = list(shape)
     mode_dim = full_shape.pop(mode)
     full_shape.insert(0, mode_dim)
-    return ivy.moveaxis(ivy.reshape(input, full_shape), 0, mode, out=out)
+    return ivy.moveaxis(ivy.reshape(x, full_shape), 0, mode, out=out)
 
 
 # TODO add container and array methods
