@@ -800,6 +800,7 @@ class Tensor:
     def ceil(self):
         return torch_frontend.ceil(self)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     @numpy_to_torch_style_args
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self, dim=dim, keepdim=keepdim)
