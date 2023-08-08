@@ -694,7 +694,7 @@ def test_jax_swish(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_swish",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-10,
         max_value=10,
         safety_factor_scale="linear",

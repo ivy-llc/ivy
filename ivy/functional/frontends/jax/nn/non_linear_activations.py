@@ -144,7 +144,7 @@ def glu(x, axis=-1):
 
 @to_ivy_arrays_and_back
 def hard_swish(x):
-    res = (x * ivy.minimum(ivy.maximum(x + 3, 0.0), 6.0)) / 6
+    res = ivy.hardswish(x, complex_mode="jax")
     return ivy.asarray(res, dtype=x.dtype)
 
 

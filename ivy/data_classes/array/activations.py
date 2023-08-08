@@ -132,6 +132,8 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         self
             Input array
+        complex_mode
+            optional specifier for how to handle complex data types.
         out
             optional output array for writing the result to. It must have the same shape
             the input broadcast to default: None
@@ -298,7 +300,13 @@ class _ArrayWithActivations(abc.ABC):
         """
         return ivy.mish(self._data, out=out)
 
-    def hardswish(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def hardswish(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         Apply the hardswish activation function element-wise.
 
@@ -306,6 +314,8 @@ class _ArrayWithActivations(abc.ABC):
         ----------
         x
             input array
+        complex_mode
+            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to. It must have
             a shape that the inputs broadcast to.
@@ -334,4 +344,4 @@ class _ArrayWithActivations(abc.ABC):
             b: ivy.array([0., 5.])
         }
         """
-        return ivy.hardswish(self._data, out=out)
+        return ivy.hardswish(self._data, complex_mode=complex_mode, out=out)
