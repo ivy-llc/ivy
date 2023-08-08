@@ -1099,6 +1099,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             input tensor to be unfolded
         mode
             indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -1128,6 +1130,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             the mode of the unfolding
         shape
             shape of the original tensor before unfolding
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -1163,6 +1167,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             number of dimensions to leave untouched at the end
         ravel_tensors
             if True, the unfolded tensors are also flattened
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -1202,6 +1208,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             the shape of the original full tensor (including skipped dimensions)
         skip_begin
             number of dimensions left untouched at the beginning
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -1230,6 +1238,8 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             number of dimensions to leave untouched at the beginning
         skip_end
             number of dimensions to leave untouched at the end
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
@@ -1237,3 +1247,34 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             `skip_begin` first and `skip_end` last dimensions untouched
         """
         return ivy.partial_tensor_to_vec(self._data, skip_begin, skip_end, out=out)
+
+    def partial_vec_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        skip_begin: Optional[int] = 1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_vec_to_tensor. This method
+        simply wraps the function, and so the docstring for ivy.partial_vec_to_tensor
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            a partially vectorised tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            full tensor
+        """
+        return ivy.partial_vec_to_tensor(self._data, shape, skip_begin, out=out)

@@ -1256,16 +1256,15 @@ def _partial_vec_to_tensor(draw):
 )
 def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, input, shape, skip_begin = data
-    test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtype,
-        input=input,
+        input=input[0],
         shape=shape,
         skip_begin=skip_begin,
     )

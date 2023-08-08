@@ -3433,3 +3433,89 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             partially re-folded tensor
         """
         return self.static_partial_tensor_to_vec(self, skip_begin, skip_end, out=out)
+
+    @staticmethod
+    def static_partial_vec_to_tensor(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_vec_to_tensor.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_vec_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            a partially vectorised tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+            full tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_vec_to_tensor",
+            x,
+            shape,
+            skip_begin,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_vec_to_tensor(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_vec_to_tensor.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_vec_to_tensor also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            partially vectorized tensor
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            full tensor
+        """
+        return self.static_partial_vec_to_tensor(self, shape, skip_begin, out=out)

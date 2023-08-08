@@ -2176,6 +2176,8 @@ def unfold(
         input tensor to be unfolded
     mode
         indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2211,6 +2213,8 @@ def fold(
         the mode of the unfolding
     shape
         shape of the original tensor before unfolding
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2258,6 +2262,8 @@ def partial_unfold(
         number of dimensions to leave untouched at the end
     ravel_tensors
         if True, the unfolded tensors are also flattened
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2308,6 +2314,8 @@ def partial_fold(
         the shape of the original full tensor (including skipped dimensions)
     skip_begin
         number of dimensions left untouched at the beginning
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2348,6 +2356,8 @@ def partial_tensor_to_vec(
         number of dimensions to leave untouched at the beginning
     skip_end
         number of dimensions to leave untouched at the end
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2372,30 +2382,33 @@ def partial_tensor_to_vec(
 @handle_array_function
 @handle_device_shifting
 def partial_vec_to_tensor(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     skip_begin: Optional[int] = 1,
     *,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """
     Refolds a partially vectorised tensor into a full one.
 
     Parameters
     ----------
-    input
+    x
         a partially vectorised tensor
     shape
         the shape of the original full tensor (including skipped dimensions)
     skip_begin
         number of dimensions to leave untouched at the beginning
+    out
+        optional output array, for writing the result to.
+
     Returns
     -------
     ret
         full tensor
     """
-    return partial_fold(input, mode=0, shape=shape, skip_begin=skip_begin, out=out)
+    return partial_fold(x, mode=0, shape=shape, skip_begin=skip_begin, out=out)
 
 
 @handle_nestable
@@ -2424,6 +2437,8 @@ def matricize(
     column_modes
         modes to use as column of the matrix, in the desired order
         if None, the modes not in `row_modes` will be used in ascending order
+    out
+        optional output array, for writing the result to.
 
     ret
     -------
@@ -2476,9 +2491,11 @@ def soft_thresholding(
     x
       input array
     threshold
-          float or ndarray with shape tensor.shape
+          float or array with shape tensor.shape
         * If float the threshold is applied to the whole tensor
-        * If ndarray, one threshold is applied per elements, 0 values are ignored
+        * If array, one threshold is applied per elements, 0 values are ignored
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -2501,10 +2518,6 @@ def soft_thresholding(
     >>> soft_thresholding(x, mask*1.1)
     array([[ 1. , -2. ,  0.4],
            [-2.9,  3. ,  0. ]])
-
-    See Also
-    --------
-    svd_thresholding : SVD-thresholding operator
     """
     res = ivy.abs(x) - threshold
     res = ivy.where(res < 0.0, 0.0, res) * ivy.sign(x)
