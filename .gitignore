@@ -43,3 +43,5 @@ venv.bak/
 ivy_dev/
 *venv/
 venv*
+*.xml
+.idea/ivy.iml
