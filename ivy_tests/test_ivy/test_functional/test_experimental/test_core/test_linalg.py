@@ -1329,10 +1329,7 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
     ],
 )
 def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
-    tol_norm_2 = tol_norm_2
-    tol_max_abs = tol_max_abs
     tensor = ivy.random_uniform(shape=shape)
-    modes = modes
     (core, factors) = ivy.partial_tucker(
         tensor, None, modes, n_iter_max=200, verbose=True
     )
@@ -1509,3 +1506,67 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
 
     for f, f_gt in zip(factors, factors_gt):
         assert np.prod(f.shape) == np.prod(f_gt.shape)
+
+
+# test adapted from tensorly
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L71
+@pytest.mark.parametrize(
+    "tol_norm_2, tol_max_abs, shape, ranks", [(10e-3, 10e-1, (3, 4, 3), [2, 3, 1])]
+)
+def test_tucker_tensorly(tol_norm_2, tol_max_abs, shape, ranks):
+    tensor = ivy.random_uniform(shape=shape)
+    tucker = ivy.tucker(tensor, None, n_iter_max=200, verbose=True)
+    reconstructed_tensor = tucker.to_tensor()
+    norm_rec = ivy.sqrt(ivy.sum(reconstructed_tensor**2))
+    norm_tensor = ivy.sqrt(ivy.sum(tensor**2))
+    assert (norm_rec - norm_tensor) / norm_rec < tol_norm_2
+
+    # Test the max abs difference between the reconstruction and the tensor
+    assert ivy.max(ivy.abs(reconstructed_tensor - tensor)) < tol_max_abs
+
+    # Test the shape of the core and factors
+    core, factors = ivy.tucker(tensor, ranks, n_iter_max=100)
+    for i, rank in enumerate(ranks):
+        np.testing.assert_equal(
+            factors[i].shape,
+            (tensor.shape[i], ranks[i]),
+            err_msg=(
+                f"factors[i].shape = {factors[i].shape}, expected"
+                f" {(tensor.shape[i], ranks[i])}"
+            ),
+        )
+        np.testing.assert_equal(
+            core.shape[i],
+            rank,
+            err_msg=f"core.shape[i] = {core.shape[i]}, expected {rank}",
+        )
+
+    # try fixing the core
+    factors_init = [ivy.copy_array(f) for f in factors]
+    _, factors = ivy.tucker(
+        tensor,
+        ranks,
+        init=(core, factors),
+        fixed_factors=[1],
+        n_iter_max=100,
+        verbose=1,
+    )
+    assert np.allclose(factors[1], factors_init[1])
+
+    # Random and SVD init should converge to a similar solution
+    rank = shape
+    tucker_svd = ivy.tucker(tensor, rank, n_iter_max=200, init="svd")
+    tucker_random = ivy.tucker(tensor, rank, n_iter_max=200, init="random", seed=1234)
+    rec_svd = tucker_svd.to_tensor()
+    rec_random = tucker_random.to_tensor()
+    error = ivy.sqrt(ivy.sum((rec_svd - rec_random) ** 2))
+    error /= ivy.sqrt(ivy.sum(rec_svd**2))
+
+    tol_norm_2 = 1e-1
+    np.testing.assert_(
+        error < tol_norm_2, "norm 2 of difference between svd and random init too high"
+    )
+    np.testing.assert_(
+        ivy.max(ivy.abs(rec_svd - rec_random)) < tol_max_abs,
+        "abs norm of difference between svd and random init too high",
+    )
