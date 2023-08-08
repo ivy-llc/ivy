@@ -5,13 +5,13 @@ from pymongo import MongoClient
 
 submodules = (
     "test_paddle",
-    "test_functional",
-    "test_experimental",
-    "test_stateful",
     "test_tensorflow",
     "test_torch",
     "test_jax",
     "test_numpy",
+    "test_functional",
+    "test_experimental",
+    "test_stateful",
     "test_misc",
     "test_scipy",
 )
