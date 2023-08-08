@@ -173,7 +173,7 @@ def test_paddle_searchsorted(
         valid_axis=True,
         force_int_axis=True,
     ),
-    k = st.data(),
+    k=st.data(),
     sorted=st.booleans(),
     largest=st.booleans(),
 )
