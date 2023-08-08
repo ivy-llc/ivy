@@ -1737,6 +1737,30 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
             ]
         )
         return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
+    elif code == COLOR_RGB2YCrCb:
+        DELTA = 128
+        channels = split(src)
+        r = b = 0
+        if code == COLOR_RGB2YCrCb:
+            r, _, b = channels[0], channels[1], channels[2]
+
+        Y = cvtColor(src, COLOR_RGB2GRAY)
+
+        # Convert all the arrays to float16 because the proper way to handle 8bit
+        # color conversion is by clipping out of range values instead of going back
+        # to the other end of the range like it is by default in case of range overflow
+        Y = Y.astype(ivy.float16)
+        r = r.astype(ivy.float16)
+        b = b.astype(ivy.float16)
+
+        Cr = ((r - Y) * 0.713 + DELTA).clip(0, 255)
+        Cb = ((b - Y) * 0.564 + DELTA).clip(0, 255)
+
+        res = ivy.zeros_like(src, dtype=src.dtype)
+        res[:, :, 0] = Y
+        res[:, :, 1] = Cr
+        res[:, :, 2] = Cb
+        return res
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
