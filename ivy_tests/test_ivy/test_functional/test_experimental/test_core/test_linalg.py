@@ -1315,6 +1315,75 @@ def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
         assert np.prod(f.shape) == np.prod(f_gt.shape)
 
 
+# test adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/tests/test_tucker.py#L24
+@pytest.mark.parametrize(
+    "tol_norm_2, tol_max_abs, modes, shape",
+    [
+        (
+            10e-3,
+            10e-1,
+            [1, 2],
+            (3, 4, 3),
+        )
+    ],
+)
+def test_partial_tucker_tensorly(tol_norm_2, tol_max_abs, modes, shape):
+    tol_norm_2 = tol_norm_2
+    tol_max_abs = tol_max_abs
+    tensor = ivy.random_uniform(shape=shape)
+    modes = modes
+    (core, factors) = ivy.partial_tucker(
+        tensor, None, modes, n_iter_max=200, verbose=True
+    )
+    reconstructed_tensor = ivy.multi_mode_dot(core, factors, modes=modes)
+    norm_rec = ivy.sqrt(ivy.sum(reconstructed_tensor**2))
+    norm_tensor = ivy.sqrt(ivy.sum(tensor**2))
+    assert (norm_rec - norm_tensor) / norm_rec < tol_norm_2
+
+    # Test the max abs difference between the reconstruction and the tensor
+    assert ivy.max(ivy.abs(norm_rec - norm_tensor)) < tol_max_abs
+
+    # Test the shape of the core and factors
+    ranks = [3, 1]
+    (core, factors) = ivy.partial_tucker(
+        tensor, ranks, modes, n_iter_max=100, verbose=True
+    )
+    for i, rank in enumerate(ranks):
+        np.testing.assert_equal(
+            factors[i].shape,
+            (tensor.shape[i + 1], rank),
+            err_msg=(
+                f"factors[i].shape = {factors[i].shape}, expected"
+                f" {(tensor.shape[i + 1], rank)}"
+            ),
+        )
+    np.testing.assert_equal(
+        core.shape,
+        [tensor.shape[0]] + ranks,
+        err_msg=f"core.shape = {core.shape}, expected {[tensor.shape[0]] + ranks}",
+    )
+
+    # Test random_state fixes the core and the factor matrices
+    (core1, factors1) = ivy.partial_tucker(
+        tensor,
+        ranks,
+        modes,
+        seed=0,
+        init="random",
+    )
+    (core2, factors2) = ivy.partial_tucker(
+        tensor,
+        ranks,
+        modes,
+        seed=0,
+        init="random",
+    )
+    np.allclose(core1, core2)
+    for factor1, factor2 in zip(factors1, factors2):
+        np.allclose(factor1, factor2)
+
+
 # tucker
 @st.composite
 def _tucker_data(draw):
