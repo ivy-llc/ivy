@@ -383,7 +383,7 @@
 #     data=_generate_bias_data(),
 #     test_with_out=st.just(False),
 # )
-# def test_mindspore_bias_add(
+# def test_bias_add(
 #     *,
 #     data,
 #     frontend,
