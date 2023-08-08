@@ -1699,8 +1699,9 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         return ivy.asarray(gray).astype(src.dtype)
     elif code == COLOR_GRAY2RGB or code == COLOR_GRAY2BGR:
         return ivy.expand_dims(src, axis=-1).repeat(repeats=3, axis=-1)
-    elif code == COLOR_GRAY2RGBA:
-        rgb_image = cvtColor(src, COLOR_GRAY2RGB)
+    elif code == COLOR_GRAY2RGBA or code == COLOR_GRAY2BGRA:
+        code = COLOR_GRAY2RGB if code == COLOR_GRAY2RGBA else COLOR_GRAY2BGR
+        rgb_image = cvtColor(src, code)
         alpha_channel = ivy.full_like(rgb_image[..., :1], 255)
         return ivy.concat((rgb_image, alpha_channel), axis=-1)
     else:
