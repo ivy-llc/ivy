@@ -420,6 +420,6 @@ class LogSigmoid(Module):
         Returns
         -------
         ret
-            The outputs following the SIGMOID activation *[batch_shape, d]*
+            The outputs following the LogSigmoid activation *[batch_shape, d]*
         """
         return ivy.logsigmoid(x)

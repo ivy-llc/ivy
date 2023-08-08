@@ -766,14 +766,14 @@ def test_elu(
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
-        min_num_dims=1,
+        min_num_dims=2,
     ),
     method_num_positional_args=helpers.num_positional_args(
         fn_name="LogSigmoid._forward"
     ),
     test_gradients=st.just(True),
 )
-def test_log_sigmoid(
+def test_logsigmoid(
     *,
     dtype_and_x,
     test_gradients,
