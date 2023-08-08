@@ -91,3 +91,18 @@ def unsorted_segment_min(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_min(data, segment_ids, num_segments)
+
+
+def unsorted_segment_sum(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # Used the same check which is used for unsorted_segment_min as
+    # the check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_sum(data, segment_ids, num_segments)

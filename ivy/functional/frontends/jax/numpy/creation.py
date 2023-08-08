@@ -1,6 +1,6 @@
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.jax.array import Array
 
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -27,11 +27,11 @@ def array(object, dtype=None, copy=True, order="K", ndmin=0):
     ret = ivy.to_device(ret, default_device)
 
     if ret.shape == () and dtype is None:
-        return DeviceArray(ret, weak_type=True)
-    return DeviceArray(ret)
+        return Array(ret, weak_type=True)
+    return Array(ret)
 
 
-ndarray = array
+ndarray = Array
 
 
 @handle_jax_dtype
@@ -51,13 +51,13 @@ def arange(start, stop=None, step=1, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
-    return DeviceArray(ivy.zeros(shape, dtype=dtype))
+    return Array(ivy.zeros(shape, dtype=dtype))
 
 
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=None):
-    return DeviceArray(ivy.ones(shape, dtype=dtype))
+    return Array(ivy.ones(shape, dtype=dtype))
 
 
 @handle_jax_dtype
@@ -89,7 +89,7 @@ def hstack(tup, dtype=None):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
-    return DeviceArray(ivy.eye(N, M, k=k, dtype=dtype))
+    return Array(ivy.eye(N, M, k=k, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
@@ -100,7 +100,7 @@ def triu(m, k=0):
 @handle_jax_dtype
 @to_ivy_arrays_and_back
 def empty(shape, dtype=None):
-    return DeviceArray(ivy.empty(shape=shape, dtype=dtype))
+    return Array(ivy.empty(shape=shape, dtype=dtype))
 
 
 @to_ivy_arrays_and_back
