@@ -866,14 +866,8 @@ def test_tensorflow_svd(
 # einsum
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.einsum",
-    eq_n_op_n_shp=st.sampled_from(
-        [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-        ]
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_tensorflow_linalg_einsum(
     *,
@@ -885,16 +879,14 @@ def test_tensorflow_linalg_einsum(
     frontend,
     test_flags,
 ):
-    eq, operands, _ = eq_n_op_n_shp
+    eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
-    i = 0
-    for x_ in operands:
-        kw["x{}".format(i)] = x_
-        i += 1
-    # len(operands) + 1 because of the equation
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
