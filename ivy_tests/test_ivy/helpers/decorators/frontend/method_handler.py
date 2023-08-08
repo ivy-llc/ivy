@@ -39,7 +39,7 @@ class FrontendMethodHandler(MethodHandlerBase):
             )
             init_num_positional_args = init_strategy_builder.build()
 
-        self._build_init_flags(
+        self.init_flags = self._build_init_flags(
             init_num_positional_args, init_native_arrays, init_as_variable_flags
         )
 
@@ -49,13 +49,14 @@ class FrontendMethodHandler(MethodHandlerBase):
             )
             method_num_positional_args = method_strategy_builder.build()
 
-        self._build_method_flags(
+        self.method_flags = self._build_method_flags(
             method_num_positional_args,
             method_native_arrays,
             method_as_variable_flags,
         )
+
         self._given_kwargs = _given_kwargs
-        self._build_extra_test_data()
+        self.extra_test_data = self._build_extra_test_data()
 
     @property
     def init_tree(self):
@@ -77,19 +78,21 @@ class FrontendMethodHandler(MethodHandlerBase):
             "frontend_method_data": st.just(self.extra_test_data),
         }
 
+    @staticmethod
     def _build_init_flags(
-        self, init_num_positional_args, init_as_variable_flags, init_native_arrays
+        init_num_positional_args, init_as_variable_flags, init_native_arrays
     ):
-        self.init_flags = frontend_method_flags(
+        return frontend_method_flags(
             num_positional_args=init_num_positional_args,
             as_variable=init_as_variable_flags,
             native_arrays=init_native_arrays,
         )
 
+    @staticmethod
     def _build_method_flags(
-        self, method_num_positional_args, method_as_variable_flags, method_native_arrays
+        method_num_positional_args, method_as_variable_flags, method_native_arrays
     ):
-        self.method_flags = frontend_method_flags(
+        return frontend_method_flags(
             num_positional_args=method_num_positional_args,
             as_variable=method_as_variable_flags,
             native_arrays=method_native_arrays,
@@ -98,7 +101,7 @@ class FrontendMethodHandler(MethodHandlerBase):
     def _build_extra_test_data(self):
         class_module_tree, _, class_name = self.class_tree.rpartition(".")
         init_tree, _, init_name = self._init_tree.rpartition(".")
-        self.extra_test_data = MethodData(
+        return MethodData(
             class_module_tree=class_module_tree,
             class_name=class_name,
             method_name=self.method_name,

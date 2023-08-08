@@ -42,7 +42,7 @@ class FrontendFunctionHandler(FunctionHandler):
             strategy_builder = ParameterInfoStrategyBuilder.from_function(self.fn_tree)
             number_positional_args = strategy_builder.build()
 
-        self._build_test_flags(
+        self.test_flags = self._build_test_flags(
             number_positional_args=number_positional_args,
             test_with_out=test_with_out,
             test_inplace=test_inplace,
@@ -76,8 +76,8 @@ class FrontendFunctionHandler(FunctionHandler):
         for i in range(len(aliases)):
             aliases[i] = self._append_ivy_prefix_to_tree(aliases[i])
 
+    @staticmethod
     def _build_test_flags(
-        self,
         number_positional_args,
         test_with_out,
         test_inplace,
@@ -85,7 +85,7 @@ class FrontendFunctionHandler(FunctionHandler):
         native_array_flags,
         generate_frontend_arrays,
     ):
-        self.test_flags = build_frontend_function_flags(
+        return build_frontend_function_flags(
             num_positional_args=number_positional_args,
             with_out=test_with_out,
             inplace=test_inplace,
