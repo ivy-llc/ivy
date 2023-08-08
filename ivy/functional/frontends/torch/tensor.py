@@ -343,7 +343,7 @@ class Tensor:
     def atanh(self):
         return torch_frontend.atanh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def atanh_(self):
         self.ivy_array = self.atanh().ivy_array
         return self
