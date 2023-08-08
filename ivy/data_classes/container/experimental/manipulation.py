@@ -3519,3 +3519,87 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             full tensor
         """
         return self.static_partial_vec_to_tensor(self, shape, skip_begin, out=out)
+
+    @staticmethod
+    def static_matricize(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        row_modes: Union[Sequence[int], ivy.Container],
+        column_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.matricize.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.matricize also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+
+        ret
+        -------
+            ivy.Container
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "matricize",
+            x,
+            row_modes,
+            column_modes,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def matricize(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        row_modes: Union[Sequence[int], ivy.Container],
+        column_modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.matricize.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.matricize also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+        ret
+        -------
+            ivy.Container
+        """
+        return self.static_matricize(self, row_modes, column_modes, out=out)

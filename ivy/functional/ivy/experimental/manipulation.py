@@ -2418,19 +2418,19 @@ def partial_vec_to_tensor(
 @handle_array_function
 @handle_device_shifting
 def matricize(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     row_modes: Sequence[int],
     column_modes: Optional[Sequence[int]] = None,
     *,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """
     Matricizes the given tensor.
 
     Parameters
     ----------
-    input
+    x
         the input tensor
     row_modes
         modes to use as row of the matrix (in the desired order)
@@ -2442,9 +2442,9 @@ def matricize(
 
     ret
     -------
-    matrix : tensor of size (ivy.prod(input.shape[i] for i in row_modes), -1)
+        ivy.Array : tensor of size (ivy.prod(x.shape[i] for i in row_modes), -1)
     """
-    ndims = len(input.shape)
+    ndims = len(x.shape)
     row_indices = list(row_modes)
 
     if column_modes:
@@ -2460,11 +2460,11 @@ def matricize(
             raise ValueError(msg)
 
     row_size, column_size = 1, 1
-    row_size = int(ivy.prod([input.shape[i] for i in row_indices]))
-    column_size = int(ivy.prod([input.shape[i] for i in column_indices]))
+    row_size = int(ivy.prod([x.shape[i] for i in row_indices]))
+    column_size = int(ivy.prod([x.shape[i] for i in column_indices]))
 
     return ivy.reshape(
-        ivy.permute_dims(input, row_indices + column_indices),
+        ivy.permute_dims(x, row_indices + column_indices),
         (row_size, column_size),
         out=out,
     )

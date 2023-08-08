@@ -1278,3 +1278,34 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             full tensor
         """
         return ivy.partial_vec_to_tensor(self._data, shape, skip_begin, out=out)
+
+    def matricize(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        row_modes: Sequence[int],
+        column_modes: Optional[Sequence[int]] = None,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.matricize. This method simply wraps the
+        function, and so the docstring for ivy.matricize also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+        row_modes
+            modes to use as row of the matrix (in the desired order)
+        column_modes
+            modes to use as column of the matrix, in the desired order
+            if None, the modes not in `row_modes` will be used in ascending order
+        out
+            optional output array, for writing the result to.
+
+        ret
+        -------
+            ivy.Array : tensor of size (ivy.prod(x.shape[i] for i in row_modes), -1)
+        """
+        return ivy.matricize(self._data, row_modes, column_modes, out=out)
