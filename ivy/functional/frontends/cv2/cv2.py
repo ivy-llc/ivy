@@ -1691,19 +1691,16 @@ def split(m, mv=None):
 
 @to_ivy_arrays_and_back
 def cvtColor(src, code: int, dst=None, dstCn: int = 0):
-    # There are multiple cases in which a dtype conversion to float16
-    # is needed due to numeric range overflow.
-    # This happens when the src image is of integer type and there are multiplication
-    # with floating-point factors in the conversion formulas.
-    # In this case what happens is that the values wrap around the range and continues
-    # to the other end of the range. For example, in case of 8-bit integers, when the
-    # result of the operation is greater than 255, it goes back to 0 and continue
-    # with the amount exceeding 255 (i.e. 256 -> 0; 257 -> 1; -1 -> 255; -2 -> 254).
-    # But for color conversion, the correct behaviour is clipping any value between
-    # 0 and 255 whatever is the amount the exceed the range:
-    # (i.e. 256 -> 255; 257 -> 255; -1 -> 0; -2 -> 0).
-    # So the solution to this default behaviour is converting the integer image
-    # to float16 and then clip the values.
+    # float16 dtype conversion is required when integer-type source
+    # images are multiplied by floating-point factors, causing potential
+    # numeric overflow. This occurs within conversion formulas, leading to
+    # value wrapping around the defined range. For instance, in 8-bit integers,
+    # results exceeding 255 loop back to 0 and continue beyond
+    # (e.g., 256 -> 0; 257 -> 1; -1 -> 255; -2 -> 254). However, in color
+    # conversion, the desired behavior is to clip values within 0 to 255,
+    # irrespective of overflow (e.g., 256 -> 255; 257 -> 255; -1 -> 0; -2 -> 0).
+    # The solution involves float16 conversion of the integer image,
+    # followed by value clipping.
     if (
         code == COLOR_RGB2GRAY
         or code == COLOR_RGBA2GRAY
