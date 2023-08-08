@@ -281,8 +281,8 @@ class IvyBackendException(IvyException):
 class InvalidBackendException(IvyException):
     def __init__(self, *messages, include_backend=False):
         super().__init__(*messages, include_backend=include_backend)
-        
-        
+
+
 class IvyNotImplementedException(NotImplementedError):
     def __init__(self, message=""):
         super().__init__(message)
