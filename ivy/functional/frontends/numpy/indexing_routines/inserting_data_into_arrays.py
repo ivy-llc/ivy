@@ -30,7 +30,7 @@ def fill_diagonal(a, val, wrap=False):
     temp[:end:step] = val
     a = ivy.reshape(temp, shape)
     
-    
+@to_ivy_arrays_and_back  
 def put(arr, indices, values):
     """Inserts the value of the desired location of indices"""
     flat_arr = ivy.flatten(arr)
