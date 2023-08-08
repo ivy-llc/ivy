@@ -90,6 +90,8 @@ def value_test(
     ret_np_from_gt_flat,
     rtol=None,
     atol=1e-6,
+    specific_rtol_atol=False,
+    specific_tolerance_dict=None,
     backend: str,
     ground_truth_backend="TensorFlow",
 ):
@@ -108,6 +110,11 @@ def value_test(
         Relative Tolerance Value.
     atol
         Absolute Tolerance Value.
+    specific_rtol_atol
+        Whether to use specific rtol and atol values according to the dtype
+        of ret_np_flat.
+    specific_tolerance_dict
+        Dictionary of specific rtol and atol values according to the dtype
     ground_truth_backend
         Ground Truth Backend Framework.
 
@@ -148,6 +155,9 @@ def value_test(
             )
     else:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
+            if specific_rtol_atol and specific_tolerance_dict:
+                dtype = str(ret_np_from_gt.dtype)
+                rtol = specific_tolerance_dict.get(dtype, rtol)
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
