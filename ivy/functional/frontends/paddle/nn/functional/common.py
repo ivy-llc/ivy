@@ -88,8 +88,20 @@ def zeropad2d(x, padding, data_format="NCHW", name=None):
 
 
 @to_ivy_arrays_and_back
-def pad(x, pad, mode="constant", value=0.0, name=None):
+def pad(x, pad, mode="constant", value=0.0, data_format="NCHW", name=None):
     pad = pad.to_list() if ivy.is_array(pad) else pad
+    if isinstance(pad, int):
+        pad = [pad, pad, pad, pad]
+    if len(pad) != 4:
+        raise ValueError("pad length should be 4.")
+    if x.ndim != 4:
+        raise ValueError("Input x must be 4-dimensional.")
+    if data_format == "NCHW":
+        pad = ((0, 0), (0, 0), (pad[2], pad[3]), (pad[0], pad[1]))
+    elif data_format == "NHWC":
+        pad = ((0, 0), (pad[2], pad[3]), (pad[0], pad[1]), (0, 0))
+    else:
+        raise ValueError("Unknown data_format: {}".format(data_format))
     return ivy.pad(x, pad, mode=mode.lower(), value=value)
 
 
