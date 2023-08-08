@@ -5,3 +5,4 @@ can_cast
 finfo
 iinfo
 result_type
+roll
