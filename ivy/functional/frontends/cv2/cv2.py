@@ -1691,6 +1691,19 @@ def split(m, mv=None):
 
 @to_ivy_arrays_and_back
 def cvtColor(src, code: int, dst=None, dstCn: int = 0):
+    # There are multiple cases in which a dtype conversion to float16
+    # is needed due to numeric range overflow.
+    # This happens when the src image is of integer type and there are multiplication
+    # with floating-point factors in the conversion formulas.
+    # In this case what happens is that the values wrap around the range and continues
+    # to the other end of the range. For example, in case of 8-bit integers, when the
+    # result of the operation is greater than 255, it goes back to 0 and continue
+    # with the amount exceeding 255 (i.e. 256 -> 0; 257 -> 1; -1 -> 255; -2 -> 254).
+    # But for color conversion, the correct behaviour is clipping any value between
+    # 0 and 255 whatever is the amount the exceed the range:
+    # (i.e. 256 -> 255; 257 -> 255; -1 -> 0; -2 -> 0).
+    # So the solution to this default behaviour is converting the integer image
+    # to float16 and then clip the values.
     if (
         code == COLOR_RGB2GRAY
         or code == COLOR_RGBA2GRAY
@@ -1734,9 +1747,6 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
                 [0.055648, -0.204043, 1.057311],
             ]
         )
-        # Convert all the arrays to float16 because the proper way to handle 8bit
-        # color conversion is by clipping out of range values instead of going back
-        # to the other end of the range like it is by default in case of range overflow
         return (
             ivy.vecdot(src.astype(ivy.float16), conversion_matrix)
             .clip(0, 255)
@@ -1751,9 +1761,6 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
 
         Y = cvtColor(src, COLOR_RGB2GRAY)
 
-        # Convert all the arrays to float16 because the proper way to handle 8bit
-        # color conversion is by clipping out of range values instead of going back
-        # to the other end of the range like it is by default in case of range overflow
         Y = Y.astype(ivy.float16)
         r = r.astype(ivy.float16)
         b = b.astype(ivy.float16)
