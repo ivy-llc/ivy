@@ -231,31 +231,25 @@ def test_linear(
     )
 
 
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x_weight_bias=x_and_linear(
-        dtypes=helpers.get_dtypes("valid", full=False),
-    ),
-)
 def test_bilinear(
+    *,
     dtype_x_weight_bias,
     on_device,
     fn_tree,
     backend_fw,
     frontend,
     test_flags,
-    fn_to_test,
 ):
-    dtype, input1, weight, bias = dtype_x_weight_bias
+    dtype, x1, x2, weight, bias = dtype_x_weight_bias
     weight = ivy.swapaxes(weight, -1, -2)
 
-    # Define the test function for the bilinear operation
-    def test_fn(input1, weight, bias):
-        input2 = input1  # Use the same input for both inputs in this example
-        return fn_to_test(input1, input2, weight, bias)
+    # Compute the expected output for the bilinear function
+    bilinear_prod = ivy.expand_dims(x1, -1) * ivy.expand_dims(x2, -2)
+    bilinear_prod_flat = ivy.reshape(
+        bilinear_prod, (-1, ivy.shape(x1)[-1] * ivy.shape(x2)[-1])
+    )
+    expected_output = ivy.linear(bilinear_prod_flat, weight, bias=bias)
 
-    # Call the reference test function with the appropriate arguments
-    # Note: Adjust the parameters and arguments accordingly based on your testing setup and environment.
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
@@ -263,8 +257,9 @@ def test_bilinear(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=input1,  # Change to your specific input variable
-        weight=weight,  # Change to your specific weight variable
-        bias=bias,  # Change to your specific bias variable
-        fn_to_test=test_fn,
+        x1=x1,
+        x2=x2,
+        weight=weight,
+        bias=bias,
+        expected_output=expected_output,
     )
