@@ -84,17 +84,15 @@ def diag_indices_from(arr):
 
 @to_ivy_arrays_and_back
 def indices(dimensions, dtype=int, sparse=False):
-    dimensions = tuple(dimensions)
-    N = len(dimensions)
-    shape = (1,) * N
     if sparse:
-        res = tuple()
+        return tuple(
+            ivy.arange(dim)
+            .expand_dims(
+                axis=[j for j in range(len(dimensions)) if i != j],
+            )
+            .astype(dtype)
+            for i, dim in enumerate(dimensions)
+        )
     else:
-        res = ivy.empty((N,) + dimensions, dtype=dtype)
-    for i, dim in enumerate(dimensions):
-        idx = ivy.arange(dim, dtype=dtype).reshape(shape[:i] + (dim,) + shape[i + 1 :])
-        if sparse:
-            res = res + (idx,)
-        else:
-            res[i] = idx
-    return res
+        grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
+        return ivy.stack(grid, axis=0).astype(dtype)

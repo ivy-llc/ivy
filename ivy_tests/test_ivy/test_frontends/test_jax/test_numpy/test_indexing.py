@@ -433,12 +433,12 @@ def test_jax_diag_indices_from(
 @handle_frontend_test(
     fn_tree="jax.numpy.indices",
     dimensions=helpers.get_shape(min_num_dims=1),
-    dtype=helpers.get_dtypes(kind="float", full=False),
+    dtype=helpers.get_dtypes(),
     sparse=st.booleans(),
     test_with_out=st.just(False),
 )
 def test_jax_numpy_indices(
-    *,
+    # *,
     dimensions,
     dtype,
     sparse,
