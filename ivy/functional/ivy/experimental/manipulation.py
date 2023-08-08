@@ -2185,7 +2185,6 @@ def unfold(
     return ivy.reshape(ivy.moveaxis(x, mode, 0), (x.shape[mode], -1), out=out)
 
 
-# TODO add container and array methods
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -2224,7 +2223,6 @@ def fold(
     return ivy.moveaxis(ivy.reshape(x, full_shape), 0, mode, out=out)
 
 
-# TODO add container and array methods
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -2232,7 +2230,7 @@ def fold(
 @handle_array_function
 @handle_device_shifting
 def partial_unfold(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     mode: Optional[int] = 0,
     skip_begin: Optional[int] = 1,
@@ -2240,16 +2238,17 @@ def partial_unfold(
     ravel_tensors: Optional[bool] = False,
     *,
     out: Optional[ivy.Array] = None,
-):
-    """Partial unfolding of a tensor while ignoring the specified number
-        of dimensions at the beginning and the end.
-        For instance, if the first dimension of the tensor is the number
-        of samples, to unfold each sample, set skip_begin=1.
-        This would, for each i in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
+) -> ivy.Array:
+    """
+    Partial unfolding of a tensor while ignoring the specified number
+    of dimensions at the beginning and the end.
+    For instance, if the first dimension of the tensor is the number
+    of samples, to unfold each sample, set skip_begin=1.
+    This would, for each i in ``range(tensor.shape[0])``, unfold ``tensor[i, ...]``.
 
     Parameters
     ----------
-    input
+    x
         tensor of shape n_samples x n_1 x n_2 x ... x n_i
     mode
         indexing starts at 0, therefore mode is in range(0, tensor.ndim)
@@ -2268,16 +2267,16 @@ def partial_unfold(
     if ravel_tensors:
         new_shape = [-1]
     else:
-        new_shape = [input.shape[mode + skip_begin], -1]
+        new_shape = [x.shape[mode + skip_begin], -1]
 
     if skip_begin:
-        new_shape = [input.shape[i] for i in range(skip_begin)] + new_shape
+        new_shape = [x.shape[i] for i in range(skip_begin)] + new_shape
 
     if skip_end:
-        new_shape += [input.shape[-i] for i in range(1, 1 + skip_end)]
+        new_shape += [x.shape[-i] for i in range(1, 1 + skip_end)]
 
     return ivy.reshape(
-        ivy.moveaxis(input, mode + skip_begin, skip_begin), new_shape, out=out
+        ivy.moveaxis(x, mode + skip_begin, skip_begin), new_shape, out=out
     )
 
 

@@ -3141,3 +3141,96 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             Container of folded tensors
         """
         return self.static_fold(self, mode, shape, out=out)
+
+    @staticmethod
+    def static_partial_unfold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        ravel_tensors: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            tensor of shape n_samples x n_1 x n_2 x ... x n_i
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        ravel_tensors
+            if True, the unfolded tensors are also flattened
+
+        Returns
+        -------
+        ret
+            partially unfolded tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_unfold",
+            x,
+            mode,
+            skip_begin,
+            skip_end,
+            ravel_tensors,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_unfold(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        skip_end: Optional[Union[int, ivy.Container]] = 0,
+        ravel_tensors: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            tensor of shape n_samples x n_1 x n_2 x ... x n_i
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+        ravel_tensors
+            if True, the unfolded tensors are also flattened
+
+        Returns
+        -------
+        ret
+            partially unfolded tensor
+        """
+        return self.static_partial_unfold(
+            self, mode, skip_begin, skip_end, ravel_tensors, out=out
+        )
