@@ -771,6 +771,11 @@ def fft2(
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_elem_in_list(
+        norm,
+        ["backward", "ortho", "forward"],
+        message=f"Unrecognized normalization mode {norm}",
+    )
     if not all(isinstance(j, int) for j in dim):
         raise ivy.utils.exceptions.IvyError(
             f"Expecting {dim} to be a sequence of integers <class integer>"
@@ -790,8 +795,6 @@ def fft2(
         raise ivy.utils.exceptions.IvyError(
             f"Invalid data points {s}, expecting s points larger than 1"
         )
-    if norm != "backward" and norm != "ortho" and norm != "forward":
-        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.fft2(x, s, dim, norm).astype(jnp.complex128)
 
 
