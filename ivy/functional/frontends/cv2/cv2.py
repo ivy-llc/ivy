@@ -1714,6 +1714,16 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         rgb_image = cvtColor(src, code)
         alpha_channel = ivy.full_like(rgb_image[..., :1], 255)
         return ivy.concat((rgb_image, alpha_channel), axis=-1)
+    elif code == COLOR_RGB2XYZ:
+        conversion_matrix = ivy.array(
+            [
+                [0.412453, 0.357580, 0.180423],
+                [0.212671, 0.715160, 0.072169],
+                [0.019334, 0.119193, 0.950227],
+            ]
+        )
+
+        return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
