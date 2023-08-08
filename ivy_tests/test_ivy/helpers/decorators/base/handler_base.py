@@ -33,6 +33,14 @@ class HandlerBase(ABC):
     def possible_arguments(self):
         pass
 
+    @abstractproperty
+    def test_data(self):
+        pass
+
+    @abstractproperty
+    def supported_devices_dtypes(self):
+        pass
+
     @property
     def is_hypothesis_test(self) -> bool:
         return len(self.given_kwargs.items()) > 0

@@ -43,7 +43,6 @@ class BackendFunctionHandler(FunctionHandler):
         self.fn_tree = self._append_ivy_prefix_to_tree(fn_tree)
         self.ground_truth_backend = ground_truth_backend
         self._given_kwargs = _given_kwargs
-        self._build_test_data()
 
         if num_positional_args is None:
             strategy_builder = ParameterInfoStrategyBuilder.from_function(self.fn_tree)

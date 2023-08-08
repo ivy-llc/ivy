@@ -14,7 +14,8 @@ class MethodHandlerBase(HandlerBase):
     def method_tree():
         pass
 
-    def _build_supported_devices_dtypes(self):
+    @property
+    def supported_devices_dtypes(self):
         supported_device_dtypes = {}
         module_tree, class_name, method_name = import_helpers.partition_method_tree(
             self.method_tree

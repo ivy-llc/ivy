@@ -55,7 +55,6 @@ class FrontendMethodHandler(MethodHandlerBase):
             method_as_variable_flags,
         )
         self._given_kwargs = _given_kwargs
-        self._build_test_data()
         self._build_extra_test_data()
 
     @property
@@ -107,9 +106,9 @@ class FrontendMethodHandler(MethodHandlerBase):
             init_name=init_name,
         )
 
-    def _build_test_data(self):
-        supported_device_dtypes = self._build_supported_devices_dtypes()
-        self.test_data = SupportedDevicesDtypes(supported_device_dtypes)
+    @property
+    def test_data(self):
+        return SupportedDevicesDtypes(self.supported_devices_dtypes)
 
     def _add_test_attributes_to_test_function(self, fn):
         fn.test_data = self.test_data

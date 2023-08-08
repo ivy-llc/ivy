@@ -8,13 +8,14 @@ from ivy_tests.test_ivy.helpers.decorators.base.handler_base import HandlerBase
 
 
 class FunctionHandler(HandlerBase):
-    def _build_test_data(self):
-        supported_device_dtypes = self._get_supported_devices_dtypes()
-        self.test_data = SupportedDevicesDtypes(
-            supported_device_dtypes=supported_device_dtypes,
+    @property
+    def test_data(self):
+        return SupportedDevicesDtypes(
+            supported_device_dtypes=self.supported_devices_dtypes,
         )
 
-    def _get_supported_devices_dtypes(self):
+    @property
+    def supported_devices_dtypes(self):
         """
         Get supported devices and data types for a function in Ivy API.
 

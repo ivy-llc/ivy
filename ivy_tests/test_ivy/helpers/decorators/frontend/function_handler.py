@@ -50,7 +50,6 @@ class FrontendFunctionHandler(FunctionHandler):
             native_array_flags=native_array_flags,
             generate_frontend_arrays=generate_frontend_arrays,
         )
-        self._build_test_data()
 
     def _build_fn_tree_strategy(self):
         if self.aliases is None:
