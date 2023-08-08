@@ -1697,7 +1697,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         gray = 0.299 * r + 0.587 * g + 0.114 * b
 
         return ivy.asarray(gray).astype(src.dtype)
-    elif code == COLOR_BGR2GRAY:
+    elif code == COLOR_BGR2GRAY or code == COLOR_BGRA2GRAY:
         channels = split(src)
         b, g, r = channels[0], channels[1], channels[2]
         gray = 0.299 * r + 0.587 * g + 0.114 * b
