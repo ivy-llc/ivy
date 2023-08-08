@@ -41,13 +41,10 @@ class _ArrayWithLossesExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1, 2, 3])
+        >>> x = ivy.array([1.0, 2.0, 3.0])
         >>> y = ivy.array([0.7, 1.8, 2.9])
         >>> z = x.l1_loss(y)
         >>> print(z)
-        ivy.array(0.30000000000000004)
+        ivy.array(0.20000000000000004)
         """
         return ivy.l1_loss(self._data, pred, reduction=reduction, out=out)
-
-
-    

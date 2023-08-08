@@ -272,10 +272,8 @@ def test_binary_cross_entropy_loss(
         max_num_dims=3,
         min_dim_size=3,
     ),
-    reduction=st.sampled_from([ "mean", "sum"]),
-    method_num_positional_args=helpers.num_positional_args(
-        fn_name="L1Loss._forward"
-    ),
+    reduction=st.sampled_from(["mean", "sum"]),
+    method_num_positional_args=helpers.num_positional_args(fn_name="L1Loss._forward"),
 )
 def test_l1_loss(
     *,
