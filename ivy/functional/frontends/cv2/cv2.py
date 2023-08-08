@@ -1714,8 +1714,10 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         rgb_image = cvtColor(src, code)
         alpha_channel = ivy.full_like(rgb_image[..., :1], 255)
         return ivy.concat((rgb_image, alpha_channel), axis=-1)
-    elif code == COLOR_RGB2XYZ:
-        conversion_matrix = ivy.array(
+    elif code == COLOR_RGB2XYZ or code == COLOR_BGR2XYZ:
+        if code == COLOR_BGR2XYZ:
+            src = src[:, :, [2, 1, 0]]
+        rgb_to_xyz_conversion_matrix = ivy.array(
             [
                 [0.412453, 0.357580, 0.180423],
                 [0.212671, 0.715160, 0.072169],
@@ -1723,7 +1725,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
             ]
         )
 
-        return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
+        return ivy.vecdot(src, rgb_to_xyz_conversion_matrix).astype(src.dtype)
     elif code == COLOR_XYZ2RGB:
         # TODO: investigate why although the conversion matrix is the one stated in
         # opencv docs the results are different
