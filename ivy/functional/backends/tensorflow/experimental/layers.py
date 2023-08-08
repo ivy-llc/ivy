@@ -978,6 +978,7 @@ def trans_x_to_s(
     return x_new
 
 
+@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
