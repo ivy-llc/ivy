@@ -155,7 +155,7 @@ def test_scipy_tril(
 
 # triu
 @handle_frontend_test(
-    fn_tree="jax.scipy.triu",
+    fn_tree="scipy.linalg.triu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
@@ -191,7 +191,7 @@ def test_scipy_triu(
 
 # inv
 @handle_frontend_test(
-    fn_tree="jax.scipy.inv",
+    fn_tree="scipy.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         small_abs_safety_factor=2,

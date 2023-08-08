@@ -10,7 +10,15 @@ from dataclasses import dataclass
 from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
+available_frameworks = [
+    "numpy",
+    "jax",
+    "tensorflow",
+    "torch",
+    "paddle",
+    "mxnet",
+    "scipy",
+]
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
