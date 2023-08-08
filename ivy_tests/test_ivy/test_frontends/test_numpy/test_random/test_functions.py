@@ -832,3 +832,42 @@ def test_numpy_logistic(
         scale=scale,
         size=size,
     )
+
+
+# logseries
+@handle_frontend_test(
+    fn_tree="numpy.random.logseries",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    p=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=9.9e-08,
+        max_value=0.99,
+    ),
+    size=st.tuples(
+        st.integers(min_value=1, max_value=10),
+        st.integers(min_value=1, max_value=10),
+    ),
+)
+def test_numpy_logseries(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+    p,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        p=p,
+        size=size,
+    )
