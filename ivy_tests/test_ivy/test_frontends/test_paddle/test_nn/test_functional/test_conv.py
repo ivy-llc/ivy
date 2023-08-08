@@ -1,14 +1,17 @@
 # global
-from hypothesis import strategies as st, assume
+from hypothesis import assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.\
-    test_convolution_functions import (
-        x_and_filters,
-        _output_shape
-    )
+from ivy_tests.test_ivy.test_frontends.test_torch.test_nn.test_functional.test_convolution_functions import (
+    x_and_filters,
+    _output_shape,
+)
+from ivy_tests.test_ivy.test_functional.test_nn.test_layers import (
+    _assume_tf_dilation_gt_1,
+)
+
 
 # conv1d
 @handle_frontend_test(
@@ -89,6 +92,8 @@ def test_paddle_conv3d(
     backend_fw,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
+    # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
@@ -104,6 +109,7 @@ def test_paddle_conv3d(
         dilation=dilations,
         groups=fc,
     )
+
 
 # conv1d_transpose
 @handle_frontend_test(
@@ -146,6 +152,7 @@ def test_paddle_conv1d_tranpose(
         dilation=dilations,
     )
 
+
 # conv2d_transpose
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.conv2d_transpose",
@@ -186,6 +193,7 @@ def test_paddle_conv2d_tranpose(
         dilation=dilations,
         groups=fc,
     )
+
 
 # conv3d_transpose
 @handle_frontend_test(
