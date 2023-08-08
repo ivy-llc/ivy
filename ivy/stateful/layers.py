@@ -2220,7 +2220,8 @@ class Embedding(Module):
 
     def _pad_embd(self, indices, embd):
         mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
-        return ivy.where(mask, 0, embd)
+        mask_val = ivy.array(0.0, dtype=embd.dtype)
+        return ivy.where(mask, mask_val, embd)
 
     def _forward(self, indices):
         emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
