@@ -54,14 +54,24 @@ def selu(input_x):
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
+
 @with_supported_dtypes(
-    {"2.0.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")},
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
     "mindspore",
 )
 @to_ivy_arrays_and_back
 def dropout3d(input, p=0.5, training=True):
     return ivy.dropout3d(input, p, training=training, data_format="NCDHW")
-
 
 
 @with_supported_dtypes(
@@ -169,3 +179,11 @@ def avg_pool2d(
         count_include_pad=count_include_pad,
         divisor_override=divisor_override,
     )
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def softshrink(x, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
