@@ -316,7 +316,7 @@ class Tensor:
     def asinh(self):
         return torch_frontend.asinh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def asinh_(self):
         self.ivy_array = self.asinh().ivy_array
         return self
