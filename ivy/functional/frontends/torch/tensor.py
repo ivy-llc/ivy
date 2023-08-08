@@ -588,7 +588,7 @@ class Tensor:
     def acos(self):
         return torch_frontend.acos(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def acos_(self):
         self.ivy_array = self.acos().ivy_array
         return self
