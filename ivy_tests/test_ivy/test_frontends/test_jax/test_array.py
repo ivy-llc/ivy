@@ -2238,37 +2238,42 @@ def test_jax_array_min(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="ptp",
-    dtype_and_x=helpers.dtype_values_axis(
+    dtype_and_x_axis_dtype=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        force_int_axis=True,
+        allow_inf=False,
+        num_arrays=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
         min_num_dims=1,
         valid_axis=True,
     ),
-    keepdims=st.booleans(),
+    keep_dims=st.booleans(),
 )
 def test_jax_array_ptp(
-    dtype_and_x,
-    keepdims,
-    on_device,
+    dtype_and_x_axis_dtype,
+    keep_dims,
     frontend,
-    backend_fw,
     frontend_method_data,
+    backend_fw,
     init_flags,
     method_flags,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtypes, x, axis = dtype_and_x_axis_dtype
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        backend_to_test=backend_fw,
+        init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "axis": axis,
-            "keepdims": keepdims,
+            "out": None,
+            "keepdims": keep_dims,
         },
         frontend=frontend,
+        backend_to_test=backend_fw,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,

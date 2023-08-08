@@ -285,6 +285,9 @@ class Array:
     ):
         return jax_frontend.numpy.take(self, indices, axis=axis, out=out)
 
+    def ptp(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
+
     def min(
         self,
         /,
@@ -310,12 +313,3 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
-
-    def ptp(
-        self,
-        *,
-        axis=None,
-        out=None,
-        keepdims=False,
-    ):
-        return jax_frontend.numpy.ptp(self, axis=axis, out=out, keepdims=keepdims)
