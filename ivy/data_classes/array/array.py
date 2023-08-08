@@ -782,6 +782,12 @@ class Array(
             return res
         return to_ivy(res)
 
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
     def __bool__(self):
         return self._data.__bool__()
 
