@@ -1347,13 +1347,18 @@ class Tensor:
     def square(self):
         return torch_frontend.square(self._ivy_array)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def log10(self):
         return torch_frontend.log10(self._ivy_array)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log10_(self):
         self.ivy_array = self.log10().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
+    def zero_(self):
+        self.ivy_array = torch_frontend.zeros_like(self).ivy_array
         return self
 
     def short(self, memory_format=None):
@@ -1653,6 +1658,13 @@ class Tensor:
     def svd(self, some=True, compute_uv=True, *, out=None):
         return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
+        "torch",
+    )
+    def gcd(self, other, *, out=None):
+        return torch_frontend.gcd(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1669,11 +1681,3 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
-
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
-    "torch",
-)
-def gcd(self, other, *, out=None):
-    return torch_frontend.gcd(self, other, out=out)
