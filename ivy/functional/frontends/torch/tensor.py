@@ -911,6 +911,7 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self, dims)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def fliplr(self):
         return torch_frontend.fliplr(self)
 
