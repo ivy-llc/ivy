@@ -1416,6 +1416,7 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
+    "logging_mode",
 ]
 
 
