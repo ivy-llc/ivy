@@ -1709,11 +1709,13 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
     ):
         channels = split(src)
 
-        r = g = b = 0
         if code == COLOR_RGB2GRAY or code == COLOR_RGBA2GRAY:
             r, g, b = channels[0], channels[1], channels[2]
-        if code == COLOR_BGR2GRAY or code == COLOR_BGRA2GRAY:
+        elif code == COLOR_BGR2GRAY or code == COLOR_BGRA2GRAY:
             b, g, r = channels[0], channels[1], channels[2]
+        else:
+            raise ivy.exceptions.IvyException("Invalid color conversion code")
+
         gray = 0.299 * r + 0.587 * g + 0.114 * b
 
         return ivy.asarray(gray).astype(src.dtype)
