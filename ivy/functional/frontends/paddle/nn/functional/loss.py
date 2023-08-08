@@ -255,11 +255,11 @@ def nll_loss(
     output = 0.0
     if reduction == "sum":
         output = ivy.sum(loss)
-        if ignore_index >=0 and ignore_index < ivy.shape(input)[1]:
+        if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
             output = output - loss[ignore_index]
         return output
     num = ivy.sum(loss)
     output = num / den
-    if ignore_index >=0 and ignore_index < ivy.shape(input)[1]:
+    if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
     return output
