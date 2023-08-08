@@ -6,6 +6,7 @@ def main():
     write_file = open("tests_to_run", "w")
     with open(sys.argv[1], "r") as f:
         for test in f:
+            test = test.strip()
             if test.startswith("ivy/"):
                 test = test[4:]
             for backend in BACKENDS:
