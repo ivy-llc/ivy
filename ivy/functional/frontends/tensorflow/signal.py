@@ -14,6 +14,21 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
 kaiser_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
 
 
+# dct
+@to_ivy_arrays_and_back
+def dct(input, type=2, n=None, axis=-1, norm=None, name=None):
+    return ivy.dct(input, type=type, n=n, axis=axis, norm=norm)
+
+
+# vorbis_window
+@to_ivy_arrays_and_back
+def vorbis_window(window_length, dtype=ivy.float32, name=None):
+    return ivy.vorbis_window(window_length, dtype=dtype, out=None)
+
+
+vorbis_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
+
+
 # idct
 @to_ivy_arrays_and_back
 def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
