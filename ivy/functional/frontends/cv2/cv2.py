@@ -1724,6 +1724,17 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         )
 
         return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
+    elif code == COLOR_XYZ2RGB:
+        # TODO: investigate why although the conversion matrix is the one stated in
+        # opencv docs the results are different
+        conversion_matrix = ivy.array(
+            [
+                [3.240479, -1.53715, -0.498535],
+                [-0.969256, 1.875991, 0.041556],
+                [0.055648, -0.204043, 1.057311],
+            ]
+        )
+        return ivy.vecdot(src, conversion_matrix).astype(src.dtype)
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
