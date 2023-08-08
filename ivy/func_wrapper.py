@@ -1539,7 +1539,10 @@ def handle_backend_invalid(fn: Callable) -> Callable:
 
         def func(x):
             target_backend = ivy.utils.backend.handler._determine_backend_from_args(x)
-            if target_backend is not None and ivy.current_backend() != target_backend:
+            if (
+                target_backend is not None
+                and ivy.current_backend_str() != target_backend.backend
+            ):
                 raise ivy.utils.exceptions.InvalidBackendException(
                     "Operation not allowed. Array was instantiated with backend"
                     f" {target_backend.backend}. But current backend is"
