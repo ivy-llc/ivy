@@ -273,7 +273,7 @@ def sigmoid(x):
 @to_ivy_arrays_and_back
 def silu(x):
     x = _type_conversion(x)
-    return ivy.multiply(x, ivy.sigmoid(x))
+    return ivy.silu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back

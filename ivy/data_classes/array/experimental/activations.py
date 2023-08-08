@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 
 # local
 import ivy
@@ -231,7 +231,13 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.selu(self._data, out=out)
 
-    def silu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def silu(
+        self: ivy.Array,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.silu. This method simply wraps the
         function, and so the docstring for ivy.silu also applies to this method with
@@ -241,6 +247,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array.
+        complex_mode
+            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -252,7 +260,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([-0.26894143,  0.        ,  0.73105854])
         """
-        return ivy.silu(self._data, out=out)
+        return ivy.silu(self._data, complex_mode=complex_mode, out=out)
 
     def elu(
         self,

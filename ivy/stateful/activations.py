@@ -212,24 +212,34 @@ class Mish(Module):
 
 
 class SiLU(Module):
-    def __init__(self):
-        """Apply the SiLU activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the SiLU activation function.
+
+        Parameter
+        ----------
+        complex_mode
+             Specifies how to handle complex input.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x):
+    def _forward(self, x, complex_mode=None):
         """
 
         Parameters
         ----------
         x
              Inputs to process *[batch_shape, d]*.
+        complex_mode
+              Specifies how to handle complex input.
 
         Returns
         -------
          ret
             The outputs following the SiLU activation *[batch_shape, d]*
         """
-        return ivy.silu(x)
+        return ivy.silu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
 
 
 class Sigmoid(Module):
