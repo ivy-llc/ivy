@@ -1309,3 +1309,33 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             ivy.Array : tensor of size (ivy.prod(x.shape[i] for i in row_modes), -1)
         """
         return ivy.matricize(self._data, row_modes, column_modes, out=out)
+
+    def soft_thresholding(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.soft_thresholding. This method simply
+        wraps the function, and so the docstring for ivy.soft_thresholding also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Array
+            thresholded tensor on which the operator has been applied
+        """
+        return ivy.soft_thresholding(self._data, threshold, out=out)

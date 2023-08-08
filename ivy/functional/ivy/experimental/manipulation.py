@@ -2478,7 +2478,9 @@ def matricize(
 @handle_device_shifting
 def soft_thresholding(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
     threshold: Union[float, ivy.Array, ivy.NativeArray],
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """

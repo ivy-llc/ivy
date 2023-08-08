@@ -3603,3 +3603,85 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             ivy.Container
         """
         return self.static_matricize(self, row_modes, column_modes, out=out)
+
+    @staticmethod
+    def static_soft_thresholding(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.soft_thresholding.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.soft_thresholding also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Container
+            thresholded tensor on which the operator has been applied
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "soft_thresholding",
+            x,
+            threshold,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def soft_thresholding(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        threshold: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.soft_thresholding.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.soft_thresholding also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+        threshold
+            float or array with shape tensor.shape
+            * If float the threshold is applied to the whole tensor
+            * If array, one threshold is applied per elements, 0 values are ignored
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ivy.Container
+            thresholded tensor on which the operator has been applied
+        """
+        return self.static_soft_thresholding(self, threshold, out=out)
