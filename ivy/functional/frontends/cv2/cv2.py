@@ -1749,14 +1749,19 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
             .clip(0, 255)
             .astype(src.dtype)
         )
-    elif code == COLOR_RGB2YCrCb:
+    elif code == COLOR_RGB2YCrCb or code == COLOR_BGR2YCrCb:
         DELTA = 128
         channels = split(src)
-        r = b = 0
         if code == COLOR_RGB2YCrCb:
+            to_gray_code = COLOR_RGB2GRAY
             r, _, b = channels[0], channels[1], channels[2]
+        elif code == COLOR_BGR2YCrCb:
+            to_gray_code = COLOR_BGR2GRAY
+            b, _, r = channels[0], channels[1], channels[2]
+        else:
+            raise ivy.exceptions.IvyException("Invalid color conversion code")
 
-        Y = cvtColor(src, COLOR_RGB2GRAY)
+        Y = cvtColor(src, to_gray_code)
 
         Y = Y.astype(ivy.float16)
         r = r.astype(ivy.float16)
