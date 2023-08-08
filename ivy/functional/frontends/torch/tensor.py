@@ -361,7 +361,7 @@ class Tensor:
     def log(self):
         return torch_frontend.log(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def arccosh(self):
         return torch_frontend.arccosh(self)
 
