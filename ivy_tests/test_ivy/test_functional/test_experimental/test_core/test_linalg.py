@@ -1411,7 +1411,7 @@ def _tucker_data(draw):
     svd_mask_repeats = draw(helpers.ints(min_value=0, max_value=1))
     n_iter_max = draw(helpers.ints(min_value=0, max_value=2))
     tol = draw(helpers.floats(min_value=1e-5, max_value=1e-1))
-    init = "svd"
+    init = draw(st.sampled_from(["svd", "random"]))
     fixed_factors = draw(st.booleans())
     if fixed_factors:
         _, core = draw(
@@ -1434,8 +1434,11 @@ def _tucker_data(draw):
             )
             factors.append(factor[0])
         fixed_factors = draw(
-            st.lists(helpers.ints(min_value=0, max_value=dims - 1), unique=True)
+            st.lists(
+                helpers.ints(min_value=0, max_value=dims - 1), unique=True, min_size=1
+            )
         )
+        rank = [rank[i] for i in range(dims) if i not in fixed_factors]
         init = ivy.TuckerTensor((core[0], factors))
     return (
         x_dtype + mask_dtype,
@@ -1468,7 +1471,6 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
         tol,
     ) = data
     test_flags.instance_method = False
-    test_flags.test_container = False
     results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -1498,7 +1500,11 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
     )
 
     with update_backend(backend_fw) as ivy_backend:
-        n_elem = int(ivy_backend.prod(rank))
+        n_elem = 1
+        if isinstance(init, ivy.TuckerTensor):
+            for index in fixed_factors:
+                n_elem *= init[0].shape[index]
+        n_elem *= int(ivy_backend.prod(rank))
 
     for c, c_gt in zip(core, core_gt):
         assert np.prod(c.shape) == n_elem

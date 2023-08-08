@@ -1465,7 +1465,7 @@ def tucker(
                 ' passed for "init".'
             )
         if len(fixed_factors) == len(factors):
-            return ivy.TuckerTensor(core, factors)
+            return ivy.TuckerTensor((core, factors))
 
         fixed_factors = sorted(fixed_factors)
         modes_fixed, factors_fixed = zip(
@@ -1476,7 +1476,6 @@ def tucker(
             *[(i, f) for (i, f) in enumerate(factors) if i not in fixed_factors]
         )
         init = (core, list(factors))
-        print("hello")
 
         rank = ivy.TuckerTensor.validate_tucker_rank(x.shape, rank=rank)
         (core, new_factors), rec_errors = partial_tucker(
@@ -1499,7 +1498,6 @@ def tucker(
             factors.insert(e, factors_fixed[i])
         core = multi_mode_dot(core, factors_fixed, modes=modes_fixed, transpose=True)
 
-        print("hello")
         if return_errors:
             return ivy.TuckerTensor((core, factors)), rec_errors
         return ivy.TuckerTensor((core, factors))
