@@ -617,3 +617,4 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a=a, b=b, out=out)
+    
