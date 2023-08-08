@@ -121,6 +121,7 @@ def isinf(input):
     return ivy.isinf(input)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def isreal(input):
     return ivy.isreal(input)
