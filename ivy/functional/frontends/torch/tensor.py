@@ -1076,6 +1076,10 @@ class Tensor:
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def isreal(self):
+        return torch_frontend.isreal(self._ivy_array)
+
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
 
