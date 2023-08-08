@@ -1000,7 +1000,7 @@ class Tensor:
     def sigmoid(self):
         return torch_frontend.sigmoid(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sigmoid_(self):
         self.ivy_array = self.sigmoid().ivy_array
         return self
