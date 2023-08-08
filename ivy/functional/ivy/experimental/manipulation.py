@@ -2356,7 +2356,7 @@ def partial_tensor_to_vec(
         `skip_begin` first and `skip_end` last dimensions untouched
     """
     return partial_unfold(
-        input,
+        x,
         mode=0,
         skip_begin=skip_begin,
         skip_end=skip_end,

@@ -1205,7 +1205,35 @@ class _ArrayWithManipulationExperimental(abc.ABC):
 
         Returns
         -------
-        ret
             partially re-folded tensor
         """
         return ivy.partial_fold(self._data, mode, shape, skip_begin, out=out)
+
+    def partial_tensor_to_vec(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        skip_begin: Optional[int] = 1,
+        skip_end: Optional[int] = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_tensor_to_vec. This method
+        simply wraps the function, and so the docstring for ivy.partial_tensor_to_vec
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor to partially vectorise
+        skip_begin
+            number of dimensions to leave untouched at the beginning
+        skip_end
+            number of dimensions to leave untouched at the end
+
+        Returns
+        -------
+            partially vectorised tensor with the
+            `skip_begin` first and `skip_end` last dimensions untouched
+        """
+        return ivy.partial_tensor_to_vec(self._data, skip_begin, skip_end, out=out)
