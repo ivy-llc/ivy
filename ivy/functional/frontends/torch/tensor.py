@@ -651,6 +651,7 @@ class Tensor:
         self.ivy_array = self.detach().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     @numpy_to_torch_style_args
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
