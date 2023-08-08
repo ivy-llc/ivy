@@ -393,6 +393,7 @@ class Tensor:
     def aminmax(self, dim=None, keepdim=False):
         return torch_frontend.aminmax(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     def abs(self):
         return torch_frontend.abs(self)
 
