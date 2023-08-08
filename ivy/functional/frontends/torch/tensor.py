@@ -1397,7 +1397,7 @@ class Tensor:
         self.ivy_array = self.addcmul(tensor1, tensor2, value=value).ivy_array
         return self
 
-    sign_decorator_dtypes = ("float16", "complex", "bool")
+    sign_decorator_dtypes = ("float16", "bfloat16", "complex", "bool")
 
     @with_unsupported_dtypes({"2.0.1 and below": sign_decorator_dtypes}, "torch")
     def sign(self):
