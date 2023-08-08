@@ -197,3 +197,15 @@ def logistic(loc=0.0, scale=1.0, size=None):
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     x = loc + scale * ivy.log(u / (1 - u))
     return x
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def logseries(p=0.5, size=None):
+    if p <= 0 or p >= 1:
+        raise ValueError("p must be in the open interval (0, 1)")
+
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    result = (ivy.log(1 - u) / ivy.log(1 - p))
+
+    return result
