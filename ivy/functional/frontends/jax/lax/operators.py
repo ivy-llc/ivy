@@ -32,6 +32,9 @@ def acos(x):
 def add(x, y):
     return ivy.add(x, y)
 
+@to_ivy_arrays_and_back
+def approx_max_k(operand, k, reduction_dimension=-1, recall_target=0.95, reduction_input_size_override=-1, aggregate_to_topk=True):
+    return ivy.top_k(operand,k,reduction_dimension,aggregate_to_topk)
 
 @to_ivy_arrays_and_back
 def argmax(operand, axis, index_dtype):
