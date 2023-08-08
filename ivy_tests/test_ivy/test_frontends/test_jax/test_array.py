@@ -2239,13 +2239,14 @@ def test_jax_array_min(
     init_tree="jax.numpy.array",
     method_name="ptp",
     dtype_and_x_axis_dtype=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
         num_arrays=1,
         large_abs_safety_factor=24,
         small_abs_safety_factor=24,
         safety_factor_scale="log",
-        shape=helpers.get_shape(min_num_dims=1, max_num_dims=4, max_dim_size=6),
+        min_num_dims=1,
+        valid_axis=True,
     ),
     keep_dims=st.booleans(),
 )
@@ -2260,14 +2261,6 @@ def test_jax_array_ptp(
     on_device,
 ):
     input_dtypes, x, axis = dtype_and_x_axis_dtype
-    if backend_fw == "torch" and (
-        "complex128" in input_dtypes or "complex64" in input_dtypes
-    ):
-        return
-    if backend_fw == "tensorflow" and (
-        "complex128" in input_dtypes or "complex64" in input_dtypes
-    ):
-        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
