@@ -871,3 +871,4 @@ def test_numpy_logseries(
         p_value=p_value,
         size=size,
     )
+

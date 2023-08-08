@@ -64,7 +64,10 @@ def general_pool(
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,) if len(strides) == dim else strides
     dims = (1,) + window_shape + (1,) if len(window_shape) == dim else window_shape
-    dilation = (1,) + tuple(dilation) + (1,)
+    if isinstance(dilation, int):
+        dilation = (1,) + (dilation,) * dim + (1,)
+    else:
+        dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:

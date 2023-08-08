@@ -207,3 +207,4 @@ def logseries(p_value=0.5, size=None):
     x = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
     res = (ivy.log(1 - x) / ivy.log(1 - p_value))
     return res
+
