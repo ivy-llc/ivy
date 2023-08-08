@@ -1174,7 +1174,7 @@ def _partial_fold_data(draw):
 
     dtype, input = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"), shape=unfolded_shape
+            available_dtypes=helpers.get_dtypes("valid"), shape=unfolded_shape
         )
     )
     return dtype, input, skip_begin, shape, mode
@@ -1194,7 +1194,7 @@ def test_partial_fold(*, data, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtype,
-        input=input,
+        x=input[0],
         mode=mode,
         shape=shape,
         skip_begin=skip_begin,

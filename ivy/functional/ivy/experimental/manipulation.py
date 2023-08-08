@@ -2280,7 +2280,6 @@ def partial_unfold(
     )
 
 
-# TODO add container and array methods
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -2288,20 +2287,20 @@ def partial_unfold(
 @handle_array_function
 @handle_device_shifting
 def partial_fold(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     mode: int,
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     skip_begin: Optional[int] = 1,
     *,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """
     Re-folds a partially unfolded tensor.
 
     Parameters
     ----------
-    input
+    x
         a partially unfolded tensor
     mode
         indexing starts at 0, therefore mode is in range(0, tensor.ndim)
@@ -2319,7 +2318,7 @@ def partial_fold(
     mode_dim = transposed_shape.pop(skip_begin + mode)
     transposed_shape.insert(skip_begin, mode_dim)
     return ivy.moveaxis(
-        ivy.reshape(input, transposed_shape), skip_begin, skip_begin + mode, out=out
+        ivy.reshape(x, transposed_shape), skip_begin, skip_begin + mode, out=out
     )
 
 
@@ -2330,20 +2329,20 @@ def partial_fold(
 @handle_array_function
 @handle_device_shifting
 def partial_tensor_to_vec(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     skip_begin: Optional[int] = 1,
     skip_end: Optional[int] = 0,
     *,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """
     Partial vectorization of a tensor while ignoring the specified dimension at the
     beginning and the end.
 
     Parameters
     ----------
-    input
+    x
         tensor to partially vectorise
     skip_begin
         number of dimensions to leave untouched at the beginning

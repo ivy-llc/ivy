@@ -3022,6 +3022,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             input tensor to be unfolded
         mode
             indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -3059,6 +3062,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             input tensor to be unfolded
         mode
             indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -3093,6 +3099,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             input tensor to be unfolded
         mode
             indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -3134,8 +3143,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
         shape
             shape of the original tensor before unfolding
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
-        Returns
         -------
         ret
             Container of folded tensors
@@ -3176,6 +3187,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             number of dimensions to leave untouched at the end
         ravel_tensors
             if True, the unfolded tensors are also flattened
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -3225,6 +3239,9 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             number of dimensions to leave untouched at the end
         ravel_tensors
             if True, the unfolded tensors are also flattened
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -3234,3 +3251,97 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         return self.static_partial_unfold(
             self, mode, skip_begin, skip_end, ravel_tensors, out=out
         )
+
+    @staticmethod
+    def static_partial_fold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.partial_fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "partial_fold",
+            x,
+            mode,
+            shape,
+            skip_begin,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def partial_fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: Union[int, ivy.Container],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        skip_begin: Optional[Union[int, ivy.Container]] = 1,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.partial_fold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.partial_fold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return self.static_partial_fold(self, mode, shape, skip_begin, out=out)

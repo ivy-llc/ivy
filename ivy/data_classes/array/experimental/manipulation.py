@@ -1147,7 +1147,7 @@ class _ArrayWithManipulationExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.array instance method variant of ivy.partial_unfold. this method simply
+        ivy.Array instance method variant of ivy.partial_unfold. This method simply
         wraps the function, and so the docstring for ivy.partial_unfold also applies to
         this method with minimal changes.
 
@@ -1177,3 +1177,35 @@ class _ArrayWithManipulationExperimental(abc.ABC):
             ravel_tensors=ravel_tensors,
             out=out,
         )
+
+    def partial_fold(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        mode: int,
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
+        skip_begin: Optional[int] = 1,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.partial_fold. This method simply wraps
+        the function, and so the docstring for ivy.partial_fold also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            a partially unfolded tensor
+        mode
+            indexing starts at 0, therefore mode is in range(0, tensor.ndim)
+        shape
+            the shape of the original full tensor (including skipped dimensions)
+        skip_begin
+            number of dimensions left untouched at the beginning
+
+        Returns
+        -------
+        ret
+            partially re-folded tensor
+        """
+        return ivy.partial_fold(self._data, mode, shape, skip_begin, out=out)
