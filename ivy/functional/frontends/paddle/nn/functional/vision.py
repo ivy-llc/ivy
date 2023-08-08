@@ -141,23 +141,22 @@ def affine_grid(theta, out_shape, align_corners=True):
 # grid_sample
 def grid_sample(input, grid, mode, padding_mode):
     """
-    grid_sample is used to perfome various spatial transformations. Once you have the
-    grid of sampling points, you use the grid_sample function to resample the pixel
-    values from the original image to the new positions defined by the grid.
+    grid_sample is used to perfome various spatial transformations.
 
-    In simple terms, the function is used for transforming images or data from one coordinate system to another.
+    The function is used to resample the pixel values.
+    i.e from the original image to new positions defined by the grid of sampling points.
+
+    Basically, it's used to transform data from
+    one coordinate system to another.
 
     Parameters:
-    - input: input tensor data/image of shape(batch_size, channels, input_height, input_width) that needs to be transformed.
+    - input: image to be transformed.
+    - grid: defines the transformation to be applied to the input tensor.
+    - mode: determines the interpolation method.
+    - padding_mode: controls how to handle out-of-bound values.
 
-    - grid: typically created using affine_grid, it defines the transformation to be applied to the input tensor.
-            It is essentially a set of coordinates that dictate how the output tensor will be computed from the input tensor.
-
-    - mode: determines the interpolation method used to estimate pixel values at non-integer coordinates when performing the sampling operation.
-            In simpler terms, the mode arg. is like choosing a method to guess the colour of new pixels when we resize or transform an image.
-
-    - padding_mode: optional parameter that controls how to handle out-of-bound values during the interpolation process.
-                    It specifies the padding strategy to be used when sampling points outside the input image boundaries.
+    Returns:
+    Transformed tensor.
     """
 
     if mode not in ["nearest", "bilinear"]:
@@ -165,7 +164,7 @@ def grid_sample(input, grid, mode, padding_mode):
 
     if padding_mode not in ["zeros", "border", "reflection"]:
         raise ValueError(
-            "Invalid padding mode. Supported modes are 'zeros', 'border' and"
+            "Invalid padding mode. Supported modes are 'zeros', 'border'and"
             " 'reflection'. "
         )
 
@@ -187,19 +186,20 @@ def grid_sample_nearest(input, grid, padding_mode):
     grid & rounding them to the nearest pixel value.
 
     parameters:
-    - input: the input data/image that needs to be transformed.
-    - grid: the transformation grid, defines the transformation to be applied to the input tensor.
-    - padding_mode: controls how to handle out-of-bound values during the interpolation process.
+    - input: image that needs to be transformed.
+    - grid: the transformation grid.
+    - padding_mode: controls how to handle out-of-bound values.
 
     Returns:
-    - gathered tensor: the transformed values for each point in the output grid. These transformed values represent the result of applying the spatial transformation.
+    transformed values for each point in the output grid.
+    These transformed values represent the result of applying spatial transformation.
     """
 
     # get the spatial dims of the input & grid
     input_shape = ivy.shape(input)
-    grid_shape = ivy.shape(grid)
+    ivy.shape(grid)
     batch, channels, in_height, in_width = input_shape
-    out_height, out_width = grid_shape[1], grid_shape[2]
+    # out_height, out_width = grid_shape[1], grid_shape[2]
 
     # normalise grid coordinates to the range [-1, 1]
     normalised_grid = 2.0 * grid / ivy.array([in_width - 1, in_height - 1])
@@ -219,7 +219,8 @@ def grid_sample_nearest(input, grid, padding_mode):
     # Gather values from input using indices
     gathered = input[:, :, y_indices, x_indices]
 
-    return gathered  # the shape of the gathered tensor is (batch, channels, out_height, out_width)
+    return gathered
+    # the shape of the gathered tensor is (batch, channels, out_height, out_width)
 
 
 def grid_sample_bilinear(input, grid, padding_mode):
@@ -231,18 +232,19 @@ def grid_sample_bilinear(input, grid, padding_mode):
     coordinate have higher weights, while pixels farther away have lower weights.
 
     Parameters:
-    - input: the image/data that needs to be transformed.
-    - grid: the transformation grid, defines the transformation to be applied to the input tensor.
-    - padding_mode: optional paramter that controls how to handle out-of-bounds values during the interpolation process.
+    - input: data that needs to be transformed.
+    - grid: defines the transformation to be applied to the input tensor.
+    - padding_mode: controls how to handle out-of-bounds values.
 
     Returns:
-    The transformed values representing the result of applying the spatial transformation.
+    The transformed values for each point in the output grid.
+    These values represent the result of applying spatial transformation.
     """
     # Get the spatial dimensions of the input and grid
     input_shape = ivy.shape(input)
-    grid_shape = ivy.shape(grid)
+    ivy.shape(grid)
     batch_size, channels, in_height, in_width = input_shape
-    out_height, out_width = grid_shape[1], grid_shape[2]
+    # out_height, out_width = grid_shape[1], grid_shape[2]
 
     # normalise grid cordinates to the range [-1, 1]
     normalised_grid = 2.0 * grid / ivy.array([in_width - 1, in_height - 1])
@@ -296,4 +298,5 @@ def grid_sample_bilinear(input, grid, padding_mode):
         + i11 * wx * wy
     )
 
-    return interpolated  # the output shape of the gathered tensor is batch, n_channels, out_height, out_width
+    return interpolated
+    # the output shape batch, channels, out_height, out_width
