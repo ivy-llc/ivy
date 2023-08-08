@@ -262,16 +262,6 @@ class _ContainerWithGradients(ContainerBase):
             self, mw, vw, step, beta1=beta1, beta2=beta2, epsilon=epsilon, out=out
         )
 
-    def adagrad_step(
-        self: ivy.Container,
-        vt: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        /,
-        *,
-        epsilon: float = 0,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return ivy.adagrad_step(self, vt, epsilon=epsilon, out=out)
-
     def optimizer_update(
         self: ivy.Container,
         effective_grad: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -597,31 +587,6 @@ class _ContainerWithGradients(ContainerBase):
             beta1=beta1,
             beta2=beta2,
             epsilon=epsilon,
-            stop_gradients=stop_gradients,
-            out=out,
-        )
-
-    def adagrad_update(
-        self: ivy.Container,
-        dcdw: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        lr: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
-        vt_tm1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        step: int,
-        /,
-        *,
-        epsilon: float = 1e-7,
-        lr_decay: float = 0,
-        stop_gradients: bool = True,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        return ivy.adagrad_update(
-            self,
-            dcdw,
-            lr,
-            vt_tm1,
-            step,
-            epsilon=epsilon,
-            lr_decay=lr_decay,
             stop_gradients=stop_gradients,
             out=out,
         )
