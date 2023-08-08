@@ -873,6 +873,7 @@ def test_jax_gradient(
     *, dtype_input_axis, varargs, edge_order, test_flags, on_device, fn_tree, frontend
 ):
     input_dtype, x, axis = dtype_input_axis
+    test_flags.num_positional_args = len(varargs) + 1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
