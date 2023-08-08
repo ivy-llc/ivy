@@ -203,8 +203,7 @@ def test_torch_avg_pool3d(
         min_side=1,
         max_side=3,
         explicit_or_str_padding=False,
-        only_explicit_padding=False,
-        data_format="channel_first",
+        only_explicit_padding=True,
     ),
     test_with_out=st.just(False),
 )
@@ -219,13 +218,22 @@ def test_torch_max_pool1d(
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
 
+    # Torch ground truth func expects input to be consistent
+    # with a channels first format i.e. NCW
+    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], x[0].shape[1]))
     x_shape = [x[0].shape[2]]
+
     # Torch ground truth func also takes padding input as an integer
     # or a tuple of integers, not a string
-    if padding == "SAME":
-        padding = calculate_same_padding(kernel_size, stride, x_shape)
-    elif padding == "VALID":
-        padding = (0,)
+    padding = tuple(
+        [
+            ivy.functional.layers._handle_padding(
+                x_shape[i], stride[0], kernel_size[i], padding
+            )
+            for i in range(len(x_shape))
+        ]
+    )
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -250,7 +258,6 @@ def test_torch_max_pool1d(
         max_side=4,
         explicit_or_str_padding=True,
         return_dilation=True,
-        data_format="channel_first",
     ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
     test_with_out=st.just(False),
     ceil_mode=st.just(True),
@@ -266,6 +273,9 @@ def test_torch_max_pool2d(
     on_device,
 ):
     dtype, x, kernel, stride, pad, dilation = x_k_s_p
+    # Torch ground truth func expects input to be consistent
+    # with a channels first format i.e. NCHW
+    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
     pad = (pad[0][0], pad[1][0])
 
     helpers.test_frontend_function(
@@ -420,9 +430,8 @@ def test_torch_adaptive_max_pool2d(
         max_dims=3,
         min_side=1,
         max_side=3,
-        data_format="channel_first",
     ),
-    norm_type=helpers.ints(min_value=1, max_value=6),
+    norm_type=helpers.number(min_value=0.1, max_value=6),
     test_with_out=st.just(False),
 )
 def test_torch_lp_pool1d(
@@ -436,6 +445,11 @@ def test_torch_lp_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, _ = dtype_x_k_s
+
+    # Torch ground truth func expects input to be consistent
+    # with a channels first format i.e. NCW
+    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], x[0].shape[1]))
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -457,11 +471,10 @@ def test_torch_lp_pool1d(
     dtype_x_k_s=helpers.arrays_for_pooling(
         min_dims=4,
         max_dims=4,
-        min_side=2,
+        min_side=1,
         max_side=4,
-        data_format="channel_first",
     ),
-    norm_type=helpers.ints(min_value=1, max_value=6),
+    norm_type=helpers.number(min_value=0.1, max_value=6),
     test_with_out=st.just(False),
 )
 def test_torch_lp_pool2d(
@@ -475,6 +488,10 @@ def test_torch_lp_pool2d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, _ = dtype_x_k_s
+    # Torch ground truth func expects input to be consistent
+    # with a channels first format i.e. NCW
+    x[0] = x[0].transpose((0, 3, 1, 2))
+
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
