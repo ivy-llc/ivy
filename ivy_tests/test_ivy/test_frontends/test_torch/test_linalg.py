@@ -1384,7 +1384,7 @@ def _lu_factor_helper(draw):
             )
         )
 
-    return input_dtype, input_matrix
+    return ip_dtype, input_matrix
 
 @handle_frontend_test(
     fn_tree="torch.linalg.lu_factor", input_dtype_and_input=_lu_factor_helper()
