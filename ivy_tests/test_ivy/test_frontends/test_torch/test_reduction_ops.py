@@ -10,7 +10,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
 )
 from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (  # noqa
-    _quantile_helper, _nanquantile_helper
+    _quantile_helper,
+    _nanquantile_helper,
 )
 
 
