@@ -3,7 +3,7 @@
 # local
 import ivy
 from ivy.func_wrapper import handle_nestable
-from ivy.stateful.initializers import GlorotUniform, RandomNormal, Zeros
+from ivy.stateful.initializers import GlorotUniform, Zeros
 from ivy.stateful.module import Module
 
 # ToDo: update docstrings and typehints according to ivy\layers
@@ -2097,15 +2097,20 @@ class Dct(Module):
         )
 
 
+# EMBEDDING #
+# ----------#
+
+
 class Embedding(Module):
     def __init__(
         self,
-        input_dims,
-        output_dims,
+        num_embeddings: int,
+        embedding_dim: int,
+        padding_idx=None,
+        max_norm=None,
         /,
         *,
-        max_norm=None,
-        weight_initializer=RandomNormal(0.0, 1.0),
+        weight_initializer=GlorotUniform(),
         device=None,
         v=None,
         dtype=None,
@@ -2117,18 +2122,30 @@ class Embedding(Module):
 
         Parameters
         ----------
-        input_dims
-            Size of the vocabulary.
-        output_dims
-            Dimension of each embedding vector.
-        max_norm
+        num_embeddingss : int
+            Number of embeddings.
+        embedding_dim : int
+            Dimension of the embeddings.
+        padding_idx : int
+            If given, pads the output with zeros whenever it encounters the index.
+        max_norm : float
             If given, each embedding vector with L2 norm larger than max_norm is renormalized to have norm max_norm.
+        weight_initializer : Initializer
+            Initializer for the weights.
+        device : str
+            device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu'
+        v : dict
+            the variables for the embedding layer, as a container, constructed internally
+            by default.
+        dtype
+            the desired data type of the internal variables to be created if not
+             provided. Default is ``None``.
         """
-        self._input_dims = input_dims
-        self._output_dims = output_dims
+        self._num_embeddings = num_embeddings
+        self._embedding_dim = embedding_dim
+        self._padding_idx = padding_idx
         self._max_norm = max_norm
-        self._w_init = weight_initializer
-        self._w_shape = (self._input_dims, self._output_dims)
+        self._weight_initializer = weight_initializer
         Module.__init__(self, device=device, v=v, dtype=dtype)
 
     def _create_variables(self, device, dtype=None):
@@ -2145,32 +2162,38 @@ class Embedding(Module):
              provided. Default is ``None``.
         """
         v = {
-            "weight": self._w_init.create_variables(
-                var_shape=self._w_shape,
-                device=device,
+            "w": self._weight_initializer.create_variables(
+                (self._num_embeddings, self._embedding_dim),
+                device,
+                self._embedding_dim,
+                self._num_embeddings,
                 dtype=dtype,
             )
         }
         return v
 
-    def _forward(self, x):
+    def _pad_embd(self, indices, embd):
+        mask = ivy.expand_dims(indices == self._padding_idx, axis=-1)
+        mask_val = ivy.array(0.0, dtype=embd.dtype)
+        return ivy.where(mask, mask_val, embd)
+
+    def _forward(self, indices):
         """
         Forward pass of the layer.
 
         Parameters
         ----------
-        x
+        indices
             The input array to the layer.
 
         Returns
         -------
             The output array of the layer.
         """
-        return ivy.embedding(
-            self.v.weight,
-            x,
-            max_norm=self._max_norm,
-        )
+        emb = ivy.embedding(self.v.w, indices, max_norm=self._max_norm)
+        if self._padding_idx is not None:
+            emb = self._pad_embd(indices, emb)
+        return emb
 
 
 class Identity(Module):

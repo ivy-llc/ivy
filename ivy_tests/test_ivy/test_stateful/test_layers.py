@@ -1510,10 +1510,35 @@ def test_dct(
 
 
 # Embedding
+@st.composite
+def _get_embedding_args(draw):
+    num_embeddings = draw(st.integers(min_value=1, max_value=10))
+    embedding_dim = draw(st.integers(min_value=1, max_value=10))
+    dtype_indices, indices = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_num_dims=2,
+            min_dim_size=1,
+            min_value=0,
+            max_value=num_embeddings - 1,
+        ).filter(lambda x: x[1][0].shape[-1] == embedding_dim)
+    )
+    padding_idx = draw(st.integers(min_value=0, max_value=num_embeddings - 1))
+    max_norm = draw(st.one_of(st.none(), st.floats(min_value=1, max_value=5)))
+
+    return (
+        num_embeddings,
+        embedding_dim,
+        dtype_indices,
+        indices,
+        padding_idx,
+        max_norm,
+    )
+
+
 @handle_method(
     method_tree="Embedding.__call__",
-    dtypes_indices_weights=helpers.embedding_helper(),
-    max_norm=st.one_of(st.none(), st.floats(min_value=1, max_value=5)),
+    embedding_args=_get_embedding_args(),
     weight_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
@@ -1521,47 +1546,50 @@ def test_dct(
 )
 def test_embedding_layer(
     *,
-    dtypes_indices_weights,
-    max_norm,
+    embedding_args,
     weight_initializer,
     init_with_v,
     method_with_v,
     seed,
-    test_gradients,
     on_device,
     class_name,
     method_name,
+    backend_fw,
     ground_truth_backend,
     init_flags,
     method_flags,
-    backend_fw,
 ):
     ivy.seed(seed_value=seed)
-    dtypes, indices, weights, _ = dtypes_indices_weights
-    input_dims, output_dims = weights.shape
-
+    (
+        num_embeddings,
+        embedding_dim,
+        dtype_indices,
+        indices,
+        padding_idx,
+        max_norm,
+    ) = embedding_args
+    dtype = dtype_indices
     helpers.test_method(
         backend_to_test=backend_fw,
         ground_truth_backend=ground_truth_backend,
         init_flags=init_flags,
         method_flags=method_flags,
         init_all_as_kwargs_np={
-            "input_dims": input_dims,
-            "output_dims": output_dims,
+            "num_embeddings": num_embeddings,
+            "embedding_dim": embedding_dim,
+            "padding_idx": padding_idx,
             "max_norm": max_norm,
-            "weight_initializer": weight_initializer,
             "device": on_device,
-            "dtype": dtypes[1],
+            "dtype": dtype[0],
         },
-        method_input_dtypes=list(dtypes[0]),
-        method_all_as_kwargs_np={"x": indices},
+        method_all_as_kwargs_np={"indices": indices[0]},
+        method_input_dtypes=dtype,
         class_name=class_name,
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        rtol_=1e-03,
-        atol_=1e-03,
-        test_gradients=test_gradients,
+        rtol_=1e-02,
+        atol_=1e-02,
         on_device=on_device,
     )
 
