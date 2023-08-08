@@ -838,7 +838,7 @@ def test_numpy_logistic(
 @handle_frontend_test(
     fn_tree="numpy.random.logseries",
     input_dtypes=helpers.get_dtypes("float", index=2),
-    p=st.floats(
+    p_value=st.floats(
         allow_nan=False,
         allow_infinity=False,
         width=32,
@@ -858,7 +858,7 @@ def test_numpy_logseries(
     fn_tree,
     backend_fw,
     on_device,
-    p,
+    p_value,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
@@ -868,6 +868,6 @@ def test_numpy_logseries(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
-        p=p,
+        p_value=p_value,
         size=size,
     )
