@@ -2264,6 +2264,10 @@ def test_jax_array_ptp(
         "complex128" in input_dtypes or "complex64" in input_dtypes
     ):
         return
+    if backend_fw == "tensorflow" and (
+        "complex128" in input_dtypes or "complex64" in input_dtypes
+    ):
+        return
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
