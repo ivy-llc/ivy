@@ -123,4 +123,4 @@ def as_native_dev(device: str):
 
 
 def isscalar(x):
-    return x.dim() == 0
+    return is_native_array(x) and x.dim() == 0

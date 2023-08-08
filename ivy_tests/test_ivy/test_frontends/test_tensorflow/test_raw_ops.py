@@ -9,7 +9,12 @@ import math
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, assert_all_close
+import ivy_tests.test_ivy.helpers.globals as test_globals
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_test,
+    assert_all_close,
+    update_backend,
+)
 
 
 # Acos
@@ -479,11 +484,12 @@ def test_tensorflow_Div(  # NOQA
 @st.composite
 def _fill_value(draw):
     dtype = draw(_dtypes())[0]
-    if ivy.is_uint_dtype(dtype):
-        return draw(helpers.ints(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtype):
-        return draw(helpers.ints(min_value=-5, max_value=5))
-    return draw(helpers.floats(min_value=-5, max_value=5))
+    with update_backend(test_globals.CURRENT_BACKEND) as ivy_backend:
+        if ivy_backend.is_uint_dtype(dtype):
+            return draw(helpers.ints(min_value=0, max_value=5))
+        elif ivy_backend.is_int_dtype(dtype):
+            return draw(helpers.ints(min_value=-5, max_value=5))
+        return draw(helpers.floats(min_value=-5, max_value=5))
 
 
 # fill
@@ -872,6 +878,37 @@ def test_tensorflow_Square(  # NOQA
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.SquaredDifference",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_SquaredDifference(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
     )
 
 
@@ -4277,6 +4314,7 @@ def test_tensorflow_Svd(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -4284,6 +4322,7 @@ def test_tensorflow_Svd(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
