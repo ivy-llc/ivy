@@ -124,3 +124,20 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def complex(
+    real: torch.tensor,
+    imag: torch.tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.complex(
+        real,
+        imag,
+        out=out,
+    )
+
+
+complex.support_native_out = True
