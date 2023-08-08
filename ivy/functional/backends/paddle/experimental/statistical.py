@@ -283,15 +283,15 @@ def quantile(
 
 
 def corrcoef(
-        x: paddle.Tensor,
-        y: paddle.Tensor = None,
-        /,
-        *,
-        rowvar: Optional[bool] = True,
-        out: Optional[paddle.Tensor] = None,
+    x: paddle.Tensor,
+    y: paddle.Tensor = None,
+    /,
+    *,
+    rowvar: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
 
-    # Functional data dimension and data type checks. 
+    # Functional data dimension and data type checks.
     if len(x.shape) > 2 or len(x.shape) < 1:
         raise ValueError("x has more than 2 or less than 1 dimensions")
 
