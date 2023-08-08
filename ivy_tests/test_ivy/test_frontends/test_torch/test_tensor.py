@@ -9589,7 +9589,7 @@ def test_torch_is_complex(
     init_tree="torch.tensor",
     method_name="isreal",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_torch_isreal(
