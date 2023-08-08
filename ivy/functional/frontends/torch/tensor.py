@@ -357,7 +357,7 @@ class Tensor:
         self.ivy_array = self.arctanh().ivy_array
         return self
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def log(self):
         return torch_frontend.log(self)
 
