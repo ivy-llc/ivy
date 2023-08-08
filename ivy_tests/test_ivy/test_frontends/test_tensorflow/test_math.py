@@ -2994,3 +2994,38 @@ def test_tensorflow_igamma(
         a=xs[0],
         x=xs[1],
     )
+
+
+# l2_normalize
+@handle_frontend_test(
+    fn_tree="tensorflow.math.l2_normalize",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+)
+def test_tensorflow_l2_normalize(
+    *,
+    dtype_values_axis,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+        axis=axis,
+    )
