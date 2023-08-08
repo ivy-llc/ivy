@@ -2154,7 +2154,6 @@ def fill_diagonal(
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
 
 
-# TODO add container and array methods
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -2162,7 +2161,7 @@ def fill_diagonal(
 @handle_array_function
 @handle_device_shifting
 def unfold(
-    input: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     mode: Optional[int] = 0,
     *,
@@ -2173,7 +2172,7 @@ def unfold(
 
     Parameters
     ----------
-    input
+    x
         input tensor to be unfolded
     mode
         indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
@@ -2183,7 +2182,7 @@ def unfold(
     ret
         unfolded_tensor of shape ``(tensor.shape[mode], -1)``
     """
-    return ivy.reshape(ivy.moveaxis(input, mode, 0), (input.shape[mode], -1), out=out)
+    return ivy.reshape(ivy.moveaxis(x, mode, 0), (x.shape[mode], -1), out=out)
 
 
 # TODO add container and array methods

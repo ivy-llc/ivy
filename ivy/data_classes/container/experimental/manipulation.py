@@ -2996,3 +2996,73 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             v,
             wrap=wrap,
         )
+
+    @staticmethod
+    def static_unfold(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        mode: Optional[int] = 0,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        x
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+
+        Returns
+        -------
+        ret
+            Container of unfolded tensors
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "unfold",
+            x,
+            mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def unfold(
+        self: ivy.Container,
+        /,
+        mode: Optional[Union[int, ivy.Container]] = 0,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.unfold.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.unfold also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            input tensor to be unfolded
+        mode
+            indexing starts at 0, therefore mode is in ``range(0, tensor.ndim)``
+
+        Returns
+        -------
+        ret
+            Container of unfolded tensors
+        """
+        return self.static_unfold(self, mode, out=out)

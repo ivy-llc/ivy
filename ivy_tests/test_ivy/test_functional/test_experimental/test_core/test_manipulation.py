@@ -1028,7 +1028,6 @@ def test_fill_diagonal(
     )
 
 
-# TODO Add instance and container methods
 @handle_test(
     fn_tree="functional.ivy.experimental.unfold",
     dtype_values_axis=helpers.dtype_values_axis(
@@ -1044,7 +1043,7 @@ def test_unfold(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device
         axis = 0
     test_flags.instance_method = False
     helpers.test_function(
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_name=fn_name,
         on_device=on_device,
