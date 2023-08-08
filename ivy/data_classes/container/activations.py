@@ -110,6 +110,7 @@ class _ContainerWithActivations(ContainerBase):
             that the inputs broadcast to.
         complex_mode
             optional specifier for how to handle complex data types.
+
         Returns
         -------
         ret
