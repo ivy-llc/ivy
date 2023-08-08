@@ -47,6 +47,7 @@ def ptp(a, axis=None, out=None, keepdims=False):
     ret = ivy.subtract(x, y)
     return ret.astype(a.dtype, copy=False)
 
+
 @handle_numpy_out
 def percentile(
     a,
