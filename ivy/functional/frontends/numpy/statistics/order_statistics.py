@@ -47,6 +47,64 @@ def ptp(a, axis=None, out=None, keepdims=False):
     ret = ivy.subtract(x, y)
     return ret.astype(a.dtype, copy=False)
 
+@handle_numpy_out
+def percentile(
+    a,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    values = ivy.array(a)
+    quantile = ivy.divide(q, 100.0)
+    quantile_arr = ivy.array(quantile)
+
+    if not _quantile_is_valid(q):
+        # raise ValueError("Percentiles must be in the range of [0, 100].")
+        ivy.logging.warning("Percentiles must be in the range of [0, 100].")
+        return []
+
+    output = []
+
+    if axis is None:
+        if ivy.any(ivy.isnan(values)):
+            output = [ivy.nan for _ in quantile_arr]
+
+        else:
+            reshaped_arr = ivy.sort(ivy.reshape(values, -1))
+
+            output = [_cpercentile(reshaped_arr, quantile) for quantile in quantile_arr]
+
+    elif axis == 0:
+        for quantile in quantile_arr:
+            q_row = []
+            for col_idx in range(values.shape[1]):
+                if ivy.any(ivy.isnan(values[:, col_idx])):
+                    val = ivy.nan
+                else:
+                    val = _cpercentile(ivy.sort(values[:, col_idx]), quantile)
+
+                q_row.append(val)
+
+            output.append(q_row)
+
+    elif axis == 1:
+        for quantile in quantile_arr:
+            q_row = []
+            for row_idx in range(values.shape[0]):
+                if ivy.any(ivy.isnan(values[row_idx, :])):
+                    val = ivy.nan
+                else:
+                    val = _cpercentile(ivy.sort(values[row_idx, :]), quantile)
+                q_row.append(val)
+
+            output.append(q_row)
+
+    return output[0] if output.shape[0] == 1 and output.shape[1] is None else output
+
 
 def nanpercentile(
     a,
