@@ -165,6 +165,8 @@ if __name__ == "__main__":
         with_gpu = True
     if priority_flag == "true":
         priority_flag = True
+    else:
+        priority_flag = False
     # Multi Version Testing
     if version_flag == "true":
         run_multiversion_testing()
