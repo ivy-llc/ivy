@@ -32,10 +32,12 @@ def test_paddle_cosine_similarity(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -74,6 +76,7 @@ def test_paddle_dropout2d(
     p,
     training,
     data_format,
+    backend_fw,
     on_device,
     fn_tree,
     frontend,
@@ -83,6 +86,7 @@ def test_paddle_dropout2d(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -119,6 +123,7 @@ def test_paddle_dropout(
     p,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
     training,
@@ -130,6 +135,7 @@ def test_paddle_dropout(
         input_dtypes=dtype,
         p=p,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         test_flags=test_flags,
         on_device=on_device,
@@ -177,11 +183,13 @@ def test_paddle_zeropad2d(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
     dataformat,
 ):
     dtype, x, padding = d_type_and_x_paddings
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -189,6 +197,193 @@ def test_paddle_zeropad2d(
         x=x[0],
         padding=padding,
         data_format=dataformat,
+    )
+
+
+# interpolate
+@st.composite
+def _interp_args(draw, mode=None, mode_list=None):
+    mixed_fn_compos = draw(st.booleans())
+    curr_backend = ivy.current_backend_str()
+    torch_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest",
+        "nearest-exact",
+        "area",
+    ]
+
+    tf_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest-exact",
+        "tf_area",
+        "bicubic_tensorflow",
+        "lanczos3",
+        "lanczos5",
+        "mitchellcubic",
+        "gaussian",
+    ]
+
+    jax_modes = [
+        "linear",
+        "bilinear",
+        "trilinear",
+        "nearest-exact",
+        "bicubic_tensorflow",
+        "lanczos3",
+        "lanczos5",
+    ]
+
+    if not mode and not mode_list:
+        if curr_backend == "torch" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(torch_modes))
+        elif curr_backend == "tensorflow" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(tf_modes))
+        elif curr_backend == "jax" and not mixed_fn_compos:
+            mode = draw(st.sampled_from(jax_modes))
+        else:
+            mode = draw(
+                st.sampled_from(
+                    [
+                        "linear",
+                        "bilinear",
+                        "trilinear",
+                        "nearest",
+                        "nearest-exact",
+                        "area",
+                        "tf_area",
+                        "bicubic_tensorflow",
+                        "lanczos3",
+                        "lanczos5",
+                        "mitchellcubic",
+                        "gaussian",
+                    ]
+                )
+            )
+    elif mode_list:
+        mode = draw(st.sampled_from(mode_list))
+    align_corners = draw(st.booleans())
+    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+        align_corners = False
+    if mode == "linear":
+        num_dims = 3
+    elif mode in [
+        "bilinear",
+        "bicubic_tensorflow",
+        "bicubic",
+        "mitchellcubic",
+        "gaussian",
+    ]:
+        num_dims = 4
+    elif mode == "trilinear":
+        num_dims = 5
+    elif mode in [
+        "nearest",
+        "area",
+        "tf_area",
+        "lanczos3",
+        "lanczos5",
+        "nearest-exact",
+    ]:
+        num_dims = (
+            draw(
+                helpers.ints(min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos)
+            )
+            + 2
+        )
+        align_corners = False
+    if curr_backend == "tensorflow" and not mixed_fn_compos:
+        num_dims = 3
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "float", mixed_fn_compos=mixed_fn_compos
+            ),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=2,
+            max_dim_size=5,
+            large_abs_safety_factor=50,
+            small_abs_safety_factor=50,
+            safety_factor_scale="log",
+        )
+    )
+    if draw(st.booleans()):
+        scale_factor = draw(
+            st.one_of(
+                helpers.lists(
+                    x=helpers.floats(
+                        min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
+                    ),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                helpers.floats(
+                    min_value=1.0, max_value=2.0, mixed_fn_compos=mixed_fn_compos
+                ),
+            )
+        )
+        recompute_scale_factor = draw(st.booleans())
+        size = None
+    else:
+        size = draw(
+            st.one_of(
+                helpers.lists(
+                    x=helpers.ints(
+                        min_value=1, max_value=3, mixed_fn_compos=mixed_fn_compos
+                    ),
+                    min_size=num_dims - 2,
+                    max_size=num_dims - 2,
+                ),
+                st.integers(min_value=1, max_value=3),
+            )
+        )
+        recompute_scale_factor = False
+        scale_factor = None
+    if (curr_backend == "tensorflow" or curr_backend == "jax") and not mixed_fn_compos:
+        if not recompute_scale_factor:
+            recompute_scale_factor = True
+
+    return (dtype, x, mode, size, align_corners, scale_factor, recompute_scale_factor)
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.interpolate",
+    dtype_x_mode=_interp_args(),
+)
+def test_paddle_interpolate(
+    dtype_x_mode,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    (
+        input_dtype,
+        x,
+        mode,
+        size,
+        align_corners,
+        scale_factor,
+        recompute_scale_factor,
+    ) = dtype_x_mode
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
     )
 
 
@@ -204,6 +399,7 @@ def test_linear(
     dtype_x_weight_bias,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
@@ -212,6 +408,7 @@ def test_linear(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
