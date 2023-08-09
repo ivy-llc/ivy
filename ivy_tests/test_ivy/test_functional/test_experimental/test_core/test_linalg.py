@@ -186,6 +186,7 @@ def _generate_eigh_tridiagonal_args(draw):
 @handle_test(
     fn_tree="eigh_tridiagonal",
     args_packet=_generate_eigh_tridiagonal_args(),
+    ground_truth_backend="numpy",
     test_gradients=st.just(False),
 )
 def test_eigh_tridiagonal(
@@ -199,9 +200,8 @@ def test_eigh_tridiagonal(
     dtype, alpha, beta, eigvals_only, select, select_range, tol = args_packet
     test_flags.with_out = False
     results = helpers.test_function(
-        ground_truth_backend="numpy",
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         rtol_=1e-2,
@@ -246,7 +246,12 @@ def test_eigh_tridiagonal(
             )
     # value test
     helpers.assert_all_close(
-        reconstructed_np, reconstructed_from_np, rtol=1e-1, atol=1e-2
+        reconstructed_np,
+        reconstructed_from_np,
+        rtol=1e-1,
+        atol=1e-2,
+        backend=backend_fw,
+        ground_truth_backend=test_flags.ground_truth_backend,
     )
 
 
@@ -265,7 +270,7 @@ def test_diagflat(*, test_flags, backend_fw, fn_name, args_packet, on_device):
     helpers.test_function(
         input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
         offset=offset,
@@ -298,7 +303,7 @@ def test_kron(*, dtype_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         a=x[0],
         b=x[1],
@@ -327,7 +332,7 @@ def test_matrix_exp(dtype_x, test_flags, backend_fw, fn_name, on_device):
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -360,7 +365,7 @@ def test_eig(dtype_x, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -394,7 +399,7 @@ def test_eigvals(dtype_x, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=False,
         x=x[0],
@@ -426,7 +431,7 @@ def test_adjoint(dtype_x, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         x=x[0],
     )
@@ -481,7 +486,7 @@ def test_multi_dot(dtype_x, test_flags, backend_fw, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         test_values=True,
         x=x,
@@ -501,7 +506,7 @@ def test_cond(dtype_x, test_flags, backend_fw, on_device, fn_name):
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
         rtol_=1e-3,
@@ -623,7 +628,7 @@ def test_cov(*, dtype_x1_x2_cov, test_flags, backend_fw, fn_name, on_device):
     helpers.test_function(
         input_dtypes=[dtype[0], dtype[0], "int64", "float64"],
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         x1=x1,
