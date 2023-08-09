@@ -1252,6 +1252,8 @@ def initialize_tucker(
     return (core, factors)
 
 
+# This function has been adpated from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L98
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion

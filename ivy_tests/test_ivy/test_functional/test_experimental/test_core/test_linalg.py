@@ -1269,7 +1269,6 @@ def _partial_tucker_data(draw):
 )
 def test_partial_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, x, rank, modes, n_iter_max, mask, svd_mask_repeats, tol = data
-    test_flags.instance_method = False
     results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
