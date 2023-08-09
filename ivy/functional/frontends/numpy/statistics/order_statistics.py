@@ -63,7 +63,7 @@ def percentile(
     quantile = ivy.divide(q, 100.0)
     quantile_arr = ivy.array(quantile)
 
-    if not _quantile_is_valid(q):
+    if not _quantile_is_valid(quantile_arr):
         # raise ValueError("Percentiles must be in the range of [0, 100].")
         ivy.logging.warning("Percentiles must be in the range of [0, 100].")
         return []
