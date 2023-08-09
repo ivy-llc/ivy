@@ -762,6 +762,13 @@ def bincount(
     return ivy.bincount(arr, weights=weights, minlength=minlength)
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+def xlog1py(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return x * ivy.log1p(y)
+
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
