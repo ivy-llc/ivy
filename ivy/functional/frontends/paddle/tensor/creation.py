@@ -178,3 +178,29 @@ def diag(x, offset=0, padding_value=0, name=None):
 @to_ivy_arrays_and_back
 def logspace(start, stop, num, base=10.0, dtype=None, name=None):
     return ivy.logspace(start, stop, num=num, base=base, dtype=dtype)
+
+
+@with_supported_dtypes({"2.5.1 and below": ("int32", "int64")}, "paddle")
+@to_ivy_arrays_and_back
+def triu_indices(row, col=None, offset=0, dtype="int64"):
+    arr = ivy.triu_indices(row, col, offset)
+    if not ivy.to_scalar(ivy.shape(arr[0], as_array=True)):
+        return arr
+    arr = ivy.astype(arr, dtype)
+    return arr
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def complex(real, imag, name=None):
+    assert real.dtype == imag.dtype, (
+        "(InvalidArgument) The type of data we are trying to retrieve does not match"
+        " the type of data currently contained in the container."
+    )
+    complex_dtype = "complex64" if real.dtype == "float32" else "complex128"
+    imag_cmplx = ivy.astype(imag, complex_dtype) * 1j
+    complex_array = real + imag_cmplx
+    return complex_array

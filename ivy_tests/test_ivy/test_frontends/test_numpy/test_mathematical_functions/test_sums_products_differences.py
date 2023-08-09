@@ -436,6 +436,7 @@ def test_numpy_trapz(
     frontend,
     test_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, y, axis = dtype_values_axis
     rand, either_x_dx = rand_either
@@ -448,6 +449,7 @@ def test_numpy_trapz(
         dx = either_x_dx
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         test_flags=test_flags,
