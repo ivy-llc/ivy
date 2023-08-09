@@ -102,7 +102,7 @@ def while_loop(
     >>> body_fn = lambda i: i + 1
     >>> result = ivy.while_loop(test_fn, body_fn, vars= (i,))
     >>> print(result)
-    (11,)
+    (3,)
 
     >>> i = 0
     >>> j = 1
@@ -111,7 +111,7 @@ def while_loop(
     >>> vars = (i, j)
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
-    (11,1)
+    (3, 4)
     """
 
     @to_native_arrays_and_back
