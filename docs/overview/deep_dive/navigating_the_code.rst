@@ -288,19 +288,17 @@ Then, we import this submodule-specific helper function to the respective backen
         ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
         return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
-Version Pinning
+Version Unpinning
 ---------------
 
-At any point in time, Ivy's development will be predominantly focused around a particular version (and all prior versions) for each of the backend frameworks.
-These are the pinned versions shown in the `optional.txt <https://github.com/unifyai/ivy/blob/master/requirements/optional.txt>`_ file.
+At any point in time, Ivy's development will be predominantly focused around the latest pypi version (and all prior versions) for each of the backend frameworks.
 
-At the time of pinning, these will be the most up-to-date versions for each framework, but new releases of the backend frameworks will then of course be made and there will sometimes be a short period of time in which we are working towards the next Ivy release, and we opt to keep the repo pinned to the older version until the next release is out.
-This helps to prevent our work growing in an unbounded manner, as we work towards getting all tests passing and everything in good shape before making the release.
-If we always pulled the latest version of every framework into master, we might end up constantly battling new subtle bugs, without knowing whether the bugs come from the change in version or our own incremental changes to the code.
-Therefore, when working towards an Ivy release, keeping the backends temporarily pinned essentially ensures that our development target remains fixed for this period of time.
+Earlier we had our versions pinned for each framework to provide stability but later concluded that by unpinnning the versions we would be able to account for the latest breaking changes if any and support the latest version of the framework.
+Any prior version's compatibility would be tested by out multiversion testing pipeline, thus keeping us ahead and in light of the latest changes.
 
-As an example, at the time of writing the latest version of PyTorch is :code:`1.12.1`, whereas Ivy is pinned to version :code:`2.0.1`.
-Therefore, all frontend functions (see Ivy Frontends section) added to ivy should not include any arguments or behaviours which are exclusive to PyTorch version :code:`1.12.1`.
+
+This helps to prevent our work from culminating over a fixed version while strides are being made in the said frameworks. Multiversion testing ensures the backward compatibility of the code while this approach ensures we support the latest changes too.
+
 
 **Round Up**
 
