@@ -607,7 +607,7 @@ def test_paddle_roll(
 @handle_frontend_test(
     fn_tree="paddle.take_along_axis",
     dtype_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes(kind="numeric", full=False),
+        array_dtypes=helpers.get_dtypes(kind="valid"),
         indices_dtypes=["int64"],
         min_num_dims=1,
         max_num_dims=5,
