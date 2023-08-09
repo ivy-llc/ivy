@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
@@ -25,6 +26,7 @@ _slice = builtins.slice
 _max = builtins.max
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -112,6 +114,7 @@ def max_pool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -182,6 +185,7 @@ def max_unpool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -269,6 +273,7 @@ def max_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -354,6 +359,7 @@ def max_pool3d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -436,6 +442,7 @@ def avg_pool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -523,6 +530,7 @@ def avg_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -611,6 +619,7 @@ def avg_pool3d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -688,6 +697,7 @@ def pool(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -891,10 +901,17 @@ def idct(
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-idct.mixed_backend_wrappers = {"to_add": ("handle_device_shifting",), "to_skip": ()}
+idct.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -964,6 +981,7 @@ def fft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1039,6 +1057,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1114,6 +1133,7 @@ def dropout2d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1165,6 +1185,7 @@ def dropout3d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1233,6 +1254,7 @@ def ifft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2029,7 +2051,10 @@ def interpolate(
 
 
 interpolate.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -2220,6 +2245,7 @@ def adaptive_max_pool2d(
 
 adaptive_max_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2299,6 +2325,7 @@ def adaptive_avg_pool1d(
 
 adaptive_avg_pool1d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2388,6 +2415,7 @@ def adaptive_avg_pool2d(
 
 adaptive_avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2597,6 +2625,7 @@ def reduce_window(
 
 reduce_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2606,6 +2635,7 @@ reduce_window.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2681,6 +2711,7 @@ fft2.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2758,6 +2789,7 @@ def ifftn(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 # @inputs_to_ivy_arrays
