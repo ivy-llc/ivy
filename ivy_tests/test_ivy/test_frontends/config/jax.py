@@ -89,7 +89,7 @@ def native_array(x):
 
 
 def is_native_array(x):
-    return isinstance(x, (jnp.ndarray, jnp.DeviceArray))
+    return isinstance(x, (jnp.ndarray))
 
 
 def to_numpy(x):

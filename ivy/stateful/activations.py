@@ -3,15 +3,29 @@
 # local
 import ivy
 from ivy.stateful.module import Module
+from typing import Literal
 
 
 class GELU(Module):
-    def __init__(self, *, approximate: bool = False):
+    def __init__(
+        self,
+        *,
+        approximate: bool = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """Apply the GELU activation function."""
         self._approximate = approximate
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, /, *, approximate=None):
+    def _forward(
+        self,
+        x,
+        /,
+        *,
+        approximate=None,
+        complex_mode=None,
+    ):
         """
         Perform forward pass of the GELU activation.
 
@@ -25,7 +39,11 @@ class GELU(Module):
         ret
             The outputs following the GELU activation *[batch_shape, d]*
         """
-        return ivy.gelu(x, approximate=ivy.default(approximate, self._approximate))
+        return ivy.gelu(
+            x,
+            approximate=ivy.default(approximate, self._approximate),
+            complex_mode=ivy.default(complex_mode, self._complex_mode),
+        )
 
 
 class GEGLU(Module):
@@ -73,7 +91,11 @@ class ReLU(Module):
 
 
 class LeakyReLU(Module):
-    def __init__(self, alpha: float = 0.2):
+    def __init__(
+        self,
+        alpha: float = 0.2,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """
         Apply the LEAKY RELU activation function.
 
@@ -81,11 +103,14 @@ class LeakyReLU(Module):
         ----------
         alpha
              Negative slope for ReLU.
+        complex_mode
+             Specifies how to handle complex input.
         """
         self._alpha = alpha
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, *, alpha=None):
+    def _forward(self, x, *, alpha=None, complex_mode=None):
         """
 
         Parameters
@@ -94,13 +119,19 @@ class LeakyReLU(Module):
               Inputs to process *[batch_shape, d]*.
         alpha
               Negative slope for ReLU.
+        complex_mode
+              Specifies how to handle complex input.
 
         Returns
         -------
         ret
             The outputs following the LEAKY RELU activation *[batch_shape, d]*
         """
-        return ivy.leaky_relu(x, alpha=ivy.default(alpha, self._alpha))
+        return ivy.leaky_relu(
+            x,
+            alpha=ivy.default(alpha, self._alpha),
+            complex_mode=ivy.default(complex_mode, self._complex_mode),
+        )
 
 
 class LogSoftmax(Module):
@@ -388,3 +419,24 @@ class ELU(Module):
             The outputs following the ELU activation *[batch_shape, d]*
         """
         return ivy.elu(x, alpha=alpha)
+
+
+class LogSigmoid(Module):
+    def __init__(self):
+        """Apply the LogSigmoid activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the LogSigmoid activation *[batch_shape, d]*
+        """
+        return ivy.logsigmoid(x)
