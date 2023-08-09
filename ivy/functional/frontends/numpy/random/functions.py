@@ -206,3 +206,18 @@ def pareto(a, size=None):
         return 0
     u = ivy.random_uniform(low=0.0, high=0.0, shape=size, dtype="float64")
     return ivy.pow(1 / (1 - u), 1 / a)
+  
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar 
+def triangular(left, mode, right, size=None):
+    if left > mode or mode > right or left == right:
+        raise ivy.utils.exceptions.IvyValueError(
+            "left < mode < right is not being followed"
+        )
+    u = ivy.random_uniform(low=0.0, high=1.0, shape=size, dtype="float64")
+    condition = u <= (mode - left) / (right - left)
+    values1 = left + (right - left) * (u * (mode - left) / (right - left)) ** 0.5
+    values2 = (
+        right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
+    )
+    return ivy.where(condition, values1, values2)
