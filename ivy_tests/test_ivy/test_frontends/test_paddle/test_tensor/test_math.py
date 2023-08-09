@@ -1928,24 +1928,34 @@ def test_paddle_kron(
     )
 
 
+@st.composite
+def _test_paddle_take_helper(draw):
+    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
+
+    dtypes, xs, indices, _, _ = draw(
+        helpers.array_indices_axis(
+            array_dtypes=helpers.get_dtypes("float_and_integer"),
+            indices_dtypes=["int32", "int64"],
+        )
+    )
+
+    return dtypes, xs, indices, mode
+
+
 # take
 @handle_frontend_test(
-    fn_tree="paddle.take",
-    dtype_and_x=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("float_and_integer"),
-        indices_dtypes=["int32", "int64"],
-    ),
+    fn_tree="paddle.take", dtype_and_values=_test_paddle_take_helper()
 )
 def test_paddle_take(
     *,
-    dtype_and_x,
+    dtype_and_values,
     on_device,
     fn_tree,
     backend_fw,
     frontend,
     test_flags,
 ):
-    dtypes, xs, indices, _, _ = dtype_and_x
+    dtypes, xs, indices, modes = dtype_and_values
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         backend_to_test=backend_fw,
@@ -1955,4 +1965,5 @@ def test_paddle_take(
         on_device=on_device,
         x=xs,
         index=indices,
+        mode=modes,
     )
