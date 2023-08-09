@@ -205,10 +205,12 @@ def check_docstring_examples_run(
         docstring = ivy.utils.backend.handler.ivy_original_dict[fn_name].__doc__
     if docstring is None:
         return True
-    if fn_name in to_skip or fn_name in skip_arr_cont:
+    if fn_name in to_skip:
         return True
-    # removing extra new lines and trailing white spaces from the docstrings
+    if (from_container or from_array) and fn_name in skip_arr_cont:
+        return True
 
+    # removing extra new lines and trailing white spaces from the docstrings
     trimmed_docstring = trim(docstring=docstring)
     trimmed_docstring = trimmed_docstring.split("\n")
     # end_index: -1, if print statement is not found in the docstring
@@ -254,10 +256,7 @@ def check_docstring_examples_run(
     # remove "..." for multilines
     for i, v in enumerate(executable_lines):
         executable_lines[i] = v.replace("...", "")
-        # backend which doesn't support inplace_update throws an exception
-        executable_lines[i] = v.replace(
-            "ensure_in_backend=True", "ensure_in_backend=False"
-        )
+
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
@@ -307,19 +306,8 @@ def check_docstring_examples_run(
         re.VERBOSE,
     )
 
-    # word list to remove from execution output
-    words_to_remove = [
-        "ivy.Shape",
-        "logabsdet=",
-        "torch.Size",
-    ]
-
-    num_output = output.replace("ivy.array", "")
-    num_parsed_output = parsed_output.replace("ivy.array", "")
-    for i in words_to_remove:
-        num_output = num_output.replace(i, "")
-        num_parsed_output = num_parsed_output.replace(i, "")
-
+    num_output = output.replace("ivy.array", "").replace("ivy.Shape", "")
+    num_parsed_output = parsed_output.replace("ivy.array", "").replace("ivy.Shape", "")
     num_output = numeric_pattern.sub("", num_output)
     num_parsed_output = numeric_pattern.sub("", num_parsed_output)
     num_output = num_output.split(",")
