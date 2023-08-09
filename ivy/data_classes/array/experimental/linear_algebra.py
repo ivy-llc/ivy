@@ -275,7 +275,7 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
 
         Parameters
         ----------
-        x
+        self
             tensor of shape ``(i_1, ..., i_k, ..., i_N)``
         matrix_or_vector
             1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
@@ -299,3 +299,54 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             if matrix_or_vector is a vector
         """
         return ivy.mode_dot(self._data, matrix_or_vector, mode, transpose, out=out)
+
+    def multi_mode_dot(
+        self: Union[ivy.Array, ivy.NativeArray],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+        /,
+        modes: Optional[Sequence[int]] = None,
+        skip: Optional[Sequence[int]] = None,
+        transpose: Optional[bool] = False,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        r"""
+        ivy.Array instance method variant of ivy.multi_mode_dot. This method simply
+        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+
+        mat_or_vec_list
+            sequence of matrices or vectors of length ``tensor.ndim``
+
+        skip
+            None or int, optional, default is None
+            If not None, index of a matrix to skip.
+
+        modes
+            None or int list, optional, default is None
+
+        transpose
+            If True, the matrices or vectors in in the list are transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            result can broadcast to.
+
+        Returns
+        -------
+        ivy.Array
+            tensor times each matrix or vector in the list at mode `mode`
+
+        Notes
+        -----
+        If no modes are specified, just assumes there is one matrix or vector per mode and returns:
+        :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
+        """
+        return ivy.multi_mode_dot(
+            self._data, mat_or_vec_list, modes, skip, transpose, out=out
+        )

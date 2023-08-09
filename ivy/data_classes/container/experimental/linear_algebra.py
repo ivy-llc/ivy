@@ -997,3 +997,123 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_multi_mode_dot(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        skip: Optional[Union[Sequence[int], ivy.Container]] = None,
+        transpose: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.multi_mode_dot. This method simply
+        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            the input tensor
+
+        mat_or_vec_list
+            sequence of matrices or vectors of length ``tensor.ndim``
+
+        skip
+            None or int, optional, default is None
+            If not None, index of a matrix to skip.
+
+        modes
+            None or int list, optional, default is None
+
+        transpose
+            If True, the matrices or vectors in in the list are transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
+
+        Returns
+        -------
+        ivy.Container
+            tensor times each matrix or vector in the list at mode `mode`
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "multi_mode_dot",
+            x,
+            mat_or_vec_list,
+            skip,
+            modes,
+            transpose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def multi_mode_dot(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        /,
+        modes: Optional[Union[Sequence[int], ivy.Container]] = None,
+        skip: Optional[Union[Sequence[int], ivy.Container]] = None,
+        transpose: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.multi_mode_dot. This method simply
+        wraps the function, and so the docstring for ivy.multi_mode_dot also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the input tensor
+
+        mat_or_vec_list
+            sequence of matrices or vectors of length ``tensor.ndim``
+
+        modes
+            None or int list, optional, default is None
+
+        skip
+            None or int, optional, default is None
+            If not None, index of a matrix to skip.
+
+        transpose
+            If True, the matrices or vectors in in the list are transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
+
+        Returns
+        -------
+        ivy.Container
+            tensor times each matrix or vector in the list at mode `mode`
+        """
+        return self.static_multi_mode_dot(
+            self,
+            mat_or_vec_list,
+            skip,
+            modes,
+            transpose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

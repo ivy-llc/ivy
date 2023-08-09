@@ -759,6 +759,8 @@ def mode_dot(
         return ivy.fold(res, fold_mode, new_shape, out=out)
 
 
+# The following code has been adapated from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L81
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -766,11 +768,13 @@ def mode_dot(
 @handle_array_function
 @handle_device_shifting
 def multi_mode_dot(
-    tensor: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     mat_or_vec_list: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    /,
     modes: Optional[Sequence[int]] = None,
     skip: Optional[Sequence[int]] = None,
     transpose: Optional[bool] = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""
@@ -778,7 +782,7 @@ def multi_mode_dot(
 
     Parameters
     ----------
-    tensor
+    x
         the input tensor
 
     mat_or_vec_list
@@ -794,6 +798,9 @@ def multi_mode_dot(
     transpose
         If True, the matrices or vectors in in the list are transposed.
         For complex tensors, the conjugate transpose is used.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        result can broadcast to.
 
     Returns
     -------
@@ -803,15 +810,14 @@ def multi_mode_dot(
     Notes
     -----
     If no modes are specified, just assumes there is one matrix or vector per mode and returns:
-
-    :math:`\\text{tensor  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
+    :math:`\\text{x  }\\times_0 \\text{ matrix or vec list[0] }\\times_1 \\cdots \\times_n \\text{ matrix or vec list[n] }` # noqa
     """
     if modes is None:
         modes = range(len(mat_or_vec_list))
 
     decrement = 0  # If we multiply by a vector, we diminish the dimension of the tensor
 
-    res = tensor
+    res = x
 
     # Order of mode dots doesn't matter for different modes
     # Sorting by mode shouldn't change order for equal modes

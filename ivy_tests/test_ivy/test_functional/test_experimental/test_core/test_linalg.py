@@ -817,7 +817,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         )
     ],
 )
-def test_mode_dot_tensorly_1(X, U, true_res):
+def test_mode_dot_tensorly(X, U, true_res):
     X = ivy.array(X)
     U = ivy.array(U)
     true_res = ivy.array(true_res)
@@ -829,7 +829,7 @@ def test_mode_dot_tensorly_1(X, U, true_res):
 def _multi_mode_dot_data(draw):
     t1_dtype, t1, shape_t1 = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("valid"),
             ret_shape=True,
             min_num_dims=2,
             large_abs_safety_factor=20,
@@ -847,7 +847,7 @@ def _multi_mode_dot_data(draw):
         shape = draw(st.sampled_from([(mode_dimsize,), (rows, mode_dimsize)]))
         mat_or_vec_dtype, mat_or_vec = draw(
             helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                dtype=t1_dtype,
                 shape=shape,
                 large_abs_safety_factor=20,
                 small_abs_safety_factor=20,
@@ -860,14 +860,12 @@ def _multi_mode_dot_data(draw):
     return t1_dtype + t2_dtype, t1[0], t2, modes, skip
 
 
-# TODO fix instance method
 @handle_test(
     fn_tree="functional.ivy.experimental.multi_mode_dot",
     data=_multi_mode_dot_data(),
 )
 def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, t1, t2, modes, skip = data
-    test_flags.instance_method = False
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -876,13 +874,15 @@ def test_multi_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtypes,
-        tensor=t1,
+        x=t1,
         mat_or_vec_list=t2,
         modes=modes,
         skip=skip,
     )
 
 
+# The following 2 tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_n_mode_product.py#L81
 @pytest.mark.parametrize(
     "X, U, true_res",
     [
