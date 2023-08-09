@@ -93,6 +93,7 @@ def adjust_hue(img, hue_factor):
 
     h = h + hue_factor
     h = h - ivy.floor(h)
+
     img_adjusted = _hsv_to_rgb(ivy.stack([h, s, v], axis=-3))
 
     return img_adjusted
