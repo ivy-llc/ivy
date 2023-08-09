@@ -49,7 +49,9 @@ def random_uniform(
         _ = paddle.seed(seed)
     random_base = paddle.uniform(shape, min=0.0, max=1.0)
 
-    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(dtype)
+    return paddle_backend.add(paddle_backend.multiply(random_base, rng), low).cast(
+        dtype
+    )
 
 
 @with_unsupported_device_and_dtypes(
@@ -137,8 +139,8 @@ def randint(
         _ = paddle.seed(seed)
 
     _retval = paddle.cast(
-            paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
-        )
+        paddle.uniform(shape or [1], min=0.0, max=1.0) * range + low, dtype
+    )
     return _retval if shape else _retval.squeeze(axis=0)
 
 

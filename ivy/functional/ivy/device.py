@@ -136,7 +136,9 @@ class DefaultDevice:
 
 
 def handle_soft_device_variable(*args, fn, dst_dev=None, **kwargs):
-    return ivy.current_backend().handle_soft_device_variable(*args, fn=fn, dst_dev=dst_dev, **kwargs)
+    return ivy.current_backend().handle_soft_device_variable(
+        *args, fn=fn, dst_dev=dst_dev, **kwargs
+    )
 
 
 # Helpers #

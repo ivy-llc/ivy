@@ -96,9 +96,7 @@ def multinomial(
     if not replace:
         orig_probs_shape = list(probs.shape)
         probs_flat = tf.reshape(probs, (-1, orig_probs_shape[-1]))
-        probs_flat = probs_flat / tf.math.reduce_sum(
-            probs_flat, axis=-1, keepdims=True
-        )
+        probs_flat = probs_flat / tf.math.reduce_sum(probs_flat, axis=-1, keepdims=True)
         probs_stack = tf.split(probs_flat, probs_flat.shape[0])
         samples_stack = []
         for prob in probs_stack:
@@ -106,9 +104,7 @@ def multinomial(
             # Gumbel-max trick
             # https://github.com/tensorflow/tensorflow/issues/9260
             z = tf.dtypes.cast(
-                -tf.math.log(
-                    -tf.math.log(tf.random.uniform(tf.shape(logits), 0, 1))
-                ),
+                -tf.math.log(-tf.math.log(tf.random.uniform(tf.shape(logits), 0, 1))),
                 tf.float64,
             )
             _, indices = tf.nn.top_k(logits + z, k=num_samples)

@@ -53,14 +53,8 @@ def arange(
         else:
             stop = start
     if dtype is None:
-        if (
-            isinstance(start, int)
-            and isinstance(stop, int)
-            and isinstance(step, int)
-        ):
-            return tf.cast(
-                tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32
-            )
+        if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
+            return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), tf.int32)
         else:
             return tf.range(start, stop, delta=step)
     else:
@@ -240,9 +234,7 @@ def linspace(
         ans = tf.linspace(start, stop, num + 1, axis=axis)
         if axis < 0:
             axis += len(ans.shape)
-        ans = tf.convert_to_tensor(
-            ans.numpy()[_slice_at_axis(slice(None, -1), axis)]
-        )
+        ans = tf.convert_to_tensor(ans.numpy()[_slice_at_axis(slice(None, -1), axis)])
     else:
         ans = tf.linspace(start, stop, num, axis=axis)
     if dtype.is_integer and ans.dtype.is_floating:

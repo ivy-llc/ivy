@@ -636,6 +636,4 @@ def triu_indices(
         return paddle.to_tensor([], place=device, dtype="int64"), paddle.to_tensor(
             [], place=device, dtype="int64"
         )
-    return tuple(
-        paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64")
-    )
+    return tuple(paddle.triu_indices(n_rows, col=n_cols, offset=k, dtype="int64"))
