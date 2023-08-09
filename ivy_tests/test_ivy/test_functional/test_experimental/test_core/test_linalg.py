@@ -1180,7 +1180,6 @@ def _initialize_tucker_data(draw):
 )
 def test_initialize_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, x, rank, modes, non_negative, mask, svd_mask_repeats = data
-    test_flags.instance_method = False
     results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,

@@ -1135,6 +1135,10 @@ def _svd_interface(
     return U, S, V
 
 
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/decomposition/_tucker.py#L22
+
+
 # TODO update svd type hints when other svd methods have been added
 # also update the test
 @handle_nestable

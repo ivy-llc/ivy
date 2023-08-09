@@ -1389,3 +1389,151 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_initialize_tucker(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        modes: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.TuckerTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.initialize_tucker. This method simply
+        wraps the function, and so the docstring for ivy.initialize_tucker also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            number of components
+        modes
+            modes to consider in the input tensor
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        init
+            initialization scheme for tucker decomposition.
+        svd
+            function to use to compute the SVD
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+
+        Returns
+        -------
+        core
+            initialized core tensor
+        factors
+            list of factors
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "initialize_tucker",
+            x,
+            rank,
+            modes,
+            seed=seed,
+            init=init,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def initialize_tucker(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        rank: Union[Sequence[int], ivy.Container],
+        modes: Union[Sequence[int], ivy.Container],
+        /,
+        *,
+        init: Optional[
+            Union[Literal["svd", "random"], ivy.TuckerTensor, ivy.Container]
+        ] = "svd",
+        seed: Optional[Union[int, ivy.Container]] = None,
+        svd: Optional[Union[Literal["truncated_svd"], ivy.Container]] = "truncated_svd",
+        non_negative: Optional[Union[bool, ivy.Container]] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        svd_mask_repeats: Optional[Union[int, ivy.Container]] = 5,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, Sequence[ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.initialize_tucker. This method
+        simply wraps the function, and so the docstring for ivy.initialize_tucker also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input tensor
+        rank
+            number of components
+        modes
+            modes to consider in the input tensor
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        init
+            initialization scheme for tucker decomposition.
+        svd
+            function to use to compute the SVD
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+
+        Returns
+        -------
+        core
+            initialized core tensor
+        factors
+            list of factors
+        """
+        return self.static_initialize_tucker(
+            self,
+            rank,
+            modes,
+            seed=seed,
+            init=init,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

@@ -442,3 +442,66 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
             Each returned array must have the same floating-point data type as ``x``.
         """
         return ivy.truncated_svd(self._data, compute_uv, n_eigenvecs)
+
+    def initialize_tucker(
+        self: Union[ivy.Array, ivy.NativeArray],
+        rank: Sequence[int],
+        modes: Sequence[int],
+        /,
+        *,
+        init: Optional[Union[Literal["svd", "random"], ivy.TuckerTensor]] = "svd",
+        seed: Optional[int] = None,
+        svd: Optional[Literal["truncated_svd"]] = "truncated_svd",
+        non_negative: Optional[bool] = False,
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        svd_mask_repeats: Optional[int] = 5,
+    ) -> Tuple[ivy.Array, Sequence[ivy.Array]]:
+        """
+        ivy.Array instance method variant of ivy.initialize_tucker. This method simply
+        wraps the function, and so the docstring for ivy.initialize_tucker also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input tensor
+        rank
+            number of components
+        modes
+            modes to consider in the input tensor
+        seed
+            Used to create a random seed distribution
+            when init == 'random'
+        init
+            initialization scheme for tucker decomposition.
+        svd
+            function to use to compute the SVD
+        non_negative
+            if True, non-negative factors are returned
+        mask
+            array of booleans with the same shape as ``tensor`` should be 0 where
+            the values are missing and 1 everywhere else. Note:  if tensor is
+            sparse, then mask should also be sparse with a fill value of 1 (or
+            True).
+        svd_mask_repeats
+            number of iterations for imputing the values in the SVD matrix when
+            mask is not None
+
+        Returns
+        -------
+        core
+            initialized core tensor
+        factors
+            list of factors
+        """
+        return ivy.initialize_tucker(
+            self._data,
+            rank,
+            modes,
+            seed=seed,
+            init=init,
+            svd=svd,
+            non_negative=non_negative,
+            mask=mask,
+            svd_mask_repeats=svd_mask_repeats,
+        )
