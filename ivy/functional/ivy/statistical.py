@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -34,6 +35,7 @@ def _get_promoted_type_of_operands(operands):
 # -------------------#
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -140,6 +142,7 @@ def min(
     return current_backend(x).min(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -249,6 +252,7 @@ def max(
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -358,6 +362,7 @@ def mean(
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -493,6 +498,7 @@ def prod(
     )
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -631,6 +637,7 @@ def std(
     )
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -771,6 +778,7 @@ def sum(
     return current_backend(x).sum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -887,6 +895,7 @@ def var(
 # ------#
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1031,6 +1040,7 @@ def cumsum(
     return current_backend(x).cumsum(x, axis, exclusive, reverse, dtype=dtype, out=out)
 
 
+@handle_backend_invalid
 @handle_array_function
 @to_native_arrays_and_back
 @handle_out_argument
@@ -1169,6 +1179,7 @@ def cumprod(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
