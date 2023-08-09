@@ -22,7 +22,7 @@ def empty(
     if args and size:
         raise TypeError("empty() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.empty(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -48,7 +48,7 @@ def ones(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fals
     if args and size:
         raise TypeError("ones() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.ones(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -82,7 +82,7 @@ def zeros(*args, size=None, out=None, dtype=None, device=None, requires_grad=Fal
     if args and size:
         raise TypeError("zeros() got multiple values for argument 'shape'")
     if size is None:
-        size = args[0] if isinstance(args[0], (tuple, list)) else args
+        size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
     return ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
 
 
@@ -261,17 +261,10 @@ def as_strided(input, size, stride, storage_offset=None):
         ind = ind + ivy.reshape(ivy.arange(size_i), r_size) * stride_i
     if storage_offset:
         ind = ind + storage_offset
-    base = (
-        input._base
-        if input._base is not None
-        else (
-            input.data._base
-            if hasattr(input.data, "_base")
-            else input.data.base if hasattr(input.data, "base") else None
-        )
-    )
-    if base is not None:
-        return ivy.gather(ivy.flatten(base), ind)
+    # in case the input is a non-contiguous native array,
+    # the return will differ from torch.as_strided
+    if ivy.is_ivy_array(input) and input.base is not None:
+        return ivy.gather(ivy.flatten(input.base), ind)
     return ivy.gather(ivy.flatten(input), ind)
 
 

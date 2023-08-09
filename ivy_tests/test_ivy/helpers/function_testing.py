@@ -576,10 +576,6 @@ def test_frontend_function(
             on_device=on_device,
         )
 
-        # Make copy for arguments for functions that might use
-        # inplace update by default
-        copy_kwargs = copy.deepcopy(args)
-        copy_args = copy.deepcopy(kwargs)
         # strip the decorator to get an Ivy array
         # ToDo, fix testing for jax frontend for x32
         if frontend == "jax":
