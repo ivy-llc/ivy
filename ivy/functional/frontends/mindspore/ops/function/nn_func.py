@@ -183,7 +183,7 @@ def avg_pool2d(
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float16", "float32")}, "mindspore")
-def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
+def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
     gumbels = -ivy.empty_like(logits).exponential().log()
     gumbels = (logits + gumbels) / tau
     y_soft = ivy.softmax(x=gumbels, axis=dim)

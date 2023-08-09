@@ -369,7 +369,6 @@
 #     ),
 #     tau=st.floats(min_value=0),
 #     hard=st.booleans(),
-#     eps=st.floats(min_value=0, max_value=1),
 #     dim=st.integers(),
 #     test_with_out=st.just(False),
 #     test_inplace=st.booleans(),
@@ -379,7 +378,6 @@
 #     dtype_and_x,
 #     tau,
 #     hard,
-#     eps,
 #     dim,
 #     on_device,
 #     fn_tree,
@@ -399,6 +397,5 @@
 #         logits=x[0],
 #         tau=tau,
 #         hard=hard,
-#         eps=eps,
 #         dim=dim,
 #     )
