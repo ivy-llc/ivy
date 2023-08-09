@@ -87,9 +87,9 @@ def tpu_is_available() -> bool:
     return False
 
 
-def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
-    args, kwargs, def_dev = ivy.shift_native_arrays_on_def_dev(*args, def_dev=def_dev, **kwargs)
-    with torch.device(def_dev):
+def handle_soft_device_variable(*args, fn, dst_dev=None, **kwargs):
+    args, kwargs, dst_dev = ivy.shift_native_arrays_on_def_dev(*args, dst_dev=dst_dev, **kwargs)
+    with torch.device(dst_dev):
         return fn(*args, **kwargs)
 
 
