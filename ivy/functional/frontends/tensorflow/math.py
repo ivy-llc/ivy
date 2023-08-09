@@ -137,12 +137,14 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def cumprod(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
+@to_ivy_arrays_and_back
 def cumsum(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
