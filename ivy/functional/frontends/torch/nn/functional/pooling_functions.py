@@ -159,6 +159,16 @@ def max_pool2d(
     return ret
 
 
+@to_ivy_arrays_and_back
+def adaptive_max_pool2d(
+    input,
+    output_size,
+    return_indices=False,
+):
+    # ToDo: Add return_indices once superset is implemented
+    return ivy.adaptive_max_pool2d(input, output_size)
+
+
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (

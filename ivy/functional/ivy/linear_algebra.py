@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ inf = float("inf")
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -163,6 +165,7 @@ def cholesky(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -191,12 +194,22 @@ def cross(
     x1
         first input array. Should have a numeric data type.
     x2
-        second input array. Must have the same shape as x1. Should have a numeric data
-        type.
+        second input array. Must be compatible with ``x1`` for all
+        non-compute axes. The size of the axis over which to compute
+        the cross product must be the same size as the respective axis
+        in ``x``. Should have a numeric data type.
+
+        .. note::
+
+            The compute axis (dimension) must not be broadcasted.
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
-        the cross product.vIf set to -1, the function computes the cross product for
-        vectors defined by the last axis (dimension). Default: ``-1``.
+        the cross product. Must be an integer on the interval``[-N, N)``, where ``N``
+        is the rank (number of dimensions) of the shape. If specified as a
+        negative integer, the function must determine the axis along which to
+        compute the cross product by counting backward from the last dimension
+        (where ``-1`` refers to the last dimension). By default, the function must
+        compute the cross product over the last axis. Default: ``-1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -259,6 +272,7 @@ def cross(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -331,6 +345,7 @@ def det(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -510,6 +525,7 @@ def diagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -557,22 +573,12 @@ def eig(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.eigh.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     """
     return current_backend(x).eig(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -586,7 +592,7 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    r"""Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -611,8 +617,11 @@ def eigh(
         a namedtuple (``eigenvalues``, ``eigenvectors``) whose
 
         -   first element must have the field name ``eigenvalues`` (corresponding to
-            ``L`` above) and must be an array consisting of computed eigenvalues. The
-            array containing the eigenvalues must have shape ``(..., M)``.
+            :math:`\operatorname{diag}\Lambda` above) and must be an array consisting
+            of computed eigenvalues. The array containing the eigenvalues must
+            have shape ``(..., M)`` and must have a real-valued floating-point
+            data type whose precision matches the precision of ``x`` (e.g., if ``x``
+            is ``complex128``, then the ``eigenvalues`` must be ``float64``).
         -   second element have have the field name ``eigenvectors`` (corresponding to
             ``Q`` above) and must be an array where the columns of the inner most
             matrices contain the computed eigenvectors. These matrices must be
@@ -640,6 +649,7 @@ def eigh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -682,7 +692,9 @@ def eigvalsh(
     -------
     ret
         an array containing the computed eigenvalues. The returned array must have shape
-        (..., M) and have the same data type as x.
+        (..., M) and and must have a real-valued floating-point
+        data type whose precision matches the precision of ``x`` (e.g., if ``x``
+        is ``complex128``, then the ``eigenvalues`` must be ``float64``).
 
 
     This function conforms to the `Array API Standard
@@ -746,6 +758,7 @@ def eigvalsh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -758,33 +771,69 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the inner product of two vectors ``x1`` and ``x2``.
+    """
+    Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
     x1
-        first one-dimensional input array of size N. Should have a numeric data type.
+        first one-dimensional input array of size N.
+        Should have a numeric data type.
         a(N,) array_like
         First input vector. Input is flattened if not already 1-dimensional.
     x2
-        second one-dimensional input array of size M. Should have a numeric data type.
+        second one-dimensional input array of size M.
+        Should have a numeric data type.
         b(M,) array_like
         Second input vector. Input is flattened if not already 1-dimensional.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
     ret
-        a two-dimensional array containing the inner product and whose shape is (N, M).
+        a two-dimensional array containing the inner product and whose
+        shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
 
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    Examples
+    --------
+    Matrices of identical shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.]])
+
+    Matrices of different shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.], [5., 6.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.], [61., 83.]])
+
+    3D matrices
+    >>> x = ivy.array([[[1., 2.], [3., 4.]],
+                       [[5., 6.], [7., 8.]]])
+    >>> y = ivy.array([[[9., 10.], [11., 12.]],
+                       [[13., 14.], [15., 16.]]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[[[ 29.,  35.], [ 41.,  47.]],
+                [[ 67.,  81.], [ 95., 109.]]],
+               [[[105., 127.], [149., 171.]],
+                [[143., 173.], [203., 233.]]]])
     """
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -879,6 +928,7 @@ def inv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1040,6 +1090,7 @@ def matmul(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1115,7 +1166,13 @@ def matrix_norm(
     Returns
     -------
     ret
-        Matrix norm of the array at specified axes.
+        Matrix norm of the array at specified axes. If ``keepdims`` is ``False``, the
+        returned array must have a rank which is two less than the ranl of ``x``.
+        If ``x`` has a real-valued data type, the returned array must have a real-valued
+        floating-point data type based on Type promotion. If ``x`` has a complex-valued
+        data type, the returned array must have a real-valued floating-point data type
+        whose precision matches the precision of ``x`` (e.g., if ``x`` is
+        ``complex128``, then the returned array must have a `float64`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -1193,6 +1250,7 @@ def matrix_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1293,6 +1351,7 @@ def matrix_power(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1319,7 +1378,7 @@ def matrix_rank(
         ``MxN`` matrices. Should have a floating-point data type.
 
     atol
-        absolute tolerance. When None it’s considered to be zero.
+        absolute tolerance. When None it's considered to be zero.
 
     rtol
         relative tolerance for small singular values. Singular values approximately less
@@ -1334,8 +1393,9 @@ def matrix_rank(
         Default: ``None``.
     
     hermitian
-        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
-        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
+        is assumed to be Hermitian, enabling a more efficient method for finding
+        eigenvalues, but x is not checked inside the function. 
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
@@ -1407,6 +1467,7 @@ def matrix_rank(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1497,6 +1558,7 @@ def matrix_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1586,6 +1648,7 @@ def outer(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1659,6 +1722,7 @@ def pinv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1724,6 +1788,7 @@ def qr(
     return current_backend(x).qr(x, mode=mode, out=out)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1741,6 +1806,19 @@ def slogdet(
        The purpose of this function is to calculate the determinant more accurately
        when the determinant is either very small or very large, as calling ``det`` may
        overflow or underflow.
+
+    **Special cases**
+
+    For real-valued floating-point operands,
+
+    - If the determinant is zero, the ``sign`` should be ``0``and ``logabsdet``
+    should be ``infinity``.
+
+    For complex floating-point operands,
+
+    - If the detereminant is ``0 + 0j``, the ``sign`` should be ``0 + 0j``
+    and ``logabsdet`` should be ``infinity + 0j``.
+
 
     Parameters
     ----------
@@ -1760,7 +1838,10 @@ def slogdet(
         For a real matrix, the sign of the determinant must be
         either ``1``, ``0``, or ``-1``.
         Each returned array must have shape ``shape(x)[:-2]`` and a real-valued
-        floating-point data type determined by :ref:`type-promotion`.
+        floating-point data type determined by :ref:`type-promotion`. If ``x``
+        is complex, the returned array must have a real-valued floating-point data
+        type having the same precision as ``x`` (1.g., if ``x`` is ``complex64``,
+        ``logabsdet`` must have a ``float32`` data type)
         .. note::
            If a determinant is zero, then the corresponding ``sign`` should be ``0``
            and ``logabsdet`` should be ``-infinity``; however, depending on the
@@ -1820,6 +1901,7 @@ def slogdet(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1876,6 +1958,7 @@ def solve(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -1935,14 +2018,17 @@ def svd(
             sorted in descending order by magnitude, such that ``s[..., 0]`` is the
             largest value, ``s[..., 1]`` is the second largest value, et cetera. The
             first ``x.ndim-2`` dimensions must have the same shape as those of the input
-            ``x``.
+            ``x``. Must have a real-valued floating-point data type having the same
+            precision as ``x`` (e.g., if ``x`` is ``complex64``, ``S`` must have
+            a ``float32`` data type).
         -   third element must have the field name ``Vh`` and must be an array whose
             shape depends on the value of ``full_matrices`` and contain orthonormal rows
             (i.e., the rows are the right singular vectors and the array is the
             adjoint). If ``full_matrices`` is ``True``, the array must have shape
             ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have
             shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2``
-            dimensions must have the same shape as those of the input ``x``.
+            dimensions must have the same shape as those of the input ``x``. Must
+            have the same data type as ``x``.
 
         Each returned array must have the same floating-point data type as ``x``.
 
@@ -2002,6 +2088,7 @@ def svd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2027,7 +2114,9 @@ def svdvals(
     ret
         array with shape ``(..., K)`` that contains the vector(s) of singular values of
         length ``K``, where K = min(M, N). The values are sorted in descending order by
-        magnitude.
+        magnitude. The returned array must have a real-valued floating-point data type
+        having the same precision as ``x`` (e.g., if ``x`` is ``complex64``,
+        the returned array must have a ``float32`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -2128,6 +2217,7 @@ def svdvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2143,6 +2233,12 @@ def tensordot(
 ) -> ivy.Array:
     """
     Return a tensor contraction of x1 and x2 over specific axes.
+
+    .. note::
+        If either ``x1`` or ``x2`` has a complex floating-point data type, neither
+        argument must be complex-conjugated or transposed. If conjugation and/or
+        transposition is desired, these operations should explicitly performed
+        prior to computing the generalized matrix product.
 
     Parameters
     ----------
@@ -2211,51 +2307,7 @@ def tensordot(
 
 
 @handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def tensorsolve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    ndim1 = ivy.get_num_dims(x1)
-    ndim2 = ivy.get_num_dims(x2)
-
-    if axes is not None:
-        allaxes = list(range(0, ndim1))
-        for k in axes:
-            allaxes.remove(k)
-            allaxes.insert(ndim1, k)
-
-        x1 = ivy.matrix_transpose(x1, allaxes)
-
-    old_shape = x1.shape[-(ndim1 - ndim2) :]
-
-    prod = 1
-    for k in old_shape:
-        prod *= k
-
-    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement "
-            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
-        )
-
-    x1 = ivy.reshape(x1, (prod, prod))
-    x2 = ivy.flatten(x2)
-    res = ivy.solve(x1, x2)
-    res = ivy.reshape(res, old_shape)
-    return res
-    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
-
-
-@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2273,6 +2325,16 @@ def trace(
 ) -> ivy.Array:
     """Return the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
+
+    **Special cases**
+
+    Let ``N`` equal the number of elements over which to compute the sum.
+
+    - If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
+
+    For both real-valued and complex floating-point operands,
+    special cases must be handled as if the operation is implemented
+    by successive application of :func:`ivy.add`:
 
     Parameters
     ----------
@@ -2372,6 +2434,7 @@ def trace(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2440,6 +2503,7 @@ def vecdot(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2518,6 +2582,10 @@ def vector_norm(
         is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
         array must have a rank which is ``n`` less than the rank of ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
+        If ``x`` has a complex-valued data type, the returned array must have a
+        real-valued floating-point data type whose precision matches the precision
+        of ``x`` (e.g., if ``x`` is ``complex128``, then the returned array must have
+        a ``float64`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -2588,6 +2656,7 @@ def vector_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2672,6 +2741,7 @@ def diag(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2745,6 +2815,7 @@ def vander(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2780,6 +2851,7 @@ def vector_to_skew_symmetric_matrix(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2811,3 +2883,49 @@ def lu_factor(
         A named tuple (LU, pivots).
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.utils.exceptions.IvyException(
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
