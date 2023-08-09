@@ -601,3 +601,37 @@ def test_paddle_roll(
         shifts=shift,
         axis=axis,
     )
+
+
+# take_along_axis
+@handle_frontend_test(
+    fn_tree="paddle.take_along_axis",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(kind="numeric", full=False),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_paddle_take_along_axis(
+    *,
+    dtype_indices_axis,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        arr=value,
+        indices=indices,
+        axis=axis,
+    )
