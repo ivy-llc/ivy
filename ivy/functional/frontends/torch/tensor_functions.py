@@ -29,8 +29,8 @@ def is_complex(input):
 
 
 @to_ivy_arrays_and_back
-def scatter(input, dim, index, src, reduce=None):
-    return ivy.put_along_axis(input, index, src, dim, mode=reduce)
+def scatter(input, dim, index, src):
+    return ivy.put_along_axis(input, index, src, dim)
 
 
 @to_ivy_arrays_and_back

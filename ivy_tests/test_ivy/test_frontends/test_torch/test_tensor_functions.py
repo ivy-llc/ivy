@@ -189,14 +189,12 @@ def put_along_axis_helper(draw):
     fn_tree="torch.scatter",
     args=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
-    mode=st.sampled_from(["add", "multiply"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter(
     *,
     args,
     value,
-    mode,
     on_device,
     fn_tree,
     frontend,
@@ -215,7 +213,6 @@ def test_torch_scatter(
         index=indices,
         src=value,
         dim=axis,
-        reduce=mode,
     )
 
 
@@ -256,7 +253,7 @@ def test_torch_scatter_add(
     fn_tree="torch.scatter",
     args=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
-    mode=st.sampled_from(["add", "multiply"]),
+    mode=st.sampled_from(["add", "mul", "mean", "amin", "amax"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(

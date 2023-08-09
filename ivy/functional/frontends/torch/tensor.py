@@ -1571,8 +1571,10 @@ class Tensor:
         ).ivy_array
         return self
 
-    def scatter_(self, dim, index, src):
-        self.ivy_array = torch_frontend.scatter(dim=dim, index=index, src=src).ivy_array
+    def scatter_(self, dim, index, src, reduce=None):
+        self.ivy_array = torch_frontend.scatter_reduce(
+            dim=dim, index=index, src=src, reduce=reduce
+        ).ivy_array
         return self
 
     def scatter_reduce_(self, dim, index, src, reduce=None):
@@ -1585,7 +1587,7 @@ class Tensor:
         return torch_frontend.scatter_add(self, dim=dim, index=index, src=src)
 
     def scatter(self, dim, index, src, reduce=None):
-        return torch_frontend.scatter(
+        return torch_frontend.scatter_reduce(
             self, dim=dim, index=index, src=src, reduce=reduce
         )
 

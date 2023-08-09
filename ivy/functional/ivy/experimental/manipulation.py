@@ -993,12 +993,12 @@ def _infer_broadcast_shape(arr, indices, axis):
 
 
 def _handle_reduction_op(reduction, arr, indices, values):
-    if reduction == "assign":
+    if reduction in ["mul", "multiply"]:
+        arr[indices] *= values
+    elif reduction == "assign":
         arr[indices] = values
     elif reduction == "add":
         arr[indices] += values
-    elif reduction == "mul":
-        arr[indices] *= values
     elif reduction == "mean":
         arr[indices] = (arr[indices] + values) // 2
     elif reduction == "amax":
