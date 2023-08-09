@@ -490,4 +490,4 @@ def test_paddle_nll_loss(
         weight=weight[0],
         ignore_index=ignore_index,
         reduction=reduction,
-    )  
+    )
