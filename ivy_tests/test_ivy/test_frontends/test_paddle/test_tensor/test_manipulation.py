@@ -641,14 +641,13 @@ def put_along_axis_helper(draw):
 
 @handle_frontend_test(
     fn_tree="paddle.put_along_axis",
-    dtype_x_ax_idx=put_along_axis_helper(),
-    value=st.integers(min_value=0, max_value=100),
+    args=put_along_axis_helper(),
     mode=st.sampled_from(["add", "assign", "mul", "multiply"]),
     test_with_out=st.just(False),
 )
 def test_paddle_put_along_axis(
     *,
-    dtype_x_ax_idx,
+    args,
     value,
     mode,
     on_device,
@@ -656,7 +655,7 @@ def test_paddle_put_along_axis(
     frontend,
     test_flags,
 ):
-    input_dtype, x, axis, indices = dtype_x_ax_idx
+    input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

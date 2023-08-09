@@ -187,14 +187,14 @@ def put_along_axis_helper(draw):
 # scatter
 @handle_frontend_test(
     fn_tree="torch.scatter",
-    dtype_x_ax_idx=put_along_axis_helper(),
+    args=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
     mode=st.sampled_from(["add", "multiply"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter(
     *,
-    dtype_x_ax_idx,
+    args,
     value,
     mode,
     on_device,
@@ -203,7 +203,7 @@ def test_torch_scatter(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis, indices = dtype_x_ax_idx
+    input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -222,13 +222,13 @@ def test_torch_scatter(
 # scatter_add
 @handle_frontend_test(
     fn_tree="torch.scatter_add",
-    dtype_x_ax_idx=put_along_axis_helper(),
+    args=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_add(
     *,
-    dtype_x_ax_idx,
+    args,
     value,
     on_device,
     fn_tree,
@@ -236,7 +236,7 @@ def test_torch_scatter_add(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis, indices = dtype_x_ax_idx
+    input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
@@ -254,14 +254,14 @@ def test_torch_scatter_add(
 # scatter_reduce
 @handle_frontend_test(
     fn_tree="torch.scatter",
-    dtype_x_ax_idx=put_along_axis_helper(),
+    args=put_along_axis_helper(),
     value=st.integers(min_value=0, max_value=100),
     mode=st.sampled_from(["add", "multiply"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(
     *,
-    dtype_x_ax_idx,
+    args,
     value,
     mode,
     on_device,
@@ -270,7 +270,7 @@ def test_torch_scatter_reduce(
     test_flags,
     backend_fw,
 ):
-    input_dtype, x, axis, indices = dtype_x_ax_idx
+    input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
