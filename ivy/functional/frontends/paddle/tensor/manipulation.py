@@ -141,8 +141,3 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
-
-
-@to_ivy_arrays_and_back
-def to_list(x):
-    return x.tolist()
