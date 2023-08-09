@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_device_shifting,
     handle_complex_input,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -34,6 +35,7 @@ def _gelu_jax_like(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -122,6 +124,7 @@ def _leaky_relu_jax_like(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -202,6 +205,7 @@ leaky_relu.jax_like = _leaky_relu_jax_like
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -293,6 +297,7 @@ def _relu_jax_like(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -359,6 +364,7 @@ relu.jax_like = _relu_jax_like
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -436,6 +442,7 @@ def sigmoid(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -487,6 +494,7 @@ def softmax(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -545,6 +553,7 @@ def softplus(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -600,6 +609,7 @@ def mish(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
