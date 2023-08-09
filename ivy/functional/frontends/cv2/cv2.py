@@ -1701,6 +1701,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
     # irrespective of overflow (e.g., 256 -> 255; 257 -> 255; -1 -> 0; -2 -> 0).
     # The solution involves float16 conversion of the integer image,
     # followed by value clipping.
+    # TODO: add RGB <-> HLS, RGB <-> CIE L*a*b, RGB <-> CIE L*u*v, Bayer -> RGB
     if (
         code == COLOR_RGB2GRAY
         or code == COLOR_RGBA2GRAY
