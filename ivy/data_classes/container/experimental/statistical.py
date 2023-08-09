@@ -631,7 +631,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
         ...                   b=ivy.array([1., 2., 3., 4.]))
-        >>> z = 0.5
+        >>> z = ivy.array([0.5])
         >>> y = x.quantile(z)
         >>> print(y)
         {
