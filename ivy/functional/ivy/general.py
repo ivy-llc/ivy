@@ -3126,6 +3126,7 @@ def inplace_update(
     --------
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([0])
     >>> ivy.inplace_update(x, y)
@@ -3134,6 +3135,7 @@ def inplace_update(
 
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
     >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
     >>> ivy.inplace_update(x, y, keep_input_dtype=True)
@@ -3142,18 +3144,20 @@ def inplace_update(
 
     With :class:`ivy.Container` instances:, and backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
     >>> ivy.inplace_update(x, y)
     >>> print(x)
     {
-        a: ivy.array([1]),
-        b: ivy.array([2])
+        a: ivy.array([1, 1]),
+        b: ivy.array([2, 2])
     }
 
     With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend
     set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.array([1, 2])
     >>> ivy.inplace_update(x, y)

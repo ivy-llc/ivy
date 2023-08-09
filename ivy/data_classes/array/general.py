@@ -1150,7 +1150,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([0])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         >>> print(x)
         ivy.array([0])
 
@@ -1158,7 +1158,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         >>> x = ivy.array([4, 5, 6])
         >>> y = ivy.array([1])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         IvyBackendException: jax: inplace_update: JAX does not natively
         support inplace updates
         """
