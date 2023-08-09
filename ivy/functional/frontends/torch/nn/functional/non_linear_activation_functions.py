@@ -353,6 +353,22 @@ def gumbel_softmax(logits, tau=1, hard=False, eps=1e-10, dim=-1):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def scaled_dot_product_attention(
+    query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, scale=None
+):
+    return ivy.scaled_dot_product_attention(
+        query,
+        key,
+        value,
+        scale=scale,
+        mask=attn_mask,
+        dropout_p=dropout_p,
+        is_causal=is_causal,
+    )
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
 def multi_head_attention_forward(
     query,
     key,

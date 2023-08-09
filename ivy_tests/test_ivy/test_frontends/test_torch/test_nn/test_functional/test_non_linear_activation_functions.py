@@ -1489,3 +1489,99 @@ def test_torch_multi_head_attention_forward(
         average_attn_weights=average_attn_weights,
         is_causal=is_causal,
     )
+
+
+@st.composite
+def x_and_scaled_attention(draw, dtypes):
+    dtype = draw(dtypes)
+    num_queries = draw(helpers.ints(min_value=2, max_value=4))
+    num_keys = draw(helpers.ints(min_value=2, max_value=4))
+    feat_dim = draw(helpers.ints(min_value=2, max_value=4))
+    batch_size = draw(helpers.ints(min_value=1, max_value=2))
+    q_shape = (batch_size,) + (num_queries,) + (feat_dim,)
+    k_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    v_shape = (batch_size,) + (num_keys,) + (feat_dim,)
+    mask_shape = (batch_size,) + (num_queries,) + (num_keys,)
+
+    query = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=q_shape,
+            min_value=0,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    key = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=k_shape,
+            min_value=0,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    value = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=v_shape,
+            min_value=0,
+            max_value=1e2,
+            large_abs_safety_factor=7,
+            small_abs_safety_factor=7,
+            safety_factor_scale="linear",
+        )
+    )
+    mask = draw(
+        helpers.array_values(
+            dtype="bool",
+            shape=mask_shape,
+        )
+        | st.none()
+    )
+    return dtype, query, key, value, mask
+
+
+# scaled_dot_product_attention
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.scaled_dot_product_attention",
+    dtype_q_k_v_mask=x_and_scaled_attention(
+        dtypes=helpers.get_dtypes("float"),
+    ),
+    dropout_p=st.floats(min_value=0, max_value=0.99),
+    is_causal=st.booleans(),
+)
+def test_torch_scaled_dot_product_attention(
+    *,
+    dtype_q_k_v_mask,
+    dropout_p,
+    is_causal,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    (dtype, query, key, value, mask) = dtype_q_k_v_mask
+    is_causal = is_causal if mask is None else False
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=dropout_p == 0.0,
+        rtol=1e-05,
+        atol=1e-05,
+        query=query,
+        key=key,
+        value=value,
+        attn_mask=mask,
+        dropout_p=dropout_p,
+        is_causal=is_causal,
+    )
