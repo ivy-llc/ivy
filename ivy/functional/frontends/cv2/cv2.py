@@ -1812,11 +1812,13 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
             res[:, :, 2] = r
 
         return res
-    elif code == COLOR_RGB2HSV:
+    elif code == COLOR_RGB2HSV or code == COLOR_BGR2HSV:
         channels = split(src)
 
         if code == COLOR_RGB2HSV:
             r, g, b = channels
+        elif code == COLOR_BGR2HSV:
+            b, g, r = channels
         else:
             raise ivy.exceptions.IvyException("Invalid color conversion code")
 
@@ -1859,13 +1861,9 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         H = H / 2
 
         res = ivy.zeros_like(src, dtype=src.dtype)
-
-        if code == COLOR_RGB2HSV:
-            res[:, :, 0] = H
-            res[:, :, 1] = S
-            res[:, :, 2] = V
-        else:
-            raise ivy.exceptions.IvyException("Invalid color conversion code")
+        res[:, :, 0] = H
+        res[:, :, 1] = S
+        res[:, :, 2] = V
 
         return res
     else:
