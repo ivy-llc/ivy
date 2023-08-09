@@ -376,7 +376,7 @@
 #     beta=st.sampled_from([1.0, 0.5, 0.1, 0.0]),
 #     test_with_out=st.just(False),
 # )
-# def test_torch_smooth_l1_loss(
+# def test_mindspore_smooth_l1_loss(
 #     *,
 #     dtype_and_x,
 #     size_average,
