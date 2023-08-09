@@ -163,7 +163,6 @@ def test_paddle_nanmedian(
         keepdim=keepdim,
     )
 
-# quantile
 @handle_frontend_test(
     fn_tree="paddle.quantile",
     dtype_and_x=_statistical_dtype_values(function="quantile"),
