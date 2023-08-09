@@ -360,3 +360,49 @@
 #         count_include_pad=count_include_pad,
 #         divisor_override=None,
 #     )
+
+
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.smooth_l1_loss",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         num_arrays=2,
+#         allow_inf=False,
+#         shared_dtype=True,
+#     ),
+#     size_average=st.booleans(),
+#     reduce=st.booleans(),
+#     reduction=st.sampled_from(["none", "mean", "sum"]),
+#     beta=st.sampled_from([1.0, 0.5, 0.1, 0.0]),
+#     test_with_out=st.just(False),
+# )
+# def test_torch_smooth_l1_loss(
+#     *,
+#     dtype_and_x,
+#     size_average,
+#     reduce,
+#     reduction,
+#     beta,
+#     frontend,
+#     test_flags,
+#     fn_tree,
+#     backend_fw,
+#     on_device,
+# ):
+#     input_dtype, x = dtype_and_x
+#     pred_dtype, pred = input_dtype[0], x[0]
+#     true_dtype, true = input_dtype[1], x[1]
+#     helpers.test_frontend_function(
+#         input_dtypes=[pred_dtype, true_dtype],
+#         backend_to_test=backend_fw,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=pred,
+#         target=true,
+#         size_average=size_average,
+#         reduce=reduce,
+#         reduction=reduction,
+#         beta=beta,
+#     )

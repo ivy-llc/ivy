@@ -54,14 +54,24 @@ def selu(input_x):
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
+
 @with_supported_dtypes(
-    {"2.0.0 and below": ("int8", "int16", "int32", "int64", "float16", "float32", "float64")},
+    {
+        "2.0.0 and below": (
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
     "mindspore",
 )
 @to_ivy_arrays_and_back
 def dropout3d(input, p=0.5, training=True):
     return ivy.dropout3d(input, p, training=training, data_format="NCDHW")
-
 
 
 @with_supported_dtypes(
@@ -169,3 +179,32 @@ def avg_pool2d(
         count_include_pad=count_include_pad,
         divisor_override=divisor_override,
     )
+
+
+@with_supported_dtypes(
+    {"2.0.0 and below": ("float16", "float32")},
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def smooth_l1_loss(logits, labels, beta=1.0):
+    if not isinstance(beta, (float, int)):
+        raise TypeError("Beta should be a float.")
+    if beta <= 0:
+        raise ValueError("Beta should be greater than 0.")
+
+    dtype = logits.dtype
+    if dtype not in (ivy.float16, ivy.float32):
+        raise TypeError("Dtype of logits should be float16 or float32.")
+    if labels.dtype != dtype:
+        raise TypeError("Dtype of labels should be the same as logits.")
+    if logits.shape != labels.shape:
+        raise ValueError("Shape of logits must be the same as labels.")
+
+    diff = ivy.subtract(logits, labels)
+    absolute_diff = ivy.abs(diff)
+    loss = ivy.where(
+        absolute_diff < beta,
+        0.5 * ivy.square(absolute_diff) / beta,
+        absolute_diff - 0.5 * beta,
+    )
+    return loss
