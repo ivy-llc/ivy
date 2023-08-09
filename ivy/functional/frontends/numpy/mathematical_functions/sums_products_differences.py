@@ -178,4 +178,4 @@ def trapz(y, x=None, dx=1, axis=-1):
         dx = ivy.moveaxis(dx, axis, -1)
 
     integral = ivy.sum((dx / 2) * (y[..., :-1] + y[..., 1:]), axis=-1)
-    return ivy.array(integral, dtype=ivy.float64)
+    return ivy.array(integral, dtype=ivy.float32)
