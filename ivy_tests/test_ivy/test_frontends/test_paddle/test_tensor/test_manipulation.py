@@ -1,6 +1,8 @@
 # global
 from hypothesis import strategies as st
 import math
+import hypothesis.extra.numpy as nph
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -605,36 +607,36 @@ def test_paddle_roll(
 
 @st.composite
 def put_along_axis_helper(draw):
-    _shape = draw(
-        helpers.get_shape(
-            min_num_dims=2, max_num_dims=2, min_dim_size=3, max_dim_size=5
+    input_dtype, x, axis, shape = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=["int32", "int64", "float32", "float64"],
+            min_num_dims=2,
+            min_dim_size=2,
+            valid_axis=True,
+            force_int_axis=True,
+            ret_shape=True,
+            min_axis=0,
+            max_axis=1,
         )
     )
-    _idx = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=len(_shape),
-            max_num_dims=len(_shape),
-            min_dim_size=1,
-            max_dim_size=1,
-            min_value=0,
-            max_value=len(_shape),
-        ),
-    )
-    dtype_x_axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=_shape,
-            min_axis=-len(_shape),
-            max_axis=len(_shape) - 1,
-            min_value=0,
-            max_value=len(_shape) - 1,
-        ),
-    )
-    dtype, x, axis = dtype_x_axis
-    _, idx = _idx
 
-    return dtype, x, axis, idx
+    if axis < 0:
+        axis = 0
+    idx_shape = list(shape)
+    idx_shape[axis] = 1
+    idx_shape = tuple(idx_shape)
+
+    idx_strategy = nph.arrays(
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
+    )
+    indices = draw(idx_strategy)
+
+    values_strategy = nph.arrays(
+        dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
+    )
+    values = draw(values_strategy)
+
+    return input_dtype, x[0], indices, values, axis
 
 
 @handle_frontend_test(

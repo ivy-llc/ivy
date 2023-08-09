@@ -1029,10 +1029,10 @@ def test_fill_diagonal(
 
 
 @st.composite
-def put_along_ax_helper(draw):
+def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int32", "int64"],
+            available_dtypes=["int32", "int64", "float32", "float64"],
             min_num_dims=2,
             min_dim_size=2,
             valid_axis=True,
@@ -1059,16 +1059,13 @@ def put_along_ax_helper(draw):
     )
     values = draw(values_strategy)
 
-    # print(input_dtype, x, indices, values, axis)
-    # print("\n")
-
     return input_dtype, x[0], indices, values, axis
 
 
 # put_along_axis
 @handle_test(
     fn_tree="put_along_axis",
-    args=put_along_ax_helper(),
+    args=put_along_axis_helper(),
     mode=st.sampled_from(["assign", "add", "mul", "mean", "amax", "amin"]),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
