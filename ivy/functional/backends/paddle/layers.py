@@ -195,6 +195,7 @@ def conv1d_transpose(
     if data_format == "NWC":
         res = res.transpose([0, 2, 1])
     return res
+    
 
 
 # noinspection PyUnresolvedReferences
