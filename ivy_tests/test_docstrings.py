@@ -261,10 +261,6 @@ def check_docstring_examples_run(
         if ">>> print(" in line:
             is_multiline_executable = False
 
-    # # remove "..." for multilines
-    # for i, v in enumerate(executable_lines):
-    #     executable_lines[i] = v.replace("...", "")
-
     # noinspection PyBroadException
     f = StringIO()
     with redirect_stdout(f):
