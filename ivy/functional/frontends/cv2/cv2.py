@@ -1782,6 +1782,30 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         res[:, :, 1] = Cr
         res[:, :, 2] = Cb
         return res
+    elif code == COLOR_YCrCb2RGB:
+        # TODO: investigate small value differences in the blue channel (up to 3-4)
+        DELTA = 128
+
+        Y, Cr, Cb = split(src)
+
+        Y = Y.astype(ivy.float16)
+        Cr = Cr.astype(ivy.float16)
+        Cb = Cb.astype(ivy.float16)
+
+        r = Y + 1.403 * (Cr - DELTA)
+        g = Y - 0.714 * (Cr - DELTA) - 0.344 * (Cb - DELTA)
+        b = Y + 1.733 * (Cb - DELTA)
+
+        r = r.clip(0, 255)
+        g = g.clip(0, 255)
+        b = b.clip(0, 255)
+
+        res = ivy.zeros_like(src, dtype=src.dtype)
+        res[:, :, 0] = r
+        res[:, :, 1] = g
+        res[:, :, 2] = b
+        return res
+
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
