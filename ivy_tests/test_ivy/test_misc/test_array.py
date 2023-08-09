@@ -1579,6 +1579,41 @@ def test_array__int__(
 
 @handle_method(
     init_tree=CLASS_TREE,
+    method_tree="Array.__complex__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        max_num_dims=0,
+    ),
+    method_container_flags=st.just([False]),
+)
+def test_array__complex__(
+    dtype_and_x,
+    method_name,
+    class_name,
+    ground_truth_backend,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
+
+
+@handle_method(
+    init_tree=CLASS_TREE,
     method_tree="Array.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),

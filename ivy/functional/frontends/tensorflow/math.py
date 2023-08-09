@@ -432,6 +432,21 @@ def unsorted_segment_mean(
 
 
 @to_ivy_arrays_and_back
+def unsorted_segment_sum(data, segment_ids, num_segments, name="unsorted_segment_sum"):
+    data = ivy.array(data)
+    segment_ids = ivy.array(segment_ids)
+    ivy.utils.assertions.check_equal(
+        list(segment_ids.shape), [list(data.shape)[0]], as_array=False
+    )
+    sum_array = ivy.zeros(
+        tuple([num_segments.item()] + (list(data.shape))[1:]), dtype=ivy.int32
+    )
+    for i in range((segment_ids).shape[0]):
+        sum_array[segment_ids[i]] = sum_array[segment_ids[i]] + data[i]
+    return sum_array
+
+
+@to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
     data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
 ):
@@ -735,6 +750,13 @@ def bincount(
     return ivy.bincount(arr, weights=weights, minlength=minlength)
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+def xlog1py(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return x * ivy.log1p(y)
+
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
@@ -761,3 +783,11 @@ def igamma(a, x, name=None):
 @to_ivy_arrays_and_back
 def rint(x, name=None):
     return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
+    square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
+    x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
+    return ivy.multiply(x, x_inv_norm)
