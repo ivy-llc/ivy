@@ -914,11 +914,10 @@ def test_multi_mode_dot_tensorly_2(shape):
         assert np.allclose(res, 1)
 
 
-# TODO fix instance method
 @handle_test(
     fn_tree="functional.ivy.experimental.svd_flip",
     uv=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         min_num_dims=2,
         max_num_dims=2,
@@ -927,10 +926,6 @@ def test_multi_mode_dot_tensorly_2(shape):
 )
 def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, input = uv
-    U = input[0]
-    V = input[1]
-    u_based_decision = u_based_decision
-    test_flags.instance_method = False
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -939,8 +934,8 @@ def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_d
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtypes,
-        U=U,
-        V=V,
+        U=input[0],
+        V=input[1],
         u_based_decision=u_based_decision,
     )
 

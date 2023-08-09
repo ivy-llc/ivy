@@ -884,6 +884,8 @@ def _svd_checks(x, n_eigenvecs=None):
     return n_eigenvecs, min_dim, max_dim
 
 
+# This function has been adapated from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L12
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -893,9 +895,11 @@ def _svd_checks(x, n_eigenvecs=None):
 def svd_flip(
     U: Union[ivy.Array, ivy.NativeArray],
     V: Union[ivy.Array, ivy.NativeArray],
+    /,
     u_based_decision: Optional[bool] = True,
-    out: Optional[ivy.Array] = None,
-) -> Tuple[ivy.Array, ivy.NativeArray]:
+    *,
+    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Sign correction to ensure deterministic output from SVD. Adjusts the columns of u
     and the rows of v such that the loadings in the columns in u that are largest in
@@ -905,9 +909,9 @@ def svd_flip(
     Parameters
     ----------
     U
-        u and v are the output of SVD
+        left singular matrix output of SVD
     V
-        u and v are the output of SVD
+        right singular matrix output of SVD
     u_based_decision
         If True, use the columns of u as the basis for sign flipping.
         Otherwise, use the rows of v. The choice of which variable to base the

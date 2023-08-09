@@ -1117,3 +1117,91 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_svd_flip(
+        U: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        V: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        u_based_decision: Optional[Union[bool, ivy.Container]] = True,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.svd_flip. This method simply wraps
+        the function, and so the docstring for ivy.svd_flip also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        U
+            left singular matrix output of SVD
+        V
+            right singular matrix output of SVD
+        u_based_decision
+            If True, use the columns of u as the basis for sign flipping.
+            Otherwise, use the rows of v. The choice of which variable to base the
+            decision on is generally algorithm dependent.
+
+        Returns
+        -------
+        u_adjusted, v_adjusted : container with the same dimensions as the input.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "svd_flip",
+            U,
+            V,
+            u_based_decision,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def svd_flip(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        V: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        u_based_decision: Optional[Union[bool, ivy.Container]] = True,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.svd_flip. This method simply wraps
+        the function, and so the docstring for ivy.svd_flip applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            left singular matrix output of SVD
+        V
+            right singular matrix output of SVD
+        u_based_decision
+            If True, use the columns of u as the basis for sign flipping.
+            Otherwise, use the rows of v. The choice of which variable to base the
+            decision on is generally algorithm dependent.
+
+        Returns
+        -------
+        u_adjusted, v_adjusted : container with the same dimensions as the input.
+        """
+        return self.static_svd_flip(
+            self,
+            V,
+            u_based_decision,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

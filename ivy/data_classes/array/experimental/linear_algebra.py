@@ -350,3 +350,33 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         return ivy.multi_mode_dot(
             self._data, mat_or_vec_list, modes, skip, transpose, out=out
         )
+
+    def svd_flip(
+        self: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        u_based_decision: Optional[bool] = True,
+        *,
+        out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.svd_flip. This method simply wraps the
+        function, and so the docstring for ivy.svd_flip also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            left singular matrix output of SVD
+        V
+            right singular matrix output of SVD
+        u_based_decision
+            If True, use the columns of u as the basis for sign flipping.
+            Otherwise, use the rows of v. The choice of which variable to base the
+            decision on is generally algorithm dependent.
+
+        Returns
+        -------
+        u_adjusted, v_adjusted : arrays with the same dimensions as the input.
+        """
+        return ivy.svd_flip(self._data, V, u_based_decision, out=out)
