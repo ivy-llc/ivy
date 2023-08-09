@@ -501,6 +501,9 @@ def test_frontend_function(
     all_aliases
         a list of strings containing all aliases for that function
         in the current frontend with their full namespaces.
+    backend_to_test : str
+        The backend (framework) to test the frontend function against, e.g., "torch",
+        "numpy", etc.
     frontend
         current frontend (framework).
     fn_tree
@@ -863,6 +866,56 @@ def gradient_test(
     ground_truth_backend: str,
     on_device: str,
 ):
+    """
+    Perform a gradient test by computing gradients of the function using both the tested
+    backend and a ground truth backend, and compare the gradients.
+
+    Parameters
+    ----------
+    fn
+        The function to test. If a string, it is assumed to be the name of the
+        function. If callable, it is the actual function to be tested.
+    all_as_kwargs_np
+        Input arguments to the function as keyword arguments.
+    args_np : tuple
+        Tuple containing the numpy arrays of the positional arguments.
+    kwargs_np
+        Tuple containing the numpy arrays of the keyword arguments.
+    input_dtypes
+        Data types of the input arguments in order.
+    test_flags
+        Frontend function flags object that stores all testing flags.
+    test_compile
+        If True, test compilation. (Default value: False)
+    rtol_
+        Relative tolerance value for gradient comparison. (Default value: None)
+    atol_
+        Absolute tolerance value for gradient comparison. (Default value: 1e-06)
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to.
+        If None, gradients are returned with respect to all input arrays.
+        (Default value: None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients.
+        If None, gradients are returned for all returned arrays.
+        (Default value: None)
+    backend_to_test
+        The backend (framework) to test the function against,
+        e.g., "torch", "numpy", etc.
+    ground_truth_backend
+        The backend (framework) used as ground truth for gradient comparison.
+    on_device
+        The device on which to create arrays.
+
+    Returns
+    -------
+    None
+
+    Raises
+    ------
+    AssertionError
+        If gradient values do not match within the specified tolerances.
+    """
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, _ = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, _ = _get_nested_np_arrays(kwargs_np)
@@ -1053,6 +1106,9 @@ def test_method(
         gradients are returned for all returned arrays. (Default value = None)
     test_compile
         If True, test for the correctness of compilation.
+    backend_to_test
+        The backend (framework) to test the method against, e.g., "torch", "numpy",
+        etc.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
     device_
@@ -1420,6 +1476,9 @@ def test_frontend_method(
     test_values
         can be a bool or a string to indicate whether correctness of values should be
         tested. If the value is `with_v`, shapes are tested but not values.
+    backend_to_test : str
+        The backend (framework) to test the method against, e.g., "torch", "numpy",
+        etc.
 
     Returns
     -------
