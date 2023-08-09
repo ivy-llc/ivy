@@ -534,6 +534,7 @@ def test_numpy_all(
         on_device=on_device,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
@@ -651,7 +652,7 @@ def test_numpy_min(
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=method_input_dtypes[1:],
+        method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
             "axis": axis,
             "keepdims": keepdims,
@@ -1396,7 +1397,7 @@ def test_numpy_std(
     frontend,
     on_device,
 ):
-    init_input_dtypes, x, axis = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
     (
         where,
         method_input_dtypes,
