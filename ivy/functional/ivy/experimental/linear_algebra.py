@@ -1446,27 +1446,31 @@ def tucker(
     init
         {'svd', 'random'}, or TuckerTensor optional
         if a TuckerTensor is provided, this is used for initialization
-    return_errors
-        Indicates whether the algorithm should return all reconstruction errors
-        and computation time of each iteration or not
-        Default: False
     svd
         str, default is 'truncated_svd'
         function to use to compute the SVD,
+    seed
+        Used to create a random seed distribution
+        when init == 'random'
+    mask
+        array of booleans with the same shape as ``tensor`` should be 0 where
+        the values are missing and 1 everywhere else. Note:  if tensor is
+        sparse, then mask should also be sparse with a fill value of 1 (or
+        True).
     svd_mask_repeats
         number of iterations for imputing the values in the SVD matrix when
         mask is not None
     tol
           tolerance: the algorithm stops when the variation in
           the reconstruction error is less than the tolerance
-    mask
-        array of booleans with the same shape as ``tensor`` should be 0 where
-        the values are missing and 1 everywhere else. Note:  if tensor is
-        sparse, then mask should also be sparse with a fill value of 1 (or
-        True).
     verbose
         if True, different in reconstruction errors are returned at each
         iteration.
+
+    return_errors
+        Indicates whether the algorithm should return all reconstruction errors
+        and computation time of each iteration or not
+        Default: False
 
     Returns
     -------
