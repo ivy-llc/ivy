@@ -1,7 +1,7 @@
 # global
 import math
 import itertools
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 from functools import reduce as _reduce
 import builtins
 
@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
@@ -25,18 +26,21 @@ _slice = builtins.slice
 _max = builtins.max
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -45,17 +49,22 @@ def max_pool1d(
     Parameters
     ----------
     x
-        Input image *[batch_size, w, d_in]*.
+        Input image *[batch_size, w, d_in]* if data_format is "NWC".
     kernel
         Size of the kernel i.e., the sliding window for each
         dimension of input. *[w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimension paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0)])
     data_format
-        NWC" or "NCW". Defaults to "NWC".
+        "NWC" or "NCW". Defaults to "NWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -83,12 +92,29 @@ def max_pool1d(
     ivy.array([[[ 4.,  5.,  6.,  7.]],
 
        [[16., 17., 18., 19.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    ivy.array([[[ 1.,  3.],
+            [ 5.,  7.],
+            [ 9., 11.]],
+
+        [[13., 15.],
+            [17., 19.],
+            [21., 23.]]])
     """
     return ivy.current_backend(x).max_pool1d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -159,19 +185,20 @@ def max_unpool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -192,6 +219,11 @@ def max_pool2d(
         indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -241,18 +273,21 @@ def max_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -261,16 +296,21 @@ def max_pool3d(
     Parameters
     ----------
     x
-        Input volume *[batch_size,d,h,w,d_in]*.
+        Input tensor *[batch_size,d,h,w,d_in]* if data_format is "NDHWC".
     kernel
         Convolution filters *[d,h,w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0), (0, 1), (1, 1)])
     data_format
-        NDHWC" or "NCDHW". Defaults to "NDHWC".
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -308,10 +348,18 @@ def max_pool3d(
         [[[46., 47.]]]]])
     """
     return ivy.current_backend(x).max_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -394,6 +442,7 @@ def avg_pool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -481,6 +530,7 @@ def avg_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -569,6 +619,7 @@ def avg_pool3d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -646,6 +697,7 @@ def pool(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -849,10 +901,17 @@ def idct(
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-idct.mixed_backend_wrappers = {"to_add": ("handle_device_shifting",), "to_skip": ()}
+idct.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -922,6 +981,7 @@ def fft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -997,6 +1057,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1072,6 +1133,7 @@ def dropout2d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1123,6 +1185,7 @@ def dropout3d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1191,6 +1254,7 @@ def ifft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1235,23 +1299,12 @@ def embedding(
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out,
-            ivy.current_backend(indices).embedding(
-                weights,
-                indices,
-                max_norm=max_norm,
-                out=out,
-            ),
-        )
-    else:
-        return ivy.current_backend(indices).embedding(
-            weights,
-            indices,
-            max_norm=max_norm,
-            out=out,
-        )
+    return ivy.current_backend(indices).embedding(
+        weights,
+        indices,
+        max_norm=max_norm,
+        out=out,
+    )
 
 
 @handle_exceptions
@@ -1987,7 +2040,10 @@ def interpolate(
 
 
 interpolate.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -2178,6 +2234,7 @@ def adaptive_max_pool2d(
 
 adaptive_max_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2257,6 +2314,7 @@ def adaptive_avg_pool1d(
 
 adaptive_avg_pool1d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2346,6 +2404,7 @@ def adaptive_avg_pool2d(
 
 adaptive_avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2555,6 +2614,7 @@ def reduce_window(
 
 reduce_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2564,10 +2624,11 @@ reduce_window.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-# @outputs_to_ivy_arrays
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2639,6 +2700,7 @@ fft2.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2716,9 +2778,9 @@ def ifftn(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
-# @inputs_to_ivy_arrays
 @to_native_arrays_and_back
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
