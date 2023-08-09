@@ -652,7 +652,7 @@ def _khatri_rao_data(draw):
     m = draw(helpers.ints(min_value=1, max_value=5))
     input_dtypes, input = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=num_matrices,
             min_dim_size=m,
             max_dim_size=m,
@@ -664,12 +664,12 @@ def _khatri_rao_data(draw):
         )
     )
     skip_matrix = draw(helpers.ints(min_value=0, max_value=len(input) - 1))
-    _, weights = draw(
+    weight_dtype, weights = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("integer"), shape=(m,)
         )
     )
-    _, mask = draw(
+    mask_dtype, mask = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("integer"),
             min_value=0,
@@ -677,19 +677,22 @@ def _khatri_rao_data(draw):
             shape=(m,),
         )
     )
-    return input_dtypes, input, skip_matrix, weights[0], mask[0]
+    return (
+        input_dtypes + weight_dtype + mask_dtype,
+        input,
+        skip_matrix,
+        weights[0],
+        mask[0],
+    )
 
 
-# TODO fix instance method
-# TODO fix out argument
 @handle_test(
     fn_tree="functional.ivy.experimental.khatri_rao",
     data=_khatri_rao_data(),
+    test_instance_method=st.just(False),
 )
 def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, input, skip_matrix, weights, mask = data
-    test_flags.instance_method = False
-    test_flags.with_out = False
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -699,7 +702,7 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
         atol_=1e-1,
         test_values=False,
         input_dtypes=input_dtypes,
-        input=input,
+        x=input,
         weights=weights,
         skip_matrix=skip_matrix,
         mask=mask,
