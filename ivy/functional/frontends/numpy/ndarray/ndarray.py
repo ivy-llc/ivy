@@ -249,7 +249,7 @@ class ndarray:
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self, axis1, axis2)
 
-    def all(self, axis=None, out=None, keepdims=False, *, where=True):
+    def all(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self, axis, out, keepdims, where=where)
 
     def any(self, axis=None, out=None, keepdims=False, *, where=True):

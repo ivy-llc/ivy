@@ -502,26 +502,27 @@ def test_numpy_all(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    init_input_dtypes, x, axis = dtype_x_axis
     (
         where,
-        input_dtypes,
+        method_input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
-        input_dtype=input_dtypes,
+        input_dtype=init_input_dtypes,
         test_flags=method_flags,
     )
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=init_input_dtypes,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=method_input_dtypes[1:],
         method_all_as_kwargs_np={
             "axis": axis,
+            "dtype": bool,
             "out": None,
             "keepdims": keepdims,
             "where": where,
@@ -532,7 +533,6 @@ def test_numpy_all(
         method_flags=method_flags,
         on_device=on_device,
     )
-
 
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -651,7 +651,7 @@ def test_numpy_min(
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=method_input_dtypes[1:],
         method_all_as_kwargs_np={
             "axis": axis,
             "keepdims": keepdims,
@@ -1396,10 +1396,10 @@ def test_numpy_std(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    init_input_dtypes, x, axis = dtype_x_axis
     (
         where,
-        input_dtypes,
+        method_input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
