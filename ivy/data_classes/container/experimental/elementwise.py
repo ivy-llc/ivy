@@ -2745,7 +2745,8 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         Examples
         --------
         With one :class:`ivy.Container` input:
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([1, 5, 10]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
+                                            b=ivy.array([1, 5, 10]))
         >>> x.frexp()
         {
             a: (ivy.array([0.5, 0.5, 0.75]), ivy.array([1, 1, 2])),
@@ -2821,7 +2822,7 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """
+        r"""
         ivy.Container instance method variant of ivy.modf. This method simply wraps the
         function, and so the docstring for ivy.modf also applies to this method with
         minimal changes.
@@ -2851,3 +2852,126 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_modf(self, out=out)
+
+    @staticmethod
+    def static_digamma(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.digamma. This method simply wraps the
+        function, and so the docstring for ivy.digamma also applies to this method with
+        minimal changes.
+
+        Note
+        ----
+        The Ivy version only accepts real-valued inputs.
+
+        Parameters
+        ----------
+        x
+            Input container containing input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the digamma function computed element-wise
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 0.5]),\
+        ...                         b=ivy.array([-2.0, 3.0]))
+        >>> ivy.Container.static_digamma(x)
+        {
+            a: ivy.array([-0.57721537, -1.96351004]),
+            b: ivy.array([nan, 0.92278427])
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "digamma",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def digamma(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.digamma. This method simply wraps
+        the function, and so the docstring for ivy.digamma also applies to this method
+        with minimal changes.
+
+        Note
+        ----
+        The Ivy version only accepts real-valued inputs.
+
+        Parameters
+        ----------
+        self
+            Input container containing input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the digamma function computed element-wise
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 0.5]), b=ivy.array([2.0, 3.0])
+        >>> x.digamma()
+        {
+            a: ivy.array([-0.5772, -1.9635]),
+            b: ivy.array([0.4228, 0.9228])
+        }
+        """
+        return self.static_digamma(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     handle_array_function,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -160,6 +161,7 @@ def eigh_tridiagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -227,6 +229,7 @@ def diagflat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -269,6 +272,7 @@ def kron(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -312,6 +316,7 @@ def matrix_exp(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -375,6 +380,7 @@ def eig(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -418,6 +424,7 @@ def eigvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -457,6 +464,7 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -515,6 +523,7 @@ multi_dot.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

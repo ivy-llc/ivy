@@ -170,7 +170,7 @@ def check_shape(x1, x2, message=""):
             x1, x2, ivy.shape(x1), ivy.shape(x2)
         )
     )
-    if ivy.shape(x1) != ivy.shape(x2):
+    if ivy.shape(x1)[:] != ivy.shape(x2)[:]:
         raise ivy.utils.exceptions.IvyException(message)
 
 

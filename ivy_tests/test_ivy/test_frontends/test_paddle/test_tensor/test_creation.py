@@ -617,9 +617,11 @@ def test_paddle_logspace(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -630,7 +632,6 @@ def test_paddle_logspace(
         base=base,
         dtype=dtype[0],
     )
-    
 
 
 # assign
@@ -661,4 +662,67 @@ def test_paddle_assign(
         on_device=on_device,
         x=x[0],
         output=x[1],
+    )
+
+
+# triu_indices
+@handle_frontend_test(
+    fn_tree="paddle.triu_indices",
+    dtype=helpers.get_dtypes("valid", full=False),
+    row=st.integers(min_value=1, max_value=5),
+    col=st.integers(min_value=1, max_value=5),
+    offset=st.integers(min_value=-4, max_value=4),
+    test_with_out=st.just(False),
+)
+def test_paddle_triu_indices(
+    row,
+    col,
+    offset,
+    dtype,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        row=row,
+        col=col,
+        offset=offset,
+        dtype=dtype[0],
+    )
+
+
+# complex
+@handle_frontend_test(
+    fn_tree="paddle.complex",
+    dtype_and_arrays=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"], shared_dtype=True, num_arrays=2
+    ),
+)
+def test_paddle_complex(
+    dtype_and_arrays,
+    test_flags,
+    backend_fw,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, (real, imag) = dtype_and_arrays
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        real=real,
+        imag=imag,
     )

@@ -190,8 +190,8 @@ def for_loop(
 
 
 def try_except(
-    body1: Callable, 
-    body2: Callable, 
+    body1: Callable,
+    body2: Callable,
     vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
 ):
     try:

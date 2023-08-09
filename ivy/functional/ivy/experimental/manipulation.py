@@ -27,6 +27,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.backend import current_backend
 from ivy.utils.exceptions import handle_exceptions
@@ -184,6 +185,7 @@ def flatten(
 
 flatten.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -193,6 +195,7 @@ flatten.mixed_backend_wrappers = {
 }
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -247,6 +250,7 @@ def moveaxis(
     return ivy.current_backend().moveaxis(a, source, destination, copy=copy, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -294,6 +298,7 @@ def heaviside(
     return ivy.current_backend().heaviside(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -342,6 +347,7 @@ def flipud(
     return ivy.current_backend().flipud(m, copy=copy, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -386,6 +392,7 @@ def vstack(
     return ivy.current_backend().vstack(arrays, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -427,6 +434,7 @@ def hstack(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -516,6 +524,7 @@ def rot90(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -597,6 +606,7 @@ def top_k(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -646,6 +656,7 @@ def fliplr(
     return ivy.current_backend().fliplr(m, copy=copy, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1222,6 +1233,7 @@ def pad(
 
 pad.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -1231,6 +1243,7 @@ pad.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1284,6 +1297,7 @@ def vsplit(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1339,6 +1353,7 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(ary, indices_or_sections, copy=copy)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1384,6 +1399,7 @@ def atleast_1d(
     return ivy.current_backend().atleast_1d(*arys, copy=copy)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1425,6 +1441,7 @@ def dstack(
     return ivy.current_backend().dstack(arrays, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1472,6 +1489,7 @@ def atleast_2d(
     return ivy.current_backend().atleast_2d(*arys, copy=copy)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1529,6 +1547,7 @@ def atleast_3d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1580,6 +1599,7 @@ def take_along_axis(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1668,6 +1688,7 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_view
@@ -1869,6 +1890,7 @@ def as_strided(
 as_strided.unsupported_dtypes = ("bfloat16",)
 as_strided.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -1878,6 +1900,7 @@ as_strided.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2071,6 +2094,7 @@ def associative_scan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -2122,6 +2146,7 @@ def unique_consecutive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back

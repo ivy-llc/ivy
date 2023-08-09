@@ -40,6 +40,7 @@ from ivy.func_wrapper import (
     handle_view_indexing,
     handle_device_shifting,
     handle_partial_mixed_function,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.device import dev
 
@@ -238,6 +239,7 @@ def get_referrers_recursive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -274,6 +276,7 @@ def is_native_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
@@ -307,6 +310,7 @@ def is_ivy_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """
     Determine whether the input x is either an Ivy Array or a Native Array.
@@ -597,6 +601,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -737,6 +742,7 @@ def all_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -809,6 +815,7 @@ def isscalar(x: Any, /) -> bool:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -866,6 +873,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -1910,7 +1918,7 @@ def einops_rearrange(
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_ivy_arrays
+@inputs_to_native_arrays
 @handle_array_function
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1977,10 +1985,15 @@ def einops_reduce(
 
 
 # IMPORTANT: assign attribute directly to function instead of wrapper here
-einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
+einops_reduce.unsupported_dtypes = {
+    "torch": ("float16",),
+    "tensorflow": ("complex",),
+    "paddle": ("complex", "uint8", "int8", "int16", "float16"),
+}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2736,6 +2749,7 @@ def get_item(
 
 get_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -2814,6 +2828,7 @@ def set_item(
 
 set_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -3057,6 +3072,7 @@ def _broadcast_to(input, target_shape):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3159,6 +3175,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3230,6 +3247,7 @@ def inplace_decrement(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3288,6 +3306,7 @@ def inplace_increment(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -3377,6 +3396,7 @@ def scatter_flat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_array_function
@@ -3460,6 +3480,7 @@ def scatter_nd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3570,6 +3591,7 @@ def gather(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3670,6 +3692,7 @@ def multiprocessing(context: Optional[str] = None):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @outputs_to_ivy_shapes
@@ -3764,6 +3787,7 @@ def unset_shape_array_mode() -> None:
         ivy.__setattr__("shape_array_mode", mode, True)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -4158,6 +4182,7 @@ def vmap(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_device_shifting
@@ -4209,6 +4234,7 @@ def isin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_device_shifting

@@ -419,7 +419,13 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
     indices
         A tuple of tuples of indices for the indices at which to prune.
     """
-    [prune_nest_at_index(nest, index) for index in indices]
+    # Delete first deeper elements and elements with larger index
+    indices_sorted = sorted(
+        indices,
+        key=str,
+        reverse=True,
+    )
+    [prune_nest_at_index(nest, index) for index in indices_sorted]
 
 
 @handle_exceptions
@@ -1055,6 +1061,73 @@ def nested_map(
     ret
         x following the applicable of fn to it's nested leaves, or x itself if x is not
         nested.
+
+    Examples
+    --------
+    With :class:`Tuple` inputs:
+
+    >>> x = ([[1., 2.], [3., 4.]])
+    >>> function = lambda a : a * 2
+    >>> ivy.nested_map(x, function)
+    [[2.0, 4.0], [6.0, 8.0]]
+    >>> print(x)
+    [[2.0, 4.0], [6.0, 8.0]]
+
+    With :code:`Dict` input:
+
+    >>> x = {1 : [1, [2, 3]], 2: (4, 5)}
+    >>> function = lambda a : a + 1
+    >>> ivy.nested_map(x, function)
+    {1 : [2, [3, 4]], 2: (5, 6)}
+    >>> print(x)
+    {1 : [2, [3, 4]], 2: (5, 6)}
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> function = lambda a: a + 'H'
+    >>> ivy.nested_map(x, function)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+    >>> print(x)
+    [['aH','bH','cH'],['dH','eH','fH'],['gH',['hH','iH']]]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(
+    ...   a=ivy.array([[1, 2, 3], [9, 8, 7]]) , b=ivy.array([[4, 5, 6], [12, 13, 14]])
+    ... )
+    >>> function = lambda a : a  + 1
+    >>> ivy.nested_map(x, function)
+    {
+        a: ivy.array([[2, 3, 4],
+                      [10, 9, 8]]),
+        b: ivy.array([[5, 6, 7],
+                      [13, 14, 15]])
+    }
+    >>> print(x)
+    {
+        a: ivy.array([[2, 3, 4],
+                      [10, 9, 8]]),
+        b: ivy.array([[5, 6, 7],
+                      [13, 14, 15]])
+    }
+
+    >>> nest = ([1, 2], [3, 4], [5, 6], {"a": 1, "b": 2, "c": 3})
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function,  to_ignore=list)
+    ([1, 2, 1, 2], [3, 4, 3, 4], [5, 6, 5, 6], {'a': 2, 'b': 4, 'c': 6})
+
+    >>> nest = [[1, 2], [3, [4, 5]], [[6], [7, 8, [9, 10]]]]
+    >>> function = lambda a :  a * 2
+    >>> ivy.nested_map(nest, function, max_depth = 3)
+    [[2, 4], [6, [8, 10]], [[12], [14, 16, [9, 10]]]]
+
+    >>> nest = ([23, 25, 1337], [63, 98, 6])
+    >>> function = lambda a :  a + 1
+    >>> ivy.nested_map(nest, function, to_mutable = True)
+    [[24, 25, 1338], [64, 99, 7]]
     """
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
