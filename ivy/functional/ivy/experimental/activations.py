@@ -253,8 +253,13 @@ def relu6(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
+@handle_complex_input
 def logsigmoid(
-    input: Union[ivy.NativeArray, ivy.Array], /, *, out: Optional[ivy.Array] = None
+    input: Union[ivy.NativeArray, ivy.Array],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply element-wise Log-sigmoid of x.
@@ -265,6 +270,9 @@ def logsigmoid(
     ----------
     input
         Input array.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------

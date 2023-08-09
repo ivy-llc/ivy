@@ -446,6 +446,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.logsigmoid. This method simply wraps
@@ -467,6 +468,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -501,6 +504,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
         )
 
     def logsigmoid(
@@ -511,6 +515,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         Apply element-wise Log-sigmoid of x i.e. log(1 / (1 + exp(-x)).
@@ -519,6 +524,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
         ----------
         self
             Input container.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -541,6 +548,7 @@ class _ContainerWithActivationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            complex_mode=complex_mode,
         )
 
     @staticmethod

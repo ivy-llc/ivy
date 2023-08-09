@@ -358,7 +358,7 @@ def test_jax_softplus(
 @handle_frontend_test(
     fn_tree="jax.nn.log_sigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-100,
         max_value=100,
         large_abs_safety_factor=8,
