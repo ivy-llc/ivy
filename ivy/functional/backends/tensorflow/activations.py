@@ -29,7 +29,6 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.relu(x)
 

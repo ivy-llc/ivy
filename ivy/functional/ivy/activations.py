@@ -278,6 +278,24 @@ def log_softmax(
     return current_backend(x).log_softmax(x, axis=axis, out=out)
 
 
+def _relu_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.where(
+        (
+            ivy.logical_or(
+                ivy.real(x) < 0, ivy.logical_and(ivy.real(x) == 0, ivy.imag(x) < 0)
+            )
+        ),
+        ivy.array(0.0, dtype=x.dtype),
+        x,
+    )
+
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -286,11 +304,21 @@ def log_softmax(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the rectified linear unit function element-wise.
+
+    If the input is complex, then by default each element is set to zero  if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative.
+    This behaviour can be changed by specifying a different `complex_mode`.
 
     Parameters
     ----------
@@ -299,6 +327,9 @@ def relu(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -332,6 +363,9 @@ def relu(
     }
     """
     return current_backend(x).relu(x, out=out)
+
+
+relu.jax_like = _relu_jax_like
 
 
 @handle_exceptions
