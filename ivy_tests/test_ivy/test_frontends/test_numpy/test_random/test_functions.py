@@ -412,7 +412,11 @@ def test_numpy_standard_gamma(
 
 @handle_frontend_test(
     fn_tree="numpy.random.standard_t",
+    df=st.floats(min_value=0, max_value=20, exclude_min=True),
     df_dtypes=helpers.get_dtypes("integer", full=False),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
     size_dtypes=helpers.get_dtypes("integer", full=False),
     test_with_out=st.just(False),
 )
@@ -435,6 +439,8 @@ def test_numpy_standard_t(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        df=df,
+        size=size,
     )
 
 
