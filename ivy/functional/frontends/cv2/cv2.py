@@ -1794,7 +1794,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
 
         r = Y + 1.403 * (Cr - DELTA)
         g = Y - 0.714 * (Cr - DELTA) - 0.344 * (Cb - DELTA)
-        b = Y + 1.733 * (Cb - DELTA)
+        b = Y + 1.773 * (Cb - DELTA)
 
         r = r.clip(0, 255)
         g = g.clip(0, 255)
