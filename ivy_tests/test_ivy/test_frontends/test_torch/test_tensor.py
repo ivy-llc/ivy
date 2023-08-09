@@ -8954,7 +8954,7 @@ def test_torch_div_(
     init_tree="torch.tensor",
     method_name="divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float64", "int16"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
         large_abs_safety_factor=2.5,

@@ -1403,15 +1403,7 @@ def test_torch_mul(
     fn_tree="torch.div",
     aliases=["torch.divide"],
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float64",
-            "float32",
-            "int64",
-            "int32",
-            "int16",
-            "int8",
-            "uint8",
-        ],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         large_abs_safety_factor=2.5,
         small_abs_safety_factor=2.5,

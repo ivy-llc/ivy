@@ -1384,7 +1384,7 @@ class Tensor:
         return self
 
     @with_unsupported_dtypes(
-        {"2.0.1 and below": ("float16", "bfloat16", "complex64", "complex128", "bool")},
+        {"2.0.1 and below": ("bool", "bfloat16", "complex", "float16")},
         "torch",
     )
     def divide(self, other, *, rounding_mode=None):
