@@ -1812,7 +1812,62 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
             res[:, :, 2] = r
 
         return res
+    elif code == COLOR_RGB2HSV:
+        channels = split(src)
 
+        if code == COLOR_RGB2HSV:
+            r, g, b = channels
+        else:
+            raise ivy.exceptions.IvyException("Invalid color conversion code")
+
+        r = r.astype(ivy.float16)
+        g = g.astype(ivy.float16)
+        b = b.astype(ivy.float16)
+
+        r = r / 255.0
+        g = g / 255.0
+        b = b / 255.0
+
+        V = ivy.maximum(r, g)
+        V = ivy.maximum(V, b)
+
+        minimum = ivy.minimum(r, g)
+        minimum = ivy.minimum(minimum, b)
+
+        V_min_diff = V - minimum
+
+        S = ivy.where(V != 0, V_min_diff / V, 0)
+
+        H = ivy.where(
+            ivy.logical_and(ivy.equal(r, g), ivy.equal(g, b)),
+            0,
+            ivy.where(
+                V == r,
+                (60 * (g - b)) / V_min_diff,
+                ivy.where(
+                    V == g,
+                    120 + (60 * (b - r)) / V_min_diff,
+                    240 + (60 * (r - g)) / V_min_diff,
+                ),
+            ),
+        )
+
+        H = ivy.where(H < 0, H + 360, H)
+
+        V = V * 255
+        S = S * 255
+        H = H / 2
+
+        res = ivy.zeros_like(src, dtype=src.dtype)
+
+        if code == COLOR_RGB2HSV:
+            res[:, :, 0] = H
+            res[:, :, 1] = S
+            res[:, :, 2] = V
+        else:
+            raise ivy.exceptions.IvyException("Invalid color conversion code")
+
+        return res
     else:
         raise ivy.exceptions.IvyNotImplementedException(
             "not implemented for this type of conversion yet"
