@@ -2625,10 +2625,10 @@ reduce_window.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-# @outputs_to_ivy_arrays
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2781,7 +2781,6 @@ def ifftn(
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
-# @inputs_to_ivy_arrays
 @to_native_arrays_and_back
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
