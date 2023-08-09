@@ -89,6 +89,11 @@ def subtract(x, y, name=None):
 def sqrt(x, name=None):
     return ivy.sqrt(x)
 
+@with_supported_dtypes({"2.5.0 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def rsqrt_(x, name=None):
+    return ivy.reciprocal(ivy.sqrt(x))
+
 
 @with_unsupported_dtypes({"2.5.0 and below": ("float16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
