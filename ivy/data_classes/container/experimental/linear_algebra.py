@@ -885,3 +885,115 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_mode_dot(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        matrix_or_vector: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mode: Union[int, ivy.Container],
+        transpose: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.mode_dot. This method simply wraps
+        the function, and so the docstring for ivy.mode_dot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor of shape ``(i_1, ..., i_k, ..., i_N)``
+        matrix_or_vector
+            1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
+            matrix or vectors to which to n-mode multiply the tensor
+        mode
+            int in the range(1, N)
+        transpose
+            If True, the matrix is transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
+
+        Returns
+        -------
+        ivy.Container
+            `mode`-mode product of `tensor` by `matrix_or_vector`
+            * of shape :math:`(i_1, ..., i_{k-1}, J, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a matrix
+            * of shape :math:`(i_1, ..., i_{k-1}, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a vector
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "mode_dot",
+            x,
+            matrix_or_vector,
+            mode,
+            transpose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def mode_dot(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        matrix_or_vector: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        mode: Union[int, ivy.Container],
+        transpose: Optional[Union[bool, ivy.Container]] = False,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """
+        ivy.Container instance method variant of ivy.mode_dot. This method simply wraps
+        the function, and so the docstring for ivy.mode_dot also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor of shape ``(i_1, ..., i_k, ..., i_N)``
+        matrix_or_vector
+            1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
+            matrix or vectors to which to n-mode multiply the tensor
+        mode
+            int in the range(1, N)
+        transpose
+            If True, the matrix is transposed.
+            For complex tensors, the conjugate transpose is used.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the result can broadcast to.
+
+        Returns
+        -------
+        ivy.Container
+            `mode`-mode product of `tensor` by `matrix_or_vector`
+            * of shape :math:`(i_1, ..., i_{k-1}, J, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a matrix
+            * of shape :math:`(i_1, ..., i_{k-1}, i_{k+1}, ..., i_N)`
+            if matrix_or_vector is a vector
+        """
+        return self.static_mode_dot(
+            self,
+            matrix_or_vector,
+            mode,
+            transpose,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

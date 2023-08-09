@@ -709,6 +709,8 @@ def test_khatri_rao(*, data, test_flags, backend_fw, fn_name, on_device):
     )
 
 
+# The following two tests have been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/tests/test_khatri_rao.py
 @pytest.mark.parametrize("columns, rows", [(4, [3, 4, 2])])
 def test_khatri_rao_tensorly_1(columns, rows):
     columns = columns
@@ -778,14 +780,12 @@ def _mode_dot_data(draw):
     return t1_dtype + t2_dtype, t1[0], t2[0], mode
 
 
-# TODO fix instance method
 @handle_test(
     fn_tree="functional.ivy.experimental.mode_dot",
     data=_mode_dot_data(),
 )
 def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, t1, t2, mode = data
-    test_flags.instance_method = False
     helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,
@@ -794,7 +794,7 @@ def test_mode_dot(*, data, test_flags, backend_fw, fn_name, on_device):
         rtol_=1e-1,
         atol_=1e-1,
         input_dtypes=input_dtypes,
-        tensor=t1,
+        x=t1,
         matrix_or_vector=t2,
         mode=mode,
     )

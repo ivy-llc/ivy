@@ -666,6 +666,8 @@ def khatri_rao(
     return res
 
 
+# The following code has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/n_mode_product.py#L5
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -673,10 +675,12 @@ def khatri_rao(
 @handle_array_function
 @handle_device_shifting
 def mode_dot(
-    tensor: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
     matrix_or_vector: Union[ivy.Array, ivy.NativeArray],
     mode: int,
     transpose: Optional[bool] = False,
+    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -684,7 +688,7 @@ def mode_dot(
 
     Parameters
     ----------
-    tensor
+    x
         tensor of shape ``(i_1, ..., i_k, ..., i_N)``
     matrix_or_vector
         1D or 2D array of shape ``(J, i_k)`` or ``(i_k, )``
@@ -694,6 +698,9 @@ def mode_dot(
     transpose
         If True, the matrix is transposed.
         For complex tensors, the conjugate transpose is used.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        result can broadcast to.
 
     Returns
     -------
@@ -706,16 +713,16 @@ def mode_dot(
     """
     # the mode along which to fold might decrease if we take product with a vector
     fold_mode = mode
-    new_shape = list(tensor.shape)
+    new_shape = list(x.shape)
     ndims = len(matrix_or_vector.shape)
 
     if ndims == 2:  # Tensor times matrix
         # Test for the validity of the operation
         dim = 0 if transpose else 1
-        if matrix_or_vector.shape[dim] != tensor.shape[mode]:
+        if matrix_or_vector.shape[dim] != x.shape[mode]:
             raise ValueError(
-                f"shapes {tensor.shape} and {matrix_or_vector.shape} not aligned in"
-                f" mode-{mode} multiplication: {tensor.shape[mode]} (mode {mode}) !="
+                f"shapes {x.shape} and {matrix_or_vector.shape} not aligned in"
+                f" mode-{mode} multiplication: {x.shape[mode]} (mode {mode}) !="
                 f" {matrix_or_vector.shape[dim]} (dim 1 of matrix)"
             )
 
@@ -726,10 +733,10 @@ def mode_dot(
         vec = False
 
     elif ndims == 1:  # Tensor times vector
-        if matrix_or_vector.shape[0] != tensor.shape[mode]:
+        if matrix_or_vector.shape[0] != x.shape[mode]:
             raise ValueError(
-                f"shapes {tensor.shape} and {matrix_or_vector.shape} not aligned for"
-                f" mode-{mode} multiplication: {tensor.shape[mode]} (mode {mode}) !="
+                f"shapes {x.shape} and {matrix_or_vector.shape} not aligned for"
+                f" mode-{mode} multiplication: {x.shape[mode]} (mode {mode}) !="
                 f" {matrix_or_vector.shape[0]} (vector size)"
             )
         if len(new_shape) > 1:
@@ -744,7 +751,7 @@ def mode_dot(
             f"Provided array of dimension {ndims} not in [1, 2]."
         )
 
-    res = ivy.matmul(matrix_or_vector, ivy.unfold(tensor, mode))
+    res = ivy.matmul(matrix_or_vector, ivy.unfold(x, mode))
 
     if vec:  # We contracted with a vector, leading to a vector
         return ivy.reshape(res, new_shape, out=out)
