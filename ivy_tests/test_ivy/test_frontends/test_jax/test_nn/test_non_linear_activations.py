@@ -102,7 +102,7 @@ def test_jax_soft_sign(
 @handle_frontend_test(
     fn_tree="jax.nn.silu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
@@ -732,7 +732,7 @@ def test_jax_hard_swish(
 @handle_frontend_test(
     fn_tree="jax.nn.hard_silu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("float_and_integer"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
     ),
@@ -792,7 +792,7 @@ def test_jax_hard_sigmoid(
 @handle_frontend_test(
     fn_tree="jax.nn.selu",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_integer"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",

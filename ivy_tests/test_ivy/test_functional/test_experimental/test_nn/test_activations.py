@@ -133,7 +133,7 @@ def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.selu",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         safety_factor_scale="log",
         small_abs_safety_factor=20,
     ),

@@ -305,16 +305,29 @@ def logsigmoid(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def selu(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Apply the scaled exponential linear unit function element-wise.
+
+    If the input is complex, then by default each element is scaled by `alpha` if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative. This behaviour can be changed by specifying a different
+    `complex_mode`.
 
     Parameters
     ----------
     x
         input array
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

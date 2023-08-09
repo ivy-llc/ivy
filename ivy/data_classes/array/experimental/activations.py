@@ -194,7 +194,13 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         """
         return ivy.logsigmoid(self._data)
 
-    def selu(self, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def selu(
+        self,
+        /,
+        *,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """
         Apply the scaled exponential linear unit function element-wise.
 
@@ -202,6 +208,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ----------
         self
             input array
+        complex_mode
+            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -229,7 +237,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-1.11133075,  0.,  1.05070102,  2.10140204,  3.15210295,
                     4.20280409,  5.25350523,  6.30420589,  7.35490704])
         """
-        return ivy.selu(self._data, out=out)
+        return ivy.selu(self._data, complex_mode=complex_mode, out=out)
 
     def silu(
         self: ivy.Array,
