@@ -442,6 +442,7 @@ def test_paddle_triplet_margin_loss(
     )
 
 
+
 @handle_frontend_test(    
     fn_tree="paddle.nn.functional.nll_loss",
     dtype_and_x=helpers.dtype_and_values(
