@@ -99,6 +99,14 @@ def standard_gamma(shape, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def standard_t(df, size=None):
+    numerator = ivy.random_normal(mean=0.0, std=1.0, shape=size, dtype="float64")
+    denominator = ivy.gamma(df / 2, 1.0, shape=size, dtype="float64")
+    return ivy.sqrt(df / 2) * ivy.divide(numerator, ivy.sqrt(denominator))
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def binomial(n, p, size=None):
     if p < 0 or p > 1:
         raise ValueError("p must be in the interval (0, 1)")
