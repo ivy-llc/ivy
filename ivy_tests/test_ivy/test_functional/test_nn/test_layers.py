@@ -719,39 +719,39 @@ def test_conv1d(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
     )
 
 
-# # conv1d_transpose
-# @handle_test(
-#     fn_tree="functional.ivy.conv1d_transpose",
-#     x_f_d_df=x_and_filters(
-#         dim=1,
-#         transpose=True,
-#         bias=True,
-#     ),
-#     ground_truth_backend="jax",
-# )
-# def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
-#     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
-#         x_f_d_df
-#     )
-#     _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
-#     helpers.test_function(
-#         input_dtypes=dtype,
-#         test_flags=test_flags,
-#         backend_to_test=backend_fw,
-#         fn_name=fn_name,
-#         on_device=on_device,
-#         rtol_=1e-2,
-#         atol_=1e-2,
-#         # tensorflow does not work with dilations > 1 on cpu
-#         x=x,
-#         filters=filters,
-#         strides=stride,
-#         padding=pad,
-#         output_shape=output_shape,
-#         data_format=data_format,
-#         dilations=dilations[0],
-#         bias=bias,
-#     )
+# conv1d_transpose
+@handle_test(
+    fn_tree="functional.ivy.conv1d_transpose",
+    x_f_d_df=x_and_filters(
+        dim=1,
+        transpose=True,
+        bias=True,
+    ),
+    ground_truth_backend="jax",
+)
+def test_conv1d_transpose(*, x_f_d_df, test_flags, backend_fw, fn_name, on_device):
+    dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc, bias = (
+        x_f_d_df
+    )
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations[0])
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        # tensorflow does not work with dilations > 1 on cpu
+        x=x,
+        filters=filters,
+        strides=stride,
+        padding=pad,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations[0],
+        bias=bias,
+    )
 
 
 # conv2d
