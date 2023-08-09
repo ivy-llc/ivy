@@ -1,7 +1,7 @@
 # global
 import math
 import itertools
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 from functools import reduce as _reduce
 import builtins
 
@@ -33,12 +33,14 @@ _max = builtins.max
 @handle_device_shifting
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -47,17 +49,22 @@ def max_pool1d(
     Parameters
     ----------
     x
-        Input image *[batch_size, w, d_in]*.
+        Input image *[batch_size, w, d_in]* if data_format is "NWC".
     kernel
         Size of the kernel i.e., the sliding window for each
         dimension of input. *[w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimension paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0)])
     data_format
-        NWC" or "NCW". Defaults to "NWC".
+        "NWC" or "NCW". Defaults to "NWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -85,9 +92,25 @@ def max_pool1d(
     ivy.array([[[ 4.,  5.,  6.,  7.]],
 
        [[16., 17., 18., 19.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    ivy.array([[[ 1.,  3.],
+            [ 5.,  7.],
+            [ 9., 11.]],
+
+        [[13., 15.],
+            [17., 19.],
+            [21., 23.]]])
     """
     return ivy.current_backend(x).max_pool1d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
@@ -169,13 +192,13 @@ def max_unpool1d(
 @handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -196,6 +219,11 @@ def max_pool2d(
         indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -252,12 +280,14 @@ def max_pool2d(
 @handle_device_shifting
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -266,16 +296,21 @@ def max_pool3d(
     Parameters
     ----------
     x
-        Input volume *[batch_size,d,h,w,d_in]*.
+        Input tensor *[batch_size,d,h,w,d_in]* if data_format is "NDHWC".
     kernel
         Convolution filters *[d,h,w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0), (0, 1), (1, 1)])
     data_format
-        NDHWC" or "NCDHW". Defaults to "NDHWC".
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -313,7 +348,14 @@ def max_pool3d(
         [[[46., 47.]]]]])
     """
     return ivy.current_backend(x).max_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 

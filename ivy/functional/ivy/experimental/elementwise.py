@@ -1294,3 +1294,43 @@ def modf(
     (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
     """
     return ivy.current_backend(x).modf(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def digamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the logarithmic derivative of the gamma function at x.
+
+    Note
+    ----
+    The Ivy version only accepts real-valued inputs.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Array with values computed from digamma function from
+        input arrays' values, element-wise.
+
+    Examples
+    --------
+    >>> x = ivy.array([.9, 3, 3.2])
+    >>> y = ivy.digamma(x)
+    ivy.array([-0.7549271   0.92278427  0.9988394])
+    """
+    return ivy.current_backend(x).digamma(x, out=out)
