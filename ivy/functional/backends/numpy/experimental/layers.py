@@ -1048,10 +1048,10 @@ def rfftn(
 
 def fftn(
     x: np.ndarray,
+    /,
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
-    *,
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.fft.fftn(x, s, axes, norm).astype(x.dtype)
+    return np.fft.fftn(x, s=s, axes=axes, norm=norm).astype(x.dtype)

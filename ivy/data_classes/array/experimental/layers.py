@@ -1109,9 +1109,9 @@ class _ArrayWithLayersExperimental(abc.ABC):
 
     def fftn(
         self: ivy.Array,
+        /,
         s: Optional[Union[int, Tuple[int, ...]]] = None,
         axes: Optional[Union[int, Tuple[int, ...]]] = None,
-        *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:

@@ -871,10 +871,10 @@ def rfftn(
 
 def fftn(
     x: JaxArray,
+    /,
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
-    *,
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.fft.fftn(x, s, axes, norm)
+    return jnp.fft.fftn(x, s=s, axes=axes, norm=norm)

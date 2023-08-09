@@ -2317,9 +2317,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
     def fftn(
         self: ivy.Container,
+        /,
         s: Optional[Union[int, Tuple[int, ...]]] = None,
         axes: Optional[Union[int, Tuple[int, ...]]] = None,
-        *,
         norm: str = "backward",
         out: Optional[ivy.Array] = None,
     ):

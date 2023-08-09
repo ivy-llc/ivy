@@ -1420,7 +1420,7 @@ def fft_operations(x, rank, norm_factor):
     return x
 
 
-def fftn_helper(x, shape, axes, norm):
+def _fftn_helper(x, shape, axes, norm):
     x = fft_input_validation(tf.convert_to_tensor(x))
     input_shape = x.shape
     input_rank_tensor = tf.rank(x)
@@ -1456,13 +1456,13 @@ def fftn_helper(x, shape, axes, norm):
 
 def fftn(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
-    *,
     norm: Optional[str] = "backward",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    result = fftn_helper(x, s, axes, norm)
+    result = _fftn_helper(x, s, axes, norm)
 
     if out is not None:
         tf.assign(out, result)

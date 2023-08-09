@@ -500,10 +500,10 @@ def fft2(
 
 def fftn(
     x: paddle.Tensor,
+    /,
     s: Optional[Union[int, Tuple[int]]] = None,
     axes: Optional[Union[int, Tuple[int]]] = None,
-    *,
     norm: Optional[str] = "backward",
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    return paddle.fft.fftn(x, s, axes, norm)
+    return paddle.fft.fftn(x, s=s, axes=axes, norm=norm)
