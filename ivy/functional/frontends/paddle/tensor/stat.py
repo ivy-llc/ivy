@@ -32,9 +32,7 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
         a, q, axis=axis, keepdims=keepdims, interpolation=interpolation, out=out
     )
 
-@with_unsupported_dtypes(
-    {"2.4.2 and below": ("float16", "bfloat16")}, 
-    "paddle"
+@with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 )
 @to_ivy_arrays_and_back
 def quantile(x, q, axis=None, keepdims=False, name=None):
