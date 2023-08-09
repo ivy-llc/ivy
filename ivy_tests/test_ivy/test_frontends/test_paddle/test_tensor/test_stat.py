@@ -169,11 +169,11 @@ def test_paddle_nanmedian(
     keepdims=st.booleans(),
     q=st.floats(0.0, 1.0),
 )
-def test_paddle_median(
+def test_paddle_quantile(
     *,
     q,
     dtype_and_x,
-    keepdim,
+    keepdims,
     frontend,
     test_flags,
     fn_tree,
