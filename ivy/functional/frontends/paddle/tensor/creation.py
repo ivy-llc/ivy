@@ -206,7 +206,7 @@ def complex(real, imag, name=None):
     return complex_array
 
 
-@with_unsupported_dtypes({"2.5.0 and below": ("bfloat16", "uint16")}, "paddle")
+@with_unsupported_dtypes({"2.5.1 and below": ("bfloat16", "uint16")}, "paddle")
 @to_ivy_arrays_and_back
 def clone(x):
     return ivy.copy_array(x)
