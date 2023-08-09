@@ -1422,17 +1422,6 @@ GLOBAL_PROPS = [
     "default_int_dtype",
     "default_complex_dtype",
     "default_uint_dtype",
-    "global_attr",
-    "jax_backend",
-    "mxnet_backend",
-    "numpy_backend",
-    "paddle_backend",
-    "tensorflow_backend",
-    "torch_backend",
-    "nest_at_index",
-    "nest_at_indices",
-    "split_factor",
-    "sub_backend",
 ]
 
 
