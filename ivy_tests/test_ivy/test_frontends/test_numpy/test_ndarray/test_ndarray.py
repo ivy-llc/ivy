@@ -1400,7 +1400,7 @@ def test_numpy_std(
     input_dtypes, x, axis = dtype_x_axis
     (
         where,
-        method_input_dtypes,
+        input_dtypes,
         method_flags,
     ) = np_frontend_helpers.handle_where_and_array_bools(
         where=[where[0][0]] if isinstance(where, list) else where,
