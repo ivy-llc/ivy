@@ -49,6 +49,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         *args,
         device=None,
         v=None,
+        buffers=None,
         build_mode="on_init",
         compile_on_next_step=False,
         store_vars=True,
@@ -159,7 +160,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
                 if v or with_partial_v:
                     # build only if `v` or `with_partial_v`
-                    self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+                    self.build(
+                        *args,
+                        dynamic_backend=dynamic_backend,
+                        buffers=buffers,
+                        **kwargs,
+                    )
                 # we don't want to delete the class variable now
                 # since there could be other child modules
                 return
@@ -174,7 +180,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 # move on
                 Module._init_var.pop()
                 return
-            self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+            self.build(
+                *args, dynamic_backend=dynamic_backend, buffers=buffers, **kwargs
+            )
             if Module._init_var[-1] == self.__class__.__name__:
                 # you delete it, only if this is the class that caused it's creation
                 Module._init_var.pop()
@@ -184,7 +192,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 del Module._init_var
 
             return
-        self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+        self.build(*args, dynamic_backend=dynamic_backend, buffers=buffers**kwargs)
 
     # Private #
     # --------#
@@ -292,6 +300,13 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
     def _find_child_objects(self, /, *, obj=None, _visited=None):
         pass
+
+    def _find_buffers(self):
+        for obj in self.__dict__.keys():
+            if isinstance(getattr(self, obj), ivy.Module):
+                # simply fetch it's buffer
+                if hasattr(getattr(self, obj), "buffers"):
+                    self.buffers.update({obj: getattr(self, obj).buffers})
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
@@ -454,11 +469,15 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         if self.buffers:
             buffer_dict = {}
             for buffer in self.buffers:
-                buffer_dict[buffer] = getattr(self, buffer)
+                buffer_dict[buffer] = (
+                    getattr(self, buffer)
+                    if not isinstance(getattr(self, buffer), ivy.Module)
+                    else getattr(self, buffer)._get_buffers()
+                )
             return buffer_dict
         return {}
 
-    def _set_buffers(self, buffers, override=False):
+    def _set_buffers(self, buffers, override=False, nesting=None):
         """
         Set the buffers of the given class instance, according to the buffers passed.
 
@@ -472,15 +491,25 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """
         for buffer in buffers:
             if hasattr(self, buffer):
-                setattr(self, buffer, buffers[buffer])
-            elif not override:
+                # check if this value is another nested dictionary, if yes
+                # we recurse
+                if isinstance(buffers[buffer], dict):
+                    getattr(self, buffer)._set_buffers(
+                        buffers=buffers[buffer], override=override
+                    )
+                else:
+                    setattr(self, buffer, buffers[buffer])
+            elif not override or (override and isinstance(buffers[buffer], dict)):
+                # do a quick check to see if this is nested case
+                # we can't set buffers for module objects not yet
+                # created, even if override=True
                 raise ivy.exceptions.IvyNotImplementedException(
                     f"{buffer} hasn't been defined for the given Module structure"
                 )
             else:
                 setattr(self, buffer, buffers[buffer])
                 if hasattr(self, "buffers"):
-                    self.buffers.update(buffer)
+                    self.buffers.update({buffer})
                 else:
                     setattr(self, "buffers", {buffer})
 
@@ -565,7 +594,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, **kwargs):
+    def _call(self, *args, v=None, buffers=None, **kwargs):
         """
         Compute forward pass of the layer, treating layer instance as callable function.
 
@@ -587,9 +616,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 from_call=True,
                 dtype=_get_first_array(*args, **kwargs).dtype,
             )
-        if getattr(kwargs, "buffers", None):
+        if buffers:
             buffers_orig = self._get_buffers()
-            self._set_buffers(kwargs["buffers"])
+            self._set_buffers(buffers)
         if v is not None:
             v_orig = self.v
             self.v = (
@@ -599,7 +628,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             )
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
-            if getattr(kwargs, "buffers", None):
+            if buffers:
                 self._set_buffers(buffers_orig)
             return ret
         elif hasattr(self.__call__, "wrapped"):
@@ -612,6 +641,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self,
         *args,
         v=None,
+        buffers=None,
         stateful=None,
         arg_stateful_idxs=None,
         kwarg_stateful_idxs=None,
@@ -673,7 +703,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
         # convert variables to native arrays so that they can be tracked
         v = ivy.to_native(v)
-        ret = self._call(*args, v=v, **kwargs)
+        ret = self._call(*args, v=v, buffers=buffers, **kwargs)
         self._unset_submod_flags()
         return ret
 
@@ -700,6 +730,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         device=None,
         dtype=None,
         dynamic_backend=None,
+        buffers=None,
         **kwargs,
     ):
         """
@@ -826,6 +857,12 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         if not self._store_vars:
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
+
+        # once all variables built, find and assign buffers
+        if buffers:
+            self._set_buffers(buffers=buffers)
+            self._find_buffers()
+
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
     def __repr__(self):
