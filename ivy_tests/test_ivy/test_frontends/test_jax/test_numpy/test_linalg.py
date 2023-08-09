@@ -5,9 +5,12 @@ import numpy as np
 from hypothesis import strategies as st, assume
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
+from ivy_tests.test_ivy.helpers import (
+    assert_all_close,
+    handle_frontend_test,
+    update_backend,
+)
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
     _matrix_rank_helper,
@@ -43,6 +46,7 @@ def test_jax_svd(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = dtype_and_x
@@ -53,6 +57,7 @@ def test_jax_svd(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -63,7 +68,8 @@ def test_jax_svd(
     )
 
     if compute_uv:
-        ret = [ivy.to_numpy(x) for x in ret]
+        with update_backend(backend_fw) as ivy_backend:
+            ret = [ivy_backend.to_numpy(x) for x in ret]
         frontend_ret = [np.asarray(x) for x in frontend_ret]
 
         u, s, vh = ret
@@ -74,14 +80,18 @@ def test_jax_svd(
             ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
             rtol=1e-2,
             atol=1e-2,
+            backend=backend_fw,
             ground_truth_backend=frontend,
         )
     else:
+        with update_backend(backend_fw) as ivy_backend:
+            ret = ivy_backend.to_numpy(ret)
         assert_all_close(
-            ret_np=ivy.to_numpy(ret),
+            ret_np=ret,
             ret_from_gt_np=np.asarray(frontend_ret[0]),
             rtol=1e-2,
             atol=1e-2,
+            backend=backend_fw,
             ground_truth_backend=frontend,
         )
 
@@ -98,11 +108,13 @@ def test_jax_det(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -135,6 +147,7 @@ def test_jax_eig(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
 ):
     dtype, x = dtype_and_x
@@ -145,6 +158,7 @@ def test_jax_eig(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -153,7 +167,8 @@ def test_jax_eig(
         a=x,
     )
 
-    ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     L, Q = ret
@@ -163,6 +178,8 @@ def test_jax_eig(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
     )
 
 
@@ -189,6 +206,7 @@ def test_jax_eigh(
     dtype_and_x,
     UPLO,
     symmetrize_input,
+    backend_fw,
     on_device,
     fn_tree,
     frontend,
@@ -201,6 +219,7 @@ def test_jax_eigh(
 
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -210,7 +229,8 @@ def test_jax_eigh(
         UPLO=UPLO,
         symmetrize_input=symmetrize_input,
     )
-    ret = [ivy.to_numpy(x) for x in ret]
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
 
     L, Q = ret
@@ -220,6 +240,8 @@ def test_jax_eigh(
         ret_np=Q @ np.diag(L) @ Q.T,
         ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
         atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
     )
 
 
@@ -246,10 +268,12 @@ def test_jax_inv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
@@ -285,6 +309,7 @@ def test_jax_eigvalsh(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -293,6 +318,7 @@ def test_jax_eigvalsh(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -326,11 +352,13 @@ def test_jax_qr(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         test_values=False,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -338,7 +366,8 @@ def test_jax_qr(
         a=np.asarray(x[0], dtype[0]),
         mode=mode,
     )
-    ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
+    with update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x).astype(np.float64) for x in ret]
     frontend_ret = [x.astype(np.float64) for x in frontend_ret]
 
     Q, R = ret
@@ -348,6 +377,8 @@ def test_jax_qr(
         ret_np=Q @ R,
         ret_from_gt_np=frontend_Q @ frontend_R,
         atol=1e-02,
+        backend=backend_fw,
+        ground_truth_backend=frontend,
     )
 
 
@@ -374,6 +405,7 @@ def test_jax_eigvals(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.array(x[0], dtype=dtype[0])
@@ -383,6 +415,7 @@ def test_jax_eigvals(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -414,6 +447,7 @@ def test_jax_cholesky(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
@@ -423,6 +457,7 @@ def test_jax_cholesky(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -453,11 +488,13 @@ def test_jax_slogdet(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -480,6 +517,7 @@ def test_jax_matrix_rank(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, hermitian, atol, rtol = dtype_x_hermitian_atol_rtol
     assume(matrix_is_stable(x, cond_limit=10))
@@ -487,6 +525,7 @@ def test_jax_matrix_rank(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         M=x,
@@ -509,6 +548,7 @@ def test_jax_solve(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype1, x1, _ = x
     input_dtype2, x2 = y
@@ -516,6 +556,7 @@ def test_jax_solve(
         input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-1,
@@ -582,6 +623,7 @@ def test_jax_norm(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x, axis = dtype_values_axis
 
@@ -592,6 +634,7 @@ def test_jax_norm(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
@@ -628,6 +671,7 @@ def test_jax_matrix_power(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -636,6 +680,7 @@ def test_jax_matrix_power(
         atol=1e-01,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=np.asarray(x[0], dtype=dtype[0]),
@@ -693,12 +738,14 @@ def test_jax_tensorsolve(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
         input_dtypes=[input_dtype],
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
@@ -729,12 +776,14 @@ def test_jax_pinv(
     frontend,
     fn_tree,
     test_flags,
+    backend_fw,
     rcond,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
@@ -799,6 +848,7 @@ def test_jax_tensorinv(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     dtype, x, ind = params
     helpers.test_frontend_function(
@@ -807,6 +857,7 @@ def test_jax_tensorinv(
         atol=1e-01,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         a=x,
@@ -826,6 +877,7 @@ def test_jax_cond(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype, x = dtype_x_p
     helpers.test_frontend_function(
@@ -834,8 +886,58 @@ def test_jax_cond(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
         p=x[1],
+    )
+
+
+# multi_dot
+@handle_frontend_test(
+    fn_tree="jax.lax.linalg.multi_dot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_lax_multi_dot(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        args=(x,),
+    )
+
+    ret = ivy.to_numpy(ret)
+    frontend_ret = np.asarray(frontend_ret)
+
+    assert_all_close(
+        ret_np=ret,
+        ret_from_gt_np=frontend_ret,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend=frontend,
     )

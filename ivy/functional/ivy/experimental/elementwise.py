@@ -12,11 +12,68 @@ from ivy.func_wrapper import (
     handle_array_function,
     infer_dtype,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+def lgamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the natural logarithm of the absolute value of the gamma function on x.
+
+    Parameters
+    ----------
+    x
+        input array. Should have a floating-point data type.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array containing the natural log of Gamma(x) of each element in x.
+        The returned array must have a floating-point data type determined
+        by :ref:`type-promotion`.
+
+    Examples
+    --------
+    >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
+    ...                   b=ivy.array([4.5, 5.3, 2.3]))
+    >>> y = x.lgamma()
+    >>> print(y)
+    {
+        a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
+        b: ivy.array([2.45373821, 3.63963795, 0.15418935])
+    }
+
+    >>> x = ivy.array([1 , 2 , 3 ])
+    >>> y = x.lgamma()
+    >>> print(y)
+    ivy.array([0., 0., 0.69314718])
+
+    >>> x = ivy.array([4.5, -4, -5.6])
+    >>> x.lgamma(out = x)
+    >>> print(x)
+    ivy.array([2.45373654, inf, -4.6477685 ])
+    """
+    return ivy.current_backend(x).lgamma(x, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -93,6 +150,7 @@ def sinc(
     return ivy.current_backend(x).sinc(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -138,6 +196,7 @@ def fmax(
     return ivy.current_backend().fmax(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -185,6 +244,7 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -232,6 +292,7 @@ def copysign(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -290,6 +351,7 @@ def count_nonzero(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -348,6 +410,7 @@ def nansum(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -412,6 +475,7 @@ def isclose(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -448,6 +512,7 @@ def signbit(
     return ivy.current_backend(x).signbit(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -484,6 +549,7 @@ def hypot(
     return ivy.current_backend(x1, x2).hypot(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -540,6 +606,7 @@ def diff(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -613,6 +680,7 @@ def allclose(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -651,6 +719,7 @@ def fix(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -692,6 +761,7 @@ def nextafter(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -735,6 +805,7 @@ def zeta(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -813,6 +884,7 @@ def gradient(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -900,6 +972,7 @@ def binarizer(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -982,6 +1055,7 @@ def conj(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1138,6 +1212,7 @@ def lerp(
 
 lerp.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -1147,6 +1222,7 @@ lerp.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1184,6 +1260,7 @@ def frexp(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1217,3 +1294,43 @@ def modf(
     (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
     """
     return ivy.current_backend(x).modf(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+def digamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the logarithmic derivative of the gamma function at x.
+
+    Note
+    ----
+    The Ivy version only accepts real-valued inputs.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Array with values computed from digamma function from
+        input arrays' values, element-wise.
+
+    Examples
+    --------
+    >>> x = ivy.array([.9, 3, 3.2])
+    >>> y = ivy.digamma(x)
+    ivy.array([-0.7549271   0.92278427  0.9988394])
+    """
+    return ivy.current_backend(x).digamma(x, out=out)
