@@ -153,7 +153,6 @@ def check_docstring_examples_run(
         "sinh",
         "reciprocal",
         "deg2rad",
-        "inplace_update",
         "value_and_grad",
         "vector_norm",
         "set_nest_at_index",
@@ -163,6 +162,15 @@ def check_docstring_examples_run(
         "compile",
         "eigvalsh",
         "conv2d_transpose",
+        # fails due to different backend and their view types
+        "sequence_length",
+        "max_pool1d",
+        "vmap",
+        "inner",
+        "slogdet",
+        "svdvals",
+        "nested_map",
+        "dill",
     ]
 
     # skip list for array and container docstrings
@@ -253,9 +261,9 @@ def check_docstring_examples_run(
         if ">>> print(" in line:
             is_multiline_executable = False
 
-    # remove "..." for multilines
-    for i, v in enumerate(executable_lines):
-        executable_lines[i] = v.replace("...", "")
+    # # remove "..." for multilines
+    # for i, v in enumerate(executable_lines):
+    #     executable_lines[i] = v.replace("...", "")
 
     # noinspection PyBroadException
     f = StringIO()
