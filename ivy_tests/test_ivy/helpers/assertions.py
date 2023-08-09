@@ -1,5 +1,6 @@
 import ivy
 import numpy as np
+import collections
 
 TOLERANCE_DICT = {
     "float16": 1e-2,
@@ -153,7 +154,10 @@ def value_test(
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
             if specific_tolerance_dict is not None:
                 dtype = str(ret_np_from_gt.dtype)
-                rtol = specific_tolerance_dict.get(dtype, rtol)
+                if isinstance(specific_tolerance_dict, dict):
+                    rtol = specific_tolerance_dict.get(dtype, rtol)
+                elif isinstance(specific_tolerance_dict, collections.defaultdict):
+                    rtol = specific_tolerance_dict[dtype]
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
