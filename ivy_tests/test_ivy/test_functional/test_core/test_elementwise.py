@@ -511,7 +511,9 @@ def test_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # exp
 @handle_test(
     fn_tree="functional.ivy.exp",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_exp(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x

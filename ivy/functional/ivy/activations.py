@@ -21,7 +21,7 @@ def _gelu_jax_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    fn_original=None,
+    fn_original: Optional[Callable] = None,
     approximate: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -35,7 +35,8 @@ def _gelu_jax_like(
             1.0,
             ivy.tanh(
                 ivy.multiply(
-                    0.7978845608, ivy.add(x, ivy.multiply(0.044715, ivy.pow(x, 3)))
+                    ivy.sqrt(2 / ivy.pi).astype(x.dtype),
+                    ivy.add(x, ivy.multiply(0.044715, ivy.pow(x, 3))),
                 )
             ),
         ),

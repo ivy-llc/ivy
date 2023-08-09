@@ -720,20 +720,17 @@ def pow(
         paddle.int16,
         paddle.uint8,
         paddle.float16,
-        paddle.complex64,
-        paddle.complex128,
         paddle.bool,
     ]:
-        if paddle.is_complex(x1):
-            # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
-            r = paddle.abs(x1)
-            theta = paddle.angle(x1)
-            power = x2 * paddle.complex(paddle.log(r), theta)
-            result = paddle.exp(power.real()) * paddle.complex(
-                paddle.cos(power.imag()), paddle.sin(power.imag())
-            )
-            return result
         return paddle.pow(x1.astype("float32"), x2.astype("float32")).astype(ret_dtype)
+    if x1.dtype in [paddle.complex64, paddle.complex128]:
+        # https://math.stackexchange.com/questions/476968/complex-power-of-a-complex-number
+        r = paddle.abs(x1)
+        theta = paddle.angle(x1)
+        res_mag = paddle.pow(r, x2.real()) / paddle.exp(x2.imag() * theta)
+        res_ang = paddle.log(r) * x2.imag() + theta * x2.real()
+        result = res_mag * paddle.complex(paddle.cos(res_ang), paddle.sin(res_ang))
+        return result.astype(ret_dtype)
     return paddle.pow(x1, x2)
 
 
@@ -979,6 +976,11 @@ def log(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 def exp(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         return paddle.exp(x)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        return paddle.multiply(
+            paddle.exp(x.real()),
+            paddle.complex(paddle.cos(x.imag()), paddle.sin(x.imag())),
+        )
     return pow(math.e, x).astype(x.dtype)
 
 
