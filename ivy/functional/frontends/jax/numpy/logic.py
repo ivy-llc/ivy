@@ -7,7 +7,7 @@ from ivy.functional.frontends.jax.numpy import (
     promote_types_of_jax_inputs as promote_jax_arrays,
 )
 from ivy.utils.exceptions import IvyNotImplementedException
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 
 
 # --- Helpers --- #
@@ -288,6 +288,10 @@ def setxor1d(ar1, ar2, assume_unique=False):
 alltrue = all
 sometrue = any
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bool",)}, "jax"
+)
 @to_ivy_arrays_and_back
 def fromfunction(function, shape, *, dtype=float, **kwargs):
     def canonicalize_shape(shape, context="shape argument"):
