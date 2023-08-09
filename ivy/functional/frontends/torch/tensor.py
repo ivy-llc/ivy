@@ -1671,7 +1671,19 @@ class Tensor:
     def gcd(self, other, *, out=None):
         return torch_frontend.gcd(self, other, out=out)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16", "uint16", "bool", "complex64", "complex128")}, "torch")
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "uint16",
+                "bool",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
     def isnan(self):
         return torch_frontend.isnan(self)
 

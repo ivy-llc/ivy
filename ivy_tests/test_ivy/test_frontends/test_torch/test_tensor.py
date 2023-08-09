@@ -11564,8 +11564,7 @@ def test_torch_isnan(
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={
-        },
+        method_all_as_kwargs_np={},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
