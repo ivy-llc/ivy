@@ -391,7 +391,9 @@ def vector_norm(
         # There is a rounding error whenever the input is a 0-dim
         # The solution at the moment is to convert the 0-dim array to 1-dim
         # and then convert it back to 0-dim in case of keepdims=True
-        abs_x = np.array(np.abs(x), ndmin=1)
+        if x.ndim == 0:
+            abs_x = np.expand_dims(abs_x, axis=0)
+
         res = (
             np.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
         ).astype(abs_x.dtype)
