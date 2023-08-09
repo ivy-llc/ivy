@@ -336,12 +336,9 @@ def maxwell(key, shape=None, dtype="float64"):
             "float16",
             "bfloat16",
         )
+        "uint32"
     },
-    "jax",
-    {
-       "uint32"
-    },
-    "paddle","torch"
+    "jax", "paddle", "torch",   
 )
 def double_sided_maxwell(key, loc, scale, shape=(), dtype="float64"):
     seed = _get_seed(key)
