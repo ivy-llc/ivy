@@ -855,6 +855,9 @@ def embedding(
     max_norm: Optional[float] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
