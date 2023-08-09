@@ -1782,7 +1782,7 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         res[:, :, 1] = Cr
         res[:, :, 2] = Cb
         return res
-    elif code == COLOR_YCrCb2RGB:
+    elif code == COLOR_YCrCb2RGB or code == COLOR_YCrCb2BGR:
         # TODO: investigate small value differences in the blue channel (up to 3-4)
         DELTA = 128
 
@@ -1801,9 +1801,17 @@ def cvtColor(src, code: int, dst=None, dstCn: int = 0):
         b = b.clip(0, 255)
 
         res = ivy.zeros_like(src, dtype=src.dtype)
-        res[:, :, 0] = r
-        res[:, :, 1] = g
-        res[:, :, 2] = b
+
+        if code == COLOR_YCrCb2RGB:
+            res[:, :, 0] = r
+            res[:, :, 1] = g
+            res[:, :, 2] = b
+
+        if code == COLOR_YCrCb2BGR:
+            res[:, :, 0] = b
+            res[:, :, 1] = g
+            res[:, :, 2] = r
+
         return res
 
     else:
