@@ -288,10 +288,6 @@ def setxor1d(ar1, ar2, assume_unique=False):
 alltrue = all
 sometrue = any
 
-@with_supported_dtypes(
-    {"0.4.14 and below": ("int64", "float64", "float32", "int32", "uint8")},
-    "jax",
-)
 @to_ivy_arrays_and_back
 def fromfunction(function, shape, *, dtype=float, **kwargs):
     def canonicalize_shape(shape, context="shape argument"):
