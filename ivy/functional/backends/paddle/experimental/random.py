@@ -107,10 +107,12 @@ def poisson(
     out: Optional[paddle.Tensor] = None,
 ):
     lam = paddle.to_tensor(lam, dtype=dtype)
+    if shape is None:
+        if seed:
+            paddle.seed(seed)
+        return paddle.poisson(lam)
     if seed:
         paddle.seed(seed)
-    if shape is None:
-        return paddle.poisson(lam)
     _check_shapes_broadcastable(lam.shape, shape)
     shape = paddle.to_tensor(shape, dtype="int32")
     if not lam.shape:
