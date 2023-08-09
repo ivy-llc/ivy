@@ -437,8 +437,18 @@ def mm(input, mat2, name=None):
 def take(
     x,
     index,
-    mode=None,
+    mode="raise",
     name=None,
 ):
+    if mode not in ["raise", "wrap", "clip"]:
+        raise ValueError(
+            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
+            .format(mode)
+        )
     x = ivy.reshape(x, (-1,))
+    if mode == "clip":
+        index = ivy.clip(index, 0, x.shape[-1] - 1)
+    elif mode == "wrap":
+        index = ivy.where(index < 0, index % x.shape[-1], index)
+        index = ivy.where(index >= x.shape[-1], index % x.shape[-1], index)
     return ivy.gather(x, index, axis=0)

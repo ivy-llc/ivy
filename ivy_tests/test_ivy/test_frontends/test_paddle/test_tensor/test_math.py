@@ -1932,7 +1932,8 @@ def test_paddle_kron(
 @handle_frontend_test(
     fn_tree="paddle.take",
     dtype_and_x=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes(), indices_dtypes=["int32", "int64"]
+        array_dtypes=helpers.get_dtypes("float_and_integer"),
+        indices_dtypes=["int32", "int64"],
     ),
 )
 def test_paddle_take(
