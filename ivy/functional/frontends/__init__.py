@@ -4,8 +4,8 @@ import importlib
 versions = {
     "torch": "2.0.1",
     "tensorflow": "2.13.0",
-    "numpy": "1.25.1",
-    "jax": "0.4.13",
+    "numpy": "1.25.2",
+    "jax": "0.4.14",
     "scipy": "1.10.1",
     "paddle": "2.5.1",
 }

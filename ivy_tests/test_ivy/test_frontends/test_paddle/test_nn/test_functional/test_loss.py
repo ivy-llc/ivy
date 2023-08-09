@@ -333,11 +333,12 @@ def test_paddle_l1_loss(
     reduction=st.sampled_from(["mean", "batchmean", "sum", "none"]),
 )
 def test_paddle_kl_div(
-    dtype_and_x, reduction, on_device, fn_tree, frontend, test_flags
+    dtype_and_x, reduction, on_device, backend_fw, fn_tree, frontend, test_flags
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -388,5 +389,54 @@ def test_paddle_margin_ranking_loss(
         other=x[1],
         label=x[2],
         margin=margin,
+        reduction=reduction,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.triplet_margin_loss",
+    dtype_and_inputs=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        allow_inf=False,
+        shared_dtype=True,
+        min_value=0.0,
+        max_value=1.0,
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+    ),
+    margin=st.floats(min_value=1e-6, max_value=1e6),
+    p=st.integers(min_value=0, max_value=2),
+    swap=st.booleans(),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
+    test_with_out=st.just(False),
+)
+def test_paddle_triplet_margin_loss(
+    dtype_and_inputs,
+    margin,
+    p,
+    swap,
+    reduction,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    frontend,
+    on_device,
+):
+    input_dtype, x = dtype_and_inputs
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype[0], input_dtype[1], input_dtype[2]],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        positive=x[1],
+        negative=x[2],
+        margin=margin,
+        p=p,
+        swap=swap,
         reduction=reduction,
     )
