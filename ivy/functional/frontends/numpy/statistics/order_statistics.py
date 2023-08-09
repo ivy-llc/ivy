@@ -63,6 +63,9 @@ def percentile(
     quantile = ivy.divide(q, 100.0)
     quantile_arr = ivy.array(quantile)
 
+    if quantile_arr.ndim == 0:
+        quantile_arr = ivy.array([quantile])
+
     if not _quantile_is_valid(quantile_arr):
         # raise ValueError("Percentiles must be in the range of [0, 100].")
         ivy.logging.warning("Percentiles must be in the range of [0, 100].")
@@ -104,7 +107,7 @@ def percentile(
 
             output.append(q_row)
 
-    return output[0] if output.shape[0] == 1 and output.shape[1] is None else output
+    return output[0] if output.shape[0] == 1 else output
 
 
 def nanpercentile(
