@@ -660,6 +660,7 @@ def unravel_index(indices, dims, out=None, name=None):
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def zeros_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
     if dtype is None:
         dtype = ivy.default_dtype()
     return ivy.zeros(shape, dtype=dtype)
