@@ -283,7 +283,8 @@ def triplet_margin_loss(
     loss = reduction(loss).astype(input.dtype)
     return loss
 
-  
+
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def nll_loss(
@@ -314,4 +315,5 @@ def nll_loss(
     output = num / den
     if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
-    return output 
+        
+    return output
