@@ -1299,23 +1299,12 @@ def embedding(
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out,
-            ivy.current_backend(indices).embedding(
-                weights,
-                indices,
-                max_norm=max_norm,
-                out=out,
-            ),
-        )
-    else:
-        return ivy.current_backend(indices).embedding(
-            weights,
-            indices,
-            max_norm=max_norm,
-            out=out,
-        )
+    return ivy.current_backend(indices).embedding(
+        weights,
+        indices,
+        max_norm=max_norm,
+        out=out,
+    )
 
 
 @handle_exceptions
@@ -2636,10 +2625,10 @@ reduce_window.mixed_backend_wrappers = {
 
 @handle_exceptions
 @handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-# @outputs_to_ivy_arrays
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2792,7 +2781,6 @@ def ifftn(
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
-# @inputs_to_ivy_arrays
 @to_native_arrays_and_back
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
