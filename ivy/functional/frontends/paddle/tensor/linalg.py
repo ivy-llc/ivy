@@ -34,8 +34,6 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
         ret = ivy.vector_norm(x.flatten(), ord=p, axis=-1)
         if keepdim:
             ret = ret.reshape([1] * len(x.shape))
-        if len(ret.shape) == 0:
-            return ivy.array([ret])
         return ret
 
     if isinstance(axis, tuple):
@@ -76,10 +74,6 @@ def norm(x, p="fro", axis=None, keepdim=False, name=None):
     else:
         raise ValueError
 
-    if len(ret.shape) == 0:
-        ret = ivy.array(
-            [ret]
-        )  # this is done so as to match shape of output from paddle
     return ret
 
 
