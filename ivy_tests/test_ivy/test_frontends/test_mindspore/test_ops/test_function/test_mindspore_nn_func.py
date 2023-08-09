@@ -372,8 +372,7 @@
 #     ),
 #     size_average=st.booleans(),
 #     reduce=st.booleans(),
-#     reduction=st.sampled_from(["none", "mean", "sum"]),
-#     beta=st.sampled_from([1.0, 0.5, 0.1, 0.0]),
+#     beta=st.sampled_from([1.0, 0.5, 0.1]),
 #     test_with_out=st.just(False),
 # )
 # def test_mindspore_smooth_l1_loss(
@@ -381,7 +380,6 @@
 #     dtype_and_x,
 #     size_average,
 #     reduce,
-#     reduction,
 #     beta,
 #     frontend,
 #     test_flags,
@@ -403,6 +401,5 @@
 #         target=true,
 #         size_average=size_average,
 #         reduce=reduce,
-#         reduction=reduction,
 #         beta=beta,
 #     )
