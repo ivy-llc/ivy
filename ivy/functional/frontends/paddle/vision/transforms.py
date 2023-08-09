@@ -15,6 +15,67 @@ def to_tensor(pic, data_format="CHW"):
     return Tensor(array)
 
 
+def _assert_image_shape_and_format(img, data_format):
+    if img.ndim < 3 or img.ndim > 4 or not data_format.lower() in ("chw", "hwc"):
+        raise RuntimeError(
+            "Image must be 3 or 4-dimensional and data format must be 'CHW' or 'HWC',"
+            " but got {} and {}".format(img.ndim, data_format)
+        )
+
+
+def _get_image_h_axis(data_format):
+    if data_format.lower() == "chw":
+        return -2
+    elif data_format.lower() == "hwc":
+        return -3
+
+
+def _get_image_w_axis(data_format):
+    if data_format.lower() == "chw":
+        return -1
+    elif data_format.lower() == "hwc":
+        return -2
+
+
+def _get_image_c_axis(data_format):
+    if data_format.lower() == "chw":
+        return -3
+    elif data_format.lower() == "hwc":
+        return -1
+
+
+def _get_image_n_axis(data_format):
+    if len(data_format) == 3:
+        return None
+    elif len(data_format) == 4:
+        return 0
+
+
+def _is_channel_last(data_format):
+    return _get_image_c_axis(data_format) == -1
+
+
+def _is_channel_first(data_format):
+    return _get_image_c_axis(data_format) == -3
+
+
+def _get_image_num_batches(img, data_format):
+    if _get_image_n_axis(data_format):
+        return ivy.shape(img)[_get_image_n_axis(data_format)]
+    return None
+
+
+def _get_image_num_channels(img, data_format):
+    return ivy.shape(img)[_get_image_c_axis(data_format)]
+
+
+def _get_image_size(img, data_format):
+    return (
+        ivy.shape(img)[_get_image_w_axis(data_format)],
+        img.shape(img)[_get_image_h_axis(data_format)],
+    )
+
+
 def _rgb_to_hsv(img):
     maxc = ivy.max(img, axis=-3)
     minc = ivy.min(img, axis=-3)
@@ -81,19 +142,25 @@ def _hsv_to_rgb(img):
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
-    img, hue_factor = ivy.functional.frontends.paddle.promote_types_of_paddle_inputs(
-        img, hue_factor
-    )
+    _assert_image_shape_and_format(img, "CHW")
     assert (
         hue_factor >= -0.5 and hue_factor <= 0.5
     ), "hue_factor should be in range [-0.5, 0.5]"
 
-    img_hsv = _rgb_to_hsv(img)
-    h, s, v = img_hsv[0], img_hsv[1], img_hsv[2]
+    channels = _get_image_num_channels(img, "CHW")
 
-    h = h + hue_factor
-    h = h - ivy.floor(h)
+    if channels == 1:
+        return img
+    elif channels == 3:
+        img_hsv = _rgb_to_hsv(img)
+        h, s, v = img_hsv[0], img_hsv[1], img_hsv[2]
 
-    img_adjusted = _hsv_to_rgb(ivy.stack([h, s, v], axis=-3))
+        h = h + hue_factor
+        h = h - ivy.floor(h)
+
+        img_adjusted = _hsv_to_rgb(ivy.stack([h, s, v], axis=-3))
+
+    else:
+        raise ValueError("channels of input should be either 1 or 3.")
 
     return img_adjusted
