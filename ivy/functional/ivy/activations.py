@@ -315,6 +315,11 @@ def relu(
     """
     Apply the rectified linear unit function element-wise.
 
+    If the input is complex, then by default each element is set to zero  if
+    either its real part is strictly negative or if its real part is zero and its
+    imaginary part is negative.
+    This behaviour can be changed by specifying a different `complex_mode`.
+
     Parameters
     ----------
     x
