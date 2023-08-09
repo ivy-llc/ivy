@@ -11964,3 +11964,59 @@ def test_torch_instance_sinc(
         backend_to_test=backend_fw,
         on_device=on_device,
     )
+
+
+# index_fill
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_fill",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        indices_same_dims=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    indices=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=0,
+        max_value=2,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    value=st.floats(min_value=-100, max_value=100),
+)
+def test_torch_index_fill(
+    params_indices_others,
+    indices,
+    value,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, x, _, axis, _ = params_indices_others
+    _, indices = indices
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=[input_dtypes[1]],
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+            "value": value,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )

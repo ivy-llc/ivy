@@ -1725,6 +1725,12 @@ class Tensor:
     )
     def isnan(self):
         return torch_frontend.isnan(self)
+    @with_unsupported_dtypes({"2.0.1 and below": ("uint8",)}, "torch")
+    def index_fill(self, dim, index, value):
+        print("##########################################################")
+        print(f"dim: {dim}")
+        print(f"index: {index}")
+        print("##########################################################")
 
     @with_unsupported_dtypes(
         {
@@ -1764,6 +1770,13 @@ class Tensor:
     def sinc(self):
         return torch_frontend.sinc(self)
 
+
+        arr = torch_frontend.moveaxis(self, dim, 0)
+        arr[ivy.to_list(index)] = value
+        arr = torch_frontend.moveaxis(self, 0, dim)
+        return arr
+        # return torch_frontend.masked_fill(arr, arr, value)# F mask T
+    
 
 class Size(tuple):
     def __new__(cls, iterable=()):

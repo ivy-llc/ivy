@@ -1681,7 +1681,11 @@ def test_frontend_method(
         rtol_ = _get_framework_rtol(rtol_, backend_to_test)
     if isinstance(atol_, dict):
         atol_ = _get_framework_atol(atol_, backend_to_test)
-
+    print("-----------------------------------------------")
+    print("from ground truth backend: ", frontend_ret_np_flat)
+    print("from ivy backend: ", ret_np_flat)
+    print("===============================================")
+    print("")
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
