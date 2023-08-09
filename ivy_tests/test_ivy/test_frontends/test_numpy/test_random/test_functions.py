@@ -410,6 +410,34 @@ def test_numpy_standard_gamma(
     )
 
 
+@handle_frontend_test(
+    fn_tree="numpy.random.standard_t",
+    df_dtypes=helpers.get_dtypes("integer", full=False),
+    size_dtypes=helpers.get_dtypes("integer", full=False),
+    test_with_out=st.just(False),
+)
+def test_numpy_standard_t(
+    df,
+    df_dtypes,
+    size,
+    size_dtypes,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=df_dtypes + size_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+    )
+
+
 # binomial
 @handle_frontend_test(
     fn_tree="numpy.random.binomial",
