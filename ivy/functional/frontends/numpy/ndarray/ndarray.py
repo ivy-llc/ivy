@@ -252,7 +252,7 @@ class ndarray:
     def all(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self, axis, out, keepdims, where=where)
 
-    def any(self, axis=None, out=None, keepdims=False, *, where=True):
+    def any(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return np_frontend.any(self, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):

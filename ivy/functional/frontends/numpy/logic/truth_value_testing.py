@@ -39,9 +39,9 @@ def any(
     where=None,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
+    if where is not None:
+        a = ivy.where(where, a, False)
     ret = ivy.any(a, axis=axis, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
