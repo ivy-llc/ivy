@@ -97,17 +97,8 @@ def as_native_dev(device, /):
 
 
 def handle_soft_device_variable(*args, fn, def_dev=None, **kwargs):
-    with ivy.ArrayMode(False):
-        default_device = ivy.default_device(def_dev, as_native=True)
-        args, kwargs = ivy.nested_map(
-            [args, kwargs],
-            lambda x: (
-                ivy.to_device(x, default_device)
-                if (ivy.is_native_array(x) and ivy.dev(x) != default_device)
-                else x
-            ),
-        )
-    with jax.default_device(default_device):
+    args, kwargs, def_dev = ivy.shift_native_arrays_on_def_dev(*args, def_dev=def_dev, **kwargs)
+    with jax.default_device(def_dev):
         return fn(*args, **kwargs)
 
 
