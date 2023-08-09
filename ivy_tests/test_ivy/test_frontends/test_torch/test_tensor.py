@@ -9583,6 +9583,7 @@ def test_torch_is_complex(
         on_device=on_device,
     )
 
+
 # isreal
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9614,7 +9615,6 @@ def test_torch_isreal(
         frontend=frontend,
         on_device=on_device,
     )
-
 
 
 # copysign

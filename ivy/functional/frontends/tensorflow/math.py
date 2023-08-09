@@ -733,6 +733,18 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def xdivy(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    if (x == 0).all():
+        return 0.0
+    return ivy.divide(x, y)
+
+
+@with_supported_dtypes(
     {"2.13.0 and below": ("int32",)},
     "tensorflow",
 )
