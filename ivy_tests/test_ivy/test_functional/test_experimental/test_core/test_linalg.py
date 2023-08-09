@@ -923,6 +923,7 @@ def test_multi_mode_dot_tensorly_2(shape):
         max_num_dims=2,
     ),
     u_based_decision=st.booleans(),
+    test_with_out=st.just(False),
 )
 def test_svd_flip(*, uv, u_based_decision, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, input = uv
@@ -989,11 +990,9 @@ def _make_svd_nn_data(draw):
     fn_tree="functional.ivy.experimental.make_svd_non_negative",
     data=_make_svd_nn_data(),
     test_with_out=st.just(False),
-    test_gradients=st.just(False),
 )
 def test_make_svd_non_negative(*, data, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, U, S, V, nntype = data
-    test_flags.instance_method = False
     results = helpers.test_function(
         backend_to_test=backend_fw,
         test_flags=test_flags,

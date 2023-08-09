@@ -897,8 +897,6 @@ def svd_flip(
     V: Union[ivy.Array, ivy.NativeArray],
     /,
     u_based_decision: Optional[bool] = True,
-    *,
-    out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
 ) -> Tuple[ivy.Array, ivy.Array]:
     """
     Sign correction to ensure deterministic output from SVD. Adjusts the columns of u
@@ -953,13 +951,11 @@ def svd_flip(
             )
         U = U * signs[: ivy.shape(U)[1]]
 
-    if ivy.exists(out):
-        U = ivy.inplace_update(out[0], U)
-        V = ivy.inplace_update(out[1], V)
-
     return U, V
 
 
+# This function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L65
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion

@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple, List, Sequence
+from typing import Optional, Union, Tuple, List, Sequence, Literal
 
 # local
 import ivy
@@ -356,8 +356,6 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         V: Union[ivy.Array, ivy.NativeArray],
         /,
         u_based_decision: Optional[bool] = True,
-        *,
-        out: Optional[Tuple[ivy.Array, ivy.Array]] = None,
     ) -> Tuple[ivy.Array, ivy.Array]:
         """
         ivy.Array instance method variant of ivy.svd_flip. This method simply wraps the
@@ -379,4 +377,36 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         -------
         u_adjusted, v_adjusted : arrays with the same dimensions as the input.
         """
-        return ivy.svd_flip(self._data, V, u_based_decision, out=out)
+        return ivy.svd_flip(self._data, V, u_based_decision)
+
+    def make_svd_non_negative(
+        self: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            tensor being decomposed.
+        U
+            left singular matrix from SVD.
+        S
+            diagonal matrix from SVD.
+        V
+            right singular matrix from SVD.
+        nntype
+            whether to fill small values with 0.0 (nndsvd),
+            or the tensor mean (nndsvda, default).
+
+        [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
+        """
+        return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)

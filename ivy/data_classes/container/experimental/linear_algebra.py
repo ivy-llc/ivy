@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, List, Dict, Tuple, Sequence
+from typing import Union, Optional, List, Dict, Tuple, Sequence, Literal
 
 # local
 from ivy.data_classes.container.base import ContainerBase
@@ -1129,7 +1129,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.svd_flip. This method simply wraps
@@ -1160,7 +1159,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def svd_flip(
@@ -1173,7 +1171,6 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
-        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         """
         ivy.Container instance method variant of ivy.svd_flip. This method simply wraps
@@ -1203,5 +1200,98 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
+        )
+
+    @staticmethod
+    def static_make_svd_non_negative(
+        x: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor being decomposed.
+        U
+            left singular matrix from SVD.
+        S
+            diagonal matrix from SVD.
+        V
+            right singular matrix from SVD.
+        nntype
+            whether to fill small values with 0.0 (nndsvd),
+            or the tensor mean (nndsvda, default).
+
+        [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "make_svd_non_negative",
+            x,
+            U,
+            S,
+            V,
+            nntype=nntype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def make_svd_non_negative(
+        self: Union[ivy.Array, ivy.NativeArray],
+        U: Union[ivy.Array, ivy.NativeArray],
+        S: Union[ivy.Array, ivy.NativeArray],
+        V: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Tuple[ivy.Container, ivy.Container]:
+        """
+        ivy.Container instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            tensor being decomposed.
+        U
+            left singular matrix from SVD.
+        S
+            diagonal matrix from SVD.
+        V
+            right singular matrix from SVD.
+        nntype
+            whether to fill small values with 0.0 (nndsvd),
+            or the tensor mean (nndsvda, default).
+
+        [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
+        """
+        return self.static_make_svd_non_negative(
+            self,
+            U,
+            S,
+            V,
+            nntype=nntype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
