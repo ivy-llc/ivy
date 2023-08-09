@@ -64,7 +64,10 @@ def general_pool(
     window_shape = tuple(window_shape)
     strides = (1,) + strides + (1,) if len(strides) == dim else strides
     dims = (1,) + window_shape + (1,) if len(window_shape) == dim else window_shape
-    dilation = (1,) + tuple(dilation) + (1,)
+    if isinstance(dilation, int):
+        dilation = (1,) + (dilation,) * dim + (1,)
+    else:
+        dilation = (1,) + tuple(dilation) + (1,)
 
     is_single_input = False
     if inputs.ndim == len(dims) - 1:
@@ -814,6 +817,10 @@ def embedding(
     max_norm: Optional[int] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
+
     embeddings = jnp.take(weights, indices, axis=0)
     if max_norm is not None:
         norms = jnp.linalg.norm(embeddings, axis=-1, keepdims=True)

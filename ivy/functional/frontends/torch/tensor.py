@@ -239,7 +239,7 @@ class Tensor:
     def cosh(self):
         return torch_frontend.cosh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def cosh_(self):
         self.ivy_array = self.cosh().ivy_array
         return self
@@ -352,7 +352,7 @@ class Tensor:
     def arctanh(self):
         return torch_frontend.arctanh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def arctanh_(self):
         self.ivy_array = self.arctanh().ivy_array
         return self
@@ -588,7 +588,7 @@ class Tensor:
     def acos(self):
         return torch_frontend.acos(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def acos_(self):
         self.ivy_array = self.acos().ivy_array
         return self
@@ -651,6 +651,7 @@ class Tensor:
         self.ivy_array = self.detach().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     @numpy_to_torch_style_args
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
@@ -1052,7 +1053,9 @@ class Tensor:
     def fmin(self, other):
         return torch_frontend.fmin(self, other)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
+    )
     def trunc(self):
         return torch_frontend.trunc(self)
 
@@ -1065,7 +1068,9 @@ class Tensor:
     def fix(self):
         return torch_frontend.fix(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
+    )
     def fix_(self):
         self.ivy_array = self.fix().ivy_array
         return self
@@ -1075,6 +1080,10 @@ class Tensor:
 
     def is_complex(self):
         return torch_frontend.is_complex(self._ivy_array)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def isreal(self):
+        return torch_frontend.isreal(self._ivy_array)
 
     def addr(self, vec1, vec2, *, beta=1, alpha=1, out=None):
         return torch_frontend.addr(self, vec1, vec2, beta=beta, alpha=alpha, out=out)
