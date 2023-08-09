@@ -1894,28 +1894,35 @@ def solve(
     extensions/generated/array_api.linalg.solve.html>`_
     in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
+    Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+  ------
+  
+  Function Examples:
 
-  - Function Examples:
+  With class:`ivy.Array` input:
 
-  - I. With :class:`ivy.Array` input:
-
-  - I.1. for shape(A) = (3,3) and shape(B) = (3,1):
+  - For shape(A) = (3,3) and shape(B) = (3,1):
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
                        [3.1, 3.2, 3.3]]),
-    >>> B = ivy.array( [1.1,
-                        2.1,
-                        3.1]),
+    >>> B = ivy.array([[1.1],
+                       [2.1],
+                       [3.1]]),
     >>> x = solve(A,B);
     >>> print(x)
-    ivy.array([1,0,0])
+    >>> ivy.array([[1],
+                   [0],
+                   [0]])
+    >>> print(x.shape)
+    (1,3)
+    
+    (The simplest case in which Ax=B)
 
-  - I.2. for shape(A) = (2,3,3) and shape(B) = (2,3,1):
+  - For shape(A) = (2,3,3) and shape(B) = (2,3,1):
     
     >>> A = ivy.array([[[11.1, 11.2, 11.3],
                         [12.1, 12.2, 12.3],
@@ -1924,18 +1931,26 @@ def solve(
                         [22.1, 22.2, 22.3],
                         [23.1, 23.2, 23.3]]
                         ]),
-    >>> B = ivy.array([ [11.1,
-                         12.1,
-                         13.1],
-                        [21.1,
-                         22.1,
-                         23.1] 
-                        ]),
+    >>> B = ivy.array([[[11.1],
+                        [12.1],
+                        [13.1]],
+                       [[21.1],
+                        [22.1],
+                        [23.1]]]),
     >>> x = solve(A,B);
     >>> print(x)
-    ivy.array([[1,0,0],[1,0,0]])
+    ivy.array([[[1],
+                [0],
+                [0]],
+               [[1],
+                [0],
+                [0]]])
+    >>> print(x.shape)
+    (2,1,3)
 
-  - I.3. for shape(A) = (3,3) and shape(B) = (3,2):
+    (A and B are both multi-dimensional matrices. A(1,:,:)x(1,:,:) = B(1,:,:), and A(2,:,:)x(1,:,:) = B(2,:,:).)
+
+  - For shape(A) = (3,3) and shape(B) = (3,2):
     
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
@@ -1945,20 +1960,30 @@ def solve(
                        [3.1, 6.2]]),
     >>> x = solve(A,B);
     >>> print(x)
-    ivy.array([[1,2],[0,0],[0,0]])
+    ivy.array([[[1],
+                [0],
+                [0]],
+               [[2],
+                [0],
+                [0]]])
+    >>> print(x.shape)
+    (2,1,3)
+    
 
-  - II. With class:`ivy.Container` input:
+    (A is square but B is not a column vector. As defined in x2, Ax(1,:,:) = B(1,:,:), and Ax(2,:,:) = B(2,:,:).)
+
+  With class:`ivy.Container` input:
 
     >>> A = ivy.array([[1.1, 1.2, 1.3],
                        [2.1, 2.2, 2.3],
                        [3.1, 3.2, 3.3]]),
-    >>> B = ivy.container(B1 = ivy.array([1.1, 2.1, 3.1]), \
-                          B2 = ivy.array([2.2, 4.2, 6.2]))
+    >>> B = ivy.container(B1 = ivy.array([[1.1], [2.1], [3.1]]), \
+                          B2 = ivy.array([[2.2], [4.2], [6.2]]))
     >>> x = solve(A,B);
     >>> print(x)
     {
-    B1:ivy.array([1,0,0]),
-    B2:ivy.array([2,0,0])
+    B1:ivy.array([[1],[0],[0]]),
+    B2:ivy.array([[2],[0],[0]])
     }
     """
     return current_backend(x1, x2).solve(x1, x2, out=out)
