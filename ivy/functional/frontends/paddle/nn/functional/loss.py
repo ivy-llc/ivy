@@ -314,4 +314,4 @@ def nll_loss(
     output = num / den
     if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
-    return output
+    return output 
