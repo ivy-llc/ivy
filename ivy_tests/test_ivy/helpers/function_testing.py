@@ -125,6 +125,9 @@ def test_function(
         returned, or whether the flattened numpy arrays are returned.
     all_as_kwargs_np
         input arguments to the function as keyword arguments.
+    backend_to_test
+        The backend (framework) to test the function against, e.g., "torch", "numpy",
+        etc.
 
     Returns
     -------
