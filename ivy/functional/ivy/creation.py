@@ -31,6 +31,8 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 
 # Helpers #
@@ -275,11 +277,13 @@ class NestedSequence(Protocol[_T_co]):
 # -------------------#
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @outputs_to_ivy_arrays
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def arange(
     start: Number,
@@ -377,9 +381,11 @@ def arange(
     )
 
 
+@handle_backend_invalid
 @handle_array_like_without_promotion
 @handle_out_argument
 @handle_array_function
+@handle_device_shifting
 def asarray(
     obj: Union[
         ivy.Array,
@@ -429,31 +435,26 @@ def asarray(
     With list of lists as input:
     >>> ivy.asarray([[1,2],[3,4]])
     ivy.array([[1, 2],
-           [3, 4]])
+               [3, 4]])
 
     With tuple of lists as input:
     >>> ivy.asarray(([1.4,5.6,5.5],[3.1,9.1,7.5]))
     ivy.array([[1.39999998, 5.5999999 , 5.5       ],
-           [3.0999999 , 9.10000038, 7.5       ]])
+               [3.0999999 , 9.10000038, 7.5       ]])
 
     With ndarray as input:
     >>> x = ivy.np.ndarray(shape=(2,2), order='C')
-    >>> x
-    array([[6.90786433e-310, 6.90786433e-310],
-           [6.90786433e-310, 6.90786433e-310]])
     >>> ivy.asarray(x)
     ivy.array([[6.90786433e-310, 6.90786433e-310],
-           [6.90786433e-310, 6.90786433e-310]])
+               [6.90786433e-310, 6.90786433e-310]])
 
     With :class:`ivy.Container` as input:
     >>> x = ivy.Container(a = [(1,2),(3,4),(5,6)], b = ((1,2,3),(4,5,6)))
     >>> ivy.asarray(x)
     {
-        a: ivy.array([[1, 2],
-                      [3, 4],
-                      [5, 6]]),
+        a: ivy.array([[1, 2],[3, 4], [5, 6]]),
         b: ivy.array([[1, 2, 3],
-                      [4, 5, 6]])
+                   [4, 5, 6]])
     }
 
     This function conforms to the `Array API Standard
@@ -471,6 +472,7 @@ def asarray(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -478,6 +480,7 @@ def asarray(
 @outputs_to_ivy_arrays
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def zeros(
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -524,8 +527,8 @@ def zeros(
     >>> x = ivy.zeros(shape)
     >>> print(x)
     ivy.array([[0., 0., 0., 0., 0.],
-           [0., 0., 0., 0., 0.],
-           [0., 0., 0., 0., 0.]])
+               [0., 0., 0., 0., 0.],
+               [0., 0., 0., 0., 0.]])
 
     >>> x = ivy.zeros(5)
     >>> print(x)
@@ -534,6 +537,7 @@ def zeros(
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -541,6 +545,7 @@ def zeros(
 @outputs_to_ivy_arrays
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def ones(
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -550,6 +555,12 @@ def ones(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a new array having a specified ``shape`` and filled with ones.
+
+    .. note::
+
+        An output array having a complex floating-point data type must contain complex
+        numbers having a real component equal to one and an imaginary component equal to
+        zero (i.e., ``1 + 0j``).
 
     Parameters
     ----------
@@ -588,7 +599,7 @@ def ones(
     >>> x = ivy.ones(shape)
     >>> print(x)
     ivy.array([[1., 1.],
-           [1., 1.]])
+               [1., 1.]])
 
     With :class:`ivy.Dtype` input:
 
@@ -597,7 +608,7 @@ def ones(
     >>> y = ivy.ones(shape, dtype=d_type)
     >>> print(y)
     ivy.array([[1, 1, 1],
-           [1, 1]])
+               [1, 1]])
 
     With :class:`ivy.Device` input:
 
@@ -606,7 +617,7 @@ def ones(
     >>> y = ivy.ones(shape, device=dev)
     >>> print(y)
     ivy.array([[1, 1, 1],
-           [1, 1]])
+               [1, 1]])
 
     With :class:`ivy.Array` input:
 
@@ -615,17 +626,20 @@ def ones(
     >>> ivy.ones(shape, out=array)
     >>> print(array)
     ivy.array([[1.],
-           [1., 1., 1., 1., 1.], [1., 1.]])
+               [1., 1., 1., 1., 1.],
+               [1., 1.]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -708,7 +722,7 @@ def full_like(
     >>> y = ivy.full_like(x, fill_value)
     >>> print(y)
     ivy.array([[0.000123, 0.000123, 0.000123],
-           [0.000123, 0.000123, 0.000123]])
+               [0.000123, 0.000123, 0.000123]])
 
     With :class:`ivy.Container` input:
 
@@ -727,12 +741,14 @@ def full_like(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -744,6 +760,12 @@ def ones_like(
 ) -> ivy.Array:
     """Return a new array filled with ones and having the same shape as an input
     array ``x``.
+
+    .. note::
+
+        An output array having a complex floating-point data type must contain complex
+        numbers having a real component equal to one and an imaginary component equal
+        to zero (i.e., ``1 + 0j``).
 
     Parameters
     ----------
@@ -789,7 +811,7 @@ def ones_like(
     >>> y2 = ivy.ones_like(x2)
     >>> print(y2)
     ivy.array([[1., 1., 1.],
-            [1., 1., 1.]])
+               [1., 1., 1.]])
 
     >>> x3 = ivy.array([3., 2., 1.])
     >>> y3 = ivy.zeros(3)
@@ -845,12 +867,14 @@ def ones_like(
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -963,11 +987,13 @@ def zeros_like(
     return current_backend(x).zeros_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -976,6 +1002,11 @@ def tril(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the lower triangular part of a matrix (or a stack of matrices) ``x``.
+
+    .. note::
+
+        The main diagonal is defined as the set of indices ``{(i, i)}`` for ``i``
+        on the interval ``[0, min(M, N) - 1]``.
 
     Parameters
     ----------
@@ -1012,11 +1043,13 @@ def tril(
     return current_backend(x).tril(x, k=k, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1025,6 +1058,11 @@ def triu(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return the upper triangular part of a matrix (or a stack of matrices) ``x``.
+
+    .. note::
+
+        The upper triangular part of the matrix is defined as the elements
+        on and above the specified diagonal ``k``.
 
     Parameters
     ----------
@@ -1061,6 +1099,7 @@ def triu(
     return current_backend(x).triu(x, k=k, out=out)
 
 
+@handle_backend_invalid
 @infer_device
 @infer_dtype
 @handle_array_function
@@ -1069,6 +1108,7 @@ def triu(
 @handle_out_argument
 @handle_array_like_without_promotion
 @handle_nestable
+@handle_device_shifting
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
@@ -1111,12 +1151,14 @@ def empty(
     return current_backend().empty(shape, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -1162,6 +1204,7 @@ def empty_like(
     return current_backend(x).empty_like(x, dtype=dtype, device=device, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1311,12 +1354,14 @@ def eye(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
@@ -1421,11 +1466,13 @@ def linspace(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def meshgrid(
     *arrays: Union[ivy.Array, ivy.NativeArray],
     sparse: bool = False,
@@ -1540,6 +1587,7 @@ def meshgrid(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1547,6 +1595,7 @@ def meshgrid(
 @outputs_to_ivy_arrays
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def full(
     shape: Union[ivy.Shape, ivy.NativeShape],
@@ -1651,11 +1700,13 @@ def full(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def from_dlpack(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1703,11 +1754,13 @@ def from_dlpack(
 array = asarray
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @inputs_to_native_arrays
 @handle_array_function
+@handle_device_shifting
 def copy_array(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1812,6 +1865,7 @@ def copy_array(
     return current_backend(x).copy_array(x, to_ivy_array=to_ivy_array, out=out)
 
 
+@handle_backend_invalid
 @handle_array_like_without_promotion
 def native_array(
     x: Union[ivy.Array, ivy.NativeArray, List[Number], Tuple[Number], np.ndarray],
@@ -1866,11 +1920,13 @@ def native_array(
     return ivy.to_native(ivy.asarray(x, dtype=dtype, device=device))
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -1979,6 +2035,7 @@ def one_hot(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument

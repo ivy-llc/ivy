@@ -20,7 +20,7 @@ from .elementwise import _elementwise_helper
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -87,7 +87,7 @@ def cross(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def det(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -179,7 +179,7 @@ def inner(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def inv(
@@ -246,6 +246,10 @@ def matmul(
     return ret
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def matrix_norm(
     x: paddle.Tensor,
     /,
@@ -324,6 +328,10 @@ def eig(
     return result_tuple(eigenvalues, eigenvectors)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def matrix_power(
     x: paddle.Tensor, n: int, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
@@ -331,7 +339,7 @@ def matrix_power(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def matrix_rank(
@@ -427,6 +435,10 @@ def tensorsolve(
     raise IvyNotImplementedException()
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def qr(
     x: paddle.Tensor,
     /,
@@ -439,6 +451,10 @@ def qr(
     return res(q, r)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def slogdet(
     x: paddle.Tensor,
     /,
@@ -454,6 +470,10 @@ def slogdet(
     return results(sign, logabsdet)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def solve(
     x1: paddle.Tensor,
     x2: paddle.Tensor,
@@ -479,7 +499,7 @@ def solve(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex",)}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svd(
@@ -507,7 +527,7 @@ def svd(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def svdvals(
@@ -542,7 +562,7 @@ def tensordot(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -641,7 +661,7 @@ def diag(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("uint8", "int8", "int16")}},
+    {"2.5.1 and below": {"cpu": ("uint8", "int8", "int16", "complex64", "complex128")}},
     backend_version,
 )
 def vander(
@@ -663,7 +683,7 @@ def vander(
 
 
 @with_unsupported_dtypes(
-    {"2.5.0 and below": ("unsigned", "int8", "int16", "float16")},
+    {"2.5.1 and below": ("unsigned", "int8", "int16", "float16")},
     backend_version,
 )
 def vector_to_skew_symmetric_matrix(

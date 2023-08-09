@@ -10,6 +10,8 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -160,10 +162,12 @@ def eigh_tridiagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -226,10 +230,12 @@ def diagflat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -267,10 +273,12 @@ def kron(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -309,9 +317,11 @@ def matrix_exp(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -371,9 +381,11 @@ def eig(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -413,10 +425,12 @@ def eigvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -451,6 +465,7 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -502,11 +517,19 @@ def multi_dot(
     return current_backend(x).multi_dot(x, out=out)
 
 
+multi_dot.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

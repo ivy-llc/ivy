@@ -1,6 +1,8 @@
 from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+
+
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
@@ -91,7 +93,7 @@ def moveaxis(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.5.0 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -130,7 +132,7 @@ def flipud(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int16", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -176,7 +178,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -373,7 +375,7 @@ def atleast_2d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16",)}},
+    {"2.5.1 and below": {"cpu": ("float16",)}},
     backend_version,
 )
 def atleast_3d(
@@ -398,7 +400,7 @@ def atleast_3d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8",)}},
+    {"2.5.1 and below": {"cpu": ("int8",)}},
     backend_version,
 )
 def take_along_axis(
@@ -532,7 +534,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -592,3 +594,37 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def fill_diagonal(
+    a: paddle.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    max_end = paddle.prod(paddle.to_tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    end = max_end if end > max_end else end
+    a = paddle.reshape(a, (-1,))
+    w = paddle.zeros(a.shape, dtype=bool)
+    ins = paddle.arange(0, max_end)
+    steps = paddle.arange(0, end, step)
+
+    for i in steps:
+        i = ins == i
+        w = paddle.logical_or(w, i)
+    v = paddle.to_tensor(v, dtype=a.dtype)
+    a = paddle.where(w, v, a)
+    a = paddle.reshape(a, shape)
+    return a

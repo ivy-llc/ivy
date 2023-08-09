@@ -469,6 +469,11 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def no_op(name=None):
+    return
+
+
 @with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
@@ -578,6 +583,45 @@ def unique(x, out_idx=ivy.int32, name=None):
 
 
 @to_ivy_arrays_and_back
+def unique_with_counts(x, out_idx="int32", name=None):
+    x = x.to_list() if ivy.is_array(x) else x
+
+    ivy.utils.assertions.check_equal(
+        ivy.array(x).ndim,
+        1,
+        message="unique_with_counts expects a 1D vector.",
+    )
+    ivy.utils.assertions.check_elem_in_list(
+        out_idx,
+        ["int32", "int64"],
+        message=(
+            f"Value for attr 'out_idx' of {out_idx} is not in the list of allowed"
+            " values: [int32, int64]"
+        ),
+    )
+
+    values = []
+    indices = []
+    counts = []
+
+    for element in x:
+        if element not in values:
+            values.append(element)
+            indices.append(len(values) - 1)
+            counts.append(1)
+        else:
+            index = values.index(element)
+            counts[index] += 1
+            indices.append(index)
+
+    return (
+        ivy.array(values),
+        ivy.array(indices, dtype=out_idx),
+        ivy.array(counts, dtype=out_idx),
+    )
+
+
+@to_ivy_arrays_and_back
 def while_loop(
     cond,
     body,
@@ -611,3 +655,12 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def zeros_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    return ivy.zeros(shape, dtype=dtype)

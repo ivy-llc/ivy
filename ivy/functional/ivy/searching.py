@@ -12,6 +12,8 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
@@ -20,11 +22,13 @@ from ivy.func_wrapper import (
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -125,11 +129,13 @@ def argmax(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -231,10 +237,12 @@ def argmin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def nonzero(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -245,6 +253,15 @@ def nonzero(
 ) -> Union[Tuple[ivy.Array], ivy.Array]:
     """
     Return the indices of the array elements which are non-zero.
+
+    .. note::
+        If ``x`` has a complex floating-point data type, non-zero elements
+        are those elements having at least one component (real or imaginary)
+        which is non-zero.
+
+    .. note::
+        If ``x`` has a boolean data type, non-zeroelements are those elements
+        which are equal to ``True``.
 
     Parameters
     ----------
@@ -370,11 +387,13 @@ def nonzero(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def where(
     condition: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -462,11 +481,13 @@ def where(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def argwhere(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
