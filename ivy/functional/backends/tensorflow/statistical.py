@@ -204,5 +204,5 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    equation = legalise_einsum_expr(*[equation,*operands])
+    equation = legalise_einsum_expr(*[equation, *operands])
     return tf.cast(tf.einsum(equation, *operands), dtype)
