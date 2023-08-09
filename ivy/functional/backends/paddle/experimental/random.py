@@ -2,7 +2,6 @@
 from typing import Optional, Union, Sequence
 import paddle
 
-from ivy import with_unsupported_device_and_dtypes
 from ivy.functional.backends.paddle import backend_version
 from ivy.utils.exceptions import IvyNotImplementedException
 
@@ -12,6 +11,7 @@ from paddle.device import core
 from ivy.functional.ivy.random import (
     _check_shapes_broadcastable,
 )
+from ivy import with_unsupported_device_and_dtypes
 
 # dirichlet
 
