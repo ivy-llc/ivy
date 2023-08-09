@@ -1541,12 +1541,13 @@ def handle_backend_invalid(fn: Callable) -> Callable:
             target_backend = ivy.utils.backend.handler._determine_backend_from_args(x)
             if (
                 target_backend is not None
+                and ivy.current_backend_str() != ""
                 and ivy.current_backend_str() != target_backend.backend
             ):
                 raise ivy.utils.exceptions.InvalidBackendException(
                     "Operation not allowed. Array was instantiated with backend"
                     f" {target_backend.backend}. But current backend is"
-                    f" {ivy.current_backend_str()}. Please set dynamic=True"
+                    f" {ivy.backend}. Please set dynamic=True"
                     " for the array if you want to convert it to the target"
                     " backend"
                 )
