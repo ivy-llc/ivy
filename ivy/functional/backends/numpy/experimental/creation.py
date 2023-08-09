@@ -111,3 +111,26 @@ def unsorted_segment_min(
             res[i] = np.min(data[mask_index], axis=0)
 
     return res
+
+
+def unsorted_segment_sum(
+    data: np.ndarray,
+    segment_ids: np.ndarray,
+    num_segments: int,
+) -> np.ndarray:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = np.zeros((num_segments,) + data.shape[1:], dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if np.any(mask_index):
+            res[i] = np.sum(data[mask_index], axis=0)
+
+    return res

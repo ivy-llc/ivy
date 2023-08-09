@@ -25,7 +25,7 @@ The tasks currently open are:
 
 We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
 
-Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy-core`.
+Please always use the latest commit on GitHub when working on any of these tasks, **DO NOT** develop your code using the latest PyPI release of :code:`ivy`.
 
 Function Formatting
 -------------------
@@ -37,7 +37,6 @@ The updates should be applied for the:
 
 #. ivy API
 #. all backend APIs
-#. container static methods
 #. array instance methods
 #. container instance methods
 #. array operators
@@ -59,7 +58,7 @@ However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
 #. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
 #. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
 #. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
@@ -245,7 +244,18 @@ A few points to keep in mind while doing this:
 #. Make sure all the positional arguments are positional-only and optional arguments are keyword-only.
 #. In case some tests require function-specific parameters, you can create composite hypothesis strategies using the :code:`draw` function in the hypothesis library.
 
-If you’re stuck on a function which requires complex compositions, feel free to reselect a function 🙂.
+If you’re stuck on a function which requires complex compositions, feel free to reselect a function 
+
+Extending the Ivy API
+~~~~~~~~~~~~~~~~~~~~~~~
+
+We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
+
+However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
+
+In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
+
+We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Where to place a backend function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
