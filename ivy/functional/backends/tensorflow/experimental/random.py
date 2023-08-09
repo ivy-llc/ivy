@@ -71,8 +71,7 @@ def beta(
     shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
-    with tf.device(device):
-        return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
+    return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
 
 
 def gamma(
@@ -92,8 +91,7 @@ def gamma(
     shape = _check_bounds_and_get_shape(alpha, beta, shape).shape
     alpha = tf.cast(alpha, dtype)
     beta = tf.cast(beta, dtype)
-    with tf.device(device):
-        return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
+    return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("bfloat16",)}, backend_version)
@@ -108,18 +106,17 @@ def poisson(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     lam = tf.cast(lam, "float32")
-    with tf.device(device):
-        if seed:
-            tf.random.set_seed(seed)
-        if shape is None:
-            return tf.random.poisson((), lam, dtype=dtype, seed=seed)
-        shape = tf.cast(shape, "int32")
-        _check_shapes_broadcastable(lam.shape, shape)
-        lam = tf.broadcast_to(lam, tuple(shape))
-        ret = tf.random.poisson((), lam, dtype=dtype, seed=seed)
-        if tf.reduce_any(lam < 0):
-            return tf.where(lam < 0, fill_value, ret)
-        return ret
+    if seed:
+        tf.random.set_seed(seed)
+    if shape is None:
+        return tf.random.poisson((), lam, dtype=dtype, seed=seed)
+    shape = tf.cast(shape, "int32")
+    _check_shapes_broadcastable(lam.shape, shape)
+    lam = tf.broadcast_to(lam, tuple(shape))
+    ret = tf.random.poisson((), lam, dtype=dtype, seed=seed)
+    if tf.reduce_any(lam < 0):
+        return tf.where(lam < 0, fill_value, ret)
+    return ret
 
 
 def bernoulli(
@@ -132,17 +129,16 @@ def bernoulli(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    with tf.device(device):
-        if seed is not None:
-            tf.random.set_seed(seed)
-        if logits is not None:
-            logits = tf.cast(logits, dtype)
-            if not _check_shapes_broadcastable(shape, logits.shape):
-                shape = logits.shape
-        elif probs is not None:
-            probs = tf.cast(probs, dtype)
-            if not _check_shapes_broadcastable(shape, probs.shape):
-                shape = probs.shape
-        return tfp.distributions.Bernoulli(
-            logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
-        ).sample(shape, seed)
+    if seed is not None:
+        tf.random.set_seed(seed)
+    if logits is not None:
+        logits = tf.cast(logits, dtype)
+        if not _check_shapes_broadcastable(shape, logits.shape):
+            shape = logits.shape
+    elif probs is not None:
+        probs = tf.cast(probs, dtype)
+        if not _check_shapes_broadcastable(shape, probs.shape):
+            shape = probs.shape
+    return tfp.distributions.Bernoulli(
+        logits=logits, probs=probs, dtype=dtype, allow_nan_stats=True
+    ).sample(shape, seed)

@@ -414,8 +414,7 @@ def gradient(
                 a * x[tuple(slice2)] + b * x[tuple(slice3)] + c * x[tuple(slice4)]
             )
 
-        with tf.device(device):
-            outvals.append(tf.convert_to_tensor(out))
+        outvals.append(tf.convert_to_tensor(out))
 
         # reset the slice object in this dimension to ":"
         slice1[axis] = slice(None)

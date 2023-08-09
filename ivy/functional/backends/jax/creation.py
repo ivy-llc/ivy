@@ -12,7 +12,6 @@ import jaxlib.xla_extension
 import ivy
 from ivy import as_native_dtype
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import _to_device
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -87,7 +86,7 @@ def empty(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.empty(shape, dtype), device=device)
+    return jnp.empty(shape, dtype)
 
 
 def empty_like(
@@ -98,7 +97,7 @@ def empty_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.empty_like(x, dtype=dtype), device=device)
+    return jnp.empty_like(x, dtype=dtype)
 
 
 def eye(
@@ -116,11 +115,11 @@ def eye(
         n_cols = n_rows
     i = jnp.eye(n_rows, n_cols, k, dtype)
     if batch_shape is None:
-        return _to_device(i, device=device)
+        return i
     reshape_dims = [1] * len(batch_shape) + [n_rows, n_cols]
     tile_dims = list(batch_shape) + [1, 1]
     return_mat = jnp.tile(jnp.reshape(i, reshape_dims), tile_dims)
-    return _to_device(return_mat, device=device)
+    return return_mat
 
 
 def from_dlpack(x, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -138,10 +137,7 @@ def full(
 ) -> JaxArray:
     dtype = ivy.default_dtype(dtype=dtype, item=fill_value, as_native=True)
     ivy.utils.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
-    return _to_device(
-        jnp.full(shape, fill_value, dtype),
-        device=device,
-    )
+    return jnp.full(shape, fill_value, dtype)
 
 
 def full_like(
@@ -226,7 +222,7 @@ def linspace(
 
     ans = jax.lax.convert_element_type(out, dtype)
 
-    return _to_device(ans, device=device)
+    return ans
 
 
 def meshgrid(
@@ -245,7 +241,7 @@ def ones(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.ones(shape, dtype), device=device)
+    return jnp.ones(shape, dtype)
 
 
 def ones_like(
@@ -256,7 +252,7 @@ def ones_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.ones_like(x, dtype=dtype), device=device)
+    return jnp.ones_like(x, dtype=dtype)
 
 
 def tril(x: JaxArray, /, *, k: int = 0, out: Optional[JaxArray] = None) -> JaxArray:
@@ -274,10 +270,7 @@ def zeros(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(
-        jnp.zeros(shape, dtype),
-        device=device,
-    )
+    return jnp.zeros(shape, dtype)
 
 
 def zeros_like(
@@ -288,7 +281,7 @@ def zeros_like(
     device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return _to_device(jnp.zeros_like(x, dtype=dtype), device=device)
+    return jnp.zeros_like(x, dtype=dtype)
 
 
 # Extra #
@@ -344,7 +337,7 @@ def one_hot(
     if axis is not None:
         res = jnp.moveaxis(res, -1, axis)
 
-    return _to_device(res, device)
+    return res
 
 
 def frombuffer(
@@ -364,7 +357,4 @@ def triu_indices(
     *,
     device: jaxlib.xla_extension.Device,
 ) -> Tuple[JaxArray]:
-    return _to_device(
-        jnp.triu_indices(n=n_rows, k=k, m=n_cols),
-        device=device,
-    )
+    return jnp.triu_indices(n=n_rows, k=k, m=n_cols)

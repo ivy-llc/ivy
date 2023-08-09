@@ -7,7 +7,6 @@ import jaxlib.xla_extension
 
 # local
 from ivy.functional.backends.jax import JaxArray
-from ivy.functional.backends.jax.device import _to_device
 import ivy
 
 # Array API Standard #
@@ -75,10 +74,7 @@ def tril_indices(
     *,
     device: jaxlib.xla_extension.Device,
 ) -> Tuple[JaxArray, ...]:
-    return _to_device(
-        jnp.tril_indices(n=n_rows, k=k, m=n_cols),
-        device=device,
-    )
+    return jnp.tril_indices(n=n_rows, k=k, m=n_cols)
 
 
 def unsorted_segment_min(
