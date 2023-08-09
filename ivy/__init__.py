@@ -1421,6 +1421,12 @@ GLOBAL_PROPS = [
     "dynamic_backend",
     "precise_mode",
     "soft_device_mode",
+    "logging_mode",
+    "default_dtype",
+    "default_float_dtype",
+    "default_int_dtype",
+    "default_complex_dtype",
+    "default_uint_dtype",
 ]
 
 
