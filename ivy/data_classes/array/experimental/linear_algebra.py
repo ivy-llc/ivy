@@ -410,3 +410,35 @@ class _ArrayWithLinearAlgebraExperimental(abc.ABC):
         [1]: Boutsidis & Gallopoulos. Pattern Recognition, 41(4): 1350-1362, 2008.
         """
         return ivy.make_svd_non_negative(self._data, U, S, V, nntype=nntype)
+
+    def truncated_svd(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        compute_uv: bool = True,
+        n_eigenvecs: Optional[int] = None,
+    ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
+        """
+        ivy.Array instance method variant of ivy.make_svd_non_negative. This method
+        simply wraps the function, and so the docstring for ivy.make_svd_non_negative
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            2D-array
+        compute_uv
+            If ``True`` then left and right singular vectors will
+            be computed and returnedv in ``U`` and ``Vh``
+            respectively. Otherwise, only the singular values will
+            be computed, which can be significantly faster.
+        n_eigenvecs
+            if specified, number of eigen[vectors-values] to return
+            else full matrices will be returned
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(U, S, Vh)``
+            Each returned array must have the same floating-point data type as ``x``.
+        """
+        return ivy.truncated_svd(self._data, compute_uv, n_eigenvecs)

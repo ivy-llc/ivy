@@ -1049,6 +1049,8 @@ def make_svd_non_negative(
     return W, H
 
 
+# The following function has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/svd.py#L206
 @handle_nestable
 @handle_exceptions
 @handle_array_like_without_promotion
@@ -1058,10 +1060,8 @@ def make_svd_non_negative(
 def truncated_svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    *,
     compute_uv: bool = True,
     n_eigenvecs: Optional[int] = None,
-    **kwargs,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ivy.Array, ivy.Array]]:
     """
     Compute a truncated SVD on `x` using the standard SVD.
@@ -1069,8 +1069,8 @@ def truncated_svd(
     Parameters
     ----------
     x
-      2D-array
-    compute_uv
+        2D-array
+        compute_uv
         If ``True`` then left and right singular vectors will be computed and returned
         in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be
         computed, which can be significantly faster.
@@ -1078,9 +1078,8 @@ def truncated_svd(
         if specified, number of eigen[vectors-values] to return
         else full matrices will be returned
 
-    .. note::
-        once complex numbers are supported, each square matrix must be Hermitian.
-
+    Returns
+    -------
     ret
         a namedtuple ``(U, S, Vh)``
         Each returned array must have the same floating-point data type as ``x``.

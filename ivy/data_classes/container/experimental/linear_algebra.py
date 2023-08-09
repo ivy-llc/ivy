@@ -1204,13 +1204,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
     @staticmethod
     def static_make_svd_non_negative(
-        x: Union[ivy.Array, ivy.NativeArray],
-        U: Union[ivy.Array, ivy.NativeArray],
-        S: Union[ivy.Array, ivy.NativeArray],
-        V: Union[ivy.Array, ivy.NativeArray],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        U: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        S: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        V: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        nntype: Optional[Union[Literal["nndsvd", "nndsvda"], ivy.Container]] = "nndsvd",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1251,13 +1251,13 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
         )
 
     def make_svd_non_negative(
-        self: Union[ivy.Array, ivy.NativeArray],
-        U: Union[ivy.Array, ivy.NativeArray],
-        S: Union[ivy.Array, ivy.NativeArray],
-        V: Union[ivy.Array, ivy.NativeArray],
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        U: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        S: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        V: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        nntype: Optional[Literal["nndsvd", "nndsvda"]] = "nndsvd",
+        nntype: Optional[Union[Literal["nndsvd", "nndsvda"], ivy.Container]] = "nndsvd",
         key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
@@ -1270,7 +1270,7 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Parameters
         ----------
-        x
+        self
             tensor being decomposed.
         U
             left singular matrix from SVD.
@@ -1290,6 +1290,100 @@ class _ContainerWithLinearAlgebraExperimental(ContainerBase):
             S,
             V,
             nntype=nntype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def static_truncated_svd(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        compute_uv: Union[bool, ivy.Container] = True,
+        n_eigenvecs: Optional[Union[int, ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container, ivy.Container]]:
+        """
+        ivy.Container static method variant of ivy.truncated_svd. This method simply
+        wraps the function, and so the docstring for ivy.truncated_svd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container of 2D-arrays
+        compute_uv
+            If ``True`` then left and right singular vectors
+            will be computed and returned in ``U`` and ``Vh``,
+            respectively. Otherwise, only the singular values
+            will be computed, which can be significantly faster.
+        n_eigenvecs
+            if specified, number of eigen[vectors-values] to return
+            else full matrices will be returned
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(U, S, Vh)``
+            Each returned container must have the same
+             floating-point data type as ``x``.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "truncated_svd",
+            x,
+            compute_uv,
+            n_eigenvecs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def truncated_svd(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        compute_uv: Union[bool, ivy.Container] = True,
+        n_eigenvecs: Optional[Union[int, ivy.Container]] = None,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+    ) -> Union[ivy.Container, Tuple[ivy.Container, ivy.Container, ivy.Container]]:
+        """
+        ivy.Container instance method variant of ivy.truncated_svd. This method simply
+        wraps the function, and so the docstring for ivy.truncated_svd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container of 2D-arrays
+        compute_uv
+            If ``True`` then left and right singular vectors
+            will be computed and returned in ``U`` and ``Vh``
+            respectively. Otherwise, only the singular values will
+            be computed, which can be significantly faster.
+        n_eigenvecs
+            if specified, number of eigen[vectors-values] to return
+            else full matrices will be returned
+
+        Returns
+        -------
+        ret
+            a namedtuple ``(U, S, Vh)``
+            Each returned container must have the
+            same floating-point data type as ``x``.
+        """
+        return self.static_truncated_svd(
+            self,
+            compute_uv,
+            n_eigenvecs,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
