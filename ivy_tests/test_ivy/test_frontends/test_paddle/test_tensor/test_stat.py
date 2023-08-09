@@ -168,7 +168,7 @@ def test_paddle_nanmedian(
     fn_tree="paddle.quantile",
     dtype_and_x=_statistical_dtype_values(function="quantile"),
         keepdims=st.booleans(),
-        q = st.floats(0.0,1.0),
+        q=st.floats(0.0, 1.0),
 )
 def test_paddle_median(
     *,
