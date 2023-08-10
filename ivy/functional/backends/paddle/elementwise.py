@@ -196,7 +196,7 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool", "bfloat16")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -210,11 +210,14 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         ret_dtype = x.dtype
         return paddle.asin(x.astype("float32")).astype(ret_dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        asinh_iz = paddle_backend.asinh(paddle.complex(-x.imag(), x.real()))
+        return paddle.complex(asinh_iz.imag(), -asinh_iz.real())
     return paddle.asin(x)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -228,6 +231,14 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         ret_dtype = x.dtype
         return paddle.asinh(x.astype("float32")).astype(ret_dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        # From https://github.com/python/cpython/blob/39ef93edb9802dccdb6555d4209ac2e60875a011/Modules/cmathmodule.c#L276 # noqa
+        s1 = paddle_backend.sqrt(paddle.complex(1 + x.imag(), -x.real()))
+        s2 = paddle_backend.sqrt(paddle.complex(1 - x.imag(), x.real()))
+        return paddle.complex(
+            paddle.asinh(s1.real() * s2.imag() - s2.real() * s1.imag()),
+            paddle.atan2(x.imag(), s1.real() * s2.real() - s1.imag() * s2.imag()),
+        )
     return paddle.asinh(x)
 
 
@@ -356,7 +367,7 @@ def log1p(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.bool,
     ]:
         if paddle.is_complex(x):
-            return paddle.complex(paddle.log1p(paddle.abs(x)), paddle.angle(x + 1))
+            return paddle_backend.log(x + 1)
         return paddle.log1p(x.astype("float32")).astype(x.dtype)
     return paddle.log1p(x)
 
@@ -512,7 +523,7 @@ def greater_equal(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -525,6 +536,14 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
         paddle.float16,
     ]:
         return paddle.acos(x.astype("float32")).astype(x.dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        # From https://github.com/python/cpython/blob/39ef93edb9802dccdb6555d4209ac2e60875a011/Modules/cmathmodule.c#L178 # noqa
+        s1 = paddle_backend.sqrt(1 - x)
+        s2 = paddle_backend.sqrt(1 + x)
+        return paddle.complex(
+            2.0 * paddle.atan2(s1.real(), s2.real()),
+            paddle.asinh(s2.real() * s1.imag() - s2.imag() * s1.real()),
+        )
     return paddle.acos(x)
 
 
@@ -584,7 +603,7 @@ def logical_or(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -597,6 +616,14 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
         paddle.float16,
     ]:
         return paddle.acosh(x.astype("float32")).astype(x.dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        # From https://github.com/python/cpython/blob/39ef93edb9802dccdb6555d4209ac2e60875a011/Modules/cmathmodule.c#L221 # noqa
+        s1 = paddle_backend.sqrt(paddle.complex(x.real() - 1, x.imag()))
+        s2 = paddle_backend.sqrt(paddle.complex(x.real() + 1, x.imag()))
+        return paddle.complex(
+            paddle.asinh(s1.real() * s2.real() + s1.imag() * s2.imag()),
+            2.0 * paddle.atan2(s1.imag(), s2.real()),
+        )
     return paddle.acosh(x)
 
 
@@ -953,7 +980,7 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -967,6 +994,9 @@ def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         ret_dtype = x.dtype
         return paddle.atan(x.astype("float32")).astype(ret_dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        atanh_iz = paddle_backend.atanh(paddle.complex(-x.imag(), x.real()))
+        return paddle.complex(atanh_iz.imag(), -atanh_iz.real())
     return paddle.atan(x)
 
 
@@ -1068,7 +1098,7 @@ def remainder(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("bool", "bfloat16")}},
     backend_version,
 )
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -1082,6 +1112,8 @@ def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         ret_dtype = x.dtype
         return paddle.atanh(x.astype("float32")).astype(ret_dtype)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        return 0.5 * (paddle_backend.log(1 + x) - paddle_backend.log(1 - x))
     return paddle.atanh(x)
 
 
