@@ -63,14 +63,14 @@ def test_log_poisson_loss(
     fn_tree="functional.ivy.experimental.l1_loss",
     dtype_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1e-04,
-        max_value=1,
+        min_value=1,
+        max_value=100,
         allow_inf=False,
     ),
     dtype_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1e-04,
-        max_value=1,
+        min_value=1,
+        max_value=100,
         allow_inf=False,
     ),
     reduction=st.sampled_from(["sum", "mean"]),
