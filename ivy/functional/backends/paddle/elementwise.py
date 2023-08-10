@@ -1,5 +1,5 @@
 # global
-from typing import Union, Optional, Dict, Type
+from typing import Union, Optional, Tuple, Type
 
 import paddle
 import math
@@ -255,32 +255,55 @@ def sign(
     return paddle.sgn(x)
 
 
-SQRT_DTYPE_CAST_MAP: Dict[Type[paddle.Tensor], str] = {
-    paddle.int8: "float32",
-    paddle.int16: "float32",
-    paddle.int32: "float32",
-    paddle.uint8: "float32",
-    paddle.float16: "float32",
-    paddle.bool: "float32",
-    paddle.int64: "float64",
-}
+def _determine_sqrt_dtype_cast(
+    dtype: Type[paddle.Tensor],
+) -> Tuple[Optional[str], Optional[str]]:
+    """
+    Determine the appropriate casting dtype for sqrt operations.
+
+    Returns:
+        (intermediate_dtype, output_dtype)
+    """
+
+    cast_and_return_float32_dtype = {
+        paddle.int8,
+        paddle.int16,
+        paddle.int32,
+        paddle.uint8,
+        paddle.uint16,
+        paddle.uint32,
+        paddle.float16,
+        paddle.bool,
+    }
+
+    if dtype in cast_and_return_float32_dtype:
+        return "float32", "float32"
+    elif dtype == paddle.int64:
+        return "float64", "float64"
+    elif dtype == paddle.bfloat16:
+        return "float32", "bfloat16"
+    else:
+        return None, None
 
 
 def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+    """Calculate the square root with type handling."""
+
     if paddle.is_complex(x):
         angle = paddle.angle(x)
-        result = paddle.complex(
+        return paddle.complex(
             paddle.cos(angle / 2), paddle.sin(angle / 2)
         ) * paddle.sqrt(paddle.abs(x))
-        return result
-    else:
-        if x.dtype in {paddle.float32, paddle.float64}:
-            return paddle.sqrt(x)
-        cast_type = SQRT_DTYPE_CAST_MAP.get(x.dtype, None)
-        if cast_type:
-            return paddle.sqrt(x.astype(cast_type))
-        else:
-            raise ValueError(f"Unsupported data type for sqrt: {x.dtype}")
+
+    if x.dtype in {paddle.float32, paddle.float64}:
+        return paddle.sqrt(x)
+
+    intermediate_dtype, output_dtype = _determine_sqrt_dtype_cast(x.dtype)
+    if intermediate_dtype:
+        result = paddle.sqrt(x.astype(intermediate_dtype))
+        return result.astype(output_dtype)
+
+    raise ValueError(f"Unsupported data type for sqrt: {x.dtype}")
 
 
 @with_unsupported_device_and_dtypes(
