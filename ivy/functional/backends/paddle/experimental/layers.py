@@ -453,7 +453,7 @@ def adaptive_max_pool2d(
 def stft(
     signal: Union[paddle.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,
+    hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
@@ -473,7 +473,7 @@ def stft(
     return paddle.signal.stft(
          signal,
          n_fft,
-         frame_step,
+         hop_length,
          win_length,
          window,
          center,
