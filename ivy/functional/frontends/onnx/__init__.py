@@ -255,6 +255,8 @@ from . import tensor
 from .tensor import *
 from . import elementwise
 from .elementwise import *
+from . import linalg
+from .linalg import *
 
 # _frontend_array = Tensor
 
