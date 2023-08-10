@@ -119,7 +119,7 @@ class PaddleFrontendConfig(FrontendConfig):
     def is_native_array(self, x):
         return isinstance(x, (paddle.Tensor, paddle.fluid.framework.EagerParamBase))
 
-    def to_numpy(x):
+    def to_numpy(self, x):
         return np.array(x)
 
     def as_native_dtype(self, dtype: str):
