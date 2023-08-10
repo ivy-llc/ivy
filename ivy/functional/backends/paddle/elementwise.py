@@ -270,8 +270,6 @@ def _determine_sqrt_dtype_cast(
         paddle.int16,
         paddle.int32,
         paddle.uint8,
-        paddle.uint16,
-        paddle.uint32,
         paddle.float16,
         paddle.bool,
     }
