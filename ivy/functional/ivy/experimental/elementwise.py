@@ -244,11 +244,11 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_device_shifting
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
@@ -884,11 +884,11 @@ def gradient(
     )
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_device_shifting
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
