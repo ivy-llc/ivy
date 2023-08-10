@@ -2147,7 +2147,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
     def stft(
         signal: Union[ivy.Array, ivy.NativeArray],
         n_fft: Optional[Union[int, Tuple[int]]],
-        frame_step: int,
+        hop_length: int,
         /,
         *,
         axis: Optional[int] = None,
@@ -2179,7 +2179,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
             component of the signal.        
         n_fft
            Size of Fourier transform.
-        frame_step
+        hop_length
            An integer scalar Tensor. The number of samples to step.             
         axis
             The axis on which to perform the DFT. By default this
@@ -2251,7 +2251,7 @@ class _ContainerWithLayersExperimental(ContainerBase):
         return self.static_stft(
             signal,
             n_fft,
-            frame_step,
+            hop_length,
             axis=axis,
             onesided=onesided,
             fs=fs,
