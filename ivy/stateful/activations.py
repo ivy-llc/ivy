@@ -7,12 +7,25 @@ from typing import Literal
 
 
 class GELU(Module):
-    def __init__(self, *, approximate: bool = False):
+    def __init__(
+        self,
+        *,
+        approximate: bool = False,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """Apply the GELU activation function."""
         self._approximate = approximate
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, /, *, approximate=None):
+    def _forward(
+        self,
+        x,
+        /,
+        *,
+        approximate=None,
+        complex_mode=None,
+    ):
         """
         Perform forward pass of the GELU activation.
 
@@ -26,7 +39,11 @@ class GELU(Module):
         ret
             The outputs following the GELU activation *[batch_shape, d]*
         """
-        return ivy.gelu(x, approximate=ivy.default(approximate, self._approximate))
+        return ivy.gelu(
+            x,
+            approximate=ivy.default(approximate, self._approximate),
+            complex_mode=ivy.default(complex_mode, self._complex_mode),
+        )
 
 
 class GEGLU(Module):
@@ -53,11 +70,15 @@ class GEGLU(Module):
 
 
 class ReLU(Module):
-    def __init__(self):
+    def __init__(
+        self,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """Apply the RELU activation function."""
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x):
+    def _forward(self, x, complex_mode=None):
         """
 
         Parameters
@@ -70,7 +91,7 @@ class ReLU(Module):
         ret
             The outputs following the RELU activation *[batch_shape, d]*
         """
-        return ivy.relu(x)
+        return ivy.relu(x, complex_mode=ivy.default(complex_mode, self._complex_mode))
 
 
 class LeakyReLU(Module):
@@ -402,3 +423,24 @@ class ELU(Module):
             The outputs following the ELU activation *[batch_shape, d]*
         """
         return ivy.elu(x, alpha=alpha)
+
+
+class LogSigmoid(Module):
+    def __init__(self):
+        """Apply the LogSigmoid activation function."""
+        Module.__init__(self)
+
+    def _forward(self, x):
+        """
+
+        Parameters
+        ----------
+        x
+            Inputs to process *[batch_shape, d]*.
+
+        Returns
+        -------
+        ret
+            The outputs following the LogSigmoid activation *[batch_shape, d]*
+        """
+        return ivy.logsigmoid(x)
