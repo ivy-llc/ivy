@@ -6,6 +6,15 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 )
 
 
+# crop
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def crop(image, top, left, height, width):
+    return image.crop((left, top, left + width, top + height))
+
+
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
