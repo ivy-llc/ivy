@@ -12095,7 +12095,8 @@ def test_torch_index_fill(
     #     max_dim_size=1,
     # ),
     #    helpers.dtype_and_values()
-    value=st.just(0),
+    # value=st.just(0),
+    value=st.floats(min_value=-100, max_value=100),
 )
 def test_torch_index_fill(
     dtype_indices_axis,
@@ -12134,8 +12135,4 @@ def test_torch_index_fill(
     )
 
 
-# dtype_and_values=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("float"),
-#         shape=st.shared(helpers.get_shape(min_num_dims=1,
-#                    max_num_dims=2), key="shape"),
-#     ),
+
