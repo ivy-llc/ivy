@@ -19,8 +19,9 @@ use = ivy.utils.backend.ContextManager(_module_in_memory)
 
 def dunder_wrapper(func):
     def rep_method(*args, **kwargs):
-        if any(ivy.is_ivy_array(arg) for arg in args):
-            return NotImplemented
+        for arg in args:
+            if ivy.is_ivy_array(arg):
+                return NotImplemented
         return func(*args, **kwargs)
 
     return rep_method
