@@ -1759,6 +1759,38 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def triu(self, diagonal=0):
+        return torch_frontend.triu(self, diagonal)
+    
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "bfloat16",
+                "int8",
+                "uint8",
+                "int16",
+                "complex128",
+                "complex64",
+            )
+        },
+        "torch",
+    )
+    def triu_(self, diagonal=0):
+        self.ivy_array = self.triu(diagonal).ivy_array
+        return self
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16")},
