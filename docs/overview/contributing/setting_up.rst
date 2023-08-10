@@ -690,7 +690,7 @@ Just follow the steps outlined below:
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/select_branch.png?raw=true
    :width: 420
 
-3. The you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
+3. Then you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
    
       - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
