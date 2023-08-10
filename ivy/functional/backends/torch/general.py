@@ -120,6 +120,7 @@ set_item.partial_mixed_handler = (
     lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
 )
 
+
 def to_numpy(
     x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -135,6 +136,7 @@ def to_numpy(
             if x.dtype is torch.bfloat16:
                 if ivy.np_bf16_interop:
                     from ml_dtypes import bfloat16
+
                     x = x.to(torch.float32)
                     x = x.numpy(force=True).astype(bfloat16)
                 else:

@@ -943,7 +943,7 @@ globals_vars = GlobalsDict(
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
         "dynamic_backend_stack": dynamic_backend_stack,
-        "np_bf16_interop_stack":np_bf16_interop_stack
+        "np_bf16_interop_stack": np_bf16_interop_stack,
     }
 )
 
@@ -1423,7 +1423,7 @@ GLOBAL_PROPS = [
     "default_int_dtype",
     "default_complex_dtype",
     "default_uint_dtype",
-    "np_bf16_interop"
+    "np_bf16_interop",
 ]
 
 
@@ -1488,15 +1488,21 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
             )
         self.__dict__[name] = value
 
+
 ivy.np_bf16_interop = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
+
+
 def set_np_bf16_interop(val=True):
     """Set the bfloat16 interoperability mode to the provided flag (True or False)"""
     global np_bf16_interop_stack
     np_bf16_interop_stack.append(val)
     ivy.__setattr__("np_bf16_interop", val, True)
     backend_str = ivy.current_backend_str()
-    if backend_str not in ["torch","numpy",""] and val == True:
-        warnings.warn(f"`set_np_bf16_interop(True)` has no effect on the `{backend_str}` backend.")
+    if backend_str not in ["torch", "numpy", ""] and val == True:
+        warnings.warn(
+            f"`set_np_bf16_interop(True)` has no effect on the `{backend_str}` backend."
+        )
+
 
 def unset_np_bf16_interop():
     """Unset the bfloat16 interoperability mode."""
@@ -1505,8 +1511,8 @@ def unset_np_bf16_interop():
         np_bf16_interop_stack.pop()
         val = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
         ivy.__setattr__("np_bf16_interop", val, True)
-    
-    
+
+
 if (
     "ivy" in sys.modules.keys()
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND

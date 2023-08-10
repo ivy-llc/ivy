@@ -404,7 +404,10 @@ class Array(
             # Requirerd in the case that backend is different
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
-        if ivy.current_backend_str() == "torch" and str(self._data.dtype)=='torch.bfloat16':
+        if (
+            ivy.current_backend_str() == "torch"
+            and str(self._data.dtype) == "torch.bfloat16"
+        ):
             current_interop_mode = ivy.np_bf16_interop
             ivy.set_np_bf16_interop(True)
             arr_np = backend.to_numpy(self._data)
