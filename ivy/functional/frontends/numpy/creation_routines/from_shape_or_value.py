@@ -77,21 +77,5 @@ def full_like(a, fill_value, dtype=None, order="K", subok=True, shape=None):
 @handle_numpy_dtype
 @outputs_to_frontend_arrays
 def fromfunction(function, shape, *, dtype="float64", like=None, **kwargs):
-    def canonicalize_shape(shape, context="shape argument"):
-        if isinstance(shape, int):
-            return (shape,)
-        elif isinstance(shape, list):
-            return tuple(shape)
-        elif isinstance(shape, tuple):
-            return shape
-        else:
-            msg = "{} must be an int, list, or tuple, but got {}."
-            raise TypeError(msg.format(context, type(shape)))
-
-    shape = canonicalize_shape(shape)
-    base = ivy.empty(shape=shape, dtype=dtype)
-    for idx in ivy.ndindex(shape):
-        ivy.set_nest_at_index(
-            base, idx, ivy.astype(ivy.array(function(*idx, **kwargs)), dtype)
-        )
-    return base
+    args = ivy.indices(shape, dtype=dtype)
+    return function(*args, **kwargs)
