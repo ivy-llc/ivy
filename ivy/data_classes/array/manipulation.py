@@ -391,7 +391,7 @@ class _ArrayWithManipulation(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[[0.],[ 1.]]])
-        >>> y = x.squeeze(2)
+        >>> y = x.squeeze(axis=2)
         >>> print(y)
         ivy.array([[0., 1.]])
         """
