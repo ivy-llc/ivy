@@ -361,14 +361,18 @@ def test_function(
                 )
 
         if test_flags.with_copy:
-            array_fn = ivy.is_array
+            array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(target_fn).parameters.keys()):
                 kwargs["copy"] = True
-            first_array = ivy.func_wrapper._get_first_array(
+            first_array = ivy_backend.func_wrapper._get_first_array(
                 *args, array_fn=array_fn, **kwargs
             )
             ret_, ret_np_flat_ = get_ret_and_flattened_np_array(
-                target_fn, *args, test_compile=test_flags.test_compile, **kwargs
+                backend_to_test,
+                target_fn,
+                *args,
+                test_compile=test_flags.test_compile,
+                **kwargs,
             )
             assert not np.may_share_memory(first_array, ret_)
 
@@ -711,18 +715,20 @@ def test_frontend_function(
             if test_flags.generate_frontend_arrays:
                 assert _is_frontend_array(ret)
             else:
-                assert ivy.is_array(ret)
+                assert ivy_backend.is_array(ret)
 
             if test_flags.generate_frontend_arrays:
                 array_fn = _is_frontend_array
             else:
-                array_fn = ivy.is_array
+                array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
                 copy_kwargs["copy"] = True
-            first_array = ivy.func_wrapper._get_first_array(
+            first_array = ivy_backend.func_wrapper._get_first_array(
                 *copy_args, array_fn=array_fn, **copy_kwargs
             )
-            ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_kwargs)
+            ret_ = get_frontend_ret(
+                backend_to_test, frontend_fn, *copy_args, **copy_kwargs
+            )
             if _is_frontend_array(first_array):
                 first_array = first_array.ivy_array
             if _is_frontend_array(ret_):
