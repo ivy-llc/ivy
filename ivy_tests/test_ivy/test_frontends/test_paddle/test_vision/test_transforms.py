@@ -31,7 +31,7 @@ def test_paddle_crop(
         top=input[1],
         left=input[2],
         height=input[3],
-        width=input[4]
+        width=input[4],
     )
 
 
