@@ -464,11 +464,11 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,

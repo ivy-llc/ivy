@@ -679,13 +679,13 @@ def cov(
     )
 
 
-@handle_backend_invalid
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -780,13 +780,13 @@ def cummax(
     )
 
 
-@handle_backend_invalid
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
