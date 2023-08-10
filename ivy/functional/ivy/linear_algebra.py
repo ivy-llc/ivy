@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ inf = float("inf")
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -163,6 +165,7 @@ def cholesky(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -269,6 +272,7 @@ def cross(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -341,6 +345,7 @@ def det(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -520,6 +525,7 @@ def diagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -572,6 +578,7 @@ def eig(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -642,6 +649,7 @@ def eigh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -750,6 +758,7 @@ def eigvalsh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -762,33 +771,69 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the inner product of two vectors ``x1`` and ``x2``.
+    """
+    Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
     x1
-        first one-dimensional input array of size N. Should have a numeric data type.
+        first one-dimensional input array of size N.
+        Should have a numeric data type.
         a(N,) array_like
         First input vector. Input is flattened if not already 1-dimensional.
     x2
-        second one-dimensional input array of size M. Should have a numeric data type.
+        second one-dimensional input array of size M.
+        Should have a numeric data type.
         b(M,) array_like
         Second input vector. Input is flattened if not already 1-dimensional.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
     ret
-        a two-dimensional array containing the inner product and whose shape is (N, M).
+        a two-dimensional array containing the inner product and whose
+        shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
 
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    Examples
+    --------
+    Matrices of identical shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.]])
+
+    Matrices of different shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.], [5., 6.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.], [61., 83.]])
+
+    3D matrices
+    >>> x = ivy.array([[[1., 2.], [3., 4.]],
+                       [[5., 6.], [7., 8.]]])
+    >>> y = ivy.array([[[9., 10.], [11., 12.]],
+                       [[13., 14.], [15., 16.]]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[[[ 29.,  35.], [ 41.,  47.]],
+                [[ 67.,  81.], [ 95., 109.]]],
+               [[[105., 127.], [149., 171.]],
+                [[143., 173.], [203., 233.]]]])
     """
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -883,6 +928,7 @@ def inv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1044,6 +1090,7 @@ def matmul(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1203,6 +1250,7 @@ def matrix_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1303,6 +1351,7 @@ def matrix_power(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1418,6 +1467,7 @@ def matrix_rank(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1508,6 +1558,7 @@ def matrix_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1597,6 +1648,7 @@ def outer(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1670,6 +1722,7 @@ def pinv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1735,6 +1788,7 @@ def qr(
     return current_backend(x).qr(x, mode=mode, out=out)
 
 
+@handle_backend_invalid
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
@@ -1847,6 +1901,7 @@ def slogdet(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1903,6 +1958,7 @@ def solve(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -2032,6 +2088,7 @@ def svd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2160,6 +2217,7 @@ def svdvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2249,6 +2307,7 @@ def tensordot(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2375,6 +2434,7 @@ def trace(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2443,6 +2503,7 @@ def vecdot(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2595,6 +2656,7 @@ def vector_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2679,6 +2741,7 @@ def diag(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2752,6 +2815,7 @@ def vander(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2787,6 +2851,7 @@ def vector_to_skew_symmetric_matrix(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2821,6 +2886,7 @@ def lu_factor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
