@@ -633,6 +633,13 @@ def test_frontend_function(
             **kwargs_for_test,
         )
 
+        if test_flags.generate_frontend_arrays:
+            assert _is_frontend_array(ret)
+            array_fn = _is_frontend_array
+        else:
+            assert ivy_backend.is_array(ret)
+            array_fn = ivy_backend.is_array
+
         if test_flags.with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -712,15 +719,6 @@ def test_frontend_function(
         elif test_flags.with_copy:
             assert not isinstance(ret, tuple)
 
-            if test_flags.generate_frontend_arrays:
-                assert _is_frontend_array(ret)
-            else:
-                assert ivy_backend.is_array(ret)
-
-            if test_flags.generate_frontend_arrays:
-                array_fn = _is_frontend_array
-            else:
-                array_fn = ivy_backend.is_array
             if "copy" in list(inspect.signature(frontend_fn).parameters.keys()):
                 copy_kwargs["copy"] = True
             first_array = ivy_backend.func_wrapper._get_first_array(
@@ -737,13 +735,6 @@ def test_frontend_function(
 
         elif test_flags.inplace:
             assert not isinstance(ret, tuple)
-
-            if test_flags.generate_frontend_arrays:
-                assert _is_frontend_array(ret)
-                array_fn = _is_frontend_array
-            else:
-                assert ivy_backend.is_array(ret)
-                array_fn = ivy_backend.is_array
 
             if "inplace" in list(inspect.signature(frontend_fn).parameters.keys()):
                 # the function provides optional inplace update
