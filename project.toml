@@ -4,3 +4,31 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ivy"
+version = "{__version__}"
+description = "The unified machine learning framework, enabling framework-agnostic functions, layers and libraries."
+readme = "README.rst"
+authors = [{ name = "Unify", email = "hello@unify.ai" }]
+license = "Apache-2.0"
+homepage = "https://unify.ai/ivy"
+documentation = "https://unify.ai/docs/ivy/"
+repository = "https://github.com/unifyai/ivy"
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+
+[project.dependencies]
+numpy = "*"
+einops = "0.6.1"
+psutil = "5.9.1"
+termcolor = "1.1.0"
+colorama = "0.4.5"
+packaging = "21.3"
+"nvidia-ml-py" = "<=11.495.46" 
+diskcache = "*"
+google-auth = "*"
+requests = "*"
+pyvis = "*"
+dill = "*"
