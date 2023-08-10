@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     infer_dtype,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 #       Permit multiple axis.
 #       Modify documentation to match the above modifications.
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -149,6 +151,7 @@ def histogram(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -194,6 +197,7 @@ def median(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -249,6 +253,7 @@ def nanmean(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -281,7 +286,8 @@ def quantile(
         as dimensions with size one. With this option, the result will broadcast
         correctly against the original array a.
     interpolation
-        {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
+        {'nearest', 'linear', 'lower', 'higher', 'midpoint', 'nearest_jax'}.
+        Default value: 'linear'.
         This specifies the interpolation method to use when the desired quantile lies
         between two data points i < j:
         - linear: i + (j - i) * fraction, where fraction is the fractional part of the
@@ -291,6 +297,7 @@ def quantile(
         - nearest: i or j, whichever is nearest.
         - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
         integer dtypes.
+        - nearest_jax: provides jax-like computation for interpolation='nearest'.
     out
         optional output array, for writing the result to.
 
@@ -333,6 +340,7 @@ def quantile(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -349,6 +357,7 @@ def corrcoef(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -421,6 +430,7 @@ def nanmedian(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -464,6 +474,7 @@ def bincount(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -504,6 +515,7 @@ def igamma(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -523,6 +535,7 @@ def nanquantile(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -680,12 +693,13 @@ def cov(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -780,12 +794,13 @@ def cummax(
     )
 
 
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

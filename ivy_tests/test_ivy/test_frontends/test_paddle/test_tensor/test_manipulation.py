@@ -518,3 +518,122 @@ def test_paddle_gather(
         param=param[0],
         indices=indices[0],
     )
+
+
+# flip
+@st.composite
+def _dtype_x_axis(draw, **kwargs):
+    dtype, x, shape = draw(helpers.dtype_and_values(**kwargs, ret_shape=True))
+    axis = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=len(shape) - 1),
+            min_size=len(shape),
+            max_size=len(shape),
+            unique=True,
+        )
+    )
+    return dtype, x, axis
+
+
+@handle_frontend_test(
+    fn_tree="paddle.flip",
+    dtype_x_axis=_dtype_x_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_dim_size=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_flip(
+    *,
+    dtype_x_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+    )
+
+
+# roll
+@handle_frontend_test(
+    fn_tree="paddle.roll",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+    shift=helpers.ints(min_value=1, max_value=10),
+    axis=helpers.ints(min_value=-1, max_value=1),
+    test_with_out=st.just(False),
+)
+def test_paddle_roll(
+    *,
+    dtype_and_x,
+    shift,
+    axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        shifts=shift,
+        axis=axis,
+    )
+
+
+# take_along_axis
+@handle_frontend_test(
+    fn_tree="paddle.take_along_axis",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(kind="valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_paddle_take_along_axis(
+    *,
+    dtype_indices_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=value,
+        indices=indices,
+        axis=axis,
+    )

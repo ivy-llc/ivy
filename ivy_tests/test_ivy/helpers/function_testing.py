@@ -291,24 +291,26 @@ def test_function(
                 test_ret, ivy_backend.zeros_like, to_mutable=True, include_derived=True
             )
             if instance_method:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        backend_to_test,
-                        instance.__getattribute__(fn_name),
-                        *args,
-                        **kwargs,
-                        out=out,
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    backend_to_test,
+                    instance.__getattribute__(fn_name),
+                    *args,
+                    **kwargs,
+                    out=out,
                 )
             else:
-                ret_from_target, ret_np_flat_from_target = (
-                    get_ret_and_flattened_np_array(
-                        backend_to_test,
-                        ivy_backend.__dict__[fn_name],
-                        *args,
-                        **kwargs,
-                        out=out,
-                    )
+                (
+                    ret_from_target,
+                    ret_np_flat_from_target,
+                ) = get_ret_and_flattened_np_array(
+                    backend_to_test,
+                    ivy_backend.__dict__[fn_name],
+                    *args,
+                    **kwargs,
+                    out=out,
                 )
             test_ret = (
                 ret_from_target[getattr(ivy_backend.__dict__[fn_name], "out_index")]
@@ -441,10 +443,9 @@ def test_function(
 
     assert ret_device == ret_from_gt_device, (
         f"ground truth backend ({test_flags.ground_truth_backend}) returned array on"
-        " device "
+        f" device {ret_from_gt_device} but target backend ({backend_to_test})"
+        f" returned array on device {ret_device}"
     )
-    f"{ret_from_gt_device} but target backend ({backend_to_test}) returned array on "
-    f"device {ret_device}"
     if ret_device is not None:
         assert ret_device == on_device, (
             f"device is set to {on_device}, but ground truth produced array on"
@@ -575,10 +576,6 @@ def test_frontend_function(
             on_device=on_device,
         )
 
-        # Make copy for arguments for functions that might use
-        # inplace update by default
-        copy_kwargs = copy.deepcopy(args)
-        copy_args = copy.deepcopy(kwargs)
         # strip the decorator to get an Ivy array
         # ToDo, fix testing for jax frontend for x32
         if frontend == "jax":
@@ -1339,16 +1336,16 @@ def test_method(
                     on_device=on_device,
                 )
 
-    assert (
-        ret_device == ret_from_gt_device
-    ), f"ground truth backend ({ground_truth_backend}) returned array on device "
-    f"{ret_from_gt_device} but target backend ({backend_to_test}) returned array on "
-    f"device {ret_device}"
+    assert ret_device == ret_from_gt_device, (
+        f"ground truth backend ({ground_truth_backend}) returned array on"
+        f" device {ret_from_gt_device} but target backend ({backend_to_test})"
+        f" returned array on device {ret_device}"
+    )
     if ret_device is not None:
-        assert (
-            ret_device == on_device
-        ), f"device is set to {on_device}, but ground truth "
-        f"produced array on {ret_device}"
+        assert ret_device == on_device, (
+            f"device is set to {on_device}, but ground truth produced array on"
+            f" {ret_device}"
+        )
 
     # assuming value test will be handled manually in the test function
     if not test_values:

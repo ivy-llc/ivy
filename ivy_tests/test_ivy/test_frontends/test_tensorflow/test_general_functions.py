@@ -1556,6 +1556,31 @@ def test_tensorflow_linspace(
     )
 
 
+# no_op
+@handle_frontend_test(
+    fn_tree="tensorflow.no_op",
+    dtype=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_no_op(
+    *,
+    dtype,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+    )
+
+
 # realdiv
 @handle_frontend_test(
     fn_tree="tensorflow.realdiv",
@@ -2316,7 +2341,7 @@ def test_tensorflow_truncatemod(
         dtype=helpers.get_dtypes("integer"), shape=(1, 2), min_value=50
     ),
 )
-def test_unravel_index(
+def test_tensorflow_unravel_index(
     *, indices, dims, frontend, test_flags, fn_tree, on_device, backend_fw
 ):
     helpers.test_frontend_function(
@@ -2329,3 +2354,36 @@ def test_unravel_index(
         indices=indices[0],
         dims=dims[0],
     )
+
+
+# @handle_frontend_test(
+#     fn_tree="tensorflow.zeros_initializer",
+#     shape=helpers.get_shape(
+#         allow_none=False,
+#         min_num_dims=1,
+#         max_num_dims=5,
+#         min_dim_size=1,
+#         max_dim_size=10,
+#     ),
+#     dtype=helpers.get_dtypes("valid", full=False),
+#     test_with_out=st.just(False),
+# )
+# def test_tensorflow_zeros_initializer(
+#     shape,
+#     dtype,
+#     frontend,
+#     backend_fw,
+#     test_flags,
+#     fn_tree,
+#     on_device,
+# ):
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         frontend=frontend,
+#         backend_to_test=backend_fw,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         shape=shape,
+#         dtype=dtype[0],
+#     )

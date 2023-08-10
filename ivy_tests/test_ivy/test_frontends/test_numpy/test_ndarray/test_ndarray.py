@@ -4,6 +4,7 @@ from hypothesis import assume, strategies as st, given
 
 # local
 import ivy
+from ivy.functional.frontends.numpy import ndarray
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
@@ -24,6 +25,9 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
     _get_castable_dtypes_values,
 )
 
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (  # noqa
+    _squeeze_helper,
+)
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
@@ -34,7 +38,7 @@ CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_ivy_array(
+def test_numpy_ndarray_ivy_array(
     dtype_x,
     frontend,
     backend_fw,
@@ -59,7 +63,7 @@ def test_numpy_ndarray_property_ivy_array(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_dtype(dtype_x, backend_fw, frontend):
+def test_numpy_ndarray_dtype(dtype_x, backend_fw, frontend):
     dtype, data, shape = dtype_x
     with update_backend(backend_fw) as ivy_backend:
         x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
@@ -75,7 +79,7 @@ def test_numpy_ndarray_property_dtype(dtype_x, backend_fw, frontend):
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_shape(
+def test_numpy_ndarray_shape(
     dtype_x,
     backend_fw,
 ):
@@ -108,7 +112,7 @@ def test_numpy_ndarray_property_ndim(dtype_x, backend_fw):
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_size(
+def test_numpy_ndarray_size(
     dtype_x,
 ):
     dtype, data, shape = dtype_x
@@ -123,7 +127,7 @@ def test_numpy_ndarray_property_size(
         ret_shape=True,
     ),
 )
-def test_numpy_ndarray_property_T(
+def test_numpy_T(
     dtype_x,
     backend_fw,
     frontend,
@@ -154,7 +158,7 @@ def test_numpy_ndarray_property_T(
         ret_shape=True,
     )
 )
-def test_numpy_ndarray_property_flat(dtype_x, backend_fw):
+def test_numpy_ndarray_flat(dtype_x, backend_fw):
     dtype, data, shape = dtype_x
 
     with update_backend(backend_fw) as ivy_backend:
@@ -222,7 +226,7 @@ def test_numpy_ndarray_astype(
     method_name="argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=st.one_of(
-            helpers.get_dtypes("float_and_integer"), helpers.get_dtypes("bool")
+            helpers.get_dtypes("numeric"),
         ),
         min_axis=-1,
         max_axis=0,
@@ -480,9 +484,12 @@ def test_numpy_ndarray_any(
     method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid", full=True),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
         valid_axis=True,
-        max_axes_size=1,
         force_int_axis=True,
+        allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
@@ -542,7 +549,7 @@ def test_numpy_ndarray_all(
         force_int_axis=True,
     ),
 )
-def test_numpy_instance_argsort(
+def test_numpy_ndarray_argsort(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
@@ -629,7 +636,7 @@ def test_numpy_ndarray_mean(
     ),
     keepdims=st.booleans(),
 )
-def test_numpy_instance_min(
+def test_numpy_ndarray_min(
     dtype_x_axis,
     keepdims,
     frontend_method_data,
@@ -764,7 +771,7 @@ def test_numpy_ndarray_argmin(
     method_name="clip",
     input_and_ranges=_get_clip_inputs(),
 )
-def test_numpy_instance_clip(
+def test_numpy_ndarray_clip(
     input_and_ranges,
     frontend_method_data,
     init_flags,
@@ -891,7 +898,7 @@ def test_numpy_ndarray_conj(
     ),
     keepdims=st.booleans(),
 )
-def test_numpy_instance_max(
+def test_numpy_ndarray_max(
     dtype_x_axis,
     keepdims,
     frontend_method_data,
@@ -935,7 +942,7 @@ def test_numpy_instance_max(
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
 )
-def test_numpy_instance_cumprod(
+def test_numpy_ndarray_cumprod(
     dtype_x_axis,
     dtype,
     frontend_method_data,
@@ -973,7 +980,7 @@ def test_numpy_instance_cumprod(
     method_name="cumsum",
     dtype_x_axis_dtype=_get_castable_dtypes_values(),
 )
-def test_numpy_instance_cumsum(
+def test_numpy_ndarray_cumsum(
     dtype_x_axis_dtype,
     frontend_method_data,
     init_flags,
@@ -1009,7 +1016,7 @@ def test_numpy_instance_cumsum(
     method_name="dot",
     dtype_and_x=np_frontend_helpers._get_dtype_input_and_vectors(),
 )
-def test_numpy_instance_dot(
+def test_numpy_ndarray_dot(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1043,13 +1050,14 @@ def test_numpy_instance_dot(
     method_name="diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=0,
-        max_axis=1,
-        min_num_dims=1,
-        force_int_axis=True,
+        min_num_dims=2,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
     ),
+    offset=st.integers(min_value=-2, max_value=2),
 )
-def test_numpy_instance_diagonal(
+def test_numpy_ndarray_diagonal(
     dtype_x_axis,
     offset,
     frontend_method_data,
@@ -1059,7 +1067,7 @@ def test_numpy_instance_diagonal(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis1, axis2 = dtype_x_axis
+    input_dtypes, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
@@ -1069,8 +1077,8 @@ def test_numpy_instance_diagonal(
         },
         method_input_dtypes=input_dtypes,
         method_all_as_kwargs_np={
-            "axis1": axis1,
-            "axis2": axis2,
+            "axis1": axis[0],
+            "axis2": axis[1],
             "offset": offset,
         },
         frontend=frontend,
@@ -1093,7 +1101,7 @@ def test_numpy_instance_diagonal(
         force_int_axis=True,
     ),
 )
-def test_numpy_instance_sort(
+def test_numpy_ndarray_sort(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
@@ -1141,7 +1149,7 @@ def test_numpy_instance_sort(
         min_num_dims=1,
     ),
 )
-def test_numpy_instance_copy(
+def test_numpy_ndarray_copy(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1176,7 +1184,7 @@ def test_numpy_instance_copy(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_nonzero(
+def test_numpy_ndarray_nonzero(
     dtype_and_a,
     frontend_method_data,
     init_flags,
@@ -1211,7 +1219,7 @@ def test_numpy_instance_nonzero(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_ravel(
+def test_numpy_ndarray_ravel(
     dtype_and_a,
     frontend_method_data,
     init_flags,
@@ -1250,7 +1258,7 @@ def test_numpy_instance_ravel(
     repeats=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=1),
 )
-def test_numpy_instance_repeat(
+def test_numpy_ndarray_repeat(
     dtype_and_x,
     repeats,
     axis,
@@ -1294,7 +1302,7 @@ def test_numpy_instance_repeat(
     ),
     side=st.sampled_from(["left", "right"]),
 )
-def test_numpy_instance_searchsorted(
+def test_numpy_ndarray_searchsorted(
     dtype_x_v,
     side,
     frontend_method_data,
@@ -1330,16 +1338,15 @@ def test_numpy_instance_searchsorted(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="squeeze",
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
+    axis=_squeeze_helper(),
 )
-def test_numpy_instance_squeeze(
-    dtype_x_axis,
+def test_numpy_ndarray_squeeze(
+    dtype_and_x,
+    axis,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -1347,15 +1354,15 @@ def test_numpy_instance_squeeze(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "axis": axis,
         },
@@ -1380,7 +1387,7 @@ def test_numpy_instance_squeeze(
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
 )
-def test_numpy_instance_std(
+def test_numpy_ndarray_std(
     dtype_x_axis,
     keepdims,
     where,
@@ -1429,8 +1436,9 @@ def test_numpy_instance_std(
     init_tree="numpy.array",
     method_name="fill",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    num=st.integers(min_value=1, max_value=10) | st.floats(min_value=1, max_value=10),
 )
 def test_numpy_ndarray_fill(
     dtype_and_x,
@@ -1469,7 +1477,7 @@ def test_numpy_ndarray_fill(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_add__(
+def test_numpy___add__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1506,7 +1514,7 @@ def test_numpy_instance_add__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_radd__(
+def test_numpy___radd__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1543,7 +1551,7 @@ def test_numpy_instance_radd__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_sub__(
+def test_numpy___sub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1581,7 +1589,7 @@ def test_numpy_instance_sub__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_mul__(
+def test_numpy___mul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1619,7 +1627,7 @@ def test_numpy_instance_mul__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_rmul__(
+def test_numpy___rmul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1662,7 +1670,7 @@ def test_numpy_instance_rmul__(
         shared_dtype=True,
     ),
 )
-def test_numpy_instance_floordiv__(
+def test_numpy___floordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1701,7 +1709,7 @@ def test_numpy_instance_floordiv__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_truediv__(
+def test_numpy___truediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1740,7 +1748,7 @@ def test_numpy_instance_truediv__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_rtruediv__(
+def test_numpy___rtruediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1779,7 +1787,7 @@ def test_numpy_instance_rtruediv__(
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
-def test_numpy_instance_pow__(
+def test_numpy___pow__(
     dtype_and_x,
     power,
     frontend_method_data,
@@ -1814,11 +1822,11 @@ def test_numpy_instance_pow__(
     init_tree="numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_and__(
+def test_numpy___and__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1852,11 +1860,11 @@ def test_numpy_instance_and__(
     init_tree="numpy.array",
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_or__(
+def test_numpy___or__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1890,11 +1898,11 @@ def test_numpy_instance_or__(
     init_tree="numpy.array",
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_xor__(
+def test_numpy___xor__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -1930,7 +1938,7 @@ def test_numpy_instance_xor__(
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
 )
-def test_numpy_instance_matmul__(
+def test_numpy___matmul__(
     x,
     y,
     frontend_method_data,
@@ -1971,7 +1979,7 @@ def test_numpy_instance_matmul__(
         min_num_dims=1,
     ),
 )
-def test_numpy_instance_copy__(
+def test_numpy___copy__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2007,7 +2015,7 @@ def test_numpy_instance_copy__(
         min_num_dims=1,
     ),
 )
-def test_numpy_instance_deepcopy__(
+def test_numpy___deepcopy__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2045,7 +2053,7 @@ def test_numpy_instance_deepcopy__(
         min_num_dims=1,
     ),
 )
-def test_numpy_instance_neg__(
+def test_numpy___neg__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2081,7 +2089,7 @@ def test_numpy_instance_neg__(
         min_num_dims=1,
     ),
 )
-def test_numpy_instance_pos__(
+def test_numpy___pos__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2121,7 +2129,7 @@ def test_numpy_instance_pos__(
         shared_dtype=True,
     ),
 )
-def test_numpy_instance_ifloordiv__(
+def test_numpy___ifloordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2156,11 +2164,11 @@ def test_numpy_instance_ifloordiv__(
     init_tree="numpy.array",
     method_name="__bool__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_dim_size=1,
     ),
 )
-def test_numpy_instance_bool__(
+def test_numpy___bool__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2196,7 +2204,7 @@ def test_numpy_instance_bool__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_ne__(
+def test_numpy___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2234,7 +2242,7 @@ def test_numpy_instance_ne__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_eq__(
+def test_numpy___eq__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2272,7 +2280,7 @@ def test_numpy_instance_eq__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_ge__(
+def test_numpy___ge__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2310,7 +2318,7 @@ def test_numpy_instance_ge__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_gt__(
+def test_numpy___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2348,7 +2356,7 @@ def test_numpy_instance_gt__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_le__(
+def test_numpy___le__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2386,7 +2394,7 @@ def test_numpy_instance_le__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_lt__(
+def test_numpy___lt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2421,11 +2429,12 @@ def test_numpy_instance_lt__(
     method_name="__int__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
-        max_dim_size=1,
+        max_num_dims=0,
+        min_value=-1e15,
+        max_value=1e15,
     ),
 )
-def test_numpy_instance_int__(
+def test_numpy___int__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2435,7 +2444,8 @@ def test_numpy_instance_int__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    # Numpy doesn't support complex to int conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2458,11 +2468,10 @@ def test_numpy_instance_int__(
     method_name="__float__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_dim_size=1,
-        max_dim_size=1,
+        max_num_dims=0,
     ),
 )
-def test_numpy_instance_float__(
+def test_numpy___float__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2472,7 +2481,8 @@ def test_numpy_instance_float__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    # Numpy doesn't support complex to float conversion
+    assume(not np.issubdtype(input_dtypes[0], np.complexfloating))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2499,7 +2509,7 @@ def test_numpy_instance_float__(
         max_dim_size=1,
     ),
 )
-def test_numpy_instance_complex__(
+def test_numpy___complex__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2531,10 +2541,10 @@ def test_numpy_instance_complex__(
     init_tree="numpy.array",
     method_name="__contains__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_contains__(
+def test_numpy___contains__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2544,7 +2554,7 @@ def test_numpy_instance_contains__(
     on_device,
 ):
     input_dtypes, xs = dtype_and_x
-
+    key = np.asarray(xs[0].reshape(-1)[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
@@ -2553,7 +2563,7 @@ def test_numpy_instance_contains__(
             "object": xs[0],
         },
         method_all_as_kwargs_np={
-            "key": xs[0].reshape(-1)[0],
+            "key": key,
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -2571,7 +2581,7 @@ def test_numpy_instance_contains__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_iadd__(
+def test_numpy___iadd__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2608,7 +2618,7 @@ def test_numpy_instance_iadd__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_isub__(
+def test_numpy___isub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2645,7 +2655,7 @@ def test_numpy_instance_isub__(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
 )
-def test_numpy_instance_imul__(
+def test_numpy___imul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2685,7 +2695,7 @@ def test_numpy_instance_imul__(
         shared_dtype=True,
     ),
 )
-def test_numpy_instance_itruediv__(
+def test_numpy___itruediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2723,7 +2733,7 @@ def test_numpy_instance_itruediv__(
     ),
     power=helpers.ints(min_value=1, max_value=3),
 )
-def test_numpy_instance_ipow__(
+def test_numpy___ipow__(
     dtype_and_x,
     power,
     frontend_method_data,
@@ -2758,11 +2768,11 @@ def test_numpy_instance_ipow__(
     init_tree="numpy.array",
     method_name="__iand__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_iand__(
+def test_numpy___iand__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2796,11 +2806,11 @@ def test_numpy_instance_iand__(
     init_tree="numpy.array",
     method_name="__ior__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_ior__(
+def test_numpy___ior__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2834,11 +2844,11 @@ def test_numpy_instance_ior__(
     init_tree="numpy.array",
     method_name="__ixor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=("bool",),
         num_arrays=2,
     ),
 )
-def test_numpy_instance_ixor__(
+def test_numpy___ixor__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2878,7 +2888,7 @@ def test_numpy_instance_ixor__(
         exclude_min=True,
     ),
 )
-def test_numpy_instance_imod__(
+def test_numpy___imod__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2918,7 +2928,7 @@ def test_numpy_instance_imod__(
         safety_factor_scale="linear",
     ),
 )
-def test_numpy_instance_abs__(
+def test_numpy___abs__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2956,7 +2966,7 @@ def test_numpy_instance_abs__(
         max_num_dims=5,
     ),
 )
-def test_numpy_instance_len__(
+def test_numpy___len__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2991,7 +3001,7 @@ def test_numpy_instance_len__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_array__(
+def test_numpy___array__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3030,7 +3040,7 @@ def test_numpy_instance_array__(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_array_wrap__(
+def test_numpy___array_wrap__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3059,38 +3069,26 @@ def test_numpy_instance_array_wrap__(
     )
 
 
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="numpy.array",
-    method_name="tobytes",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+# tobytes
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+        ret_shape=True,
     ),
+    order=st.sampled_from(["C", "F"]),
 )
-def test_numpy_instance_tobytes__(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
+def test_numpy_ndarray_tobytes(
+    dtype_x,
+    order,
     backend_fw,
-    frontend,
-    on_device,
 ):
-    input_dtypes, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
-        backend_to_test=backend_fw,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        on_device=on_device,
-    )
+    dtype, data, shape = dtype_x
+    with update_backend(backend_fw) as ivy_backend:
+        x = ivy_backend.functional.frontends.numpy.ndarray(shape, dtype[0])
+        x.ivy_array = data[0]
+        ivy_backend.utils.assertions.check_equal(
+            x.tobytes(order=order), data[0].tobytes(order=order), as_array=False
+        )
 
 
 # tofile
@@ -3107,7 +3105,7 @@ def test_numpy_instance_tobytes__(
         max_size=50,
     ),
 )
-def test_numpy_instance_tofile__(
+def test_numpy_ndarray_tofile(
     dtype_and_x,
     path,
     frontend_method_data,
@@ -3145,7 +3143,7 @@ def test_numpy_instance_tofile__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_tolist__(
+def test_numpy_ndarray_tolist(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3181,7 +3179,7 @@ def test_numpy_instance_tolist__(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_getitem(
+def test_numpy_getitem(
     dtype_x_index,
     frontend_method_data,
     init_flags,
@@ -3214,7 +3212,7 @@ def test_numpy_instance_getitem(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_setitem(
+def test_numpy_ndarray_setitem(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
@@ -3247,7 +3245,7 @@ def test_numpy_instance_setitem(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_instance_view(
+def test_numpy_ndarray_view(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3281,11 +3279,14 @@ def test_numpy_instance_view(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
         min_value=0,
         exclude_min=True,
     ),
 )
-def test_numpy_instance_mod__(
+def test_numpy___mod__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3310,6 +3311,8 @@ def test_numpy_instance_mod__(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        rtol_=1e-5,
+        atol_=1e-5,
     )
 
 
@@ -3323,7 +3326,7 @@ def test_numpy_instance_mod__(
         valid_axis=True,
     ),
 )
-def test_numpy_instance_ptp(
+def test_numpy_ndarray_ptp(
     dtype_x_axis,
     frontend_method_data,
     init_flags,
@@ -3404,8 +3407,14 @@ def _item_helper(draw):
     method_name="item",
     args_kwargs=_item_helper(),
 )
-def test_numpy_instance_item(
-    args_kwargs, frontend_method_data, init_flags, method_flags, frontend, on_device
+def test_numpy_ndarray_item(
+    args_kwargs,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
 ):
     input_dtype, x, method_all_as_kwargs_np, num_positional_args = args_kwargs
     method_flags.num_positional_args = num_positional_args
@@ -3413,6 +3422,7 @@ def test_numpy_instance_item(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"object": x},
         method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -3431,7 +3441,7 @@ def test_numpy_instance_item(
         num_arrays=2,
     ),
 )
-def test_numpy_instance_rshift__(
+def test_numpy___rshift__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3441,9 +3451,18 @@ def test_numpy_instance_rshift__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
-    x[1] = np.asarray(
-        np.clip(x[1], 0, np.iinfo(input_dtypes[1]).bits - 1), dtype=input_dtypes[1]
+    max_bits = np.iinfo(input_dtypes[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(
+        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
     )
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.clip(x[0], None, overflow_threshold)
+    if np.any(x[0] < 0):
+        x[0] = np.abs(x[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
@@ -3462,16 +3481,18 @@ def test_numpy_instance_rshift__(
     )
 
 
-# __tostring__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
-    method_name="tostring",
+    method_name="__lshift__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        max_dim_size=1,
+        max_value=2**31 - 1,
     ),
 )
-def test_numpy_instance_tostring__(
+def test_numpy_instance_lshift__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3481,18 +3502,32 @@ def test_numpy_instance_tostring__(
     on_device,
 ):
     input_dtypes, x = dtype_and_x
+    max_bits = np.iinfo(input_dtypes[0]).bits
+    max_shift = max_bits - 1
+    x[1] = np.asarray(np.clip(x[1], 0, max_shift), dtype=input_dtypes[1])
+    max_value_before_shift = 2 ** (max_bits - x[1]) - 1
+    overflow_threshold = 2 ** (max_bits - 1)
+    x[0] = np.asarray(
+        np.clip(x[0], None, max_value_before_shift), dtype=input_dtypes[0]
+    )
+    if np.any(x[0] > overflow_threshold):
+        x[0] = np.clip(x[0], None, overflow_threshold)
+    if np.any(x[0] < 0):
+        x[0] = np.abs(x[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         init_all_as_kwargs_np={
             "object": x[0],
         },
         method_input_dtypes=input_dtypes,
-        method_all_as_kwargs_np={},
         backend_to_test=backend_fw,
-        init_flags=init_flags,
-        method_flags=method_flags,
+        method_all_as_kwargs_np={
+            "value": x[1],
+        },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         on_device=on_device,
     )
 
@@ -3506,7 +3541,7 @@ def test_numpy_instance_tostring__(
         num_arrays=1,
     ),
 )
-def test_numpy_instance_invert__(
+def test_numpy___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
