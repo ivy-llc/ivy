@@ -31,7 +31,7 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1 , 2 , 3 ])
+        >>> x = ivy.array([1., 2., 3.])
         >>> y = x.lgamma()
         >>> print(y)
         ivy.array([0., 0., 0.69314718])

@@ -511,7 +511,8 @@ def value_and_grad(func: Callable) -> Callable:
     >>> grad_fn = ivy.value_and_grad(func)
     >>> value_grad = grad_fn(x)
     >>> print(value_grad)
-    (ivy.array(16.423332), ivy.array([[1.53, 0.7, 1.67], [0.933, 0.433, 2.07]]))
+    (ivy.array(16.42333412), ivy.array([[1.5333333 , 0.69999999, 1.66666675],
+           [0.93333334, 0.43333334, 2.0666666 ]]))
     """
     return current_backend(None).value_and_grad(func)
 
@@ -647,9 +648,9 @@ def adam_step(
     >>> step = ivy.array(3)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-    (ivy.array([0.2020105,0.22187898,0.24144873]),
-        ivy.array([1.,1.10000002,1.20000005]),
-        ivy.array([1.,1.00300002,1.00800002]))
+    (ivy.array([0.2020105 , 0.22187898, 0.24144873]),
+    ivy.array([0.99999998, 1.09999998, 1.19999998]),
+    ivy.array([1.00000001, 1.00300001, 1.00800001]))
 
     >>> dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])
     >>> mw = ivy.zeros((2,3))
@@ -662,20 +663,20 @@ def adam_step(
     ...                                 epsilon=epsilon)
     >>> print(adam_step_delta)
     (ivy.array([[ 1.,  1., -1.],
-    ...         [ 1.,  1.,  1.]]),
-    ... ivy.array([[ 0.14,  0.56, -0.42],
-    ...            [ 0.28,  0.42,  0.07]]),
+                [ 1.,  1.,  1.]]),
+        ivy.array([[ 0.14,  0.56, -0.42],
+                   [ 0.28,  0.42,  0.07]]),
      ivy.array([[0.05  , 0.8   , 0.45  ],
                 [0.2   , 0.45  , 0.0125]]))
 
-    >>> dcdw = ivy.array([1, -2, 3])
+    >>> dcdw = ivy.array([0.1, -0.7, 2])
     >>> mw = ivy.ones(1)
     >>> vw = ivy.ones(1)
     >>> step = ivy.array(3.6)
     >>> out = ivy.zeros_like(dcdw)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step, out=out)
     >>> print(out)
-        ivy.array([0.171, 0.171, 0.171])
+    ivy.array([0.17294501, 0.15770318, 0.20863818])
 
     With one :class:`ivy.Container` input:
 

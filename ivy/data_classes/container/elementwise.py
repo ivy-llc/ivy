@@ -1620,7 +1620,8 @@ class _ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, True])
         }
 
-        >>> x = ivy.Container(a=[1, 2, 3], b=[4, 5, 6])
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]),
+        ...                   b = ivy.array([4, 5, 6]))
         >>> y = x.bitwise_invert()
         >>> print(y)
         {

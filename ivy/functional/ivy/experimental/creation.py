@@ -426,13 +426,13 @@ def eye_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> x1 = ivy.array([[0, 1],[2, 3]])
     >>> y1 = ivy.eye_like(x1)
     >>> print(y1)
     ivy.array([[1., 0.],
                [0., 1.]])
 
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> x1 = ivy.array([[0, 1, 2],[3, 4, 5],[6, 7, 8]])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
@@ -442,7 +442,7 @@ def eye_like(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
-    >>> y = ivy.eye_like(x)
+    >>> y = x.eye_like()
     >>> print(y)
     {
         a: ivy.array([[1., 0.],

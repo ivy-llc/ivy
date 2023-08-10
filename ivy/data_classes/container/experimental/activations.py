@@ -354,10 +354,8 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+        ...                   b = ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = ivy.Container.static_relu6(x)
         >>> print(y)
         {
@@ -417,15 +415,13 @@ class _ContainerWithActivationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
+        >>> x = ivy.Container(a = ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
+        ...                   b= ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.]))
         >>> y = x.relu()
         >>> print(y)
         {
             a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-            b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
+            b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
         }
         """
         return self.static_relu6(
