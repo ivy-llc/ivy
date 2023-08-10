@@ -162,6 +162,12 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
+with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("bool", "int32", "int64", "float32", "float64")}},
+    backend_version,
+)
+
+
 def rot90(
     m: paddle.Tensor,
     /,

@@ -5,6 +5,9 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
+)
 
 
 # Helpers #
@@ -636,4 +639,39 @@ def test_paddle_take_along_axis(
         arr=value,
         indices=indices,
         axis=axis,
+    )
+
+
+# rot90
+@handle_frontend_test(
+    fn_tree="paddle.rot90",
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    test_with_out=st.just(False),
+)
+def test_paddle_rot90(
+    *,
+    dtype_m_k_axes,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, m, k, axes = dtype_m_k_axes
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=m,
+        k=k,
+        axes=tuple(axes),
     )
