@@ -360,3 +360,29 @@
 #         count_include_pad=count_include_pad,
 #         divisor_override=None,
 #     )
+
+# FastGelu
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.fast_gelu",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#     ),
+# )
+# def test_mindspore_fast_gelu(
+#     dtype_and_x,
+#     *,
+#     test_flags,
+#     frontend,
+#     on_device,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=x[0],
+#     )

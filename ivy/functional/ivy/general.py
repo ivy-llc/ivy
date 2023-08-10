@@ -3410,8 +3410,8 @@ def scatter_flat(
 @handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_array_function
 @inputs_to_native_shapes
+@handle_array_function
 @handle_device_shifting
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
