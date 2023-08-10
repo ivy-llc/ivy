@@ -120,7 +120,6 @@ set_item.partial_mixed_handler = (
     lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
 )
 
-
 def to_numpy(
     x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
 ) -> Union[np.ndarray, List[np.ndarray]]:
@@ -132,16 +131,15 @@ def to_numpy(
         else:
             return x
     elif torch.is_tensor(x):
-        x = x.resolve_neg().resolve_conj()
         if copy:
             if x.dtype is torch.bfloat16:
-                default_dtype = ivy.default_float_dtype(as_native=True)
-                if default_dtype is torch.bfloat16:
+                if ivy.get_np_bf16_interop():
+                    from ml_dtypes import bfloat16
                     x = x.to(torch.float32)
+                    x = x.numpy(force=True).astype(bfloat16)
                 else:
-                    x = x.to(default_dtype)
-                return x.detach().cpu().numpy().astype("bfloat16")
-            return x.detach().cpu().numpy()
+                    x = x.detach().cpu().numpy().astype("bfloat16")
+            return x
         else:
             raise ivy.utils.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."

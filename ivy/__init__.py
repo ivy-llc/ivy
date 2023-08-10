@@ -9,7 +9,6 @@ import inspect
 import os
 from collections.abc import Sequence
 
-
 import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
 
@@ -942,7 +941,7 @@ globals_vars = GlobalsDict(
         "default_int_dtype_stack": data_type.default_int_dtype_stack,
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
-        "dynamic_backend_stack": dynamic_backend_stack,
+        "dynamic_backend_stack": dynamic_backend_stack
     }
 )
 
@@ -1486,6 +1485,18 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
             )
         self.__dict__[name] = value
 
+
+np_bf16_interop = False
+def set_np_bf16_interop(val=True):
+    global np_bf16_interop
+    np_bf16_interop = val
+    backend_str = ivy.current_backend_str()
+    if backend_str not in ["torch","numpy",""] and opt == True:
+        warnings.warn(f"`set_np_bf16_interop(True)` has no effect on the current backend framework {backend_str}, This is an experimental feature and may change in future versions.")
+
+def get_np_bf16_interop():
+    global np_bf16_interop
+    return np_bf16_interop
 
 if (
     "ivy" in sys.modules.keys()
