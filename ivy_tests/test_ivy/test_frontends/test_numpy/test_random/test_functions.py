@@ -750,6 +750,53 @@ def test_numpy_gumbel(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.random.f",
+    input_dtypes=helpers.get_dtypes("float"),
+    dfn=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    dfd=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=False),
+)
+def test_numpy_f(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    dfn,
+    dfd,
+):
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        on_device=on_device,
+        dfn=dfn,
+        dfd=dfd,
+        size=size,
+    )
+
+
+@handle_frontend_test(
     fn_tree="numpy.random.gamma",
     input_dtypes=helpers.get_dtypes("float", full=False),
     shape=st.floats(
