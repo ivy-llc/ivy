@@ -182,5 +182,5 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-def flatten(input, order="C ", *, start_dim=1, end_dim=-1):
+def flatten(input, order="C", *, start_dim=1, end_dim=-1):
     return ivy.flatten(input, order=order, start_dim=start_dim, end_dim=end_dim)

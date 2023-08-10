@@ -361,32 +361,43 @@
 #         divisor_override=None,
 #     )
 
-# flatten
+
+# #flatten
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.flatten",
-#     dtype_and_x=helpers.dtype_and_values(
+#     dtype_input_axes=helpers.dtype_values_axis(
 #         available_dtypes=helpers.get_dtypes("valid"),
-#         num_arrays=1,
-#         shared_dtype=True,
+#         valid_axis=True,
+#         min_num_dims=1,
+#         min_axes_size=2,
+#         max_axes_size=2,
 #     ),
 # )
 # def test_mindspore_flatten(
 #     *,
-#     dtype_and_x,
+#     dtype_input_axes,
 #     on_device,
 #     fn_tree,
 #     frontend,
 #     test_flags,
+#     backend_fw,
 # ):
-#     dtype, x = dtype_and_x
+#     dtype, input, axes = dtype_input_axes
+#     if isinstance(axes, int):
+#         start_dim = axes
+#         end_dim = -1
+#     else:
+#         start_dim = axes[0]
+#         end_dim = axes[1]
 #     helpers.test_frontend_function(
 #         input_dtypes=dtype,
+#         backend_to_test=backend_fw,
 #         frontend=frontend,
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
-#         input=x[0],
-#         order='C ',
-#         start_dim=1,
-#         end_dim=-1,
+#         input=input[0],
+#         order = 'C'
+#         start_dim=start_dim,
+#         end_dim=end_dim,
 #     )
