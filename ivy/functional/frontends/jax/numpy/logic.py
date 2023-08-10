@@ -292,7 +292,6 @@ sometrue = any
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"0.4.14 and below": ("bool",)}, "jax")
-@to_ivy_arrays_and_back
 def fromfunction(function, shape, *, dtype=float, **kwargs):
     def canonicalize_shape(shape, context="shape argument"):
         if isinstance(shape, int):
