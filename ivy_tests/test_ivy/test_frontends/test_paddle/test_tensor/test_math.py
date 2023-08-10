@@ -1932,10 +1932,13 @@ def test_paddle_kron(
 def _test_paddle_take_helper(draw):
     mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
 
+    safe_bounds = mode == "raise"
+
     dtypes, xs, indices, _, _ = draw(
         helpers.array_indices_axis(
             array_dtypes=helpers.get_dtypes("float_and_integer"),
             indices_dtypes=["int32", "int64"],
+            valid_bounds=safe_bounds,
         )
     )
 
