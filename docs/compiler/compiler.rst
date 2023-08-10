@@ -109,7 +109,7 @@ From the graph, we can observe that:
     b = ivy.array([[2., 3.]])
 
     # New set of inputs
-    out = compiled_fn(x, y)
+    out = compiled_fn(a, b)
 
 Eager vs lazy Compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
