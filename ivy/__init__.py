@@ -1489,7 +1489,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 ivy.np_bf16_interop = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
-def enable_np_bf16_interop(val=True):
+def set_np_bf16_interop(val=True):
     """Set the bfloat16 interoperability mode to the provided flag (True or False)"""
     global np_bf16_interop_stack
     np_bf16_interop_stack.append(val)
@@ -1498,7 +1498,7 @@ def enable_np_bf16_interop(val=True):
     if backend_str not in ["torch","numpy",""] and val == True:
         warnings.warn(f"`set_np_bf16_interop(True)` has no effect on the `{backend_str}` backend.")
 
-def disable_np_bf16_interop():
+def unset_np_bf16_interop():
     """Unset the bfloat16 interoperability mode."""
     global np_bf16_interop_stack
     if np_bf16_interop_stack:
