@@ -171,3 +171,4 @@ def put(arr, indices, values):
     flat_arr[indices] = values
     reshape_arr = ivy.reshape(flat_arr,arr.shape)
     arr[...] = reshape_arr
+    
