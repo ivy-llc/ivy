@@ -416,3 +416,32 @@ def test_linear(
         weight=weight,
         bias=bias,
     )
+#label_smooth
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.label_smooth",
+    dtype_x_weight_bias=x_and_linear(
+        dtypes=helpers.get_dtypes("float", full=False),
+    ),
+)
+def test_linear(
+    *,
+    dtype_x_weight_bias,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtype, x, weight, bias = dtype_x_weight_bias
+    weight = ivy.swapaxes(weight, -1, -2)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x,
+        weight=weight,
+        bias=bias,
+    )
