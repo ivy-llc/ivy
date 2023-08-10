@@ -42,7 +42,7 @@ def test_jax_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_jax_dtype(
+def test_jax_array_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -61,7 +61,7 @@ def test_jax_dtype(
         ret_shape=True,
     ),
 )
-def test_jax_shape(
+def test_jax_array_shape(
     dtype_x_shape,
     backend_fw,
 ):
@@ -123,7 +123,7 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-def test_jax_at(x_y_index, backend_fw):
+def test_jax_array_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
@@ -219,7 +219,7 @@ def test_jax_array_diagonal(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_all(
+def test_jax_array_all(
     dtype_x_axis,
     keepdims,
     on_device,
@@ -296,7 +296,7 @@ def test_jax_array_astype(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_argmax(
+def test_jax_array_argmax(
     dtype_and_x,
     keepdims,
     on_device,
@@ -334,7 +334,7 @@ def test_jax_argmax(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_jax_conj(
+def test_jax_array_conj(
     dtype_and_x,
     on_device,
     frontend,
@@ -368,7 +368,7 @@ def test_jax_conj(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_jax_conjugate(
+def test_jax_array_conjugate(
     dtype_and_x,
     on_device,
     frontend,
@@ -409,7 +409,7 @@ def test_jax_conjugate(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_mean(
+def test_jax_array_mean(
     dtype_and_x,
     keepdims,
     on_device,
@@ -457,7 +457,7 @@ def test_jax_mean(
         force_int_axis=True,
     ),
 )
-def test_jax_cumprod(
+def test_jax_array_cumprod(
     dtype_and_x,
     on_device,
     frontend,
@@ -491,7 +491,7 @@ def test_jax_cumprod(
     method_name="cumsum",
     dtype_and_x=_get_castable_dtype(),
 )
-def test_jax_cumsum(
+def test_jax_array_cumsum(
     dtype_and_x,
     on_device,
     frontend,
@@ -529,7 +529,7 @@ def test_jax_cumsum(
         min_num_dims=1,
     ),
 )
-def test_jax_nonzero(
+def test_jax_array_nonzero(
     dtype_and_x,
     on_device,
     frontend,
@@ -571,7 +571,7 @@ def test_jax_nonzero(
     ),
     order=st.sampled_from(["C", "F"]),
 )
-def test_jax_ravel(
+def test_jax_array_ravel(
     dtype_and_x,
     order,
     on_device,
@@ -614,7 +614,7 @@ def test_jax_ravel(
         min_num_dims=2,
     ),
 )
-def test_jax_sort(
+def test_jax_array_sort(
     dtype_x_axis,
     on_device,
     frontend,
@@ -2112,7 +2112,7 @@ def test_jax___getitem__(
         st.integers(min_value=-10, max_value=10),
     ),
 )
-def test_jax_round(
+def test_jax_array_round(
     dtype_x,
     decimals,
     frontend,
