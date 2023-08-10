@@ -839,7 +839,7 @@ def embedding(
 def stft(
     signal: Union[JaxArray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,    
+    hop_length: int,    
     /,
     *,  
     axis: Optional[int] = None,
@@ -862,11 +862,11 @@ def stft(
     if window is None:
         window = "hann"
 
-    if frame_step is None:
-        frame_step = n_fft//4
+    if hop_length is None:
+        hop_length = n_fft//4
 
-    if not isinstance(frame_step, int):
-        raise TypeError("frame_step must be an int.")
+    if not isinstance(hop_length, int):
+        raise TypeError("hop_length must be an int.")
 
     if not isinstance(n_fft, int):
         raise TypeError("n_fft must be an int.")
