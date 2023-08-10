@@ -296,7 +296,6 @@ At any point in time, Ivy's development will be predominantly focused around the
 Earlier we had our versions pinned for each framework to provide stability but later concluded that by unpinnning the versions we would be able to account for the latest breaking changes if any and support the latest version of the framework.
 Any prior version's compatibility would be tested by out multiversion testing pipeline, thus keeping us ahead and in light of the latest changes.
 
-
 This helps to prevent our work from culminating over a fixed version while strides are being made in the said frameworks. Multiversion testing ensures the backward compatibility of the code while this approach ensures we support the latest changes too.
 
 
