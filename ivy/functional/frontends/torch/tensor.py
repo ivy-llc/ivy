@@ -1693,6 +1693,23 @@ class Tensor:
     def isnan(self):
         return torch_frontend.isnan(self)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "complex",
+                "uint8",
+                "int8",
+            )
+        },
+        "torch",
+    )
+    def lcm(self, other, *, out=None):
+        return torch_frontend.lcm(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
