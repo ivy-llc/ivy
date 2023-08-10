@@ -785,6 +785,20 @@ def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
 
 
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def rint(x, name=None):
+    return ivy.round(x)
+
+
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
 def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
