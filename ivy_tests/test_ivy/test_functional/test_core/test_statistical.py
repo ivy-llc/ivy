@@ -2,7 +2,6 @@
 # global
 import numpy as np
 from hypothesis import strategies as st, assume
-from collections import defaultdict
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -125,8 +124,6 @@ def test_max(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_devi
 )
 def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, axis = dtype_and_x
-    tolerance_dict = defaultdict(lambda: 1e-2)
-    tolerance_dict.update({"bfloat16": 1e-1})
     helpers.test_function(
         input_dtypes=input_dtype,
         test_flags=test_flags,
@@ -135,7 +132,7 @@ def test_mean(*, dtype_and_x, keep_dims, test_flags, backend_fw, fn_name, on_dev
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        tolerance_dict=tolerance_dict,
+        tolerance_dict={"bfloat16": 1e-1},
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
