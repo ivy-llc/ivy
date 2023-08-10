@@ -492,3 +492,29 @@ def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=N
     return ivy.cov(
         m, y, rowVar=rowvar, bias=bias, ddof=ddof, fweights=fweights, aweights=aweights
     )
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.13 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def quantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    if method == "nearest":
+        return ivy.quantile(
+            a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
+        )
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )

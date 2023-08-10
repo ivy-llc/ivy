@@ -2273,3 +2273,111 @@ def test_jax_array_min(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+# ptp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="ptp",
+    dtype_and_x_axis_dtype=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        num_arrays=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_jax_array_ptp(
+    dtype_and_x_axis_dtype,
+    keep_dims,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_and_x_axis_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "out": None,
+            "keepdims": keep_dims,
+        },
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# searchsorted
+@st.composite
+def _searchsorted(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            shape=(draw(st.integers(min_value=1, max_value=10)),),
+        ),
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+        )
+    )
+
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    sorter = None
+    xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="searchsorted",
+    dtype_x_v_side_sorter=_searchsorted(),
+)
+def test_jax_array_searchsorted(
+    dtype_x_v_side_sorter,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={"v": xs[0], "side": side, "sorter": sorter},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
