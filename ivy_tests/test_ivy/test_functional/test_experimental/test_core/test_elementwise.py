@@ -836,11 +836,11 @@ def test_digamma(
     test_with_out=st.just(False),
 )
 def test_amin(
-        dtype_and_x,
-        frontend,
-        test_flags,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
