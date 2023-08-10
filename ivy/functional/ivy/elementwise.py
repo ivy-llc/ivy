@@ -21,9 +21,9 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_nestable
 @handle_exceptions
 @handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
@@ -7055,8 +7055,8 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@handle_nestable
 @handle_exceptions
+@handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
 @handle_array_function
