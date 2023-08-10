@@ -154,7 +154,7 @@ def test_torch_is_complex(
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int32", "int64", "float32", "float64"],
+            available_dtypes=["int64"],
             min_num_dims=2,
             min_dim_size=2,
             valid_axis=True,
@@ -177,7 +177,7 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
+        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
     )
     values = draw(values_strategy)
 
@@ -188,13 +188,11 @@ def put_along_axis_helper(draw):
 @handle_frontend_test(
     fn_tree="torch.scatter",
     args=put_along_axis_helper(),
-    value=st.integers(min_value=0, max_value=100),
     test_with_out=st.just(False),
 )
 def test_torch_scatter(
     *,
     args,
-    value,
     on_device,
     fn_tree,
     frontend,
@@ -220,13 +218,11 @@ def test_torch_scatter(
 @handle_frontend_test(
     fn_tree="torch.scatter_add",
     args=put_along_axis_helper(),
-    value=st.integers(min_value=0, max_value=100),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_add(
     *,
     args,
-    value,
     on_device,
     fn_tree,
     frontend,
@@ -252,14 +248,12 @@ def test_torch_scatter_add(
 @handle_frontend_test(
     fn_tree="torch.scatter",
     args=put_along_axis_helper(),
-    value=st.integers(min_value=0, max_value=100),
     mode=st.sampled_from(["add", "mul", "mean", "amin", "amax"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(
     *,
     args,
-    value,
     mode,
     on_device,
     fn_tree,

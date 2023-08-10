@@ -1566,20 +1566,20 @@ class Tensor:
         return torch_frontend.gather(self, dim=dim, index=index)
 
     def scatter_add_(self, dim, index, src):
-        self.ivy_array = torch_frontend.scatter_add(
-            self, dim=dim, index=index, src=src
-        ).ivy_array
+        self.ivy_array = ivy.put_along_axis(self, index, src, dim, mode="add").ivy_array
         return self
 
     def scatter_(self, dim, index, src, reduce=None):
-        self.ivy_array = torch_frontend.scatter_reduce(
-            dim=dim, index=index, src=src, reduce=reduce
+        if reduce is None:
+            reduce = "assign"
+        self.ivy_array = ivy.put_along_axis(
+            self, index, src, dim, reduce=reduce
         ).ivy_array
         return self
 
     def scatter_reduce_(self, dim, index, src, reduce=None):
-        self.ivy_array = torch_frontend.scatter_reduce(
-            self, dim=dim, index=index, src=src, reduce=reduce
+        self.ivy_array = ivy.put_along_axis(
+            self, index, src, dim, reduce=reduce
         ).ivy_array
         return self
 
@@ -1681,6 +1681,13 @@ class Tensor:
     def svd(self, some=True, compute_uv=True, *, out=None):
         return torch_frontend.svd(self, some=some, compute_uv=compute_uv, out=out)
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
+        "torch",
+    )
+    def gcd(self, other, *, out=None):
+        return torch_frontend.gcd(self, other, out=out)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1697,11 +1704,3 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
-
-
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("float16", "bfloat16", "float32", "float64", "complex")},
-    "torch",
-)
-def gcd(self, other, *, out=None):
-    return torch_frontend.gcd(self, other, out=out)

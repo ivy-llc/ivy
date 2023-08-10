@@ -632,7 +632,7 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
+        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
     )
     values = draw(values_strategy)
 
@@ -648,7 +648,6 @@ def put_along_axis_helper(draw):
 def test_paddle_put_along_axis(
     *,
     args,
-    value,
     mode,
     on_device,
     fn_tree,
@@ -662,7 +661,7 @@ def test_paddle_put_along_axis(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        arr=x[0],
+        arr=x,
         indices=indices,
         values=value,
         axis=axis,

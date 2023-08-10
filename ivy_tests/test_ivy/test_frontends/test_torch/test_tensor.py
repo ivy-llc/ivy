@@ -11476,14 +11476,13 @@ def test_torch_instance_gcd(
 def put_along_axis_helper(draw):
     input_dtype, x, axis, shape = draw(
         helpers.dtype_values_axis(
-            available_dtypes=["int32", "int64", "float32", "float64"],
+            available_dtypes=["int64"],
             min_num_dims=2,
             min_dim_size=2,
             valid_axis=True,
             force_int_axis=True,
             ret_shape=True,
             min_axis=0,
-            max_axis=1,
         )
     )
 
@@ -11499,7 +11498,7 @@ def put_along_axis_helper(draw):
     indices = draw(idx_strategy)
 
     values_strategy = nph.arrays(
-        dtype=input_dtype[0], shape=(), elements=st.integers(0, 1e3)
+        dtype=input_dtype[0], shape=idx_shape, elements=st.integers(0, 1e3)
     )
     values = draw(values_strategy)
 

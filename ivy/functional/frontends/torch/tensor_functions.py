@@ -30,12 +30,12 @@ def is_complex(input):
 
 @to_ivy_arrays_and_back
 def scatter(input, dim, index, src):
-    return ivy.put_along_axis(input, index, src, dim)
+    return ivy.put_along_axis(input, index, src, dim, mode="assign")
 
 
 @to_ivy_arrays_and_back
 def scatter_add(input, dim, index, src):
-    return ivy.put_along_axis(input, index, src, dim)
+    return ivy.put_along_axis(input, index, src, dim, mode="add")
 
 
 @to_ivy_arrays_and_back

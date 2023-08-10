@@ -398,16 +398,22 @@ def put_along_axis(
 ) -> torch.Tensor:
     if mode:
         if mode == "add":
-            mode = "sum"
+            ret = torch.scatter_add(arr, axis, indices, values, out=out)
         elif mode == "mul":
-            mode = "prod"
-        ret = torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
+            ret = torch.scatter_reduce(
+                arr, axis, indices, values, reduce="prod", out=out
+            )
+        elif mode == "assign":
+            ret = torch.scatter(arr, axis, indices, values, out=out)
+        else:
+            ret = torch.scatter_reduce(arr, axis, indices, values, reduce=mode, out=out)
     elif mode is None:
-        ret = torch.scatter_add(arr, axis, indices, values, out=out)
+        ret = torch.scatter(arr, axis, indices, values, out=out)
     return ret
 
 
 put_along_axis.partial_mixed_handler = lambda *args, mode=None, **kwargs: mode in [
+    "assign",
     "add",
     "mul",
     "mean",
