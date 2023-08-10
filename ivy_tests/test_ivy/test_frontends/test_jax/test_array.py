@@ -42,7 +42,7 @@ def test_jax_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_jax_dtype(
+def test_jax_array_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -61,7 +61,7 @@ def test_jax_dtype(
         ret_shape=True,
     ),
 )
-def test_jax_shape(
+def test_jax_array_shape(
     dtype_x_shape,
     backend_fw,
 ):
@@ -123,7 +123,7 @@ def _at_helper(draw):
 @given(
     x_y_index=_at_helper(),
 )
-def test_jax_at(x_y_index, backend_fw):
+def test_jax_array_at(x_y_index, backend_fw):
     with update_backend(backend_fw) as ivy_backend:
         jax_frontend = ivy_backend.utils.dynamic_import.import_module(
             "ivy.functional.frontends.jax"
@@ -219,7 +219,7 @@ def test_jax_array_diagonal(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_all(
+def test_jax_array_all(
     dtype_x_axis,
     keepdims,
     on_device,
@@ -296,7 +296,7 @@ def test_jax_array_astype(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_argmax(
+def test_jax_array_argmax(
     dtype_and_x,
     keepdims,
     on_device,
@@ -334,7 +334,7 @@ def test_jax_argmax(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_jax_conj(
+def test_jax_array_conj(
     dtype_and_x,
     on_device,
     frontend,
@@ -368,7 +368,7 @@ def test_jax_conj(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
     ),
 )
-def test_jax_conjugate(
+def test_jax_array_conjugate(
     dtype_and_x,
     on_device,
     frontend,
@@ -409,7 +409,7 @@ def test_jax_conjugate(
     ),
     keepdims=st.booleans(),
 )
-def test_jax_mean(
+def test_jax_array_mean(
     dtype_and_x,
     keepdims,
     on_device,
@@ -457,7 +457,7 @@ def test_jax_mean(
         force_int_axis=True,
     ),
 )
-def test_jax_cumprod(
+def test_jax_array_cumprod(
     dtype_and_x,
     on_device,
     frontend,
@@ -491,7 +491,7 @@ def test_jax_cumprod(
     method_name="cumsum",
     dtype_and_x=_get_castable_dtype(),
 )
-def test_jax_cumsum(
+def test_jax_array_cumsum(
     dtype_and_x,
     on_device,
     frontend,
@@ -529,7 +529,7 @@ def test_jax_cumsum(
         min_num_dims=1,
     ),
 )
-def test_jax_nonzero(
+def test_jax_array_nonzero(
     dtype_and_x,
     on_device,
     frontend,
@@ -571,7 +571,7 @@ def test_jax_nonzero(
     ),
     order=st.sampled_from(["C", "F"]),
 )
-def test_jax_ravel(
+def test_jax_array_ravel(
     dtype_and_x,
     order,
     on_device,
@@ -614,7 +614,7 @@ def test_jax_ravel(
         min_num_dims=2,
     ),
 )
-def test_jax_sort(
+def test_jax_array_sort(
     dtype_x_axis,
     on_device,
     frontend,
@@ -2112,7 +2112,7 @@ def test_jax___getitem__(
         st.integers(min_value=-10, max_value=10),
     ),
 )
-def test_jax_round(
+def test_jax_array_round(
     dtype_x,
     decimals,
     frontend,
@@ -2225,6 +2225,114 @@ def test_jax_array_min(
             "axis": axis,
             "keepdims": keepdims,
         },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# ptp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="ptp",
+    dtype_and_x_axis_dtype=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        num_arrays=1,
+        large_abs_safety_factor=24,
+        small_abs_safety_factor=24,
+        safety_factor_scale="log",
+        min_num_dims=1,
+        valid_axis=True,
+    ),
+    keep_dims=st.booleans(),
+)
+def test_jax_array_ptp(
+    dtype_and_x_axis_dtype,
+    keep_dims,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtypes, x, axis = dtype_and_x_axis_dtype
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={
+            "axis": axis,
+            "out": None,
+            "keepdims": keep_dims,
+        },
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# searchsorted
+@st.composite
+def _searchsorted(draw):
+    dtype_x, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            shape=(draw(st.integers(min_value=1, max_value=10)),),
+        ),
+    )
+    dtype_v, v = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "numeric", full=False, key="searchsorted"
+            ),
+            min_num_dims=1,
+        )
+    )
+
+    input_dtypes = dtype_x + dtype_v
+    xs = x + v
+    side = draw(st.sampled_from(["left", "right"]))
+    sorter = None
+    xs[0] = np.sort(xs[0], axis=-1)
+    return input_dtypes, xs, side, sorter
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="searchsorted",
+    dtype_x_v_side_sorter=_searchsorted(),
+)
+def test_jax_array_searchsorted(
+    dtype_x_v_side_sorter,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtypes, xs, side, sorter = dtype_x_v_side_sorter
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "object": xs[0],
+        },
+        method_input_dtypes=input_dtypes,
+        method_all_as_kwargs_np={"v": xs[0], "side": side, "sorter": sorter},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
