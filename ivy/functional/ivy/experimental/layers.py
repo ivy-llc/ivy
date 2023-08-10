@@ -353,6 +353,7 @@ def max_pool3d(
         out=out,
     )
 
+
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -367,7 +368,7 @@ def max_unpool2d(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute a 2-D max pool given 4-D input x.
+    Compute a 2-D max unpool.
 
     Parameters
     ----------
@@ -393,8 +394,6 @@ def max_unpool2d(
     for simplicity, but this function is *nestable*, and therefore
     also accepts :class:`ivy.Container` instances in place of any of
     the arguments.
-
-    
     """
     return ivy.current_backend(x).max_unpool2d(
         x,
@@ -403,6 +402,7 @@ def max_unpool2d(
         padding,
         out=out,
     )
+
 
 @handle_nestable
 @handle_out_argument
