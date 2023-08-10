@@ -80,6 +80,48 @@
 #         x=x[0],
 #     )
 
+# kl_div
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.kl_div",
+#     p=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     q=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     reduction=st.sampled_from(["none", "sum", "mean"]),
+# )
+# def test_mindspore_kl_div(
+#     *,
+#     p,
+#     q,
+#     reduction,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     helpers.test_frontend_function(
+#         input_dtypes=p[0],
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         p=p[1],
+#         q=q[1],
+#         reduction=reduction,
+#     )
+
 # dropout3d
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.dropout3d",
