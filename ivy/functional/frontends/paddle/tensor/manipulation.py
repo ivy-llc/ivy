@@ -132,3 +132,19 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def take_along_axis(arr, indices, axis):
+    return ivy.take_along_axis(arr, indices, axis)
