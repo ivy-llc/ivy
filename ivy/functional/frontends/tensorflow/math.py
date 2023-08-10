@@ -137,12 +137,14 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def cumprod(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
+@to_ivy_arrays_and_back
 def cumsum(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
@@ -733,6 +735,18 @@ def atanh(x, name="atanh"):
 
 
 @with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def xdivy(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    if (x == 0).all():
+        return 0.0
+    return ivy.divide(x, y)
+
+
+@with_supported_dtypes(
     {"2.13.0 and below": ("int32",)},
     "tensorflow",
 )
@@ -750,6 +764,13 @@ def bincount(
     return ivy.bincount(arr, weights=weights, minlength=minlength)
 
 
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+def xlog1py(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    return x * ivy.log1p(y)
+
+
 @with_supported_device_and_dtypes(
     {
         "2.13.0 and below": {
@@ -762,3 +783,25 @@ def bincount(
 @to_ivy_arrays_and_back
 def igamma(a, x, name=None):
     return ivy.igamma(a, x=x)
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.13.0 and below": {
+            "cpu": ("float32", "float64"),
+            "gpu": ("bfloat16", "float16", "float32", "float64"),
+        }
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def rint(x, name=None):
+    return ivy.round(x)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.13.0 and below": ("float32", "float64")}, "tensorflow")
+def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
+    square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
+    x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
+    return ivy.multiply(x, x_inv_norm)

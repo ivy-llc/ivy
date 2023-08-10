@@ -9,6 +9,7 @@ from ivy.utils.exceptions import IvyNotImplementedException, IvyValueError
 from ivy.func_wrapper import (
     with_supported_device_and_dtypes,
     with_unsupported_dtypes,
+    with_supported_dtypes,
 )
 from .. import backend_version
 
@@ -496,3 +497,24 @@ def rfftn(
 ) -> paddle.Tensor:
     result = paddle.fft.rfftn(x, s, axes, norm)
     return result.astype("complex128")
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "complex64",
+            "complex128",
+        )
+    },
+    backend_version,
+)
+def fft2(
+    x: paddle.Tensor,
+    *,
+    dim: Optional[Union[int, Tuple[int]]] = None,
+    norm: Optional[str] = "backward",
+    s: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    res = paddle.fft.fft2(x, s, dim, norm)
+    return res.astype("complex128")
