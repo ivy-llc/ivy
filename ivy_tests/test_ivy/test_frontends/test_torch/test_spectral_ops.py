@@ -35,6 +35,7 @@ def test_torch_hamming_window(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw
 ):
     window_length_dtype, window_length = dtype_and_window_length
     coefficients_dtypes, coefficients = dtype_and_coefficients
@@ -48,4 +49,5 @@ def test_torch_hamming_window(
         dtype=dtype[0],
         fn_tree=fn_tree,
         frontend=frontend,
+        backend_to_test=backend_fw,
     )
