@@ -173,6 +173,8 @@ def conv1d_transpose(
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
+    if data_format != "NWC":
+        raise ValueError("Invalid data format")
     if data_format == "NWC":
         x = x.transpose([0, 2, 1])
     strides = [strides] if isinstance(strides, int) else strides
