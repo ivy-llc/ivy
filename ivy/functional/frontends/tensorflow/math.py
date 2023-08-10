@@ -137,12 +137,14 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
+@to_ivy_arrays_and_back
 def cumprod(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
+@to_ivy_arrays_and_back
 def cumsum(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
@@ -730,6 +732,18 @@ def real(input, name=None):
 @to_ivy_arrays_and_back
 def atanh(x, name="atanh"):
     return ivy.atanh(x)
+
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def xdivy(x, y, name=None):
+    x, y = check_tensorflow_casting(x, y)
+    if (x == 0).all():
+        return 0.0
+    return ivy.divide(x, y)
 
 
 @with_supported_dtypes(
