@@ -25,6 +25,9 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_mathematical_functions.te
     _get_castable_dtypes_values,
 )
 
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_manipulation_routines.test_changing_number_of_dimensions import (
+    _squeeze_helper,
+)
 
 CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
 
@@ -1335,16 +1338,15 @@ def test_numpy_searchsorted(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="squeeze",
-    dtype_x_axis=helpers.dtype_values_axis(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
+    axis=_squeeze_helper(),
 )
 def test_numpy_squeeze(
-    dtype_x_axis,
+    dtype_and_x,
+    axis,
     frontend_method_data,
     init_flags,
     method_flags,
@@ -1352,15 +1354,15 @@ def test_numpy_squeeze(
     frontend,
     on_device,
 ):
-    input_dtypes, x, axis = dtype_x_axis
+    input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        init_input_dtypes=input_dtypes,
+        init_input_dtypes=input_dtype,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
             "axis": axis,
         },
