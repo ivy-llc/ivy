@@ -9,6 +9,7 @@ import inspect
 import os
 from collections.abc import Sequence
 
+
 import ivy.utils.backend.handler
 from ivy._version import __version__ as __version__
 
@@ -1489,7 +1490,7 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
         self.__dict__[name] = value
 
 
-ivy.np_bf16_interop = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
+ivy.np_bf16_interop = np_bf16_interop_stack[-1] if np_bf16_interop_stack else True
 
 
 def set_np_bf16_interop(val=True):
@@ -1509,7 +1510,7 @@ def unset_np_bf16_interop():
     global np_bf16_interop_stack
     if np_bf16_interop_stack:
         np_bf16_interop_stack.pop()
-        val = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
+        val = np_bf16_interop_stack[-1] if np_bf16_interop_stack else True
         ivy.__setattr__("np_bf16_interop", val, True)
 
 
