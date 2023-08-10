@@ -66,11 +66,11 @@ class Tensor:
 
     @property
     def real(self):
-        return self.ivy_array.real()
+        return self.ivy_array.real
 
     @property
     def imag(self):
-        return self.ivy_array.imag()
+        return self.ivy_array.imag
 
     @property
     def ndim(self):
