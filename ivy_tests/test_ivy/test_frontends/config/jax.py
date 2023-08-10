@@ -4,6 +4,10 @@ import jax
 import numpy as np
 
 
+def get_config():
+    return JaxFrontendConfig()
+
+
 class JaxFrontendConfig(FrontendConfig):
     Dtype = jax.numpy.dtype
     Device = jax.Device

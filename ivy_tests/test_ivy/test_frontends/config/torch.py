@@ -2,6 +2,10 @@ from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import torch
 
 
+def get_config():
+    return TorchFrontendConfig()
+
+
 class TorchFrontendConfig(FrontendConfig):
     Dtype = torch.dtype
     Device = torch.device

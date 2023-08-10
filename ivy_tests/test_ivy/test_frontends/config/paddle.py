@@ -3,6 +3,10 @@ import paddle
 import numpy as np
 
 
+def get_config():
+    return PaddleFrontendConfig()
+
+
 class PaddleFrontendConfig(FrontendConfig):
     Dtype = paddle.dtype
     Device = paddle.device

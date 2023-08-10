@@ -2,6 +2,10 @@ from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import numpy as np
 
 
+def get_config():
+    return NumpyFrontendConfig()
+
+
 class NumpyFrontendConfig(FrontendConfig):
     Dtype = np.dtype
     Device = str

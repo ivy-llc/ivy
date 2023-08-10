@@ -2,6 +2,10 @@ from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 import tensorflow as tf
 
 
+def get_config():
+    return TensorflowFrontendConfig()
+
+
 class TensorflowFrontendConfig(FrontendConfig):
     Dtype = tf.dtypes.DType
     Device = tf.DeviceSpec
