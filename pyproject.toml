@@ -1,28 +1,32 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = [ "setuptools", "wheel",]
 
 [project]
 name = "ivy"
-version = "1.1.9" 
+version = "1.1.9"
 description = "The unified machine learning framework, enabling framework-agnostic functions, layers and libraries."
 long_description = "file: PROCESSED_README.md"
 readme = "README.md"
-authors = [{ name = "Unify", email = "hello@unify.ai" }]
 license = "Apache-2.0"
-urls = { Docs = "https://unify.ai/docs/ivy/", Source = "https://github.com/unifyai/ivy" }
-classifiers = ["License :: OSI Approved :: Apache Software License"]
+classifiers = [ "License :: OSI Approved :: Apache Software License",]
+[[project.authors]]
+name = "Unify"
+email = "hello@unify.ai"
+
+[project.urls]
+Docs = "https://unify.ai/docs/ivy/"
+Source = "https://github.com/unifyai/ivy"
 
 [project.dependencies]
-numpy = "*"
-einops = "0.6.1"
-psutil = "5.9.1"
-termcolor = "1.1.0"
-colorama = "0.4.5"
-packaging = "21.3"
-"nvidia-ml-py" = "<=11.495.46"
-diskcache = "*"
-google-auth = "*"
-requests = "*"
-pyvis = "*"
-dill = "*"
-
+numpy = "numpy"
+einops = "einops==0.6.1"
+psutil = "psutil==5.9.1"
+termcolor = "termcolor==1.1.0"
+colorama = "colorama==0.4.5"
+packaging = "packaging==21.3"
+pynvml = "nvidia-ml-py<=11.495.46"
+diskcache = "diskcache"
+"google.auth" = "google-auth"
+requests = "requests"
+pyvis = "pyvis"
+dill = "dill"
