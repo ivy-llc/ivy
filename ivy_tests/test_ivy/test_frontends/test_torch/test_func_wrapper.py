@@ -1,10 +1,11 @@
 # global
 from hypothesis import given, strategies as st
-import torch
+import pytest
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import update_backend
 from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
@@ -40,9 +41,10 @@ def _fn(*args, dtype=None, check_default=False):
         available_dtypes=("float32", "float64"),
     ),
 )
-def test_handle_gradients(dtype_and_xs):
-    if ivy.current_backend_str() == "paddle" or ivy.current_backend_str() == "numpy":
-        return
+def test_handle_gradients(dtype_and_xs, backend_fw):
+    if backend_fw == "numpy":
+        pytest.skip()
+    ivy.set_backend(backend=backend_fw)
 
     dtypes, xs = dtype_and_xs
     fn = lambda x: 2 * x
@@ -70,23 +72,20 @@ def test_handle_gradients(dtype_and_xs):
     for stored, gt in zip(output_wrapped.func_inputs, [x]):
         assert ivy.all(stored[0].ivy_array == gt.ivy_array)
 
-    # Test jac_fn is stored
-    x_native = torch.tensor(xs[0], requires_grad=True)
-    output_native = fn(x_native)
-    grads_gt = torch.autograd.grad(
-        output_native, x_native, grad_outputs=torch.ones_like(output_native)
-    )
+    # Test jac_fn
+    jacobians = output_wrapped.jac_fn([[x], {}])[0][0]
+    with update_backend(backend_fw) as ivy_backend:
+        jacobians_gt = ivy_backend.jac(fn)(ivy_backend.array(x.ivy_array.data))
+    grads_flat_np_gt = helpers.flatten_and_to_np(backend=backend_fw, ret=jacobians_gt)
 
-    axis = list(range(len(output_wrapped.shape)))
-    grads = output_wrapped.jac_fn([[x], {}])[0][0].sum(dim=axis)
-
-    ivy.set_backend("torch")
-    grads_flat_np_gt = helpers.flatten_and_to_np(ret=ivy.to_ivy(grads_gt[0]))
-    ivy.previous_backend()
-    grads_flat_np = helpers.flatten_frontend_to_np(ret=grads)
+    grads_flat_np = helpers.flatten_frontend_to_np(backend=backend_fw, ret=jacobians)
     for grads_flat, grads_flat_gt in zip(grads_flat_np, grads_flat_np_gt):
         assert grads_flat.shape == grads_flat_gt.shape
-        helpers.value_test(ret_np_flat=grads_flat, ret_np_from_gt_flat=grads_flat_gt)
+        helpers.value_test(
+            ret_np_flat=grads_flat,
+            ret_np_from_gt_flat=grads_flat_gt,
+            backend=backend_fw,
+        )
 
 
 @given(

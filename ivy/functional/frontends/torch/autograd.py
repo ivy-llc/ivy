@@ -15,14 +15,13 @@ def _add_grad(g_total, g):
     return g_total + g
 
 
-def _tensors_to_tuple(tensors, outputs=None):
+def _create_grad_outputs(tensors, outputs=None):
     if tensors is None:
         ret = tuple()
         for out in outputs:
             ret += (torch_frontend.ones_like(out),)
         return ret
-
-    if isinstance(tensors, torch_frontend.Tensor):
+    elif isinstance(tensors, torch_frontend.Tensor):
         return (tensors,)
     return tuple(tensors)
 
@@ -30,6 +29,8 @@ def _tensors_to_tuple(tensors, outputs=None):
 def _grad_out_multiply(grad_out, jacobian_wrt_input):
     """
     return grad_out * jacobian_wrt_input after manipulating the shapes
+    if grad_put is a 1-D tensor, this would be equivalent to:
+    matmul(transpose(jacs), grad_out)
     """
     output_shape = grad_out.shape
     input_num_dims = len(jacobian_wrt_input.shape) - len(output_shape)
@@ -59,8 +60,11 @@ def _get_grad(output, input, grad_output):
         return None
 
     # Case #3
+    # Search for the input deeper in the graph
     grads = None
-    all_indices = ivy.all_nested_indices(func_inputs)
+
+    # Jac function returns jacobians of all outputs of the function
+    # We are only intersted in one of them
     if output.out_idx is None:
         jacs = handle_gradients(output.jac_fn)(func_inputs)
     else:
@@ -68,6 +72,7 @@ def _get_grad(output, input, grad_output):
             handle_gradients(output.jac_fn)(func_inputs), output.out_idx
         )
 
+    all_indices = ivy.all_nested_indices(func_inputs)
     for idx in all_indices:
         func_input = ivy.index_nest(func_inputs, idx)
         jac_wrt_input = ivy.index_nest(jacs, idx)
@@ -97,11 +102,13 @@ def grad(
     is_grads_batched=False,
 ):
     """Compute and return the sum of gradients of outputs with respect to each input."""
-    inputs = _tensors_to_tuple(inputs)
-    outputs = _tensors_to_tuple(outputs)
-    grad_outputs = _tensors_to_tuple(grad_outputs, outputs)
+    inputs = (inputs,) if isinstance(inputs, torch_frontend.Tensor) else tuple(inputs)
+    outputs = (
+        (outputs,) if isinstance(outputs, torch_frontend.Tensor) else tuple(outputs)
+    )
+    grad_outputs = _create_grad_outputs(grad_outputs, outputs)
 
-    ret = []
+    ret = tuple()
     for input in inputs:
         if not input.requires_grad:
             raise RuntimeError("One of the input tensors does not require grad")
@@ -120,5 +127,5 @@ def grad(
                 " been used in the graph. Set allow_unused=True if this"
                 " is the desired behavior."
             )
-        ret += [grad_wrt_input]
-    return tuple(ret)
+        ret += (grad_wrt_input,)
+    return ret

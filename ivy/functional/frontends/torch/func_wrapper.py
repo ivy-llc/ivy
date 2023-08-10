@@ -143,8 +143,8 @@ def _store_data(out_tensors, fn, xs):
             lambda x: torch_frontend.Tensor(x, _init_overload=True),
             shallow=False,
         )
-        xs_torch_all = _add_non_tensors(xs_torch, xs, prune_idxs)
 
+        xs_torch_all = _add_non_tensors(xs_torch, xs, prune_idxs)
         ret = fn(*xs_torch_all[0], **xs_torch_all[1])
 
         # To ivy
@@ -153,7 +153,7 @@ def _store_data(out_tensors, fn, xs):
             _to_ivy_array,
             to_ignore=torch_frontend.Tensor,
             shallow=False,
-            include_derived={tuple: True},
+            include_derived=True,
         )
         return ivy_ret
 
