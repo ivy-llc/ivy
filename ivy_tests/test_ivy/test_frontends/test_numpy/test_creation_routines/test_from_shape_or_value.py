@@ -418,8 +418,13 @@ def _shape_and_function(
         )
     )
 
-    def fn1(*args):
-        return sum(*args)
+    VARS = "abcdefghijklmnopqrstuvw"
+    args = ""
+    out = ""
+    for i in range(len(shape)):
+        args += f"{VARS[i]},"
+        out += f"{VARS[i]}+"
+    fn_str = f"lambda {args[:-1]}: {out[:-1]}"
 
     def fn2(*args):
         return args[0]
@@ -434,15 +439,8 @@ def _shape_and_function(
         def fn3(*args):
             return args[0] > 10
 
-    function = st.sampled_from([fn1, fn2, fn3])
-    # VARS = "abcdefghijklmnopqrstuvw"
-    # args = ""
-    # out = ""
-    # for i in range(len(shape)):
-    #    args += f"{VARS[i]},"
-    #    out += f"{VARS[i]}+"
-    # fn_str = f"lambda {args[:-1]}: {out[:-1]}"
-    # function = draw(st.functions(like=eval(fn_str), returns=st.integers()))
+    function = draw(st.sampled_from([eval(fn_str), fn2, fn3]))
+
     return shape, function
 
 
@@ -455,7 +453,8 @@ def _shape_and_function(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    # not using valid as bool is problematic 
+    dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
 def test_numpy_fromfunction(
