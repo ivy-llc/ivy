@@ -979,7 +979,7 @@ def ifftn(
 def stft(
     signal: Union[torch.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,
+    hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
@@ -999,7 +999,7 @@ def stft(
     return torch.stft(
         signal,
         n_fft,
-        frame_step,
+        hop_length,
         win_length,
         window,
         center,
