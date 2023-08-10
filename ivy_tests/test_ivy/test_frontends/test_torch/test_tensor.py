@@ -2164,7 +2164,7 @@ def test_torch_tensor_log2(
         max_value=1e04,
     ),
 )
-def test_torch__bool__(
+def test_torch___bool__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2605,7 +2605,7 @@ def test_torch___truediv__(
         safety_factor_scale="log",
     ),
 )
-def test_torch__floordiv__(
+def test_torch___floordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3004,7 +3004,7 @@ def test_torch_tensor_new_tensor(
         allow_neg_step=False,
     ),
 )
-def test_torch__getitem__(
+def test_torch___getitem__(
     dtype_x_index,
     frontend_method_data,
     init_flags,
@@ -3038,7 +3038,7 @@ def test_torch__getitem__(
         allow_neg_step=False,
     ).filter(lambda x: x[0][0] == x[0][-1]),
 )
-def test_torch__setitem__(
+def test_torch___setitem__(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
@@ -7226,7 +7226,7 @@ def test_torch_tensor_clip_(
         allow_inf=False,
     ),
 )
-def test_torch__gt__(
+def test_torch___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7267,7 +7267,7 @@ def test_torch__gt__(
         allow_inf=False,
     ),
 )
-def test_torch__ne__(
+def test_torch___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7308,7 +7308,7 @@ def test_torch__ne__(
         allow_inf=False,
     ),
 )
-def test_torch__lt__(
+def test_torch___lt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7349,7 +7349,7 @@ def test_torch__lt__(
         allow_inf=False,
     ),
 )
-def test_torch__or__(
+def test_torch___or__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7459,7 +7459,7 @@ def test_torch_tensor_clone(
         num_arrays=1,
     ),
 )
-def test_torch__invert__(
+def test_torch___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7772,7 +7772,7 @@ def test_torch_tensor_bitwise_and_(
         allow_inf=False,
     ),
 )
-def test_torch__and__(
+def test_torch___and__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
