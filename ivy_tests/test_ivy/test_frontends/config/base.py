@@ -36,19 +36,19 @@ class SupportedDtypes:
 
 class FrontendConfig(ABC):
     @abstractproperty
-    def supported_dtypes() -> SupportedDtypes:
+    def supported_dtypes(self) -> SupportedDtypes:
         pass
 
     @abstractproperty
-    def supported_devices() -> SupportedDeviecs:
+    def supported_devices(self) -> SupportedDeviecs:
         pass
 
     @abstractproperty
-    def Dtype():
+    def Dtype(self):
         pass
 
     @abstractproperty
-    def Device():
+    def Device(self):
         pass
 
     @abstractmethod
