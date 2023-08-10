@@ -90,12 +90,14 @@ class NumpyFrontendConfig(FrontendConfig):
             invalid_dtypes=self.invalid_dtypes,
             valid_numeric_dtypes=self.valid_numeric_dtypes,
             invalid_numeric_dtypes=self.invalid_numeric_dtypes,
-            valid_int_dtypes=self.valid_intdtypes,
+            valid_int_dtypes=self.valid_int_dtypes,
             invalid_int_dtypes=self.invalid_int_dtypes,
             valid_uint_dtypes=self.valid_uint_dtypes,
             invalid_uint_dtypes=self.invalid_uint_dtypes,
             valid_float_dtypes=self.valid_float_dtypes,
             invalid_float_dtypes=self.invalid_float_dtypes,
+            valid_complex_dtypes=self.valid_complex_dtypes,
+            invalid_complex_dtypes=self.invalid_complex_dtypes,
         )
 
     def native_array(self, x):
