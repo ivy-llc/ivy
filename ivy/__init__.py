@@ -586,6 +586,7 @@ array_decimal_values_stack = list()
 warning_level_stack = list()
 nan_policy_stack = list()
 dynamic_backend_stack = list()
+np_bf16_interop_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -941,7 +942,8 @@ globals_vars = GlobalsDict(
         "default_int_dtype_stack": data_type.default_int_dtype_stack,
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
         "nan_policy_stack": nan_policy_stack,
-        "dynamic_backend_stack": dynamic_backend_stack
+        "dynamic_backend_stack": dynamic_backend_stack,
+        "np_bf16_interop_stack":np_bf16_interop_stack
     }
 )
 
@@ -1421,6 +1423,7 @@ GLOBAL_PROPS = [
     "default_int_dtype",
     "default_complex_dtype",
     "default_uint_dtype",
+    "np_bf16_interop"
 ]
 
 
@@ -1485,19 +1488,25 @@ class IvyWithGlobalProps(sys.modules[__name__].__class__):
             )
         self.__dict__[name] = value
 
-
-np_bf16_interop = False
-def set_np_bf16_interop(val=True):
-    global np_bf16_interop
-    np_bf16_interop = val
+ivy.np_bf16_interop = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
+def enable_np_bf16_interop(val=True):
+    """Set the bfloat16 interoperability mode to the provided flag (True or False)"""
+    global np_bf16_interop_stack
+    np_bf16_interop_stack.append(val)
+    ivy.__setattr__("np_bf16_interop", val, True)
     backend_str = ivy.current_backend_str()
-    if backend_str not in ["torch","numpy",""] and opt == True:
-        warnings.warn(f"`set_np_bf16_interop(True)` has no effect on the current backend framework {backend_str}, This is an experimental feature and may change in future versions.")
+    if backend_str not in ["torch","numpy",""] and val == True:
+        warnings.warn(f"`set_np_bf16_interop(True)` has no effect on the `{backend_str}` backend.")
 
-def get_np_bf16_interop():
-    global np_bf16_interop
-    return np_bf16_interop
-
+def disable_np_bf16_interop():
+    """Unset the bfloat16 interoperability mode."""
+    global np_bf16_interop_stack
+    if np_bf16_interop_stack:
+        np_bf16_interop_stack.pop()
+        val = np_bf16_interop_stack[-1] if np_bf16_interop_stack else False
+        ivy.__setattr__("np_bf16_interop", val, True)
+    
+    
 if (
     "ivy" in sys.modules.keys()
     and sys.modules["ivy"].utils._importlib.IS_COMPILING_WITH_BACKEND

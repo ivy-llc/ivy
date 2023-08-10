@@ -133,7 +133,7 @@ def to_numpy(
     elif torch.is_tensor(x):
         if copy:
             if x.dtype is torch.bfloat16:
-                if ivy.get_np_bf16_interop():
+                if ivy.np_bf16_interop:
                     from ml_dtypes import bfloat16
                     x = x.to(torch.float32)
                     x = x.numpy(force=True).astype(bfloat16)

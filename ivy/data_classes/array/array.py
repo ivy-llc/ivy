@@ -404,7 +404,13 @@ class Array(
             # Requirerd in the case that backend is different
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
-        arr_np = backend.to_numpy(self._data)
+        if ivy.current_backend_str() == "torch" and str(self._data.dtype)=='torch.bfloat16':
+            current_interop_mode = ivy.np_bf16_interop
+            ivy.set_np_bf16_interop(True)
+            arr_np = backend.to_numpy(self._data)
+            ivy.set_np_bf16_interop(current_interop_mode)
+        else:
+            arr_np = backend.to_numpy(self._data)
         rep = (
             np.array(ivy.vec_sig_fig(arr_np, sig_fig))
             if self.size > 0
