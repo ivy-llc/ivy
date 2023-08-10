@@ -427,7 +427,6 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     """
     return current_backend(arrays[0]).broadcast_arrays(*arrays)
 
-
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion

@@ -1871,8 +1871,8 @@ def conv_general_transpose(
 @handle_exceptions
 @handle_array_like_without_promotion
 @handle_out_argument
-@handle_array_function
 @inputs_to_native_shapes
+@handle_array_function
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
