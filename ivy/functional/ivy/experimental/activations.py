@@ -13,10 +13,12 @@ from ivy.func_wrapper import (
     handle_out_argument,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -124,6 +126,7 @@ def prelu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -184,6 +187,7 @@ def thresholded_relu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -242,6 +246,7 @@ def relu6(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -292,6 +297,7 @@ def logsigmoid(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -351,6 +357,7 @@ def selu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -400,6 +407,7 @@ def silu(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -464,14 +472,15 @@ def sequence_length(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.int64:
     """
-    Produces a scalar (tensor of empty shape) containing the number of tensors in the
-    ivy array input.
+    Produce a scalar (tensor of empty shape) containing the number of tensors in the ivy
+    array input.
 
     Parameters
     ----------
     x
-        Can be a sequence of any tensor type: bool, complex128, complex64, double, float,
-        float16, int16, int32, int64, int8, string, uint16, uint32, uint64, uint8
+        Can be a sequence of any tensor type: bool, complex128,
+        complex64, double, float, float16, int16, int32, int64,
+        int8, string, uint16, uint32, uint64, uint8
 
     Returns
     -------
