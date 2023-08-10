@@ -291,6 +291,7 @@ def test_torch_max_pool2d(
         ceil_mode=ceil_mode,
     )
 
+
 # max_unpool2d
 
 
@@ -320,7 +321,8 @@ def test_torch_max_unpool2d(
     # Reshape the input data and indices as needed
     x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
     indices[0] = indices[0].reshape(
-        (indices[0].shape[0], indices[0].shape[-1], *indices[0].shape[1:-1]))
+        (indices[0].shape[0], indices[0].shape[-1], *indices[0].shape[1:-1])
+    )
 
     # Calculate the output shape based on the input shape, kernel size, stride, and padding
     output_shape = tuple(

@@ -292,23 +292,9 @@ def avg_pool3d(
 
 
 @to_ivy_arrays_and_back
-def max_unpool2d(
-    input,
-    indices,
-    kernel_size,
-    stride=None,
-    padding=0,
-    output_size=None
-):
+def max_unpool2d(input, indices, kernel_size, stride=None, padding=0, output_size=None):
     if input.ndim == 3:
         input = input.expand_dims()
     if not stride:
         stride = kernel_size
-    return ivy.max_unpool2d(
-        input,
-        indices,
-        kernel_size,
-        stride,
-        padding,
-        output_size
-    )
+    return ivy.max_unpool2d(input, indices, kernel_size, stride, padding, output_size)
