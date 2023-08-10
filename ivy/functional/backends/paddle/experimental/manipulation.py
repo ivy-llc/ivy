@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_supported_device_and_dtypes
 
 # Code from cephes for i0
 
@@ -401,6 +402,10 @@ def atleast_3d(
 
 @with_unsupported_device_and_dtypes(
     {"2.5.1 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
+@with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int32", "int64", "float32", "float64")}},
     backend_version,
 )
 def take_along_axis(
