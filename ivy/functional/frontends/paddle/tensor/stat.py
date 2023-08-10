@@ -35,7 +35,7 @@ def nanquantile(a, q, axis=None, keepdims=False, interpolation="linear", out=Non
 @with_unsupported_dtypes({"2.4.2 and below": ("float16", "bfloat16")}, "paddle")
 )
 @to_ivy_arrays_and_back
-def quantile(x, q, axis=None, keepdims=False, name=None):
+def quantile(x, q, axis=None, keepdims=False, name=None, out=None):
     return ivy.quantile(x, q, axis=axis, keepdims=keepdims, out=out)
     
 @with_supported_dtypes(
