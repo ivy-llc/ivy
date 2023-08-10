@@ -1297,7 +1297,7 @@ def ifftn(
 def stft(
     signal: Union[tf.Tensor, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,
+    hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
@@ -1320,7 +1320,7 @@ def stft(
     return tf.signal.stft(
         signal,
         n_fft,
-        frame_step,
+        hop_length,
         window,
         win_length,
         pad_mode,
