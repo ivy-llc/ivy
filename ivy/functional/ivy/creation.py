@@ -1100,15 +1100,15 @@ def triu(
 
 
 @handle_backend_invalid
-@infer_device
-@infer_dtype
-@handle_array_function
-@outputs_to_ivy_arrays
-@inputs_to_native_shapes
-@handle_out_argument
-@handle_array_like_without_promotion
 @handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@inputs_to_native_shapes
+@outputs_to_ivy_arrays
+@handle_array_function
+@infer_dtype
 @handle_device_shifting
+@infer_device
 def empty(
     shape: Union[ivy.Shape, ivy.NativeShape],
     *,
