@@ -182,7 +182,7 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-def bias_add(value, bias, data_format=None, name=None):
+def bias_add(value, bias, data_format=None):
     if data_format is None:
         data_format = "N...C"
 
