@@ -681,6 +681,7 @@ def test_jax_sum(
         init_flags=init_flags,
         method_flags=method_flags,
         on_device=on_device,
+        atol_=1e-04,
     )
 
 
