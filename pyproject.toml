@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "ivy"
+version = "1.1.9" 
+description = "The unified machine learning framework, enabling framework-agnostic functions, layers and libraries."
+long_description = "file: PROCESSED_README.md"
+readme = "README.md"
+authors = [{ name = "Unify", email = "hello@unify.ai" }]
+license = "Apache-2.0"
+urls = { Docs = "https://unify.ai/docs/ivy/", Source = "https://github.com/unifyai/ivy" }
+classifiers = ["License :: OSI Approved :: Apache Software License"]
+
+[project.dependencies]
+numpy = "*"
+einops = "0.6.1"
+psutil = "5.9.1"
+termcolor = "1.1.0"
+colorama = "0.4.5"
+packaging = "21.3"
+"nvidia-ml-py" = "<=11.495.46"
+diskcache = "*"
+google-auth = "*"
+requests = "*"
+pyvis = "*"
+dill = "*"
+
