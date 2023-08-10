@@ -1268,3 +1268,107 @@ def test_rfftn(
         axes=axes,
         norm=norm,
     )
+
+
+# stft
+@st.composite
+def stft_arguments(draw):
+    dtype = draw(helpers.get_dtypes("float"))
+    n_fft_type = draw(st.sampled_from(["int", "tuple"]))
+
+    if n_fft_type == "int":
+        n_fft = draw(st.integers(min_value=2, max_value=256))
+    else:
+        n_fft = tuple(draw(st.integers(min_value=2, max_value=256)) for _ in range(2))
+
+    hop_length = draw(st.integers(min_value=1, max_value=256))
+    onesided = draw(st.booleans())
+    fs = draw(st.floats(min_value=0.001, max_value=1.0))
+    window = "hann"
+    win_length = draw(st.integers(min_value=1, max_value=n_fft))
+    noverlap = draw(st.integers(min_value=0, max_value=win_length - 1))
+    center = draw(st.booleans())
+    pad_mode = draw(st.sampled_from(["reflect", "constant"]))
+    normalized = draw(st.booleans())
+    detrend = draw(st.one_of(st.booleans(), st.sampled_from(["linear", "constant"])))
+    return_complex = draw(st.booleans())
+    boundary = draw(st.sampled_from(["reflect", "zeros"]))
+    axis = draw(st.integers(min_value=0))
+    return (
+        dtype,
+        n_fft,
+        hop_length,
+        onesided,
+        fs,
+        window,
+        win_length,
+        noverlap,
+        center,
+        pad_mode,
+        normalized,
+        detrend,
+        return_complex,
+        boundary,
+        axis,
+    )
+
+
+handle_test(
+    fn_tree="functional.ivy.experimental.stft",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=st.just("float"),
+    ),
+    ground_truth_backend="numpy",
+    test_gradients=st.just(False),
+    stft_args=stft_arguments(),
+)
+
+
+def test_stft(
+    *,
+    dtype_and_x,
+    on_device,
+    test_flags,
+    backend_fw,
+    fn_name,
+    stft_args,
+):
+    dtype, x = dtype_and_x
+    (
+        n_fft,
+        hop_length,
+        onesided,
+        fs,
+        window,
+        win_length,
+        noverlap,
+        center,
+        pad_mode,
+        normalized,
+        detrend,
+        return_complex,
+        boundary,
+        axis,
+    ) = stft_args
+    ret, gt_ret = helpers.test_function(
+        input_dtypes=dtype,
+        on_device=on_device,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        signal=x[0],
+        n_fft=n_fft,
+        hop_length=hop_length,
+        onesided=onesided,
+        fs=fs,
+        window=window,
+        win_length=win_length,
+        noverlap=noverlap,
+        center=center,
+        pad_mode=pad_mode,
+        normalized=normalized,
+        detrend=detrend,
+        return_complex=return_complex,
+        boundary=boundary,
+        axis=axis,
+    )
