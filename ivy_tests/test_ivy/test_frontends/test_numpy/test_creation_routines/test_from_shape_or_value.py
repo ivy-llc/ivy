@@ -453,7 +453,7 @@ def _shape_and_function(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    # not using valid as bool is problematic 
+    # not using valid as bool a is problematic dtype
     dtype=helpers.get_dtypes("numeric", full=False),
     test_with_out=st.just(False),
 )
