@@ -1322,15 +1322,13 @@ handle_test(
     test_gradients=st.just(False),
     stft_args=stft_arguments(),
 )
-
-
 def test_stft(
     *,
     dtype_and_x,
     on_device,
     test_flags,
     backend_fw,
-    fn_name,
+    fn_tree,
     stft_args,
 ):
     dtype, x = dtype_and_x
@@ -1355,7 +1353,7 @@ def test_stft(
         on_device=on_device,
         test_flags=test_flags,
         backend_to_test=backend_fw,
-        fn_name=fn_name,
+        fn_tree=fn_tree,
         signal=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
