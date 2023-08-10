@@ -946,7 +946,7 @@ def ifft(
 def stft(
     signal: Union[np.ndarray, int, Tuple[int]],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,
+    hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
@@ -970,14 +970,14 @@ def stft(
         window = np.asarray(window)
 
     if center:
-        pad = (n_fft - frame_step) // 2
+        pad = (n_fft - hop_length) // 2
         signal = np.pad(signal, [(0, 0)] * (signal.ndim - 1) + [(pad, pad)], mode=pad_mode)
 
-    num_frames = (signal.shape[-1] - n_fft) // frame_step + 1
+    num_frames = (signal.shape[-1] - n_fft) // hop_length + 1
     stft_result = np.empty(signal.shape[:-1] + (num_frames, n_fft // 2 + 1), dtype=np.complex128)
 
     for i in range(num_frames):
-        start = i * frame_step
+        start = i * hop_length
         end = start + n_fft
         frame = signal[..., start:end]
 
