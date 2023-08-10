@@ -1,81 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="102.27466"
-   height="53.208839"
-   viewBox="0 0 102.27466 53.208839"
-   version="1.1"
-   id="svg186"
-   sodipodi:docname="ivy_logo_text.svg"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   style="fill:none">
-  <metadata
-     id="metadata10">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs190" />
-  <sodipodi:namedview
-     id="namedview188"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="2.5818662"
-     inkscape:cx="-66.024392"
-     inkscape:cy="21.038365"
-     inkscape:window-width="1728"
-     inkscape:window-height="1043"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="svg186"
-     fit-margin-top="5"
-     fit-margin-left="10"
-     fit-margin-right="10"
-     fit-margin-bottom="5" />
-  <path
-     d="m 57.263555,34.978983 h 2.112 v -17.04 h -2.112 z m 17.6477,-17.04 -5.088,14.04 h -0.048 l -5.088,-14.04 h -2.256 l 6.432,17.04 h 1.872 l 6.432,-17.04 z m 14.9394,0 -4.392,7.344 h -0.048 l -4.416,-7.344 h -2.4 l 5.784,9.432 v 7.608 h 2.088 v -7.608 l 5.808,-9.432 z"
-     id="path178"
-     inkscape:connector-curvature="0"
-     style="fill:#0a0c13" />
-  <path
-     d="m 31.560155,29.227083 c -1.1697,-1.0374 0.8213,-2.0886 1.7242,-1.9442 2.4469,0.3913 3.0206,3.461 2.1642,5.3926 -1.5318,3.455 -6.0082,4.1175 -9.0609,2.3842 -4.4801,-2.5437 -5.2445,-8.589 -2.6043,-12.7294 3.5191,-5.5185 11.1816,-6.384 16.3978,-2.8242 6.564,4.4796 7.5301,13.7798 3.0442,20.0661 -5.433,7.6137 -16.3811,8.68 -23.73453,3.2643 -8.665698,-6.3822 -9.8321393,-18.9845 -3.48424,-27.403 4.21617,-5.5913902 11.10837,-8.7119902 18.07907,-8.4378302"
-     id="path182"
-     inkscape:connector-curvature="0"
-     style="stroke:#35a835;stroke-width:3.95777011" />
-  <path
-     d="m 31.995455,31.373383 c 1.3107,0 2.3733,-0.919 2.3733,-2.0527 0,-1.1336 -1.0626,-2.0526 -2.3733,-2.0526 -1.3107,0 -2.3732,0.919 -2.3732,2.0526 0,1.1337 1.0625,2.0527 2.3732,2.0527 z"
-     id="path184"
-     inkscape:connector-curvature="0"
-     style="fill:#35a835" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.96864986px;font-family:Arial;-inkscape-font-specification:Arial;fill:#0a0c14;fill-opacity:0.50196078;stroke-width:0.174216"
-     x="56.683723"
-     y="42.76041"
-     id="text1434"><tspan
-       sodipodi:role="line"
-       id="tspan1432"
-       x="56.683723"
-       y="42.76041"
-       style="stroke-width:0.174216">UNIFIED AI</tspan></text>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.8.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg8" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:svg="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" inkscape:export-filename="/media/djl11/Drive/Ivy/ivy_logo.png" inkscape:export-ydpi="96"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 847.2 359"
+	 style="enable-background:new 0 0 847.2 359;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#0B0B0D;}
+	.st1{fill:#00B828;}
+</style>
+<g>
+	<path class="st0" d="M394.1,65.5h41.5v38.7h-41.5V65.5z M394.1,124.7h41.7v154.1h-41.7V124.7z"/>
+	<polygon class="st0" points="570.8,124.7 614,124.7 552.8,278.8 514.3,278.8 451.6,124.7 496.1,124.7 533.7,228 	"/>
+	<path class="st0" d="M746.8,124.7h44.3l-67.2,152.1c-6.4,14.5-12.7,25.8-18.8,33.8c-6.1,8-13.2,14-21.2,18
+		c-8.1,3.9-17.9,5.9-29.4,5.9h-17.2V297h14.5c9.9,0,16.9-1.8,21.1-5.4c4.2-3.6,8.8-11.4,13.6-23.3l0.6-1.3l-65.2-142.3h45.3
+		l41.1,94.8L746.8,124.7z"/>
+	<path class="st1" d="M210.2,56.5c-49.2,0-89.2,40-89.2,89.2c0,39.5,32.1,71.6,71.6,71.6c29.7,0,54-24.2,54-54
+		c0-20-16.3-36.3-36.3-36.3c-15.2,0-27.5,12.3-27.5,27.5c0,10.3,8.4,18.7,18.7,18.7c1.7,0,3.3-0.2,4.9-0.6c-3,4.4-8,7.2-13.7,7.2
+		c-18.8,0-34.1-15.3-34.1-34.1c0-28.5,23.2-51.7,51.7-51.7c38.2,0,69.4,31.1,69.4,69.4c0,48-39,87-87,87
+		C134.9,250.3,88,203.4,88,145.7c0-7.1,0.6-14.1,1.8-21H51.9c-0.9,6.9-1.4,14-1.4,21c0,78.3,63.7,142,142,142
+		c68.6,0,124.4-55.8,124.4-124.4C317,104.5,269.1,56.5,210.2,56.5"/>
+</g>
 </svg>
