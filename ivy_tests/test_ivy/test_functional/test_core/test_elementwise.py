@@ -429,7 +429,9 @@ def test_ceil(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cos
 @handle_test(
     fn_tree="functional.ivy.cos",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -446,7 +448,9 @@ def test_cos(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # cosh
 @handle_test(
     fn_tree="functional.ivy.cosh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+    ),
 )
 def test_cosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -827,7 +831,9 @@ def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # log
 @handle_test(
     fn_tree="functional.ivy.log",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1368,7 +1374,9 @@ def test_sign(*, dtype_and_x, np_variant, test_flags, backend_fw, fn_name, on_de
 # sin
 @handle_test(
     fn_tree="functional.ivy.sin",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1385,7 +1393,9 @@ def test_sin(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 # sinh
 @handle_test(
     fn_tree="functional.ivy.sinh",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_sinh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
@@ -1472,7 +1482,9 @@ def test_subtract(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_dev
 # tan
 @handle_test(
     fn_tree="functional.ivy.tan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
 )
 def test_tan(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
