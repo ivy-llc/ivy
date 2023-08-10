@@ -8,7 +8,7 @@ import ivy
 
 class _ArrayWithLossesExperimental(abc.ABC):
     def l1_loss(
-        self: ivy.Array,
+        self: Union[ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Array, ivy.NativeArray],
         /,
         *,

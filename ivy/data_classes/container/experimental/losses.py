@@ -91,7 +91,7 @@ class _ContainerWithLosses(ContainerBase):
         )
 
     def l1_loss(
-        self: ivy.Container,
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         pred: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         reduction: Union[str, ivy.Container] = "mean",
