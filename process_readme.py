@@ -1,7 +1,8 @@
 import re
 
+
 def preprocess_readme(input_file, output_file):
-    with open(input_file, 'r', encoding='utf-8') as file:
+    with open(input_file, "r", encoding="utf-8") as file:
         content = file.read()
 
     # Remove img tags that have class "only-dark"
@@ -20,7 +21,8 @@ def preprocess_readme(input_file, output_file):
         flags=re.MULTILINE,
     )
 
-    with open(output_file, 'w', encoding='utf-8') as file:
+    with open(output_file, "w", encoding="utf-8") as file:
         file.write(content)
 
-preprocess_readme('README.md', 'PROCESSED_README.md')
+
+preprocess_readme("README.md", "PROCESSED_README.md")
