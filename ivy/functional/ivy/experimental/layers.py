@@ -2783,7 +2783,7 @@ def ifftn(
 def stft(
     signal: Union[ivy.Array, ivy.NativeArray],
     n_fft: Union[int, Tuple[int]],
-    frame_step: int,
+    hop_length: int,
     /,
     *,
     axis: Optional[int] = None,
@@ -2815,7 +2815,7 @@ def stft(
         component of the signal.        
     n_fft
        Size of Fourier transform.
-    frame_step
+    hop_length
         An integer scalar Tensor. The number of samples to step.            
     axis
         The axis on which to perform the DFT. By default this
@@ -2887,7 +2887,7 @@ def stft(
     return ivy.current_backend(signal).stft(
         signal,
         n_fft,
-        frame_step,
+        hop_length,
         axis=axis,
         onesided=onesided,
         fs=fs,
