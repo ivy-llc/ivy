@@ -362,7 +362,7 @@
 #     )
 
 
-# #flatten
+# # flatten
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.flatten",
 #     dtype_input_axes=helpers.dtype_values_axis(
@@ -397,7 +397,7 @@
 #         fn_tree=fn_tree,
 #         on_device=on_device,
 #         input=input[0],
-#         order = 'C'
+#         order='C',
 #         start_dim=start_dim,
 #         end_dim=end_dim,
 #     )
