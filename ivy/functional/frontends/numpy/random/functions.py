@@ -187,6 +187,17 @@ def gumbel(loc=0.0, scale=1.0, size=None):
 
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
+def f(dfn, dfd, size=None):
+    # Generate samples from the uniform distribution
+    x1 = ivy.gamma(ivy.to_scalar(ivy.divide(dfn, 2)), 2.0, shape=size, dtype="float64")
+    x2 = ivy.gamma(ivy.to_scalar(ivy.divide(dfd, 2)), 2.0, shape=size, dtype="float64")
+    # Calculate the F-distributed samples
+    samples = ivy.divide(ivy.divide(x1, ivy.array(dfn)), ivy.divide(x2, ivy.array(dfd)))
+    return samples
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
 def gamma(shape, scale=1.0, size=None):
     return ivy.gamma(shape, scale, shape=size, dtype="float64")
 
