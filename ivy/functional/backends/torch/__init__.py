@@ -69,7 +69,10 @@ methods_to_patch = [
     "__pow__",
     "__truediv__",
     "__xor__",
+    "__ne__",
+    "__mod__",
 ]
+
 for module in modules_to_patch:
     for method in methods_to_patch:
         exec(

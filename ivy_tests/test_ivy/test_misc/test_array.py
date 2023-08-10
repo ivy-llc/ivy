@@ -1,6 +1,7 @@
 # global
 from hypothesis import assume, strategies as st
 import numpy as np
+import importlib
 
 # local
 import ivy
@@ -2538,3 +2539,32 @@ def test_array__iter__(
         class_name=class_name,
         method_name=method_name,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_dim_size=2,
+        min_num_dims=1,
+        num_arrays=2,
+    ),
+    op=st.sampled_from(
+        ["!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"]
+    ),
+)
+def test_dunder_wrapping(
+    dtype_x,
+    backend_fw,
+    test_flags,
+    op,
+):
+    if backend_fw != "torch":
+        return
+    _, data = dtype_x
+    fw = importlib.import_module(backend_fw)
+    fw.Tensor(data[0])
+    ivy.set_backend(backend_fw)
+    ivy.array(data[1])
+    res = eval(f"x {op} y")
+    assert ivy.is_ivy_array(res)
