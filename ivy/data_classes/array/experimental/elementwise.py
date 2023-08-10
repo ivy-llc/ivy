@@ -1020,3 +1020,41 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-0.7549271   0.92278427  0.9988394])
         """
         return ivy.digamma(self._data, out=out)
+
+    def amin(
+        self: ivy.Array, 
+        /, 
+        *, 
+        axis: int = None, 
+        out: Optional[ivy.Array] = None,
+        keepdims: bool = False
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.amin. This method simply wraps the
+        function, and so the docstring for ivy.amin also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which to operate. By default, flattened input is used.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        keepdims
+            If this is set to True, the axes which are reduced are left in the result as
+            dimensions with size one. With this option, the result will broadcast
+            correctly against the input array.
+        Returns
+        -------
+        ret
+            The minimum along the specified axis.
+        Examples
+        --------
+        >>> x = ivy.array([[3, 7, 1], [2, 8, 5]])
+        >>> x.amin(axis=1)
+        ivy.array([1, 2])
+        """
+        return ivy.amin(self._data, axis=axis, out=out, keepdims=keepdims)
+    

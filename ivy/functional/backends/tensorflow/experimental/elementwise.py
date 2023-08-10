@@ -516,3 +516,13 @@ def digamma(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.digamma(x)
+
+
+def amin(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.aminf(x)

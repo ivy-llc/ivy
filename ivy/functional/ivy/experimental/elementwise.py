@@ -1334,3 +1334,37 @@ def digamma(
     ivy.array([-0.7549271   0.92278427  0.9988394])
     """
     return ivy.current_backend(x).digamma(x, out=out)
+
+
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def amin(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the minimum value along the specified axis.
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Optional output array for writing the result to.
+        It must have a shape that the input broadcasts to.
+    Returns
+    -------
+    ret
+        The minimum value along the specified axis.
+    Examples
+    --------
+    >>> x = ivy.array([[3, 7, 1], [2, 8, 5]])
+    >>> ivy.amin(x, axis=1)
+    ivy.array([1, 2])
+    """
+    return ivy.current_backend(x).amin(x, out=out, axis=axis)

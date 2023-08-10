@@ -644,3 +644,14 @@ def digamma(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.digamma(x)
+
+
+def amin(
+    x: paddle.Tensor, 
+    /, 
+    *, 
+    axis: Optional[Union[int, list, tuple]] = None, 
+    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
+) -> Tuple[paddle.Tensor, paddle.Tensor]:
+    with ivy.ArrayMode(False):
+        return paddle.amin(x, out=out, axis=axis)

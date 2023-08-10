@@ -301,6 +301,16 @@ def modf(
     return np.modf(x, out=out)
 
 
+def amin(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.amin(x, out=out, axis=axis)
+
+
 # ---digamma---#
 kLanczosGamma = 7  # aka g
 kBaseLanczosCoeff = 0.99999999999980993227684700473478

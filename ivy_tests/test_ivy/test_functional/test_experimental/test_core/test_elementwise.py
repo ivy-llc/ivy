@@ -822,3 +822,32 @@ def test_digamma(
         on_device=on_device,
         x=x[0],
     )
+
+
+# amin
+@handle_test(
+    fn_tree="functional.ivy.experimental.amin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        min_value=0,
+        exclude_min=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_amin(
+        dtype_and_x,
+        frontend,
+        test_flags,
+        fn_tree,
+        on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )

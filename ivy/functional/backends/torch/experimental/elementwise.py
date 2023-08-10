@@ -383,3 +383,14 @@ def digamma(
 
 
 digamma.support_native_out = True
+
+
+def amin(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, list, tuple]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    amin_x = torch.amin(x)
+    return torch.resolve_amin(input=amin_x)

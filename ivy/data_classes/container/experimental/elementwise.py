@@ -2975,3 +2975,91 @@ class _ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_amin(
+            x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+            /,
+            *,
+            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+            to_apply: bool = True,
+            prune_unapplied: bool = False,
+            map_sequences: bool = False,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.amin. This method simply wraps the
+        function, and so the docstring for ivy.amin also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        x
+            The container whose arrays should be processed.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            container with the minimum values along the specified axis.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([3, 7, 1]), b=ivy.array([2, 8, 5]))
+        >>> ivy.Container.static_amin(x)
+        {
+            a: 1,
+            b: 2
+        }
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "amin",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def amin(
+            self: ivy.Container,
+            /,
+            *,
+            out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.amin. This method simply wraps the
+        function, and so the docstring for ivy.amin also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        self
+            The container whose arrays should be processed.
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            container with the minimum values along the specified axis.
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = IvyContainer(a=ivy.array([3, 7, 1]), b=ivy.array([2, 8, 5]))
+        >>> x.amin()
+        {
+            a: 1,
+            b: 2
+        }
+        """
+        return self.static_amin(self, out=out)
