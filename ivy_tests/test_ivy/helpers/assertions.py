@@ -1,6 +1,5 @@
 import ivy
 import numpy as np
-import collections
 
 TOLERANCE_DICT = {
     "float16": 1e-2,
@@ -139,9 +138,23 @@ def value_test(
         )
     )
     # value tests, iterating through each array in the flattened returns
-    if not rtol:
+    if specific_tolerance_dict is not None:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
-            rtol = TOLERANCE_DICT.get(str(ret_np_from_gt.dtype), 1e-03)
+            dtype = str(ret_np_from_gt.dtype)
+            if specific_tolerance_dict.get(dtype) is not None:
+                rtol = specific_tolerance_dict.get(dtype)
+            else:
+                rtol = TOLERANCE_DICT.get(dtype, 1e-03)
+            assert_all_close(
+                ret_np,
+                ret_np_from_gt,
+                backend=backend,
+                rtol=rtol,
+                atol=atol,
+                ground_truth_backend=ground_truth_backend,
+            )
+    elif rtol is not None:
+        for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
@@ -152,12 +165,7 @@ def value_test(
             )
     else:
         for ret_np, ret_np_from_gt in zip(ret_np_flat, ret_np_from_gt_flat):
-            if specific_tolerance_dict is not None:
-                dtype = str(ret_np_from_gt.dtype)
-                if type(specific_tolerance_dict) == dict:
-                    rtol = specific_tolerance_dict.get(dtype, rtol)
-                elif type(specific_tolerance_dict) == collections.defaultdict:
-                    rtol = specific_tolerance_dict[dtype]
+            rtol = TOLERANCE_DICT.get(str(ret_np_from_gt.dtype), 1e-03)
             assert_all_close(
                 ret_np,
                 ret_np_from_gt,
