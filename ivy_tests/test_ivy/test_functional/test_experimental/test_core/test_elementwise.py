@@ -824,7 +824,7 @@ def test_digamma(
     )
 
 
-# amin
+#amin
 @handle_test(
     fn_tree="functional.ivy.experimental.amin",
     dtype_and_x=helpers.dtype_and_values(
