@@ -80,26 +80,20 @@
 #         x=x[0],
 #     )
 
-# lrn
+# LRN
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.lrn",
+# Update this to your actual function name
 #     d_type_and_x=helpers.dtype_and_values(
 #         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=1,
 #         shared_dtype=True,
-#         min_value=2,
-#         max_value=5,
-#         min_dim_size=4,
-#         shape=(
-#             st.integers(min_value=2, max_value=10),
-#             st.integers(min_value=12, max_value=64),
-#             st.integers(min_value=12, max_value=64),
-#         ),
 #     ),
-#     depth_radius=st.integers(min_value=1, max_value=5),
-#     bias=st.floats(min_value=0.1, max_value=2.0),
-#     alpha=st.floats(min_value=0.1, max_value=2.0),
-#     beta=st.floats(min_value=0.1, max_value=2.0),
+#     depth_radius=st.integers(min_value=1, max_value=10),
+#     bias=st.floats(min_value=1.0),
+#     alpha=st.floats(min_value=0.1),
+#     beta=st.floats(min_value=0.1),
+#     norm_region="ACROSS_CHANNELS"
 # )
 # def test_mindspore_lrn(
 #     *,
@@ -108,6 +102,7 @@
 #     bias,
 #     alpha,
 #     beta,
+#     norm_region,
 #     on_device,
 #     fn_tree,
 #     frontend,
@@ -125,6 +120,7 @@
 #         bias=bias,
 #         alpha=alpha,
 #         beta=beta,
+#         norm_region=norm_region,
 #     )
 
 # dropout3d
