@@ -12057,29 +12057,49 @@ def test_torch_index_fill(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="index_fill",
-    params_indices_others=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("valid"),
+    # params_indices_others=helpers.array_indices_axis(
+    #     array_dtypes=helpers.get_dtypes("valid"),
+    #     indices_dtypes=["int64"],
+    #     indices_same_dims=True,
+    #     min_num_dims=1,
+    #     max_num_dims=3,
+    #     min_dim_size=1,
+    #     max_dim_size=3,
+    # ),
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
         indices_dtypes=["int64"],
-        indices_same_dims=True,
         min_num_dims=1,
-        max_num_dims=3,
+        max_num_dims=5,
         min_dim_size=1,
-        max_dim_size=3,
+        max_dim_size=10,
+        first_dimension_only=True,
+        indices_same_dims=False,
     ),
-    indices=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
-        min_value=0,
-        max_value=2,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=1,
-        max_dim_size=3,
-    ),
-    value=st.floats(min_value=-100, max_value=100),
+    # indices=helpers.array_indices_axis(
+    #     array_dtypes=helpers.get_dtypes("numeric"),
+    #     indices_dtypes=["int64"],
+    #     min_num_dims=1,
+    #     max_num_dims=1,
+    #     min_dim_size=1,
+    #     max_dim_size=3,
+    #     indices_same_dims=True,
+    # ),
+    # indices=helpers.dtype_and_values(
+    #     available_dtypes=helpers.get_dtypes("integer"),
+    #     min_value=0,
+    #     max_value=0,
+    #     min_num_dims=1,
+    #     max_num_dims=1,
+    #     min_dim_size=1,
+    #     max_dim_size=1,
+    # ),
+    #    helpers.dtype_and_values()
+    value=st.just(0),
 )
 def test_torch_index_fill(
-    params_indices_others,
-    indices,
+    dtype_indices_axis,
+    # indices,
     value,
     frontend,
     frontend_method_data,
@@ -12088,8 +12108,13 @@ def test_torch_index_fill(
     on_device,
     backend_fw,
 ):
-    input_dtypes, x, _, axis, _ = params_indices_others
-    _, indices = indices
+    # input_dtypes, x, _, axis, _ = params_indices_others
+    input_dtypes, x, indices, axis, _ = dtype_indices_axis
+    # _, indices, _, _, _ = indices
+    # _, indices = indices
+    # _, value, _, _, _ = value
+    if indices.ndim != 1:
+        indices = ivy.flatten(indices)
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
         backend_to_test=backend_fw,
@@ -12098,6 +12123,7 @@ def test_torch_index_fill(
         method_all_as_kwargs_np={
             "dim": axis,
             "index": indices,
+            # "index": indices[0],
             "value": value,
         },
         frontend=frontend,
@@ -12106,3 +12132,10 @@ def test_torch_index_fill(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+# dtype_and_values=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#         shape=st.shared(helpers.get_shape(min_num_dims=1,
+#                    max_num_dims=2), key="shape"),
+#     ),

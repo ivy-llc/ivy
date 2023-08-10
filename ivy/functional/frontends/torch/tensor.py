@@ -1769,6 +1769,7 @@ class Tensor:
         print("##########################################################")
         print(f"dim: {dim}")
         print(f"index: {index}")
+        print(f"value: {value}")
         print("##########################################################")
         arr = torch_frontend.moveaxis(self, dim, 0)
         arr[ivy.to_list(index)] = value
@@ -1776,7 +1777,7 @@ class Tensor:
         return arr
         # return torch_frontend.masked_fill(arr, arr, value)# F mask T
     
-    
+
 class Size(tuple):
     def __new__(cls, iterable=()):
         new_iterable = list()
