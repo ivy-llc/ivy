@@ -5,6 +5,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy.functional.frontends.jax import DeviceArray
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
@@ -2009,38 +2010,28 @@ def test_jax_devicearray_round(
         on_device=on_device,
     )
 
-
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="jax.numpy.array",
-    method_name="real",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("real_and_complex"),
-    ),
+#real
+@handle_frontend_test(
+    fn_tree="jax.numpy.real",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("real_and_complex")),
 )
 def test_jax_devicearray_real(
     dtype_and_x,
     frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device
+    test_flags,
+    fn_tree,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "object": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+    input_dtypes, x = dtype_and_x
+    assume("bfloat16" not in input_dtypes)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
         frontend=frontend,
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
         on_device=on_device,
+        val=x[0],
     )
-
 
 # var
 @handle_frontend_method(
