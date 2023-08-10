@@ -367,6 +367,11 @@ class Tensor:
     def log2(self):
         return torch_frontend.log2(self)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def log2_(self):
+        self.ivy_array = self.log2().ivy_array
+        return self
+
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def relu(self):
         return torch_frontend_nn.relu(self)
