@@ -2903,6 +2903,7 @@ def test_tensorflow_invert_permutation(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -2910,8 +2911,9 @@ def test_tensorflow_invert_permutation(
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x=x[0],
         on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
     )
 
 
