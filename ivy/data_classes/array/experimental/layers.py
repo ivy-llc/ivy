@@ -1110,7 +1110,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
         self,
         signal: Union[ivy.Array, ivy.NativeArray],
         n_fft: Union[int, Tuple[int]],
-        frame_step: int,
+        hop_length: int,
         /,
         *,
         axis: Optional[int] = None,
@@ -1145,7 +1145,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             component of the signal.        
         n_fft
            Size of Fourier transform.   
-        frame_step
+        hop_length
            An integer scalar Tensor. The number of samples to step.          
         axis
             The axis on which to perform the DFT. By default this
@@ -1219,7 +1219,7 @@ class _ArrayWithLayersExperimental(abc.ABC):
             self._data,
             signal,
             n_fft,
-            frame_step,
+            hop_length,
             axis=axis,
             onesided=onesided,
             fs=fs,
