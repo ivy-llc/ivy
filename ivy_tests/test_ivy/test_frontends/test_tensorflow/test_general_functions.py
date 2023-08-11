@@ -560,6 +560,35 @@ def test_tensorflow_constant(
     )
 
 
+# constant_initializer
+@handle_frontend_test(
+    fn_tree="tensorflow.constant_initializer",
+    all_args=_x_cast_dtype_shape(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_constant_initializer(
+    *,
+    all_args,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    x_dtype, x, cast_dtype, to_shape = all_args
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0].tolist() if x[0].ndim > 0 else x[0].item(),
+        dtype=cast_dtype,
+        shape=to_shape,
+    )
+
+
 # convert_to_tensor
 @handle_frontend_test(
     fn_tree="tensorflow.convert_to_tensor",
