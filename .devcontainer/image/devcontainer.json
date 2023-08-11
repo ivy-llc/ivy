@@ -15,6 +15,7 @@
 
 	"postCreateCommand": {
         "post_create": "bash .devcontainer/post_create_commands.sh", 
+		"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
         "bashrc": "echo \"alias python=python3\" >> ~/.bashrc"
     },
 	"initializeCommand": "docker pull unifyai/ivy:latest",

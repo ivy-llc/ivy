@@ -13,3 +13,16 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 def to_tensor(pic, data_format="CHW"):
     array = ivy.array(pic)
     return Tensor(array)
+
+
+with_supported_dtypes()
+
+
+@to_ivy_arrays_and_back
+def pad(x, padding, fill=0, padding_mode="constant", keys=None):
+    padded_array = ivy.pad(x, padding)
+
+    return padded_array
+
+
+# inputs outputs dekhne hai thode
