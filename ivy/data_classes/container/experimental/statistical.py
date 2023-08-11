@@ -622,7 +622,7 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
         -------
         ret
             Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
-            as input arrays in the container, or, if axis is None, rank(q) arrays. The 
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The
             first rank(q) dimensions index quantiles for different values of q.
 
         Examples
@@ -1306,7 +1306,6 @@ class _ContainerWithStatisticalExperimental(ContainerBase):
             b: ivy.array([[1., -1.],
                           [-1., 1.]])
         }
-
         """
         return self.static_cov(
             self,
