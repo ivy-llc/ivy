@@ -218,6 +218,11 @@ def avg_pool2d(
     )
 
 
+@to_ivy_arrays_and_back
+def flatten(input, order="C", *, start_dim=1, end_dim=-1):
+    return ivy.flatten(input, order=order, start_dim=start_dim, end_dim=end_dim)
+
+
 @with_supported_dtypes(
     {"2.0.0 and below": ("float16", "float32", "float64")},
     "mindspore",
