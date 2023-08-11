@@ -1278,7 +1278,7 @@ class Tensor:
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
 
-    def bitwize_xor_(self, other):
+    def bitwise_xor_(self, other):
         self.ivy_array = self.bitwise_xor(other).ivy_array
         return self
 
