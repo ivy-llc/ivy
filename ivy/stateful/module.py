@@ -145,9 +145,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         self._target = None
         self._lazy_compiled = False
         self._dynamic_backend = dynamic_backend
-        if hasattr(self, "_create_buffers"):
-            self._create_buffers = self._buffer_tracker(self._create_buffers)
-
         if build_mode != "on_init":
             return
         if hasattr(Module, "_init_var"):
@@ -447,36 +444,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
-    def _buffer_tracker(self, func):
-        """Tracks the variables defined as buffer variables and stores them."""
-
-        def wrapper(*args, **kwargs):
-            initial_object_snapshot = self.__dict__.copy()
-            # initialise the buffers
-            func(*args, **kwargs)
-            final_object_snapshot = self.__dict__
-            getattr(self, "buffers", {}).update(
-                set(final_object_snapshot.keys()).difference(
-                    set(initial_object_snapshot.keys())
-                )
-            )
-
-        wrapper.buffers_tracked = True
-        return wrapper
-
-    def _get_buffers(self):
-        """Return the buffer variables, if any, of the given Module class instance."""
-        if self.buffers:
-            buffer_dict = {}
-            for buffer in self.buffers:
-                buffer_dict[buffer] = (
-                    getattr(self, buffer)
-                    if not isinstance(getattr(self, buffer), ivy.Module)
-                    else getattr(self, buffer)._get_buffers()
-                )
-            return buffer_dict
-        return {}
-
     def _set_buffers(self, buffers, override=False, nesting=None):
         """
         Set the buffers of the given class instance, according to the buffers passed.
@@ -512,10 +479,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                     self.buffers.update({buffer})
                 else:
                     setattr(self, "buffers", {buffer})
-
-    def _register_buffers(self, var_name, value):
-        """Set the buffer variables at any place within the class."""
-        self._set_buffers({var_name: value}, override=True)
 
     # Overridable #
 
@@ -864,6 +827,25 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             self._find_buffers()
 
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
+
+    def get_buffers(self):
+        """Return the buffers with values, if any, of the given Module class
+        instance.
+        """
+        if self.buffers:
+            buffer_dict = {}
+            for buffer in self.buffers:
+                buffer_dict[buffer] = (
+                    getattr(self, buffer)
+                    if not isinstance(getattr(self, buffer), ivy.Module)
+                    else getattr(self, buffer).get_buffers()
+                )
+            return buffer_dict
+        return {}
+
+    def register_buffer(self, var_name, value):
+        """Set the buffer at any place within the class."""
+        self._set_buffers({var_name: value}, override=True)
 
     def __repr__(self):
         return object.__repr__(self)

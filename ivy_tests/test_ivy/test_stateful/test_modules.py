@@ -1059,3 +1059,33 @@ def test_module_save_and_load_as_pickled(
     assert ivy.Container.all(loaded_module.v == module.v).cont_all_true()
 
     os.remove(save_filepath)
+
+
+class ModuleWithBuffer(ivy.Module):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def _forward(*args, **kwargs):
+        pass
+
+
+@given(
+    buffer=st.just(
+        [
+            {
+                "var1": [
+                    ivy.ones((1, 2)),
+                ]
+            }
+        ]
+    )
+)
+def test_get_buffers(buffer):
+    module = ModuleWithBuffer()
+    buffers = {}
+    for item in buffer:
+        buffers.update(item)
+        for key in item:
+            module.register_buffer(key, item[key])
+
+    assert module.get_buffers() == buffers
