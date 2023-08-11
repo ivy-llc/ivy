@@ -97,28 +97,30 @@ def layer_norm(
     With one :class:`ivy.Container` input:
     >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
     ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
-    >> normalized_idxs = [0]
+    >>> normalized_idxs = [0]
     >>> y = ivy.layer_norm(x, normalized_idxs, eps=1.25, scale=0.3)
     >>> print(y)
     {
-        a: ivy.array([-0.342, 0.0427, 0.299]),
-        b: ivy.array([[-0.217, 0., 0.217],
-                      [-0.217, 0., 0.217]])
+        a: ivy.array([-0.34198591, 0.04274819, 0.29923761]),
+        b: ivy.array([[-0.24053511, -0.24053511, -0.24053511],
+                      [0.24053511, 0.24053511, 0.24053511]])
     }
+
     With multiple :class:`ivy.Container` inputs:
-    >>> x = ivy.Container({'a': ivy.array([7., 10., 12.]),
-    ...                    'b': ivy.array([[1., 2., 3.], [4., 5., 6.]])})
-    >>> normalized_idxs = ivy.Container({'a': [0], 'b': [1]})
-    >>> new_std = ivy.Container({'a': 1.25, 'b': 1.5})
-    >>> bias = ivy.Container({'a': [0.2, 0.5, 0.7], 'b': 0.3})
-    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, offset=offset)
+
+    >>> x = ivy.Container(a=ivy.array([7.0, 10.0, 12.0]),
+    ...                   b=ivy.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]))
+    >>> normalized_idxs = ivy.Container(a=[0], b=[1])
+    >>> new_std = ivy.Container(a=1.25, b=1.5)
+    >>> bias = ivy.Container(a=[0.2, 0.5, 0.7], b=0.3)
+    >>> y = ivy.layer_norm(x, normalized_idxs, new_std=new_std, offset=0.2)
     >>> print(y)
     {
         a: ivy.array([-1.62, 0.203, 1.42]),
         b: ivy.array([[-1.84, 0., 1.84],
                       [-1.84, 0., 1.84]])
     }
-    Both the description and the type hints above assumes an array input for simplicity,
+    # Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
     """
@@ -140,6 +142,7 @@ def layer_norm(
 
 layer_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",

@@ -469,6 +469,11 @@ def linspace(start, stop, num, name=None, axis=0):
     return ivy.linspace(start, stop, num, axis=axis)
 
 
+@to_ivy_arrays_and_back
+def no_op(name=None):
+    return
+
+
 @with_unsupported_dtypes({"2.13.0 and below": ("unsigned", "integer")}, "tensorflow")
 @to_ivy_arrays_and_back
 def realdiv(x, y, name=None):
@@ -650,6 +655,15 @@ def truncatemod(x, y):
 @to_ivy_arrays_and_back
 def unravel_index(indices, dims, out=None, name=None):
     return ivy.unravel_index(indices, dims, out=out)
+
+
+@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def zeros_initializer(shape, dtype=None, name=None):
+    # todo internal: fix behaviour
+    if dtype is None:
+        dtype = ivy.default_dtype()
+    return ivy.zeros(shape, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
