@@ -207,6 +207,7 @@ def test_paddle_dropout3d(
     training,
     data_format,
     on_device,
+    backend_fw,
     fn_tree,
     frontend,
     test_flags,
@@ -214,6 +215,7 @@ def test_paddle_dropout3d(
     dtype, x = d_type_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

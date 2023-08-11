@@ -10,6 +10,8 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_array_function,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -89,7 +91,7 @@ def eigh_tridiagonal(
     >>> beta = ivy.array([0., 1.])
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
-    ivy.array([0., 0.38196, 2.61803])
+    ivy.array([0., 0.38196602, 2.61803389])
 
     >>> alpha = ivy.array([0., 1., 2.])
     >>> beta = ivy.array([0., 1.])
@@ -97,22 +99,21 @@ def eigh_tridiagonal(
     ...     beta, select='v',
     ...     select_range=[0.2,3.0])
     >>> print(y)
-    ivy.array([0.38196, 2.61803])
+    ivy.array([0.38196602, 2.61803389])
 
-    >>> ivy.set_backend("tensorflow")
     >>> alpha = ivy.array([0., 1., 2., 3.])
     >>> beta = ivy.array([2., 1., 2.])
     >>> y = ivy.eigh_tridiagonal(alpha,
     ...     beta,
     ...     eigvals_only=False,
     ...     select='i',
-    ...     select_range=[1,2]
+    ...     select_range=[1,2],
     ...     tol=1.)
     >>> print(y)
-    (ivy.array([0.18749806, 2.81250191]), ivy.array([[ 0.350609  , -0.56713122],
-        [ 0.06563006, -0.74146169],
-        [-0.74215561, -0.0636413 ],
-        [ 0.56742489,  0.35291126]]))
+    (ivy.array([0.38196602, 2.61803389]), ivy.array([[ 0.35048741, -0.56710052],
+           [ 0.06693714, -0.74234426],
+           [-0.74234426, -0.06693714],
+           [ 0.56710052,  0.35048741]]))
 
     With :class:`ivy.Container` input:
 
@@ -121,7 +122,7 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
         b: ivy.array([0., 2., 4.])
     }
 
@@ -130,8 +131,8 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
-        b: ivy.array([-0.82842, 2., 4.82842])
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
+        b: ivy.array([-0.82842714, 2., 4.82842731])
     }
     """
     x = ivy.diag(alpha)
@@ -160,10 +161,12 @@ def eigh_tridiagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -226,10 +229,12 @@ def diagflat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def kron(
     a: Union[ivy.Array, ivy.NativeArray],
     b: Union[ivy.Array, ivy.NativeArray],
@@ -267,10 +272,12 @@ def kron(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def matrix_exp(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -309,9 +316,11 @@ def matrix_exp(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eig(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -371,9 +380,11 @@ def eig(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
+@handle_device_shifting
 def eigvals(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -413,10 +424,12 @@ def eigvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def adjoint(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -451,10 +464,11 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
+@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -502,11 +516,19 @@ def multi_dot(
     return current_backend(x).multi_dot(x, out=out)
 
 
+multi_dot.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def cond(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

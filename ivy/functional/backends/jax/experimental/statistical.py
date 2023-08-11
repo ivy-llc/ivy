@@ -10,7 +10,7 @@ from ..statistical import _infer_dtype
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("bfloat16",)},
+    {"0.4.14 and below": ("bfloat16",)},
     backend_version,
 )
 def histogram(
@@ -121,7 +121,7 @@ def histogram(
 
 
 @with_unsupported_dtypes(
-    {"0.4.13 and below": ("complex64", "complex128")}, backend_version
+    {"0.4.14 and below": ("complex64", "complex128")}, backend_version
 )
 def median(
     input: JaxArray,
@@ -172,9 +172,8 @@ def quantile(
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if isinstance(axis, list):
-        axis = tuple(axis)
-
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    interpolation = "nearest" if interpolation == "nearest_jax" else interpolation
     return jnp.quantile(
         a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
     )
@@ -200,6 +199,9 @@ def nanmedian(
     overwrite_input: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
     if overwrite_input:
         copied_input = input.copy()
         overwrite_input = False
@@ -211,6 +213,7 @@ def nanmedian(
             overwrite_input=overwrite_input,
             out=out,
         )
+
     return jnp.nanmedian(
         input, axis=axis, keepdims=keepdims, overwrite_input=False, out=None
     )
@@ -367,7 +370,7 @@ def __get_index(lst, indices=None, prefix=None):
     return indices
 
 
-@with_unsupported_dtypes({"0.4.13 and below": "bfloat16"}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": "bfloat16"}, backend_version)
 def cummin(
     x: JaxArray,
     /,

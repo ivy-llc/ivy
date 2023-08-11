@@ -6,10 +6,16 @@ import builtins
 
 # local
 import ivy
+from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes, frontend_outputs_to_ivy_arrays
 
 _slice = builtins.slice
+
+
+@to_ivy_arrays_and_back
+def imag(x):
+    return ivy.imag(x)
 
 
 @to_ivy_arrays_and_back
@@ -494,7 +500,7 @@ def shift_left(x, y):
 
 @to_ivy_arrays_and_back
 def sign(x):
-    return ivy.sign(x)
+    return ivy.sign(x, np_variant=False)
 
 
 @to_ivy_arrays_and_back
@@ -647,3 +653,23 @@ def conj(x):
 @to_ivy_arrays_and_back
 def is_finite(x):
     return ivy.isfinite(x)
+
+
+@with_supported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def cbrt(x):
+    return ivy.pow(x, 1 / 3)
+
+
+@to_ivy_arrays_and_back
+def tie_in(x, y):
+    return y

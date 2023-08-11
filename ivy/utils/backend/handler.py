@@ -327,8 +327,12 @@ def convert_from_source_backend_to_numpy(variable_ids, numpy_objs, devices):
     ]
     array_list.extend(cont_array_vals)
 
-    # filter uninitialized arrays and ensure the order
-    array_list = [arr for arr in array_list if arr.__dict__]
+    # filter uninitialized arrays and arrays with other bakcends, and ensure the order
+    array_list = [
+        arr
+        for arr in array_list
+        if arr.__dict__ and arr.backend == ivy.current_backend_str()
+    ]
     arr_ids = [id(item.data) for item in array_list]
     new_objs = {k: v for k, v in zip(arr_ids, array_list)}
     new_objs = list(new_objs.values())
@@ -411,7 +415,7 @@ def set_backend(backend: str, dynamic: bool = False):
     >>> ivy.set_backend("jax")
     >>> native = ivy.native_array([1])
     >>> print(type(native))
-    <class 'jaxlib.xla_extension.DeviceArray'>
+    <class 'jaxlib.xla_extension.ArrayImpl'>
     """  # noqa
     ivy.utils.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
@@ -628,11 +632,16 @@ def with_backend(backend: str, cached: bool = False):
             ivy_pack.utils.backend.handler._backend_dict[backend], ivy_pack.__package__
         )
         _handle_backend_specific_vars(ivy_pack, backend_module)
+        set_backend_to_specific_version(backend_module)
         # We know for sure that the backend stack is empty
         # no need to do backend unsetting
         ivy_pack.utils.backend.handler._set_backend_as_ivy(
             ivy_pack.__dict__.copy(), ivy_pack, backend_module
         )
+        # TODO use a refactored code from ivy.set_backend
+        for key, _ in ivy_pack.__dict__.items():
+            if key in ivy_pack.functional.__dict__ and not key.startswith("__"):
+                ivy_pack.functional.__dict__[key] = ivy_pack.ivy.__dict__[key]
         ivy_pack.backend_stack.append(backend_module)
         ivy_pack.utils.backend._importlib.import_cache = copy.copy(
             _importlib.import_cache

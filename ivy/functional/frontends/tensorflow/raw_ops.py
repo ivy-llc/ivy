@@ -38,6 +38,14 @@ ArgMax = to_ivy_arrays_and_back(
 AddV2 = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
+Atan2 = to_ivy_arrays_and_back(
+    with_unsupported_dtypes(
+        {"2.13.0 and below": "float16"},
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.atan2))
+)
+
+
 @with_unsupported_dtypes(
     {
         "2.13.0 and below": (
@@ -291,6 +299,18 @@ def Log(*, x, name="Log"):
 
 Log1p = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.log1p))
 
+LogSoftmax = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "float32",
+                "float64",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.log_softmax))
+)
 
 LogicalOr = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.logical_or))
 
@@ -505,6 +525,24 @@ def Sqrt(*, x, name="Sqrt"):
 @to_ivy_arrays_and_back
 def Square(*, x, name="Square"):
     return ivy.square(x)
+
+
+SquaredDifference = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "complex",
+                "bfloat16",
+                "float16",
+                "float64",
+                "float32",
+                "int32",
+                "int64",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.math.squared_difference))
+)
 
 
 Squeeze = to_ivy_arrays_and_back(
@@ -885,3 +923,37 @@ Imag.supported_dtypes = {
         "complex128",
     ),
 }
+
+
+@to_ivy_arrays_and_back
+def Svd(*, input, full_matrices=False, compute_uv=True, name=None):
+    return ivy.svd(input, compute_uv=compute_uv, full_matrices=full_matrices)
+
+
+Svd.supported_dtypes = {
+    "tensorflow": (
+        "float64",
+        "float128",
+        "halfcomplex64",
+        "complex128",
+    ),
+}
+
+
+Einsum = to_ivy_arrays_and_back(
+    with_supported_dtypes(
+        {
+            "2.13.0 and below": (
+                "bfloat16",
+                "complex128 ",
+                "complex64",
+                "float64",
+                "float32",
+                "float16",
+                "int64",
+                "int32",
+            ),
+        },
+        "tensorflow",
+    )(map_raw_ops_alias(tf_frontend.general_functions.einsum))
+)

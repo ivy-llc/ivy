@@ -182,7 +182,15 @@ def inner(
     return tf.experimental.numpy.inner(x1, x2)
 
 
-@with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def inv(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -190,19 +198,12 @@ def inv(
     adjoint: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if tf.math.reduce_any(tf.linalg.det(tf.cast(x, dtype="float64")) == 0):
-        return x
-    else:
-        if adjoint is False:
-            ret = tf.linalg.inv(x)
-            return ret
-        else:
-            x = tf.linalg.adjoint(x)
-            ret = tf.linalg.inv(x)
-            return ret
+    return tf.linalg.inv(x, adjoint=adjoint)
 
 
-@with_unsupported_dtypes({"1.25.0 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("float16", "bfloat16", "bool")}, backend_version
+)
 def matmul(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -698,7 +699,7 @@ def vander(
 
 @with_unsupported_dtypes(
     {
-        "2.13.0": (
+        "2.13.0 and below": (
             "int8",
             "int16",
             "int32",

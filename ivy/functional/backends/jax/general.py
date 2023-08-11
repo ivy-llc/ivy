@@ -63,7 +63,7 @@ def _mask_to_index(query, x):
 def get_item(
     x: JaxArray,
     /,
-    query: JaxArray,
+    query: Union[JaxArray, Tuple],
     *,
     copy: bool = None,
 ) -> JaxArray:
@@ -101,7 +101,7 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
     return bool(jnp.array_equal(x0, x1))
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("bfloat16",)}, backend_version)
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
     if copy:
         return np.array(_to_array(x))
@@ -365,18 +365,8 @@ def scatter_nd(
             else ivy.default_dtype(item=updates)
         ),
     )
-
-    expected_shape = (
-        list(indices.shape[:-1]) + list(out.shape[indices.shape[-1] :])
-        if ivy.exists(out)
-        else list(indices.shape[:-1]) + list(shape[indices.shape[-1] :])
-    )
-    updates = _broadcast_to(updates, expected_shape)._data
-
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
-
-    # implementation
     target = out
     target_given = ivy.exists(target)
     if ivy.exists(shape) and ivy.exists(target):
@@ -386,6 +376,7 @@ def scatter_nd(
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
     if not target_given:
         target = jnp.zeros(shape, dtype=updates.dtype)
+    updates = _broadcast_to(updates, target[indices_tuple].shape)._data
     if reduction == "sum":
         target = target.at[indices_tuple].add(updates)
     elif reduction == "replace":
@@ -430,7 +421,7 @@ def vmap(
     )
 
 
-@with_unsupported_dtypes({"0.4.13 and below": ("float16", "bfloat16")}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("float16", "bfloat16")}, backend_version)
 def isin(
     elements: JaxArray,
     test_elements: JaxArray,
@@ -444,8 +435,3 @@ def isin(
 
 def itemsize(x: JaxArray) -> int:
     return x.itemsize
-
-
-@with_unsupported_dtypes({"0.4.13 and below": ("bfloat16",)}, backend_version)
-def strides(x: JaxArray) -> Tuple[int]:
-    return to_numpy(x).strides

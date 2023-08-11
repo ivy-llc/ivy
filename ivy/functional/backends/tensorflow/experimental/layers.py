@@ -1,109 +1,142 @@
 # global
 import math
-from typing import Union, Optional, Tuple, Literal, Sequence
+from typing import Union, Optional, Tuple, List, Literal, Sequence
 import tensorflow as tf
 
 # local
-from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+    with_supported_device_and_dtypes,
+)
 from .. import backend_version
 import ivy
-from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _get_num_padded_values,
+    _validate_max_pool_params,
+    _depth_max_pooling_helper,
+)
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
 
 
-def _from_int_to_tuple(arg, dim):
-    if isinstance(arg, int):
-        return (arg,) * dim
-    if isinstance(arg, (tuple, list)) and len(arg) == 1:
-        return (arg[0],) * dim
-    return arg
-
-
-def _determine_depth_max_pooling(x, kernel, strides, dims):
-    # determine depth pooling
-    depth_pooling = False
-    if len(kernel) == dims + 2:
-        spatial_kernel = kernel[1:-1]
-        if kernel[-1] != 1:
-            depth_pooling = True
-            if any(tf.constant(spatial_kernel) != 1):
-                raise NotImplementedError(
-                    "MaxPooling supports exactly one of pooling across"
-                    " depth or pooling across width/height."
-                )
-            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to equal the depth"
-                    " stride"
-                )
-            if x.shape[-1] % kernel[-1] != 0:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to evenly divide"
-                    " the input depth"
-                )
-            x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
-            kernel = [kernel[-1], *[1] * (dims - 1)]
-            strides = [strides[-1], *[1] * (dims - 1)]
-        else:
-            kernel = spatial_kernel
-            strides = strides[1:-1] if len(strides) == dims + 2 else strides
+def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
+    # Determine depth pooling
+    kernel, strides, depth_pooling = _depth_max_pooling_helper(
+        x.shape, kernel, strides, dims=dims, data_format=data_format
+    )
+    if depth_pooling:
+        x = tf.transpose(x, (0, dims + 1, *range(1, dims + 1)))
     return x, kernel, strides, depth_pooling
 
 
 def max_pool1d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if data_format == "NCW":
-        x = tf.transpose(x, (0, 2, 1))
-    res = tf.nn.max_pool1d(x, kernel, strides, padding)
+    dims = 1
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
     if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, dims, data_format="channel_last"
+    )
+
+    if not depth_pooling:
+        new_kernel = [kernel[0] + (kernel[0] - 1) * (dilation[0] - 1)]
+        if isinstance(padding, str):
+            pad_w = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
+            padding = [(pad_w // 2, pad_w - pad_w // 2)]
+
+        if ceil_mode:
+            padding[0] = _padding_ceil_mode(
+                x.shape[1], new_kernel[0], padding[0], strides[0]
+            )
+        padding = [(0, 0)] + list(padding) + [(0, 0)]
+        x = tf.pad(x, padding, constant_values=-math.inf)
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
+
+    res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
+
+    if depth_pooling:
         res = tf.transpose(res, (0, 2, 1))
+    # converting minimum value to -inf because tensorflow clips -inf to minimum value
+    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
+    if data_format == "NCW":
+        return tf.transpose(res, (0, 2, 1))
     return res
 
 
 def max_pool2d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dims = 2
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
+
     if data_format == "NCHW":
         x = tf.transpose(x, (0, 2, 3, 1))
-
-    dilation = _from_int_to_tuple(dilation, 2)
-    strides = _from_int_to_tuple(strides, 2)
-    kernel = _from_int_to_tuple(kernel, 2)
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 1]] if len(kernel) == (dims + 2) else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
     # determine depth pooling
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, 2
+        x, kernel, strides, dims, data_format="channel_last"
     )
 
     if not depth_pooling:
-        if isinstance(padding, int):
-            padding = [(padding,) * 2] * 2
-        elif isinstance(padding, tuple) and len(padding) == 1:
-            padding = [(padding[0],) * 2] * 2
-        elif isinstance(padding, tuple) and len(padding) == 2:
-            padding = [(padding[0],) * 2, (padding[1],) * 2]
-
-        if isinstance(padding, (tuple, list)):
-            ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
-        new_kernel = [kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(2)]
+        new_kernel = [
+            kernel[i] + (kernel[i] - 1) * (dilation[i] - 1) for i in range(dims)
+        ]
         if isinstance(padding, str):
             pad_h = _handle_padding(x.shape[1], strides[0], new_kernel[0], padding)
             pad_w = _handle_padding(x.shape[2], strides[1], new_kernel[1], padding)
@@ -115,12 +148,20 @@ def max_pool2d(
         x_shape = x.shape[1:-1]
 
         if ceil_mode:
-            for i in range(2):
+            for i in range(dims):
                 padding[i] = _padding_ceil_mode(
                     x_shape[i], new_kernel[i], padding[i], strides[i]
                 )
         padding = [(0, 0)] + list(padding) + [(0, 0)]
         x = tf.pad(x, padding, constant_values=-math.inf)
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
+
     res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
 
     if depth_pooling:
@@ -137,17 +178,78 @@ def max_pool2d(
 )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
+
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
-    res = tf.nn.max_pool3d(x, kernel, strides, padding)
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 4, 1]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 4, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 4, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+
+    # determine depth pooling
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, dims, data_format="channel_last"
+    )
+
+    if not depth_pooling:
+        x_shape = x.shape[1:-1]
+        new_kernel = [dilation[i] * (kernel[i] - 1) + 1 for i in range(dims)]
+        if isinstance(padding, str):
+            pad_d = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
+            pad_h = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
+            pad_w = _handle_padding(x_shape[2], strides[2], new_kernel[2], padding)
+            padding = [
+                (pad_d // 2, pad_d - pad_d // 2),
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+
+        if ceil_mode:
+            for i in range(dims):
+                padding[i] = _padding_ceil_mode(
+                    x_shape[i], new_kernel[i], padding[i], strides[i]
+                )
+        padding = [(0, 0)] + list(padding) + [(0, 0)]
+        x = tf.pad(x, padding, constant_values=-math.inf)
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
+
+    res = tf.nn.pool(x, kernel, "MAX", strides, "VALID", dilations=dilation)
+
+    if depth_pooling:
+        res = tf.transpose(res, (0, 2, 3, 4, 1))
+    # converting minimum value to -inf because tensorflow clips -inf to minimum value
+    res = tf.where(res <= ivy.finfo(res.dtype).min, -math.inf, res)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -201,7 +303,8 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
+        print("why")
         x = tf.transpose(x, (0, 2, 1))
 
     manual_padding = False
@@ -242,7 +345,7 @@ def avg_pool1d(
             )
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         res = tf.transpose(res, (0, 2, 1))
     return res
 
@@ -576,7 +679,6 @@ def fft(
         )
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-    x = tf.cast(x, tf.complex128)
     if x.shape[dim] != n:
         s = list(x.shape)
         if s[dim] > n:
@@ -753,6 +855,9 @@ def embedding(
     max_norm: Optional[float] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
     return tf.nn.embedding_lookup(weights, indices, max_norm=max_norm)
 
 
@@ -816,8 +921,7 @@ def interpolate(
 
 interpolate.partial_mixed_handler = lambda x, *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
     (not align_corners and (len(x.shape) - 2) < 2)
-    and mode not in ["nearest", "area", "bicubic"]
-    and recompute_scale_factor
+    and mode not in ["nearest", "area", "bicubic", "nd"]
 )
 
 
@@ -877,6 +981,7 @@ def trans_x_to_s(
     return x_new
 
 
+@with_supported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
 def fft2(
     x: Union[tf.Tensor, tf.Variable],
     *,
@@ -1187,3 +1292,105 @@ def ifftn(
         return out
     else:
         return result
+
+
+"""
+RFFTN Function
+"""
+
+
+def rfft_input_validation(x):
+    if not x.dtype.is_floating:
+        raise TypeError(
+            "Invalid FFT input: `x` must be of a real dtype. Received: {}".format(
+                x.dtype
+            )
+        )
+    return x
+
+
+def rfft_operations(x, rank, norm_factor):
+    if x.shape.rank == 1:
+        x = tf.signal.rfft(x)
+    elif x.shape.rank == 2:
+        x = tf.switch_case(
+            rank - 1, {0: lambda: tf.signal.rfft(x), 1: lambda: tf.signal.rfft2d(x)}
+        )
+    else:
+        x = tf.switch_case(
+            rank - 1,
+            {
+                0: lambda: tf.signal.rfft(x),
+                1: lambda: tf.signal.rfft2d(x),
+                2: lambda: tf.signal.rfft3d(x),
+            },
+        )
+    norm_factor = tf.cast(norm_factor, tf.complex128)
+    x = x / norm_factor
+    x = tf.cast(x, tf.complex128)
+    return x
+
+
+def _rfftn_helper(x, shape, axes, norm):
+    x = rfft_input_validation(tf.convert_to_tensor(x))
+    input_shape = x.shape
+    input_rank_tensor = tf.rank(x)
+
+    shape_, axes_ = shape_and_axes_validation(shape, axes, input_rank_tensor)
+
+    axes = axes_initialization(shape, axes, input_shape, input_rank_tensor)
+
+    perform_padding, perform_transpose = perform_actions_initialization(
+        shape, axes, input_shape, input_rank_tensor
+    )
+
+    shape = shape_initialization(shape, axes, x)
+
+    rank = rank_initialization(axes)
+
+    norm_factor = norm_initialization(norm, shape, x)
+
+    x = get_x_after_pad_or_crop(x, shape, axes, perform_padding, input_rank_tensor)
+
+    perm = get_perm(input_rank_tensor, axes)
+
+    x = transpose_x(x, perm, perform_transpose)
+
+    x = rfft_operations(x, rank, norm_factor)
+
+    x = transpose_x(x, tf.argsort(perm), perform_transpose)
+
+    x = tf.ensure_shape(x, static_output_shape(input_shape, shape_, axes_))
+
+    return x
+
+
+@with_supported_device_and_dtypes(
+    {
+        "2.5.0 and above": {
+            "cpu": (
+                "float32",
+                "float64",
+                "complex128",
+            )
+        }
+    },
+    backend_version,
+)
+def rfftn(
+    x: Union[tf.Tensor, tf.Variable],
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: Optional[str] = [("forward", "ortho", "backward")],
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    result = _rfftn_helper(x, s, axes, norm)
+
+    if out is not None:
+        out = tf.cast(result, tf.complex128)
+        # out = result
+        return out
+    else:
+        # return result
+        return tf.cast(result, tf.complex128)

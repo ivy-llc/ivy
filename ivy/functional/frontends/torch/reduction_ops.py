@@ -65,9 +65,11 @@ def sum(input, dim=None, keepdim=False, *, dtype=None, out=None):
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
-def mean(input, dim=None, axis=None, keepdim=False, *, out=None):
-    if dim is None:
-        dim = axis
+def mean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    if dtype is not None:
+        input = input.astype(dtype)
+        if out is not None:
+            out = out.astype(dtype)
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
@@ -263,6 +265,15 @@ quantile.unsupported_dtypes = {
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
+
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"2.0.1 and below": ("uint8", "int8")},
     "torch",
@@ -292,7 +303,7 @@ def logsumexp(input, dim, keepdim=False, *, out=None):
 def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
     if dim is not None:
         sorted = True
-    results = ivy.unique_all(input, by_value=sorted, axis=dim)
+    results = ivy.unique_all(input, axis=dim, by_value=sorted)
 
     fields = ["output"]
     if return_inverse:

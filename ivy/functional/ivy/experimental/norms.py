@@ -11,14 +11,18 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_array_function,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def l1_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -48,17 +52,20 @@ def l1_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l1_normalize(x, axis=1)
-    ivy.array([[0.3333, 0.6667],
-               [0.4286, 0.5714]])
+    >>> y = ivy.l1_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 1.33333337],
+           [1.28571439, 2.28571439]])
     """
     return current_backend(x).l1_normalize(x, axis=axis, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def l2_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -87,9 +94,10 @@ def l2_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.l2_normalize(x, axis=1)
-    ivy.array([[0.4472, 0.8944],
-               [0.6, 0.8]])
+    >>> y = ivy.l2_normalize(x, axis=1)
+    >>> print(y)
+    ivy.array([[0.44721359, 0.89442718],
+           [0.60000002, 0.80000001]])
     """
     return current_backend(x).l2_normalize(x, axis=axis, out=out)
 
@@ -206,9 +214,11 @@ def batch_norm(
 
 batch_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -334,9 +344,11 @@ def instance_norm(
 
 instance_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
+        "handle_device_shifting",
     ),
     "to_skip": ("inputs_to_ivy_arrays", "handle_partial_mixed_function"),
 }
@@ -420,6 +432,7 @@ def group_norm(
 
 group_norm.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
@@ -429,9 +442,11 @@ group_norm.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def lp_normalize(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -463,8 +478,9 @@ def lp_normalize(
     Examples
     --------
     >>> x = ivy.array([[1., 2.], [3., 4.]])
-    >>> ivy.lp_normalize(x, p=1, axis=1)
-    ivy.array([[0.3333, 0.6666],
-               [0.75, 1.]])
+    >>> y = ivy.lp_normalize(x, p=1, axis=1)
+    >>> print(y)
+    ivy.array([[0.33333334, 0.66666669],
+           [0.42857143, 0.5714286 ]])
     """
     return current_backend(x).lp_normalize(x, p=p, axis=axis, out=out)
