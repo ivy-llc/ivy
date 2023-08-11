@@ -95,25 +95,20 @@ def sum(
     where=None,
     promote_integers=True,
 ):
-    if dtype is None:
-        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
-    elif ivy.is_uint_dtype(a.dtype):
-        dtype = "uint64"
-        a = ivy.astype(a, "uint64")
-    elif ivy.is_int_dtype(a.dtype):
-        dtype = "int64"
-        a = ivy.astype(a, "int64")
-
     # TODO: promote_integers is only supported from JAX v0.4.10
     if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(dtype):
+        if ivy.is_bool_dtype(a.dtype):
             dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(dtype):
-            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(a.dtype):
+            dtype = "uint64"
+            a = ivy.astype(a, dtype)
+        elif ivy.is_int_dtype(a.dtype):
+            dtype = "int64"
+            a = ivy.astype(a, dtype)
+        else:
+            dtype = a.dtype
+    elif dtype is None and not promote_integers:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
     if initial:
         if axis is None:
