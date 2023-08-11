@@ -162,8 +162,8 @@ def test_paddle_var(
         unbiased=unbiased,
         keepdim=keepdim,
     )
-   
-  
+
+
 @handle_frontend_test(
     fn_tree="paddle.nanmedian",
     dtype_x_and_axis=helpers.dtype_values_axis(
