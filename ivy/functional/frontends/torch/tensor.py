@@ -952,6 +952,11 @@ class Tensor:
         return torch_frontend.rsqrt(self)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def rsqrt_(self):
+        self.ivy_array = self.rsqrt().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt_(self):
         self.ivy_array = self.sqrt().ivy_array
         return self
