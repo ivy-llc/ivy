@@ -206,15 +206,15 @@ def argmin(
     >>> y = ivy.argmin(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[2],
-              [0]])
+           [0]])
 
     >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
-    >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+    >>> y= ivy.zeros((3,1), dtype=ivy.int64)
     >>> ivy.argmin(x, axis=1, keepdims=True, out=y)
     >>> print(y)
     ivy.array([[2],
-               [0],
-               [1]])
+           [0],
+           [1]])
 
     With :class:`ivy.Container` input:
 
@@ -222,8 +222,8 @@ def argmin(
     >>> y = ivy.argmin(x)
     >>> print(y)
     {
-        a:ivy.array(1),
-        b:ivy.array(0)
+        a: ivy.array(1),
+        b: ivy.array(0)
     }
     """
     return current_backend(x).argmin(
@@ -341,45 +341,34 @@ def nonzero(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([[1,1], [0,0]]))
+    >>> x = ivy.Container(a=ivy.array([0,1,2,3,0]), b=ivy.array([1,1, 0,0]))
     >>> y = ivy.nonzero(x)
     >>> print(y)
-    {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[2], <class ivy.array.array.Array> shape=[2])
-    }
-
-    >>> print(y.a)
-    (ivy.array([1, 2, 3]),)
-
-    >>> print(y.b)
-    (ivy.array([0, 0]), ivy.array([0, 1]))
+    [{
+        a: ivy.array([1, 2, 3]),
+        b: ivy.array([0, 1])
+    }]
 
     Instance Method Examples
     ------------------------
 
-    Using :class:`ivy.Array` instance method:
+    With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([0,0,0,1,1,1])
     >>> y = x.nonzero()
     >>> print(y)
     (ivy.array([3, 4, 5]),)
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([1,1,1]), b=ivy.native_array([0]))
     >>> y = x.nonzero()
     >>> print(y)
-    {
-        a: (list[1], <class ivy.array.array.Array> shape=[3]),
-        b: (list[1], <class ivy.array.array.Array> shape=[0])
-    }
+    [{
+        a: ivy.array([0, 1, 2]),
+        b: ivy.array([])
+    }]
 
-    >>> print(y.a)
-    (ivy.array([0, 1, 2]),)
-
-    >>> print(y.b)
-    (ivy.array([]),)
     """
     return current_backend(x).nonzero(
         x, as_tuple=as_tuple, size=size, fill_value=fill_value
@@ -443,35 +432,28 @@ def where(
     >>> x2 = ivy.array([[5, 6], [7, 8]])
     >>> res = ivy.where(condition, x1, x2)
     >>> print(res)
-    ivy.array([[1,6],[3,4]])
+    ivy.array([[1, 6],
+           [3, 4]])
 
     >>> x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])
     >>> x2 = ivy.array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])
     >>> res = ivy.where(((x1 % 2 == 0) & (x2 % 2 == 1)), x1, x2)
     >>> print(res)
-    ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])
+    ivy.array([[44, 20,  8, 35, 12],
+           [98, 23, 16,  6, 13]])
 
     With :class:`ivy.Container` input:
 
     >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
     >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1.a > x2.a), x1, x2)
+    >>> condition = x1.a > x2.a
+    >>> res = x1.where(condition, x2)
     >>> print(res)
     {
-        a: ivy.array([3, 7, 5]),
-        b: ivy.array([3, 8, 6])
+        a: ivy.array([1, 0, 1]),
+        b: ivy.array([1, 0, 1])
     }
 
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
-
-    >>> x1 = ivy.array([[1.1, 2, -3.6], [5, 4, 3.1]])
-    >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]),b=ivy.array([3, 8, 5]))
-    >>> res = ivy.where((x1.b < x2.b), x1, x2)
-    >>> print(res)
-    {
-        a: ivy.array([0, 2, -3.6]),
-        b: ivy.array([3, 4, 3.1])
-    }
     """
     return current_backend(x1).where(condition, x1, x2, out=out)
 

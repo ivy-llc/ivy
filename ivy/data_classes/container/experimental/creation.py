@@ -747,8 +747,10 @@ class _ContainerWithCreationExperimental(ContainerBase):
         >>> y = x.eye_like()
         >>> print(y)
         {
-            a: ivy.array([[1.]]),
-            b: ivy.array([[1.]])
+            a: ivy.array([[1.],
+                          [0.]]),
+            b: ivy.array([[1.],
+                          [0.]])
         }
         """
         return self.static_eye_like(
