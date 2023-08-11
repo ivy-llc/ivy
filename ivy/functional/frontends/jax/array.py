@@ -148,11 +148,10 @@ class Array:
         where=None,
         promote_integers=True,
     ):
-        jax_frontend.config.update("jax_enable_x64", True)
         return jax_frontend.numpy.sum(
             self,
             axis=axis,
-            dtype=self.dtype,
+            dtype=dtype,
             out=out,
             keepdims=keepdims,
             initial=initial,
