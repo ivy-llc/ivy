@@ -483,6 +483,8 @@ class Tensor:
         layout=None,
         pin_memory=False,
     ):
+        if size and args:
+            raise TypeError("new_zeros() got multiple values for argument 'size'")
         if dtype is None:
             dtype = self.dtype
         if device is None:
