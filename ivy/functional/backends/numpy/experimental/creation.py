@@ -134,3 +134,10 @@ def unsorted_segment_sum(
             res[i] = np.sum(data[mask_index], axis=0)
 
     return res
+
+
+def complex(
+    real: np.ndarray,
+    imag: np.ndarray,
+) -> np.ndarray:
+    return real + imag * 1j

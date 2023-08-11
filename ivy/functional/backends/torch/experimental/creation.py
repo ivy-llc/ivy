@@ -175,3 +175,17 @@ def unsorted_segment_sum(
             res[i] = torch.sum(data[mask_index], dim=0)
 
     return res
+
+
+def complex(
+    real: torch.Tensor,
+    imag: torch.Tensor,
+) -> torch.Tensor:
+    if real.dtype not in (torch.float32, torch.float64) or imag.dtype not in (
+        torch.float32,
+        torch.float64,
+    ):
+        raise ValueError("Unsupported datatype")
+    if real.dtype != imag.dtype:
+        raise ValueError("real and imag must have same dtype")
+    return torch.complex(real, imag)

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import jax
 import jax.numpy as jnp
@@ -106,3 +106,10 @@ def unsorted_segment_sum(
         data, segment_ids, num_segments
     )
     return jax.ops.segment_sum(data, segment_ids, num_segments)
+
+
+def complex(
+    x: Union[JaxArray, jnp.ndarray, jnp.bool_, jnp.number, bool, int, float, complex],
+    y: JaxArray,
+) -> JaxArray:
+    return jax.lax.complex(x, y)

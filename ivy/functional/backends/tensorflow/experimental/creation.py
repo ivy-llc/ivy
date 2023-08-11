@@ -109,3 +109,17 @@ def unsorted_segment_sum(
     num_segments: Union[int, tf.Tensor],
 ) -> tf.Tensor:
     return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+def complex(
+    real: tf.Tensor,
+    imag: tf.Tensor,
+) -> tf.Tensor:
+    if real.dtype not in (tf.float32, tf.float64) or imag.dtype not in (
+        tf.float32,
+        tf.float64,
+    ):
+        raise ValueError("Unsupported datatype")
+    if real.dtype != imag.dtype:
+        raise ValueError("real and imag must have same dtype")
+    return tf.dtypes.complex(real, imag)

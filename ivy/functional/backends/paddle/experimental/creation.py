@@ -165,3 +165,17 @@ def unsorted_segment_sum(
         res = paddle.cast(res, "int32")
 
     return res
+
+
+def complex(
+    real: paddle.Tensor,
+    imag: paddle.Tensor,
+) -> paddle.Tensor:
+    if real.dtype not in (paddle.float32, paddle.float64) or imag.dtype not in (
+        paddle.float32,
+        paddle.float64,
+    ):
+        raise ValueError("Unsupported datatype")
+    if real.dtype != imag.dtype:
+        raise ValueError("real and imag must have same dtype")
+    return paddle.complex(real, imag)
