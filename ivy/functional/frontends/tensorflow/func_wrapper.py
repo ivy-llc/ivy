@@ -215,8 +215,8 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
             )
             new_params.append(param.replace(name=name, kind=param.KEYWORD_ONLY))
         new_signature = sig.replace(parameters=new_params)
+        new_module = inspect.stack()[2][0].f_globals["__name__"]
 
-        @functools.wraps(fn)
         def _wraped_fn(**kwargs):
             # update kwargs dictionary keys
             if kw_update:
@@ -224,6 +224,8 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
             return fn(**kwargs)
 
         _wraped_fn.__signature__ = new_signature
+        _wraped_fn.__module__ = new_module
+        _wraped_fn.__alias__ = {fn.__name__: fn}
         return _wraped_fn
 
     return _wrap_raw_ops_alias(alias, kwargs_to_update)

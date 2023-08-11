@@ -76,6 +76,8 @@ def _lstrip_lines(source: str) -> str:
 
 # Get the list of function used the function
 def _get_function_list(func):
+    if hasattr(func, "__alias__"):
+        return func.__alias__
     tree = ast.parse(_lstrip_lines(inspect.getsource(func)))
     names = {}
     # Extract all the call names
