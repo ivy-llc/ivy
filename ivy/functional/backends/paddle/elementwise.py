@@ -255,6 +255,7 @@ def sign(
     return paddle.sgn(x)
 
 
+# TODO: Remove `float16` from the list once paddle add it's supporting kernel to `CPU`.
 def _determine_sqrt_dtype_cast(
     dtype: Type[paddle.Tensor],
 ) -> Tuple[Optional[str], Optional[str]]:
@@ -270,7 +271,6 @@ def _determine_sqrt_dtype_cast(
         paddle.int16,
         paddle.int32,
         paddle.uint8,
-        paddle.float16,
         paddle.bool,
     }
 
@@ -278,6 +278,8 @@ def _determine_sqrt_dtype_cast(
         return "float32", "float32"
     elif dtype == paddle.int64:
         return "float64", "float64"
+    elif dtype == paddle.float16:
+        return "float32", "float16"
     elif dtype == paddle.bfloat16:
         return "float32", "bfloat16"
     else:
