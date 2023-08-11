@@ -812,10 +812,10 @@ def test_paddle_bincount(
 )
 def test_paddle_qr(
     dtype_and_x,
-    mode,
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     dtype, x = dtype_and_x
@@ -823,10 +823,10 @@ def test_paddle_qr(
         input_dtypes=dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        mode=mode,
     )
 
 
