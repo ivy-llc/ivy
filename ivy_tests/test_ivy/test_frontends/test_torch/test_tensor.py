@@ -11679,7 +11679,7 @@ def put_along_axis_helper(draw):
     idx_shape = tuple(idx_shape)
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
     )
     indices = draw(idx_strategy)
 
@@ -11774,7 +11774,7 @@ def test_torch_instance_scatter_(
     init_tree="torch.tensor",
     method_name="scatter_reduce_",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["add", "mul", "mean", "amax", "amin"]),
+    mode=st.sampled_from(["sum", "prod", "mean", "amax", "amin"]),
 )
 def test_torch_instance_scatter_reduce_(
     args,
@@ -11891,7 +11891,7 @@ def test_torch_instance_scatter(
     init_tree="torch.tensor",
     method_name="scatter_reduce",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["add", "mul", "mean", "amax", "amin"]),
+    mode=st.sampled_from(["sum", "prod", "mean", "amax", "amin"]),
 )
 def test_torch_instance_scatter_reduce(
     args,

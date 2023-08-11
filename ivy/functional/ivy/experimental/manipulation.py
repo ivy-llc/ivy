@@ -989,24 +989,12 @@ def _ndindex(shape):
     return product(*ranges)
 
 
-def _infer_broadcast_shape(arr, indices, axis):
-    # This function is used in put_along_axis
-    broadcast_shape_list = list(arr.shape)
-    broadcast_shape_list[axis] = list(indices.shape)[axis]
-    broadcast_shape = tuple(broadcast_shape_list)
-    for i in range(len(arr.shape)):
-        if arr.shape[i] < indices.shape[i]:
-            # if indices matrix has larger size than arr matrix, do not broadcast.
-            return None
-    return broadcast_shape
-
-
 def _handle_reduction_op(reduction, arr, indices, values):
-    if reduction in ["mul", "multiply"]:
+    if reduction in ["mul", "multiply", "prod"]:
         arr[indices] *= values
     elif reduction == "assign":
         arr[indices] = values
-    elif reduction == "add":
+    elif reduction in ["add", "sum"]:
         arr[indices] += values
     elif reduction == "mean":
         arr[indices] = (arr[indices] + values) // 2
@@ -1834,12 +1822,15 @@ def put_along_axis(
                [ 160, 40, 50]])
     """
     if len(arr.shape) != len(indices.shape):
-        raise ivy.ValueError("indices and arr must have the same number of dimensions")
-    broadcast_shape = _infer_broadcast_shape(arr, indices, axis)
+        raise ivy.utils.exceptions.IvyValueError(
+            "indices and arr must have the same number of dimensions"
+        )
+    # out = ivy.zeros_like(arr) if out is None else out
+    broadcast_shape = ivy.broadcast_shapes(*[arr.shape, indices.shape, values.shape])
     values = ivy.asarray(values) if not isinstance(values, ivy.Array) else values
     if broadcast_shape:
         indices = ivy.broadcast_to(indices, broadcast_shape)
-    values = ivy.broadcast_to(values, broadcast_shape)
+        values = ivy.broadcast_to(values, broadcast_shape)
 
     Ni, Nk = arr.shape[:axis], arr.shape[axis + 1 :]
     ret = []
@@ -1852,11 +1843,8 @@ def put_along_axis(
             a = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d)
             ret.append(a)
 
-    ret = (
-        ivy.asarray(ret).T
-        if ivy.asarray(ret).shape == arr.shape[::-1]
-        else ivy.asarray(ret)
-    )
+    ret = ivy.asarray(ret)
+    ret = ivy.reshape(ret, arr.shape)
 
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
 

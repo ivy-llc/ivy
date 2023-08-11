@@ -1599,7 +1599,7 @@ class Tensor:
         if reduce is None:
             reduce = "assign"
         self.ivy_array = ivy.put_along_axis(
-            self, index, src, dim, reduce=reduce
+            self, index, src, dim, mode=reduce
         ).ivy_array
         return self
 
@@ -1610,17 +1610,13 @@ class Tensor:
         return self
 
     def scatter_add(self, dim, index, src):
-        return torch_frontend.scatter_add(self, dim=dim, index=index, src=src)
+        return torch_frontend.scatter_add(self, dim, index, src)
 
     def scatter(self, dim, index, src, reduce=None):
-        return torch_frontend.scatter_reduce(
-            self, dim=dim, index=index, src=src, reduce=reduce
-        )
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce=reduce)
 
     def scatter_reduce(self, dim, index, src, reduce=None):
-        return torch_frontend.scatter_reduce(
-            self, dim=dim, index=index, src=src, reduce=reduce
-        )
+        return torch_frontend.scatter_reduce(self, dim, index, src, reduce=reduce)
 
     def take_along_dim(self, indices, dim):
         return torch_frontend.take_along_dim(self, indices=indices, dim=dim)

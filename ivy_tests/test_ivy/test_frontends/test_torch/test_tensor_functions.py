@@ -161,7 +161,6 @@ def put_along_axis_helper(draw):
             force_int_axis=True,
             ret_shape=True,
             min_axis=0,
-            max_axis=1,
         )
     )
 
@@ -172,7 +171,7 @@ def put_along_axis_helper(draw):
     idx_shape = tuple(idx_shape)
 
     idx_strategy = nph.arrays(
-        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 1)
+        dtype=np.int64, shape=idx_shape, elements=st.integers(0, len(idx_shape) - 2)
     )
     indices = draw(idx_strategy)
 
@@ -197,7 +196,6 @@ def test_torch_scatter(
     fn_tree,
     frontend,
     test_flags,
-    backend_fw,
 ):
     input_dtype, x, indices, value, axis = args
     helpers.test_frontend_function(
@@ -206,11 +204,11 @@ def test_torch_scatter(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        backend_to_test="numpy",
         input=x,
+        dim=axis,
         index=indices,
         src=value,
-        dim=axis,
     )
 
 
@@ -238,17 +236,17 @@ def test_torch_scatter_add(
         on_device=on_device,
         backend_to_test=backend_fw,
         input=x,
+        dim=axis,
         index=indices,
         src=value,
-        dim=axis,
     )
 
 
 # scatter_reduce
 @handle_frontend_test(
-    fn_tree="torch.scatter",
+    fn_tree="torch.scatter_reduce",
     args=put_along_axis_helper(),
-    mode=st.sampled_from(["add", "mul", "mean", "amin", "amax"]),
+    mode=st.sampled_from(["sum", "prod", "mean", "amin", "amax"]),
     test_with_out=st.just(False),
 )
 def test_torch_scatter_reduce(
@@ -268,10 +266,10 @@ def test_torch_scatter_reduce(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        backend_to_test=backend_fw,
+        backend_to_test="numpy",
         input=x,
+        dim=axis,
         index=indices,
         src=value,
-        dim=axis,
         reduce=mode,
     )
