@@ -287,13 +287,17 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d((2, 2), (1, 1), "SAME"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> y = x.max_pool2d(3, 1, "VALID")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 0, 1, 4)),
+            b: ivy.array([[[[16., 17.]],
+                           [[22., 23.]]],
+                         [[[40., 41.]],
+                           [[46., 47.]]]])
         }
         """
         return self.static_max_pool2d(
@@ -440,16 +444,13 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.max_pool3d(3, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([], shape=(1, 0, 1, 2, 1)),
+            b: ivy.array([], shape=(2, 2, 1, 0, 1))
         }
         """
         return self.static_max_pool3d(
@@ -676,10 +677,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> y = ivy.Container.static_avg_pool2d(x, (2, 2), (1, 1), "SAME")
+        >>> print(y)
         {
-            a: ivy.array([], shape=(2, 0, 2, 2)),
-            b: (<class ivy.array.array.Array> shape=[2, 3, 2, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return ContainerBase.cont_multi_map_in_function(
@@ -755,10 +757,11 @@ class _ContainerWithLayersExperimental(ContainerBase):
         >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
         >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.avg_pool2d((2, 2), (1, 1), "SAME"))
+        >>> y = x.avg_pool2d(2, 1, "SAME")
+        >>> print(y)
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: (<class ivy.data_classes.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 4, 3, 2])
         }
         """
         return self.static_avg_pool2d(
@@ -911,16 +914,18 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
-        >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool3d(2, 1, "VALID"))
+        >>> a = ivy.arange(24.).reshape((1, 2, 3, 4, 1))
+        >>> b = ivy.arange(48.).reshape((2, 4, 3, 2, 1))
+        >>> x = ivy.Container(a=a, b=b)
+        >>> print(x.avg_pool3d(2, 1, "VALID"))
         {
-            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[20, 21],
-                             [22, 23]]]],
-                       [[[[44, 45],
-                             [46, 47]]]]])
+            a: ivy.array([[[[[8.5],
+                             [9.5],
+                             [10.5]],
+                            [[12.5],
+                             [13.5],
+                             [14.5]]]]]),
+            b: (<class ivy.data_classes.array.array.Array> shape=[2, 3, 2, 1, 1])
         }
         """
         return self.static_avg_pool3d(
@@ -2133,6 +2138,29 @@ class _ContainerWithLayersExperimental(ContainerBase):
         -------
         ret
             Container containing the transformed inputs
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0.247306+0.908323j, 0.494955+0.90395j,
+        ...                                 0.98193269+0.49560517j],
+        ...                                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                                 0.2343787 +0.83528011j],
+        ...                                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                                 0.44719226+0.72654048j]]),
+        ...                   b= ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+        ...                                 0.98193269+0.49560517j],
+        ...                                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+        ...                                 0.2343787 +0.83528011j],
+        ...                                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+        ...                                 0.44719226+0.72654048j]]))
+        >>> y = x.ifftn(s=[2, 1], axes=[0, 1], norm='ortho')
+        >>> print(y)
+        {
+            a: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]]),
+            b: ivy.array([[0.8344667+0.98222595j],
+                          [-0.48472244+0.30233797j]])
+        }
         """
         return self.static_ifftn(
             self,

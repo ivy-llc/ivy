@@ -55,6 +55,12 @@ def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
 
 
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def log_softmax(input, axis=-1):
+    return ivy.log_softmax(input)
+
+
 @with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
 def kl_div(logits, labels, reduction="mean"):
@@ -216,6 +222,11 @@ def avg_pool2d(
         count_include_pad=count_include_pad,
         divisor_override=divisor_override,
     )
+
+
+@to_ivy_arrays_and_back
+def flatten(input, order="C", *, start_dim=1, end_dim=-1):
+    return ivy.flatten(input, order=order, start_dim=start_dim, end_dim=end_dim)
 
 
 @with_supported_dtypes(
