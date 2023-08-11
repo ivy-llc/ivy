@@ -281,3 +281,31 @@ def test_numpy_rfftn(dtype_and_x, frontend, backend_fw, test_flags, fn_tree, on_
         axes=axes,
         norm=norm,
     )
+
+@handle_frontend_test(
+    fn_tree="numpy.fft.ifft2",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), 
+        shape=(4, 4), array_api_dtypes=True
+    )
+)    
+def test_numpy_iftt2(
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=True,
+        a=x,
+        s=None,
+        axis=(-2, -1),
+        norm=None
+    )
