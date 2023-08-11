@@ -57,6 +57,7 @@ def percentile(
     overwrite_input=False,
     method="linear",
     keepdims=False,
+    *,
     interpolation=None,
 ):
     values = ivy.array(a)

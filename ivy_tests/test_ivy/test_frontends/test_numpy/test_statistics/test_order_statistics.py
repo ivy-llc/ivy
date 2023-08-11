@@ -42,34 +42,26 @@ def test_numpy_ptp(
         input_dtypes=input_dtypes,
     )
 
+
 # percentile
 @handle_frontend_test(
     fn_tree="numpy.percentile",
     dtype_values_axis=_statistical_dtype_values(function="percentile"),
-    where=np_frontend_helpers.where(),
     keep_dims=st.booleans(),
 )
 def test_numpy_percentile(
     dtype_values_axis,
-    where,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
-    on_device,
     keep_dims,
 ):
     input_dtypes, values, axis = dtype_values_axis
     if isinstance(axis, tuple):
         axis = axis[0]
 
-    where, input_dtypes, test_flags = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=test_flags,
-    )
-
-    np_frontend_helpers.test_frontend_function(
+    helpers.test_frontend_function(
         a=values[0][0],
         q=values[0][1],
         axis=axis,
@@ -84,6 +76,7 @@ def test_numpy_percentile(
         test_flags=test_flags,
         input_dtypes=input_dtypes,
     )
+
 
 # nanpercentile
 @handle_frontend_test(
