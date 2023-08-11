@@ -1791,8 +1791,8 @@ def qr(
     return current_backend(x).qr(x, mode=mode, out=out)
 
 
-@handle_backend_invalid
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
