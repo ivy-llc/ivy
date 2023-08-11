@@ -109,3 +109,8 @@ def interpolate(
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def unsampleUpsample ( size=None, scale_factor=None, mode='nearest', align_corners=False, align_mode=0, data_format='NCHW', name=None ):
+    return ivy.interpolate( x, size, mode=mode, scale_factor=scale_factor, align_corners=align_corners )
