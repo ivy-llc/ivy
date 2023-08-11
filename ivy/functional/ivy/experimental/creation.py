@@ -684,3 +684,14 @@ def unsorted_segment_sum(
         equals to segment ID.
     """
     return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def complex(
+    real: Union[ivy.Array, ivy.NativeArray],
+    imag: Union[ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """Docstring pending ~"""
+    return ivy.current_backend(real, imag).complex(real, imag)

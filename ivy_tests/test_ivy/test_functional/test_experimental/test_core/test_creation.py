@@ -393,3 +393,31 @@ def test_unsorted_segment_sum(
         segment_ids=segment_ids,
         num_segments=num_segments,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.complex",
+    dtype_x_and_y=helpers.dtype_and_values(
+        available_dtypes="valid",
+        num_arrays=2,
+        min_num_dims=1,
+    ),
+)
+def test_complex(
+    *,
+    dtype_x_and_y,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x = dtype_x_and_y
+    helpers.test_function(
+        input_dtypes=dtypes,
+        test_flags=test_flags,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        real=x[0],
+        imag=x[1],
+    )
