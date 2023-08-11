@@ -805,3 +805,11 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
     return ivy.multiply(x, x_inv_norm)
+
+
+@with_supported_dtypes(
+    {"2.13.0 and below": ("bfloat32", "float32", "float64")}, "tensorflow"
+)
+@to_ivy_arrays_and_back
+def softsign(features, name=None):
+    return ivy.divide(features, ivy.abs(features) + 1)

@@ -35,6 +35,7 @@ def apply_decorators(decorators):
 # Array API Standard #
 # -------------------#
 
+
 with apply_decorators(
     [
         handle_exceptions,
@@ -6908,4 +6909,4 @@ with apply_decorators(
             "handle_backend_invalid",
         ),
         "to_skip": ("inputs_to_ivy_arrays",),
-    }
+
