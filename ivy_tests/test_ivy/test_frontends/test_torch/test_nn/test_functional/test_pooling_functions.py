@@ -293,8 +293,6 @@ def test_torch_max_pool2d(
 
 
 # max_unpool2d
-
-
 @handle_frontend_test(
     fn_tree="torch.nn.functional.max_unpool2d",
     x_k_indices_k_s_p=helpers.arrays_for_pooling(
@@ -324,7 +322,8 @@ def test_torch_max_unpool2d(
         (indices[0].shape[0], indices[0].shape[-1], *indices[0].shape[1:-1])
     )
 
-    # Calculate the output shape based on the input shape, kernel size, stride, and padding
+    # Calculate the output shape based on the input shape, kernel size, stride, and
+    # padding
     output_shape = tuple(
         [
             (x[0].shape[i + 2] - 1) * stride[i] - 2 * pad[i] + kernel[i]
