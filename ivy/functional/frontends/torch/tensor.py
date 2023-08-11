@@ -1525,6 +1525,7 @@ def resolve_neg(input):
 if __name__ == "__main__":
     x = torch.resolve_neg(input)
     y = x.conj()
+
     z = y.imag
 
     print(z.is_neg())
