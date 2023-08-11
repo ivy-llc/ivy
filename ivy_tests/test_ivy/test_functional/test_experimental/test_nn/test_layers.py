@@ -1328,7 +1328,7 @@ def test_stft(
     on_device,
     test_flags,
     backend_fw,
-    fn_tree,
+    fn_name,
     stft_args,
 ):
     dtype, x = dtype_and_x
@@ -1354,7 +1354,7 @@ def test_stft(
         on_device=on_device,
         test_flags=test_flags,
         backend_to_test=backend_fw,
-        fn_tree=fn_tree,
+        fn_name=fn_name,
         signal=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
