@@ -53,7 +53,7 @@ def selu(input_x):
 @to_ivy_arrays_and_back
 def softsign(x):
     return ivy.divide(x, ivy.add(1, ivy.abs(x)))
-  
+
 
 @with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
@@ -210,7 +210,7 @@ def conv3d(
         raise NotImplementedError(f"pad_mode {pad_mode} not implemented")
     return _conv(input, weight, bias, stride, padding, dilation, groups)
 
-  
+
 def kl_div(logits, labels, reduction="mean"):
     """
     Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
