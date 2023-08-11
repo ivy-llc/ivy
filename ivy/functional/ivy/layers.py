@@ -109,7 +109,7 @@ def linear(
     ret
         Result array of the linear transformation.
         *[outer_batch_shape,inner_batch_shape,out_features]*
-    
+
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
@@ -123,7 +123,7 @@ def linear(
     >>> y = ivy.linear(x, w)
     >>> print(y)
     ivy.array([1.])
-    
+
     >>> x = ivy.array([[0.666, -0.4269, 1.911]])
     >>> w = ivy.array([[1., 0., 0.], [0., 0., 1.]])
     >>> y = ivy.zeros((1, 2))
@@ -143,7 +143,7 @@ def linear(
     ivy.array([[ 34.98495483, 101.0293808 ],
            [ 28.0159359 ,  83.74752808],
            [ 37.20942307, 108.3205719 ]])
-        
+
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[1., 2., 3.],
@@ -181,7 +181,7 @@ def linear(
         b: ivy.array([[15.1, 32., 47.9],
                       [85., 196., 306.]])
     }
-    
+
     """
     outer_batch_shape = list(weight.shape[:-2])
     num_outer_batch_dims = len(outer_batch_shape)
@@ -1602,10 +1602,10 @@ def conv3d(
         while "NCDHW" corresponds to input with shape (batch_size, channels, depth,
         height, width).
     filter_format
-        Either "channel_first" or "channel_last". "channel_first" corresponds 
+        Either "channel_first" or "channel_last". "channel_first" corresponds
         to "OIDHW",input data formats, while "channel_last" corresponds to "DHWIO".
      x_dilations
-        The dilation factor for each dimension of input. (Default value = 1)    
+        The dilation factor for each dimension of input. (Default value = 1)
     dilations
         The dilation factor for each dimension of input. (Default value = 1)
     bias

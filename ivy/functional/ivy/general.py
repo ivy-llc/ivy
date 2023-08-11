@@ -1746,7 +1746,6 @@ def cache_fn(func: Callable) -> Callable:
     >>> cached_line_eq = ivy.cache_fn(line_eq)
     >>> print(cached_line_eq(3, itc=5, slp=2))
     11
-
     """
     global FN_CACHE
     if func not in FN_CACHE:
@@ -2626,7 +2625,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     -------
     ret
         True if supports, raises IvyBackendException otherwise
-    
+
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
 

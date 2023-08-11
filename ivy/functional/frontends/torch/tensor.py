@@ -475,8 +475,8 @@ class Tensor:
 
     def new_zeros(
         self,
-        size,
-        *,
+        *args,
+        size=None,
         dtype=None,
         device=None,
         requires_grad=False,
@@ -487,10 +487,8 @@ class Tensor:
             dtype = self.dtype
         if device is None:
             device = self.device
-        if isinstance(size[0], (tuple, list, ivy.Shape)):
-            return torch_frontend.zeros(
-                size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
-            )
+        if size is None:
+            size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
         return torch_frontend.zeros(
             size=size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -823,7 +821,7 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", )}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     @numpy_to_torch_style_args
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
