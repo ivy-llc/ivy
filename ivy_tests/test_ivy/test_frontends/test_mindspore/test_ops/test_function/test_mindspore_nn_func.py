@@ -424,14 +424,12 @@
 #         divisor_override=None,
 #     )
 
-# def _filter_dtypes(input_dtype):
-#     assume(("bfloat16" not in input_dtype) and ("float16" not in input_dtype))
 
 # # softshrink
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.softshrink",
 #     dtype_and_input=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("float"),
+#         available_dtypes=helpers.get_dtypes("valid"),
 #     ),
 #     lambd=helpers.floats(min_value=0, max_value=1, exclude_min=True),
 # )
@@ -446,7 +444,6 @@
 #     backend_fw,
 # ):
 #     input_dtype, x = dtype_and_input
-#     _filter_dtypes(input_dtype)
 #     helpers.test_frontend_function(
 #         input_dtypes=input_dtype,
 #         backend_to_test=backend_fw,
