@@ -183,8 +183,8 @@ def test_tensorflow_vorbis_window(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["int32","int64"],
         max_num_dims=0,
-        min_value=5,
-        max_value=10,
+        min_value=0,
+        max_value=100,
     ),
     periodic=st.booleans(),
     # dtype=helpers.get_dtypes("float", full=False),
