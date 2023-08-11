@@ -21,6 +21,7 @@ from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 from ivy.functional.backends.jax.experimental.manipulation import _to_nested_tuple
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
@@ -867,3 +868,16 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
+
+
+def deform_conv2d(
+    x: JaxArray,
+    offset: JaxArray,
+    weight: JaxArray,
+    bias: Optional[JaxArray] = None,
+    stride: Union[int, Tuple[int, int]] = (1, 1),
+    padding: Union[int, Tuple[int, int]] = (0, 0),
+    dilation: Union[int, Tuple[int, int]] = (1, 1),
+    mask: Optional[JaxArray] = None,
+):
+    raise IvyNotImplementedException()

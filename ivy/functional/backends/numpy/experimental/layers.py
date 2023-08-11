@@ -17,6 +17,7 @@ from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
@@ -1044,3 +1045,17 @@ def rfftn(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
+
+
+def deform_conv2d(
+    x: np.ndarray,
+    offset: np.ndarray,
+    weight: np.ndarray,
+    bias: Optional[np.ndarray] = None,
+    stride: Union[int, Tuple[int]] = (1, 1),
+    padding: Union[int, Tuple[int]] = (0, 0),
+    dilation: Union[int, Tuple[int]] = (1, 1),
+    mask: Optional[np.ndarray] = None,
+
+):
+    raise IvyNotImplementedException()

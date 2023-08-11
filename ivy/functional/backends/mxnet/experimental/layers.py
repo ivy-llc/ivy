@@ -231,3 +231,53 @@ def interpolate(
     out: Optional[mx.nd.NDArray] = None,
 ):
     raise IvyNotImplementedException()
+
+
+def deform_conv2d(
+    x: mx.nd.NDArray,
+    offset: mx.nd.NDArray,
+    weight: mx.nd.NDArray,
+    bias: Optional[mx.nd.NDArray] = None,
+    stride: Union[int, Tuple[int, int]] = (1, 1),
+    padding: Union[int, Tuple[int, int]] = (0, 0),
+    dilation: Union[int, Tuple[int, int]] = (1, 1),
+    mask: Optional[mx.nd.NDArray] = None,
+):
+    if isinstance(stride, int):
+        stride = (stride, stride)
+    if isinstance(padding, int):
+        padding = (padding, padding)
+    if isinstance(dilation, int):
+        dilation = (dilation, dilation)
+    if offset.shape[1] % (2 * weight.shape[2] * weight.shape[3]) != 0:
+        raise Exception("offset_groups must be integer")
+    offset_groups = int(offset.shape[1] // (2 * weight.shape[2] * weight.shape[3]))
+    groups = int(x.shape[1] // weight.shape[1])
+
+    if mask is None:
+        return mx.nd.contrib.DeformableConvolution(
+            x,
+            offset,
+            weight,
+            bias,
+            kernel=weight.shape[2:],
+            stride=stride,
+            pad=padding,
+            dilate=dilation,
+            num_filter=weight.shape[0],
+            num_group=groups,
+            num_deformable_group=offset_groups,
+        )
+    else:
+        return mx.nd.contrib.ModulatedDeformableConvolution(
+            x,
+            offset,
+            mask,
+            weight,
+            bias,
+            kernel=weight.shape[2:],
+            stride=stride,
+            pad=padding,
+            dilate=dilation,
+            num_filter=weight.shape[0],
+        )

@@ -1010,3 +1010,26 @@ def rfftn(
     return torch.tensor(
         torch.fft.rfftn(x, s, axes, norm=norm, out=out), dtype=torch.complex128
     )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "float16")}, backend_version)
+def deform_conv2d(
+    x: torch.Tensor,
+    offset: torch.Tensor,
+    weight: torch.Tensor,
+    bias: Optional[torch.Tensor] = None,
+    stride: Union[int, Sequence[int]] = (1, 1),
+    padding: Union[int, Sequence[int]] = (0, 0),
+    dilation: Union[int, Sequence[int]] = (1, 1),
+    mask: Optional[torch.Tensor] = None,
+):
+    return torch.nn.functional.deform_conv2d(
+        x,
+        offset,
+        weight,
+        bias,
+        stride,
+        padding,
+        dilation,
+        mask,
+    )

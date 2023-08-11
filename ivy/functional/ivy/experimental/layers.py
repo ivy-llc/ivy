@@ -2856,3 +2856,65 @@ def rfftn(
         raise ValueError("s and axes must have the same length.")
 
     return ivy.current_backend(x).rfftn(x, s=s, axes=axes, norm=norm, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+def deform_conv2d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    offset: Union[ivy.Array, ivy.NativeArray],
+    weight: Union[ivy.Array, ivy.NativeArray],
+    bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    stride: Union[int, Tuple[int, int]] = (1, 1),
+    padding: Union[int, Tuple[int, int]] = (0, 0),
+    dilation: Union[int, Tuple[int, int]] = (1, 1),
+    mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """
+    Performs Deformable Convolution v2, if mask is not None,
+    and Performs Deformable Convolution, if mask is None.
+    Deformable convolution, as described in https://arxiv.org/abs/1703.06211.
+    Deformable convolution v2, as described in https://arxiv.org/abs/1811.11168.
+
+    Parameters
+    ----------
+    x : array_like
+        Input image, taken to be real. Shape is (batch_size, d_in, height_in, width_in).
+    offset : array_like
+        Input offset, taken to be real. Offsets to be applied for each position in the convolution kernel.
+        Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width, height_out, width_out).
+    weight : array_like
+        Input weight, taken to be real. convolution weights, split into groups of size d_in // groups.
+        Shape is (d_out, d_in // groups, kernel_height, kernel_width).
+    bias : array_like, optional
+        Input bias, taken to be real. Shape is (d_out,).
+    stride : tuple of ints, or int, optional
+        Stride of the convolution. Default is (1, 1).
+    padding : tuple of ints, or int, optional
+        Zero-padding added to both sides of the input. Default is (0, 0).
+    dilation : tuple of ints, or int, optional
+        Spacing between kernel elements. Default is (1, 1).
+    mask : array_like, optional
+        Masks to be applied for each position in the convolution kernel. Default is None.
+        If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width, height_out, width_out).
+
+    Returns
+    -------
+    array_like
+        The result of the convolution. Shape is (batch_size, d_out, height_out, width_out).
+
+    """
+    return ivy.current_backend().deform_conv2d(
+        x,
+        offset,
+        weight,
+        bias=bias,
+        stride=stride,
+        padding=padding,
+        dilation=dilation,
+        mask=mask
+    )

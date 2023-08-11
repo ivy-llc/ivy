@@ -18,6 +18,7 @@ from ivy.functional.ivy.layers import (
     _depth_max_pooling_helper,
 )
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode, _get_size
+from ivy.utils.exceptions import IvyNotImplementedException
 
 
 def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
@@ -1394,3 +1395,15 @@ def rfftn(
     else:
         # return result
         return tf.cast(result, tf.complex128)
+
+
+def deform_conv2d(
+    x: Union[tf.Tensor, tf.Variable],
+    offset: Union[tf.Tensor, tf.Variable],
+    weight: Union[tf.Tensor, tf.Variable],
+    strides: Union[int, Tuple[int]] = (1, 1),
+    padding: Union[int, Tuple[int]] = (0, 0),
+    dilation: Union[int, Tuple[int]] = (1, 1),
+    mask: Optional[Union[tf.Tensor, tf.Variable]] = None,
+):
+    raise IvyNotImplementedException()
