@@ -6,7 +6,7 @@ from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_fr
 from ivy_tests.test_ivy.test_functional.test_core.test_creation import (
     _get_dtype_buffer_count_offset,
 )
-from jax.numpy import mgrid as np_mgrid, ogrid as np_ogrid
+from jax.numpy import mgrid as jnp_mgrid, ogrid as jnp_ogrid
 from ivy.functional.frontends.jax.numpy import mgrid, ogrid
 
 # local
@@ -1086,14 +1086,14 @@ def test_jax_numpy_frombuffer(
     fn_tree="jax.numpy.array",  # dummy fn_tree
     range=_get_range_for_grid(),
 )
-def test_numpy_mgrid(
+def test_jax_numpy_mgrid(
     range,
     backend_fw,
     frontend,
 ):
     start, stop, step = range
     ret = mgrid[start:stop:step]
-    ret_np = np_mgrid[start:stop:step]
+    ret_np = jnp_mgrid[start:stop:step]
     ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
     helpers.value_test(
@@ -1109,14 +1109,14 @@ def test_numpy_mgrid(
     fn_tree="jax.numpy.array",  # dummy fn_tree
     range=_get_range_for_grid(),
 )
-def test_numpy_ogrid(
+def test_jax_numpy_ogrid(
     range,
     backend_fw,
     frontend,
 ):
     start, stop, step = range
     ret = ogrid[start:stop:step]
-    ret_np = np_ogrid[start:stop:step]
+    ret_np = jnp_ogrid[start:stop:step]
     ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
     helpers.value_test(
