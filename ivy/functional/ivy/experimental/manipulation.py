@@ -599,7 +599,6 @@ def top_k(
         a: ivy.array([1, 0]),
         b: ivy.array([1, 0])
     }]
-
     """
     return current_backend(x).top_k(
         x, k, axis=axis, largest=largest, sorted=sorted, out=out
