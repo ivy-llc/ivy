@@ -272,14 +272,16 @@ def test_binary_cross_entropy_loss(
         max_num_dims=3,
         min_dim_size=3,
     ),
-    reduction=st.sampled_from(["mean", "sum"]),
+    reduction=st.sampled_from(["none", "mean", "sum"]),
     method_num_positional_args=helpers.num_positional_args(fn_name="L1Loss._forward"),
+    axis=helpers.ints(min_value=-1, max_value=0),
 )
 def test_l1_loss(
     *,
     dtype_and_true,
     dtype_and_predictions,
     reduction,
+    axis,
     class_name,
     method_name,
     ground_truth_backend,
@@ -297,7 +299,11 @@ def test_l1_loss(
         init_all_as_kwargs_np={
             "reduction": reduction,
         },
-        method_all_as_kwargs_np={"true": targets[0], "pred": predictions[0]},
+        method_all_as_kwargs_np={
+            "true": targets[0],
+            "pred": predictions[0],
+            "axis": axis,
+        },
         class_name=class_name,
         method_name=method_name,
         rtol_=1e-2,

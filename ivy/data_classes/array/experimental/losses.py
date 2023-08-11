@@ -13,6 +13,7 @@ class _ArrayWithLossesExperimental(abc.ABC):
         /,
         *,
         reduction: str = "mean",
+        axis: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -47,4 +48,4 @@ class _ArrayWithLossesExperimental(abc.ABC):
         >>> print(z)
         ivy.array(0.20000000000000004)
         """
-        return ivy.l1_loss(self._data, pred, reduction=reduction, out=out)
+        return ivy.l1_loss(self._data, pred, reduction=reduction, axis=axis, out=out)

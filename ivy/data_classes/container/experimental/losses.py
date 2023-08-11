@@ -18,6 +18,7 @@ class _ContainerWithLosses(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -88,6 +89,7 @@ class _ContainerWithLosses(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            axis=axis,
             out=out,
         )
 
@@ -101,6 +103,7 @@ class _ContainerWithLosses(ContainerBase):
         to_apply: Union[bool, ivy.Container] = True,
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -157,5 +160,6 @@ class _ContainerWithLosses(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            axis=axis,
             out=out,
         )
