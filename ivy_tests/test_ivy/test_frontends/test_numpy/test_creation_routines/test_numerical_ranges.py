@@ -212,30 +212,12 @@ def test_numpy_meshgrid(
 )
 def test_numpy_mgrid(
     range,
-    class_,
-    method_name,
     backend_fw,
     frontend,
 ):
     start, stop, step = range
-    if start and stop and step:
-        ret = mgrid[start:stop:step]
-        ret_np = np_mgrid[start:stop:step]
-    elif start and step:
-        ret = mgrid[start::step]
-        ret_np = np_mgrid[start::step]
-    elif stop and step:
-        ret = mgrid[:stop:step]
-        ret_np = np_mgrid[:stop:step]
-    elif start and stop:
-        ret = mgrid[start:stop]
-        ret_np = np_mgrid[start:stop]
-    elif start:
-        ret = mgrid[start:]
-        ret_np = np_mgrid[start:]
-    else:
-        ret = mgrid[:stop]
-        ret_np = np_mgrid[:stop]
+    ret = mgrid[start:stop:step]
+    ret_np = np_mgrid[start:stop:step]
     ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
     helpers.value_test(
@@ -254,26 +236,10 @@ def test_numpy_mgrid(
     method_name="__getitem__",
     range=_get_range_for_grid(),
 )
-def test_numpy_ogrid(range, class_, method_name, backend_fw, frontend):
+def test_numpy_ogrid(range, backend_fw, frontend):
     start, stop, step = range
-    if start and stop and step:
-        ret = ogrid[start:stop:step]
-        ret_np = np_ogrid[start:stop:step]
-    elif start and step:
-        ret = ogrid[start::step]
-        ret_np = np_ogrid[start::step]
-    elif stop and step:
-        ret = ogrid[:stop:step]
-        ret_np = np_ogrid[:stop:step]
-    elif start and stop:
-        ret = ogrid[start:stop]
-        ret_np = np_ogrid[start:stop]
-    elif start:
-        ret = ogrid[start:]
-        ret_np = np_ogrid[start:]
-    else:
-        ret = ogrid[:stop]
-        ret_np = np_ogrid[:stop]
+    ret = ogrid[start:stop:step]
+    ret_np = np_ogrid[start:stop:step]
     ret = helpers.flatten_and_to_np(ret=ret, backend=backend_fw)
     ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=frontend)
     helpers.value_test(
