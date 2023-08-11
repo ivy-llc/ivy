@@ -2875,7 +2875,7 @@ def deform_conv2d(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
-    Performs Deformable Convolution v2, if mask is not None, and Performs Deformable
+    Perform Deformable Convolution v2, if mask is not None, and Perform Deformable
     Convolution, if mask is None. Deformable convolution, as described in
     https://arxiv.org/abs/1703.06211. Deformable convolution v2, as described in
     https://arxiv.org/abs/1811.11168.
