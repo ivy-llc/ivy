@@ -184,38 +184,38 @@ def test_tensorflow_max_pool(
         data_format=data_format,
     )
 
-# depthwise_conv2d_backprop_input
 @handle_frontend_test(
     fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d_backprop_input",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
-        type="separable",
+        type="depthwise",
     ),
     test_with_out=st.just(False),
 )
-def depthwise_conv2d_backprop_input(
-    input_sizes,
-    filter,
-    out_backprop,
-    strides,
-    padding,
-    data_format='NHWC',
-    dilations=[1, 1, 1, 1],
-    name=None
+def test_tensorflow_depthwise_conv2d_backprop_input(
+    *,
+    x_f_d_df,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
 ):
-    if input_sizes is not None:
-        raise ivy.utils.exceptions.IvyException(
-            "Cannot specify'input_sizes'."
-        )
-    return tf.nn.depthwise_conv2d_backprop_input(
-    input_sizes,
-    filter,
-    out_backprop,
-    strides,
-    padding,
-    data_format='NHWC',
-    dilations=[1, 1, 1, 1],
-    name=None
-)
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input_sizes=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        rate=dilation,
+        name=None,
+        data_format=data_format,
+    )
