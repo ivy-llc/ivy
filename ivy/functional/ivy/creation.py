@@ -1331,7 +1331,6 @@ def eye(
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
                [0., 0., 1.]])
-
     """
     return current_backend().eye(
         n_rows,

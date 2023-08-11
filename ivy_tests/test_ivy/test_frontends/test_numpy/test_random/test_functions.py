@@ -881,7 +881,7 @@ def test_numpy_logistic(
     )
 
 
-#pareto
+# pareto
 @handle_frontend_test(
     fn_tree="numpy.random.pareto",
     input_dtypes=helpers.get_dtypes("float", index=2),
@@ -918,7 +918,7 @@ def test_numpy_pareto(
         size=size,
     )
 
-   
+
 @handle_frontend_test(
     fn_tree="numpy.random.triangular",
     input_dtypes=helpers.get_dtypes("float"),
