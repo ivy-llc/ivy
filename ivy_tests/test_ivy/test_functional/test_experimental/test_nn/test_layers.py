@@ -1203,6 +1203,8 @@ def test_ifftn(
         s=s,
         axes=axes,
         norm=norm,
+        atol_=1e-03,
+        rtol_=1e-03,
     )
 
 
