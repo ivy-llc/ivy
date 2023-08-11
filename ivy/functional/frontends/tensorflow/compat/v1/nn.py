@@ -153,3 +153,33 @@ def max_pool(value, ksize, strides, padding, data_format="NHWC", name=None, inpu
         padding,
         data_format=data_format,
     )
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"2.13.0 and below": ("float16",)},
+    "tensorflow",
+)
+def depthwise_conv2d_backprop_input(
+    input_sizes,
+    filter,
+    out_backprop,
+    strides,
+    padding,
+    data_format='NHWC',
+    dilations=[1, 1, 1, 1],
+    name=None
+):
+    if input_sizes is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot specify'input_sizes'."
+        )
+    return tf_nn.depthwise_conv2d_backprop_input(
+    input_sizes,
+    filter,
+    out_backprop,
+    strides,
+    padding,
+    data_format='NHWC',
+    dilations=[1, 1, 1, 1],
+    name=None
+)

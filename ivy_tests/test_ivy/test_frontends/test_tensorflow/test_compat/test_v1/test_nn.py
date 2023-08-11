@@ -183,3 +183,39 @@ def test_tensorflow_max_pool(
         padding=padding,
         data_format=data_format,
     )
+
+# depthwise_conv2d_backprop_input
+@handle_frontend_test(
+    fn_tree="tensorflow.compat.v1.nn.depthwise_conv2d_backprop_input",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="separable",
+    ),
+    test_with_out=st.just(False),
+)
+def depthwise_conv2d_backprop_input(
+    input_sizes,
+    filter,
+    out_backprop,
+    strides,
+    padding,
+    data_format='NHWC',
+    dilations=[1, 1, 1, 1],
+    name=None
+):
+    if input_sizes is not None:
+        raise ivy.utils.exceptions.IvyException(
+            "Cannot specify'input_sizes'."
+        )
+    return tf.nn.depthwise_conv2d_backprop_input(
+    input_sizes,
+    filter,
+    out_backprop,
+    strides,
+    padding,
+    data_format='NHWC',
+    dilations=[1, 1, 1, 1],
+    name=None
+)
