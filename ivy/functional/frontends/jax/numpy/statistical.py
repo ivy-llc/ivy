@@ -8,6 +8,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
+import warnings
 
 @to_ivy_arrays_and_back
 def einsum(
@@ -510,5 +511,22 @@ def quantile(
             a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
         )
     return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+
+@to_ivy_arrays_and_back
+def nanquantile(
+    a,
+    q,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method='linear',
+    keepdims=False,
+    interpolation=None):
+    if interpolation:
+        warnings.warn('interpolation is deprecated name for the method keyword argument since version 1.22.0 in JAX') 
+        method=interpolation   
+    return ivy.nanquantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
