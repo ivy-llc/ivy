@@ -225,7 +225,23 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
+def flatten(input, order="C", *, start_dim=1, end_dim=-1):
+    return ivy.flatten(input, order=order, start_dim=start_dim, end_dim=end_dim)
+
+
+@with_supported_dtypes(
+    {"2.0.0 and below": ("float16", "float32", "float64")},
+    "mindspore",
+)
+@to_ivy_arrays_and_back
+def fast_gelu(input_x):
+    return (input_x / (1 + ivy.exp(-1.702 * ivy.abs(input_x)))) * ivy.exp(
+        0.851 * (input_x - ivy.abs(input_x))
+    )
+
+
 @with_supported_dtypes({"2.0.1 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
 def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
     gumbels = -ivy.empty_like(logits).exponential().log()
     gumbels = (logits + gumbels) / tau
