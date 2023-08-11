@@ -2884,6 +2884,32 @@ def test_tensorflow_atanh(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.math.rint",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_rint(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        x=x[0],
+    )
+
+
 # bincount
 @handle_frontend_test(
     fn_tree="tensorflow.math.bincount",
@@ -2921,6 +2947,38 @@ def test_tensorflow_bincount(
         arr=x[0],
         weights=None,
         minlength=0,
+    )
+
+
+# xdivy
+@handle_frontend_test(
+    fn_tree="tensorflow.math.xdivy",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_xdivy(
+    *,
+    dtype_and_x,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs[0],
+        y=xs[1],
     )
 
 
@@ -3028,4 +3086,88 @@ def test_tensorflow_l2_normalize(
         backend_to_test=backend_fw,
         x=x[0],
         axis=axis,
+    )
+
+
+# cumsum
+@handle_frontend_test(
+    fn_tree="tensorflow.math.cumsum",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cumsum(  # NOQA
+    *,
+    dtype_x_axis,
+    exclusive,
+    reverse,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
+    )
+
+
+# cumprod
+@handle_frontend_test(
+    fn_tree="tensorflow.math.cumprod",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+        min_value=-5,
+        max_value=5,
+    ),
+    exclusive=st.booleans(),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_cumprod(  # NOQA
+    *,
+    dtype_x_axis,
+    exclusive,
+    reverse,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        axis=axis,
+        exclusive=exclusive,
+        reverse=reverse,
     )
