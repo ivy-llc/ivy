@@ -1376,19 +1376,18 @@ class Tensor:
     def prod(self, dim=None, keepdim=False, *, dtype=None):
         return torch_frontend.prod(self, dim=dim, keepdim=keepdim, dtype=dtype)
 
-    def div(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
-
-    def div_(self, other, *, rounding_mode=None):
-        self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
-        return self
-
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("bool", "bfloat16", "complex", "float16")},
         "torch",
     )
-    def divide(self, other, *, rounding_mode=None):
-        return torch_frontend.divide(self, other, rounding_mode=rounding_mode)
+    def div(self, other, *, rounding_mode=None):
+        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    divide = div
+
+    def div_(self, other, *, rounding_mode=None):
+        self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
+        return self
 
     def normal_(self, mean=0, std=1, *, generator=None):
         self.ivy_array = ivy.random_normal(

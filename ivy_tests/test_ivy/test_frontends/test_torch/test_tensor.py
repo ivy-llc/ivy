@@ -8976,6 +8976,8 @@ def test_torch_divide(
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
 
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={"data": x[0]},
@@ -8989,6 +8991,7 @@ def test_torch_divide(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+        atol_=1,
         backend_to_test=backend_fw,
     )
 
