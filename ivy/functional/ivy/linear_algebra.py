@@ -1143,13 +1143,13 @@ def matrix_norm(
         | -inf             | min(sum(abs(x), axis=1))        |
         +------------------+---------------------------------+
 
-        If ``ord=1``, the norm corresponds to the induced matrix norm where 
+        If ``ord=1``, the norm corresponds to the induced matrix norm where
         ``p=1`` (i.e., the maximum absolute value column sum).
 
-        If ``ord=2``, the norm corresponds to the induced matrix norm where 
+        If ``ord=2``, the norm corresponds to the induced matrix norm where
         ``p=inf`` (i.e., the maximum absolute value row sum).
 
-        If ``ord=inf``, the norm corresponds to the induced matrix norm where 
+        If ``ord=inf``, the norm corresponds to the induced matrix norm where
         ``p=2`` (i.e., the largest singular value).
 
         Default: "fro".
@@ -1188,7 +1188,7 @@ def matrix_norm(
     Examples
     --------
     With :class:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1232,7 +1232,7 @@ def matrix_norm(
     }
 
     With multiple :class:`ivy:Container` inputs:
-    
+
     >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)),
     ...                   b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
     >>> ord = ivy.Container(a=1, b=float('inf'))
@@ -1242,7 +1242,7 @@ def matrix_norm(
     >>> print(y)
     {
         a: ivy.array([4., 12., 20.]),
-        b: ivy.array([[[4.]], 
+        b: ivy.array([[[4.]],
                       [[12.]]])
     }
     """
