@@ -44,6 +44,7 @@ from ivy.data_classes.container.experimental import (
     _ContainerWithSortingExperimental,
     _ContainerWithStatisticalExperimental,
     _ContainerWithUtilityExperimental,
+    _ContainerWithLossesExperimental,
 )
 
 
@@ -87,6 +88,7 @@ class Container(
     _ContainerWithSortingExperimental,
     _ContainerWithStatisticalExperimental,
     _ContainerWithUtilityExperimental,
+    _ContainerWithLossesExperimental,
 ):
     def __init__(
         self,
