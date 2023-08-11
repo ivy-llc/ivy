@@ -37,10 +37,12 @@ def test_paddle_to_tensor(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
+        max_value=1,
         min_num_dims=3,
         max_num_dims=3,
         min_dim_size=3,
         max_dim_size=3,
+        small_abs_safety_factor=1,
     ),
     hue_factor=helpers.floats(min_value=-0.5, max_value=0.5),
 )
