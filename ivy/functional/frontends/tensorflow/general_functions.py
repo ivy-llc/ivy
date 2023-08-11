@@ -138,6 +138,11 @@ def constant(value, dtype=None, shape=None, name=None):
 
 
 @handle_tf_dtype
+def constant_initializer(value):
+    return EagerTensor(value)
+
+
+@handle_tf_dtype
 def convert_to_tensor(value, dtype=None, dtype_hint=None, name=None):
     if dtype:
         return tf_frontend.cast(value, dtype)
