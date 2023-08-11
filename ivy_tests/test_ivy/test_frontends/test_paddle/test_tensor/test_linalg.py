@@ -825,7 +825,7 @@ def test_paddle_qr(
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
+        x=x[0],
         mode=mode,
     )
 
