@@ -96,3 +96,25 @@ def indices(dimensions, dtype=int, sparse=False):
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+def take(a, indices, axis=None, out=None, mode=None, unique_indices=False, indices_are_sorted=False, fill_value=None):
+    if axis is not None:
+        a = ivy.swapaxes(a, axis, 0)
+    if out is None:
+        out = ivy.empty_like(indices)
+    for index, value in ivy.ndenumerate(indices):
+        if value < 0 or value >= a.shape[0]:
+            if fill_value is not None:
+                out[index] = fill_value
+            else:
+                raise IndexError('index out of bounds')
+                
+        if mode == 'raise' and (value < 0 or value >= a.shape[0]):
+            raise IndexError('index out of bounds')
+        elif mode == 'wrap':
+            value = value % a.shape[0]
+        elif mode == 'clip':
+            value = max(0, min(value, a.shape[0] - 1))
+        out[index] = a[value]
+
+    return out

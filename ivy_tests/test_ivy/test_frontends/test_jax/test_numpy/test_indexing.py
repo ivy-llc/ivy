@@ -459,3 +459,11 @@ def test_jax_numpy_indices(
         dtype=dtype[0],
         sparse=sparse,
     )
+
+# take
+@handle_frontend_test(
+    fn_tree="jax.numpy.take",
+)
+def test_jax_take():
+    # Votre code ici pour tester la fonction take
+    pass
