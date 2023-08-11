@@ -9859,7 +9859,7 @@ def test_torch_rsqrt(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_tensor_rsqrt_(
+def test_torch_rsqrt_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
