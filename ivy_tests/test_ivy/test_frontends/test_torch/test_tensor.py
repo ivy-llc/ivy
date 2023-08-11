@@ -9676,6 +9676,8 @@ def test_torch_instance_diag(
         indices_same_dims=True,
     ),
 )
+
+
 def test_torch_instance_gather(
     params_indices_others,
     frontend,
@@ -10013,4 +10015,32 @@ def test_torch_instance_tile(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
         on_device=on_device,
+    )
+
+@handle_frontend_test(
+    fn_tree="torch.resolve_neg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(),
+    ),
+)
+
+
+def test_torch_tensor_property_resolve_neg(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )

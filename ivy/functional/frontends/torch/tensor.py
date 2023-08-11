@@ -1511,3 +1511,25 @@ class Size(tuple):
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+
+@to_ivy_arrays_and_back
+def resolve_neg(input):
+    if ivy.is_complex_dtype(input) is not torch.Tensor:
+        raise ivy.exceptions.IvyError("tensor must be a torch.Tensor")
+
+    output = tensor.clone()
+    output.neg = False
+    return output
+
+if __name__ == "__main__":
+    x = torch.resolve_neg(input)
+    y = x.conj()
+    z = y.imag
+
+    print(z.is_neg())
+
+    out = resolve_neg(z)
+
+    print(out.is_neg())
+
