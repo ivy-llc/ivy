@@ -36,14 +36,13 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 
-# hann_window
+#hamming_window
 @to_ivy_arrays_and_back
-def hann_window(window_length, periodic=True, dtype=ivy.float32, name=None):
-    if window_length % 2 == 1 and periodic and window_length != 1:
-        ret = ivy.hann_window(window_length - 1, periodic=True, dtype=dtype, out=name)
-        append = ivy.array([0.0])
-        return ivy.concat([ret, append])
-    return ivy.hann_window(window_length, periodic=periodic, dtype=dtype, out=name)
+def hamming_window(window_length,periodic=True, dtype=ivy.float32,name=None):
+    if window_length%2 == 1 and periodic and window_length != 1:
+        ret= ivy.hamming_window(window_length-1,periodic=True,dtype=dtype,out=name)
+        append = ivy.array([ret[0]])
+        return ivy.concat([ret,append])
+    return ivy.hamming_window(window_length,periodic=periodic,dtype=dtype,out=None)
 
-
-hann_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
+hamming_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
