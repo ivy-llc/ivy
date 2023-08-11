@@ -2994,7 +2994,7 @@ def test_jax_cbrt(
 @handle_frontend_test(
     fn_tree="jax.lax.igamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=["float32", "float64"],
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=True,
         abs_smallest_val=1e-5,
@@ -3002,13 +3002,13 @@ def test_jax_cbrt(
         max_num_dims=2,
         min_dim_size=3,
         max_dim_size=3,
-        min_value=2,
+        min_value=0,
         max_value=100,
         allow_nan=False,
     ),
     test_with_out=st.just(False),
 )
-def test_jax_lax__igamma(
+def test_jax_lax_igamma(
     *,
     dtype_and_x,
     on_device,
