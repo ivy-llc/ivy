@@ -234,7 +234,8 @@ class _ArrayWithLayers(abc.ABC):
         >>> x = ivy.array([[1, 1, 1], [2, 2, 2]])
         >>> y = x.dropout2d(0.5)
         >>> print(y)
-        ivy.array([[2., 0., 2.], [0., 0., 4.]])
+        ivy.array([[0., 0., 2.],
+               [4., 4., 4.]])
         """
         return ivy.dropout2d(
             self._data,
@@ -287,12 +288,15 @@ class _ArrayWithLayers(abc.ABC):
 
     def scaled_dot_product_attention(
         self: ivy.Array,
-        k: Union[ivy.Array, ivy.NativeArray],
-        v: Union[ivy.Array, ivy.NativeArray],
-        scale: float,
+        key: Union[ivy.Array, ivy.NativeArray],
+        value: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        scale: Optional[float] = None,
         mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        dropout_p: Optional[float] = 0.0,
+        is_causal: Optional[bool] = False,
+        training: Optional[bool] = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -307,11 +311,11 @@ class _ArrayWithLayers(abc.ABC):
             The queries input array. The shape of queries input array should be in
             *[batch_shape,num_queries,feat_dim]*. The queries input array should
             have the same size as keys and values.
-        k
+        key
             The keys input array. The shape of keys input array should be in
             *[batch_shape,num_keys,feat_dim]*. The keys input array should have
             the same size as queries and values.
-        v
+        value
             The values input array. The shape of values input should be in
             *[batch_shape,num_keys,feat_dim]*. The values input array should
             have the same size as queries and keys.
@@ -322,6 +326,12 @@ class _ArrayWithLayers(abc.ABC):
             The mask input array. The mask to apply to the query-key values.
             Default is None. The shape of mask input should be in
             *[batch_shape,num_queries,num_keys]*.
+        dropout_p
+            Specifies the dropout probablity, if greater than 0.0, dropout is applied
+        is_causal
+            If true, assumes causal attention masking and errors if both `mask` and `is_causal` are set.
+        training
+            If True, dropout is used, otherwise dropout is not activated.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -338,29 +348,40 @@ class _ArrayWithLayers(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-        >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
-        >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
-        >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
-        >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
-        >>> result = q.scaled_dot_product_attention(k, v, 1, mask=mask)
+        >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
+        >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
+        >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
         >>> print(result)
-        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+
+        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
+
+        >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
+        >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
+        >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
+        >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0],[0.0, 0.0, 0.0]]])
+        >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1, mask=mask)
+        >>> print(result)
+        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
 
         >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
         >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
         >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
-        >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
         >>> out = ivy.zeros(shape=(1, 3, 2))
-        >>> q.scaled_dot_product_attention(k, v, 1, mask=mask, out=out)
+        >>> ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True,out=out)
         >>> print(out)
-        ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
+
+        ivy.array([[[0.40000001, 1.29999995],[2.19994521, 3.09994531],[4.30000019, 5.30000019]]])
         """
         return ivy.scaled_dot_product_attention(
             self._data,
-            k,
-            v,
-            scale,
+            key,
+            value,
+            scale=scale,
             mask=mask,
+            dropout_p=dropout_p,
+            is_causal=is_causal,
+            training=training,
             out=out,
         )
 
