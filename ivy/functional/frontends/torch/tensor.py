@@ -1599,7 +1599,7 @@ class Tensor:
 
     def scatter_reduce_(self, dim, index, src, reduce=None):
         self.ivy_array = ivy.put_along_axis(
-            self, index, src, dim, reduce=reduce
+            self, index, src, dim, mode=reduce
         ).ivy_array
         return self
 
