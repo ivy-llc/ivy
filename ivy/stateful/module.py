@@ -444,7 +444,7 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
-    def _set_buffers(self, buffers, override=False, nesting=None):
+    def _set_buffers(self, buffers):
         """
         Set the buffers of the given class instance, according to the buffers passed.
 
@@ -461,24 +461,15 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 # check if this value is another nested dictionary, if yes
                 # we recurse
                 if isinstance(buffers[buffer], dict):
-                    getattr(self, buffer)._set_buffers(
-                        buffers=buffers[buffer], override=override
-                    )
+                    getattr(self, buffer)._set_buffers(buffers=buffers[buffer])
                 else:
                     setattr(self, buffer, buffers[buffer])
-            elif not override or (override and isinstance(buffers[buffer], dict)):
-                # do a quick check to see if this is nested case
-                # we can't set buffers for module objects not yet
-                # created, even if override=True
-                raise ivy.exceptions.IvyNotImplementedException(
-                    f"{buffer} hasn't been defined for the given Module structure"
-                )
             else:
-                setattr(self, buffer, buffers[buffer])
                 if hasattr(self, "buffers"):
-                    self.buffers.update({buffer})
+                    self.buffers.update({buffer: buffers[buffer]})
                 else:
-                    setattr(self, "buffers", {buffer})
+                    setattr(self, "buffers", {buffer: buffers[buffer]})
+                setattr(self, buffer, buffers[buffer])
 
     # Overridable #
 
@@ -580,7 +571,8 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 dtype=_get_first_array(*args, **kwargs).dtype,
             )
         if buffers:
-            buffers_orig = self._get_buffers()
+            buffers_orig = self.buffers.copy()
+            self.buffers = {}
             self._set_buffers(buffers)
         if v is not None:
             v_orig = self.v
@@ -592,8 +584,10 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
             ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             if buffers:
+                self.buffers = {}
                 self._set_buffers(buffers_orig)
             return ret
+
         elif hasattr(self.__call__, "wrapped"):
             return self.__call__(*args, **kwargs)
         return self._forward_with_tracking(*args, **kwargs)
@@ -828,24 +822,9 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
 
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
-    def get_buffers(self):
-        """Return the buffers with values, if any, of the given Module class
-        instance.
-        """
-        if self.buffers:
-            buffer_dict = {}
-            for buffer in self.buffers:
-                buffer_dict[buffer] = (
-                    getattr(self, buffer)
-                    if not isinstance(getattr(self, buffer), ivy.Module)
-                    else getattr(self, buffer).get_buffers()
-                )
-            return buffer_dict
-        return {}
-
     def register_buffer(self, var_name, value):
         """Set the buffer at any place within the class."""
-        self._set_buffers({var_name: value}, override=True)
+        self._set_buffers({var_name: value})
 
     def __repr__(self):
         return object.__repr__(self)
@@ -894,8 +873,26 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
                 self._build_and_return_v(
                     self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
                 )
-
+        if name == "buffers":
+            return super().__getattribute__(name)
+        elif hasattr(self, "buffers"):
+            if name in self.buffers:
+                return self.buffers[name]
         return super().__getattribute__(name)
+
+    def __setattr__(self, name, value):
+        if hasattr(self, "buffers"):
+            if name in self.buffers:
+                self.buffers[name] = value
+                return
+
+        return super().__setattr__(name, value)
+
+    def __delattr__(self, name):
+        if name in self.buffers:
+            del self.buffers
+        else:
+            super().__delattr__(name)
 
     def compile(
         self,

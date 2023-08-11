@@ -1088,4 +1088,4 @@ def test_get_buffers(buffer):
         for key in item:
             module.register_buffer(key, item[key])
 
-    assert module.get_buffers() == buffers
+    assert module.buffers == buffers
