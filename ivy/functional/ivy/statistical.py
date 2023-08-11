@@ -507,7 +507,6 @@ def prod(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
-
 def std(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
