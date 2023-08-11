@@ -6,7 +6,10 @@ import paddle
 from typing import Optional, Union
 import time
 import ivy
-from ivy.functional.ivy.device import Profiler as BaseProfiler
+from ivy.functional.ivy.device import (
+    _shift_native_arrays_on_default_device,
+    Profiler as BaseProfiler,
+)
 from paddle.device import core
 
 
@@ -95,14 +98,15 @@ def tpu_is_available() -> bool:
     return False
 
 
-def handle_soft_device_variable(*args, fn, dst_dev=None, **kwargs):
-    args, kwargs, dst_dev = ivy.shift_native_arrays_on_def_dev(
-        *args, dst_dev=dst_dev, **kwargs
+def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
+    args, kwargs, device_shifting_dev = _shift_native_arrays_on_default_device(
+        *args, device_shifting_dev=device_shifting_dev, **kwargs
     )
-    # since there is no context manager for device in Paddle, we need to manually set the device
+    # since there is no context manager for device in Paddle,
+    # we need to manually set the device
     # then set it back to prev default device after the function call
     prev_def_dev = paddle.get_device()
-    paddle.device.set_device(ivy.as_ivy_dev(dst_dev))
+    paddle.device.set_device(ivy.as_ivy_dev(device_shifting_dev))
     ret = fn(*args, **kwargs)
     paddle.device.set_device(ivy.as_ivy_dev(prev_def_dev))
     return ret

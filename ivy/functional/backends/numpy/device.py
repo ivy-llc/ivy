@@ -85,7 +85,7 @@ def to_device(
     return x
 
 
-def handle_soft_device_variable(*args, fn, dst_dev=None, **kwargs):
+def handle_soft_device_variable(*args, fn, device_shifting_dev=None, **kwargs):
     return fn(*args, **kwargs)
 
 
