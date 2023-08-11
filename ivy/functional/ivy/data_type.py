@@ -437,8 +437,8 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
-@to_native_arrays_and_back
 @inputs_to_native_shapes
+@to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
 def broadcast_to(
