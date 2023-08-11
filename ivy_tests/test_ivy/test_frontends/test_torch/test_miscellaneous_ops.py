@@ -1578,6 +1578,52 @@ def test_torch_view_as_real(
     )
 
 
+
+@st.composite
+def complex_strategy(
+    draw, min_num_dims=0, max_num_dims=5, min_dim_size=1, max_dim_size=10
+):
+    shape = draw(
+        st.lists(
+            helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+            min_size=min_num_dims,
+            max_size=max_num_dims,
+        )
+    )
+    shape = list(shape)
+    shape.append(2)
+    return tuple(shape)
+
+
+# view_as_complex
+@handle_frontend_test(
+    fn_tree="torch.view_as_complex",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(complex_strategy()),
+    ),
+)
+def test_torch_view_as_complex(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
+
+
 # corrcoef
 @handle_frontend_test(
     fn_tree="torch.corrcoef",

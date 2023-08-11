@@ -599,7 +599,6 @@ def top_k(
         a: ivy.array([1, 0]),
         b: ivy.array([1, 0])
     }]
-
     """
     return current_backend(x).top_k(
         x, k, axis=axis, largest=largest, sorted=sorted, out=out
@@ -1827,8 +1826,8 @@ def _check_bounds(shape0, shape1, strides1, itemsize):
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
-@inputs_to_native_shapes
 @inputs_to_ivy_arrays
+@inputs_to_native_shapes
 def as_strided(
     x: Union[ivy.Array, ivy.NativeArray],
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
