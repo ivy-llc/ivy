@@ -180,7 +180,7 @@ def test_tensorflow_vorbis_window(
 
 # hann_window
 @handle_frontend_test(
-    fn_tree="tensorflow.signal.hann_window",
+    fn_tree="tensorflow.signal.hamming_window",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=["int32", "int64"],
         max_num_dims=0,
@@ -191,7 +191,7 @@ def test_tensorflow_vorbis_window(
     # dtype=helpers.get_dtypes("float", full=False),
     test_with_out=st.just(False),
 )
-def test_tensorflow_hann_window(
+def test_tensorflow_hamming_window(
     *,
     dtype_and_x,
     test_flags,
