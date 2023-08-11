@@ -399,7 +399,7 @@ def vector_norm(
         ).astype(abs_x.dtype)
 
         if keepdims and x.ndim == 0:
-            res = res.reshape(x.shape)
+            res = np.squeeze(res)
 
         return res
 
