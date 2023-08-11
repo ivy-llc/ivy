@@ -72,7 +72,7 @@ Essentially, when the user calls :code:`ivy.set_backend(<backend>, dynamic=True)
 
 #. First, all live objects in the current project scope are found and then filtered to only include :class:`ivy.Array`/:class:`ivy.Container` objects.
 #. Then, these objects are iterated through and `converted to numpy`_ as an intermediary using the current backend.
-#. Next, the global ivy.__dict__ is updated to the new backend as mentioned in the Backend Setting section above.
+#. Next, the global :code:`ivy.__dict__` is updated to the new backend as mentioned in the Backend Setting section above.
 #. Finally, the objects are `converted from numpy`_ to the target backend using the newly set backend.
 
 By default, the dynamic backend attribute is set to True when you create an ivy array (e.g., :code:`x = ivy.array([1,2,3])`), but the attribute is mutable and can be changed after the ivy array is created (e.g., :code:`x.dynamic_backend= True`). 
