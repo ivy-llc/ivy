@@ -180,9 +180,12 @@ def rayleigh(scale, size=None):
 @to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_scalar
 def permuted(x, axes=None, out=None):#, copy=None):
-result = ivy.matrix_transpose(x, axes)
-out = result
-return ivy.permute_dims(x, axes, copy = None, out) #copy is kept at default
+    if out == None:
+        result = ivy.matrix_transpose(x, axes)
+        return ivy.permute_dims(x, axes, copy = None, out = result) #copy is kept at default
+    #when out is not None, store and return 
+    result = ivy.permute_dims(x, axes, copy = None, out = result)
+    return result
 
 
 @to_ivy_arrays_and_back
