@@ -91,6 +91,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
@@ -412,6 +413,7 @@ def cov(input, /, *, correction=1, fweights=None, aweights=None):
     return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
 
 
+
 @to_ivy_arrays_and_back
 def resolve_neg(input):
     if ivy.is_array(input):
@@ -424,3 +426,26 @@ def resolve_neg(input):
         if ivy.any(neg_bit):
             return input
     return input
+@with_supported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def view_as_real(input):
+    if not ivy.is_complex_dtype(input):
+        raise ivy.exceptions.IvyError(
+            "view_as_real is only supported for complex tensors"
+        )
+    re_part = ivy.real(input)
+    im_part = ivy.imag(input)
+    return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)

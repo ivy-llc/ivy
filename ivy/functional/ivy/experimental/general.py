@@ -88,6 +88,7 @@ def reduce(
 
 reduce.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",

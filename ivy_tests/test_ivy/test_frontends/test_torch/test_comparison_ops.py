@@ -25,10 +25,12 @@ def test_torch_allclose(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -58,10 +60,12 @@ def test_torch_equal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -88,10 +92,12 @@ def test_torch_eq(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     inputs_dtypes, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=inputs_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -123,10 +129,12 @@ def test_torch_argsort(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -155,10 +163,12 @@ def test_torch_greater_equal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -186,10 +196,12 @@ def test_torch_greater(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -217,10 +229,12 @@ def test_torch_isclose(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -249,10 +263,12 @@ def test_torch_isfinite(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -277,10 +293,42 @@ def test_torch_isinf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+    )
+
+
+# isreal
+@handle_frontend_test(
+    fn_tree="torch.isreal",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_value=-np.inf,
+        max_value=np.inf,
+    ),
+)
+def test_torch_isreal(
+    *,
+    dtype_and_input,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -305,10 +353,12 @@ def test_torch_isposinf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -333,10 +383,12 @@ def test_torch_isneginf(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -367,10 +419,12 @@ def test_torch_sort(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input, axis = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -398,10 +452,12 @@ def test_torch_isnan(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -427,10 +483,12 @@ def test_torch_less_equal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -457,10 +515,12 @@ def test_torch_less(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -487,10 +547,12 @@ def test_torch_not_equal(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -519,10 +581,12 @@ def test_torch_isin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -549,10 +613,12 @@ def test_torch_minimum(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -580,10 +646,12 @@ def test_torch_fmax(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -611,10 +679,12 @@ def test_torch_fmin(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -640,10 +710,12 @@ def test_torch_msort(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -668,10 +740,12 @@ def test_torch_maximum(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, inputs = dtype_and_inputs
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -702,11 +776,13 @@ def test_torch_kthvalue(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, input, dim = dtype_input_axis
     assume(k <= input[0].shape[dim])
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -748,10 +824,12 @@ def test_torch_topk(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
 ):
     input_dtype, input, axis, k = dtype_x_axis_k
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,

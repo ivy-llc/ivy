@@ -25,3 +25,4 @@ pandas
 pyspark
 autoflake # for backend generation
 snakeviz # for profiling
+cryptography

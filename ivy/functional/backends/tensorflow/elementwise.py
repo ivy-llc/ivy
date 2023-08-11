@@ -263,7 +263,7 @@ def exp2(
     return tf.math.pow(2, x, name=None)
 
 
-@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, "tensorflow")
+@with_supported_dtypes({"2.13.0 and below": ("float", "complex")}, backend_version)
 def expm1(
     x: Union[tf.Tensor, tf.Variable],
     /,

@@ -83,7 +83,7 @@ jobs:
         run: |
           cd ivy
           set -o pipefail
-          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
+          python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'false' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }} | tee test_results_${{ matrix.branch }}.txt
         continue-on-error: true
 
       - name: Upload test results
