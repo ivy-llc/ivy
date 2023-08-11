@@ -1315,15 +1315,12 @@ def x_and_deform_conv2d(draw):
     )
 
     min_height_out = (
-        (min_height_in + 2 * padding[0] - (dilations[0] * (kernel_height - 1) + 1))
-        // strides[0]
-        + 1
-    )
+        min_height_in + 2 * padding[0] - (dilations[0] * (kernel_height - 1) + 1)
+    ) // strides[0] + 1
+
     min_width_out = (
-        (min_width_in + 2 * padding[1] - (dilations[1] * (kernel_width - 1) + 1))
-        // strides[1]
-        + 1
-    )
+        min_width_in + 2 * padding[1] - (dilations[1] * (kernel_width - 1) + 1)
+    ) // strides[1] + 1
     height_out = draw(st.integers(min_height_out, min_height_out + 1))
     width_out = draw(st.integers(min_width_out, min_width_out + 1))
 
@@ -1339,7 +1336,12 @@ def x_and_deform_conv2d(draw):
     offset = draw(
         helpers.array_values(
             dtype,
-            (batch_size, 2 * offset_groups * kernel_height * kernel_width, height_out, width_out),
+            (
+                batch_size,
+                2 * offset_groups * kernel_height * kernel_width,
+                height_out,
+                width_out,
+            ),
             min_value=0.0,
             max_value=1.0,
         )
@@ -1366,7 +1368,12 @@ def x_and_deform_conv2d(draw):
     mask = draw(
         helpers.array_values(
             dtype,
-            (batch_size, offset_groups * kernel_height * kernel_width, height_out, width_out),
+            (
+                batch_size,
+                offset_groups * kernel_height * kernel_width,
+                height_out,
+                width_out,
+            ),
             min_value=0.0,
             max_value=1.0,
         )

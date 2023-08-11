@@ -2875,10 +2875,10 @@ def deform_conv2d(
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """
-    Performs Deformable Convolution v2, if mask is not None,
-    and Performs Deformable Convolution, if mask is None.
-    Deformable convolution, as described in https://arxiv.org/abs/1703.06211.
-    Deformable convolution v2, as described in https://arxiv.org/abs/1811.11168.
+    Performs Deformable Convolution v2, if mask is not None, and Performs Deformable
+    Convolution, if mask is None. Deformable convolution, as described in
+    https://arxiv.org/abs/1703.06211. Deformable convolution v2, as described in
+    https://arxiv.org/abs/1811.11168.
 
     Parameters
     ----------
@@ -2915,7 +2915,7 @@ def deform_conv2d(
     >>> weight = ivy.random.random_normal(shape=(5, 3, 3, 3))
     >>> mask = ivy.random.random_normal(shape=(4, 3 * 3, 8, 8))
     >>> result = ivy.deform_conv2d(x, offset, weight)
-    >>> print(out.shape)
+    >>> print(result.shape)
     (4, 5, 8, 8)
     """
     return ivy.current_backend().deform_conv2d(
@@ -2926,5 +2926,5 @@ def deform_conv2d(
         stride=stride,
         padding=padding,
         dilation=dilation,
-        mask=mask
+        mask=mask,
     )
