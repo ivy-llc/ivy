@@ -29,6 +29,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
     _get_dtype_input_and_matrices,
+    _get_dtype_input_and_mat_vec,
 )
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
@@ -42,7 +43,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_miscellaneous_ops import 
     dtype_value1_value2_axis,
 )
 from ivy_tests.test_ivy.test_frontends.test_torch.test_linalg import (  # noqa
-    _get_dtype_and_square_matrix,
+    _get_dtype_and_matrix,
 )
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _get_castable_dtype,
@@ -81,18 +82,20 @@ def _requires_grad(draw):
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_ivy_array(
+def test_torch_tensor_ivy_array(
     dtype_x,
+    backend_fw,
 ):
     _, data = dtype_x
+    ivy.set_backend(backend_fw)
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
-    ret_gt = helpers.flatten_and_to_np(ret=data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data, backend=backend_fw)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0], backend=backend_fw)
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="torch",
+        backend="torch",
     )
 
 
@@ -101,15 +104,18 @@ def test_torch_tensor_property_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_device(
+def test_torch_tensor_device(
     dtype_x,
+    backend_fw,
 ):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(
         x.device, ivy.dev(ivy.array(data[0])), as_array=False
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -117,13 +123,13 @@ def test_torch_tensor_property_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_dtype(
-    dtype_x,
-):
+def test_torch_tensor_dtype(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.dtype, dtype[0], as_array=False)
+    ivy.previous_backend()
 
 
 @given(
@@ -132,12 +138,14 @@ def test_torch_tensor_property_dtype(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_shape(dtype_x):
+def test_torch_tensor_shape(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(
         x.ivy_array.shape, ivy.Shape(shape), as_array=False
     )
+    ivy.previous_backend()
 
 
 @given(
@@ -145,13 +153,13 @@ def test_torch_tensor_property_shape(dtype_x):
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_real(
-    dtype_x,
-):
+def test_torch_tensor_real(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.real, ivy.real(data[0]))
+    ivy.previous_backend()
 
 
 @given(
@@ -159,13 +167,13 @@ def test_torch_tensor_property_real(
         available_dtypes=helpers.get_dtypes("complex", prune_function=False)
     ),
 )
-def test_torch_tensor_property_imag(
-    dtype_x,
-):
+def test_torch_tensor_imag(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
     ivy.utils.assertions.check_equal(x.imag, ivy.imag(data[0]))
+    ivy.previous_backend()
 
 
 @given(
@@ -174,12 +182,87 @@ def test_torch_tensor_property_imag(
         ret_shape=True,
     ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_ndim(
-    dtype_x,
-):
+def test_torch_tensor_ndim(dtype_x, backend_fw):
+    ivy.set_backend(backend_fw)
     dtype, data, shape = dtype_x
     x = Tensor(data[0])
     ivy.utils.assertions.check_equal(x.ndim, data[0].ndim, as_array=False)
+    ivy.previous_backend()
+
+
+def test_torch_tensor_grad(backend_fw):
+    ivy.set_backend(backend_fw)
+    x = Tensor(ivy.array([1.0, 2.0, 3.0]))
+    grads = ivy.array([1.0, 2.0, 3.0])
+    x._grads = grads
+    assert ivy.array_equal(x.grad, grads)
+    ivy.previous_backend()
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_requires_grad(dtype_x, requires_grad, backend_fw):
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0], requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.requires_grad, requires_grad, as_array=False)
+    x.requires_grad = not requires_grad
+    ivy.utils.assertions.check_equal(x.requires_grad, not requires_grad, as_array=False)
+    ivy.previous_backend()
+
+
+@given(
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor_is_leaf(requires_grad, backend_fw):
+    ivy.set_backend(backend_fw)
+    x = Tensor(ivy.array([3.0]), requires_grad=requires_grad)
+    ivy.utils.assertions.check_equal(x.is_leaf, True, as_array=False)
+    y = x.pow(2)
+    ivy.utils.assertions.check_equal(y.is_leaf, not requires_grad, as_array=False)
+    z = y.detach()
+    ivy.utils.assertions.check_equal(z.is_leaf, True, as_array=False)
+    ivy.previous_backend()
+
+
+def test_torch_tensor_grad_fn(backend_fw):
+    ivy.set_backend(backend_fw)
+    x = Tensor(ivy.array([3.0]), requires_grad=True)
+    ivy.utils.assertions.check_equal(x.grad_fn, None, as_array=False)
+    y = x.pow(2)
+    ivy.utils.assertions.check_equal(y.grad_fn, "PowBackward", as_array=False)
+    ivy.utils.assertions.check_equal(
+        y.grad_fn.next_functions[0], "AccumulateGrad", as_array=False
+    )
+    z = y.detach()
+    ivy.utils.assertions.check_equal(z.grad_fn, None, as_array=False)
+    ivy.previous_backend()
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False),
+    ),
+    requires_grad=st.booleans(),
+)
+def test_torch_tensor__requires_grad(
+    dtype_x,
+    requires_grad,
+    backend_fw,
+):
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0])
+    assert not x._requires_grad
+    x.requires_grad_()
+    assert x._requires_grad
+    x.requires_grad_(requires_grad)
+    assert x._requires_grad == requires_grad
+    ivy.previous_backend()
 
 
 # chunk
@@ -201,7 +284,7 @@ def test_torch_tensor_property_ndim(
         max_value=5,
     ),
 )
-def test_torch_instance_chunk(
+def test_torch_tensor_chunk(
     dtype_x_dim,
     chunks,
     frontend,
@@ -209,10 +292,12 @@ def test_torch_instance_chunk(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, dim = dtype_x_dim
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -244,7 +329,7 @@ def test_torch_instance_chunk(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_any(
+def test_torch_tensor_any(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -252,10 +337,12 @@ def test_torch_instance_any(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -287,7 +374,7 @@ def test_torch_instance_any(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_all(
+def test_torch_tensor_all(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -295,10 +382,12 @@ def test_torch_instance_all(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -329,7 +418,7 @@ def test_torch_instance_all(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_instance_add(
+def test_torch_tensor_add(
     dtype_and_x,
     alpha,
     frontend,
@@ -337,10 +426,12 @@ def test_torch_instance_add(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -379,7 +470,7 @@ def test_torch_instance_add(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addmm(
+def test_torch_tensor_addmm(
     dtype_and_matrices,
     beta,
     alpha,
@@ -388,10 +479,12 @@ def test_torch_instance_addmm(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -432,7 +525,7 @@ def test_torch_instance_addmm(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addmm_(
+def test_torch_tensor_addmm_(
     dtype_and_matrices,
     beta,
     alpha,
@@ -441,10 +534,12 @@ def test_torch_instance_addmm_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -452,6 +547,116 @@ def test_torch_instance_addmm_(
         method_all_as_kwargs_np={
             "mat1": mat1,
             "mat2": mat2,
+            "beta": beta,
+            "alpha": alpha,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+# addmv
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="addmv",
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_tensor_addmv(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, mat, vec = dtype_and_matrices
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "mat": mat,
+            "vec": vec,
+            "beta": beta,
+            "alpha": alpha,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        atol_=1e-02,
+        on_device=on_device,
+    )
+
+
+# addmv_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="addmv_",
+    dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_tensor_addmv_(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, mat, vec = dtype_and_matrices
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        method_all_as_kwargs_np={
+            "mat": mat,
+            "vec": vec,
             "beta": beta,
             "alpha": alpha,
         },
@@ -485,7 +690,7 @@ def test_torch_instance_addmm_(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addbmm(
+def test_torch_tensor_addbmm(
     dtype_and_matrices,
     beta,
     alpha,
@@ -494,10 +699,12 @@ def test_torch_instance_addbmm(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, batch1, batch2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -538,7 +745,7 @@ def test_torch_instance_addbmm(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addbmm_(
+def test_torch_tensor_addbmm_(
     dtype_and_matrices,
     beta,
     alpha,
@@ -547,10 +754,12 @@ def test_torch_instance_addbmm_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, batch1, batch2 = dtype_and_matrices
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -584,7 +793,7 @@ def test_torch_instance_addbmm_(
     ),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
-def test_torch_instance_sub(
+def test_torch_tensor_sub(
     dtype_and_x,
     alpha,
     frontend,
@@ -592,10 +801,12 @@ def test_torch_instance_sub(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -629,7 +840,7 @@ def test_torch_instance_sub(
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
 )
-def test_torch_instance_new_ones(
+def test_torch_tensor_new_ones(
     dtype_and_x,
     size,
     dtypes,
@@ -639,10 +850,12 @@ def test_torch_instance_new_ones(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -677,7 +890,7 @@ def test_torch_instance_new_ones(
     dtypes=_dtypes(),
     requires_grad=_requires_grad(),
 )
-def test_torch_instance_new_zeros(
+def test_torch_tensor_new_zeros(
     dtype_and_x,
     size,
     dtypes,
@@ -687,10 +900,12 @@ def test_torch_instance_new_zeros(
     init_flags,
     method_flags,
     frontend,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -722,7 +937,7 @@ def test_torch_instance_new_zeros(
     ),
     unpack_shape=st.booleans(),
 )
-def test_torch_instance_reshape(
+def test_torch_tensor_reshape(
     dtype_x,
     shape,
     unpack_shape,
@@ -731,6 +946,7 @@ def test_torch_instance_reshape(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     shape = {
@@ -744,6 +960,7 @@ def test_torch_instance_reshape(
             i += 1
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -766,17 +983,19 @@ def test_torch_instance_reshape(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
-def test_torch_instance_reshape_as(
+def test_torch_tensor_reshape_as(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -802,17 +1021,19 @@ def test_torch_instance_reshape_as(
         allow_inf=False,
     ),
 )
-def test_torch_instance_sin(
+def test_torch_tensor_sin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -836,17 +1057,19 @@ def test_torch_instance_sin(
         allow_inf=False,
     ),
 )
-def test_torch_instance_arcsin(
+def test_torch_tensor_arcsin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -871,7 +1094,7 @@ def test_torch_instance_arcsin(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_sum(
+def test_torch_tensor_sum(
     dtype_x_dim,
     keepdim,
     frontend_method_data,
@@ -879,6 +1102,7 @@ def test_torch_instance_sum(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, dim, castable_dtype = dtype_x_dim
     if method_flags.as_variable:
@@ -886,6 +1110,7 @@ def test_torch_instance_sum(
     input_dtype = [input_dtype]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -913,17 +1138,19 @@ def test_torch_instance_sum(
         allow_inf=False,
     ),
 )
-def test_torch_instance_atan(
+def test_torch_tensor_atan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -947,17 +1174,19 @@ def test_torch_instance_atan(
         num_arrays=2,
     ),
 )
-def test_torch_instance_atan2(
+def test_torch_tensor_atan2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -983,17 +1212,19 @@ def test_torch_instance_atan2(
         allow_inf=False,
     ),
 )
-def test_torch_instance_sin_(
+def test_torch_tensor_sin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1017,17 +1248,19 @@ def test_torch_instance_sin_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_cos(
+def test_torch_tensor_cos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1051,17 +1284,19 @@ def test_torch_instance_cos(
         allow_inf=False,
     ),
 )
-def test_torch_instance_cos_(
+def test_torch_tensor_cos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": list(x[0]) if type(x[0]) == int else x[0],
         },
@@ -1085,17 +1320,19 @@ def test_torch_instance_cos_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_sinh(
+def test_torch_tensor_sinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1119,17 +1356,19 @@ def test_torch_instance_sinh(
         allow_inf=False,
     ),
 )
-def test_torch_instance_sinh_(
+def test_torch_tensor_sinh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1153,17 +1392,19 @@ def test_torch_instance_sinh_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_cosh(
+def test_torch_tensor_cosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1187,17 +1428,19 @@ def test_torch_instance_cosh(
         allow_inf=False,
     ),
 )
-def test_torch_instance_cosh_(
+def test_torch_tensor_cosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1226,7 +1469,7 @@ def test_torch_instance_cosh_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape")
     ),
 )
-def test_torch_instance_view(
+def test_torch_tensor_view(
     dtype_x,
     shape,
     frontend_method_data,
@@ -1234,10 +1477,12 @@ def test_torch_instance_view(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1261,15 +1506,50 @@ def test_torch_instance_view(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_float(
+def test_torch_tensor_float(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="double",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_tensor_double(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    backend_fw,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_all_as_kwargs_np={
@@ -1281,6 +1561,7 @@ def test_torch_instance_float(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
 
@@ -1295,17 +1576,19 @@ def test_torch_instance_float(
         allow_inf=False,
     ),
 )
-def test_torch_instance_asinh(
+def test_torch_tensor_asinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1331,17 +1614,19 @@ def test_torch_instance_asinh(
         allow_inf=False,
     ),
 )
-def test_torch_instance_asinh_(
+def test_torch_tensor_asinh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1367,17 +1652,19 @@ def test_torch_instance_asinh_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_tan(
+def test_torch_tensor_tan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1401,17 +1688,19 @@ def test_torch_instance_tan(
         allow_inf=False,
     ),
 )
-def test_torch_instance_tanh(
+def test_torch_tensor_tanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1435,17 +1724,19 @@ def test_torch_instance_tanh(
         allow_inf=False,
     ),
 )
-def test_torch_instance_tanh_(
+def test_torch_tensor_tanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1469,17 +1760,19 @@ def test_torch_instance_tanh_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_asin(
+def test_torch_tensor_asin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1505,7 +1798,7 @@ def test_torch_instance_asin(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_amax(
+def test_torch_tensor_amax(
     dtype_x_axis,
     keepdim,
     frontend_method_data,
@@ -1513,10 +1806,12 @@ def test_torch_instance_amax(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1542,17 +1837,19 @@ def test_torch_instance_amax(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_abs(
+def test_torch_tensor_abs(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1575,17 +1872,19 @@ def test_torch_instance_abs(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_abs_(
+def test_torch_tensor_abs_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1611,7 +1910,7 @@ def test_torch_instance_abs_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_amin(
+def test_torch_tensor_amin(
     dtype_x_axis,
     keepdim,
     frontend_method_data,
@@ -1619,10 +1918,12 @@ def test_torch_instance_amin(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1648,17 +1949,19 @@ def test_torch_instance_amin(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_aminmax(
+def test_torch_tensor_aminmax(
     dtype_input_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1672,6 +1975,40 @@ def test_torch_instance_aminmax(
     )
 
 
+# bernoulli
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bernoulli",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+    test_with_out=st.just(True),
+)
+def test_torch_tensor_bernoulli(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "input": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"generator": x[1], "out": x[2]},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+    )
+
+
 # contiguous
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1682,17 +2019,19 @@ def test_torch_instance_aminmax(
         allow_inf=False,
     ),
 )
-def test_torch_instance_contiguous(
+def test_torch_tensor_contiguous(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1716,17 +2055,19 @@ def test_torch_instance_contiguous(
         allow_inf=False,
     ),
 )
-def test_torch_instance_log(
+def test_torch_tensor_log(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1750,17 +2091,19 @@ def test_torch_instance_log(
         allow_inf=False,
     ),
 )
-def test_torch_instance_log_(
+def test_torch_tensor_log_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1784,17 +2127,19 @@ def test_torch_instance_log_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_log2(
+def test_torch_tensor_log2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1819,17 +2164,19 @@ def test_torch_instance_log2(
         max_value=1e04,
     ),
 )
-def test_torch_special_bool(
+def test_torch___bool__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1856,17 +2203,19 @@ def test_torch_special_bool(
         allow_inf=False,
     ),
 )
-def test_torch_special_add(
+def test_torch___add__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1893,17 +2242,19 @@ def test_torch_special_add(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arcsinh(
+def test_torch_tensor_arcsinh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1929,17 +2280,19 @@ def test_torch_instance_arcsinh(
         allow_inf=False,
     ),
 )
-def test_torch_special_long(
+def test_torch___long__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -1966,17 +2319,19 @@ def test_torch_special_long(
         allow_inf=False,
     ),
 )
-def test_torch_special_radd(
+def test_torch___radd__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2005,17 +2360,19 @@ def test_torch_special_radd(
         allow_inf=False,
     ),
 )
-def test_torch_special_sub(
+def test_torch___sub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2044,17 +2401,19 @@ def test_torch_special_sub(
         allow_inf=False,
     ),
 )
-def test_torch_special_mul(
+def test_torch___mul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2087,17 +2446,19 @@ def _get_dtype_and_multiplicative_matrices(draw):
     method_name="__matmul__",
     dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
-def test_torch_special_matmul(
+def test_torch___matmul__(
     dtype_tensor1_tensor2,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, tensor1, tensor2 = dtype_tensor1_tensor2
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": tensor1,
         },
@@ -2121,17 +2482,19 @@ def test_torch_special_matmul(
         num_arrays=2,
     ),
 )
-def test_torch_special_rsub(
+def test_torch___rsub__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2160,17 +2523,19 @@ def test_torch_special_rsub(
         allow_inf=False,
     ),
 )
-def test_torch_special_rmul(
+def test_torch___rmul__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2200,17 +2565,19 @@ def test_torch_special_rmul(
         allow_inf=False,
     ),
 )
-def test_torch_special_truediv(
+def test_torch___truediv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2223,6 +2590,48 @@ def test_torch_special_truediv(
         method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__floordiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+)
+def test_torch___floordiv__(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        atol_=1,
     )
 
 
@@ -2239,17 +2648,19 @@ def test_torch_special_truediv(
         num_arrays=2,
     ),
 )
-def test_torch_remainder(
+def test_torch_tensor_remainder(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2298,18 +2709,20 @@ def _to_helper(draw):
     method_name="to",
     args_kwargs=_to_helper(),
 )
-def test_torch_instance_to(
+def test_torch_tensor_to(
     args_kwargs,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
     method_flags.num_positional_args = method_num_positional_args
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2333,17 +2746,19 @@ def test_torch_instance_to(
         allow_inf=False,
     ),
 )
-def test_torch_instance_arctan(
+def test_torch_tensor_arctan(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2367,17 +2782,19 @@ def test_torch_instance_arctan(
         allow_inf=False,
     ),
 )
-def test_torch_instance_arctan_(
+def test_torch_tensor_arctan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2401,17 +2818,19 @@ def test_torch_instance_arctan_(
         num_arrays=2,
     ),
 )
-def test_torch_instance_arctan2(
+def test_torch_tensor_arctan2(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2437,17 +2856,19 @@ def test_torch_instance_arctan2(
         num_arrays=2,
     ),
 )
-def test_torch_instance_arctan2_(
+def test_torch_tensor_arctan2_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2473,17 +2894,19 @@ def test_torch_instance_arctan2_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_acos(
+def test_torch_tensor_acos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2506,17 +2929,19 @@ def test_torch_instance_acos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_floor(
+def test_torch_tensor_floor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2540,17 +2965,19 @@ def test_torch_instance_floor(
         num_arrays=2,
     ),
 )
-def test_torch_instance_new_tensor(
+def test_torch_tensor_new_tensor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2572,24 +2999,26 @@ def test_torch_instance_new_tensor(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__getitem__",
-    dtype_x_index=helpers.dtype_array_index(
+    dtype_x_index=helpers.dtype_array_query(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
     ),
 )
-def test_torch_instance_getitem(
+def test_torch___getitem__(
     dtype_x_index,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, index = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
-        method_input_dtypes=[input_dtype[1]],
+        method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"query": index},
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -2599,44 +3028,29 @@ def test_torch_instance_getitem(
     )
 
 
-@st.composite
-def _setitem_helper(draw, available_dtypes, allow_neg_step=True):
-    input_dtype, x, index = draw(
-        helpers.dtype_array_index(
-            available_dtypes=available_dtypes,
-            allow_neg_step=allow_neg_step,
-        )
-    )
-    val_dtype, val = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=x[index].shape,
-        )
-    )
-    return input_dtype + val_dtype, x, index, val[0]
-
-
 # __setitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="__setitem__",
-    dtypes_x_index_val=_setitem_helper(
+    dtypes_x_index_val=helpers.dtype_array_query_val(
         available_dtypes=helpers.get_dtypes("valid"),
         allow_neg_step=False,
-    ),
+    ).filter(lambda x: x[0][0] == x[0][-1]),
 )
-def test_torch_instance_setitem(
+def test_torch___setitem__(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, index, val = dtypes_x_index_val
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=[*input_dtype[1:]],
         method_all_as_kwargs_np={"key": index, "value": val},
@@ -2659,17 +3073,19 @@ def test_torch_instance_setitem(
         num_arrays=2,
     ),
 )
-def test_torch_instance_view_as(
+def test_torch_tensor_view_as(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2700,7 +3116,7 @@ def test_torch_instance_view_as(
         force_int=True,
     ),
 )
-def test_torch_instance_unsqueeze(
+def test_torch_tensor_unsqueeze(
     dtype_value,
     dim,
     frontend_method_data,
@@ -2708,10 +3124,12 @@ def test_torch_instance_unsqueeze(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2742,7 +3160,7 @@ def test_torch_instance_unsqueeze(
         force_int=True,
     ),
 )
-def test_torch_instance_unsqueeze_(
+def test_torch_tensor_unsqueeze_(
     dtype_value,
     dim,
     frontend_method_data,
@@ -2750,10 +3168,12 @@ def test_torch_instance_unsqueeze_(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2779,17 +3199,19 @@ def test_torch_instance_unsqueeze_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_instance_ravel(
+def test_torch_tensor_ravel(
     dtype_value,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2821,7 +3243,7 @@ def test_torch_instance_ravel(
         key="target_axis",
     ),
 )
-def test_torch_instance_split(
+def test_torch_tensor_split(
     dtype_value,
     split_size,
     dim,
@@ -2830,10 +3252,12 @@ def test_torch_instance_split(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2871,7 +3295,7 @@ def test_torch_instance_split(
     ),
     method_num_positional_args=st.just(1),
 )
-def test_torch_instance_tensor_split(
+def test_torch_tensor_tensor_split(
     dtype_value,
     indices_or_sections,
     dim,
@@ -2880,10 +3304,12 @@ def test_torch_instance_tensor_split(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2917,7 +3343,7 @@ def test_torch_instance_tensor_split(
         is_mod_split=True,
     ),
 )
-def test_torch_instance_vsplit(
+def test_torch_tensor_vsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -2925,10 +3351,12 @@ def test_torch_instance_vsplit(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -2959,7 +3387,7 @@ def test_torch_instance_vsplit(
         is_mod_split=True,
     ),
 )
-def test_torch_instance_hsplit(
+def test_torch_tensor_hsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -2967,10 +3395,12 @@ def test_torch_instance_hsplit(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3001,7 +3431,7 @@ def test_torch_instance_hsplit(
         is_mod_split=True,
     ),
 )
-def test_torch_instance_dsplit(
+def test_torch_tensor_dsplit(
     dtype_value,
     indices_or_sections,
     frontend_method_data,
@@ -3009,10 +3439,12 @@ def test_torch_instance_dsplit(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3035,17 +3467,19 @@ def test_torch_instance_dsplit(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_detach(
+def test_torch_tensor_detach(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3068,17 +3502,19 @@ def test_torch_instance_detach(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_detach_(
+def test_torch_tensor_detach_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3101,17 +3537,19 @@ def test_torch_instance_detach_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_dim(
+def test_torch_tensor_dim(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3134,17 +3572,19 @@ def test_torch_instance_dim(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_ndimension(
+def test_torch_tensor_ndimension(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3209,17 +3649,19 @@ def _fill_value_and_size(
     method_name="new_full",
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
-def test_torch_instance_new_full(
+def test_torch_tensor_new_full(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3249,7 +3691,7 @@ def test_torch_instance_new_full(
         max_num_dims=3,
     ),
 )
-def test_torch_instance_new_empty(
+def test_torch_tensor_new_empty(
     dtype_and_x,
     size,
     frontend_method_data,
@@ -3257,10 +3699,12 @@ def test_torch_instance_new_empty(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -3305,7 +3749,7 @@ def _expand_helper(draw):
     dtype_x_shape=_expand_helper(),
     unpack_shape=st.booleans(),
 )
-def test_torch_instance_expand(
+def test_torch_tensor_expand(
     dtype_x_shape,
     unpack_shape,
     frontend_method_data,
@@ -3313,6 +3757,7 @@ def test_torch_instance_expand(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, shape = dtype_x_shape
     if unpack_shape:
@@ -3328,6 +3773,7 @@ def test_torch_instance_expand(
         }
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3350,17 +3796,19 @@ def test_torch_instance_expand(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
 )
-def test_torch_instance_expand_as(
+def test_torch_tensor_expand_as(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3414,18 +3862,20 @@ def _unfold_args(draw):
     method_name="unfold",
     dtype_values_args=_unfold_args(),
 )
-def test_torch_instance_unfold(
+def test_torch_tensor_unfold(
     dtype_values_args,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis, size, step = dtype_values_args
     print(axis, size, step)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -3453,17 +3903,19 @@ def test_torch_instance_unfold(
         num_arrays=2,
     ),
 )
-def test_torch_special_mod(
+def test_torch___mod__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3488,17 +3940,19 @@ def test_torch_special_mod(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_instance_long(
+def test_torch_tensor_long(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3521,17 +3975,19 @@ def test_torch_instance_long(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_max(
+def test_torch_tensor_max(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3545,90 +4001,61 @@ def test_torch_instance_max(
     )
 
 
-# is_quantized
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_quantized",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("qint8"),
-    ),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_quantized(
-    dtype_and_x,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    frontend,
-    on_device,
+def test_torch_tensor_is_quantized(
+    dtype_x,
+    backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_quantized, "q" in ivy.dtype(ivy.array(data[0])), as_array=False
     )
+    ivy.previous_backend()
 
 
-# is_cuda
-@handle_frontend_method(
-    class_tree=CLASS_TREE,
-    init_tree="torch.tensor",
-    method_name="is_cuda",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-    ),
-    size=helpers.get_shape(
-        allow_none=False,
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
-    ),
-    dtypes=_dtypes(),
-    requires_grad=_requires_grad(),
-    device=st.booleans(),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_instance_is_cuda(
-    dtype_and_x,
-    size,
-    dtypes,
-    requires_grad,
-    device,
-    frontend,
-    frontend_method_data,
-    init_flags,
-    method_flags,
-    on_device,
+def test_torch_tensor_is_cuda(
+    dtype_x,
+    backend_fw,
 ):
-    input_dtype, x = dtype_and_x
-    device = "cpu" if device is False else "gpu:0"
-    x = Tensor(x[0]).new_ones(
-        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_cuda, "gpu" in ivy.dev(ivy.array(data[0])), as_array=False
     )
+    ivy.previous_backend()
 
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=[],
-        method_all_as_kwargs_np={},
-        frontend_method_data=frontend_method_data,
-        init_flags=init_flags,
-        method_flags=method_flags,
-        frontend=frontend,
-        on_device=on_device,
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", prune_function=False)
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_tensor_is_meta(
+    dtype_x,
+    backend_fw,
+):
+    ivy.set_backend(backend_fw)
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.utils.assertions.check_equal(
+        x.is_meta, "meta" in ivy.dev(ivy.array(data[0])), as_array=False
     )
+    ivy.previous_backend()
 
 
 # logical_and
@@ -3641,17 +4068,19 @@ def test_torch_instance_is_cuda(
         num_arrays=2,
     ),
 )
-def test_torch_instance_logical_and(
+def test_torch_tensor_logical_and(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3676,17 +4105,19 @@ def test_torch_instance_logical_and(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
 )
-def test_torch_instance_logical_not(
+def test_torch_tensor_logical_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3710,17 +4141,19 @@ def test_torch_instance_logical_not(
         num_arrays=2,
     ),
 )
-def test_torch_instance_logical_or(
+def test_torch_tensor_logical_or(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3746,17 +4179,19 @@ def test_torch_instance_logical_or(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_not(
+def test_torch_tensor_bitwise_not(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3780,17 +4215,19 @@ def test_torch_instance_bitwise_not(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_and(
+def test_torch_tensor_bitwise_and(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3816,17 +4253,19 @@ def test_torch_instance_bitwise_and(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_or(
+def test_torch_tensor_bitwise_or(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3852,17 +4291,19 @@ def test_torch_instance_bitwise_or(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_or_(
+def test_torch_tensor_bitwise_or_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3888,17 +4329,19 @@ def test_torch_instance_bitwise_or_(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_left_shift(
+def test_torch_tensor_bitwise_left_shift(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3924,17 +4367,19 @@ def test_torch_instance_bitwise_left_shift(
         num_arrays=2,
     ),
 )
-def test_torch_instance_add_(
+def test_torch_tensor_add_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3960,17 +4405,19 @@ def test_torch_instance_add_(
         num_arrays=2,
     ),
 )
-def test_torch_instance_subtract_(
+def test_torch_tensor_subtract_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -3997,17 +4444,19 @@ def test_torch_instance_subtract_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccos_(
+def test_torch_tensor_arccos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4032,17 +4481,19 @@ def test_torch_instance_arccos_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccos(
+def test_torch_tensor_arccos(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4067,17 +4518,19 @@ def test_torch_instance_arccos(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_acos_(
+def test_torch_tensor_acos_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4102,17 +4555,19 @@ def test_torch_instance_acos_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_asin_(
+def test_torch_tensor_asin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4137,17 +4592,19 @@ def test_torch_instance_asin_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arcsin_(
+def test_torch_tensor_arcsin_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4171,17 +4628,19 @@ def test_torch_instance_arcsin_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_atan_(
+def test_torch_tensor_atan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4205,17 +4664,19 @@ def test_torch_instance_atan_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_tan_(
+def test_torch_tensor_tan_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4240,17 +4701,19 @@ def test_torch_instance_tan_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_atanh(
+def test_torch_tensor_atanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4275,17 +4738,19 @@ def test_torch_instance_atanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_atanh_(
+def test_torch_tensor_atanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4310,17 +4775,19 @@ def test_torch_instance_atanh_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arctanh(
+def test_torch_tensor_arctanh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4345,17 +4812,19 @@ def test_torch_instance_arctanh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arctanh_(
+def test_torch_tensor_arctanh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4382,13 +4851,14 @@ def test_torch_instance_arctanh_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_pow(
+def test_torch_tensor_pow(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -4396,6 +4866,7 @@ def test_torch_instance_pow(
         x[1] = ivy.abs(x[1])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4421,13 +4892,14 @@ def test_torch_instance_pow(
         num_arrays=2,
     ),
 )
-def test_torch_instance_pow_(
+def test_torch_tensor_pow_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -4435,6 +4907,7 @@ def test_torch_instance_pow_(
         x[1] = ivy.abs(x[1])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4460,13 +4933,14 @@ def test_torch_instance_pow_(
         num_arrays=2,
     ),
 )
-def test_torch_special_pow(
+def test_torch___pow__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -4474,6 +4948,7 @@ def test_torch_special_pow(
         x[1] = ivy.abs(x[1])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4500,13 +4975,14 @@ def test_torch_special_pow(
         min_value=1,
     ),
 )
-def test_torch_special_rpow(
+def test_torch___rpow__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     dtype = input_dtype[0]
@@ -4514,6 +4990,7 @@ def test_torch_special_rpow(
         x[0] = ivy.abs(x[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4540,17 +5017,19 @@ def test_torch_special_rpow(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccosh_(
+def test_torch_tensor_arccosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4583,7 +5062,7 @@ def test_torch_instance_arccosh_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_argmax(
+def test_torch_tensor_argmax(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -4591,10 +5070,12 @@ def test_torch_instance_argmax(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4630,7 +5111,7 @@ def test_torch_instance_argmax(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_argmin(
+def test_torch_tensor_argmin(
     dtype_input_axis,
     keepdim,
     frontend_method_data,
@@ -4638,10 +5119,12 @@ def test_torch_instance_argmin(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4677,7 +5160,7 @@ def test_torch_instance_argmin(
     ),
     descending=st.booleans(),
 )
-def test_torch_instance_argsort(
+def test_torch_tensor_argsort(
     dtype_input_axis,
     descending,
     frontend_method_data,
@@ -4685,10 +5168,12 @@ def test_torch_instance_argsort(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4716,17 +5201,19 @@ def test_torch_instance_argsort(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccosh(
+def test_torch_tensor_arccosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4749,17 +5236,19 @@ def test_torch_instance_arccosh(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_ceil(
+def test_torch_tensor_ceil(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4782,17 +5271,19 @@ def test_torch_instance_ceil(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_argwhere(
+def test_torch_tensor_argwhere(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4820,7 +5311,7 @@ def test_torch_instance_argwhere(
         force_int=True,
     ),
 )
-def test_torch_instance_size(
+def test_torch_tensor_size(
     dtype_and_x,
     dim,
     frontend_method_data,
@@ -4828,10 +5319,12 @@ def test_torch_instance_size(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4856,17 +5349,19 @@ def test_torch_instance_size(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_min(
+def test_torch_tensor_min(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4897,17 +5392,19 @@ def _get_dtype_and_multiplicative_matrices(draw):
     method_name="matmul",
     dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
-def test_torch_instance_matmul(
+def test_torch_tensor_matmul(
     dtype_tensor1_tensor2,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, tensor1, tensor2 = dtype_tensor1_tensor2
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": tensor1,
         },
@@ -4948,15 +5445,15 @@ def _array_idxes_n_dtype(draw, **kwargs):
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    unpack_dims=st.booleans(),
 )
-def test_torch_instance_permute(
+def test_torch_tensor_permute(
     dtype_values_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     x, idxes, dtype = dtype_values_axis
     unpack_dims = True
@@ -4973,6 +5470,7 @@ def test_torch_instance_permute(
         }
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -4991,28 +5489,35 @@ def test_torch_instance_permute(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="mean",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_x=_statistical_dtype_values(
+        function="mean",
         min_value=-1e04,
         max_value=1e04,
     ),
+    keepdims=st.booleans(),
 )
-def test_torch_instance_mean(
-    dtype_x,
+def test_torch_tensor_mean(
+    dtype_and_x,
+    keepdims,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
-        method_all_as_kwargs_np={},
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdims,
+        },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
@@ -5032,17 +5537,19 @@ def test_torch_instance_mean(
         max_value=1e04,
     ),
 )
-def test_torch_instance_nanmean(
+def test_torch_tensor_nanmean(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5069,7 +5576,7 @@ def test_torch_instance_nanmean(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_median(
+def test_torch_tensor_median(
     dtype_input_axis,
     keepdim,
     frontend,
@@ -5077,10 +5584,12 @@ def test_torch_instance_median(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5117,7 +5626,7 @@ def test_torch_instance_median(
         force_int=True,
     ),
 )
-def test_torch_instance_transpose(
+def test_torch_tensor_transpose(
     dtype_value,
     dim0,
     dim1,
@@ -5126,10 +5635,12 @@ def test_torch_instance_transpose(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5163,7 +5674,7 @@ def test_torch_instance_transpose(
         force_int=True,
     ),
 )
-def test_torch_instance_transpose_(
+def test_torch_tensor_transpose_(
     dtype_value,
     dim0,
     dim1,
@@ -5172,10 +5683,12 @@ def test_torch_instance_transpose_(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5202,17 +5715,19 @@ def test_torch_instance_transpose_(
         shape=helpers.get_shape(min_num_dims=2, max_num_dims=2),
     ),
 )
-def test_torch_instance_t(
+def test_torch_tensor_t(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5243,7 +5758,7 @@ def test_torch_instance_t(
         force_tuple=True,
     ),
 )
-def test_torch_instance_flatten(
+def test_torch_tensor_flatten(
     dtype_value,
     axes,
     frontend_method_data,
@@ -5251,10 +5766,12 @@ def test_torch_instance_flatten(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5287,7 +5804,7 @@ def test_torch_instance_flatten(
     ),
     dtypes=_dtypes(),
 )
-def test_torch_instance_cumsum(
+def test_torch_tensor_cumsum(
     dtype_value,
     dim,
     dtypes,
@@ -5296,10 +5813,12 @@ def test_torch_instance_cumsum(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5331,7 +5850,7 @@ def test_torch_instance_cumsum(
         force_int=True,
     ),
 )
-def test_torch_instance_cumsum_(
+def test_torch_tensor_cumsum_(
     dtype_value,
     dim,
     frontend_method_data,
@@ -5339,10 +5858,12 @@ def test_torch_instance_cumsum_(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5375,7 +5896,7 @@ def test_torch_instance_cumsum_(
     ),
     descending=st.booleans(),
 )
-def test_torch_instance_sort(
+def test_torch_tensor_sort(
     dtype_value,
     dim,
     descending,
@@ -5384,10 +5905,12 @@ def test_torch_instance_sort(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5413,17 +5936,19 @@ def test_torch_instance_sort(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_sigmoid(
+def test_torch_tensor_sigmoid(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5446,17 +5971,19 @@ def test_torch_instance_sigmoid(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_sigmoid_(
+def test_torch_tensor_sigmoid_(
     dtype_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5484,7 +6011,7 @@ def test_torch_instance_sigmoid_(
     ),
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_torch_instance_softmax(
+def test_torch_tensor_softmax(
     dtype_x_and_axis,
     dtype,
     frontend_method_data,
@@ -5492,10 +6019,12 @@ def test_torch_instance_softmax(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5539,7 +6068,7 @@ def _repeat_helper(draw):
     dtype_x_repeats=_repeat_helper(),
     unpack_repeat=st.booleans(),
 )
-def test_torch_instance_repeat(
+def test_torch_tensor_repeat(
     dtype_x_repeats,
     unpack_repeat,
     frontend_method_data,
@@ -5547,6 +6076,7 @@ def test_torch_instance_repeat(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, repeats = dtype_x_repeats
     repeat = {
@@ -5558,6 +6088,7 @@ def test_torch_instance_repeat(
             repeat["x{}".format(i)] = x_
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5583,17 +6114,19 @@ def test_torch_instance_repeat(
         force_int_axis=True,
     ),
 )
-def test_torch_instance_unbind(
+def test_torch_tensor_unbind(
     dtype_value_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtypes, x, axis = dtype_value_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5622,17 +6155,19 @@ def test_torch_instance_unbind(
         allow_inf=False,
     ),
 )
-def test_torch_special_eq(
+def test_torch___eq__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5658,17 +6193,19 @@ def test_torch_special_eq(
         min_num_dims=2,
     ).filter(lambda s: s[1][0].shape[-1] == s[1][0].shape[-2]),
 )
-def test_torch_instance_inverse(
+def test_torch_tensor_inverse(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5694,17 +6231,19 @@ def test_torch_instance_inverse(
         allow_inf=False,
     ),
 )
-def test_torch_instance_neg(
+def test_torch_tensor_neg(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5730,17 +6269,19 @@ def test_torch_instance_neg(
         allow_inf=False,
     ),
 )
-def test_torch_special_neg(
+def test_torch___neg__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5763,17 +6304,19 @@ def test_torch_special_neg(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_instance_int(
+def test_torch_tensor_int(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5796,17 +6339,19 @@ def test_torch_instance_int(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_half(
+def test_torch_tensor_half(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5829,17 +6374,19 @@ def test_torch_instance_half(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
-def test_torch_instance_bool(
+def test_torch_tensor_bool(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5863,7 +6410,7 @@ def test_torch_instance_bool(
     ),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_torch_instance_type(
+def test_torch_tensor_type(
     dtype_and_x,
     dtype,
     frontend_method_data,
@@ -5871,10 +6418,12 @@ def test_torch_instance_type(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5900,17 +6449,19 @@ def test_torch_instance_type(
         num_arrays=2,
     ),
 )
-def test_torch_instance_type_as(
+def test_torch_tensor_type_as(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5935,17 +6486,19 @@ def test_torch_instance_type_as(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_byte(
+def test_torch_tensor_byte(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -5972,17 +6525,19 @@ def test_torch_instance_byte(
         allow_inf=False,
     ),
 )
-def test_torch_instance_ne(
+def test_torch_tensor_ne(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6003,30 +6558,74 @@ def test_torch_instance_ne(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="squeeze",
-    dtype_value=helpers.dtype_and_values(
+    dtype_value_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
-    dim=helpers.get_shape(min_num_dims=1),
 )
-def test_torch_instance_squeeze(
-    dtype_value,
-    dim,
+def test_torch_tensor_squeeze(
+    dtype_value_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
-    input_dtype, x = dtype_value
+    input_dtype, x, axis = dtype_value_axis
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
-            "dim": dim,
+            "dim": axis,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# squeeze_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="squeeze_",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+)
+def test_torch_tensor_squeeze_(
+    dtype_value_axis,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_value_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "dim": axis,
         },
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
@@ -6045,17 +6644,19 @@ def test_torch_instance_squeeze(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_flip(
+def test_torch_tensor_flip(
     dtype_values_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6081,17 +6682,19 @@ def test_torch_instance_flip(
         min_num_dims=2,
     ),
 )
-def test_torch_instance_fliplr(
+def test_torch_tensor_fliplr(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6116,7 +6719,7 @@ def test_torch_instance_fliplr(
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
 )
-def test_torch_instance_tril(
+def test_torch_tensor_tril(
     dtype_and_values,
     diagonal,
     frontend_method_data,
@@ -6124,10 +6727,52 @@ def test_torch_instance_tril(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_values
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "diagonal": diagonal,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# tril_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tril_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,  # Torch requires this.
+    ),
+    diagonal=st.integers(min_value=-100, max_value=100),
+)
+def test_torch_tensor_tril_(
+    dtype_and_values,
+    diagonal,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6152,17 +6797,19 @@ def test_torch_instance_tril(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_sqrt(
+def test_torch_tensor_sqrt(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -6183,17 +6830,19 @@ def test_torch_instance_sqrt(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_sqrt_(
+def test_torch_tensor_sqrt_(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -6217,17 +6866,19 @@ def test_torch_instance_sqrt_(
         indices_same_dims=True,
     ),
 )
-def test_torch_instance_index_select(
+def test_torch_tensor_index_select(
     params_indices_others,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtypes, input, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -6307,7 +6958,7 @@ def _arrays_dim_idx_n_dtypes(draw):
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
     alpha=st.integers(min_value=1, max_value=2),
 )
-def test_torch_instance_index_add_(
+def test_torch_tensor_index_add_(
     *,
     xs_dtypes_dim_idx,
     alpha,
@@ -6316,6 +6967,7 @@ def test_torch_instance_index_add_(
     method_flags,
     on_device,
     frontend,
+    backend_fw,
 ):
     xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
     if xs[0].shape[axis] < xs[1].shape[axis]:
@@ -6324,6 +6976,7 @@ def test_torch_instance_index_add_(
         input, source = xs
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -6350,7 +7003,7 @@ def test_torch_instance_index_add_(
     xs_dtypes_dim_idx=_arrays_dim_idx_n_dtypes(),
     alpha=st.integers(min_value=1, max_value=2),
 )
-def test_torch_instance_index_add(
+def test_torch_tensor_index_add(
     *,
     xs_dtypes_dim_idx,
     alpha,
@@ -6359,6 +7012,7 @@ def test_torch_instance_index_add(
     method_flags,
     on_device,
     frontend,
+    backend_fw,
 ):
     xs, input_dtypes, axis, indices = xs_dtypes_dim_idx
     if xs[0].shape[axis] < xs[1].shape[axis]:
@@ -6367,6 +7021,7 @@ def test_torch_instance_index_add(
         input, source = xs
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -6433,17 +7088,19 @@ def _get_clamp_inputs(draw):
     method_name="clamp",
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
-def test_torch_instance_clamp(
+def test_torch_tensor_clamp(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6464,17 +7121,19 @@ def test_torch_instance_clamp(
     method_name="clamp_",
     dtype_and_x_min_max=_get_clamp_inputs(),
 )
-def test_torch_instance_clamp_(
+def test_torch_tensor_clamp_(
     dtype_and_x_min_max,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = dtype_and_x_min_max
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6495,17 +7154,19 @@ def test_torch_instance_clamp_(
     method_name="clip",
     input_and_ranges=_get_clamp_inputs(),
 )
-def test_torch_instance_clip(
+def test_torch_tensor_clip(
     input_and_ranges,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6526,17 +7187,19 @@ def test_torch_instance_clip(
     method_name="clip_",
     input_and_ranges=_get_clamp_inputs(),
 )
-def test_torch_instance_clip_(
+def test_torch_tensor_clip_(
     input_and_ranges,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6563,17 +7226,19 @@ def test_torch_instance_clip_(
         allow_inf=False,
     ),
 )
-def test_torch_special_gt(
+def test_torch___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6602,17 +7267,19 @@ def test_torch_special_gt(
         allow_inf=False,
     ),
 )
-def test_torch_special_ne(
+def test_torch___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6641,17 +7308,19 @@ def test_torch_special_ne(
         allow_inf=False,
     ),
 )
-def test_torch_special_lt(
+def test_torch___lt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6680,17 +7349,19 @@ def test_torch_special_lt(
         allow_inf=False,
     ),
 )
-def test_torch_special_or(
+def test_torch___or__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6713,17 +7384,19 @@ def test_torch_special_or(
     method_name="where",
     broadcastables=_broadcastable_trio(),
 )
-def test_torch_instance_where(
+def test_torch_tensor_where(
     broadcastables,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     cond, xs, dtypes = broadcastables
     helpers.test_frontend_method(
         init_input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": xs[0],
         },
@@ -6750,17 +7423,19 @@ def test_torch_instance_where(
         num_arrays=1,
     ),
 )
-def test_torch_instance_clone(
+def test_torch_tensor_clone(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6784,17 +7459,19 @@ def test_torch_instance_clone(
         num_arrays=1,
     ),
 )
-def test_torch_special_invert(
+def test_torch___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6818,17 +7495,19 @@ def test_torch_special_invert(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_acosh(
+def test_torch_tensor_acosh(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6861,17 +7540,19 @@ def _masked_fill_helper(draw):
     method_name="masked_fill",
     x_mask_val=_masked_fill_helper(),
 )
-def test_torch_instance_masked_fill(
+def test_torch_tensor_masked_fill(
     x_mask_val,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, x, mask, val = x_mask_val
     helpers.test_frontend_method(
         init_input_dtypes=[dtype],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -6898,17 +7579,19 @@ def test_torch_instance_masked_fill(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_acosh_(
+def test_torch_tensor_acosh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6931,17 +7614,19 @@ def test_torch_instance_acosh_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_numpy(
+def test_torch_tensor_numpy(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     ret, frontend_ret = helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -6972,12 +7657,19 @@ def test_torch_instance_numpy(
         num_arrays=2,
     ),
 )
-def test_torch_instance_atan2_(
-    dtype_and_x, frontend_method_data, init_flags, method_flags, frontend, on_device
+def test_torch_tensor_atan2_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7003,17 +7695,19 @@ def test_torch_instance_atan2_(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_not_(
+def test_torch_tensor_bitwise_not_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7037,17 +7731,19 @@ def test_torch_instance_bitwise_not_(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_and_(
+def test_torch_tensor_bitwise_and_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7076,17 +7772,19 @@ def test_torch_instance_bitwise_and_(
         allow_inf=False,
     ),
 )
-def test_torch_special_and(
+def test_torch___and__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7112,17 +7810,19 @@ def test_torch_special_and(
         num_arrays=2,
     ),
 )
-def test_torch_instance_bitwise_xor(
+def test_torch_tensor_bitwise_xor(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7154,7 +7854,7 @@ def test_torch_instance_bitwise_xor(
     ),
     dtypes=_dtypes(),
 )
-def test_torch_instance_cumprod(
+def test_torch_tensor_cumprod(
     dtype_value,
     dim,
     dtypes,
@@ -7163,10 +7863,12 @@ def test_torch_instance_cumprod(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7193,17 +7895,19 @@ def test_torch_instance_cumprod(
         allow_inf=False,
     ),
 )
-def test_torch_instance_relu(
+def test_torch_tensor_relu(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7227,17 +7931,19 @@ def test_torch_instance_relu(
         num_arrays=2,
     ),
 )
-def test_torch_instance_fmin(
+def test_torch_tensor_fmin(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7268,7 +7974,7 @@ def test_torch_instance_fmin(
         force_int=True,
     ),
 )
-def test_torch_instance_count_nonzero(
+def test_torch_tensor_count_nonzero(
     dtype_value,
     dim,
     frontend_method_data,
@@ -7276,10 +7982,12 @@ def test_torch_instance_count_nonzero(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7302,17 +8010,19 @@ def test_torch_instance_count_nonzero(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_exp(
+def test_torch_tensor_exp(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7335,17 +8045,19 @@ def test_torch_instance_exp(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_exp_(
+def test_torch_tensor_exp_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7368,17 +8080,19 @@ def test_torch_instance_exp_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_expm1(
+def test_torch_tensor_expm1(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7402,17 +8116,19 @@ def test_torch_instance_expm1(
         num_arrays=2,
     ),
 )
-def test_torch_instance_mul(
+def test_torch_tensor_mul(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7437,17 +8153,19 @@ def test_torch_instance_mul(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_ceil_(
+def test_torch_tensor_ceil_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7472,17 +8190,19 @@ def test_torch_instance_ceil_(
         shared_dtype=True,
     ),
 )
-def test_torch_instance_mul_(
+def test_torch_tensor_mul_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7508,17 +8228,19 @@ def test_torch_instance_mul_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_instance_trunc(
+def test_torch_tensor_trunc(
     dtype_value,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7542,17 +8264,19 @@ def test_torch_instance_trunc(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_instance_trunc_(
+def test_torch_tensor_trunc_(
     dtype_value,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7576,17 +8300,19 @@ def test_torch_instance_trunc_(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_instance_fix(
+def test_torch_tensor_fix(
     dtype_value,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7610,17 +8336,19 @@ def test_torch_instance_fix(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
 )
-def test_torch_instance_fix_(
+def test_torch_tensor_fix_(
     dtype_value,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7644,7 +8372,7 @@ def test_torch_instance_fix_(
     ),
     decimals=st.integers(min_value=0, max_value=5),
 )
-def test_torch_instance_round(
+def test_torch_tensor_round(
     dtype_and_x,
     decimals,
     frontend_method_data,
@@ -7652,10 +8380,12 @@ def test_torch_instance_round(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7689,17 +8419,19 @@ def test_torch_instance_round(
         safety_factor_scale="log",
     ),
 )
-def test_torch_instance_cross(
+def test_torch_tensor_cross(
     dtype_input_other_dim,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, input, other, dim = dtype_input_other_dim
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -7723,19 +8455,21 @@ def test_torch_instance_cross(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="det",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
-def test_torch_instance_det(
+def test_torch_tensor_det(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -7759,17 +8493,19 @@ def test_torch_instance_det(
         min_value=1,
     ),
 )
-def test_torch_instance_reciprocal(
+def test_torch_tensor_reciprocal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7793,7 +8529,7 @@ def test_torch_instance_reciprocal(
     ),
     value=helpers.floats(min_value=1, max_value=10),
 )
-def test_torch_instance_fill_(
+def test_torch_tensor_fill_(
     dtype_and_x,
     value,
     frontend_method_data,
@@ -7801,10 +8537,12 @@ def test_torch_instance_fill_(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7829,17 +8567,19 @@ def test_torch_instance_fill_(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_nonzero(
+def test_torch_tensor_nonzero(
     dtype_and_values,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_values
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7860,17 +8600,19 @@ def test_torch_instance_nonzero(
     method_name="mm",
     dtype_xy=_get_dtype_input_and_matrices(),
 )
-def test_torch_instance_mm(
+def test_torch_tensor_mm(
     dtype_xy,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -7895,17 +8637,19 @@ def test_torch_instance_mm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_square(
+def test_torch_tensor_square(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -7927,17 +8671,91 @@ def test_torch_instance_square(
         allow_inf=False,
     ),
 )
-def test_torch_instance_log10(
+def test_torch_tensor_log10(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# log10_ tests
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log10_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_log10_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# zero_ tests
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="zero_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_zero_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -7963,17 +8781,19 @@ def test_torch_instance_log10(
         allow_inf=False,
     ),
 )
-def test_torch_instance_short(
+def test_torch_tensor_short(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8007,7 +8827,7 @@ def test_torch_instance_short(
     dtype=helpers.get_dtypes("float", none=True, full=False),
     keepdims=st.booleans(),
 )
-def test_torch_instance_prod(
+def test_torch_tensor_prod(
     dtype_x_axis,
     dtype,
     keepdims,
@@ -8016,6 +8836,7 @@ def test_torch_instance_prod(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     if ivy.current_backend_str() == "torch":
@@ -8023,6 +8844,7 @@ def test_torch_instance_prod(
         method_flags.as_variable = [False]
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8052,7 +8874,7 @@ def test_torch_instance_prod(
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
-def test_torch_instance_div(
+def test_torch_tensor_div(
     dtype_and_x,
     rounding_mode,
     frontend,
@@ -8060,12 +8882,14 @@ def test_torch_instance_div(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8094,7 +8918,7 @@ def test_torch_instance_div(
     ),
     rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
-def test_torch_instance_div_(
+def test_torch_tensor_div_(
     dtype_and_x,
     rounding_mode,
     frontend,
@@ -8102,12 +8926,14 @@ def test_torch_instance_div_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8133,7 +8959,7 @@ def test_torch_instance_div_(
     mean=helpers.floats(min_value=-1, max_value=1),
     std=helpers.floats(min_value=0, max_value=1),
 )
-def test_torch_instance_normal_(
+def test_torch_tensor_normal_(
     dtype_and_x,
     mean,
     std,
@@ -8142,12 +8968,14 @@ def test_torch_instance_normal_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
 
     def call():
         return helpers.test_frontend_method(
             init_input_dtypes=dtype,
+            backend_to_test=backend_fw,
             init_all_as_kwargs_np={"data": x[0]},
             method_input_dtypes=dtype,
             method_all_as_kwargs_np={
@@ -8190,7 +9018,7 @@ def test_torch_instance_normal_(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_instance_addcdiv(
+def test_torch_tensor_addcdiv(
     dtype_and_x,
     value,
     frontend,
@@ -8198,12 +9026,14 @@ def test_torch_instance_addcdiv(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[2], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8235,7 +9065,7 @@ def test_torch_instance_addcdiv(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_instance_addcmul(
+def test_torch_tensor_addcmul(
     dtype_and_x,
     value,
     frontend,
@@ -8243,11 +9073,13 @@ def test_torch_instance_addcmul(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8279,7 +9111,7 @@ def test_torch_instance_addcmul(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_instance_addcmul_(
+def test_torch_tensor_addcmul_(
     dtype_and_x,
     value,
     frontend,
@@ -8287,11 +9119,13 @@ def test_torch_instance_addcmul_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8317,17 +9151,19 @@ def test_torch_instance_addcmul_(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_sign(
+def test_torch_tensor_sign(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -8339,6 +9175,39 @@ def test_torch_instance_sign(
     )
 
 
+# sign_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sign_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_tensor_sign_(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=[input_dtype],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        frontend=frontend,
+    )
+
+
 # std
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8346,17 +9215,19 @@ def test_torch_instance_sign(
     method_name="std",
     dtype_and_x=_statistical_dtype_values(function="std"),
 )
-def test_torch_instance_std(
+def test_torch_tensor_std(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, _, _ = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8384,17 +9255,19 @@ def test_torch_instance_std(
         max_value=100,
     ),
 )
-def test_torch_instance_fmod(
+def test_torch_tensor_fmod(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"other": x[1]},
@@ -8420,17 +9293,19 @@ def test_torch_instance_fmod(
         max_value=100,
     ),
 )
-def test_torch_instance_fmod_(
+def test_torch_tensor_fmod_(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={"other": x[1]},
@@ -8453,7 +9328,7 @@ def test_torch_instance_fmod_(
     largest=st.booleans(),
     sorted=st.booleans(),
 )
-def test_torch_instance_topk(
+def test_torch_tensor_topk(
     dtype_x_axis_k,
     largest,
     sorted,
@@ -8462,10 +9337,12 @@ def test_torch_instance_topk(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, input, axis, k = dtype_x_axis_k
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": input[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8494,13 +9371,14 @@ def test_torch_instance_topk(
         shared_dtype=True,
     ),
 )
-def test_torch_instance_bitwise_right_shift(
+def test_torch_tensor_bitwise_right_shift(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -8510,6 +9388,7 @@ def test_torch_instance_bitwise_right_shift(
     )
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8530,21 +9409,23 @@ def test_torch_instance_bitwise_right_shift(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="logdet",
-    dtype_and_x=_get_dtype_and_square_matrix(),
+    dtype_and_x=_get_dtype_and_matrix(square=True, batch=True),
 )
-def test_torch_instance_logdet(
+def test_torch_tensor_logdet(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     dtype, x = dtype_and_x
     x = np.matmul(x.T, x) + np.identity(x.shape[0])
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x,
         },
@@ -8568,17 +9449,19 @@ def test_torch_instance_logdet(
         num_arrays=2,
     ),
 )
-def test_torch_instance_multiply(
+def test_torch_tensor_multiply(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8603,7 +9486,7 @@ def test_torch_instance_multiply(
     keepdim=st.booleans(),
     dtype=helpers.get_dtypes("valid", full=False),
 )
-def test_torch_instance_norm(
+def test_torch_tensor_norm(
     p_dtype_x_axis,
     keepdim,
     dtype,
@@ -8612,11 +9495,13 @@ def test_torch_instance_norm(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     p, values = p_dtype_x_axis
     input_dtype, x, axis = values
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -8642,17 +9527,19 @@ def test_torch_instance_norm(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_isinf(
+def test_torch_tensor_isinf(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -8673,17 +9560,52 @@ def test_torch_instance_isinf(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_torch_instance_is_complex(
+def test_torch_tensor_is_complex(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# isreal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="isreal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_torch_tensor_isreal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -8706,17 +9628,19 @@ def test_torch_instance_is_complex(
         num_arrays=2,
     ),
 )
-def test_torch_instance_copysign(
+def test_torch_tensor_copysign(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8742,17 +9666,19 @@ def test_torch_instance_copysign(
         num_arrays=2,
     ),
 )
-def test_torch_instance_not_equal(
+def test_torch_tensor_not_equal(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8818,7 +9744,7 @@ def _get_dtype_input_and_vectors(draw, with_input=False, same_size=False):
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addr(
+def test_torch_tensor_addr(
     dtype_and_vecs,
     beta,
     alpha,
@@ -8827,10 +9753,12 @@ def test_torch_instance_addr(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -8861,17 +9789,19 @@ def test_torch_instance_addr(
         large_abs_safety_factor=12,
     ),
 )
-def test_torch_instance_logical_not_(
+def test_torch_tensor_logical_not_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8894,17 +9824,54 @@ def test_torch_instance_logical_not_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_rsqrt(
+def test_torch_tensor_rsqrt(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# rsqrt_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="rsqrt_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_rsqrt_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8932,17 +9899,19 @@ def test_torch_instance_rsqrt(
         max_value=1e04,
     ),
 )
-def test_torch_instance_equal(
+def test_torch_tensor_equal(
     dtype_and_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -8960,6 +9929,41 @@ def test_torch_instance_equal(
     )
 
 
+# erf
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="erf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_tensor_erf(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # greater
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -8973,17 +9977,19 @@ def test_torch_instance_equal(
         allow_inf=False,
     ),
 )
-def test_torch_instance_greater(
+def test_torch_tensor_greater(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9012,17 +10018,19 @@ def test_torch_instance_greater(
         allow_inf=False,
     ),
 )
-def test_torch_instance_greater_(
+def test_torch_tensor_greater_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9051,17 +10059,19 @@ def test_torch_instance_greater_(
         allow_inf=False,
     ),
 )
-def test_torch_instance_greater_equal(
+def test_torch_tensor_greater_equal(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9090,17 +10100,183 @@ def test_torch_instance_greater_equal(
         allow_inf=False,
     ),
 )
-def test_torch_instance_greater_equal_(
+def test_torch_tensor_greater_equal_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_less(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_less_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_equal
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_less_equal(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# less_equal_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="less_equal_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_less_equal_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9137,7 +10313,7 @@ def test_torch_instance_greater_equal_(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_addr_(
+def test_torch_tensor_addr_(
     dtype_and_vecs,
     beta,
     alpha,
@@ -9146,10 +10322,12 @@ def test_torch_instance_addr_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_method(
         init_input_dtypes=dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": input,
         },
@@ -9181,17 +10359,19 @@ def test_torch_instance_addr_(
         allow_inf=False,
     ),
 )
-def test_torch_special_eq_(
+def test_torch_tensor_eq_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9218,7 +10398,7 @@ def test_torch_special_eq_(
     ),
     keepdim=st.booleans(),
 )
-def test_torch_instance_var(
+def test_torch_tensor_var(
     dtype_and_x,
     keepdim,
     frontend,
@@ -9226,10 +10406,12 @@ def test_torch_instance_var(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -9251,17 +10433,19 @@ def test_torch_instance_var(
     method_name="narrow",
     dtype_input_dim_start_length=_dtype_input_dim_start_length(),
 )
-def test_torch_instance_narrow(
+def test_torch_tensor_narrow(
     dtype_input_dim_start_length,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     (input_dtype, x, dim, start, length) = dtype_input_dim_start_length
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -9283,17 +10467,19 @@ def test_torch_instance_narrow(
     method_name="as_strided",
     dtype_x_and_other=_as_strided_helper(),
 )
-def test_torch_instance_as_strided(
+def test_torch_tensor_as_strided(
     dtype_x_and_other,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x, size, stride, offset = dtype_x_and_other
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -9312,22 +10498,59 @@ def test_torch_instance_as_strided(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="stride",
+    dtype_value_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+)
+def test_torch_tensor_stride(
+    dtype_value_axis,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_value_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"dim": axis},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="log1p",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_log1p(
+def test_torch_tensor_log1p(
     dtype_x,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={},
@@ -9359,7 +10582,58 @@ def test_torch_instance_log1p(
         allow_infinity=False,
     ),
 )
-def test_torch_instance_baddbmm(
+def test_torch_tensor_baddbmm(
+    dtype_and_matrices,
+    beta,
+    alpha,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, batch1, batch2 = dtype_and_matrices
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "batch1": batch1,
+            "batch2": batch2,
+            "beta": beta,
+            "alpha": alpha,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="baddbmm_",
+    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+    beta=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+    alpha=st.floats(
+        min_value=-5,
+        max_value=5,
+        allow_nan=False,
+        allow_subnormal=False,
+        allow_infinity=False,
+    ),
+)
+def test_torch_baddbmm_(
     dtype_and_matrices,
     beta,
     alpha,
@@ -9391,22 +10665,54 @@ def test_torch_instance_baddbmm(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="bmm",
+    dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
+)
+def test_torch_tensor_instance_bmm(
+    dtype_and_matrices,
+    backend_fw,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, _, x, mat2 = dtype_and_matrices
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={"data": x},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={"mat2": mat2},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="floor_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_floor_(
+def test_torch_tensor_floor_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": x[0],
         },
@@ -9430,7 +10736,7 @@ def test_torch_instance_floor_(
     ),
     diagonal=st.integers(min_value=-100, max_value=100),
 )
-def test_torch_instance_diag(
+def test_torch_tensor_diag(
     dtype_and_values,
     diagonal,
     frontend_method_data,
@@ -9438,10 +10744,12 @@ def test_torch_instance_diag(
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtype, values = dtype_and_values
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": values[0],
         },
@@ -9457,6 +10765,67 @@ def test_torch_instance_diag(
     )
 
 
+# diagonal
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dims_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_torch_tensor_diagonal(
+    dtype_and_values,
+    dims_and_offset,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, value = dtype_and_values
+    dim1, dim2, offset = dims_and_offset
+    input = value[0]
+    num_dims = len(np.shape(input))
+    assume(dim1 != dim2)
+    if dim1 < 0:
+        assume(dim1 + num_dims != dim2)
+    if dim2 < 0:
+        assume(dim1 != dim2 + num_dims)
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtype[0]],
+        init_all_as_kwargs_np={"data": input},
+        method_input_dtypes=[input_dtype[0]],
+        method_all_as_kwargs_np={
+            "offset": offset,
+            "dim1": dim1,
+            "dim2": dim2,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        backend_to_test=backend_fw,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
@@ -9467,17 +10836,19 @@ def test_torch_instance_diag(
         indices_same_dims=True,
     ),
 )
-def test_torch_instance_gather(
+def test_torch_tensor_gather(
     params_indices_others,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtypes, x, indices, axis, batch_dims = params_indices_others
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x},
         method_input_dtypes=[input_dtypes[1]],
         method_all_as_kwargs_np={
@@ -9506,17 +10877,19 @@ def test_torch_instance_gather(
         indices_same_dims=True,
     ),
 )
-def test_torch_instance_take_along_dim(
+def test_torch_tensor_take_along_dim(
     dtype_indices_axis,
     frontend_method_data,
     init_flags,
     method_flags,
     frontend,
     on_device,
+    backend_fw,
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtypes[0]],
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": value,
         },
@@ -9582,7 +10955,7 @@ def test_torch_instance_take_along_dim(
         force_int=True,
     ),
 )
-def test_torch_instance_movedim(
+def test_torch_tensor_movedim(
     dtype_and_input,
     source,
     destination,
@@ -9591,10 +10964,12 @@ def test_torch_instance_movedim(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, value = dtype_and_input
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": value[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -9623,7 +10998,7 @@ def test_torch_instance_movedim(
     ),
     value=st.floats(min_value=-100, max_value=100),
 )
-def test_torch_instance_addcdiv_(
+def test_torch_tensor_addcdiv_(
     dtype_and_x,
     value,
     frontend,
@@ -9631,12 +11006,14 @@ def test_torch_instance_addcdiv_(
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[2], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_all_as_kwargs_np={
@@ -9656,23 +11033,66 @@ def test_torch_instance_addcdiv_(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="cholesky",
+    dtype_and_x=_get_dtype_and_matrix(square=True),
+    upper=st.booleans(),
+)
+def test_torch_tensor_cholesky(
+    dtype_and_x,
+    upper,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    x = x[0]
+    # make symmetric positive-definite
+    x = np.matmul(x.swapaxes(-1, -2), x) + np.identity(x.shape[-1]) * 1e-3
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "upper": upper,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+        rtol_=1e-2,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="heaviside",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
 )
-def test_torch_instance_heaviside(
+def test_torch_tensor_heaviside(
     dtype_and_values,
     frontend,
     frontend_method_data,
     init_flags,
     method_flags,
     on_device,
+    backend_fw,
 ):
     input_dtype, values = dtype_and_values
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "data": values[0],
         },
@@ -9683,6 +11103,555 @@ def test_torch_instance_heaviside(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="dot",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shape=(1,),
+    ),
+)
+def test_torch_tensor_dot(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "tensor": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tile",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    reps=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False,
+    ),
+)
+def test_torch_tensor_tile(
+    dtype_and_values,
+    reps,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, values = dtype_and_values
+    if isinstance(reps, tuple):
+        method_flags.num_positional_args = len(reps)
+    else:
+        method_flags.num_positional_args = 1
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "reps": reps,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# write test for torch instance apply_
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="apply_",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+    ),
+)
+def test_torch_tensor_apply_(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    def func(x):
+        return x + 1
+
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "callable": func,
+        },
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", prune_function=False),
+        num_arrays=3,
+        min_value=-1e3,
+        max_value=1e3,
+    ).filter(lambda x: all(dt == "float32" for dt in x[0])),
+)
+def test_torch_tensor_backward(
+    dtype_x,
+    backend_fw,
+):
+    ivy.set_backend(backend_fw)
+    if ivy.current_backend_str() == "numpy":
+        ivy.warnings.warn("Gradient calculation unavailable for numpy backend")
+        return
+    if ivy.current_backend_str() == "paddle":
+        ivy.warnings.warn("torch.Tensor.backward() unavailable for paddle backend")
+        return
+    _, values = dtype_x
+    x = Tensor(values[0], requires_grad=True)
+    y = Tensor(values[1], requires_grad=True)
+    z = Tensor(values[2], requires_grad=True)
+    a = x + y.pow(2)
+    b = z * a
+    c = b.sum()
+    c.backward()
+    x_torch = torch.tensor(values[0], requires_grad=True, dtype=torch.float32)
+    y_torch = torch.tensor(values[1], requires_grad=True, dtype=torch.float32)
+    z_torch = torch.tensor(values[2], requires_grad=True, dtype=torch.float32)
+    a_torch = x_torch + y_torch.pow(2)
+    b_torch = z_torch * a_torch
+    c_torch = b_torch.sum()
+    c_torch.backward()
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(
+            ret=x._grads.ivy_array, backend=backend_fw
+        ),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(x_torch.grad.numpy()), backend=backend_fw
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(
+            ret=y._grads.ivy_array, backend=backend_fw
+        ),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(y_torch.grad.numpy()), backend=backend_fw
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        backend="torch",
+    )
+    helpers.assertions.value_test(
+        ret_np_flat=helpers.flatten_and_to_np(
+            ret=z._grads.ivy_array, backend=backend_fw
+        ),
+        ret_np_from_gt_flat=helpers.flatten_and_to_np(
+            ret=ivy.to_ivy(z_torch.grad.numpy()), backend=backend_fw
+        ),
+        rtol=1e-3,
+        atol=1e-3,
+        backend="torch",
+    )
+
+
+# angle
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="angle",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=["float64", "complex64", "complex128"],
+    ),
+)
+def test_torch_tensor_angle(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# logaddexp
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="logaddexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=1,
+        min_value=-100,
+        max_value=100,
+        shared_dtype=True,
+    ),
+)
+def test_torch_tensor_logaddexp(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="adjoint",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("real_and_complex"),
+        min_num_dims=2,
+        min_dim_size=2,
+    ),
+)
+def test_torch_tensor_adjoint(
+    dtype_and_values,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, values = dtype_and_values
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": values[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="conj",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float_and_complex")
+    ),
+)
+def test_torch_tensor_conj(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ),
+    some=st.booleans(),
+    compute_uv=st.booleans(),
+)
+def test_torch_tensor_svd(
+    dtype_and_x,
+    some,
+    compute_uv,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=input_dtype[0])
+
+    ret, frontend_ret = helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "some": some,
+            "compute_uv": compute_uv,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        test_values=False,
+    )
+    with helpers.update_backend(backend_fw) as ivy_backend:
+        ret = [ivy_backend.to_numpy(x) for x in ret]
+    frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+    u, s, vh = ret
+    frontend_u, frontend_s, frontend_vh = frontend_ret
+
+    if compute_uv:
+        helpers.assert_all_close(
+            ret_np=frontend_u @ np.diag(frontend_s) @ frontend_vh.T,
+            ret_from_gt_np=u @ np.diag(s) @ vh,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+    else:
+        helpers.assert_all_close(
+            ret_np=frontend_s,
+            ret_from_gt_np=s,
+            rtol=1e-2,
+            atol=1e-2,
+            backend=backend_fw,
+            ground_truth_backend=frontend,
+        )
+
+
+@st.composite
+def _get_clip_min_inputs(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
+        )
+    )
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+        )
+    )
+
+    min = draw(
+        helpers.array_values(dtype=x_dtype[0], shape=shape, min_value=0, max_value=25)
+    )
+
+    return x_dtype, x, min
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="clamp_min",
+    input_and_ranges=_get_clip_min_inputs(),
+)
+def test_torch_tensor_clamp_min(
+    input_and_ranges,
+    frontend_method_data,
+    init_flags,
+    backend_fw,
+    frontend,
+    on_device,
+    method_flags,
+):
+    x_dtype, x, min = input_and_ranges
+    helpers.test_frontend_method(
+        init_input_dtypes=x_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=x_dtype,
+        method_all_as_kwargs_np={
+            "min": min,
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# gcd
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_torch_tensor_gcd(
+    dtype_and_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# isnan
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="isnan",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_torch_isnan(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
         frontend=frontend,
         on_device=on_device,
     )

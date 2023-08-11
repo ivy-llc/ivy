@@ -147,19 +147,6 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> ivy.relu6(x, out = y)
         >>> print(y)
         ivy.array([0., 0., 1., 2., 3., 4., 5., 6., 6.])
-
-        With :class:`ivy.Container` input:
-
-        >>> x = {
-                    a: ivy.array([-3., -2., -1., 0., 1., 2., 3., 4., 5.]),
-                    b: ivy.array([1., 2., 3., 4., 5., 6., 7., 8., 9.])
-                }
-        >>> x = ivy.relu6(x, out=x)
-        >>> print(x)
-        {
-        a: ivy.array([0., 0., 0., 0., 1., 2., 3., 4., 5.]),
-        b: ivy.array([1., 2., 3., 4., 5., 6., 6., 6., 6.])
-        }
         """
         return ivy.relu6(self._data, out=out)
 
@@ -188,7 +175,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([ -1.31326175,  -0.126928  ,  -0.01814993, -10.00004578])
 
         >>> x = ivy.array([-2.5, 1., 0, 4.5])
-        >>> z = x.logsigmoid())
+        >>> z = x.logsigmoid()
         >>> print(z)
         ivy.array([-2.57888985, -0.31326169, -0.69314718, -0.01104775])
         """
@@ -253,3 +240,39 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         ivy.array([-0.26894143,  0.        ,  0.73105854])
         """
         return ivy.silu(self._data, out=out)
+
+    def elu(
+        self,
+        /,
+        *,
+        alpha: float = 1.0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Ivy.Array instance method variant of ivy.elu. This method simply wraps the
+        function, and so the docstring for ivy.elu also applies to this method with
+        minimal.
+
+        Parameters
+        ----------
+        self
+            input array.
+        alpha
+            scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the elu activation function applied element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([0.39, -0.85])
+        >>> y = x.elu()
+        >>> print(y)
+        ivy.array([ 0.39, -0.57])
+        """
+        return ivy.elu(self._data, alpha=alpha, out=out)

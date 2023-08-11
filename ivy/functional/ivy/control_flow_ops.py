@@ -5,6 +5,7 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     to_native_arrays_and_back,
     to_ivy_arrays_and_back,
+    handle_device_shifting,
 )
 
 
@@ -38,7 +39,8 @@ def if_else(
 
     Examples
     --------
-    >>> cond = lambda x: True
+    >>> x = 1
+    >>> cond = x > 0
     >>> body_fn = lambda x: x + 1
     >>> orelse_fn = lambda x: x - 1
     >>> vars = (1,)
@@ -46,17 +48,19 @@ def if_else(
     >>> print(result)
     2
 
-    >>> cond = lambda x: True
+    >>> x = 0
+    >>> cond = x - 2 == 0
     >>> body_fn = lambda x: x * 2
     >>> orelse_fn = lambda x: x / 2
     >>> vars = ivy.array([1, 2, 3])
     >>> result = ivy.if_else(cond, body_fn, orelse_fn, vars=(vars,))
     >>> print(result)
-    ivy.array([0.5, 1.0, 1.5])
+    ivy.array([0.5, 1. , 1.5])
     """
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
+    @handle_device_shifting
     def _if_else(cond, body_fn, orelse_fn, vars):
         return current_backend().if_else(cond, body_fn, orelse_fn, vars)
 
@@ -107,11 +111,12 @@ def while_loop(
     >>> vars = (i, j)
     >>> result = ivy.while_loop(test_fn, body_fn, vars=vars)
     >>> print(result)
-    (3, 8)
+    (3, 4)
     """
 
     @to_native_arrays_and_back
     @handle_array_like_without_promotion
+    @handle_device_shifting
     def _while_loop(test_fn, body_fn, vars):
         return current_backend().while_loop(test_fn, body_fn, vars)
 
@@ -184,6 +189,17 @@ def for_loop(
     return _dict_to_tuple(while_loop(test_fn, empty_function, packed_vars)[2])
 
 
+def try_except(
+    body1: Callable,
+    body2: Callable,
+    vars: Iterable[Union[ivy.Array, ivy.NativeArray]],
+):
+    try:
+        return body1(*vars)
+    except Exception as e:
+        return body2(*vars, e)
+
+
 # todo (nightcrab) find a better place for these cmp functions
 
 
@@ -194,7 +210,9 @@ def cmp_is(left, right):
 def cmp_isnot(left, right):
     return left is not right
 
-
+def cast_bool(x):
+    return bool(x)
+    
 def _tuple_to_dict(t):
     return {k: t[k] for k in range(len(t))}
 

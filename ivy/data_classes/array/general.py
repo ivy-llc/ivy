@@ -41,11 +41,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> ret = x.is_native_array()
         >>> print(ret)
         False
-
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_native_array(exclusive=True)
-        >>> print(ret)
-        True
         """
         return ivy.is_native_array(self, exclusive=exclusive)
 
@@ -75,10 +70,6 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(ret)
         True
 
-        >>> x = ivy.native_array([9.1, -8.3])
-        >>> ret = x.is_ivy_array(exclusive=True)
-        >>> print(ret)
-        False
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
@@ -105,10 +96,6 @@ class _ArrayWithGeneral(abc.ABC):
         --------
         >>> x = ivy.array([0, 1, 2])
         >>> print(x.is_array())
-        True
-
-        >>> x = ivy.native_array([9.1, -8.3, 2.8, 3.0])
-        >>> print(x.is_array(exclusive=True))
         True
         """
         return ivy.is_array(self, exclusive=exclusive)
@@ -842,19 +829,20 @@ class _ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :class:`ivy.Array` input and default backend set as `numpy`:
+        With :class:`ivy.Array` input and default backend set as `torch`:
 
+        >>> ivy.set_backend("torch")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
         True
 
-        With :class:`ivy.Array` input and default backend set as `jax`:
+        With :class:`ivy.Array` input and default backend set as `numpy`:
 
+        >>> ivy.set_backend("numpy")
         >>> x = ivy.array([1, 2, 3])
         >>> print(x.assert_supports_inplace())
-        IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-        are not supported <class 'jaxlib.xla_extension.DeviceArray'> types 
-        with jax backend
+        True
+
         """
         return ivy.assert_supports_inplace(self)
 
@@ -1025,7 +1013,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> print(y)
         True
 
-        >>> x = ivy.array(None)
+        >>> x = ivy.array([])
         >>> y = x.exists()
         >>> print(y)
         True
@@ -1155,14 +1143,14 @@ class _ArrayWithGeneral(abc.ABC):
         >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
         >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
         >>> x.inplace_update(y, keep_input_dtype=True)
-        >>> print(x, x.dtype)
-        ivy.array([0., 0., 0.]) float32
+        >>> print(x)
+        ivy.array([0., 0., 0.])
 
         With :class:`ivy.Array` input and default backend set as `torch`:
 
         >>> x = ivy.array([1, 2, 3])
         >>> y = ivy.array([0])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         >>> print(x)
         ivy.array([0])
 
@@ -1170,7 +1158,7 @@ class _ArrayWithGeneral(abc.ABC):
 
         >>> x = ivy.array([4, 5, 6])
         >>> y = ivy.array([1])
-        >>> x.inplace_update(y, ensure_in_backend=True)
+        >>> x.inplace_update(y)
         IvyBackendException: jax: inplace_update: JAX does not natively
         support inplace updates
         """
@@ -1301,7 +1289,7 @@ class _ArrayWithGeneral(abc.ABC):
         >>> size = 8
         >>> out = indices.scatter_flat(updates, size=size)
         >>> print(out)
-        ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+        ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
 
 
         With :class:`ivy.Array` input:

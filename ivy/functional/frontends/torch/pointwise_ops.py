@@ -1,10 +1,16 @@
 # global
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, integer_arrays_to_float
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_supported_dtypes,
+)
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@with_supported_dtypes(
+    {"1.12.0 and below": ("float32", "float64", "int32", "int64")}, "jax"
+)
 @to_ivy_arrays_and_back
 def add(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
@@ -318,7 +324,6 @@ def flipud(input):
     return ivy.flipud(input)
 
 
-@integer_arrays_to_float
 @to_ivy_arrays_and_back
 def deg2rad(input, *, out=None):
     return ivy.array(input * 3.1416 / 180, out=out)
@@ -434,6 +439,7 @@ def xlogy(input, other, *, out=None):
     return ivy.xlogy(input, other, out=out)
 
 
+@with_unsupported_dtypes({"1.12.0 and below": ("float16",)}, "jax")
 @to_ivy_arrays_and_back
 def copysign(input, other, *, out=None):
     return ivy.copysign(input, other, out=out)
@@ -522,6 +528,12 @@ def erf(input, *, out=None):
     return ivy.erf(input, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+@to_ivy_arrays_and_back
+def erfc(input, *, out=None):
+    return 1.0 - ivy.erf(input, out=out)
+
+
 @to_ivy_arrays_and_back
 def sgn(input, *, out=None):
     if ivy.is_complex_dtype(input.dtype):
@@ -539,3 +551,21 @@ def sgn(input, *, out=None):
 @to_ivy_arrays_and_back
 def nan_to_num(input, nan=0.0, posinf=None, neginf=None, *, out=None):
     return ivy.nan_to_num(input, nan=nan, posinf=posinf, neginf=neginf, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def masked_fill(input, mask, value):
+    return ivy.where(mask, value, input, out=input)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+@to_ivy_arrays_and_back
+def igamma(input, other, *, out=None):
+    return ivy.igamma(input, x=other, out=out)
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def lgamma(input, *, out=None):
+    return ivy.lgamma(input, out=out)

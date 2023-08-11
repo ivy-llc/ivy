@@ -74,7 +74,7 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
         >>> z = ivy.histogram(x, bins=y)
         >>> print(z)
-        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+        ivy.array([1., 0., 1., 1.])
         """
         return ivy.histogram(
             self._data,
@@ -457,5 +457,232 @@ class _ArrayWithStatisticalExperimental(abc.ABC):
         return ivy.igamma(
             self._data,
             x=x,
+            out=out,
+        )
+
+    def cov(
+        self: ivy.Array,
+        x2: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        /,
+        *,
+        rowVar: bool = True,
+        bias: bool = False,
+        ddof: Optional[int] = None,
+        fweights: Optional[ivy.Array] = None,
+        aweights: Optional[ivy.Array] = None,
+        dtype: Optional[type] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cov. This method simply wraps the
+        function, and so the docstring for ivy.cov also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            a 1D or 2D input array, with a numeric data type.
+        x2
+            optional second 1D or 2D input array, with a numeric data type.
+            Must have the same shape as ``self``.
+        rowVar
+            optional variable where each row of input is interpreted as a variable
+            (default = True). If set to False, each column is instead interpreted as a
+            variable.
+        bias
+            optional variable for normalizing input (default = False) by (N - 1) where
+            N is the number of given observations. If set to True, then normalization
+            is instead by N. Can be overridden by keyword ``ddof``.
+        ddof
+            optional variable to override ``bias`` (default = None). ddof=1 will return
+            the unbiased estimate, even with fweights and aweights given. ddof=0 will
+            return the simple average.
+        fweights
+            optional 1D array of integer frequency weights; the number of times each
+            observation vector should be repeated.
+        aweights
+            optional 1D array of observation vector weights. These relative weights are
+            typically large for observations considered "important" and smaller for
+            observations considered less "important". If ddof=0 is specified, the array
+            of weights can be used to assign probabilities to observation vectors.
+        dtype
+            optional variable to set data-type of the result. By default, data-type
+            will have at least ``float64`` precision.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the covariance matrix of an input matrix, or the
+            covariance matrix of two variables. The returned array must have a
+            floating-point data type determined by Type Promotion Rules and must be
+            a square matrix of shape (N, N), where N is the number of variables in the
+            input(s).
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3],
+        ...                [4, 5, 6]])
+        >>> y = x[0].cov(x[1])
+        >>> print(y)
+        ivy.array([[1., 1.],
+               [1., 1.]])
+
+        >>> x = ivy.array([1,2,3])
+        >>> y = ivy.array([4,5,6])
+        >>> z = x.cov(y)
+        >>> print(z)
+        ivy.array([[1., 1.],
+               [1., 1.]])
+        """
+        return ivy.cov(
+            self._data,
+            x2,
+            rowVar=rowVar,
+            bias=bias,
+            ddof=ddof,
+            fweights=fweights,
+            aweights=aweights,
+            dtype=dtype,
+        )
+
+    def cummax(
+        self: ivy.Array,
+        /,
+        *,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cummax. This method simply wraps the
+        function, and so the docstring for ivy.cummax also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, axis along which to take the cumulative maximum. Default is ``0``.
+        reverse
+            Whether to perform the cummax from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
+        dtype
+            data type of the returned array. If None, if the default data type
+            corresponding to the data type “kind” (integer or floating-point) of x
+            has a smaller range of values than the data type of x (e.g., x has data
+            type int64 and the default data type is int32, or x has data type uint64
+            and the default data type is int64), the returned array must have the
+            same data type as x. if x has a floating-point data type, the returned array
+            must have the default floating-point data type. if x has a signed integer
+            data type (e.g., int16), the returned array must have the default integer
+            data type. if x has an unsigned integer data type (e.g., uint16), the
+            returned array must have an unsigned integer data type having the same
+            number of bits as the default integer data type (e.g., if the default
+            integer data type is int32, the returned array must have a uint32 data
+            type). If the data type (either specified or resolved) differs from the
+            data type of x, the input array should be cast to the specified data type
+            before computing the product. Default: ``None``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively multiplied elements along the specified axis.
+        --------
+        >>> x = ivy.array([1, 2, 5, 4, 3])
+        >>> y = x.cummax()
+        >>> print(y)
+        (ivy.array([1, 2, 5, 5, 5]), ivy.array([0, 1, 2, 2, 2]))
+
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
+        >>> y = ivy.zeros((3, 2), dtype="int32")
+        >>> x.cummax(axis=1, reverse=True, out=y)
+        >>> print(y)
+        ivy.array([[0, 0],
+               [0, 0],
+               [0, 0]])
+        """
+        return ivy.cummax(
+            self._data,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            dtype=dtype,
+            out=out,
+        )
+
+    def cummin(
+        self: ivy.Array,
+        /,
+        *,
+        axis: int = 0,
+        exclusive: bool = False,
+        reverse: bool = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.cummin. This method simply wraps the
+        function, and so the docstring for ivy.cummin also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array
+        axis
+            int, axis along which to take the cumulative minimum. Default is ``0``.
+        reverse
+            Whether to perform the cummin from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
+        dtype
+            data type of the returned array. If None, if the default data type
+            corresponding to the data type “kind” (integer or floating-point) of x
+            has a smaller range of values than the data type of x (e.g., x has data
+            type int64 and the default data type is int32, or x has data type uint64
+            and the default data type is int64), the returned array must have the
+            same data type as x. if x has a floating-point data type, the returned array
+            must have the default floating-point data type. if x has a signed integer
+            data type (e.g., int16), the returned array must have the default integer
+            data type. if x has an unsigned integer data type (e.g., uint16), the
+            returned array must have an unsigned integer data type having the same
+            number of bits as the default integer data type (e.g., if the default
+            integer data type is int32, the returned array must have a uint32 data
+            type). If the data type (either specified or resolved) differs from the
+            data type of x, the input array should be cast to the specified data type
+            before computing the product. Default: ``None``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Input array with cumulatively multiplied elements along the specified axis.
+        --------
+        >>> x = ivy.array([1, 2, 3, 4, 5])
+        >>> y = x.cummin()
+        >>> print(y)
+        ivy.array([1, 1, 1, 1, 1])
+
+        >>> x = ivy.array([[2, 3], [5, 7], [11, 13]])
+        >>> y = ivy.zeros((3, 2), dtype="int32")
+        >>> x.cummin(axis=1, reverse=True, out=y)
+        >>> print(y)
+        ivy.array([[ 2,  3],
+                  [ 5,  7],
+                  [11, 13]])
+        """
+        return ivy.cummin(
+            self._data,
+            axis=axis,
+            exclusive=exclusive,
+            reverse=reverse,
+            dtype=dtype,
             out=out,
         )

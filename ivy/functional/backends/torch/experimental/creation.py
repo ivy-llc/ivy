@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 import math
 import torch
 
@@ -124,3 +124,54 @@ def tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
         )
     )
+
+
+def unsorted_segment_min(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    if data.dtype in [torch.float32, torch.float64, torch.float16, torch.bfloat16]:
+        init_val = torch.finfo(data.dtype).max
+    elif data.dtype in [torch.int32, torch.int64, torch.int8, torch.int16, torch.uint8]:
+        init_val = torch.iinfo(data.dtype).max
+    else:
+        raise ValueError("Unsupported data type")
+
+    res = torch.full(
+        (num_segments,) + data.shape[1:], init_val, dtype=data.dtype, device=data.device
+    )
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.min(data[mask_index], 0)[0]
+
+    return res
+
+
+def unsorted_segment_sum(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.sum(data[mask_index], dim=0)
+
+    return res

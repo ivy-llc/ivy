@@ -132,6 +132,31 @@ instance_norm.partial_mixed_handler = (
 )
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, backend_version)
+def group_norm(
+    x: torch.Tensor,
+    num_groups: int = 1,
+    /,
+    *,
+    offset: Optional[torch.Tensor] = None,
+    scale: Optional[torch.Tensor] = None,
+    eps: Optional[float] = 1e-5,
+    data_format: Optional[str] = "NSC",
+    out: Optional[torch.Tensor] = None,
+):
+    xdims = x.ndim
+    if data_format == "NSC":
+        x = torch.permute(x, dims=(0, xdims - 1, *range(1, xdims - 1)))
+    xnormalized = torch.nn.functional.group_norm(
+        x, num_groups, weight=scale, bias=offset, eps=eps
+    )
+
+    if data_format == "NSC":
+        xnormalized = torch.permute(xnormalized, dims=(0, *range(2, xdims), 1))
+
+    return xnormalized
+
+
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, backend_version)
 def lp_normalize(
     x: torch.Tensor,

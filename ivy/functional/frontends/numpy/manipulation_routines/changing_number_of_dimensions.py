@@ -9,7 +9,7 @@ def squeeze(
     a,
     axis=None,
 ):
-    return ivy.squeeze(a, axis)
+    return ivy.squeeze(a, axis=axis)
 
 
 # expand_dims

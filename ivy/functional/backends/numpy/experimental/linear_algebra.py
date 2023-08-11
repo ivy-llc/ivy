@@ -4,6 +4,7 @@ import numpy as np
 
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.utils.exceptions import IvyNotImplementedException
 from .. import backend_version
 
 from ivy.functional.ivy.experimental.linear_algebra import _check_valid_dimension_size
@@ -97,7 +98,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.25.0 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.25.2 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -175,31 +176,11 @@ def cond(
 cond.support_native_out = False
 
 
-def cov(
-    x1: np.ndarray,
-    x2: np.ndarray = None,
+def lu_factor(
+    x: np.ndarray,
     /,
     *,
-    rowVar: bool = True,
-    bias: bool = False,
-    ddof: Optional[int] = None,
-    fweights: Optional[np.ndarray] = None,
-    aweights: Optional[np.ndarray] = None,
-    dtype: Optional[np.dtype] = None,
-) -> np.ndarray:
-    if fweights is not None:
-        fweights = fweights.astype(np.int64)
-
-    return np.cov(
-        m=x1,
-        y=x2,
-        rowvar=rowVar,
-        bias=bias,
-        ddof=ddof,
-        fweights=fweights,
-        aweights=aweights,
-        dtype=dtype,
-    )
-
-
-cov.support_native_out = False
+    pivot: Optional[bool] = True,
+    out: Optional[np.ndarray] = None,
+) -> Tuple[np.ndarray]:
+    raise IvyNotImplementedException()

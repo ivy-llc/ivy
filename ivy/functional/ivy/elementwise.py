@@ -9,8 +9,10 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    integer_arrays_to_float,
     handle_array_like_without_promotion,
+    inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -19,17 +21,18 @@ from ivy.utils.exceptions import handle_exceptions
 # -------------------#
 
 
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def abs(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
     *,
-    where: Optional[ivy.Array] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:  # noqa
     """Calculate the absolute value for each element ``x_i`` of the input array ``x``
@@ -52,9 +55,9 @@ def abs(
     let ``a = real(x_i)`` and ``b = imag(x_i)``. and
 
     - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
-    (including ``NaN``), the result is ``+infinity``.
+      (including ``NaN``), the result is ``+infinity``.
     - If ``a`` is any value (including ``NaN``) and ``b`` is ``+infinity``,
-    the result is ``+infinity``.
+      the result is ``+infinity``.
     - If ``a`` is either ``+0`` or ``-0``, the result is ``abs(b)``.
     - If ``b`` is ``+0`` or ``-0``, the result is ``abs(a)``.
     - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN``.
@@ -65,8 +68,6 @@ def abs(
     ----------
     x
         input array. Should have a numeric data type
-    where
-        optional boolean mask
 
     out
         optional output array, for writing the result to. It must have a shape that the
@@ -122,15 +123,17 @@ def abs(
 
     """
 
-    return ivy.current_backend(x).abs(x, out=out, where=where)
+    return ivy.current_backend(x).abs(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def acos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -146,10 +149,38 @@ def acos(
 
     For floating-point operands,
 
-    - If x_i is NaN, the result is NaN.
-    - If x_i is greater than 1, the result is NaN.
-    - If x_i is less than -1, the result is NaN.
-    - If x_i is 1, the result is +0.
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is greater than ``1``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is ``1``, the result is ``+0``.
+
+    For complex floating-point operands, let a = real(x_i) and b = imag(x_i),
+    and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``π/2 - 0j``.
+    - if ``a`` is either ``+0`` or ``-0`` and ``b`` is ``NaN``,
+      the result is ``π/2 + NaN j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``π/2 - infinity j``.
+    - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a positive
+      (i.e., greater than 0) finite number, the result is ``π - infinity j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than 0) finite number, the result is ``+0 - infinity j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``3π/4 - infinity j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``π/4 - infinity j``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``NaN ± infinity j`` (sign of
+      the imaginary component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+      the result is ``NaN + NaN j``.
+    - if ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+      the result is ``NaN - infinity j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Parameters
     ----------
@@ -206,12 +237,13 @@ def acos(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def acosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -230,6 +262,33 @@ def acosh(
     - If ``x_i`` is less than ``1``, the result is ``NaN``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let a = real(x_i) and b = imag(x_i),
+    and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``+0 + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/2``.
+    - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``NaN ± πj/2``
+      (sign of the imaginary component is unspecified).
+    - If ``a`` is ``-infinity`` and ``b`` is a positive (i.e., greater than 0) finite
+      number, the result is ``+infinity + πj``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than 0) finite
+      number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + 3πj/4``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/4``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+      the result is ``NaN + NaN j``.
+    - if ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
 
     Parameters
     ----------
@@ -289,10 +348,12 @@ def acosh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def add(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -342,6 +403,33 @@ def add(
 
     .. note::
        Floating-point addition is a commutative operation, but not always associative.
+
+    For complex floating-point operands, addition is defined according
+    to the following table.
+    For real components ``a`` and ``c``, and imaginary components ``b`` and ``d``,
+
+    +-------------------+-------------------+-------------------+-------------------+
+    |                   |         c         |       dj          |         c+dj      |
+    +===================+===================+===================+===================+
+    |     **a**         |       a + c       |      a + dj       |  (a+c) + dj       |
+    +-------------------+-------------------+-------------------+-------------------+
+    |     **bj**        |    c + bj         |     (b+d)j        |   c + (b+d)j      |
+    +-------------------+-------------------+-------------------+-------------------+
+    |     **a+bj**      | (a+c) + bj        |   a + (b+d)j      | (a+c) + (b+d)j    |
+    +-------------------+-------------------+-------------------+-------------------+
+
+    For complex floating-point operands, the real valued floating-point
+    special cases must independently apply to the real and
+    imaginary component operation invloving real numbers as
+    described in the above table. For example, let ``a = real(x1_i)``,
+    ``c = real(x2_i)``, ``d = imag(x2_i)``,
+    and
+    - if ``a`` is ``-0``, the real component of the result is ``-0``.
+    - Similarly, if ``b`` is ``+0`` and ``d`` is ``-0``,
+    the imaginary component of the result is ``+0``.
+
+    Hence, if ``z1 = a + bj = -0 + 0j`` and ``z2 = c + dj = -0 - 0j``,
+    then the result of  ``z1 + z2`` is ``-0 + 0j``.
 
     Parameters
     ----------
@@ -410,11 +498,13 @@ def add(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def asin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -435,6 +525,9 @@ def asin(
     - If ``x_i`` is less than ``-1``, the result is ``NaN``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
+
+    For complex floating-point operands, special cases must be handled
+    as if the operation is implemented as ``-1j * asinh(x * 1j)``.
 
     Parameters
     ----------
@@ -494,12 +587,13 @@ def asin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def asinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -519,6 +613,24 @@ def asinh(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)`` and ``b = imag(x_i)``,
+    and
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is a positive (i.e., greater than ``0``) finite number and ``b`` is
+      ``+infinity``, the result is ``+infinity + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than ``0``)
+      finite number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``, the result is
+      ``+infinity + πj/4``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``, the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is nonzero finite number, the result is
+      ``NaN + NaNj``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+      the result is ``±infinity ± NaNj``, (sign of real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, ``NaN + NaNj``.
 
     Parameters
     ----------
@@ -584,11 +696,13 @@ def asinh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def atan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -667,11 +781,12 @@ def atan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def atan2(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -841,12 +956,13 @@ def atan2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def atanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -882,6 +998,37 @@ def atanh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    **Special cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x_i`` is less than ``-1``, the result is ``NaN``.
+    - If ``x_i`` is greater than ``1``, the result is ``NaN``.
+    - If ``x_i`` is ``-1``, the result is ``-infinity``.
+    - If ``x_i`` is ``+1``, the result is ``+infinity``.
+    - If ``x_i`` is ``+0``, the result is ``+0``.
+    - If ``x_i`` is ``-0``, the result is ``-0``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``+0 + NaN j``.
+    - If ``a`` is ``1`` and ``b`` is ``+0``, the result is ``+infinity + 0j``.
+    - If ``a`` is a positive (i.e., greater than ``0``) finite number and ``b``
+      is ``+infinity``, the result is ``+0 + πj/2``.
+    - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive (i.e., greater than ``0``)
+      finite number, the result is ``+0 + πj/2``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``+0 + πj/2``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``, the result is ``+0 + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number, the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``, the result is ``±0 + πj/2``
+      (sign of the real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -913,10 +1060,12 @@ def atanh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_and(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1005,11 +1154,13 @@ def bitwise_and(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_invert(
     x: Union[int, bool, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
@@ -1080,10 +1231,12 @@ def bitwise_invert(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_left_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1129,10 +1282,12 @@ def bitwise_left_shift(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_or(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1216,10 +1371,12 @@ def bitwise_or(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_right_shift(
     x1: Union[int, ivy.Array, ivy.NativeArray],
     x2: Union[int, ivy.Array, ivy.NativeArray],
@@ -1330,10 +1487,12 @@ def bitwise_right_shift(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def bitwise_xor(
     x1: Union[int, bool, ivy.Array, ivy.NativeArray],
     x2: Union[int, bool, ivy.Array, ivy.NativeArray],
@@ -1397,6 +1556,7 @@ def bitwise_xor(
 
     >>> a = ivy.array([1, 2, 3])
     >>> b = ivy.array([3, 2, 1])
+    >>> y = ivy.zeros(3)
     >>> ivy.bitwise_xor(a, b, out = a)
     >>> print(a)
     ivy.array([2, 0, 2])
@@ -1404,10 +1564,10 @@ def bitwise_xor(
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([0, 1, 3, 67, 91])
-    >>> a = ivy.native_array([4, 7, 90, 89, 98])
+    >>> b = ivy.native_array([4, 7, 90, 89, 98])
     >>> y = ivy.bitwise_xor(a, b)
     >>> print(y)
-    ivy.array([0,0,0,0,0])
+    ivy.array([ 4,  6, 89, 26, 57])
 
     With :class:`ivy.Container` input:
 
@@ -1434,11 +1594,13 @@ def bitwise_xor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def ceil(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1522,12 +1684,13 @@ def ceil(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def cos(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1547,6 +1710,9 @@ def cos(
     - If ``x_i`` is ``-0``, the result is ``1``.
     - If ``x_i`` is ``+infinity``, the result is ``NaN``.
     - If ``x_i`` is ``-infinity``, the result is ``NaN``.
+
+    For complex floating-point operands, special cases must be handled as if the
+    operation is implemented as ``cosh(x*1j)``.
 
     Parameters
     ----------
@@ -1604,12 +1770,13 @@ def cos(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def cosh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1629,6 +1796,37 @@ def cosh(
     - If ``x_i`` is ``-0``, the result is ``1``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    .. note::
+       For complex floating-point operands, ``cosh(conj(x))``
+       must equal ``conj(cosh(x))``.
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``1 + 0j``.
+    - If ``a`` is ``+0`` and ``b`` is ``+infinity``, the result is ``NaN + 0j``
+      (sign of the imaginary component is unspecified).
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``, the result is ``NaN + 0j``
+      (sign of the imaginary component is unspecified).
+    - If ``a`` is a nonzero finite number and ``b`` is ``+infinity``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is a nonzero finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+      the result is ``+infinity + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
+      the result is ``+infinity * cis(b)``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + NaN j``(sign of the real component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is either ``+0`` or ``-0``,
+      the result is ``NaN + 0j`` (sign of the imaginary component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is a nonzero finite number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
@@ -1691,10 +1889,12 @@ def cosh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -1702,9 +1902,124 @@ def divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
+    r"""
     Calculate the division for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
+      is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i``
+      is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``,
+      the result is ``+0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``,
+      the result is ``-0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``,
+      the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``,
+      the result is ``+0``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``,
+      the result is ``+infinity``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``,
+      the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``,
+      the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``,
+      the result is ``+infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative
+      (i.e., less than ``0``) finite number, the result is ``-infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``-infinity``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative
+      (i.e., less than ``0``) finite number, the result is ``+infinity``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
+      ``x2_i`` is ``+infinity``, the result is ``+0``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``) finite number and
+      ``x2_i`` is ``-infinity``, the result is ``-0``.
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
+      ``x2_i`` is ``+infinity``, the result is ``-0``.
+    - If ``x1_i`` is a negative (i.e., less than ``0``) finite number and
+      ``x2_i`` is ``-infinity``, the result is ``+0``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign and
+      are both nonzero finite numbers, the result has a positive mathematical sign.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs and
+      are both nonzero finite numbers, the result has a negative mathematical sign.
+    - In the remaining cases, where neither ``-infinity``, ``+0``, ``-0``, nor ``NaN``
+      is involved, the quotient must be computed and rounded
+      to the nearest representable value according to IEEE 754-2019
+      and a supported rounding mode.
+      If the magnitude is too large to represent, the operation overflows and
+      the result is an ``infinity`` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the operation
+      underflows and the result is a zero of appropriate mathematical sign.
+
+    For complex floating-point operands,
+    division is defined according to the following table.
+    For real components ``a`` and ``c`` and imaginary components ``b`` and ``d``,
+
+    +------------+----------------+-----------------+--------------------------+
+    |            | c              | dj              | c + dj                   |
+    +============+================+=================+==========================+
+    | **a**      | a / c          | -(a/d)j         | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+    | **bj**     | (b/c)j         | b/d             | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+    | **a + bj** | (a/c) + (b/c)j | b/d - (a/d)j    | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+
+    In general, for complex floating-point operands,
+    real-valued floating-point special cases
+    must independently apply to the real and imaginary component operations
+    involving real numbers as described in the above table.
+
+    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
+    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
+    division of complex floating-point operands should be computed as
+    if calculated according to the textbook formula for complex number division
+
+    .. math::
+       \frac{a + bj}{c + dj} = \frac{(ac + bd) + (bc - ad)j}{c^2 + d^2}
+
+    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
+    ``+infinity``, or ``-infinity``,
+
+    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``, the result is ``NaN + NaN j``.
+    - In the remaining cases, the result is implementation dependent.
+
+    .. note::
+       For complex floating-point operands, the results of special cases
+       may be implementation dependent depending on how an implementation
+       chooses to model complex numbers and complex infinity (e.g.,
+       complex plane versus Riemann sphere).
+       For those implementations following C99 and its one-infinity model,
+       when at least one component is infinite, even if the other component is ``NaN``,
+       the complex value is infinite, and the usual arithmetic rules do not apply to
+       complex-complex division.
+       In the interest of performance, other implementations may want
+       to avoid the complex branching logic necessary
+       to implement the one-infinity model
+       and choose to implement all complex-complex division
+       according to the textbook formula.
+       Accordingly, special case behavior is unlikely
+       to be consistent across implementations.
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.divide.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Parameters
     ----------
@@ -1722,18 +2037,6 @@ def divide(
     ret
         an array containing the element-wise results. The returned array must have a
         floating-point data type determined by Type Promotion Rules.
-
-
-    This method conforms to the
-    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
-    This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    API_specification/generated/array_api.divide.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     Examples
     --------
@@ -1778,10 +2081,12 @@ def divide(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1810,6 +2115,33 @@ def equal(
         an array containing the element-wise results. The returned array must have a
         data type of bool.
 
+
+    **Special cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x1_i`` is ``NaN`` or ``x2_i`` is ``NaN``, the result is ``False``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``+infinity``,
+      the result is ``True``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``-infinity``,
+      the result is ``True``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is either ``+0`` or ``-0``,
+      the result is ``True``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is either ``+0`` or ``-0``,
+      the result is ``True``.
+    - If ``x1_i`` is a finite number, ``x2_i`` is a finite number,
+      and ``x1_i`` equals ``x2_i``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
+
+    For complex floating-point operands, let ``a = real(x1_i)``,
+    ``b = imag(x1_i)``, ``c = real(x2_i)``, ``d = imag(x2_i)``, and
+
+    - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``False``.
+    - In the remaining cases, the result is the logical AND of the equality
+      comparison between the real values ``a`` and ``c`` (real components) and
+      between the real values ``b`` and ``d`` (imaginary components),
+      as described above for real-valued floating-point operands
+      (i.e., ``a == c AND b == d``).
 
     This method conforms to the
     `Array API Standard <https://data-apis.org/array-api/latest/>`_.
@@ -1866,12 +2198,13 @@ def equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def exp(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1883,6 +2216,14 @@ def exp(
     element ``x_i`` of the input array ``x`` (``e`` raised to the power of ``x_i``,
     where ``e`` is the base of the natural logarithm).
 
+    .. note::
+        For complex floating-point operands, ``exp(conj(x))`` must
+        equal ``conj(exp(x))``.
+
+    .. note::
+        The exponential function is an entire function in
+        the complex plane and has no branch cuts.
+
     **Special cases**
 
     For floating-point operands,
@@ -1892,6 +2233,38 @@ def exp(
     - If ``x_i`` is ``-0``, the result is ``1``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``+0``.
+
+    For complex floating-point operands,
+    let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``1 + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+      the result is ``infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a finite number,
+      the result is ``+0 * cis(b)``.
+    - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
+      the result is ``+infinity * cis(b)``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``0 + 0j`` (signs of real and imaginary components are unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``,
+      the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is not equal to ``0``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
@@ -1964,10 +2337,12 @@ def exp(
     return ivy.current_backend(x).exp(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def imag(
     val: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1975,12 +2350,13 @@ def imag(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Return the Imaginary part of a complex numbers(x+yj).
+    Return the imaginary part of a complex number for each element
+    ``x_i`` of the input array ``val``.
 
     Parameters
     ----------
     val
-        Array-like input.
+        input array. Should have a complex floating-point data type.
     out
         optional output array, for writing the result to.
 
@@ -1988,6 +2364,20 @@ def imag(
     -------
     ret
         Returns an array with the imaginary part of complex numbers.
+        The returned arrau must have a floating-point data type determined by
+        the precision of ``val`` (e.g., if ``val`` is ``complex64``,
+        the returned array must be ``float32``).
+
+    This method conforms to the
+    `Array API Standard <https://data-apis.org/array-api/latest/>`_.
+    This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.imag.html>`_
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     Examples
     --------
@@ -2000,10 +2390,12 @@ def imag(
     return ivy.current_backend(val).imag(val, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def angle(
     z: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2032,22 +2424,22 @@ def angle(
 
     Examples
     --------
-    >>> ivy.set_backend('tensorflow')
     >>> z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])
     >>> z
     ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])
     >>> ivy.angle(z)
     ivy.array([ 2.35619449,  2.35619449, -0.78539816])
-    >>> ivy.set_backend('numpy')
     >>> ivy.angle(z,deg=True)
     ivy.array([135., 135., -45.])
     """
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def gcd(
     x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
@@ -2085,10 +2477,12 @@ def gcd(
     return ivy.current_backend(x1, x2).gcd(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def exp2(
     x: Union[ivy.Array, float, list, tuple],
     /,
@@ -2123,12 +2517,13 @@ def exp2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def expm1(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2146,6 +2541,14 @@ def expm1(
        IEEE 754-2019 compliant mathematical library, for a potential reference
        implementation.
 
+    .. note::
+        For complex floating-point operands, ``expm1(conj(x))``
+        must equal ``conj(expm1(x))``.
+
+    .. note::
+        The exponential function is an entire function
+        in the complex plane and has no branch cuts.
+
     **Special cases**
 
     For floating-point operands,
@@ -2155,6 +2558,38 @@ def expm1(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-1``.
+
+    For complex floating-point operands,
+    let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``0 + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+      the result is ``+infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a finite number,
+      the result is ``+0 * cis(b) - 1.0``.
+    - If ``a`` is ``+infinity`` and ``b`` is a nonzero finite number,
+      the result is ``+infinity * cis(b) - 1.0``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``-1 + 0j`` (sign of imaginary component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``infinity + NaN j`` (sign of real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``,
+      the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is not equal to ``0``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
@@ -2208,11 +2643,13 @@ def expm1(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def floor(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2298,10 +2735,12 @@ def floor(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def floor_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2309,10 +2748,105 @@ def floor_divide(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
+    r"""
     Round the result of dividing each element x1_i of the input array x1 by the
     respective element x2_i of the input array x2 to the greatest (i.e., closest to
     +infinity) integer-value number that is not greater than the division result.
+
+    .. note::
+        For input arrays which promote to an integer data type,
+        the result of division by zero is unspecified and thus implementation-defined.
+
+    **Special cases**
+
+    .. note::
+       Floor division was introduced in Python via
+       `PEP 238 <https://www.python.org/dev/peps/pep-0238/>`_
+       with the goal to disambiguate "true division"
+       (i.e., computing an approximation to the mathematical operation of division)
+       from "floor division" (i.e., rounding the result
+       of division toward negative infinity).
+       The former was computed when one of the operands was a ``float``,
+       while the latter was computed when both operands were ``int``\s.
+       Overloading the ``/`` operator to support both behaviors led to
+       subtle numerical bugs when integers are possible, but not expected.
+
+       To resolve this ambiguity, ``/`` was designated for true division, and ``//``
+       was designated for floor division. Semantically, floor division was
+       `defined
+       <https://www.python.org/dev/peps/pep-0238/#semantics-of-floor-division>`_
+       as equivalent to ``a // b == floor(a/b)``;
+       however, special floating-point cases were left ill-defined.
+
+       Accordingly, floor division is not implemented consistently
+       across array libraries for some of the special cases documented below.
+       Namely, when one of the operands is ``infinity``,
+       libraries may diverge with some choosing
+       to strictly follow ``floor(a/b)`` and others choosing to pair ``//`` with ``%``
+       according to the relation ``b = a % b + b * (a // b)``.
+       The special cases leading to divergent behavior are documented below.
+
+       This specification prefers floor division to match ``floor(divide(x1, x2))``
+       in order to avoid surprising and unexpected results; however,
+       array libraries may choose to more strictly follow Python behavior.
+
+    For floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
+      is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i``
+      is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is greater than ``0``,
+      the result is ``+0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is greater than ``0``,
+      the result is ``-0``.
+    - If ``x1_i`` is ``+0`` and ``x2_i`` is less than ``0``,
+      the result is ``-0``.
+    - If ``x1_i`` is ``-0`` and ``x2_i`` is less than ``0``,
+      the result is ``+0``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``+0``,
+      the result is ``+infinity``.
+    - If ``x1_i`` is greater than ``0`` and ``x2_i`` is ``-0``,
+      the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``+0``,
+      the result is ``-infinity``.
+    - If ``x1_i`` is less than ``0`` and ``x2_i`` is ``-0``,
+      the result is ``+infinity``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is a negative
+      (i.e., less than ``0``) finite number, the result is ``-infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``-infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is a negative
+      (i.e., less than ``0``) finite number, the result is ``+infinity``.
+      (**note**: libraries may return ``NaN`` to match Python behavior.)
+    - If ``x1_i`` is a positive (i.e., greater than ``0``)
+      finite number and ``x2_i`` is ``+infinity``, the result is ``+0``.
+    - If ``x1_i`` is a positive (i.e., greater than ``0``)
+      finite number and ``x2_i`` is ``-infinity``, the result is ``-0``.
+      (**note**: libraries may return ``-1.0`` to match Python behavior.)
+    - If ``x1_i`` is a negative (i.e., less than ``0``)
+      finite number and ``x2_i`` is ``+infinity``, the result is ``-0``.
+      (**note**: libraries may return ``-1.0`` to match Python behavior.)
+    - If ``x1_i`` is a negative (i.e., less than ``0``)
+      finite number and ``x2_i`` is ``-infinity``, the result is ``+0``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign and
+      are both nonzero finite numbers, the result has a positive mathematical sign.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs and
+      are both nonzero finite numbers, the result has a negative mathematical sign.
+    - In the remaining cases, where neither ``-infinity``, ``+0``, ``-0``,
+      nor ``NaN`` is involved, the quotient must be computed and rounded to
+      the greatest (i.e., closest to `+infinity`) representable integer-value
+      number that is not greater than the division result.
+      If the magnitude is too large to represent, the operation overflows and
+      the result is an ``infinity`` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the operation underflows and
+      the result is a zero of appropriate mathematical sign.
 
     Parameters
     ----------
@@ -2386,9 +2920,11 @@ def floor_divide(
     return ivy.current_backend(x1, x2).floor_divide(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def fmin(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2431,10 +2967,12 @@ def fmin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def greater(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2485,7 +3023,9 @@ def greater(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
     >>> print(x)
-    ivy.array([[[False],[True],[False]]])
+    ivy.array([[[0.],
+            [1.],
+            [0.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2493,7 +3033,7 @@ def greater(
     >>> y = ivy.native_array([4, 5, 0])
     >>> z = ivy.greater(x, y)
     >>> print(z)
-    ivy.array([False,False,True])
+    ivy.array([False, False,  True])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
@@ -2528,10 +3068,12 @@ def greater(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def greater_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2578,7 +3120,7 @@ def greater_equal(
 
     >>> x = ivy.greater_equal(ivy.array([1,2,3]),ivy.array([2,2,2]))
     >>> print(x)
-    ivy.array([False,True,True])
+    ivy.array([False, True, True])
 
     >>> x = ivy.array([[10.1, 2.3, -3.6]])
     >>> y = ivy.array([[4.8], [5.2], [6.1]])
@@ -2587,13 +3129,17 @@ def greater_equal(
     >>> z = ivy.full(shape, fill_value)
     >>> ivy.greater_equal(x, y, out=z)
     >>> print(z)
-    ivy.array([[True,False,False],[True,False,False],[True,False,False]])
+    ivy.array([[ True, False, False],
+           [ True, False, False],
+           [ True, False, False]])
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[False],[True],[False]]])
+    ivy.array([[[0.],
+            [1.],
+            [0.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2601,17 +3147,21 @@ def greater_equal(
     >>> y = ivy.native_array([4, 5, 0])
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
-    ivy.array([False,False,True])
+    ivy.array([False, False,  True])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]), b=ivy.array([[5.], [6.], [7.]])) # noqa
+    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]), b=ivy.array([[5.], [6.], [7.]]))
     >>> z = ivy.greater_equal(x, y)
     >>> print(z)
     {
-        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),
-        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])
+        a: ivy.array([[True, False, False],
+                      [True, False, False],
+                      [False, False, False]]),
+        b: ivy.array([[True, False, False],
+                      [False, False, False],
+                      [False, False, False]])
     }
 
     With :class:`ivy.Container` input:
@@ -2629,10 +3179,12 @@ def greater_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def less_equal(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2687,15 +3239,17 @@ def less_equal(
     >>> z = ivy.full(shape, fill_value)
     >>> ivy.less_equal(x, y, out=z)
     >>> print(z)
-    ivy.array([[False, True, True],
-       [ False, True, True],
-       [ False, True, True]])
+    ivy.array([[False,  True,  True],
+           [False,  True,  True],
+           [False,  True,  True]])
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less_equal(x, y, out=x)
     >>> print(x)
-    ivy.array([[[True],[False],[True]]])
+    ivy.array([[[1.],
+            [0.],
+            [1.]]])
 
     With :class:`ivy.Container` input:
 
@@ -2712,10 +3266,12 @@ def less_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def multiply(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -2723,9 +3279,96 @@ def multiply(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """
+    r"""
     Calculate the product for each element x1_i of the input array x1 with the
     respective element x2_i of the input array x2.
+
+    .. note::
+       Floating-point multiplication is not always associative due to finite precision.
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
+      ``x2_i`` is either ``+0`` or ``-0``, the result is ``NaN``.
+    - If ``x1_i`` is either ``+0`` or ``-0`` and
+      ``x2_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+    - If ``x1_i`` and ``x2_i`` have the same mathematical sign,
+      the result has a positive mathematical sign, unless the result is ``NaN``.
+      If the result is ``NaN``, the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` and ``x2_i`` have different mathematical signs,
+      the result has a negative mathematical sign,
+      unless the result is ``NaN``. If the result is ``NaN``,
+      the "sign" of ``NaN`` is implementation-defined.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and
+      ``x2_i`` is either ``+infinity`` or ``-infinity``,
+      the result is a signed infinity with the mathematical sign determined by
+      the rule already stated above.
+    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i``
+      is a nonzero finite number, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
+    - If ``x1_i`` is a nonzero finite number and ``x2_i``
+      is either ``+infinity`` or ``-infinity``, the result is a signed infinity with
+      the mathematical sign determined by the rule already stated above.
+    - In the remaining cases, where neither ``infinity`` nor ``NaN``
+      is involved, the product must be computed and rounded to the nearest
+      representable value according to IEEE 754-2019 and a supported
+      rounding mode. If the magnitude is too large to represent,
+      the result is an `infinity` of appropriate mathematical sign.
+      If the magnitude is too small to represent, the result is a zero of
+      appropriate mathematical sign.
+
+    For complex floating-point operands, multiplication is defined according to the
+    following table. For real components ``a`` and ``c`` and
+    imaginary components ``b`` and ``d``,
+
+    +------------+----------------+-----------------+--------------------------+
+    |            | c              | dj              | c + dj                   |
+    +============+================+=================+==========================+
+    | **a**      | a * c          | (a*d)j          | (a*c) + (a*d)j           |
+    +------------+----------------+-----------------+--------------------------+
+    | **bj**     | (b*c)j         | -(b*d)          | -(b*d) + (b*c)j          |
+    +------------+----------------+-----------------+--------------------------+
+    | **a + bj** | (a*c) + (b*c)j | -(b*d) + (a*d)j | special rules            |
+    +------------+----------------+-----------------+--------------------------+
+
+    In general, for complex floating-point operands, real-valued floating-point
+    special cases must independently apply to the real and imaginary component
+    operations involving real numbers as described in the above table.
+
+    When ``a``, ``b``, ``c``, or ``d`` are all finite numbers
+    (i.e., a value other than ``NaN``, ``+infinity``, or ``-infinity``),
+    multiplication of complex floating-point operands should be computed
+    as if calculated according to the textbook formula for complex number multiplication
+
+    .. math::
+       (a + bj) \cdot (c + dj) = (ac - bd) + (bc + ad)j
+
+    When at least one of ``a``, ``b``, ``c``, or ``d`` is ``NaN``,
+    ``+infinity``, or ``-infinity``,
+
+    - If ``a``, ``b``, ``c``, and ``d`` are all ``NaN``,
+      the result is ``NaN + NaN j``.
+    - In the remaining cases, the result is implementation dependent.
+
+    .. note::
+       For complex floating-point operands, the results of special cases may be
+       implementation dependent depending on how an implementation chooses
+       to model complex numbers and complex infinity
+       (e.g., complex plane versus Riemann sphere).
+       For those implementations following C99 and its one-infinity model,
+       when at least one component is infinite,
+       even if the other component is ``NaN``,
+       the complex value is infinite, and the usual arithmetic
+       rules do not apply to complex-complex multiplication.
+       In the interest of performance, other implementations
+       may want to avoid the complex branching logic necessary
+       to implement the one-infinity model and choose to implement
+       all complex-complex multiplication according to the textbook formula.
+       Accordingly, special case behavior is unlikely
+       to be consistent across implementations.
 
     Parameters
     ----------
@@ -2739,6 +3382,7 @@ def multiply(
     out
         optional output array, for writing the array result to.
         It must have a shape that the inputs broadcast to.
+
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -2808,12 +3452,13 @@ def multiply(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def isfinite(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2838,6 +3483,24 @@ def isfinite(
         finite and ``False`` otherwise. The returned array must have a data type of
         ``bool``.
 
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``False``.
+    - if ``x_i`` is ``NaN``, the result is ``False``.
+    - if ``x_i`` is a finite number, the result is ``True``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``,
+    and
+
+    - If ``a`` is ``NaN`` or ``b`` is ``NaN``, the result is ``False``.
+    _ If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value,
+      the result is ``False``.
+    - If ``a`` is any value and ``b`` is either ``+infinity`` or ``-infinity``,
+      the result is ``False``.
+    - If ``a`` is a finite number and ``b`` is a finite number, the result is ``True``.
 
     This method conforms to the
     `Array API Standard<https://data-apis.org/array-api/latest/>`_.
@@ -2864,13 +3527,13 @@ def isfinite(
     >>> y = ivy.zeros(3)
     >>> ivy.isfinite(x, out=y)
     >>> print(y)
-    ivy.array([ True, False, False])
+    ivy.array([1., 0., 0.])
 
     >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
     >>> ivy.isfinite(x, out=x)
     >>> print(x)
-    ivy.array([[ True,  True],
-        [False, False]])
+    ivy.array([[1., 1.],
+           [0., 0.]])
 
     With :class:`ivy.Container` input:
 
@@ -2887,12 +3550,13 @@ def isfinite(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def isinf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2924,6 +3588,22 @@ def isinf(
         positive or negative infinity and False otherwise. The returned array must have
         a data type of bool.
 
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If x_i is either +infinity or -infinity, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``,
+    and
+
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and ``b`` is any value
+      (including ``NaN``), the result is ``True``.
+    - If ``a`` is either a finite number or ``NaN`` and ``b`` is either ``+infinity``
+      or ``-infinity``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -2995,12 +3675,13 @@ def isinf(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def isnan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3025,6 +3706,19 @@ def isnan(
         ``NaN`` and ``False`` otherwise. The returned array should have a data type of
         ``bool``.
 
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x_i`` is ``NaN``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``,
+    and
+
+    - If ``a`` or ``b`` is ``NaN``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -3090,10 +3784,12 @@ def isnan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def less(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -3134,7 +3830,9 @@ def less(
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.less(x, y, out=x)
     >>> print(x)
-    ivy.array([[[True],[False],[True]]])
+    ivy.array([[[1.],
+            [0.],
+            [1.]]])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -3176,12 +3874,13 @@ def less(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def log(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3201,6 +3900,31 @@ def log(
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is ``-0`` and ``b`` is ``+0``, the result is ``-infinity + πj``.
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``-infinity + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + 3πj/4``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/4``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and
+      ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+
+
 
     Parameters
     ----------
@@ -3250,19 +3974,20 @@ def log(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def log10(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the base ``10``
+    r"""Calculate an implementation-dependent approximation to the base ``10``
     logarithm, having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
 
@@ -3275,6 +4000,14 @@ def log10(
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, special cases must be handled as if the
+    operation is implemented using the standard change of base formula
+
+    .. math::
+        \log_{10} x = \frac{\log_{e} x}{\log_{e} 10}
+
+    where :math:`\log_{e}` is the natural logarithm.
 
     Parameters
     ----------
@@ -3335,12 +4068,13 @@ def log10(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def log1p(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3348,8 +4082,9 @@ def log1p(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Calculate an implementation-dependent approximation to log(1+x), where log
-    refers to the natural (base e) logarithm.
+    Calculate an implementation-dependent approximation to log(1+x), where log refers to
+    the natural (base e) logarithm.
+
     .. note::
        The purpose of this function is to calculate ``log(1+x)`` more accurately
        when `x` is close to zero. Accordingly, conforming implementations should avoid
@@ -3367,6 +4102,30 @@ def log1p(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``, ``b = imag(x_i)``, and
+
+    - If ``a`` is ``-1`` and ``b`` is ``+0``, the result is ``-infinity + 0j``.
+    - If ``a`` is a finite number and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/2``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``-infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + πj``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+infinity + 0j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + 3πj/4``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + πj/4``.
+    - If ``a`` is either ``+infinity`` or ``-infinity`` and
+      ``b`` is ``NaN``, the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is a finite number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``+infinity``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+
 
     Parameters
     ----------
@@ -3398,12 +4157,12 @@ def log1p(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([1 , 2 ,3 ])
-    >>> y = ivy.log1p(x)
+    >>> x = ivy.array([1., 2., 3.])
+    >>> y = x.log1p()
     >>> print(y)
     ivy.array([0.693, 1.1  , 1.39 ])
 
-    >>> x = ivy.array([0 , 1 ])
+    >>> x = ivy.array([0. , 1.])
     >>> y = ivy.zeros(2)
     >>> ivy.log1p(x , out = y)
     >>> print(y)
@@ -3423,25 +4182,25 @@ def log1p(
         a: ivy.array([0., 0.693, 1.1]),
         b: ivy.array([1.39, 1.61, 1.81])
     }
-
     """
     return ivy.current_backend(x).log1p(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def log2(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the base ``2`` logarithm,
+    r"""Calculate an implementation-dependent approximation to the base ``2`` logarithm,
     having domain ``[0, +infinity]`` and codomain ``[-infinity, +infinity]``, for each
     element ``x_i`` of the input array ``x``.
 
@@ -3454,6 +4213,14 @@ def log2(
     - If ``x_i`` is either ``+0`` or ``-0``, the result is ``-infinity``.
     - If ``x_i`` is ``1``, the result is ``+0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, special cases must be hanled as if
+    the operation is implemented using the standard change of base formula
+
+    .. math::
+        \log_{2} x = \frac{\log_{e} x}{\log_{e} 2}
+
+    where :math:`\log_{e}` is the natural logarithm.
 
     Parameters
     ----------
@@ -3487,10 +4254,12 @@ def log2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def logaddexp(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3587,9 +4356,11 @@ def logaddexp(
     return ivy.current_backend(x1, x2).logaddexp(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def logaddexp2(
     x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
     x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
@@ -3628,10 +4399,12 @@ def logaddexp2(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def logical_and(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3727,11 +4500,13 @@ def logical_and(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def logical_not(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -3822,10 +4597,12 @@ def logical_not(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def logical_or(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -3886,13 +4663,13 @@ def logical_or(
     >>> ivy.logical_or(x, y, out=z)
     >>> print(z)
     ivy.array([[False,  True,  True],
-       [ True,  True,  True]])
+           [ True,  True,  True]])
 
     >>> x = ivy.array([False, 3, 0])
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
     >>> print(x)
-    ivy.array([ True,  True, False])
+    ivy.array([1, 1, 0])
 
     With :class:`ivy.Container` input:
 
@@ -3911,10 +4688,12 @@ def logical_or(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def logical_xor(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -4007,10 +4786,12 @@ def logical_xor(
     return ivy.current_backend(x1, x2).logical_xor(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def nan_to_num(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4067,11 +4848,13 @@ def nan_to_num(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def negative(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -4079,6 +4862,16 @@ def negative(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a new array with the negative value of each element in ``x``.
+
+    .. note::
+       For signed integer data types, the numerical negative of
+       the minimum representable integer is implementation-dependent.
+
+    .. note::
+       If ``x`` has a complex floating-point data type,
+       both the real and imaginary components for each ``x_i``
+       must be negated (a result which follows from the rules of
+       complex number multiplication).
 
     Parameters
     ----------
@@ -4142,10 +4935,12 @@ def negative(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def not_equal(
     x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
@@ -4155,6 +4950,29 @@ def not_equal(
 ) -> ivy.Array:
     """Compute the truth value of ``x1_i != x2_i`` for each element ``x1_i`` of the
     input array ``x1`` with the respective element ``x2_i`` of the input array ``x2``.
+
+    **Special Cases**
+
+    For real-valued floating-point operands,
+
+    - If ``x1_i`` is ``NaN`` or ``x2_i`` is ``NaN``, the result is ``True``.
+    - If ``x1_i`` is ``+infinity`` and ``x2_i`` is ``-infinity``,
+      the result is ``True``.
+    - If ``x1_i`` is ``-infinity`` and ``x2_i`` is ``+infinity``,
+      the result is ``True``.
+    - If ``x1_i`` is a finite number, ``x2_i`` is a finite number,
+      and ``x1_i`` does not equal ``x2_i``, the result is ``True``.
+    - In the remaining cases, the result is ``False``.
+
+    For omplex floating-point operands, let ``a = real(x1_i)``, ``b = imag(x1_i)``,
+    ``c = real(x2_i)``, ``d = imag(x2_i)``, and
+
+    - If ``a``, ``b``, ``c``, or ``d`` is ``NaN``, the result is ``True``.
+    - In the remaining cases, the result is the logical OR of
+      the equality comparison between the real values ``a`` and ``c``
+      (real components) and between the real values ``b`` and ``d``
+      (imaginary components), as described above for real-valued floating-point operands
+      (i.e., ``a != c OR b != d``).
 
     Parameters
     ----------
@@ -4206,13 +5024,13 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1., 0., 0., 1.])
 
     >>> x1 = ivy.array([1, -1, 1, -1])
     >>> x2 = ivy.array([0, -1, 1, 0])
     >>> y = ivy.not_equal(x1, x2, out=x1)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1, 0, 0, 1])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -4233,14 +5051,14 @@ def not_equal(
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, True])
+    ivy.array([1., 0., 0., 1.])
 
     >>> x1 = ivy.native_array([1, 2, 3, 4])
     >>> x2 = ivy.native_array([0, 2, 3, 4])
     >>> y = ivy.zeros(4)
     >>> ivy.not_equal(x1, x2, out=y)
     >>> print(y)
-    ivy.array([True, False, False, False])
+    ivy.array([1., 0., 0., 0.])
 
     With :class:`ivy.Container` input:
 
@@ -4300,11 +5118,13 @@ def not_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def positive(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -4376,10 +5196,12 @@ def positive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def pow(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4443,6 +5265,14 @@ def pow(
       integer value, the result is ``+infinity``.
     - If ``x1_i`` is less than ``0``, ``x1_i`` is a finite number, ``x2_i`` is a finite
       number, and ``x2_i`` is not an integer value, the result is ``NaN``.
+
+    For complex floating-point operands, special cases should be handled
+    as if the operation is implemented as ``exp(x2*log(x1))``.
+
+    .. note::
+       Conforming implementations are allowed to treat special cases involving
+       complex floating-point operands more carefully than as described
+       in this specification.
 
     Parameters
     ----------
@@ -4512,10 +5342,12 @@ pow.unsupported_gradients = {"torch": ["float16"]}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def real(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4543,7 +5375,9 @@ def real(
         ``real number`` if ``x_i`` contain real number part only
         and if it is ``real number with complex part also`` then it
         returns the real number part.
-        The returned array should have a data type of ``float``.
+        The returned array must have a floating-point data type with the
+        same floating-point precision as ``x`` (e.g., if ``x`` is ``complex64``,
+        the returned array must have the floating-point precision of ``float32``).
 
     The descriptions above assume an array input for simplicity, but
     the method also accepts :class:`ivy.Container` instances
@@ -4553,6 +5387,7 @@ def real(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[[1.1], [2], [-6.3]]])
     >>> z = ivy.real(x)
     >>> print(z)
@@ -4564,6 +5399,7 @@ def real(
     ivy.array([4.2, 0., 7.])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
                           b=ivy.array([5j, 5.32-6.55j, 3.001]))
     >>> z = ivy.real(x)
@@ -4577,10 +5413,12 @@ def real(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def remainder(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -4704,11 +5542,13 @@ def remainder(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def round(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4718,6 +5558,16 @@ def round(
 ) -> ivy.Array:
     """Round each element ``x_i`` of the input array ``x`` to the nearest
     integer-valued number.
+
+    .. note::
+       For complex floating-point operands, real and imaginary components
+       must be independently rounded to the nearest integer-valued number.
+
+       Rounded real and imaginary components must be equal
+       to their equivalent rounded real-valued floating-point
+       counterparts (i.e., for complex-valued ``x``, ``real(round(x))``
+       must equal ``round(real(x)))`` and ``imag(round(x))`` must equal
+       ``round(imag(x))``).
 
     **Special cases**
 
@@ -4733,6 +5583,14 @@ def round(
     - If two integers are equally close to ``x_i``, the result is
       the even integer closest to ``x_i``.
 
+    .. note::
+       For complex floating-point operands, the following special
+       cases apply to real and imaginary components independently
+       (e.g., if ``real(x_i)`` is ``NaN``, the rounded
+       real component is ``NaN``).
+
+    - If ``x_i`` is already integer-valued, the result is ``x_i``.
+
     Parameters
     ----------
     x
@@ -4747,6 +5605,7 @@ def round(
     -------
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
+
 
     Note: PyTorch supports an additional argument :code:`decimals` for the
     `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
@@ -4804,11 +5663,13 @@ def round(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def sign(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -4816,8 +5677,19 @@ def sign(
     np_variant: Optional[bool] = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return an indication of the sign of a number for each element ``x_i`` of the
+    r"""Return an indication of the sign of a number for each element ``x_i`` of the
     input array ``x``.
+
+    The sign function (also known as the **signum function**)
+    of a number :math:`x_{i}` is defined as
+
+    .. math::
+        \operatorname{sign}(x_i) = \begin{cases}
+       0 & \textrm{if } x_i = 0 \\
+       \frac{x}{|x|} & \textrm{otherwise}
+       \end{cases}
+
+    where :math:`|x_i|` is the absolute value of :math:`x_i`.
 
     **Special cases**
 
@@ -4825,6 +5697,16 @@ def sign(
     - If ``x_i`` is either ``-0`` or ``+0``, the result is ``0``.
     - If ``x_i`` is greater than ``0``, the result is ``+1``.
     - For complex numbers ``sign(x.real) + 0j if x.real != 0 else sign(x.imag) + 0j``
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``-0`` or ``+0`` and ``b`` is
+      either ``-0`` or ``+0``, the result is ``0 + 0j``.
+    - If ``a`` is ``NaN`` or ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - In the remaining cases, special cases must be handled
+      according to the rules of complex number division.
 
     Parameters
     ----------
@@ -4890,21 +5772,25 @@ def sign(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def sin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the sine, having domain
+    r"""Calculate an implementation-dependent approximation to the sine, having domain
     ``(-infinity, +infinity)`` and codomain ``[-1, +1]``, for each element ``x_i`` of
     the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
+
+    .. note::
+       The sine is an entire function on the complex plane and has no branch cuts.
 
     **Special cases**
 
@@ -4914,6 +5800,9 @@ def sin(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    For complex floating-point operands, special cases
+    must be handled as if the operation is implemented as ``-1j * sinh(x*1j)``.
 
     Parameters
     ----------
@@ -4977,21 +5866,31 @@ def sin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def sinh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the hyperbolic sine,
+    r"""Calculate an implementation-dependent approximation to the hyperbolic sine,
     having domain ``[-infinity, +infinity]`` and codomain ``[-infinity, +infinity]``,
     for each element ``x_i`` of the input array ``x``.
+
+    .. math::
+       \operatorname{sinh}(x) = \frac{e^x - e^{-x}}{2}
+
+    .. note::
+       The hyperbolic sine is an entire function in the
+       complex plane and has no branch cuts.
+       The function is periodic, with period
+       :math:`2\pi j`, with respect to the imaginary component.
 
     **Special cases**
 
@@ -5002,6 +5901,39 @@ def sinh(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
     - If ``x_i`` is ``-infinity``, the result is ``-infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    .. note::
+       For complex floating-point operands, ``sinh(conj(x))``
+       must equal ``conj(sinh(x))``.
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is ``+0`` and ``b`` is ``+infinity``,
+      the result is ``0 + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``,
+      the result is ``0 + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is a positive (i.e., greater than ``0``)
+      finite number and ``b`` is ``+infinity``, the result is ``NaN + NaN j``.
+    - If ``a`` is a positive (i.e., greater than ``0``)
+      finite number and ``b`` is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+0``,
+      the result is ``+infinity + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive finite number,
+      the result is ``+infinity * cis(b)``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``infinity + NaN j`` (sign of the real component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``infinity + NaN j``
+      (sign of the real component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``, the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is a nonzero finite number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    where ``cis(v)`` is ``cos(v) + sin(v)*1j``.
 
     Parameters
     ----------
@@ -5057,22 +5989,44 @@ def sinh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def sqrt(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate the square root, having domain ``[0, +infinity]`` and codomain
+    r"""Calculate the square root, having domain ``[0, +infinity]`` and codomain
     ``[0, +infinity]``, for each element ``x_i`` of the input array ``x``. After
     rounding, each result must be indistinguishable from the infinitely precise result
     (as required by IEEE 754).
+
+    .. note::
+       After rounding, each result must be indistinguishable
+       from the infinitely precise result (as required by IEEE 754).
+
+    .. note::
+       For complex floating-point operands, ``sqrt(conj(x))``
+       must equal ``conj(sqrt(x))``.
+
+    .. note::
+       By convention, the branch cut of the square root is
+       the negative real axis :math:`(-\infty, 0)`.
+
+       The square root is a continuous function from above
+       the branch cut, taking into account the sign of the imaginary component.
+
+       Accordingly, for complex arguments, the function returns
+       the square root in the range of the right half-plane,
+       including the imaginary axis (i.e., the plane defined by
+       :math:`[0, +\infty)` along the real axis and :math:`(-\infty, +\infty)`
+       along the imaginary axis).
 
     **Special cases**
 
@@ -5083,6 +6037,30 @@ def sqrt(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+infinity``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    - If ``a`` is either ``+0`` or ``-0`` and ``b`` is ``+0``,
+      the result is ``+0 + 0j``.
+    - If ``a`` is any value (including ``NaN``) and ``b`` is
+      ``+infinity``, the result is ``+infinity + infinity j``.
+    - If ``a`` is a finite number and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+    - If ``a`` ``-infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``+0 + infinity j``.
+    - If ``a`` is ``-infinity`` and ``b`` is ``NaN``,
+      the result is ``NaN + infinity j``
+      (sign of the imaginary component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``+infinity + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is any value,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
 
     Parameters
     ----------
@@ -5142,11 +6120,13 @@ def sqrt(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def square(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5213,10 +6193,12 @@ def square(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def subtract(
     x1: Union[float, ivy.Array, ivy.NativeArray],
     x2: Union[float, ivy.Array, ivy.NativeArray],
@@ -5276,21 +6258,35 @@ def subtract(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def tan(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculate an implementation-dependent approximation to the tangent, having
+    r"""Calculate an implementation-dependent approximation to the tangent, having
     domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each
     element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be
     expressed in radians.
+    .. note::
+        Tangent is an analytical function on the complex plane
+        and has no branch cuts. The function is periodic,
+        with period :math:`\pi j`, with respect to the real
+        component and has first order poles along the real
+        line at coordinates :math:`(\pi (\frac{1}{2} + n), 0)`.
+        However, IEEE 754 binary floating-point representation
+        cannot represent the value :math:`\pi / 2` exactly, and,
+        thus, no argument value is possible for
+        which a pole error occurs.
+
+        where :math:`{tanh}` is the hyperbolic tangent.
 
     **Special cases**
 
@@ -5300,6 +6296,9 @@ def tan(
     - If ``x_i`` is ``+0``, the result is ``+0``.
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is either ``+infinity`` or ``-infinity``, the result is ``NaN``.
+
+    For complex floating-point operands, special cases must
+    be handled as if the operation is implemented as ``-1j * tanh(x*1j)``.
 
     Parameters
     ----------
@@ -5363,12 +6362,13 @@ def tan(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def tanh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5389,6 +6389,52 @@ def tanh(
     - If ``x_i`` is ``-0``, the result is ``-0``.
     - If ``x_i`` is ``+infinity``, the result is ``+1``.
     - If ``x_i`` is ``-infinity``, the result is ``-1``.
+
+    For complex floating-point operands, let ``a = real(x_i)``,
+    ``b = imag(x_i)``, and
+
+    .. note::
+       For complex floating-point operands, ``tanh(conj(x))``
+       must equal ``conj(tanh(x))``.
+
+    - If ``a`` is ``+0`` and ``b`` is ``+0``, the result is ``+0 + 0j``.
+    - If ``a`` is a nonzero finite number and ``b`` is
+      ``+infinity``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+0`` and ``b`` is ``+infinity``,
+      the result is ``+0 + NaN j``.
+    - If ``a`` is a nonzero finite number and ``b``
+      is ``NaN``, the result is ``NaN + NaN j``.
+    - If ``a`` is ``+0`` and ``b`` is ``NaN``,
+      the result is ``+0 + NaN j``.
+    - If ``a`` is ``+infinity`` and ``b`` is a positive
+      (i.e., greater than ``0``) finite number, the result is ``1 + 0j``.
+    - If ``a`` is ``+infinity`` and ``b`` is ``+infinity``,
+      the result is ``1 + 0j`` (sign of the imaginary
+      component is unspecified).
+    - If ``a`` is ``+infinity`` and ``b`` is ``NaN``,
+      the result is ``1 + 0j`` (sign of the imaginary
+      component is unspecified).
+    - If ``a`` is ``NaN`` and ``b`` is ``+0``,
+      the result is ``NaN + 0j``.
+    - If ``a`` is ``NaN`` and ``b`` is a nonzero number,
+      the result is ``NaN + NaN j``.
+    - If ``a`` is ``NaN`` and ``b`` is ``NaN``,
+      the result is ``NaN + NaN j``.
+
+    .. warning::
+       For historical reasons stemming from the C standard,
+       array libraries may not return the expected
+       result when ``a`` is ``+0`` and ``b`` is either
+       ``+infinity`` or ``NaN``. The result should be
+       ``+0 + NaN j`` in both cases; however, for libraries
+       compiled against older C versions, the result may be
+       ``NaN + NaN j``.
+
+       Array libraries are not required to patch these older
+       C versions, and, thus, users are advised that results
+       may vary across array library implementations for
+       these special cases.
+
 
     Parameters
     ----------
@@ -5454,10 +6500,12 @@ def tanh(
     return ivy.current_backend(x).tanh(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def trapz(
     y: ivy.Array,
     /,
@@ -5512,11 +6560,13 @@ def trapz(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def trunc(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5603,11 +6653,13 @@ def trunc(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def erf(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5639,10 +6691,12 @@ def erf(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def maximum(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
     x2: Union[ivy.Array, ivy.NativeArray, Number],
@@ -5675,6 +6729,7 @@ def maximum(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([7, 9, 5])
     >>> y = ivy.array([9, 3, 2])
     >>> z = ivy.maximum(x, y)
@@ -5686,9 +6741,9 @@ def maximum(
     >>> z = ivy.zeros((3, 6))
     >>> ivy.maximum(x, y, out=z)
     >>> print(z)
-    ivy.array([[9.,9.,9.,9.,9.,9.],
-               [3.,5.,9.,8.,3.,7.],
-               [2.,5.,9.,8.,3.,7.]])
+    ivy.array([[9., 9., 9., 9., 9., 9.],
+           [3., 5., 9., 8., 3., 7.],
+           [2., 5., 9., 8., 3., 7.]])
 
     >>> x = ivy.array([[7, 3]])
     >>> y = ivy.array([0, 7])
@@ -5727,10 +6782,12 @@ def maximum(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def minimum(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -5816,11 +6873,13 @@ def minimum(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def reciprocal(
     x: Union[float, ivy.Array, ivy.NativeArray],
     /,
@@ -5852,12 +6911,13 @@ def reciprocal(
     return ivy.current_backend(x).reciprocal(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def deg2rad(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5887,36 +6947,35 @@ def deg2rad(
     >>> x=ivy.array([0,90,180,270,360])
     >>> y=ivy.deg2rad(x)
     >>> print(y)
-    ivy.array([0.  , 1.57, 3.14, 4.71, 6.28])
+    ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
 
     >>> x=ivy.array([0,-1.5,-50,ivy.nan])
-    >>> y=ivy.zeros(5)
+    >>> y=ivy.zeros(4)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
-    ivy.array([ 0.    , -0.0262, -0.873 ,     nan])
+    ivy.array([ 0., -0.02617994, -0.87266463, nan])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],[-4.4, -5.5, -6.6]])
     >>> ivy.deg2rad(x, out=x)
     >>> print(x)
-    ivy.array([[ 0.0192,  0.0384,  0.0576],
-        [-0.0768, -0.096 , -0.115 ]])
-
+    ivy.array([[ 0.01919862,  0.03839725,  0.05759586],
+           [-0.07679449, -0.09599311, -0.11519173]])
 
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
     >>> ivy.deg2rad(x,out=y)
     >>> print(y)
-    ivy.array([0.   , 0.351,   nan])
+    ivy.array([0., 0.35081118, nan])
 
     With :class:`ivy.Container` input:
 
     >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-                        b=ivy.array([0,90,180,270,360]))
+    ...                 b=ivy.array([0,90,180,270,360]))
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
-        a: ivy.array([0., 0.351, -0.881, nan]),
-        b: ivy.array([0., 1.57, 3.14, 4.71, 6.28])
+        a: ivy.array([0., 0.35081118, -0.88139129, nan]),
+        b: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531])
     }
 
     >>> x=ivy.Container(a=ivy.array([0,90,180,270,360]),
@@ -5924,19 +6983,20 @@ def deg2rad(
     >>> y=ivy.deg2rad(x)
     >>> print(y)
     {
-        a: ivy.array([0., 1.57, 3.14, 4.71, 6.28]),
-        b: ivy.array([0., -0.0262, -0.873, nan])
+        a: ivy.array([0., 1.57079633, 3.14159265, 4.71238898, 6.28318531]),
+        b: ivy.array([0., -0.02617994, -0.87266463, nan])
     }
     """
     return ivy.current_backend(x).deg2rad(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-@integer_arrays_to_float
 @handle_array_function
+@handle_device_shifting
 def rad2deg(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -5969,7 +7029,7 @@ def rad2deg(
     ivy.array([  0.,  90., 180., 270., 360.])
 
     >>> x=ivy.array([0.,-0.0262,-0.873,ivy.nan])
-    >>> y=ivy.zeros(5)
+    >>> y=ivy.zeros(4)
     >>> ivy.rad2deg(x,out=y)
     >>> print(y)
     ivy.array([  0. ,  -1.5, -50. ,   nan])
@@ -5988,8 +7048,8 @@ def rad2deg(
 
     With :class:`ivy.Container` input:
 
-    >>> x=ivy.Container(a=ivy.array([-0,20.1,-50.5,-ivy.nan]),
-    ...                 b=ivy.array([0,1,2,3,4]))
+    >>> x=ivy.Container(a=ivy.array([-0., 20.1, -50.5, -ivy.nan]),
+    ...                 b=ivy.array([0., 1., 2., 3., 4.]))
     >>> y=ivy.rad2deg(x)
     >>> print(y)
     {
@@ -6009,10 +7069,10 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@handle_nestable
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
+@handle_array_like_without_promotion
+@inputs_to_ivy_arrays
 @handle_array_function
 def trunc_divide(
     x1: Union[float, ivy.Array, ivy.NativeArray],
@@ -6055,12 +7115,27 @@ def trunc_divide(
     return ivy.trunc(ivy.divide(x1, x2), out=out)
 
 
+trunc_divide.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+        "handle_backend_invalid",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
+
+
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def isreal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -6096,6 +7171,7 @@ def isreal(
     Examples
     --------
     With :class:`ivy.Array` inputs:
+
     >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
     >>> z = ivy.isreal(x)
     >>> print(z)
@@ -6107,6 +7183,7 @@ def isreal(
     ivy.array([ True, False, False])
 
     With :class:`ivy.Container` input:
+
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),\
                           b=ivy.array([5j, 5-6j, 3]))
     >>> z = ivy.isreal(x)
@@ -6119,9 +7196,11 @@ def isreal(
     return ivy.current_backend(x).isreal(x, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def fmod(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -6161,9 +7240,11 @@ def fmod(
     return ivy.current_backend(x1, x2).fmod(x1, x2, out=out)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def lcm(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -6193,7 +7274,7 @@ def lcm(
     With :class:`ivy.Array` input:
 
     >>> x1=ivy.array([2, 3, 4])
-    >>> x2=ivy.array([5, 8, 15])
+    >>> x2=ivy.array([5, 7, 15])
     >>> x1.lcm(x1, x2)
     ivy.array([10, 21, 60])
     """

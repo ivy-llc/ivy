@@ -40,7 +40,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
@@ -106,24 +106,13 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
 |
 
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
-
-Ivy Experimental API
---------------------
-
-We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
-
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
-
-In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
-
-We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Managing Your Fork
 ------------------
@@ -158,7 +147,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
@@ -253,7 +242,7 @@ The code review process is explained in more detail in the following video.
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 

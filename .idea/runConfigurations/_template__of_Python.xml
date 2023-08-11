@@ -5,7 +5,7 @@
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
-      <env name="PYTHONPATH" value="/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
+      <env name="PYTHONPATH" value="/opt/miniconda/envs/multienv/lib/python3.10/site-packages:/opt/fw/numpy:/opt/fw/jax:/opt/fw/tensorflow:/opt/fw/torch:/opt/fw/paddle:/opt/fw/mxnet" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="" />
