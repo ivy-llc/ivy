@@ -2907,6 +2907,16 @@ def deform_conv2d(
     array_like
         The result of the convolution. Shape is (batch_size, d_out, height_out, width_out).
 
+    Examples
+    --------
+    >>> import ivy
+    >>> x = ivy.random.random_normal(shape=(4, 3, 10, 10))
+    >>> offset = ivy.random.random_normal(shape=(4, 2 * 3 * 3, 8, 8))
+    >>> weight = ivy.random.random_normal(shape=(5, 3, 3, 3))
+    >>> mask = ivy.random.random_normal(shape=(4, 3 * 3, 8, 8))
+    >>> result = ivy.deform_conv2d(x, offset, weight)
+    >>> print(out.shape)
+    (4, 5, 8, 8)
     """
     return ivy.current_backend().deform_conv2d(
         x,

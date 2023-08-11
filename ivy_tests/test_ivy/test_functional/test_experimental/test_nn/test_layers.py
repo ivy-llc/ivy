@@ -1268,3 +1268,142 @@ def test_rfftn(
         axes=axes,
         norm=norm,
     )
+
+
+@st.composite
+def x_and_deform_conv2d(draw):
+    dim = 2
+    dtype = draw(helpers.get_dtypes("float"))
+    batch_size = draw(st.integers(1, 5))
+    in_channels = draw(st.integers(1, 3))
+    out_channels = draw(st.integers(1, 3))
+    group_list = [*range(1, 6)]
+    group_list = list(filter(lambda x: (in_channels % x == 0), group_list))
+    groups = draw(st.sampled_from(group_list))
+    offset_groups = draw(st.integers(1, 3))
+    kernel_height = draw(st.integers(1, 3))
+    kernel_width = draw(st.integers(1, 3))
+
+    min_height_in = kernel_height + (kernel_height - 1) * (1 - 1)
+    min_width_in = kernel_width + (kernel_width - 1) * (1 - 1)
+    height_in = draw(st.integers(min_height_in, min_height_in + 1))
+    width_in = draw(st.integers(min_width_in, min_width_in + 1))
+
+    strides = draw(
+        st.one_of(
+            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+        )
+    )
+    dilations = draw(
+        st.one_of(
+            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+        )
+    )
+
+    padding = draw(
+        st.one_of(
+            st.lists(
+                st.tuples(
+                    st.integers(min_value=0, max_value=3),
+                    st.integers(min_value=0, max_value=3),
+                ),
+                min_size=dim,
+                max_size=dim,
+            ),
+            st.integers(min_value=0, max_value=3),
+        )
+    )
+
+    min_height_out = (
+        (min_height_in + 2 * padding[0] - (dilations[0] * (kernel_height - 1) + 1))
+        // strides[0]
+        + 1
+    )
+    min_width_out = (
+        (min_width_in + 2 * padding[1] - (dilations[1] * (kernel_width - 1) + 1))
+        // strides[1]
+        + 1
+    )
+    height_out = draw(st.integers(min_height_out, min_height_out + 1))
+    width_out = draw(st.integers(min_width_out, min_width_out + 1))
+
+    x = draw(
+        helpers.array_values(
+            dtype,
+            (batch_size, in_channels, height_in, width_in),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+
+    offset = draw(
+        helpers.array_values(
+            dtype,
+            (batch_size, 2 * offset_groups * kernel_height * kernel_width, height_out, width_out),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+
+    weight = draw(
+        helpers.array_values(
+            dtype,
+            (out_channels, in_channels // groups, kernel_height, kernel_width),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+
+    bias = draw(
+        helpers.array_values(
+            dtype,
+            (out_channels,),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+
+    mask = draw(
+        helpers.array_values(
+            dtype,
+            (batch_size, offset_groups * kernel_height * kernel_width, height_out, width_out),
+            min_value=0.0,
+            max_value=1.0,
+        )
+    )
+
+    return dtype, x, offset, weight, bias, strides, padding, dilations, mask
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.deform_conv2d",
+    d_x_d_s_n=x_and_deform_conv2d(),
+    ground_truth_backend="torch",
+    test_gradients=st.just(False),
+)
+def test_deform_conv2d(
+    *,
+    d_x_d_s_n,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x, offset, weight, bias, strides, padding, dilations, mask = d_x_d_s_n
+    helpers.test_function(
+        input_dtypes=dtype,
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        rtol_=1e-2,
+        atol_=1e-2,
+        x=x,
+        offset=offset,
+        weight=weight,
+        bias=bias,
+        strides=strides,
+        padding=padding,
+        dilations=dilations,
+        mask=mask,
+    )
