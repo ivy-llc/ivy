@@ -1370,5 +1370,4 @@ def test_stft(
         detrend=detrend,
         return_complex=return_complex,
         boundary=boundary,
-
     )
