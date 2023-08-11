@@ -182,14 +182,18 @@ def avg_pool2d(
 
 
 @to_ivy_arrays_and_back
-def bias_add(value, bias, data_format=None):
-    if data_format is None:
-        data_format = "N...C"
+def bias_add(input_x, bias):
+    if not isinstance(input_x, np.ndarray) or not isinstance(bias, np.ndarray):
+        raise TypeError("Both input_x and bias must be NumPy arrays")
+    
+    if input_x.ndim < 2 or input_x.ndim > 5:
+        raise TypeError("Dimension of input_x must be in the range [2, 5]")
+    
+    if bias.shape != (input_x.shape[-1],):
+        raise ValueError("Shape of bias must match the channel dimension of input_x")
 
-    chanel_index = data_format.find("C")
-    if chanel_index != 1:
-        return ivy.add(value, bias)
-    else:
-        value = ivy.swapaxes(value, 1, -1)
-        res = ivy.add(value, bias)
-        return ivy.swapaxes(res, 1, -1)
+    broadcasted_bias = ivy.broadcast_to(bias, input_x.shape)
+    output = input_x + broadcasted_bias
+    return output
+
+
