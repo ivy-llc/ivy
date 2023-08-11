@@ -40,6 +40,7 @@ from ivy.func_wrapper import (
     handle_view_indexing,
     handle_device_shifting,
     handle_partial_mixed_function,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.device import dev
 
@@ -238,6 +239,7 @@ def get_referrers_recursive(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
 ) -> bool:
@@ -274,6 +276,7 @@ def is_native_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
 ) -> bool:
@@ -307,6 +310,7 @@ def is_ivy_array(
 
 
 @handle_exceptions
+@handle_backend_invalid
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """
     Determine whether the input x is either an Ivy Array or a Native Array.
@@ -597,6 +601,7 @@ def unset_show_func_wrapper_trace_mode() -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -696,8 +701,8 @@ def all_equal(
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
     {
-        a: true,
-        b: true
+        a: True,
+        b: True
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -709,8 +714,8 @@ def all_equal(
     >>> y = ivy.all_equal(x1, x2, equality_matrix=False)
     >>> print(y)
     {
-        a: true,
-        b: false
+        a: True,
+        b: False
     }
     """
     equality_fn = ivy.array_equal if ivy.is_array(xs[0]) else lambda a, b: a == b
@@ -737,6 +742,7 @@ def all_equal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -809,6 +815,7 @@ def isscalar(x: Any, /) -> bool:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -866,6 +873,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_native_arrays
@@ -1327,7 +1335,7 @@ def has_nans(
     True
 
     >>> x = ivy.array([float('inf'), 2, 3])
-    >>> y = ivy.has_nans(x, False)
+    >>> y = ivy.has_nans(x, include_infs=False)
     >>> print(y)
     False
 
@@ -1337,8 +1345,8 @@ def has_nans(
     >>> y = ivy.has_nans(x)
     >>> print(y)
     {
-        a: false,
-        b: false
+        a: False,
+        b: False
     }
     """
     return ivy.value_is_nan(ivy.sum(x), include_infs=include_infs)
@@ -1608,7 +1616,7 @@ def try_else_none(fn: Callable, *args: Any, **kwargs: Any) -> Union[Callable, No
 
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([4, 5, 6])
-    >>> z = ivy.try_else_none(ivy.add,x, y)
+    >>> z = ivy.try_else_none(ivy.add, x, y)
     >>> print(z.__name__)
     add
 
@@ -1729,18 +1737,8 @@ def cache_fn(func: Callable) -> Callable:
 
     >>> def my_sum(val1:float, val2:float)->float: return val1 + val2
     >>> cached_sum = ivy.cache_fn(my_sum)
-    >>> print(cached_sum(3, 5)) # Compute the output
+    >>> print(cached_sum(3, 5))
     8
-
-    >>> print(cached_sum(10, 34)) # Compute the output
-    44
-
-    >>> print(cached_sum(3, 5)) # Returns the cached value
-    8
-
-    >>> print(cached_sum(5, 3)) # Compute the output
-    8
-
 
     With keyword arguments:
 
@@ -1748,19 +1746,6 @@ def cache_fn(func: Callable) -> Callable:
     >>> cached_line_eq = ivy.cache_fn(line_eq)
     >>> print(cached_line_eq(3, itc=5, slp=2))
     11
-
-    >>> print(cached_line_eq(3, slp=2, itc=5)) # Returns the cached value
-    11
-
-
-    Note: providing keyword arguments by position, or using the default
-    keyword argument values will prevent the cache from being used.
-
-    >>> print(cached_line_eq(5, slp=2)) # Output is re-computed
-    10
-
-    >>> print(cached_line_eq(5)) # Output is re-computed
-    10
     """
     global FN_CACHE
     if func not in FN_CACHE:
@@ -1841,8 +1826,8 @@ def einops_rearrange(
     >>> y = x.einops_rearrange("height width -> width height")
     >>> print(y)
     ivy.array([[ 1, -4],
-        [ 2, -5],
-        [ 3, -6]])
+           [ 2, -5],
+           [ 3, -6]])
 
     >>> x = ivy.array([[[ 1,  2,  3],
     ...                  [ 4,  5,  6]],
@@ -1851,67 +1836,72 @@ def einops_rearrange(
     >>> y = x.einops_rearrange("c h w -> c (h w)")
     >>> print(y)
     ivy.array([[ 1,  2,  3,  4,  5,  6],
-        [ 7,  8,  9, 10, 11, 12]])
+           [ 7,  8,  9, 10, 11, 12]])
 
     >>> x = ivy.array([[1, 2, 3, 4, 5, 6],
     ...            [7, 8, 9, 10, 11, 12]])
     >>> y = ivy.zeros((4,3))
     >>> x.einops_rearrange("c (h w) -> (c h) w", out=y, h=2, w=3)
+    >>> print(y)
     ivy.array([[ 1,  2,  3],
-       [ 4,  5,  6],
-       [ 7,  8,  9],
-       [10, 11, 12]])
+           [ 4,  5,  6],
+           [ 7,  8,  9],
+           [10, 11, 12]])
 
     With :class:`ivy.Container` input:
 
-    x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
+    >>> x = ivy.Container(a=ivy.array([[-4.47, 0.93, -3.34],
     ...                            [3.66, 24.29, 3.64]]),
     ...               b=ivy.array([[4.96, 1.52, -10.67],
     ...                            [4.36, 13.96, 0.3]]))
-    y = ivy.einops_rearrange(x, 'a b -> b a')
-    print(y)
+    >>> y = ivy.einops_rearrange(x, 'a b -> b a')
+    >>> print(y)
     {
         a: ivy.array([[-4.46999979, 3.66000009],
-                    [0.93000001, 24.29000092],
-                    [-3.33999991, 3.6400001]]),
+                      [0.93000001, 24.29000092],
+                      [-3.33999991, 3.6400001]]),
         b: ivy.array([[4.96000004, 4.36000013],
-                    [1.51999998, 13.96000004],
-                    [-10.67000008, 0.30000001]])
+                      [1.51999998, 13.96000004],
+                      [-10.67000008, 0.30000001]])
     }
 
     With varying pattern:
 
     Suppose we have a set of 32 images in "h w c" format (height-width-channel)
+    and concatenate images along height (vertical axis), 960 = 32 * 30
     >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
-
-    Concatenate images along height (vertical axis), 960 = 32 * 30
     >>> x = ivy.einops_rearrange(images, 'b h w c -> (b h) w c')
     >>> print(x.shape)
     (960, 40, 3)
 
-    Concatenate images along horizontal axis, 1280 = 32 * 40
+    # Concatenate images along horizontal axis, 1280 = 32 * 40
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> h (b w) c')
     >>> print(x.shape)
     (30, 1280, 3)
 
-    Reorder axes to "b c h w" format for deep learning
+    # Reorder axes to "b c h w" format for deep learning
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b c h w')
     >>> print(x.shape)
     (32, 3, 30, 40)
 
-    Flatten each image into a vector, 3600 = 30 * 40 * 3
+    # Flatten each image into a vector, 3600 = 30 * 40 * 3
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b h w c -> b (c h w)')
     >>> print(x.shape)
     (32, 3600)
 
-    Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
-    128 = 32 * 2 * 2
+    # Split each image into 4 smaller (top-left, top-right, bottom-left, bottom-right),
+    # 128 = 32 * 2 * 2
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h1 h) (w1 w) c -> (b h1 w1) h w c',
     ... h1=2, w1=2)
     >>> print(x.shape)
     (128, 15, 20, 3)
 
-    Space-to-depth operation
+    # Space-to-depth operation
+    >>> images = ivy.asarray([ivy.random_normal(shape=(30, 40, 3)) for _ in range(32)])
     >>> x = ivy.einops_rearrange(images, 'b (h h1) (w w1) c -> b h w (c h1 w1)', h1=2,
     ... w1=2)
     >>> print(x.shape)
@@ -2002,6 +1992,7 @@ einops_reduce.unsupported_dtypes = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @inputs_to_ivy_arrays
@@ -2634,7 +2625,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     -------
     ret
         True if supports, raises IvyBackendException otherwise
-    
+
     This function is *nestable*, and therefore also accepts :code:'ivy.Container'
     instance in place of the argument.
 
@@ -2642,19 +2633,21 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
     --------
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3])
     >>> print(x.assert_supports_inplace())
     True
 
-    With :class:`ivy.Array` input and default backend set as `jax`:
+    With :class:`ivy.Array` input and default backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.array([1, 2, 3])
     >>> print(x.assert_supports_inplace())
-    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+    True
 
     With :class:`ivy.Container` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> print(x.assert_supports_inplace())
     {
@@ -2662,12 +2655,15 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         b: True
     }
 
-    With :class:`ivy.Container` input and default backend set as `jax`:
+    With :class:`ivy.Container` input and default backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> print(x.assert_supports_inplace())
-    IvyBackendException: jax: assert_supports_inplace: Inplace operations \
-    are not supported <class 'jaxlib.xla_extension.DeviceArray'> types with jax backend
+    {
+        a: True,
+        b: True
+    }
     """
     ivy.utils.assertions.check_true(
         ivy.supports_inplace_updates(x),
@@ -2752,6 +2748,7 @@ def get_item(
 
 get_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -2804,11 +2801,12 @@ def set_item(
     ivy.array([10, 10, 20])
 
     >>> x = ivy.array([[0, -1, 20], [5, 2, -8]])
-    >>> query = (1, 0:1)
+    >>> query = ([1, 1])
     >>> val = ivy.array([10, 10])
     >>> y = ivy.set_item(x, query, val, copy=True)
     >>> print(y)
-    ivy.array([[0, -1, 20], [10, 10, -8]])
+    ivy.array([[ 0, -1, 20],
+           [10, 10, 10]])
     """
     if copy:
         x = ivy.copy_array(x)
@@ -2829,6 +2827,7 @@ def set_item(
 
 set_item.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
     ),
@@ -3072,6 +3071,7 @@ def _broadcast_to(input, target_shape):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3125,6 +3125,7 @@ def inplace_update(
     --------
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3])
     >>> y = ivy.array([0])
     >>> ivy.inplace_update(x, y)
@@ -3133,26 +3134,29 @@ def inplace_update(
 
     With :class:`ivy.Array` input and default backend set as `numpy`:
 
+    >>> ivy.set_backend("numpy")
     >>> x = ivy.array([1, 2, 3], dtype=ivy.float32)
     >>> y = ivy.array([0, 0, 0], dtype=ivy.int32)
     >>> ivy.inplace_update(x, y, keep_input_dtype=True)
-    >>> print(x, x.dtype)
-    ivy.array([0., 0., 0.]) float32
+    >>> print(x)
+    ivy.array([0., 0., 0.])
 
     With :class:`ivy.Container` instances:, and backend set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.Container(a=ivy.array([1]), b=ivy.array([2]))
     >>> ivy.inplace_update(x, y)
     >>> print(x)
     {
-        a: ivy.array([1]),
-        b: ivy.array([2])
+        a: ivy.array([1, 1]),
+        b: ivy.array([2, 2])
     }
 
     With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:, and backend
     set as `torch`:
 
+    >>> ivy.set_backend("torch")
     >>> x = ivy.Container(a=ivy.array([5, 6]), b=ivy.array([7, 8]))
     >>> y = ivy.array([1, 2])
     >>> ivy.inplace_update(x, y)
@@ -3174,6 +3178,7 @@ inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3245,6 +3250,7 @@ def inplace_decrement(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_ivy_arrays
 @handle_array_function
@@ -3303,6 +3309,7 @@ def inplace_increment(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -3359,31 +3366,31 @@ def scatter_flat(
     >>> updates = ivy.array([9, 2, 0, 2, 3, 2, 1, 8])
     >>> size = 8
     >>> print(ivy.scatter_flat(indices, updates, size=size))
-    ivy.array([4, 9, 5, 9, 0, 0, 0, 0])
+    ivy.array([2, 0, 2, 8, 0, 0, 0, 0])
 
 
     With :class:`ivy.Container` and :class:`ivy.Array` input:
     >>> indices = ivy.array([1, 0, 1, 0, 2, 2, 3, 3])
-    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
-                        b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
+    ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
     >>> size = 8
     >>> print(ivy.scatter_flat(indices, updates, size=size))
     {
-        a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
-        b: ivy.array([3, 12, 5, 4, 0, 0, 0, 0])
+        a: ivy.array([2, 0, 2, 8, 0, 0, 0, 0]),
+        b: ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
     }
 
 
     With :class:`ivy.Container` input:
-    >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]), \
-                        b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
-    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]), \
-                        b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
+    >>> indices = ivy.Container(a=ivy.array([1, 0, 1, 0, 2, 2, 3, 3]),
+    ...                 b=ivy.array([0, 0, 1, 0, 2, 2, 3, 3]))
+    >>> updates = ivy.Container(a=ivy.array([9, 2, 0, 2, 3, 2, 1, 8]),
+    ...                 b=ivy.array([5, 1, 7, 2, 3, 2, 1, 3]))
     >>> size = 8
     >>> print(ivy.scatter_flat(indices, updates, size=size))
     {
-        a: ivy.array([4, 9, 5, 9, 0, 0, 0, 0]),
-        b: ivy.array([8, 7, 5, 4, 0, 0, 0, 0])
+        a: ivy.array([2, 0, 2, 8, 0, 0, 0, 0]),
+        b: ivy.array([2, 7, 2, 3, 0, 0, 0, 0])
     }
     """
     return current_backend(indices).scatter_flat(
@@ -3392,10 +3399,11 @@ def scatter_flat(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
-@handle_array_function
 @inputs_to_native_shapes
+@handle_array_function
 @handle_device_shifting
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -3475,6 +3483,7 @@ def scatter_nd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3531,7 +3540,7 @@ def gather(
 
     >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
     >>> y = ivy.array([[0, 1],[1, 2]])
-    >>> z = ivy.array([[0., 0.],[0., 0.]])
+    >>> z = ivy.zeros((2, 2, 2))
     >>> ivy.gather(x, y, out=z)
     >>> print(z)
     ivy.array([[[0., 1.],[1., 2.]],[[3., 4.],[4., 5.]]])
@@ -3539,8 +3548,9 @@ def gather(
     >>> x = ivy.array([[[0., 1.], [2., 3.]],
     ...                [[8., 9.], [10., 11.]]])
     >>> y = ivy.array([[0, 1]])
-    >>> ivy.gather(x, y, axis=0, out=x)
-    >>> print(x)
+    >>> z = ivy.zeros((1, 2, 2, 2))
+    >>> ivy.gather(x, y, axis=0, out=z)
+    >>> print(z)
     ivy.array(
         [[[[ 0.,  1.],
            [ 2.,  3.]],
@@ -3584,6 +3594,7 @@ def gather(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -3684,6 +3695,7 @@ def multiprocessing(context: Optional[str] = None):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @outputs_to_ivy_shapes
@@ -3778,6 +3790,7 @@ def unset_shape_array_mode() -> None:
         ivy.__setattr__("shape_array_mode", mode, True)
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -3819,12 +3832,16 @@ def get_num_dims(
     With :class:`ivy.Container` input:
 
     >>> a = ivy.Container(b = ivy.asarray([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]]))
-    >>> ivy.get_num_dims(a)
-    2
+    >>> print(ivy.get_num_dims(a))
+    {
+        b: 2
+    }
 
     >>> b = ivy.get_num_dims(a, as_array=True)
     >>> print(b)
-    ivy.array(3)
+    {
+        b: ivy.array(2)
+    }
     """
     return current_backend(x).get_num_dims(x, as_array=as_array)
 
@@ -4168,6 +4185,7 @@ def vmap(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 @handle_device_shifting
@@ -4219,6 +4237,7 @@ def isin(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @inputs_to_native_arrays
 @handle_device_shifting

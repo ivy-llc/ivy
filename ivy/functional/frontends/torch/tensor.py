@@ -66,11 +66,11 @@ class Tensor:
 
     @property
     def real(self):
-        return self.ivy_array.real()
+        return self.ivy_array.real
 
     @property
     def imag(self):
-        return self.ivy_array.imag()
+        return self.ivy_array.imag
 
     @property
     def ndim(self):
@@ -239,7 +239,7 @@ class Tensor:
     def cosh(self):
         return torch_frontend.cosh(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def cosh_(self):
         self.ivy_array = self.cosh().ivy_array
         return self
@@ -475,22 +475,22 @@ class Tensor:
 
     def new_zeros(
         self,
-        size,
-        *,
+        *args,
+        size=None,
         dtype=None,
         device=None,
         requires_grad=False,
         layout=None,
         pin_memory=False,
     ):
+        if size and args:
+            raise TypeError("new_zeros() got multiple values for argument 'size'")
         if dtype is None:
             dtype = self.dtype
         if device is None:
             device = self.device
-        if isinstance(size[0], (tuple, list, ivy.Shape)):
-            return torch_frontend.zeros(
-                size=size[0], dtype=dtype, device=device, requires_grad=requires_grad
-            )
+        if size is None:
+            size = args[0] if isinstance(args[0], (tuple, list, ivy.Shape)) else args
         return torch_frontend.zeros(
             size=size, dtype=dtype, device=device, requires_grad=requires_grad
         )
@@ -588,7 +588,7 @@ class Tensor:
     def acos(self):
         return torch_frontend.acos(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def acos_(self):
         self.ivy_array = self.acos().ivy_array
         return self
@@ -651,6 +651,7 @@ class Tensor:
         self.ivy_array = self.detach().ivy_array
         return self
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16", "uint16")}, "torch")
     @numpy_to_torch_style_args
     def unsqueeze(self, dim):
         return torch_frontend.unsqueeze(self, dim)
@@ -822,6 +823,7 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self, dim=dim, keepdim=keepdim)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     @numpy_to_torch_style_args
     def nanmean(self, dim=None, keepdim=False):
         return torch_frontend.nanmean(self, dim=dim, keepdim=keepdim)
@@ -951,6 +953,11 @@ class Tensor:
         return torch_frontend.rsqrt(self)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def rsqrt_(self):
+        self.ivy_array = self.rsqrt().ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
     def sqrt_(self):
         self.ivy_array = self.sqrt().ivy_array
         return self
@@ -1067,7 +1074,9 @@ class Tensor:
     def fix(self):
         return torch_frontend.fix(self)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16", "complex")}, "torch"
+    )
     def fix_(self):
         self.ivy_array = self.fix().ivy_array
         return self
@@ -1268,6 +1277,10 @@ class Tensor:
 
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
+
+    def bitwize_xor_(self, other):
+        self.ivy_array = self.bitwise_xor(other).ivy_array
+        return self
 
     def item(self):
         if all(dim == 1 for dim in self.shape):
@@ -1558,6 +1571,12 @@ class Tensor:
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
         )
 
+    def baddbmm_(self, batch1, batch2, *, beta=1, alpha=1):
+        self.ivy_array = torch_frontend.baddbmm(
+            self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
+        ).ivy_array
+        return self
+
     def bmm(self, mat2):
         return torch_frontend.bmm(self, mat2=mat2)
 
@@ -1667,6 +1686,39 @@ class Tensor:
     )
     def gcd(self, other, *, out=None):
         return torch_frontend.gcd(self, other, out=out)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "uint16",
+                "bool",
+                "complex64",
+                "complex128",
+            )
+        },
+        "torch",
+    )
+    def isnan(self):
+        return torch_frontend.isnan(self)
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+                "float32",
+                "float64",
+                "complex",
+                "uint8",
+                "int8",
+            )
+        },
+        "torch",
+    )
+    def lcm(self, other, *, out=None):
+        return torch_frontend.lcm(self, other, out=out)
 
 
 class Size(tuple):
