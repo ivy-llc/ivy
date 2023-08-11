@@ -535,6 +535,3 @@ class _ContainerWithLosses(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-    
-    
-    

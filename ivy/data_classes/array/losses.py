@@ -176,5 +176,3 @@ class _ArrayWithLosses(abc.ABC):
         return ivy.sparse_cross_entropy(
             self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
         )
-    
-    
