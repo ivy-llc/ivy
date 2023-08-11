@@ -2885,10 +2885,13 @@ def deform_conv2d(
     x : array_like
         Input image, taken to be real. Shape is (batch_size, d_in, height_in, width_in).
     offset : array_like
-        Input offset, taken to be real. Offsets to be applied for each position in the convolution kernel.
-        Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width, height_out, width_out).
+        Input offset, taken to be real.
+        Offsets to be applied for each position in the convolution kernel.
+        Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width,
+        height_out, width_out).
     weight : array_like
-        Input weight, taken to be real. convolution weights, split into groups of size d_in // groups.
+        Input weight, taken to be real. convolution weights,
+        split into groups of size d_in // groups.
         Shape is (d_out, d_in // groups, kernel_height, kernel_width).
     bias : array_like, optional
         Input bias, taken to be real. Shape is (d_out,).
@@ -2899,13 +2902,16 @@ def deform_conv2d(
     dilation : tuple of ints, or int, optional
         Spacing between kernel elements. Default is (1, 1).
     mask : array_like, optional
-        Masks to be applied for each position in the convolution kernel. Default is None.
-        If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width, height_out, width_out).
+        Masks to be applied for each position in the convolution kernel.
+        Default is None.
+        If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width,
+         height_out, width_out).
 
     Returns
     -------
     array_like
-        The result of the convolution. Shape is (batch_size, d_out, height_out, width_out).
+        The result of the convolution.
+        Shape is (batch_size, d_out, height_out, width_out).
 
     Examples
     --------
