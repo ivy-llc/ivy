@@ -13,13 +13,13 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_astype(
         x: ivy.Container,
-        dtype: ivy.Dtype,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        dtype: Union[ivy.Dtype, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
-        copy: bool = True,
+        copy: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """Copy an array to a specified data type irrespective of
@@ -83,13 +83,13 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def astype(
         self: ivy.Container,
-        dtype: ivy.Dtype,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        dtype: Union[ivy.Dtype, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         *,
-        copy: bool = True,
+        copy: Union[bool, ivy.Container] = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """Copy an array to a specified data type irrespective of
@@ -155,11 +155,11 @@ class _ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def _static_broadcast_arrays(
-        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.broadcast_arrays`. This method
@@ -231,11 +231,11 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def broadcast_arrays(
         self: ivy.Container,
-        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        *arrays: Union[ivy.Container, ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.broadcast_arrays`. This method
@@ -306,12 +306,12 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_broadcast_to(
         x: ivy.Container,
         /,
-        shape: Tuple[int, ...],
+        shape: Union[Tuple[int, ...], ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -364,12 +364,12 @@ class _ContainerWithDataTypes(ContainerBase):
     def broadcast_to(
         self: ivy.Container,
         /,
-        shape: Tuple[int, ...],
+        shape: Union[Tuple[int, ...], ivy.Container],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -421,11 +421,11 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_can_cast(
         from_: ivy.Container,
-        to: ivy.Dtype,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        to: Union[ivy.Dtype, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.can_cast`. This method simply
@@ -481,11 +481,11 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def can_cast(
         self: ivy.Container,
-        to: ivy.Dtype,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        to: Union[ivy.Dtype, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.can_cast`. This method simply
@@ -525,8 +525,8 @@ class _ContainerWithDataTypes(ContainerBase):
 
         >>> print(x.can_cast('int64'))
         {
-            a: false,
-            b: true
+            a: False,
+            b: True
         }
         """
         return self._static_can_cast(
@@ -537,11 +537,11 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_dtype(
         x: ivy.Container,
         *,
-        as_native: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        as_native: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
@@ -558,11 +558,11 @@ class _ContainerWithDataTypes(ContainerBase):
     def dtype(
         self: ivy.Container,
         *,
-        as_native: bool = False,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        as_native: Union[bool, ivy.Container] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -589,13 +589,15 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_default_float_dtype(
         *,
-        input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-        as_native: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        input: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        float_dtype: Optional[
+            Union[ivy.FloatDtype, ivy.NativeDtype, ivy.Container]
+        ] = None,
+        as_native: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "default_float_dtype",
@@ -611,13 +613,15 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_default_complex_dtype(
         *,
-        input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-        complex_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-        as_native: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        input: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        complex_dtype: Optional[
+            Union[ivy.FloatDtype, ivy.NativeDtype, ivy.Container]
+        ] = None,
+        as_native: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "default_complex_dtype",
@@ -632,11 +636,11 @@ class _ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def _static_function_supported_dtypes(
-        fn: Callable,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        fn: Union[Callable, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "function_supported_dtypes",
@@ -649,11 +653,11 @@ class _ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def _static_function_unsupported_dtypes(
-        fn: Callable,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        fn: Union[Callable, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "function_unsupported_dtypes",
@@ -669,10 +673,10 @@ class _ContainerWithDataTypes(ContainerBase):
         type: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.finfo`.
@@ -715,10 +719,10 @@ class _ContainerWithDataTypes(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.finfo`.
@@ -760,10 +764,10 @@ class _ContainerWithDataTypes(ContainerBase):
         type: ivy.Container,
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.iinfo`. This method simply wraps
@@ -820,10 +824,10 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def iinfo(
         self: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.iinfo`. This method simply wraps
@@ -888,10 +892,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_is_bool_dtype(
         dtype_in: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "is_bool_dtype",
@@ -905,10 +909,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def is_bool_dtype(
         self: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return self._static_is_bool_dtype(
             self,
@@ -922,10 +926,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_is_float_dtype(
         dtype_in: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `is_float_dtype`. This method simply
@@ -993,10 +997,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def is_float_dtype(
         self: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_float_dtype`. This method
@@ -1067,10 +1071,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_is_int_dtype(
         dtype_in: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "is_int_dtype",
@@ -1084,10 +1088,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def is_int_dtype(
         self: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return self._static_is_int_dtype(
             self,
@@ -1100,10 +1104,10 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_is_uint_dtype(
         dtype_in: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return ContainerBase.cont_multi_map_in_function(
             "is_uint_dtype",
@@ -1116,10 +1120,10 @@ class _ContainerWithDataTypes(ContainerBase):
 
     def is_uint_dtype(
         self: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         return self._static_is_uint_dtype(
             self,
@@ -1133,10 +1137,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def _static_is_complex_dtype(
         dtype_in: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `is_complex_dtype`. This method simply
@@ -1192,10 +1196,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def is_complex_dtype(
         self: ivy.Container,
         /,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_complex_dtype`. This method
@@ -1253,10 +1257,10 @@ class _ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def _static_result_type(
         *arrays_and_dtypes: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` static method variant of `ivy.result_type`. This method simply
@@ -1309,10 +1313,10 @@ class _ContainerWithDataTypes(ContainerBase):
     def result_type(
         self: ivy.Container,
         *arrays_and_dtypes: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.result_type`. This method simply

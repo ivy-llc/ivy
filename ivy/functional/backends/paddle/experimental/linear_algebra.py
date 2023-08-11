@@ -10,7 +10,7 @@ from .. import backend_version
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def diagflat(
     x: paddle.Tensor,
@@ -43,7 +43,7 @@ def diagflat(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "uint8", "int16")}}, backend_version
 )
 def kron(
     a: paddle.Tensor,
@@ -104,3 +104,15 @@ def lu_factor(
     out: Optional[paddle.Tensor] = None,
 ) -> Any:
     raise IvyNotImplementedException()
+
+def dot(
+        a: paddle.Tensor,
+        b: paddle.Tensor,
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
+    return paddle.dot(a, b, out=out)
+
+
+dot.support_native_out = True

@@ -98,7 +98,7 @@ kron.support_native_out = False
 
 
 @with_supported_dtypes(
-    {"1.25.1 and below": ("float32", "float64", "complex64", "complex128")},
+    {"1.25.2 and below": ("float32", "float64", "complex64", "complex128")},
     backend_version,
 )
 def matrix_exp(
@@ -184,3 +184,15 @@ def lu_factor(
     out: Optional[np.ndarray] = None,
 ) -> Tuple[np.ndarray]:
     raise IvyNotImplementedException()
+
+def dot(
+        a: np.ndarray,
+        b: np.ndarray,
+        /,
+        *,
+        out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dot(a, b, out=out)
+
+
+dot.support_native_out = True
