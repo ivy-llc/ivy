@@ -1278,6 +1278,10 @@ class Tensor:
     def bitwise_xor(self, other):
         return torch_frontend.bitwise_xor(self, other)
 
+    def bitwize_xor_(self, other):
+        self.ivy_array = self.bitwise_xor(other).ivy_array
+        return self
+
     def item(self):
         if all(dim == 1 for dim in self.shape):
             return self.ivy_array.to_scalar()
