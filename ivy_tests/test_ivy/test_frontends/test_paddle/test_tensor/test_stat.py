@@ -164,7 +164,7 @@ def test_paddle_var(
     )
    
   
- @handle_frontend_test(
+@handle_frontend_test(
     fn_tree="paddle.nanmedian",
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
