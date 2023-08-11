@@ -2164,7 +2164,7 @@ def test_torch_tensor_log2(
         max_value=1e04,
     ),
 )
-def test_torch__bool__(
+def test_torch___bool__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -2605,7 +2605,7 @@ def test_torch___truediv__(
         safety_factor_scale="log",
     ),
 )
-def test_torch__floordiv__(
+def test_torch___floordiv__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -3004,7 +3004,7 @@ def test_torch_tensor_new_tensor(
         allow_neg_step=False,
     ),
 )
-def test_torch__getitem__(
+def test_torch___getitem__(
     dtype_x_index,
     frontend_method_data,
     init_flags,
@@ -3038,7 +3038,7 @@ def test_torch__getitem__(
         allow_neg_step=False,
     ).filter(lambda x: x[0][0] == x[0][-1]),
 )
-def test_torch__setitem__(
+def test_torch___setitem__(
     dtypes_x_index_val,
     frontend_method_data,
     init_flags,
@@ -7226,7 +7226,7 @@ def test_torch_tensor_clip_(
         allow_inf=False,
     ),
 )
-def test_torch__gt__(
+def test_torch___gt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7267,7 +7267,7 @@ def test_torch__gt__(
         allow_inf=False,
     ),
 )
-def test_torch__ne__(
+def test_torch___ne__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7308,7 +7308,7 @@ def test_torch__ne__(
         allow_inf=False,
     ),
 )
-def test_torch__lt__(
+def test_torch___lt__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7349,7 +7349,7 @@ def test_torch__lt__(
         allow_inf=False,
     ),
 )
-def test_torch__or__(
+def test_torch___or__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7459,7 +7459,7 @@ def test_torch_tensor_clone(
         num_arrays=1,
     ),
 )
-def test_torch__invert__(
+def test_torch___invert__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -7772,7 +7772,7 @@ def test_torch_tensor_bitwise_and_(
         allow_inf=False,
     ),
 )
-def test_torch__and__(
+def test_torch___and__(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -9825,6 +9825,41 @@ def test_torch_tensor_logical_not_(
     ),
 )
 def test_torch_tensor_rsqrt(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# rsqrt_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="rsqrt_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_rsqrt_(
     dtype_and_x,
     frontend_method_data,
     init_flags,

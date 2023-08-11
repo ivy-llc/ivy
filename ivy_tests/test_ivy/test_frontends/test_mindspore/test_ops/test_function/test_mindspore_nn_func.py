@@ -319,6 +319,27 @@
 #         x=x[0],
 #         output_size=output_size,
 #     )
+
+
+# log_softmax
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.log_softmax",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         safety_factor_scale="log",
+#         small_abs_safety_factor=20,
+#     ),
+# )
+# def test_mindspore_log_softmax(
+#     *,
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+
 # def _is_same_padding(padding, stride, kernel_size, input_shape):
 #     output_shape = tuple(
 #         [
@@ -403,6 +424,7 @@
 #         divisor_override=None,
 #     )
 
+
 # FastGelu
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.fast_gelu",
@@ -420,11 +442,57 @@
 # ):
 #     input_dtype, x = dtype_and_x
 
+
 #     helpers.test_frontend_function(
 #         input_dtypes=input_dtype,
 #         frontend=frontend,
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
+
+#         x=x[0],
+
 #         input=x[0],
+
+#     )
+
+
+# # flatten
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.flatten",
+#     dtype_input_axes=helpers.dtype_values_axis(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         valid_axis=True,
+#         min_num_dims=1,
+#         min_axes_size=2,
+#         max_axes_size=2,
+#     ),
+# )
+# def test_mindspore_flatten(
+#     *,
+#     dtype_input_axes,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+#     backend_fw,
+# ):
+#     dtype, input, axes = dtype_input_axes
+#     if isinstance(axes, int):
+#         start_dim = axes
+#         end_dim = -1
+#     else:
+#         start_dim = axes[0]
+#         end_dim = axes[1]
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         backend_to_test=backend_fw,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=input[0],
+#         order='C',
+#         start_dim=start_dim,
+#         end_dim=end_dim,
 #     )
