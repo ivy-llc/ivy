@@ -12,15 +12,6 @@ from ivy.func_wrapper import (
 from ivy.utils.exceptions import handle_exceptions
 
 
-def _reduce_loss(red, loss, axis, out):
-    if red == "sum":
-        return ivy.negative(ivy.sum(loss, axis=axis), out=out)
-    elif red == "mean":
-        return ivy.negative(ivy.mean(loss, axis=axis), out=out)
-    else:
-        return ivy.negative(loss, out=out)
-
-
 # log_poisson_loss
 @handle_exceptions
 @handle_nestable
@@ -116,7 +107,6 @@ def l1_loss(
     /,
     *,
     reduction: str = "mean",
-    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -153,7 +143,11 @@ def l1_loss(
     >>> print(ivy.l1_loss(a, b))
     ivy.array(0.5)
     """
-    ivy.utils.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
     loss = ivy.abs(pred - true)
 
-    return _reduce_loss(reduction, loss, axis, out)
+    if reduction == "sum":
+        return ivy.sum(loss, out=out)
+    elif reduction == "mean":
+        return ivy.mean(loss, out=out)
+    else:
+        return loss

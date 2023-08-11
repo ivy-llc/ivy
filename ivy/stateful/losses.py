@@ -172,7 +172,7 @@ class L1Loss(Module):
         self._reduction = reduction
         Module.__init__(self)
 
-    def _forward(self, true, pred, *, reduction=None, axis=None):
+    def _forward(self, true, pred, *, reduction=None):
         """
         Perform forward pass of the L1 Loss.
 
@@ -193,5 +193,4 @@ class L1Loss(Module):
             true,
             pred,
             reduction=ivy.default(reduction, self._reduction),
-            axis=axis,
         )
