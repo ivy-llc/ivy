@@ -210,7 +210,9 @@ def cmp_is(left, right):
 def cmp_isnot(left, right):
     return left is not right
 
-
+def cast_bool(x):
+    return bool(x)
+    
 def _tuple_to_dict(t):
     return {k: t[k] for k in range(len(t))}
 
