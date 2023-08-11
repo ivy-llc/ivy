@@ -80,6 +80,48 @@
 #         x=x[0],
 #     )
 
+# kl_div
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.kl_div",
+#     p=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     q=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     reduction=st.sampled_from(["none", "sum", "mean"]),
+# )
+# def test_mindspore_kl_div(
+#     *,
+#     p,
+#     q,
+#     reduction,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     helpers.test_frontend_function(
+#         input_dtypes=p[0],
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         p=p[1],
+#         q=q[1],
+#         reduction=reduction,
+#     )
+
 # dropout3d
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.dropout3d",
@@ -277,6 +319,27 @@
 #         x=x[0],
 #         output_size=output_size,
 #     )
+
+
+# log_softmax
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.log_softmax",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         safety_factor_scale="log",
+#         small_abs_safety_factor=20,
+#     ),
+# )
+# def test_mindspore_log_softmax(
+#     *,
+#     dtype_and_x,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+# ):
+#     input_dtype, x = dtype_and_x
+
 # def _is_same_padding(padding, stride, kernel_size, input_shape):
 #     output_shape = tuple(
 #         [
@@ -398,4 +461,77 @@
 #         tau=tau,
 #         hard=hard,
 #         dim=dim,
+#     )
+
+
+# FastGelu
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.fast_gelu",
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("float"),
+#     ),
+# )
+# def test_mindspore_fast_gelu(
+#     dtype_and_x,
+#     *,
+#     test_flags,
+#     frontend,
+#     on_device,
+#     fn_tree,
+# ):
+#     input_dtype, x = dtype_and_x
+
+
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+
+#         x=x[0],
+
+#         input=x[0],
+
+#     )
+
+
+# # flatten
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.flatten",
+#     dtype_input_axes=helpers.dtype_values_axis(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         valid_axis=True,
+#         min_num_dims=1,
+#         min_axes_size=2,
+#         max_axes_size=2,
+#     ),
+# )
+# def test_mindspore_flatten(
+#     *,
+#     dtype_input_axes,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+#     backend_fw,
+# ):
+#     dtype, input, axes = dtype_input_axes
+#     if isinstance(axes, int):
+#         start_dim = axes
+#         end_dim = -1
+#     else:
+#         start_dim = axes[0]
+#         end_dim = axes[1]
+#     helpers.test_frontend_function(
+#         input_dtypes=dtype,
+#         backend_to_test=backend_fw,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         input=input[0],
+#         order='C',
+#         start_dim=start_dim,
+#         end_dim=end_dim,
 #     )

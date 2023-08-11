@@ -306,6 +306,7 @@ def test_torch_isinf(
         input=input[0],
     )
 
+
 # isreal
 @handle_frontend_test(
     fn_tree="torch.isreal",
@@ -334,7 +335,6 @@ def test_torch_isreal(
         on_device=on_device,
         input=input[0],
     )
-
 
 
 # isposinf
