@@ -435,7 +435,7 @@
 #     ),
 #     lambd=helpers.floats(min_value=0, max_value=1, exclude_min=True),
 # )
-# def test_torch_softshrink(
+# def test_mindspore_softshrink(
 #     *,
 #     dtype_and_input,
 #     lambd,
