@@ -1056,6 +1056,5 @@ def deform_conv2d(
     padding: Union[int, Tuple[int]] = (0, 0),
     dilation: Union[int, Tuple[int]] = (1, 1),
     mask: Optional[np.ndarray] = None,
-
 ):
     raise IvyNotImplementedException()
