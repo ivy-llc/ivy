@@ -2888,9 +2888,9 @@ def test_tensorflow_atanh(
 @handle_frontend_test(
     fn_tree="tensorflow.math.invert_permutation",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
-        max_num_dims=1,
+        max_num_dims=3,
         min_value=0,
         max_value=5,
     ),

@@ -737,7 +737,7 @@ def atanh(x, name="atanh"):
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
     {
-        "2.13.0 and below": "int64",
+        "2.13.0 and below": ("integer",),
     },
     "tensorflow",
 )
