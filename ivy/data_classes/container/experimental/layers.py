@@ -2254,14 +2254,14 @@ class _ContainerWithLayersExperimental(ContainerBase):
     @staticmethod
     def static_irfftn(
         x: ivy.Container,
-        s: Optional[Union[int, Tuple[int, ...]]] = None,
-        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        s: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int, ...], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        norm: Union[str, ivy.Container] = "backward",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ):
         """
@@ -2316,12 +2316,12 @@ class _ContainerWithLayersExperimental(ContainerBase):
         )
 
     def irfftn(
-        self: ivy.Container,
-        s: Optional[Union[int, Tuple[int, ...]]] = None,
-        axes: Optional[Union[int, Tuple[int, ...]]] = None,
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        s: Optional[Union[Sequence[int], ivy.Container]] = None,
+        axes: Optional[Union[int, Tuple[int], ivy.Container]] = None,
         *,
-        norm: str = "backward",
-        out: Optional[ivy.Array] = None,
+        norm: Union[str, ivy.Container] = "backward",
+        out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ):
         """
         ivy.Container static method variant of ivy.irfftn.

@@ -477,6 +477,10 @@ def rfftn(
     return result.astype("complex128")
 
 
+@with_unsupported_dtypes(
+    {"2.5.1 and below": ("bfloat16", "float16")},
+    backend_version,
+)
 def irfftn(
     x: paddle.Tensor,
     s: Optional[Union[int, Tuple[int]]] = None,
@@ -486,8 +490,8 @@ def irfftn(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.fft.irfftn(x, s, axes, norm)
-  
-  
+
+
 @with_supported_dtypes(
     {
         "2.5.0 and below": (
@@ -507,4 +511,3 @@ def fft2(
 ) -> paddle.Tensor:
     res = paddle.fft.fft2(x, s, dim, norm)
     return res.astype("complex128")
-

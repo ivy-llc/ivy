@@ -1011,8 +1011,8 @@ def rfftn(
 
 def irfftn(
     x: torch.Tensor,
-    s: Optional[Union[int, Tuple[int]]] = None,
-    axes: Optional[Union[int, Tuple[int]]] = None,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
     *,
     norm: Optional[str] = "backward",
     out: Optional[torch.Tensor] = None,

@@ -2845,10 +2845,10 @@ def rfftn(
 @to_native_arrays_and_back
 def irfftn(
     x: Union[ivy.Array, ivy.NativeArray],
-    s: Optional[Union[int, Tuple[int, ...]]] = None,
-    axes: Optional[Union[int, Tuple[int, ...]]] = None,
+    s: Optional[Sequence[int]] = None,
+    axes: Optional[Sequence[int]] = None,
     *,
-    norm: str = "backward",
+    norm: Optional[str] = "backward",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     r"""

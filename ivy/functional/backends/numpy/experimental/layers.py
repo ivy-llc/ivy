@@ -1047,4 +1047,25 @@ def irfftn(
     norm: str = "backward",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.fft.irfftn(x, s, axes, norm).astype(x.dtype)
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.irfftn(x, s, axes, norm).astype(np.float64)

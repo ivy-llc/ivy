@@ -862,6 +862,7 @@ def rfftn(
     return jnp.fft.rfftn(x, s, axes, norm).astype(jnp.complex128)
 
 
+@with_unsupported_dtypes({"0.4.14 and below": "float32"}, backend_version)
 def irfftn(
     x: JaxArray,
     s: Optional[Union[int, Tuple[int]]] = None,
@@ -870,4 +871,4 @@ def irfftn(
     norm: str = "backward",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.fft.irfftn(x, s, axes, norm)
+    return jnp.fft.irfftn(x, s, axes, norm).astype(jnp.float64)

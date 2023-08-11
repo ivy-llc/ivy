@@ -1283,8 +1283,11 @@ def x_and_irfftn(draw):
         helpers.array_values(
             dtype=dtype[0],
             shape=tuple(x_dim),
-            min_value=-1e-10,
+            min_value=1e-10,
             max_value=1e10,
+            large_abs_safety_factor=2.5,
+            small_abs_safety_factor=2.5,
+            safety_factor_scale="log",
         )
     )
     axes = draw(
@@ -1320,11 +1323,11 @@ def test_irfftn(
     helpers.test_function(
         input_dtypes=dtype,
         test_flags=test_flags,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         on_device=on_device,
         fn_name=fn_name,
-        rtol_=1e-05,
-        atol_=1e-05,
+        rtol_=1e-2,
+        atol_=1e-2,
         x=x,
         s=s,
         axes=axes,

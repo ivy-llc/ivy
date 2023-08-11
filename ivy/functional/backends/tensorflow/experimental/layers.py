@@ -1390,80 +1390,7 @@ def rfftn(
         return out
     else:
         # return result
-        return tf.cast(result, tf.complex128
-
-# def _rfftn_norm(
-#     x: Union[tf.Tensor, tf.Variable],
-#     s: Sequence[int] = None,
-#     axes: Sequence[int] = None,
-#     norm: str = "backward",
-# ):
-#     n = tf.constant(s[-1] // 2 + 1, dtype=tf.complex128)
-#     if norm == "backward":
-#         return x
-#     elif norm == "ortho":
-#         return x / tf.sqrt(n)
-#     elif norm == "forward":
-#         return x / n
-#     else:
-#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-
-
-# @with_unsupported_dtypes(
-#     {"0.4.13 and below": ("float32", "complex")}, backend_version
-# )
-# def rfftn(
-#     x: Union[tf.Tensor, tf.Variable],
-#     s: Sequence[int] = None,
-#     axes: Sequence[int] = None,
-#     *,
-#     norm: str = "backward",
-#     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-# ) -> Union[tf.Tensor, tf.Variable]:
-#     if axes is None:
-#         axes = list(range(len(s)))
-#     elif s is None:
-#         s = [x.shape[axis] for axis in axes]
-#     elif len(s) != len(axes):
-#         raise ValueError("s and axes must have the same length.")
-
-#     if not all(isinstance(j, int) for j in s):
-#         raise ivy.utils.exceptions.IvyError(
-#             f"Expecting {s} to be a sequence of integers <class integer>"
-#         )
-#     if all(j <= 1 for j in s):
-#         raise ivy.utils.exceptions.IvyError(
-#             f"Invalid data points {s}, expecting s points larger than 1"
-#         )
-#     if norm != "backward" and norm != "ortho" and norm != "forward":
-#         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
-
-
-#     if len(s) != 2:
-#         raise ValueError("fft_length must have shape [2]")
-#     fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
-
-#     # Convert s to a tensor with shape [2]
-#     # fft_length = tf.convert_to_tensor(s, dtype=tf.int32)
-#     # if tf.shape(fft_length).shape != [1] or tf.shape(fft_length).as_list()[0] != 2:
-#     #     raise ValueError("fft_length must have shape [2]")
-#     operation_name = f"RFFTn with s={s}, axes={axes}, norm={norm}"
-#     # tf_rfftn = tf.signal.rfft2d(x, fft_length=fft_length, name=operation_name)
-
-# # Reshape the input tensor to 2D
-#     x_2d = tf.reshape(x, [-1, s[0]])
-
-#     # Perform rfft2d operation on the reshaped tensor
-#     tf_rfftn_2d = tf.signal.rfft2d(x_2d, fft_length=s[1], name=operation_name)
-
-#     # Reshape the result back to the original shape
-#     output_shape = tf.concat([tf.shape(x)[:-1], [s[-1] // 2 + 1]], axis=0)
-#     tf_rfftn = tf.reshape(tf_rfftn_2d, output_shape)
-
-
-#     # Apply the same normalization as 'backward' in NumPy
-#     tf_rfftn = _rfftn_norm(tf_rfftn, s, axes, norm, out).astype("complex128")
-#     return tf_rfftn
+        return tf.cast(result, tf.complex128)
 
 
 # IRFFTN FUNCTION IMPLEMENTATION
@@ -1479,7 +1406,7 @@ def irfftn_input_validation(x):
 
 def irfftn_operations(x, rank, norm_factor):
     if x.shape.rank == 1:
-        x = tf.signal.ifft(x)
+        x = tf.signal.irfft(x)
     elif x.shape.rank == 2:
         x = tf.switch_case(
             rank - 1, {0: lambda: tf.signal.irfft(x), 1: lambda: tf.signal.irfft2d(x)}
