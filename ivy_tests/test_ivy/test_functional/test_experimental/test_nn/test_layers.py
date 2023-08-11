@@ -1282,6 +1282,7 @@ def stft_arguments(draw):
         n_fft = tuple(draw(st.integers(min_value=2, max_value=256)) for _ in range(2))
 
     hop_length = draw(st.integers(min_value=1, max_value=256))
+    axis = draw(st.integers(min_value=0))
     onesided = draw(st.booleans())
     fs = draw(st.floats(min_value=0.001, max_value=1.0))
     window = "hann"
@@ -1293,11 +1294,11 @@ def stft_arguments(draw):
     detrend = draw(st.one_of(st.booleans(), st.sampled_from(["linear", "constant"])))
     return_complex = draw(st.booleans())
     boundary = draw(st.sampled_from(["reflect", "zeros"]))
-    axis = draw(st.integers(min_value=0))
     return (
         dtype,
         n_fft,
         hop_length,
+        axis,
         onesided,
         fs,
         window,
@@ -1309,14 +1310,13 @@ def stft_arguments(draw):
         detrend,
         return_complex,
         boundary,
-        axis,
     )
 
 
-handle_test(
+@handle_test(
     fn_tree="functional.ivy.experimental.stft",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.just("float"),
+        available_dtypes=helpers.get_dtypes("float"),
     ),
     ground_truth_backend="numpy",
     test_gradients=st.just(False),
@@ -1335,6 +1335,7 @@ def test_stft(
     (
         n_fft,
         hop_length,
+        axis,
         onesided,
         fs,
         window,
@@ -1348,7 +1349,7 @@ def test_stft(
         boundary,
         axis,
     ) = stft_args
-    ret, gt_ret = helpers.test_function(
+    helpers.test_function(
         input_dtypes=dtype,
         on_device=on_device,
         test_flags=test_flags,
@@ -1357,6 +1358,7 @@ def test_stft(
         signal=x[0],
         n_fft=n_fft,
         hop_length=hop_length,
+        axis=axis,
         onesided=onesided,
         fs=fs,
         window=window,
@@ -1368,5 +1370,5 @@ def test_stft(
         detrend=detrend,
         return_complex=return_complex,
         boundary=boundary,
-        axis=axis,
+
     )
