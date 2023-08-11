@@ -146,9 +146,7 @@ def _hsv_to_rgb(img):
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
     _assert_image_shape_and_format(img, "CHW")
-    assert (
-        hue_factor >= -0.5 and hue_factor <= 0.5
-    ), "hue_factor should be in range [-0.5, 0.5]"
+    assert -0.5 <= hue_factor <= 0.5, "hue_factor should be in range [-0.5, 0.5]"
 
     channels = _get_image_num_channels(img, "CHW")
 
