@@ -250,7 +250,7 @@ def one_hot(x, num_classes, *, dtype=None, axis=-1):
 
 @to_ivy_arrays_and_back
 def relu(x):
-    return ivy.relu(x)
+    return ivy.relu(x, complex_mode="jax")
 
 
 @to_ivy_arrays_and_back
