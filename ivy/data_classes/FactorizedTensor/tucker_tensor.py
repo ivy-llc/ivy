@@ -207,7 +207,7 @@ class TuckerTensor(FactorizedTensor):
                     f" {matrix_or_vector.shape[1]} (dim 1 of matrix)"
                 )
 
-        elif len(matrix_or_vector).shape == 1:  # Tensor times vector
+        elif len(matrix_or_vector.shape) == 1:  # Tensor times vector
             if matrix_or_vector.shape[0] != shape[mode]:
                 raise ValueError(
                     f"shapes {shape} and {matrix_or_vector.shape} not aligned for"
@@ -226,9 +226,9 @@ class TuckerTensor(FactorizedTensor):
         if contract:
             print("contracting mode")
             f = factors.pop(mode)
-            core = ivy.mode_dot(core, ivy.multi_dot(matrix_or_vector, f), mode=mode)
+            core = ivy.mode_dot(core, ivy.dot(matrix_or_vector, f), mode=mode)
         else:
-            factors[mode] = ivy.multi_dot(matrix_or_vector, factors[mode])
+            factors[mode] = ivy.dot(matrix_or_vector, factors[mode])
 
         return TuckerTensor((core, factors))
 

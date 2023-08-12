@@ -105,3 +105,32 @@ def test_tucker_to_vec(shape, ranks):
         ivy.TuckerTensor.tucker_to_vec((G, U)),
         ivy.dot(ivy.kronecker(U), ivy.reshape(G, -1)),
     )
+
+
+@pytest.mark.parametrize("shape, ranks", [((5, 4, 6), (3, 2, 3))])
+def test_tucker_mode_dot(shape, ranks):
+    tucker_ten = ivy.random_tucker(shape, ranks, full=False)
+    full_tensor = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
+    # matrix for mode 1
+    matrix = ivy.random_uniform(shape=(7, shape[1]))
+    # vec for mode 2
+    vec = ivy.random_uniform(shape=(shape[2]))
+
+    # Test tucker_mode_dot with matrix
+    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, matrix, mode=1, copy=True)
+    # Note that if copy=True is not respected, factors will be changes
+    # And the next test will fail
+    res = ivy.TuckerTensor.tucker_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, matrix, mode=1)
+    assert np.allclose(true_res, res)
+
+    # Check that the data was indeed copied
+    rec = ivy.TuckerTensor.tucker_to_tensor(tucker_ten)
+    assert np.allclose(full_tensor, rec)
+
+    # Test tucker_mode_dot with vec
+    res = ivy.TuckerTensor.tucker_mode_dot(tucker_ten, vec, mode=2, copy=True)
+    res = ivy.TuckerTensor.tucker_to_tensor(res)
+    true_res = ivy.mode_dot(full_tensor, vec, mode=2)
+    assert np.allclose(res.shape, true_res.shape)
+    assert np.allclose(true_res, res)
