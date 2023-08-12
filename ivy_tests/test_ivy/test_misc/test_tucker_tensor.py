@@ -92,3 +92,16 @@ def test_tucker_to_unfolded(shape, ranks):
                 ivy.permute_dims(ivy.kronecker(U, skip_matrix=mode), (1, 0)),
             ),
         )
+
+
+@pytest.mark.parametrize("shape, ranks", [((4, 3, 5, 2), (2, 2, 3, 4))])
+def test_tucker_to_vec(shape, ranks):
+    G = ivy.random_uniform(shape=shape)
+    ranks = [2, 2, 3, 4]
+    U = [ivy.random_uniform(shape=(ranks[i], G.shape[i])) for i in range(4)]
+    vec = ivy.reshape(ivy.TuckerTensor.tucker_to_tensor((G, U)), -1)
+    assert np.allclose(ivy.TuckerTensor.tucker_to_vec((G, U)), vec)
+    assert np.allclose(
+        ivy.TuckerTensor.tucker_to_vec((G, U)),
+        ivy.dot(ivy.kronecker(U), ivy.reshape(G, -1)),
+    )
