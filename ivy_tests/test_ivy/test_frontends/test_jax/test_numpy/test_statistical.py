@@ -1264,6 +1264,7 @@ def test_jax_quantile(
         keepdims=keepdims,
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.numpy.nanquantile",
     dtype_array_axes_q=_get_array_axes_probs(),
