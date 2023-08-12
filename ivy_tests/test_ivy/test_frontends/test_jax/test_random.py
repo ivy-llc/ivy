@@ -1421,7 +1421,6 @@ def test_jax_ball(
         assert u.shape == v.shape
 
 
-
 @st.composite
 def get_mean_cov_vector(draw):
     batch_shape = draw(
@@ -1430,21 +1429,25 @@ def get_mean_cov_vector(draw):
         )
     )
     preMeanShape = draw(
-        helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([ x]))
+        helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x]))
     )
     covShape = batch_shape + (preMeanShape + preMeanShape)
     meanShape = batch_shape + preMeanShape
     dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
     
     # Generate shape for mean vector (..., n)
-    dtype_mean = draw(helpers.dtype_and_values(
-        available_dtypes=dtype, min_value=0, max_value=10, shape=meanShape
-    ))
+    dtype_mean = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=10, shape=meanShape
+        )
+    )
 
     # Generate shape for covariance matrix (..., n, n)
-    dtype_cov = draw(helpers.dtype_and_values(
-        available_dtypes=dtype, min_value=0, max_value=10, shape=covShape
-    ))
+    dtype_cov = draw(
+        helpers.dtype_and_values(
+            available_dtypes=dtype, min_value=0, max_value=10, shape=covShape
+        )
+    )
 
     return dtype_mean, dtype_cov, batch_shape
 
@@ -1476,8 +1479,7 @@ def test_jax_multivariate_normal(
     test_flags,
     fn_tree,
 ):
-    
-    input_dtype, key= dtype_key
+    input_dtype, key = dtype_key
     mean, cov, batch_shape = mean_cov_vector
 
     mean_dtype, mean_matrix = mean
