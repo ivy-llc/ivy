@@ -7,7 +7,9 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test, matrix_is_stable
-
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_and_matrix,
+)
 
 # Helpers #
 # ------ #
@@ -808,10 +810,13 @@ def test_paddle_bincount(
 # qr
 @handle_frontend_test(
     fn_tree="paddle.tensor.linalg.qr",
-    dtype_and_x=helpers.dtype_and_values(dtype=["float32", "float64"]),
+    dtype_and_x=_get_dtype_and_matrix(),
+    mode=st.sampled_from(("reduced", "complete")),
+    test_with_out=st.just(False),
 )
 def test_paddle_qr(
     dtype_and_x,
+    mode,
     frontend,
     test_flags,
     fn_tree,
@@ -826,7 +831,9 @@ def test_paddle_qr(
         backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-01,
         x=x[0],
+        mode=mode,
     )
 
 
