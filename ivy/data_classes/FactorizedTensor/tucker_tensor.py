@@ -5,7 +5,7 @@ import ivy
 # global
 from scipy.optimize import brentq
 from copy import deepcopy
-import logging
+import warnings
 
 
 class TuckerTensor(FactorizedTensor):
@@ -296,7 +296,7 @@ class TuckerTensor(FactorizedTensor):
 
         elif isinstance(rank, int):
             n_modes = len(tensor_shape)
-            logging.Warning(
+            warnings.warn(
                 "Given only one int for 'rank' for decomposition a tensor of order"
                 f" {n_modes}. Using this rank for all modes."
             )

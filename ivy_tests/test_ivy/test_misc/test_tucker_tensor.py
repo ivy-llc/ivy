@@ -207,3 +207,17 @@ def test_tucker_normalize(shape, rank):
         ivy.TuckerTensor.tucker_to_tensor((core, factors)),
         ivy.TuckerTensor.tucker_to_tensor(tucker_ten),
     )
+
+
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5), 4)])
+def test_tucker_copy(shape, rank):
+    tucker_tensor = ivy.random_tucker(shape, rank)
+    core, factors = tucker_tensor
+    core_normalized, factors_normalized = ivy.TuckerTensor.tucker_normalize(
+        tucker_tensor.tucker_copy()
+    )
+    # Check that modifying copy tensor doesn't change the original tensor
+    assert np.allclose(
+        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
+        ivy.TuckerTensor.tucker_to_tensor(tucker_tensor),
+    )
