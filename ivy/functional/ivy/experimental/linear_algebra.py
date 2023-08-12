@@ -556,14 +556,14 @@ def cond(
 
     Examples
     --------
-        >>> x = ivy.array([[1., 2.],
-                           [3., 4.]])
-        >>> ivy.cond(x)
-        ivy.array(14.933034)
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
+    >>> ivy.cond(x)
+    ivy.array(14.933034)
 
-        >>> x = ivy.array([[1., 2.],
-                            [3., 4.]])
-        >>> ivy.cond(x, p=ivy.inf)
+    >>> x = ivy.array([[1., 2.],
+    ...                     [3., 4.]])
+    >>> ivy.cond(x, p=ivy.inf)
         ivy.array(21.0)
     """
     return current_backend(x).cond(x, p=p, out=out)
@@ -607,21 +607,21 @@ def dot(
     >>> b = ivy.array([4, 5, 6])
     >>> result = ivy.dot(a, b)
     >>> print(result)
-    32
+    ivy.array(32)
 
-    >>> c = ivy.array([[1, 2], [3, 4]])
-    >>> d = ivy.array([[5, 6], [7, 8]])
-    >>> e = ivy.empty_like(d)
-    >>> results_matrix = ivy.dot(c, d, out=e)
-    >>> print(results_matrix)
+    >>> a = ivy.array([[1, 2], [3, 4]])
+    >>> b = ivy.array([[5, 6], [7, 8]])
+    >>> c = ivy.empty_like(d)
+    >>> ivy.dot(a, b, out=c)
+    >>> print(c)
     ivy.array([[19, 22],
            [43, 50]])
 
-    >>> f = ivy.array([[1.1, 2.3, -3.6]])
-    >>> g = ivy.array([[-4.8], [5.2], [6.1]])
-    >>> h = np.zeros((1,1))
-    >>> result_ = ivy.dot(f, g, out=h)
-    >>> print(result_)
+    >>> a = ivy.array([[1.1, 2.3, -3.6]])
+    >>> b = ivy.array([[-4.8], [5.2], [6.1]])
+    >>> c = ivy.zeros((1, 1))
+    >>> ivy.dot(a, b, out=c)
+    >>> print(c)
     ivy.array([[-15.28]])
     """
-    return current_backend(a, b).dot(a=a, b=b, out=out)
+    return current_backend(a, b).dot(a, b, out=out)
