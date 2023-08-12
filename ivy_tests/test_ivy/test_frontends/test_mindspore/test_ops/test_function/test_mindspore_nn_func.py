@@ -424,6 +424,7 @@
 #         divisor_override=None,
 #     )
 
+
 # gumbel_softmax
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.gumbel_softmax",
