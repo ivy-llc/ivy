@@ -10,6 +10,7 @@ from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 import warnings
 
+
 @to_ivy_arrays_and_back
 def einsum(
     subscripts,
@@ -513,6 +514,7 @@ def quantile(
     return ivy.quantile(
         a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
     )
+
 
 @to_ivy_arrays_and_back
 def nanquantile(
