@@ -45,6 +45,10 @@ class Array:
     def T(self):
         return self.ivy_array.T
 
+    @property
+    def ndim(self):
+        return self.ivy_array.ndim
+
     # Instance Methods #
     # ---------------- #
 
@@ -145,6 +149,9 @@ class Array:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+
+    def reshape(self, newshape, order="C"):
+        return jax_frontend.numpy.reshape(self, newshape, order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
