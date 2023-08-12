@@ -162,5 +162,5 @@ def take_along_axis(arr, indices, axis):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def put_along_axis(arr, indices, values, axis, reduce='assign'):
+def put_along_axis(arr, indices, values, axis, reduce="assign"):
     return ivy.put_along_axis(arr, indices, values, axis)
