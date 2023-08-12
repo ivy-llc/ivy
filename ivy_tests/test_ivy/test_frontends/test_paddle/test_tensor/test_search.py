@@ -253,8 +253,8 @@ def test_paddle_masked_select(
         x=x[0],
         mask=mask,
     )
-    
-    
+
+
 @handle_frontend_test(
     fn_tree="paddle.topk",
     dtype_x_and_axis=helpers.dtype_values_axis(
