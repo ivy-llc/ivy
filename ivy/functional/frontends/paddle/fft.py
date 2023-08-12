@@ -100,3 +100,6 @@ def ifftshift(x, axes=None, name=None):
     roll = ivy.roll(x, shifts, axis=axes)
 
     return roll
+@to_ivy_arrays_and_back
+def ifft2(x, n=None, axis=(-2, -1), norm="backward", name=None):
+    return irfft2(x, n, axis, norm)

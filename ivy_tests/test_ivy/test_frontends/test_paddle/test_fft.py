@@ -187,3 +187,45 @@ def test_paddle_ifftshift(
         x=x[0],
         axes=axes,
     )
+
+#ifft2
+@handle_frontend_test(
+    fn_tree="paddle.fft.ifft2",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        min_dim_size=2,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    n=st.one_of(
+        st.integers(min_value=2, max_value=10),
+        st.just(None),
+    ),
+    norm=st.sampled_from(["backward", "ortho", "forward"]),
+)
+def test_paddle_ifft2(
+    dtype_x_axis,
+    n,
+    norm,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x=x[0],
+        n=n,
+        axis=axis,
+        norm=norm,
+        valid_axis=True,
+        force_int_axis=True,
+    )
