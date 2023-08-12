@@ -647,6 +647,49 @@ def test_cov(*, dtype_x1_x2_cov, test_flags, backend_fw, fn_name, on_device):
 
 
 @st.composite
+def _kronecker_data(draw):
+    num_arrays = draw(helpers.ints(min_value=2, max_value=5))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=num_arrays,
+            large_abs_safety_factor=20,
+            small_abs_safety_factor=20,
+            safety_factor_scale="log",
+            shared_dtype=True,
+            min_num_dims=2,
+            max_num_dims=2,
+        )
+    )
+    skip_matrix = draw(
+        st.lists(st.integers(min_value=0, max_value=num_arrays - 1), unique=True)
+    )
+    reverse = draw(st.booleans())
+    return x_dtype, x, skip_matrix, reverse
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.kronecker",
+    data=_kronecker_data(),
+    test_instance_method=st.just(False),
+)
+def test_kronecker(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtypes, input, skip_matrix, reverse = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtypes,
+        x=input,
+        skip_matrix=skip_matrix,
+        reverse=reverse,
+    )
+
+
+@st.composite
 def _khatri_rao_data(draw):
     num_matrices = draw(helpers.ints(min_value=2, max_value=4))
     m = draw(helpers.ints(min_value=1, max_value=5))

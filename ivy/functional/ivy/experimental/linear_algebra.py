@@ -570,6 +570,58 @@ def cond(
     """
     return current_backend(x).cond(x, p=p, out=out)
 
+
+# This code has been adapted from TensorLy
+# https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_kronecker.py
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def kronecker(
+    x: Sequence[Union[ivy.Array, ivy.NativeArray]],
+    skip_matrix: Optional[int] = None,
+    reverse: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Kronecker product of a list of matrices.
+
+    Parameters
+    ----------
+    x
+        Sequence of matrices
+
+    skip_matrix
+        if not None, index of a matrix to skip
+
+    reverse
+        if True, the order of the matrices is reversed
+
+    Returns
+    -------
+    kronecker_product: matrix of shape ``(prod(n_rows), prod(n_columns)``
+        where ``prod(n_rows) = prod([m.shape[0] for m in matrices])``
+        and ``prod(n_columns) = prod([m.shape[1] for m in matrices])``
+    """
+    if skip_matrix is not None:
+        x = [x[i] for i in range(len(x)) if i != skip_matrix]
+
+    if reverse:
+        order = -1
+    else:
+        order = 1
+
+    for i, matrix in enumerate(x[::order]):
+        if not i:
+            res = matrix
+        else:
+            res = ivy.kron(res, matrix, out=out)
+    return res
+
+
 # The code has been adapated from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
 @handle_nestable
@@ -1556,24 +1608,25 @@ def tucker(
             return ivy.TuckerTensor((core, factors)), rec_errors
         else:
             return ivy.TuckerTensor((core, factors))
-          
+
+
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_exceptions
 def dot(
-        a: Union[ivy.Array, ivy.NativeArray],
-        b: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the dot product between two arrays `a` and `b` using the
-    current backend's implementation. The dot product is defined as the sum of the
-    element-wise product of the input arrays.
+    Compute the dot product between two arrays `a` and `b` using the current backend's
+    implementation. The dot product is defined as the sum of the element-wise product of
+    the input arrays.
 
-    Parameters:
+    Parameters
     ----------
     a
         First input array.
@@ -1582,7 +1635,7 @@ def dot(
     out
         Optional output array. If provided, the output array to store the result.
 
-    Returns:
+    Returns
     -------
     ret
         The dot product of the input arrays.
@@ -1613,4 +1666,3 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a=a, b=b, out=out)
-  
