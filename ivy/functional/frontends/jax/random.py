@@ -365,8 +365,7 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     },
     "jax",
 )
-def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
-    
+def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):    
     if shape is None:
         shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
     if method == "cholesky":

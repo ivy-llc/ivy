@@ -3,8 +3,6 @@ import pytest
 from hypothesis import strategies as st
 import ivy
 import numpy as np
-import sys
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -1431,10 +1429,10 @@ def get_mean_cov_vector(draw):
     preMeanShape = draw(
         helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x]))
     )
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
     covShape = batch_shape + (preMeanShape + preMeanShape)
     meanShape = batch_shape + preMeanShape
-    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
-    
+
     # Generate shape for mean vector (..., n)
     dtype_mean = draw(
         helpers.dtype_and_values(
