@@ -463,7 +463,35 @@ def test_jax_numpy_indices(
 # take
 @handle_frontend_test(
     fn_tree="jax.numpy.take",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+        valid_bounds=False,
+    ),
+    out=st.none(),
+    mode=st.sampled_from(['wrap', 'clip']),
+    unique_indices=st.booleans(),
+    indices_are_sorted=st.booleans(),
+    fill_value=st.none(),
+    test_with_out=st.just(False),
 )
-def test_jax_take():
-    # Votre code ici pour tester la fonction take
+def test_jax_take(
+    *,
+    dtype_x_indices_axis,
+    out,
+    mode,
+    unique_indices,
+    indices_are_sorted,
+    fill_value,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,    
+):
     pass
