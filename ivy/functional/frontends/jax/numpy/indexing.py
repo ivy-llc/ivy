@@ -1,6 +1,5 @@
 # global
 import inspect
-from typing import Callable
 
 # local
 import ivy
@@ -84,7 +83,7 @@ def diag_indices_from(arr):
 
 
 @to_ivy_arrays_and_back
-def apply_along_axis(func1d: Callable, axis: int, arr, *args, **kwargs):
+def apply_along_axis(func1d, axis, arr, *args, **kwargs):
     ndim = ivy.get_num_dims(arr)
     if axis is None:
         raise ValueError("Axis must be an integer.")
