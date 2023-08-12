@@ -194,3 +194,16 @@ def test_validate_tucker_rank(tol):
     for mode in fixed_modes:
         assert rank[mode] == tensor_shape[mode]
     assert n_param >= n_param_tensor * 0.5 * (1 - tol)
+
+
+@pytest.mark.parametrize("shape, rank", [((3, 4, 5), (3, 2, 4))])
+def test_tucker_normalize(shape, rank):
+    tucker_ten = ivy.random_tucker(shape, rank)
+    core, factors = ivy.TuckerTensor.tucker_normalize(tucker_ten)
+    for i in range(len(factors)):
+        norm = ivy.sqrt(ivy.sum(ivy.abs(factors[i]) ** 2, axis=0))
+        assert np.allclose(norm, ivy.ones(rank[i]))
+    assert np.allclose(
+        ivy.TuckerTensor.tucker_to_tensor((core, factors)),
+        ivy.TuckerTensor.tucker_to_tensor(tucker_ten),
+    )

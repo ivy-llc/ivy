@@ -145,9 +145,9 @@ class TuckerTensor(FactorizedTensor):
         core, factors = tucker_tensor
         normalized_factors = []
         for i, factor in enumerate(factors):
-            scales = int(ivy.sqrt(ivy.sum(ivy.abs(factor) ** 2, axis=0)))
+            scales = ivy.sqrt(ivy.sum(ivy.abs(factor) ** 2, axis=0))
             scales_non_zero = ivy.where(
-                scales == 0, ivy.ones(ivy.shape(scales), factor[0].dtype), scales
+                scales == 0, ivy.ones(ivy.shape(scales), dtype=factor[0].dtype), scales
             )
             core = core * ivy.reshape(
                 scales, (1,) * i + (-1,) + (1,) * (len(core.shape) - i - 1)
