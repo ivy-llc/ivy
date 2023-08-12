@@ -240,7 +240,7 @@ def fast_gelu(input_x):
     )
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float16", "float32")}, "mindspore")
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
 def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
     gumbels = -ivy.empty_like(logits).exponential().log()
