@@ -5,6 +5,9 @@ from hypothesis import assume, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy.numpy as np
+from ivy.functional.frontends.paddle.nn.functional.vision import grid_sample
+import numpy
 
 
 # pixel_shuffle
@@ -112,3 +115,28 @@ def test_paddle_affine_grid(
         out_shape=size,
         align_corners=align_corners,
     )
+
+
+def test_grid_sample_nearest():
+    input_data = np.array([[[[1, 2], [3, 4]]]], dtype=numpy.float32)
+    grid_data = np.array([[[[0.5, 0.5], [1.5, 0.5]]]], dtype=numpy.float32)
+    input = ivy.array(input_data)
+    grid = ivy.array(grid_data)
+
+    output = grid_sample(input, grid, mode="nearest", padding_mode="zeros")
+
+    expected_output = np.array([[[[2, 3]]]], dtype=np.float32)
+    numpy.testing.assert_allclose(output, expected_output, rtol=1e-5)
+
+
+@handle_frontend_test()
+def test_grid_sample_bilinear():
+    input_data = np.array([[[[1, 2], [3, 4]]]], dtype=numpy.float32)
+    grid_data = np.array([[[[0.5, 0.5], [1.5, 0.5]]]], dtype=numpy.float32)
+    input = ivy.array(input_data)
+    grid = ivy.array(grid_data)
+
+    output = grid_sample(input, grid, mode="bilinear", padding_mode="zeros")
+
+    expected_output = np.array([[[[1.75, 2.25]]]], dtype=numpy.float32)
+    numpy.testing.assert_allclose(output, expected_output, rtol=1e-5)

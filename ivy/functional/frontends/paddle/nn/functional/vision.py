@@ -139,6 +139,8 @@ def affine_grid(theta, out_shape, align_corners=True):
 
 
 # grid_sample
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def grid_sample(input, grid, mode, padding_mode):
     """
     grid_sample is used to perfome various spatial transformations.
@@ -164,7 +166,7 @@ def grid_sample(input, grid, mode, padding_mode):
 
     if padding_mode not in ["zeros", "border", "reflection"]:
         raise ValueError(
-            "Invalid padding mode. Supported modes are 'zeros', 'border'and"
+            "Invalid padding mode. Supported modes are 'zeros', 'border' and"
             " 'reflection'. "
         )
 
