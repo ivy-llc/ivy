@@ -100,12 +100,13 @@ def cond(
 ) -> Union[(None, mx.ndarray.NDArray)]:
     raise IvyNotImplementedException()
 
+
 def dot(
-        a: mx.ndarray.NDArray,
-        b: mx.ndarray.NDArray,
-        /,
-        *,
-        out: Optional[mx.ndarray.NDArray] = None,
+    a: mx.ndarray.NDArray,
+    b: mx.ndarray.NDArray,
+    /,
+    *,
+    out: Optional[mx.ndarray.NDArray] = None,
 ) -> mx.ndarray.NDArray:
     return mx.symbol.dot(a, b, out=out)
 

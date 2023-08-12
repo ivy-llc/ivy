@@ -105,12 +105,13 @@ def lu_factor(
 ) -> Any:
     raise IvyNotImplementedException()
 
+
 def dot(
-        a: paddle.Tensor,
-        b: paddle.Tensor,
-        /,
-        *,
-        out: Optional[paddle.Tensor] = None,
+    a: paddle.Tensor,
+    b: paddle.Tensor,
+    /,
+    *,
+    out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.dot(a, b, out=out)
 

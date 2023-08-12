@@ -162,11 +162,11 @@ def lu_factor(
 
 
 def dot(
-        a: JaxArray,
-        b: JaxArray,
-        /,
-        *,
-        out: Optional[JaxArray] = None,
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.dot(a, b, out=out)
 
