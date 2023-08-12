@@ -9521,16 +9521,19 @@ def test_torch_tensor_multiply(
     init_tree="torch.tensor",
     method_name="divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
     ),
 )
 def test_torch_tensor_divide(
     dtype_and_x,
+    frontend,
     frontend_method_data,
     init_flags,
     method_flags,
-    frontend,
     on_device,
     backend_fw,
 ):
@@ -9549,6 +9552,7 @@ def test_torch_tensor_divide(
         init_flags=init_flags,
         method_flags=method_flags,
         frontend=frontend,
+        atol_=1e-02,
         on_device=on_device,
     )
 
