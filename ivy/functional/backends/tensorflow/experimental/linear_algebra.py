@@ -201,3 +201,16 @@ def lu_factor(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Tuple[tf.Tensor]:
     raise IvyNotImplementedException()
+
+
+def dot(
+        a: tf.Tensor,
+        b: tf.Tensor,
+        /,
+        *,
+        out: Optional[tf.Tensor] = None,
+) -> tf.Tensor:
+    return tf.tensordot(a, b, out=out)
+
+
+dot.support_native_out = True

@@ -1929,6 +1929,23 @@ def test_paddle_kron(
     )
 
 
+@st.composite
+def _test_paddle_take_helper(draw):
+    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
+
+    safe_bounds = mode == "raise"
+
+    dtypes, xs, indices, _, _ = draw(
+        helpers.array_indices_axis(
+            array_dtypes=helpers.get_dtypes("float_and_integer"),
+            indices_dtypes=["int32", "int64"],
+            valid_bounds=safe_bounds,
+        )
+    )
+
+    return dtypes, xs, indices, mode
+
+
 # addmm
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.addmm",
@@ -1972,4 +1989,31 @@ def test_paddle_addmm(
         y=y[0],
         beta=beta,
         alpha=alpha,
+    )
+
+
+# take
+@handle_frontend_test(
+    fn_tree="paddle.take", dtype_and_values=_test_paddle_take_helper()
+)
+def test_paddle_take(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    backend_fw,
+    frontend,
+    test_flags,
+):
+    dtypes, xs, indices, modes = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=xs,
+        index=indices,
+        mode=modes,
     )

@@ -437,3 +437,27 @@ def mm(input, mat2, name=None):
 def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
     value = alpha * ivy.matmul(x, y) + (beta * input)
     return value
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def take(
+    x,
+    index,
+    mode="raise",
+    name=None,
+):
+    if mode not in ["raise", "wrap", "clip"]:
+        raise ValueError(
+            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
+            .format(mode)
+        )
+    x = ivy.reshape(x, (-1,))
+    if mode == "clip":
+        index = ivy.clip(index, 0, x.shape[-1] - 1)
+    elif mode == "wrap":
+        index = ivy.where(index < 0, index % x.shape[-1], index)
+        index = ivy.where(index >= x.shape[-1], index % x.shape[-1], index)
+    return ivy.gather(x, index, axis=0)
