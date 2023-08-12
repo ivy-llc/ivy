@@ -14,7 +14,7 @@ tensorflow-probability # unpinned, we test for latest version now, mod_name=tens
 torch # unpinned, we test for latest version now
 torch-scatter # unpinned, mod_name=torch_scatter
 functorch # unpinned, we test for latest version now
-scipy # unpinned
+scipy  # unpinned
 dm-haiku # unpinned mod_name=haiku
 flax
 pydriller

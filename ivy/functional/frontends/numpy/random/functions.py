@@ -213,3 +213,22 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+@to_ivy_arrays_and_back
+def noncentral_f(dfnum, dfden, nonc, size=None):
+    dfnum = ivy.array(dfnum)
+    dfden = ivy.array(dfden)
+
+    chi1 = chisquare(dfnum, size=size)
+    chi2 = chisquare(dfden, size=size)
+
+    if size is None:
+        normal_sample = ivy.random_normal(mean=nonc, std=1)
+    else:
+        normal_sample = ivy.random_normal(
+            mean=ivy.zeros(size) + nonc, std=ivy.ones(size)
+        )
+
+    noncentral_f_sample = (chi1 / dfnum) / (chi2 / dfden) + normal_sample
+    return noncentral_f_sample

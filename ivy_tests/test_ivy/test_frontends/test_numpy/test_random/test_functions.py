@@ -887,3 +887,93 @@ def test_numpy_triangular(
         right=right,
         size=size,
     )
+
+
+# noncentral_f
+# The test values are restricted to (0, 1000] because df<=0 is invalid
+# and very large df can cause problems with type conversions
+@handle_frontend_test(
+    fn_tree="numpy.random.noncentral_f",
+    dtypes=helpers.get_dtypes("float", full=False),
+    dfnum=st.one_of(
+        st.floats(
+            min_value=0,
+            max_value=1000,
+            exclude_min=True,
+            allow_subnormal=False,
+            width=32,
+        ),
+        st.integers(min_value=1, max_value=1000),
+        st.lists(
+            st.one_of(
+                st.floats(
+                    min_value=0,
+                    max_value=1000,
+                    exclude_min=True,
+                    allow_subnormal=False,
+                    width=32,
+                )
+                | st.integers(min_value=1, max_value=1000)
+            ),
+            min_size=1,
+        ),
+    ),
+    dfden=st.one_of(
+        st.floats(
+            min_value=0,
+            max_value=1000,
+            exclude_min=True,
+            allow_subnormal=False,
+            width=32,
+        ),
+        st.integers(min_value=1, max_value=1000),
+        st.lists(
+            st.one_of(
+                st.floats(
+                    min_value=0,
+                    max_value=1000,
+                    exclude_min=True,
+                    allow_subnormal=False,
+                    width=32,
+                )
+                | st.integers(min_value=1, max_value=1000)
+            ),
+            min_size=1,
+        ),
+    ),
+    nonc=st.floats(min_value=0, max_value=1000, exclude_min=True),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_noncentral_f(
+    dtypes,
+    dfnum,
+    dfden,
+    nonc,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+    on_device,
+):
+    # to make sure `size` is something `df` can be broadcast to
+    if (
+        hasattr(dfnum, "__len__")
+        and size is not None
+        and (len(size) == 0 or size[-1] != len(dfnum))
+    ):
+        size = (*size, len(dfnum))
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        dfnum=dfnum,
+        dfden=dfden,
+        nonc=nonc,
+        size=size,
+    )
