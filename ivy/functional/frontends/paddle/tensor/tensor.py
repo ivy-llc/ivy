@@ -361,6 +361,7 @@ class Tensor:
                 "uint8",
                 "int8",
                 "int16",
+                "bfloat16",
                 "complex64",
                 "complex128",
             )
