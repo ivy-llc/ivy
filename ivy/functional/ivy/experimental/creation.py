@@ -15,10 +15,12 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -60,6 +62,7 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -107,6 +110,7 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -268,6 +272,7 @@ def hamming_window(
 
 hamming_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "handle_device_shifting",
     ),
@@ -421,13 +426,13 @@ def eye_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> x1 = ivy.array([[0, 1],[2, 3]])
     >>> y1 = ivy.eye_like(x1)
     >>> print(y1)
     ivy.array([[1., 0.],
                [0., 1.]])
 
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> x1 = ivy.array([[0, 1, 2],[3, 4, 5],[6, 7, 8]])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
@@ -437,7 +442,7 @@ def eye_like(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
-    >>> y = ivy.eye_like(x)
+    >>> y = x.eye_like()
     >>> print(y)
     {
         a: ivy.array([[1., 0.],
@@ -606,6 +611,7 @@ indices.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def unsorted_segment_min(
