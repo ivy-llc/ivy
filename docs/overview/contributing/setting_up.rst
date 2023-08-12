@@ -807,9 +807,11 @@ The steps are as following to setup testing on VS Code when using a new Codespac
          "python.testing.pytestArgs": [
             "./ivy_tests/test_ivy/",
             "./ivy_tests/array_api_testing/test_array_api/",
+            "--continue-on-collection-errors",
          ],
          "python.testing.unittestEnabled": false,
-         "python.testing.pytestEnabled": true
+         "python.testing.pytestEnabled": true,
+         "python.testing.autoTestDiscoverOnSaveEnabled": true,
       }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.

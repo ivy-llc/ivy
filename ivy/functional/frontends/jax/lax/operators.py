@@ -677,13 +677,13 @@ def tie_in(x, y):
 
 @with_supported_dtypes(
     {
-        "2.5.1 and below": (
+        "0.4.14 and below": (
             "float16",
             "float32",
             "float64",
         )
     },
-    "paddle",
+    "jax",
 )
 @to_ivy_arrays_and_back
 def erfc(x):

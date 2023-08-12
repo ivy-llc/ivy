@@ -189,3 +189,16 @@ def lu_factor(
     out: Optional[torch.Tensor] = None,
 ) -> Tuple[torch.Tensor]:
     raise IvyNotImplementedException()
+
+
+def dot(
+        a: torch.Tensor,
+        b: torch.Tensor,
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dot(a, b, out=out)
+
+
+dot.support_native_out = True
