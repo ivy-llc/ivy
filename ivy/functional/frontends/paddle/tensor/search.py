@@ -34,6 +34,15 @@ def argsort(x, /, *, axis=-1, descending=False, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.0 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def sort(x, /, *, axis=-1, descending=False, name=None):
+    return ivy.sort(x, axis=axis, descending=descending)
+
+
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int16", "int32", "int64", "uint8")},
     "paddle",
 )
@@ -68,3 +77,11 @@ def searchsorted(sorted_sequence, values, out_int32=False, right=False, name=Non
 @to_ivy_arrays_and_back
 def masked_select(x, mask, name=None):
     return ivy.flatten(x[mask])
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")},
+    "paddle",
+)
+def topk(x, k, axis=None, largest=True, sorted=True, name=None):
+    return ivy.top_k(x, k, axis=axis, largest=largest, sorted=sorted)

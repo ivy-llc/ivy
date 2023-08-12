@@ -200,12 +200,12 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 ------------------
 
-All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`.
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/utils/backend/handler.py`, and the front facing function is :func:`ivy.current_backend`.
 The contents of this function are as follows:
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
     def current_backend(*args, **kwargs):
         global implicit_backend
         # if a global backend has been set with set_backend then this will be returned
@@ -232,7 +232,7 @@ The following is a slightly simplified version of this code for illustration, wh
 
 .. code-block:: python
 
-   # ivy/backend_handler.py
+   # ivy/utils/backend/handler.py
    def set_backend(backend: str):
 
        # un-modified ivy.__dict__

@@ -426,3 +426,31 @@ def view_as_real(input):
     re_part = ivy.real(input)
     im_part = ivy.imag(input)
     return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+def view_as_complex(input):
+    if ivy.shape(input)[-1] != 2:
+        raise ivy.exceptions.IvyError("The last dimension must have a size of 2")
+
+    real, imaginary = ivy.split(
+        ivy.stop_gradient(input, preserve_type=False),
+        num_or_size_splits=2,
+        axis=ivy.get_num_dims(input) - 1,
+    )
+    dtype = ivy.complex64 if input.dtype == ivy.float32 else ivy.complex128
+    real = ivy.squeeze(real, axis=ivy.get_num_dims(real) - 1).astype(dtype)
+    imag = ivy.squeeze(imaginary, axis=ivy.get_num_dims(imaginary) - 1).astype(dtype)
+    complex_ = real + imag * 1j
+    return ivy.array(complex_, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)
