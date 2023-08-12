@@ -1424,26 +1424,32 @@ def test_jax_ball(
 
 @st.composite
 def get_mean_cov_vector(draw):
-    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=5))
-    dtype_mean=draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
+    batch_shape = draw(helpers.get_shape(
+        min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
+    ))
+    preMeanShape = draw(helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([ x])))
+    covShape = batch_shape + (preMeanShape + preMeanShape)
+    meanShape = batch_shape + preMeanShape
+    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
+    
+    # Generate shape for mean vector (..., n)
+    dtype_mean = draw(helpers.dtype_and_values(
+        available_dtypes=dtype,
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: shape + tuple([x])),
-        
-        )
-    )
-    batch_shape = shape
-    dtype_cov=draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=False),
+        shape=meanShape
+    ))
+
+    # Generate shape for covariance matrix (..., n, n)
+    dtype_cov = draw(helpers.dtype_and_values(
+        available_dtypes=dtype,
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: batch_shape + tuple([x, x])),
-        )
-    )
+        shape=covShape
+    ))
 
+    return dtype_mean, dtype_cov, batch_shape
 
-    return dtype_mean, dtype_cov, shape
 
 # @pytest.mark.xfail
 @handle_frontend_test(
@@ -1473,17 +1479,14 @@ def test_jax_multivariate_normal(
     fn_tree,
 ):
     input_dtype, key= dtype_key
-    mean, cov, shape = mean_cov_vector
+    mean, cov, batch_shape = mean_cov_vector
     
-    mean_dtype, mean_matrix_shape = mean
-    
-    mean_matrix_shape = np.array(mean_matrix_shape[0], dtype=mean_dtype[0])
+    mean_dtype, mean_matrix = mean
+    mean_matrix = np.asarray(mean_matrix[0], dtype=mean_dtype[0])
 
     cov_dtype, x = cov
 
-    x = np.array(x[0], dtype=cov_dtype[0])
-    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-
+    x = np.asarray(x[0], dtype=cov_dtype[0])
     
     def call():
         helpers.test_frontend_function(
@@ -1493,11 +1496,10 @@ def test_jax_multivariate_normal(
             backend_to_test=backend_fw,
             fn_tree=fn_tree,
             test_values=False,
-            rtol=1e-02,
             key=key[0],
-            mean=mean_matrix_shape,
+            mean=mean_matrix,
             cov=x,
-            shape=shape,
+            shape=batch_shape,
             dtype=dtype[0],
             method=method,
         )
