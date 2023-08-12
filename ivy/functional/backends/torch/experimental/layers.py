@@ -2,6 +2,7 @@
 from typing import Optional, Union, Tuple, List, Literal, Sequence
 import torch
 import math
+import torchvision
 
 # local
 import ivy
@@ -1017,13 +1018,15 @@ def deform_conv2d(
     x: torch.Tensor,
     offset: torch.Tensor,
     weight: torch.Tensor,
+    *,
     bias: Optional[torch.Tensor] = None,
-    stride: Union[int, Sequence[int]] = (1, 1),
-    padding: Union[int, Sequence[int]] = (0, 0),
-    dilation: Union[int, Sequence[int]] = (1, 1),
+    stride: Union[int, Tuple[int, int]] = (1, 1),
+    padding: Union[int, Tuple[int, int]] = (0, 0),
+    dilation: Union[int, Tuple[int, int]] = (1, 1),
     mask: Optional[torch.Tensor] = None,
-):
-    return torch.nn.functional.deform_conv2d(
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torchvision.ops.deform_conv2d(
         x,
         offset,
         weight,

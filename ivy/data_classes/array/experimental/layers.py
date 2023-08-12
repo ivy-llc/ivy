@@ -1106,3 +1106,72 @@ class _ArrayWithLayersExperimental(abc.ABC):
             The result of the RFFT operation.
         """
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
+
+
+    def deform_conv2d(
+        self: ivy.Array,
+        offset: Union[ivy.Array, ivy.NativeArray],
+        weight: Union[ivy.Array, ivy.NativeArray],
+        *,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        stride: Union[int, Tuple[int, int]] = (1, 1),
+        padding: Union[int, Tuple[int, int]] = (0, 0),
+        dilation: Union[int, Tuple[int, int]] = (1, 1),
+        mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Perform Deformable Convolution v2, if mask is not None, and Perform Deformable
+        Convolution, if mask is None. Deformable convolution, as described in
+        https://arxiv.org/abs/1703.06211. Deformable convolution v2, as described in
+        https://arxiv.org/abs/1811.11168.
+
+        Parameters
+        ----------
+        self : array_like
+            Input image, taken to be real.
+            Shape is (batch_size, d_in, height_in, width_in).
+        offset : array_like
+            Input offset, taken to be real.
+            Offsets to be applied for each position in the convolution kernel.
+            Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width,
+            height_out, width_out).
+        weight : array_like
+            Input weight, taken to be real. convolution weights,
+            split into groups of size d_in // groups.
+            Shape is (d_out, d_in // groups, kernel_height, kernel_width).
+        bias : array_like, optional
+            Input bias, taken to be real. Shape is (d_out,).
+        stride : tuple of ints, or int, optional
+            Stride of the convolution. Default is (1, 1).
+        padding : tuple of ints, or int, optional
+            Zero-padding added to both sides of the input. Default is (0, 0).
+        dilation : tuple of ints, or int, optional
+            Spacing between kernel elements. Default is (1, 1).
+        mask : array_like, optional
+            Masks to be applied for each position in the convolution kernel.
+            Default is None.
+            If not None, shape is (
+            batch_size, offset_groups * kernel_height * kernel_width, height_out,
+            width_out).
+        out : array_like, optional
+
+        Returns
+        -------
+        array_like
+            The result of the convolution.
+            Shape is (batch_size, d_out, height_out, width_out).
+
+        Examples
+        --------
+        >>> import ivy
+        >>> x = ivy.random.random_normal(shape=(4, 3, 10, 10))
+        >>> offset = ivy.random.random_normal(shape=(4, 2 * 3 * 3, 8, 8))
+        >>> weight = ivy.random.random_normal(shape=(5, 3, 3, 3))
+        >>> mask = ivy.random.random_normal(shape=(4, 3 * 3, 8, 8))
+        >>> result = x.deform_conv2d(offset, weight)
+        >>> print(result.shape)
+        (4, 5, 8, 8)
+        """
+        return ivy.deform_conv2d(self._data, offset, weight, bias=bias, stride=stride,
+                                 padding=padding, dilation=dilation, mask=mask, out=out)

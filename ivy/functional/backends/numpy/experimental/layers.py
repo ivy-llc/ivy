@@ -1051,10 +1051,12 @@ def deform_conv2d(
     x: np.ndarray,
     offset: np.ndarray,
     weight: np.ndarray,
+    *,
     bias: Optional[np.ndarray] = None,
     stride: Union[int, Tuple[int]] = (1, 1),
     padding: Union[int, Tuple[int]] = (0, 0),
     dilation: Union[int, Tuple[int]] = (1, 1),
     mask: Optional[np.ndarray] = None,
-):
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
     raise IvyNotImplementedException()

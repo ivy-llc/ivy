@@ -502,29 +502,28 @@ def deform_conv2d(
     x: paddle.Tensor,
     offset: paddle.Tensor,
     weight: paddle.Tensor,
+    *,
     bias: Optional[paddle.Tensor] = None,
     stride: Union[int, Tuple[int]] = (1, 1),
     padding: Union[int, Tuple[int]] = (0, 0),
     dilation: Union[int, Tuple[int]] = (1, 1),
     mask: Optional[paddle.Tensor] = None,
-):
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if offset.shape[1] % (2 * weight.shape[2] * weight.shape[3]) != 0:
         raise Exception("offset_groups must be integer")
     offset_groups = int(offset.shape[1] // (2 * weight.shape[2] * weight.shape[3]))
     groups = int(x.shape[1] // weight.shape[1])
-    conv_out = paddle.fluid.layers.deformable_conv(
-        input=x,
+    conv_out = paddle.vision.ops.deform_conv2d(
+        x=x,
         offset=offset,
+        weight=weight,
+        bias=bias,
         mask=mask,
-        num_filters=weight.shape[0],
-        filter_size=weight.shape[2:],
         stride=stride,
         padding=padding,
         dilation=dilation,
         groups=groups,
         deformable_groups=offset_groups,
-        modulated=True if mask is not None else False,
     )
-    if bias is not None:
-        conv_out += bias
     return conv_out

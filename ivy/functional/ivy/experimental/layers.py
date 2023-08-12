@@ -2868,11 +2868,13 @@ def deform_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     offset: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
+    *,
     bias: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     stride: Union[int, Tuple[int, int]] = (1, 1),
     padding: Union[int, Tuple[int, int]] = (0, 0),
     dilation: Union[int, Tuple[int, int]] = (1, 1),
     mask: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
     Perform Deformable Convolution v2, if mask is not None, and Perform Deformable
@@ -2906,6 +2908,7 @@ def deform_conv2d(
         Default is None.
         If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width,
          height_out, width_out).
+    out : array_like, optional
 
     Returns
     -------
@@ -2933,4 +2936,5 @@ def deform_conv2d(
         padding=padding,
         dilation=dilation,
         mask=mask,
+        out=out,
     )

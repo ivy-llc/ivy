@@ -1272,62 +1272,62 @@ def test_rfftn(
 
 @st.composite
 def x_and_deform_conv2d(draw):
-    dim = 2
     dtype = draw(helpers.get_dtypes("float"))
     batch_size = draw(st.integers(1, 5))
     in_channels = draw(st.integers(1, 3))
-    out_channels = draw(st.integers(1, 3))
     group_list = [*range(1, 6)]
     group_list = list(filter(lambda x: (in_channels % x == 0), group_list))
     groups = draw(st.sampled_from(group_list))
     offset_groups = draw(st.integers(1, 3))
-    kernel_height = draw(st.integers(1, 3))
-    kernel_width = draw(st.integers(1, 3))
+    out_channels = draw(st.integers(1, 3)) * groups * offset_groups
+    kernel_height = draw(st.integers(1, 2))
+    kernel_width = draw(st.integers(1, 2))
 
-    min_height_in = kernel_height + (kernel_height - 1) * (1 - 1)
-    min_width_in = kernel_width + (kernel_width - 1) * (1 - 1)
-    height_in = draw(st.integers(min_height_in, min_height_in + 1))
-    width_in = draw(st.integers(min_width_in, min_width_in + 1))
+    height_in = draw(st.integers(5, 6))
+    width_in = draw(st.integers(5, 6))
 
     strides = draw(
         st.one_of(
-            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+            st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2))
         )
     )
     dilations = draw(
         st.one_of(
-            st.integers(1, 3), st.lists(st.integers(1, 3), min_size=dim, max_size=dim)
+            st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2))
         )
     )
 
     padding = draw(
         st.one_of(
-            st.lists(
-                st.tuples(
-                    st.integers(min_value=0, max_value=3),
-                    st.integers(min_value=0, max_value=3),
-                ),
-                min_size=dim,
-                max_size=dim,
+            st.tuples(
+                st.integers(min_value=0, max_value=3),
+                st.integers(min_value=0, max_value=3),
             ),
             st.integers(min_value=0, max_value=3),
         )
     )
 
-    min_height_out = (
-        min_height_in + 2 * padding[0] - (dilations[0] * (kernel_height - 1) + 1)
-    ) // strides[0] + 1
+    full_padding = padding if isinstance(padding, tuple) else (padding, padding)
+    full_dilations = dilations if isinstance(dilations, tuple) \
+        else (dilations, dilations)
+    full_strides = strides if isinstance(strides, tuple) else (strides, strides)
 
-    min_width_out = (
-        min_width_in + 2 * padding[1] - (dilations[1] * (kernel_width - 1) + 1)
-    ) // strides[1] + 1
-    height_out = draw(st.integers(min_height_out, min_height_out + 1))
-    width_out = draw(st.integers(min_width_out, min_width_out + 1))
+    height_out = (
+        height_in + 2 * full_padding[0] - (
+                             full_dilations[0] * (kernel_height - 1) + 1
+                     )
+    ) // full_strides[0] + 1
+
+    width_out = (
+        width_in + 2 * full_padding[1] - (
+                            full_dilations[1] * (kernel_width - 1) + 1
+                    )
+    ) // full_strides[1] + 1
 
     x = draw(
         helpers.array_values(
-            dtype,
-            (batch_size, in_channels, height_in, width_in),
+            dtype=dtype[0],
+            shape=(batch_size, in_channels, height_in, width_in),
             min_value=0.0,
             max_value=1.0,
         )
@@ -1335,8 +1335,8 @@ def x_and_deform_conv2d(draw):
 
     offset = draw(
         helpers.array_values(
-            dtype,
-            (
+            dtype=dtype[0],
+            shape=(
                 batch_size,
                 2 * offset_groups * kernel_height * kernel_width,
                 height_out,
@@ -1349,8 +1349,8 @@ def x_and_deform_conv2d(draw):
 
     weight = draw(
         helpers.array_values(
-            dtype,
-            (out_channels, in_channels // groups, kernel_height, kernel_width),
+            dtype=dtype[0],
+            shape=(out_channels, in_channels // groups, kernel_height, kernel_width),
             min_value=0.0,
             max_value=1.0,
         )
@@ -1358,25 +1358,27 @@ def x_and_deform_conv2d(draw):
 
     bias = draw(
         helpers.array_values(
-            dtype,
-            (out_channels,),
+            dtype=dtype[0],
+            shape=(out_channels,),
             min_value=0.0,
             max_value=1.0,
         )
     )
 
     mask = draw(
-        helpers.array_values(
-            dtype,
-            (
-                batch_size,
-                offset_groups * kernel_height * kernel_width,
-                height_out,
-                width_out,
+        st.one_of(
+            helpers.array_values(
+                dtype=dtype[0],
+                shape=(
+                    batch_size,
+                    offset_groups * kernel_height * kernel_width,
+                    height_out,
+                    width_out,
+                ),
+                min_value=0.0,
+                max_value=1.0,
             ),
-            min_value=0.0,
-            max_value=1.0,
-        )
+        st.none())
     )
 
     return dtype, x, offset, weight, bias, strides, padding, dilations, mask
@@ -1409,8 +1411,8 @@ def test_deform_conv2d(
         offset=offset,
         weight=weight,
         bias=bias,
-        strides=strides,
+        stride=strides,
         padding=padding,
-        dilations=dilations,
+        dilation=dilations,
         mask=mask,
     )

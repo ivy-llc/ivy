@@ -237,12 +237,14 @@ def deform_conv2d(
     x: mx.nd.NDArray,
     offset: mx.nd.NDArray,
     weight: mx.nd.NDArray,
+    *,
     bias: Optional[mx.nd.NDArray] = None,
     stride: Union[int, Tuple[int, int]] = (1, 1),
     padding: Union[int, Tuple[int, int]] = (0, 0),
     dilation: Union[int, Tuple[int, int]] = (1, 1),
     mask: Optional[mx.nd.NDArray] = None,
-):
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
     if isinstance(stride, int):
         stride = (stride, stride)
     if isinstance(padding, int):

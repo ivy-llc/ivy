@@ -874,10 +874,12 @@ def deform_conv2d(
     x: JaxArray,
     offset: JaxArray,
     weight: JaxArray,
+    *,
     bias: Optional[JaxArray] = None,
     stride: Union[int, Tuple[int, int]] = (1, 1),
     padding: Union[int, Tuple[int, int]] = (0, 0),
     dilation: Union[int, Tuple[int, int]] = (1, 1),
     mask: Optional[JaxArray] = None,
-):
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
     raise IvyNotImplementedException()

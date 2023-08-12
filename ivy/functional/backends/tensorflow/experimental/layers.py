@@ -1401,9 +1401,12 @@ def deform_conv2d(
     x: Union[tf.Tensor, tf.Variable],
     offset: Union[tf.Tensor, tf.Variable],
     weight: Union[tf.Tensor, tf.Variable],
-    strides: Union[int, Tuple[int]] = (1, 1),
+    *,
+    bias: Union[tf.Tensor, tf.Variable] = None,
+    stride: Union[int, Tuple[int]] = (1, 1),
     padding: Union[int, Tuple[int]] = (0, 0),
     dilation: Union[int, Tuple[int]] = (1, 1),
     mask: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     raise IvyNotImplementedException()

@@ -2250,3 +2250,136 @@ class _ContainerWithLayersExperimental(ContainerBase):
             norm=norm,
             out=out,
         )
+
+    @staticmethod
+    def static_deform_conv2d(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        offset: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        stride: Union[int, Tuple[int, int], ivy.Container] = (1, 1),
+        padding: Union[int, Tuple[int, int], ivy.Container] = (0, 0),
+        dilation: Union[int, Tuple[int, int], ivy.Container] = (1, 1),
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.deform_conv2d.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.deform_conv2d also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x : array_like
+            Input image, taken to be real. Shape is (batch_size, d_in, height_in, width_in).
+        offset : array_like
+            Input offset, taken to be real.
+            Offsets to be applied for each position in the convolution kernel.
+            Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width,
+            height_out, width_out).
+        weight : array_like
+            Input weight, taken to be real. convolution weights,
+            split into groups of size d_in // groups.
+            Shape is (d_out, d_in // groups, kernel_height, kernel_width).
+        bias : array_like, optional
+            Input bias, taken to be real. Shape is (d_out,).
+        stride : tuple of ints, or int, optional
+            Stride of the convolution. Default is (1, 1).
+        padding : tuple of ints, or int, optional
+            Zero-padding added to both sides of the input. Default is (0, 0).
+        dilation : tuple of ints, or int, optional
+            Spacing between kernel elements. Default is (1, 1).
+        mask : array_like, optional
+            Masks to be applied for each position in the convolution kernel.
+            Default is None.
+            If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width,
+             height_out, width_out).
+        out : array_like, optional
+
+        Returns
+        -------
+        array-like
+            The convolved array.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "deform_conv2d",
+            x,
+            offset=offset,
+            weight=weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            mask=mask,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def deform_conv2d(
+        self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        offset: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        weight: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        *,
+        bias: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        stride: Union[int, Tuple[int, int], ivy.Container] = (1, 1),
+        padding: Union[int, Tuple[int, int], ivy.Container] = (0, 0),
+        dilation: Union[int, Tuple[int, int], ivy.Container] = (1, 1),
+        mask: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        Deformable convolutional layer.
+
+        Parameters
+        ----------
+        x : array_like
+            Input image, taken to be real. Shape is (batch_size, d_in, height_in, width_in).
+        offset : array_like
+            Input offset, taken to be real.
+            Offsets to be applied for each position in the convolution kernel.
+            Shape is (batch_size, 2 * offset_groups * kernel_height * kernel_width,
+            height_out, width_out).
+        weight : array_like
+            Input weight, taken to be real. convolution weights,
+            split into groups of size d_in // groups.
+            Shape is (d_out, d_in // groups, kernel_height, kernel_width).
+        bias : array_like, optional
+            Input bias, taken to be real. Shape is (d_out,).
+        stride : tuple of ints, or int, optional
+            Stride of the convolution. Default is (1, 1).
+        padding : tuple of ints, or int, optional
+            Zero-padding added to both sides of the input. Default is (0, 0).
+        dilation : tuple of ints, or int, optional
+            Spacing between kernel elements. Default is (1, 1).
+        mask : array_like, optional
+            Masks to be applied for each position in the convolution kernel.
+            Default is None.
+            If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width,
+             height_out, width_out).
+        out : array_like, optional
+
+        Returns
+        -------
+        array-like
+            The convolved array.
+        """
+        return self.static_deform_conv2d(
+            self,
+            offset=offset,
+            weight=weight,
+            bias=bias,
+            stride=stride,
+            padding=padding,
+            dilation=dilation,
+            mask=mask,
+            out=out,
+        )
