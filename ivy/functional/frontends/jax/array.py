@@ -273,6 +273,9 @@ class Array:
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
 
+    def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
+        return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
+
     def ptp(self, *, axis=None, out=None, keepdims=False):
         return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
 
@@ -301,3 +304,8 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+
+# Jax supports DeviceArray from 0.4.13 and below
+# Hence aliasing it here
+DeviceArray = Array

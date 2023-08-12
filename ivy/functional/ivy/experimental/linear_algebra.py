@@ -93,7 +93,7 @@ def eigh_tridiagonal(
     >>> beta = ivy.array([0., 1.])
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
-    ivy.array([0., 0.38196, 2.61803])
+    ivy.array([0., 0.38196602, 2.61803389])
 
     >>> alpha = ivy.array([0., 1., 2.])
     >>> beta = ivy.array([0., 1.])
@@ -101,22 +101,21 @@ def eigh_tridiagonal(
     ...     beta, select='v',
     ...     select_range=[0.2,3.0])
     >>> print(y)
-    ivy.array([0.38196, 2.61803])
+    ivy.array([0.38196602, 2.61803389])
 
-    >>> ivy.set_backend("tensorflow")
     >>> alpha = ivy.array([0., 1., 2., 3.])
     >>> beta = ivy.array([2., 1., 2.])
     >>> y = ivy.eigh_tridiagonal(alpha,
     ...     beta,
     ...     eigvals_only=False,
     ...     select='i',
-    ...     select_range=[1,2]
+    ...     select_range=[1,2],
     ...     tol=1.)
     >>> print(y)
-    (ivy.array([0.18749806, 2.81250191]), ivy.array([[ 0.350609  , -0.56713122],
-        [ 0.06563006, -0.74146169],
-        [-0.74215561, -0.0636413 ],
-        [ 0.56742489,  0.35291126]]))
+    (ivy.array([0.38196602, 2.61803389]), ivy.array([[ 0.35048741, -0.56710052],
+           [ 0.06693714, -0.74234426],
+           [-0.74234426, -0.06693714],
+           [ 0.56710052,  0.35048741]]))
 
     With :class:`ivy.Container` input:
 
@@ -125,7 +124,7 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
         b: ivy.array([0., 2., 4.])
     }
 
@@ -134,8 +133,8 @@ def eigh_tridiagonal(
     >>> y = ivy.eigh_tridiagonal(alpha, beta)
     >>> print(y)
     {
-        a: ivy.array([-0.56155, 0., 3.56155]),
-        b: ivy.array([-0.82842, 2., 4.82842])
+        a: ivy.array([-0.56155282, 0., 3.56155276]),
+        b: ivy.array([-0.82842714, 2., 4.82842731])
     }
     """
     x = ivy.diag(alpha)
@@ -467,11 +466,11 @@ def adjoint(
     return current_backend(x).adjoint(x, out=out)
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 def multi_dot(
     x: Sequence[Union[ivy.Array, ivy.NativeArray]],
     /,
@@ -570,7 +569,6 @@ def cond(
         ivy.array(21.0)
     """
     return current_backend(x).cond(x, p=p, out=out)
-
 
 # The code has been adapated from tensorly.khatri_rao
 # https://github.com/tensorly/tensorly/blob/main/tensorly/tenalg/core_tenalg/_khatri_rao.py#L9
@@ -1558,3 +1556,61 @@ def tucker(
             return ivy.TuckerTensor((core, factors)), rec_errors
         else:
             return ivy.TuckerTensor((core, factors))
+          
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_exceptions
+def dot(
+        a: Union[ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute the dot product between two arrays `a` and `b` using the
+    current backend's implementation. The dot product is defined as the sum of the
+    element-wise product of the input arrays.
+
+    Parameters:
+    ----------
+    a
+        First input array.
+    b
+        Second input array.
+    out
+        Optional output array. If provided, the output array to store the result.
+
+    Returns:
+    -------
+    ret
+        The dot product of the input arrays.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> a = ivy.array([1, 2, 3])
+    >>> b = ivy.array([4, 5, 6])
+    >>> result = ivy.dot(a, b)
+    >>> print(result)
+    32
+
+    >>> c = ivy.array([[1, 2], [3, 4]])
+    >>> d = ivy.array([[5, 6], [7, 8]])
+    >>> e = ivy.empty_like(d)
+    >>> results_matrix = ivy.dot(c, d, out=e)
+    >>> print(results_matrix)
+    ivy.array([[19, 22],
+           [43, 50]])
+
+    >>> f = ivy.array([[1.1, 2.3, -3.6]])
+    >>> g = ivy.array([[-4.8], [5.2], [6.1]])
+    >>> h = np.zeros((1,1))
+    >>> result_ = ivy.dot(f, g, out=h)
+    >>> print(result_)
+    ivy.array([[-15.28]])
+    """
+    return current_backend(a, b).dot(a=a, b=b, out=out)
+  

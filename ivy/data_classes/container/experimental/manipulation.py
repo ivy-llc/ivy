@@ -632,7 +632,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),\
+        >>> m = ivy.Container(a=ivy.array([[1,2], [3,4]]),
         ...                   b=ivy.array([[1,2,3,4],[7,8,9,10]]))
         >>> n = m.rot90()
         >>> print(n)
@@ -799,16 +799,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-1, 2, -4]), b=ivy.array([4., 5., 0.]))
         >>> y = x.top_k(2)
         >>> print(y)
-        {
-            a: [
-                values = ivy.array([ 2, -1]),
-                indices = ivy.array([1, 0])
-            ],
-            b: [
-                values = ivy.array([5., 4.]),
-                indices = ivy.array([1, 0])
-            ]
-        }
+        [{
+            a: ivy.array([2, -1]),
+            b: ivy.array([5., 4.])
+        }, {
+            a: ivy.array([1, 0]),
+            b: ivy.array([1, 0])
+        }]
         """
         return self.static_top_k(
             self,
@@ -2482,17 +2479,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
         Examples
         --------
-        >>> shapes = ivy.Container(a = [(2, 3), (2, 1)],
-        ...                        b = [(2, 3), (1, 3)],
-        ...                        c = [(2, 3), (2, 3)],
-        ...                        d = [(2, 3), (2, 1), (1, 3), (2, 3)])
+        >>> shapes = ivy.Container(a = (2, 3, 5),
+        ...                        b = (2, 3, 1))
         >>> z = shapes.broadcast_shapes()
         >>> print(z)
         {
-            a: (2, 3),
-            b: (2, 3),
-            c: (2, 3),
-            d: (2, 3)
+            a: [2, 3, 5],
+            b: [2, 3, 1]
         }
         """
         return self.static_broadcast_shapes(self, out=out)
