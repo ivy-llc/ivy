@@ -1287,14 +1287,10 @@ def x_and_deform_conv2d(draw):
     width_in = draw(st.integers(5, 6))
 
     strides = draw(
-        st.one_of(
-            st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2))
-        )
+        st.one_of(st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2)))
     )
     dilations = draw(
-        st.one_of(
-            st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2))
-        )
+        st.one_of(st.integers(1, 2), st.tuples(st.integers(1, 2), st.integers(1, 2)))
     )
 
     padding = draw(
@@ -1308,20 +1304,17 @@ def x_and_deform_conv2d(draw):
     )
 
     full_padding = padding if isinstance(padding, tuple) else (padding, padding)
-    full_dilations = dilations if isinstance(dilations, tuple) \
-        else (dilations, dilations)
+    full_dilations = (
+        dilations if isinstance(dilations, tuple) else (dilations, dilations)
+    )
     full_strides = strides if isinstance(strides, tuple) else (strides, strides)
 
     height_out = (
-        height_in + 2 * full_padding[0] - (
-                             full_dilations[0] * (kernel_height - 1) + 1
-                     )
+        height_in + 2 * full_padding[0] - (full_dilations[0] * (kernel_height - 1) + 1)
     ) // full_strides[0] + 1
 
     width_out = (
-        width_in + 2 * full_padding[1] - (
-                            full_dilations[1] * (kernel_width - 1) + 1
-                    )
+        width_in + 2 * full_padding[1] - (full_dilations[1] * (kernel_width - 1) + 1)
     ) // full_strides[1] + 1
 
     x = draw(
@@ -1378,7 +1371,8 @@ def x_and_deform_conv2d(draw):
                 min_value=0.0,
                 max_value=1.0,
             ),
-        st.none())
+            st.none(),
+        )
     )
 
     return dtype, x, offset, weight, bias, strides, padding, dilations, mask
