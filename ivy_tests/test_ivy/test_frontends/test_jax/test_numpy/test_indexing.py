@@ -467,39 +467,15 @@ def test_jax_numpy_indices(
 
 
 @handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_r_())  # dummy fn_tree
-def test_jax_numpy_r_(
-    inputs,
-    backend_fw,
-    frontend,
-):
+def test_jax_numpy_r_(inputs):
     inputs, elems_in_last_dim, dim = inputs
     ret_gt = r_.__getitem__(tuple(inputs))
     ret = jnp_frontend.r_.__getitem__(tuple(inputs))
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt, backend=backend_fw)
-    ret = helpers.flatten_and_to_np(ret=ret, backend=frontend)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        rtol=1e-03,
-        backend=backend_fw,
-        ground_truth_backend=frontend,
-    )
+    assert np.allclose(ret.ivy_array, ret_gt)
 
 
 @handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
-def test_jax_numpy_c_(
-    inputs,
-    backend_fw,
-    frontend,
-):
+def test_jax_numpy_c_(inputs):
     ret_gt = c_.__getitem__(tuple(inputs))
     ret = jnp_frontend.c_.__getitem__(tuple(inputs))
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt, backend=backend_fw)
-    ret = helpers.flatten_and_to_np(ret=ret, backend=frontend)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        rtol=1e-03,
-        backend=backend_fw,
-        ground_truth_backend=frontend,
-    )
+    assert np.allclose(ret.ivy_array, ret_gt)
