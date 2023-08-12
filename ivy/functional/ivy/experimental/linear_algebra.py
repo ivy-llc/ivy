@@ -574,16 +574,16 @@ def cond(
 @to_native_arrays_and_back
 @handle_exceptions
 def dot(
-        a: Union[ivy.Array, ivy.NativeArray],
-        b: Union[ivy.Array, ivy.NativeArray],
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
-    Compute the dot product between two arrays `a` and `b` using the
-    current backend's implementation. The dot product is defined as the sum of the
-    element-wise product of the input arrays.
+    Compute the dot product between two arrays `a` and `b` using the current backend's
+    implementation. The dot product is defined as the sum of the element-wise product of
+    the input arrays.
 
     Parameters:
     ----------
@@ -625,4 +625,3 @@ def dot(
     ivy.array([[-15.28]])
     """
     return current_backend(a, b).dot(a=a, b=b, out=out)
-    
