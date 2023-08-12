@@ -144,3 +144,53 @@ def test_n_param_tucker(shape, rank):
     )
     n_param = tucker_tensor.n_param
     assert np.allclose(n_param, true_n_param)
+
+
+@pytest.mark.parametrize("tol", [(0.01)])
+def test_validate_tucker_rank(tol):
+    tensor_shape = tuple(ivy.randint(1, 100, shape=(5,)))
+    n_param_tensor = ivy.prod(tensor_shape)
+
+    # Rounding = floor
+    rank = ivy.TuckerTensor.validate_tucker_rank(
+        tensor_shape, rank="same", rounding="floor"
+    )
+    n_param = ivy.TuckerTensor.tucker_n_param(tensor_shape, rank)
+    assert n_param * (1 - tol) <= n_param_tensor
+
+    # Rounding = ceil
+    rank = ivy.TuckerTensor.validate_tucker_rank(
+        tensor_shape, rank="same", rounding="ceil"
+    )
+    n_param = ivy.TuckerTensor.tucker_n_param(tensor_shape, rank)
+    assert n_param >= n_param_tensor * (1 - tol)
+
+    # With fixed modes
+    fixed_modes = [1, 4]
+    tensor_shape = [
+        s**2 if i in fixed_modes else s
+        for (i, s) in enumerate(ivy.randint(2, 10, shape=(5,)))
+    ]
+    n_param_tensor = ivy.prod(tensor_shape)
+    # Floor
+    rank = ivy.TuckerTensor.validate_tucker_rank(
+        tensor_shape, rank=0.5, fixed_modes=fixed_modes, rounding="floor"
+    )
+    n_param = ivy.TuckerTensor.tucker_n_param(tensor_shape, rank)
+    for mode in fixed_modes:
+        assert rank[mode] == tensor_shape[mode]
+    assert n_param * (1 - tol) <= n_param_tensor * 0.5
+    # Ceil
+    fixed_modes = [0, 2]
+    tensor_shape = [
+        s**2 if i in fixed_modes else s
+        for (i, s) in enumerate(ivy.randint(2, 10, shape=(5,)))
+    ]
+    n_param_tensor = ivy.prod(tensor_shape)
+    rank = ivy.TuckerTensor.validate_tucker_rank(
+        tensor_shape, rank=0.5, fixed_modes=fixed_modes, rounding="ceil"
+    )
+    n_param = ivy.TuckerTensor.tucker_n_param(tensor_shape, rank)
+    for mode in fixed_modes:
+        assert rank[mode] == tensor_shape[mode]
+    assert n_param >= n_param_tensor * 0.5 * (1 - tol)

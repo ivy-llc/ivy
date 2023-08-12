@@ -309,3 +309,9 @@ class TuckerTensor(FactorizedTensor):
                 ]  # *n_mode
 
         return rank
+
+    @staticmethod
+    def tucker_n_param(shape, rank):
+        core_params = ivy.prod(rank)
+        factors_params = ivy.sum([r * s for (r, s) in zip(rank, shape)])
+        return int(core_params + factors_params)
