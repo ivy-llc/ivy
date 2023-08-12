@@ -5,9 +5,6 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
-    _get_dtype_values_k_axes_for_rot90,
-)
 
 
 # Helpers #
@@ -41,13 +38,13 @@ def dtypes_x_reshape(draw):
     dtypes_x_reshape=dtypes_x_reshape(),
 )
 def test_paddle_reshape(
-    *,
-    dtypes_x_reshape,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtypes_x_reshape,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
@@ -70,13 +67,13 @@ def test_paddle_reshape(
     ),
 )
 def test_paddle_abs(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_and_x,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -127,13 +124,13 @@ def _arrays_axis_n_dtypes(draw):
     test_with_out=st.just(False),
 )
 def test_paddle_stack(
-    *,
-    _arrays_n_dtypes_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        _arrays_n_dtypes_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     xs, input_dtypes, axis = _arrays_n_dtypes_axis
     helpers.test_frontend_function(
@@ -191,13 +188,13 @@ def _arrays_idx_n_dtypes(draw):
     test_with_out=st.just(False),
 )
 def test_paddle_concat(
-    *,
-    xs_n_input_dtypes_n_unique_idx,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
+        *,
+        xs_n_input_dtypes_n_unique_idx,
+        on_device,
+        fn_tree,
+        frontend,
+        backend_fw,
+        test_flags,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_frontend_function(
@@ -240,13 +237,13 @@ def _tile_helper(draw):
     test_with_out=st.just(False),
 )
 def test_paddle_tile(
-    *,
-    dt_x_repeats,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
+        *,
+        dt_x_repeats,
+        on_device,
+        fn_tree,
+        frontend,
+        backend_fw,
+        test_flags,
 ):
     input_dtypes, x, repeats = dt_x_repeats
     helpers.test_frontend_function(
@@ -287,13 +284,13 @@ def _split_helper(draw):
     test_with_out=st.just(False),
 )
 def test_paddle_split(
-    *,
-    dt_x_num_splits_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dt_x_num_splits_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtypes, x, num_splits, axis = dt_x_num_splits_axis
     helpers.test_frontend_function(
@@ -331,14 +328,14 @@ def _squeeze_helper(draw):
     axis=_squeeze_helper(),
 )
 def test_paddle_squeeze(
-    *,
-    dtype_and_x,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_and_x,
+        axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -378,13 +375,13 @@ def _expand_helper(draw):
     dtype_x_and_shape=_expand_helper(),
 )
 def test_paddle_expand(
-    *,
-    dtype_x_and_shape,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_and_shape,
+        on_device,
+        fn_tree,
+        backend_fw,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, shape = dtype_x_and_shape
     helpers.test_frontend_function(
@@ -408,14 +405,14 @@ def test_paddle_expand(
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_paddle_cast(
-    *,
-    dtype_and_x,
-    dtype,
-    on_device,
-    backend_fw,
-    fn_tree,
-    frontend,
-    test_flags,
+        *,
+        dtype_and_x,
+        dtype,
+        on_device,
+        backend_fw,
+        fn_tree,
+        frontend,
+        test_flags,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -454,13 +451,13 @@ def _broadcast_to_helper(draw):
     dtype_x_and_shape=_broadcast_to_helper(),
 )
 def test_paddle_broadcast_to(
-    *,
-    dtype_x_and_shape,
-    on_device,
-    fn_tree,
-    backend_fw,
-    frontend,
-    test_flags,
+        *,
+        dtype_x_and_shape,
+        on_device,
+        fn_tree,
+        backend_fw,
+        frontend,
+        test_flags,
 ):
     input_dtype, x, shape = dtype_x_and_shape
     helpers.test_frontend_function(
@@ -502,13 +499,13 @@ def _gather_helper(draw):
     dtype_param_and_indices=_gather_helper(),
 )
 def test_paddle_gather(
-    *,
-    dtype_param_and_indices,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
+        *,
+        dtype_param_and_indices,
+        on_device,
+        fn_tree,
+        frontend,
+        backend_fw,
+        test_flags,
 ):
     input_dtype, param, indices = dtype_param_and_indices
     helpers.test_frontend_function(
@@ -548,13 +545,13 @@ def _dtype_x_axis(draw, **kwargs):
     test_with_out=st.just(False),
 )
 def test_paddle_flip(
-    *,
-    dtype_x_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_x_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -582,15 +579,15 @@ def test_paddle_flip(
     test_with_out=st.just(False),
 )
 def test_paddle_roll(
-    *,
-    dtype_and_x,
-    shift,
-    axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_and_x,
+        shift,
+        axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -620,13 +617,13 @@ def test_paddle_roll(
     ),
 )
 def test_paddle_take_along_axis(
-    *,
-    dtype_indices_axis,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    backend_fw,
+        *,
+        dtype_indices_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
 ):
     input_dtypes, value, indices, axis, _ = dtype_indices_axis
     helpers.test_frontend_function(
@@ -642,11 +639,12 @@ def test_paddle_take_along_axis(
     )
 
 
-# rot90
+# put_along_axis
 @handle_frontend_test(
-    fn_tree="paddle.rot90",
-    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
-        available_dtypes=helpers.get_dtypes("numeric"),
+    fn_tree="numpy.put_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_put_along_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
@@ -654,24 +652,25 @@ def test_paddle_take_along_axis(
     ),
     test_with_out=st.just(False),
 )
-def test_paddle_rot90(
-    *,
-    dtype_m_k_axes,
-    on_device,
-    fn_tree,
-    frontend,
-    backend_fw,
-    test_flags,
+def test_numpy_put_along_axis(
+        *,
+        dtype_x_indices_axis,
+        test_flags,
+        frontend,
+        fn_tree,
+        on_device,
+        backend_fw,
 ):
-    input_dtype, m, k, axes = dtype_m_k_axes
+    dtypes, x, indices, axis, values, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
+        test_flags=test_flags,
         backend_to_test=backend_fw,
         frontend=frontend,
-        test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=m,
-        k=k,
-        axes=tuple(axes),
+        arr=x,
+        indices=indices,
+        axis=axis,
+        values=values,
     )

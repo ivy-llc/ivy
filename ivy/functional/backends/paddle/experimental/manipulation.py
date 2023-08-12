@@ -2,7 +2,6 @@ from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
 
-
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
@@ -75,13 +74,13 @@ _i0B = [
 
 
 def moveaxis(
-    a: paddle.Tensor,
-    source: Union[int, Sequence[int]],
-    destination: Union[int, Sequence[int]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
+        a: paddle.Tensor,
+        source: Union[int, Sequence[int]],
+        destination: Union[int, Sequence[int]],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if isinstance(source, tuple):
         source = list(source)
@@ -96,34 +95,34 @@ def moveaxis(
     {
         "2.5.1 and below": {
             "cpu": (
-                "int8",
-                "int16",
-                "uint8",
-                "float16",
-                "complex64",
-                "complex128",
-                "bool",
+                    "int8",
+                    "int16",
+                    "uint8",
+                    "float16",
+                    "complex64",
+                    "complex128",
+                    "bool",
             )
         }
     },
     backend_version,
 )
 def heaviside(
-    x1: paddle.Tensor,
-    x2: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+        x1: paddle.Tensor,
+        x2: paddle.Tensor,
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle.heaviside(x1, x2)
 
 
 def flipud(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
+        m: paddle.Tensor,
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
         m = m.clone()
@@ -137,10 +136,10 @@ def flipud(
     backend_version,
 )
 def vstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+        arrays: Sequence[paddle.Tensor],
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if arrays[0].ndim >= 2:
@@ -150,10 +149,10 @@ def vstack(
 
 
 def hstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+        arrays: Sequence[paddle.Tensor],
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if arrays[0].ndim >= 2:
@@ -162,20 +161,14 @@ def hstack(
             return ivy.concat(arrays, axis=0)
 
 
-with_supported_device_and_dtypes(
-    {"2.5.1 and below": {"cpu": ("bool", "int32", "int64", "float32", "float64")}},
-    backend_version,
-)
-
-
 def rot90(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    k: Optional[int] = 1,
-    axes: Optional[Tuple[int, int]] = (0, 1),
-    out: Optional[paddle.Tensor] = None,
+        m: paddle.Tensor,
+        /,
+        *,
+        copy: Optional[bool] = None,
+        k: Optional[int] = 1,
+        axes: Optional[Tuple[int, int]] = (0, 1),
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
         m = m.clone()
@@ -189,14 +182,14 @@ def rot90(
     backend_version,
 )
 def top_k(
-    x: paddle.Tensor,
-    k: int,
-    /,
-    *,
-    axis: int = -1,
-    largest: Optional[bool] = True,
-    sorted: bool = True,
-    out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
+        x: paddle.Tensor,
+        k: int,
+        /,
+        *,
+        axis: int = -1,
+        largest: Optional[bool] = True,
+        sorted: bool = True,
+        out: Optional[Tuple[paddle.Tensor, paddle.Tensor]] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor]:
     k = min(k, x.shape[axis])
     topk_res = NamedTuple(
@@ -212,11 +205,11 @@ def top_k(
 
 
 def fliplr(
-    m: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
+        m: paddle.Tensor,
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if copy:
         m = m.clone()
@@ -226,10 +219,10 @@ def fliplr(
 
 
 def i0(
-    x: paddle.Tensor,
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+        x: paddle.Tensor,
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     def _i0_1(x):
         return paddle_backend.multiply(
@@ -265,14 +258,14 @@ def i0(
 
 
 def flatten(
-    x: paddle.Tensor,
-    /,
-    *,
-    copy: Optional[bool] = None,
-    start_dim: Optional[int] = 0,
-    end_dim: Optional[int] = -1,
-    order: Optional[str] = "C",
-    out: Optional[paddle.Tensor] = None,
+        x: paddle.Tensor,
+        /,
+        *,
+        copy: Optional[bool] = None,
+        start_dim: Optional[int] = 0,
+        end_dim: Optional[int] = -1,
+        order: Optional[str] = "C",
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     ivy.utils.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
@@ -306,11 +299,11 @@ def flatten(
 
 
 def vsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: paddle.Tensor,
+        indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim < 2:
         raise ivy.exceptions.IvyError(
@@ -320,11 +313,11 @@ def vsplit(
 
 
 def dsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: paddle.Tensor,
+        indices_or_sections: Union[int, Sequence[int], paddle.Tensor],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim < 3:
         raise ivy.exceptions.IvyError(
@@ -334,7 +327,7 @@ def dsplit(
 
 
 def atleast_1d(
-    *arys: paddle.Tensor, copy: Optional[bool] = None
+        *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -350,10 +343,10 @@ def atleast_1d(
 
 
 def dstack(
-    arrays: Sequence[paddle.Tensor],
-    /,
-    *,
-    out: Optional[paddle.Tensor] = None,
+        arrays: Sequence[paddle.Tensor],
+        /,
+        *,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         arrays = ivy.atleast_2d(*arrays)
@@ -366,7 +359,7 @@ def dstack(
 
 
 def atleast_2d(
-    *arys: paddle.Tensor, copy: Optional[bool] = None
+        *arys: paddle.Tensor, copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -386,7 +379,7 @@ def atleast_2d(
     backend_version,
 )
 def atleast_3d(
-    *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
+        *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
@@ -415,13 +408,13 @@ def atleast_3d(
     backend_version,
 )
 def take_along_axis(
-    arr: paddle.Tensor,
-    indices: paddle.Tensor,
-    axis: int,
-    /,
-    *,
-    mode: str = "fill",
-    out: Optional[paddle.Tensor] = None,
+        arr: paddle.Tensor,
+        indices: paddle.Tensor,
+        axis: int,
+        /,
+        *,
+        mode: str = "fill",
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     if arr.ndim != indices.ndim:
         raise ivy.utils.exceptions.IvyException(
@@ -484,11 +477,11 @@ def take_along_axis(
 
 
 def hsplit(
-    ary: paddle.Tensor,
-    indices_or_sections: Union[int, Tuple[int, ...]],
-    /,
-    *,
-    copy: Optional[bool] = None,
+        ary: paddle.Tensor,
+        indices_or_sections: Union[int, Tuple[int, ...]],
+        /,
+        *,
+        copy: Optional[bool] = None,
 ) -> List[paddle.Tensor]:
     if ary.ndim == 1:
         return ivy.split(ary, num_or_size_splits=indices_or_sections, axis=0)
@@ -519,23 +512,23 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
 
 
 def expand(
-    x: paddle.Tensor,
-    shape: Union[List[int], List[Tuple]],
-    /,
-    *,
-    copy: Optional[bool] = None,
-    out: Optional[paddle.Tensor] = None,
+        x: paddle.Tensor,
+        shape: Union[List[int], List[Tuple]],
+        /,
+        *,
+        copy: Optional[bool] = None,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     return paddle_backend.broadcast_to(x, shape)
 
 
 def concat_from_sequence(
-    input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
-    /,
-    *,
-    new_axis: int = 0,
-    axis: int = 0,
-    out: Optional[paddle.Tensor] = None,
+        input_sequence: Union[Tuple[paddle.Tensor], List[paddle.Tensor]],
+        /,
+        *,
+        new_axis: int = 0,
+        axis: int = 0,
+        out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     with ivy.ArrayMode(False):
         if new_axis == 0:
@@ -548,10 +541,10 @@ def concat_from_sequence(
     {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
-    x: paddle.Tensor,
-    /,
-    *,
-    axis: Optional[int] = None,
+        x: paddle.Tensor,
+        /,
+        *,
+        axis: Optional[int] = None,
 ) -> Tuple[paddle.Tensor, paddle.Tensor, paddle.Tensor]:
     Results = namedtuple(
         "Results",
@@ -575,12 +568,12 @@ def unique_consecutive(
     )
     if len(split_indices) > 0:
         split_sizes = (
-            [split_indices[0]]
-            + [
-                split_indices[i] - split_indices[i - 1]
-                for i in range(1, len(split_indices))
-            ]
-            + [x.shape[axis] - split_indices[-1]]
+                [split_indices[0]]
+                + [
+                    split_indices[i] - split_indices[i - 1]
+                    for i in range(1, len(split_indices))
+                ]
+                + [x.shape[axis] - split_indices[-1]]
         )
         sub_arrays = paddle.split(
             x,
@@ -611,11 +604,11 @@ def unique_consecutive(
     {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
 )
 def fill_diagonal(
-    a: paddle.Tensor,
-    v: Union[int, float],
-    /,
-    *,
-    wrap: bool = False,
+        a: paddle.Tensor,
+        v: Union[int, float],
+        /,
+        *,
+        wrap: bool = False,
 ) -> paddle.Tensor:
     shape = a.shape
     max_end = paddle.prod(paddle.to_tensor(shape))
