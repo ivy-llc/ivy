@@ -1431,13 +1431,17 @@ def _get_mean_cov_vector(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
+
     # Generate shape for mean vector (..., n)
     dtype_mean = draw(
         helpers.array_values(
-            dtype=input_dtype, shape=tuple([shared_size]), min_value=2, max_value=5, 
+            dtype=input_dtype, 
+            shape=tuple([shared_size]), 
+            min_value=2, 
+            max_value=5, 
         )
     )
-    
+
     # Generate shape for covariance matrix (..., n, n)
     dtype_cov = draw(
         helpers.array_values(
@@ -1445,13 +1449,10 @@ def _get_mean_cov_vector(draw):
             shape=tuple([shared_size, shared_size]),
             min_value=2,
             max_value=5,
-        ).filter(
-            lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
-        )
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
     )
 
     batch_shape = dtype_cov.shape[:-2]
-    
 
     return input_dtype, dtype_mean, dtype_cov, batch_shape
 
@@ -1488,8 +1489,7 @@ def test_jax_multivariate_normal(
     shared_dtype, mean, cov, shape = mean_cov_vector
 
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
-
-    
+  
     def call():
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
