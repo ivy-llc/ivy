@@ -1543,6 +1543,7 @@ def test_torch_narrow(
         start=start,
         length=length,
     )
+<<<<<<< HEAD
 
 
 @st.composite
@@ -1593,3 +1594,8 @@ def test_torch_select(
         dim=axis,
         index=idx,
     )
+=======
+    
+def test_torch_select_scatter():
+    return 0
+>>>>>>> d3e3cae21 (Co-authored-by: Aditya Gowda <sanju4725@gmail.com>)

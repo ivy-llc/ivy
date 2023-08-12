@@ -366,6 +366,7 @@ def select_scatter(input, src, dim, index):
     output[dim, index] = src
     return output
 
+<<<<<<< HEAD
 @to_ivy_arrays_and_back
 def select(input, dim, index):
     num_dims = ivy.get_num_dims(input)
@@ -373,3 +374,5 @@ def select(input, dim, index):
     slices[dim] = index
     return input[tuple(slices)]
 
+=======
+>>>>>>> d3e3cae21 (Co-authored-by: Aditya Gowda <sanju4725@gmail.com>)
