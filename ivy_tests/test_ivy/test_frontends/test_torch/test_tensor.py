@@ -10044,4 +10044,3 @@ def test_torch_tensor_property_resolve_neg(
         on_device=on_device,
         input=x[0],
     )
-
