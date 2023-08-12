@@ -93,7 +93,7 @@ def histogram(
     >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
     >>> z = ivy.histogram(x, bins=y)
     >>> print(z)
-    (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
+    ivy.array([1., 0., 1., 1.])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [4.4, 5.5, .6]])
@@ -102,7 +102,7 @@ def histogram(
     >>> dtype = ivy.int32
     >>> y = ivy.histogram(x, bins=bins, range=range, dtype=dtype)
     >>> print(y)
-    (ivy.array([0, 0, 0, 0]), ivy.array([0.   , 0.125, 0.25 , 0.375, 0.5  ]))
+    ivy.array([2, 1, 1, 1])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
@@ -113,28 +113,29 @@ def histogram(
     >>> dtype = ivy.float32
     >>> weights = ivy.array([[1., 1., 1.], [1., 1., 1.]])
     >>> z = ivy.histogram(
-    >>>                     x,
-    >>>                     bins=y,
-    >>>                     axis=axis,
-    >>>                     extend_lower_interval=extend_lower_interval,
-    >>>                     extend_upper_interval=extend_upper_interval,
-    >>>                     dtype=dtype,
-    >>>                     weights=weights)
+    ...                     x,
+    ...                     bins=y,
+    ...                     axis=axis,
+    ...                     extend_lower_interval=extend_lower_interval,
+    ...                     extend_upper_interval=extend_upper_interval,
+    ...                     dtype=dtype,
+    ...                     weights=weights)
     >>> print(z)
-    (ivy.array([[0., 3.],
-    [1., 0.],
-    [1., 0.],
-    [1., 0.],
-    [0., 0.]]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    ivy.array([[0., 3.],
+           [1., 0.],
+           [1., 0.],
+           [1., 0.],
+           [0., 0.]])
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.array([0., 1., 2., 3., 4., 5.])
     >>> dtype = ivy.int32
     >>> z = ivy.histogram(x, bins=y, dtype=dtype)
-    >>> print(z.a)
-    >>> print(z.b)
-    (ivy.array([1, 1, 1, 0, 0]), ivy.array([0., 1., 2., 3., 4., 5.]))
-    (ivy.array([0, 0, 0, 1, 2]), ivy.array([0., 1., 2., 3., 4., 5.]))
+    >>> print(z)
+    {
+        a: ivy.array([1, 1, 1, 0, 0]),
+        b: ivy.array([0, 0, 0, 1, 2])
+    }
     """
     return ivy.current_backend(a).histogram(
         a,
@@ -609,12 +610,12 @@ def cov(
     Examples
     --------
     With :class:`ivy.Array` input:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-    >>> y = x.cov()
+    >>> x = ivy.array([[1, 2, 3],
+    ...                [4, 5, 6]])
+    >>> y = x[0].cov(x[1])
     >>> print(y)
-    ivy.array([[ 1.,  1.  ],
-    ...        [ 1.,  1.  ]]
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Container` inputs:
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([1., 2., 3.]))
@@ -622,10 +623,10 @@ def cov(
     >>> z = ivy.Container.static_cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1., -1., -1.]
-                     [ 1.,  1., -1., -1.]),
-        b: ivy.array([-1., -1.,  1.,  1.]
-                     [-1.,  1.,  1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -634,52 +635,37 @@ def cov(
     >>> z = ivy.cov(x, y)
     >>> print(z)
     {
-        a: ivy.array([ 1., -1.]
-                     [-1.,  1.]),
-        b: ivy.array([ 1., -1.]
-                     [-1.,  1.])
+        a: ivy.array([[1., -1.],
+                      [-1., 1.]]),
+        b: ivy.array([[1., -1.],
+                      [-1., 1.]])
     }
 
     With :class:`ivy.Array` input and rowVar flag set to False (True by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(rowVar=False)
+    >>> y = x[0].cov(x[1], rowVar=False)
     >>> print(y)
-    ivy.array([[ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ],
-    ...        [ 4.5,  4.5, 4.5 ]])
+    ivy.array([[1., 1.],
+           [1., 1.]])
 
     With :class:`ivy.Array` input and bias flag set to True (False by default):
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-    >>> y = x.cov(bias=True)
+    >>> y = x[0].cov(x[1], bias=True)
     >>> print(y)
-    ivy.array([[ 0.6667,  0.6667  ],
-    ...        [ 0.6667,  0.6667  ]]
+    ivy.array([[0.66666667, 0.66666667],
+           [0.66666667, 0.66666667]])
 
     With :class:`ivy.Array` input with both fweights and aweights given:
     >>> x = ivy.array([[1,2,3],
     ...                [4,5,6]])
-
     >>> fw = ivy.array([1,2,3])
     >>> aw = ivy.array([ 1.2, 2.3, 3.4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw)
+    >>> y = x[0].cov(x[1], fweights=fw, aweights=aw)
     >>> print(y)
-    ivy.array([[ 0.48447205,  0.48447205  ],
-    ...        [ 0.48447205,  0.48447205  ]]
-
-    With :class:`ivy.Array` input with both fweights and aweights given,
-    and rowVar set to False:
-    >>> x = ivy.array([[1,2,3],
-    ...                [4,5,6]])
-
-    >>> fw = ivy.array([1,3])
-    >>> aw = ivy.array([ 1.5, 4 ])
-    >>> y = x.cov(fweights=fw, aweights=aw, rowVar=False)
-    >>> print(y)
-    ivy.array([[ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ],
-    ...        [ 1.22727273,  1.22727273, 1.22727273 ]])
+    ivy.array([[0.48447205, 0.48447205],
+           [0.48447205, 0.48447205]])
     """
     return ivy.current_backend(x1).cov(
         x1,
@@ -693,13 +679,13 @@ def cov(
     )
 
 
-@handle_backend_invalid
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -742,19 +728,19 @@ def cummax(
     >>> x = ivy.array([-86, -19, 41, 88, -5, 80, 32, 87, -90, -12])
     >>> y = ivy.cummax(x, exclusive=False, reverse=False)
     >>> print(y)
-    [ivy.array([-86, -19, 41, 88, 88, 88, 88, 88, 88, 88]),
-      ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3])]
+    (ivy.array([-86, -19,  41,  88,  88,  88,  88,  88,  88,  88]),
+    ivy.array([0, 1, 2, 3, 3, 3, 3, 3, 3, 3]))
 
     >>> x = ivy.array([ 14,  15,  49, -24, -39])
     >>> y = ivy.cummax(x, axis=0, exclusive=False, reverse=False)
     >>> print(y)
-    [ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2])]
+    (ivy.array([14, 15, 49, 49, 49]), ivy.array([0, 1, 2, 2, 2]))
 
     >>> x = ivy.array([[ 63,  43, -16,  -4],[ 21,  82,  59,  33]])
     >>> ivy.cummax(x, axis=0, reverse=False, dtype='int64', out=x)
     >>> print(x)
-    [ivy.array([[ 63,  43, -16,  -4], [ 63,  82,  59,  33]]),
-    ivy.array([[0, 0, 0, 0],[0, 1, 1, 1]])]
+    ivy.array([[0, 0, 0, 0],
+           [0, 1, 1, 1]])
 
     >>> x = ivy.array([[-36,  83, -81],
     ...                [ 23,  29,  63],
@@ -765,42 +751,42 @@ def cummax(
     ...                [ 33,  54, -16]])
     >>> y = ivy.cummax(x, axis=1, exclusive=True, reverse=False)
     >>> print(y)
-    [ivy.array([[ 0,  0, 83],
-                [ 0, 23, 29],
-                [ 0,  0, 85],
-                [ 0, 31, 31],
-                [ 0,  0,  0],
-                [ 0, 22, 38],
-                [ 0, 33, 54]]), ivy.array([[0, 0, 2],
-                [0, 1, 2],
-                [0, 0, 2],
-                [0, 1, 1],
-                [0, 0, 0],
-                [0, 1, 2],
-                [0, 1, 2]])]
+    (ivy.array([[ 0,  0, 83],
+           [ 0, 23, 29],
+           [ 0,  0, 85],
+           [ 0, 31, 31],
+           [ 0,  0,  0],
+           [ 0, 22, 38],
+           [ 0, 33, 54]]), ivy.array([[0, 0, 2],
+           [0, 1, 2],
+           [0, 0, 2],
+           [0, 1, 1],
+           [0, 0, 0],
+           [0, 1, 2],
+           [0, 1, 2]]))
 
     >>> x = ivy.array([73, 15, 47])
-    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=True)
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=True)
     >>> print(y)
-    [ivy.array([47, 47,  0]), ivy.array([0, 0, 0])]
+    (ivy.array([47, 47,  0]), ivy.array([0, 0, 0]))
 
     >>> x = ivy.array([-47, -14, -67, 15, -23, -45])
-    >>> ivy.cummax(x, axis=0, reverse=True, exclusive=False)
+    >>> y = ivy.cummax(x, axis=0, reverse=True, exclusive=False)
     >>> print(y)
-    [ivy.array([ 15, 15, 15, 15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0])]
+    (ivy.array([ 15,  15,  15,  15, -23, -45]), ivy.array([2, 2, 2, 2, 1, 0]))
     """
     return ivy.current_backend(x).cummax(
         x, axis=axis, exclusive=exclusive, reverse=reverse, dtype=dtype, out=out
     )
 
 
-@handle_backend_invalid
-@handle_array_function
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_array_like_without_promotion
-@handle_nestable
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
 def cummin(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -865,7 +851,7 @@ def cummin(
     >>> ivy.cummin(x, axis=0, reverse=True, out=y)
     >>> print(y)
     ivy.array([[1., 3., 0.],
-        [1., 3., 0.]])
+           [1., 3., 0.]])
 
     >>> x = ivy.array([[2, 4, 5],
     ...                [3, 6, 5],
@@ -873,8 +859,8 @@ def cummin(
     >>> ivy.cummin(x,axis=1,reverse=True, dtype='int64', out=x)
     >>> print(x)
     ivy.array([[ 2,  4,  5],
-        [ 3,  5,  5],
-        [ 1,  3, 10]])
+           [ 3,  5,  5],
+           [ 1,  3, 10]])
 
     With :class:`ivy.Container` input:
 
@@ -899,16 +885,15 @@ def cummin(
     >>> ivy.cummin(x,axis=1,reverse=True, out=y)
     >>> print(y)
     {
-    a: ivy.array([[1., 3., 4.]]),
-    b: ivy.array([[3., 5., 8.],
-                    [5., 5., 5.]]),
-    c: ivy.array([[1., 1., 1.],
-                    [3., 6., 9.],
-                    [0., 2., 3.]])
+        a: ivy.array([[1., 3., 4.]]),
+        b: ivy.array([[3., 5., 8.],
+                      [5., 5., 5.]]),
+        c: ivy.array([[1., 1., 1.],
+                      [3., 6., 9.],
+                      [0., 2., 3.]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0],[5]]),
-    ...                                [5]]),
     ...                   b=ivy.array([[6, 8, 7],
     ...                                [4, 2, 3]]),
     ...                   c=ivy.array([[1, 2],
@@ -917,13 +902,13 @@ def cummin(
     >>> ivy.cummin(x,axis=0,out=x)
     >>> print(x)
     {
-    a: ivy.array([[0],
-                    [0]]),
-    b: ivy.array([[6, 8, 7],
-                    [4, 2, 3]]),
-    c: ivy.array([[1, 2],
-                    [1, 2],
-                    [1, 2]])
+        a: ivy.array([[0],
+                      [0]]),
+        b: ivy.array([[6, 8, 7],
+                      [4, 2, 3]]),
+        c: ivy.array([[1, 2],
+                      [1, 2],
+                      [1, 2]])
     }
     """
     return ivy.current_backend(x).cummin(
