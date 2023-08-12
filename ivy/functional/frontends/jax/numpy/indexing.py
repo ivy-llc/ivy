@@ -185,7 +185,6 @@ class RClass(_AxisConcat):
     axis = 0
     ndmin = 1
     trans1d = -1
-    op_name = "r_"
 
 
 r_ = RClass()
@@ -195,7 +194,6 @@ class CClass(_AxisConcat):
     axis = -1
     ndmin = 2
     trans1d = 0
-    op_name = "c_"
 
 
 c_ = CClass()
