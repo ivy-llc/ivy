@@ -1,5 +1,5 @@
 # global
-# from hypothesis import strategies as st
+# from hypothesis import assume, strategies as st
 
 # local
 # TODO: uncomment after frontend is not required
@@ -426,6 +426,37 @@
 #         pad_mode=pad_mode,
 #         count_include_pad=count_include_pad,
 #         divisor_override=None,
+#     )
+
+
+# # softshrink
+# @handle_frontend_test(
+#     fn_tree="mindspore.ops.function.nn_func.softshrink",
+#     dtype_and_input=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#     ),
+#     lambd=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+# )
+# def test_mindspore_softshrink(
+#     *,
+#     dtype_and_input,
+#     lambd,
+#     on_device,
+#     fn_tree,
+#     frontend,
+#     test_flags,
+#     backend_fw,
+# ):
+#     input_dtype, x = dtype_and_input
+#     helpers.test_frontend_function(
+#         input_dtypes=input_dtype,
+#         backend_to_test=backend_fw,
+#         frontend=frontend,
+#         test_flags=test_flags,
+#         fn_tree=fn_tree,
+#         on_device=on_device,
+#         x=x[0],
+#         lambd=lambd,
 #     )
 
 
