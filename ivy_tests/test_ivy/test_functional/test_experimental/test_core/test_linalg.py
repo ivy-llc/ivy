@@ -1491,12 +1491,11 @@ def test_tucker(*, data, test_flags, backend_fw, fn_name, on_device):
         ret=ret_from_gt_np[1], backend=test_flags.ground_truth_backend
     )
 
-    with update_backend(backend_fw) as ivy_backend:
-        n_elem = 1
-        if isinstance(init, ivy.TuckerTensor):
-            for index in fixed_factors:
-                n_elem *= init[0].shape[index]
-        n_elem *= int(ivy_backend.prod(rank))
+    n_elem = 1
+    if isinstance(init, ivy.TuckerTensor):
+        for index in fixed_factors:
+            n_elem *= init[0].shape[index]
+    n_elem *= np.prod(rank)
 
     for c, c_gt in zip(core, core_gt):
         assert np.prod(c.shape) == n_elem
