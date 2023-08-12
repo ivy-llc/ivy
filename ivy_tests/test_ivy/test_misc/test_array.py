@@ -2560,7 +2560,7 @@ def test_dunder_wrapping(
     test_flags,
     op,
 ):
-    if backend_fw not in ["torch", "tensorflow"]:
+    if backend_fw not in ["torch", "tensorflow", "paddle"]:
         return
     _, data = dtype_x
     ivy.set_backend(backend_fw)
