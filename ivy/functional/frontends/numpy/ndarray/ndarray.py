@@ -250,6 +250,11 @@ class ndarray:
         return np_frontend.swapaxes(self, axis1, axis2)
 
     def all(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        if not (dtype is None or ivy.is_bool_dtype(dtype)):
+            raise TypeError(
+                "No loop matching the specified signature and "
+                "casting was found for ufunc logical_or"
+            )
         return np_frontend.all(self, axis, out, keepdims, where=where)
 
     def any(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
