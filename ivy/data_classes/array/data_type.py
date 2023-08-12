@@ -169,6 +169,7 @@ class _ArrayWithDataTypes(abc.ABC):
         >>> print(x.dtype)
         float32
 
+        >>> x = ivy.array([4., 5., 6.])
         >>> print(x.can_cast(ivy.float64))
         True
         """
