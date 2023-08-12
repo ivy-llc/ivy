@@ -260,6 +260,10 @@ def conv2d_transpose(
 
 
 # noinspection PyUnresolvedReferences
+@with_unsupported_device_and_dtypes(
+    {"2.5 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def depthwise_conv2d(
     x: paddle.Tensor,
     filters: paddle.Tensor,
@@ -271,7 +275,29 @@ def depthwise_conv2d(
     dilations: Optional[Union[int, Tuple[int, int]]] = 1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    raise IvyNotImplementedException()
+    if data_format == "NHWC":
+        x = paddle.transpose(x, perm=(0, 3, 1, 2))
+    strides = [strides] * 2 if isinstance(strides, int) else strides
+    dilations = [dilations] * 2 if isinstance(dilations, int) else dilations
+    if len(filters.shape) == 3:
+        filters = paddle.unsqueeze(filters, axis=-1)
+    x = _pad_before_conv(x, filters, strides, padding, 2, dilations, "NCHW")
+    padding = "VALID"
+    num_groups = filters.shape[-2]
+    filters = paddle.transpose(filters, (2, 3, 0, 1))
+    res = paddle.nn.functional.conv2d(
+        x,
+        filters,
+        None,
+        strides,
+        padding,
+        dilations,
+        num_groups,
+        "NCHW",
+    )
+    if data_format == "NHWC":
+        res = paddle.transpose(res, (0, 2, 3, 1))
+    return res
 
 
 @with_unsupported_device_and_dtypes(
