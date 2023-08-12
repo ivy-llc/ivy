@@ -50,6 +50,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     _statistical_dtype_values,
 )
 
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_statistical import (
+    _quantile_helper,
+)
+
 CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 
 
@@ -11738,3 +11742,45 @@ def test_torch_tensor_lcm(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="quantile",
+    dtype_and_x=_quantile_helper().filter(lambda x: "bfloat16" not in x[0]),
+    keepdims=st.booleans(),
+)
+def test_torch_tensor_quantile(
+    dtype_and_x,
+    keepdims,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    if type(axis) is tuple:
+        axis = axis[0]
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "q": q,
+            "dim": axis,
+            "keepdim": keepdims,
+            "interpolation": interpolation[0],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+    
