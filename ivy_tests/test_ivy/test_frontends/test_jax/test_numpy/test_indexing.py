@@ -505,3 +505,10 @@ def test_jax_take(
         indices_are_sorted=indices_are_sorted,
         fill_value=fill_value
     )
+
+# choose
+@handle_frontend_test(
+    fn_tree="jax.numpy.choose",
+)
+def test_jax_choose():
+    pass
