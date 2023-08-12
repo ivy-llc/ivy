@@ -1,7 +1,6 @@
 # global
 from hypothesis import assume, strategies as st
 import numpy as np
-import importlib
 
 # local
 import ivy
@@ -2548,6 +2547,8 @@ def test_array__iter__(
         min_dim_size=2,
         min_num_dims=1,
         num_arrays=2,
+        min_value=1.0,
+        max_value=10.0,
     ),
     op=st.sampled_from(
         ["!=", ">", "<", ">=", "<=", "*", "/", "%", "==", "&", "@", "**", "/"]
@@ -2559,12 +2560,13 @@ def test_dunder_wrapping(
     test_flags,
     op,
 ):
-    if backend_fw != "torch":
+    if backend_fw not in ["torch", "tensorflow"]:
         return
     _, data = dtype_x
-    fw = importlib.import_module(backend_fw)
-    fw.Tensor(data[0])
     ivy.set_backend(backend_fw)
-    ivy.array(data[1])
+    x = ivy.to_native(ivy.array(data[0]))
+    y = ivy.array(data[1])
+    assert ivy.is_ivy_array(y)
+    assert ivy.is_native_array(x)
     res = eval(f"x {op} y")
     assert ivy.is_ivy_array(res)
