@@ -1578,7 +1578,6 @@ def test_torch_view_as_real(
     )
 
 
-
 @st.composite
 def complex_strategy(
     draw, min_num_dims=0, max_num_dims=5, min_dim_size=1, max_dim_size=10

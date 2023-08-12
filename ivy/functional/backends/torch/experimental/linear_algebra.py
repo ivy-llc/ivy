@@ -192,11 +192,11 @@ def lu_factor(
 
 
 def dot(
-        a: torch.Tensor,
-        b: torch.Tensor,
-        /,
-        *,
-        out: Optional[torch.Tensor] = None,
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.dot(a, b, out=out)
 
