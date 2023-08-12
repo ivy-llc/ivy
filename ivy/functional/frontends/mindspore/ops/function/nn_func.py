@@ -386,3 +386,23 @@ def fast_gelu(input_x):
     return (input_x / (1 + ivy.exp(-1.702 * ivy.abs(input_x)))) * ivy.exp(
         0.851 * (input_x - ivy.abs(input_x))
     )
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(gumbels, axis=dim)
+
+    if hard:
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
+    else:
+        ret = y_soft
+
+    return ret
