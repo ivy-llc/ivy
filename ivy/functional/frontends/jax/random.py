@@ -366,17 +366,9 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     "jax",
 )
 def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cholesky"):
-    seed = _get_seed(key)
-    try:
-        ivy.cholesky(cov)
-        # print(cov)
-        print("matrix is positive definite")
-        
-    except ValueError as e:
-        return ("damnnnn: {e}")
     
     if shape is None:
-        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2]) + mean.shape[-1:]
+        shape = ivy.broadcast_shapes(mean.shape[:-1], cov.shape[:-2])
     if method == "cholesky":
         cov_factor = ivy.cholesky(cov)
     elif method == "eigh":
@@ -385,16 +377,9 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
     elif method == "svd":
         (u, s, _) = ivy.svd(cov)
         cov_factor = u * ivy.sqrt(s[..., None, :])
-    # print(shape, " :shape before")
-    # print(cov.shape, " : cov shape")
-    # print(mean.shape, " :meanshape")
-    # print(mean.shape[-1:], " : batchshaep")
+
     rand_normal = normal(key=key, shape=shape + mean.shape[-1:], dtype=dtype)
-    # print(cov_factor, "-> covfactor")
-    # print(shape+mean.shape[-1:], " : shape after")
-    # print(cov_factor.shape, " : covfactor shape")
-    # print(rand_normal.shape, "-> randnormal.shape")
-    # print(rand_normal, "-> randnormal")
+
     result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
 
     return result

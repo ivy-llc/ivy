@@ -1424,28 +1424,26 @@ def test_jax_ball(
 
 @st.composite
 def get_mean_cov_vector(draw):
-    batch_shape = draw(helpers.get_shape(
-        min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
-    ))
-    preMeanShape = draw(helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([ x])))
+    batch_shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
+        )
+    )
+    preMeanShape = draw(
+        helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([ x]))
+    )
     covShape = batch_shape + (preMeanShape + preMeanShape)
     meanShape = batch_shape + preMeanShape
     dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
     
     # Generate shape for mean vector (..., n)
     dtype_mean = draw(helpers.dtype_and_values(
-        available_dtypes=dtype,
-        min_value=0,
-        max_value=10,
-        shape=meanShape
+        available_dtypes=dtype, min_value=0, max_value=10, shape=meanShape
     ))
 
     # Generate shape for covariance matrix (..., n, n)
     dtype_cov = draw(helpers.dtype_and_values(
-        available_dtypes=dtype,
-        min_value=0,
-        max_value=10,
-        shape=covShape
+        available_dtypes=dtype, min_value=0, max_value=10, shape=covShape
     ))
 
     return dtype_mean, dtype_cov, batch_shape
@@ -1464,7 +1462,7 @@ def get_mean_cov_vector(draw):
         max_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    mean_cov_vector = get_mean_cov_vector(),
+    mean_cov_vector=get_mean_cov_vector(),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
 )
 def test_jax_multivariate_normal(
@@ -1478,16 +1476,17 @@ def test_jax_multivariate_normal(
     test_flags,
     fn_tree,
 ):
+    
     input_dtype, key= dtype_key
     mean, cov, batch_shape = mean_cov_vector
-    
+
     mean_dtype, mean_matrix = mean
     mean_matrix = np.asarray(mean_matrix[0], dtype=mean_dtype[0])
 
     cov_dtype, x = cov
 
     x = np.asarray(x[0], dtype=cov_dtype[0])
-    
+
     def call():
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
