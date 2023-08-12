@@ -428,7 +428,7 @@
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.gumbel_softmax",
 #     dtype_and_x=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("float"),
+#         available_dtypes=helpers.get_dtypes("valid"),
 #     ),
 #     tau=st.floats(min_value=0),
 #     hard=st.booleans(),
