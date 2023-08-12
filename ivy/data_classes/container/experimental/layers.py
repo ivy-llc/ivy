@@ -2341,8 +2341,9 @@ class _ContainerWithLayersExperimental(ContainerBase):
 
         Parameters
         ----------
-        x : array_like
-            Input image, taken to be real. Shape is (batch_size, d_in, height_in, width_in).
+        self : array_like
+            Input image, taken to be real. Shape is (
+            batch_size, d_in, height_in, width_in).
         offset : array_like
             Input offset, taken to be real.
             Offsets to be applied for each position in the convolution kernel.
@@ -2363,7 +2364,8 @@ class _ContainerWithLayersExperimental(ContainerBase):
         mask : array_like, optional
             Masks to be applied for each position in the convolution kernel.
             Default is None.
-            If not None, shape is (batch_size, offset_groups * kernel_height * kernel_width,
+            If not None, shape is (
+            batch_size, offset_groups * kernel_height * kernel_width,
              height_out, width_out).
         out : array_like, optional
 
