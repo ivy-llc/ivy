@@ -9514,6 +9514,7 @@ def test_torch_tensor_multiply(
         on_device=on_device,
     )
 
+
 #divide
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9550,6 +9551,7 @@ def test_torch_tensor_divide(
         frontend=frontend,
         on_device=on_device,
     )
+
 
 # norm
 @handle_frontend_method(
