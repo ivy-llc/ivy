@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_nestable,
     handle_array_like_without_promotion,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ inf = float("inf")
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -163,6 +165,7 @@ def cholesky(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -191,12 +194,22 @@ def cross(
     x1
         first input array. Should have a numeric data type.
     x2
-        second input array. Must have the same shape as x1. Should have a numeric data
-        type.
+        second input array. Must be compatible with ``x1`` for all
+        non-compute axes. The size of the axis over which to compute
+        the cross product must be the same size as the respective axis
+        in ``x``. Should have a numeric data type.
+
+        .. note::
+
+            The compute axis (dimension) must not be broadcasted.
     axis
         the axis (dimension) of x1 and x2 containing the vectors for which to compute
-        the cross product.vIf set to -1, the function computes the cross product for
-        vectors defined by the last axis (dimension). Default: ``-1``.
+        the cross product. Must be an integer on the interval``[-N, N)``, where ``N``
+        is the rank (number of dimensions) of the shape. If specified as a
+        negative integer, the function must determine the axis along which to
+        compute the cross product by counting backward from the last dimension
+        (where ``-1`` refers to the last dimension). By default, the function must
+        compute the cross product over the last axis. Default: ``-1``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -259,6 +272,7 @@ def cross(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -331,6 +345,7 @@ def det(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -510,6 +525,7 @@ def diagonal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -557,22 +573,12 @@ def eig(
     .. note::
        Eigenvalue sort order is left unspecified and is thus implementation-dependent.
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/
-    extensions/generated/array_api.linalg.eigh.html>`_
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
-
     """
     return current_backend(x).eig(x, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -586,7 +592,7 @@ def eigh(
     UPLO: str = "L",
     out: Optional[ivy.Array] = None,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
-    """Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    r"""Return an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
     symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
     matrices) and ``L`` is a vector (or a stack of vectors).
 
@@ -611,8 +617,11 @@ def eigh(
         a namedtuple (``eigenvalues``, ``eigenvectors``) whose
 
         -   first element must have the field name ``eigenvalues`` (corresponding to
-            ``L`` above) and must be an array consisting of computed eigenvalues. The
-            array containing the eigenvalues must have shape ``(..., M)``.
+            :math:`\operatorname{diag}\Lambda` above) and must be an array consisting
+            of computed eigenvalues. The array containing the eigenvalues must
+            have shape ``(..., M)`` and must have a real-valued floating-point
+            data type whose precision matches the precision of ``x`` (e.g., if ``x``
+            is ``complex128``, then the ``eigenvalues`` must be ``float64``).
         -   second element have have the field name ``eigenvectors`` (corresponding to
             ``Q`` above) and must be an array where the columns of the inner most
             matrices contain the computed eigenvectors. These matrices must be
@@ -640,6 +649,7 @@ def eigh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -682,7 +692,9 @@ def eigvalsh(
     -------
     ret
         an array containing the computed eigenvalues. The returned array must have shape
-        (..., M) and have the same data type as x.
+        (..., M) and and must have a real-valued floating-point
+        data type whose precision matches the precision of ``x`` (e.g., if ``x``
+        is ``complex128``, then the ``eigenvalues`` must be ``float64``).
 
 
     This function conforms to the `Array API Standard
@@ -716,7 +728,7 @@ def eigvalsh(
     ivy.array([[1., 5.]])
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
-    ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
+    ...                [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
     >>> y = ivy.eigvalsh(x, UPLO="U")
     >>> print(y)
     ivy.array([[-1.45033181e+00,  1.02829754e+00,  1.54220343e+01],
@@ -746,6 +758,7 @@ def eigvalsh(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -758,33 +771,69 @@ def inner(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Return the inner product of two vectors ``x1`` and ``x2``.
+    """
+    Return the inner product of two vectors ``x1`` and ``x2``.
 
     Parameters
     ----------
     x1
-        first one-dimensional input array of size N. Should have a numeric data type.
+        first one-dimensional input array of size N.
+        Should have a numeric data type.
         a(N,) array_like
         First input vector. Input is flattened if not already 1-dimensional.
     x2
-        second one-dimensional input array of size M. Should have a numeric data type.
+        second one-dimensional input array of size M.
+        Should have a numeric data type.
         b(M,) array_like
         Second input vector. Input is flattened if not already 1-dimensional.
     out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
 
     Returns
     -------
     ret
-        a two-dimensional array containing the inner product and whose shape is (N, M).
+        a two-dimensional array containing the inner product and whose
+        shape is (N, M).
         The returned array must have a data type determined by Type Promotion Rules.
 
+    Both the description and the type hints above assumes an array input for
+    simplicity, but this function is *nestable*, and therefore also accepts
+    :class:`ivy.Container` instances in place of any of the arguments.
+
+    Examples
+    --------
+    Matrices of identical shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.]])
+
+    # Matrices of different shapes
+    >>> x = ivy.array([[1., 2.], [3., 4.], [5., 6.]])
+    >>> y = ivy.array([[5., 6.], [7., 8.]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[17., 23.], [39., 53.], [61., 83.]])
+
+    # 3D matrices
+    >>> x = ivy.array([[[1., 2.], [3., 4.]],
+    ...                [[5., 6.], [7., 8.]]])
+    >>> y = ivy.array([[[9., 10.], [11., 12.]],
+    ...                [[13., 14.], [15., 16.]]])
+    >>> d = ivy.inner(x, y)
+    >>> print(d)
+    ivy.array([[[[ 29.,  35.], [ 41.,  47.]],
+                [[ 67.,  81.], [ 95., 109.]]],
+               [[[105., 127.], [149., 171.]],
+                [[143., 173.], [203., 233.]]]])
     """
     return current_backend(x1, x2).inner(x1, x2, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -834,7 +883,7 @@ def inv(
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0], [3.0, 4.0]])
-    >>> y = ivy.zeros(3)
+    >>> y = ivy.zeros((2, 2))
     >>> ivy.inv(x, out=y)
     >>> print(y)
     ivy.array([[-2., 1.],[1.5, -0.5]])
@@ -859,7 +908,7 @@ def inv(
     ...                               [50., 5000., 40.]]),
     ...                   c=ivy.array([[25., 22., 100.], [55, 20., 20.],
     ...                               [55., 50., 100.]]))
-    >>> y = ivy.Container.static_inv(x)
+    >>> y = x.inv()
     >>> print(y)
     {
         a: ivy.array([[-0.0012, 0.00342, -0.000565],
@@ -879,6 +928,7 @@ def inv(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1040,6 +1090,7 @@ def matmul(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1092,13 +1143,13 @@ def matrix_norm(
         | -inf             | min(sum(abs(x), axis=1))        |
         +------------------+---------------------------------+
 
-        If ``ord=1``, the norm corresponds to the induced matrix norm where 
+        If ``ord=1``, the norm corresponds to the induced matrix norm where
         ``p=1`` (i.e., the maximum absolute value column sum).
 
-        If ``ord=2``, the norm corresponds to the induced matrix norm where 
+        If ``ord=2``, the norm corresponds to the induced matrix norm where
         ``p=inf`` (i.e., the maximum absolute value row sum).
 
-        If ``ord=inf``, the norm corresponds to the induced matrix norm where 
+        If ``ord=inf``, the norm corresponds to the induced matrix norm where
         ``p=2`` (i.e., the largest singular value).
 
         Default: "fro".
@@ -1115,7 +1166,13 @@ def matrix_norm(
     Returns
     -------
     ret
-        Matrix norm of the array at specified axes.
+        Matrix norm of the array at specified axes. If ``keepdims`` is ``False``, the
+        returned array must have a rank which is two less than the ranl of ``x``.
+        If ``x`` has a real-valued data type, the returned array must have a real-valued
+        floating-point data type based on Type promotion. If ``x`` has a complex-valued
+        data type, the returned array must have a real-valued floating-point data type
+        whose precision matches the precision of ``x`` (e.g., if ``x`` is
+        ``complex128``, then the returned array must have a `float64`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -1131,7 +1188,7 @@ def matrix_norm(
     Examples
     --------
     With :class:`ivy.Array` inputs:
-    
+
     >>> x = ivy.array([[1., 2.], [3., 4.]])
     >>> y = ivy.matrix_norm(x)
     >>> print(y)
@@ -1144,8 +1201,9 @@ def matrix_norm(
     ivy.array([ 4., 12.])
 
     >>> x = ivy.arange(12, dtype=float).reshape((3, 2, 2))
-    >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)
-    >>> print(x)
+    >>> y = ivy.zeros((3,))
+    >>> ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=y)
+    >>> print(y)
     ivy.array([ 4., 12., 20.])
 
     >>> x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])
@@ -1153,18 +1211,19 @@ def matrix_norm(
     >>> print(y)
     ivy.array([[11.]])
 
-    >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \
-                        [[1., 0., 1.1], [1., 1., 0.]]])   
-    >>> ivy.matrix_norm(x, ord='fro', out=x)
-    >>> print(x)
+    >>> x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]],
+    ...                 [[1., 0., 1.1], [1., 1., 0.]]])
+    >>> y = ivy.zeros((2,))
+    >>> ivy.matrix_norm(x, ord='fro', out=y)
+    >>> print(y)
     ivy.array([10.5 ,  2.05])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11], \
-                                       [42.69, 9.23]]), \
-                          b=ivy.array([[1.1, 2.2, 3.3], \
-                                       [4.4, 5.5, 6.6]]))   
+    >>> x = ivy.Container(a=ivy.array([[0.666, 9.11],
+    ...                                [42.69, 9.23]]),
+    ...                   b=ivy.array([[1.1, 2.2, 3.3],
+    ...                                [4.4, 5.5, 6.6]]))
     >>> y = ivy.matrix_norm(x, ord=-ivy.inf)
     >>> print(y)
     {
@@ -1173,9 +1232,9 @@ def matrix_norm(
     }
 
     With multiple :class:`ivy:Container` inputs:
-    
-    >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \
-                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) 
+
+    >>> x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)),
+    ...                   b=ivy.arange(8, dtype=float).reshape((2, 2, 2)))
     >>> ord = ivy.Container(a=1, b=float('inf'))
     >>> axis = ivy.Container(a=(1, 2), b=(2, 1))
     >>> k = ivy.Container(a=False, b=True)
@@ -1183,7 +1242,7 @@ def matrix_norm(
     >>> print(y)
     {
         a: ivy.array([4., 12., 20.]),
-        b: ivy.array([[[4.]], 
+        b: ivy.array([[[4.]],
                       [[12.]]])
     }
     """
@@ -1193,6 +1252,7 @@ def matrix_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1293,6 +1353,7 @@ def matrix_power(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1319,7 +1380,7 @@ def matrix_rank(
         ``MxN`` matrices. Should have a floating-point data type.
 
     atol
-        absolute tolerance. When None it’s considered to be zero.
+        absolute tolerance. When None it's considered to be zero.
 
     rtol
         relative tolerance for small singular values. Singular values approximately less
@@ -1334,8 +1395,9 @@ def matrix_rank(
         Default: ``None``.
     
     hermitian
-        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x`` is assumed to be Hermitian,
-        enabling a more efficient method for finding eigenvalues, but x is not checked inside the function. 
+        indicates whether ``x`` is Hermitian. When ``hermitian=True``, ``x``
+        is assumed to be Hermitian, enabling a more efficient method for finding
+        eigenvalues, but x is not checked inside the function. 
         Instead, We just use the lower triangular of the matrix to compute.
         Default: ``False``.
     out
@@ -1407,6 +1469,7 @@ def matrix_rank(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1463,7 +1526,7 @@ def matrix_transpose(
                [2., 3.]])
 
     >>> x = ivy.array([[1., 4.], [2., 5.], [3., 1.]])
-    >>> y = ivy.zeros((3, 2))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.matrix_transpose(x, out=y)
     ivy.array([[1., 2., 3.],
                [4., 5., 1.]])
@@ -1497,6 +1560,7 @@ def matrix_transpose(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1586,6 +1650,7 @@ def outer(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1646,19 +1711,21 @@ def pinv(
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> y = ivy.pinv(x)
     >>> print(y)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
+    ivy.array([[-1.99999988,  1.        ],
+           [ 1.5       , -0.5       ]])
 
     >>> x = ivy.array([[1., 2.],[3., 4.]])
     >>> out = ivy.zeros(x.shape)
     >>> ivy.pinv(x, out=out)
     >>> print(out)
-    ivy.array([[-2., 1.],[1.5, -0.5]])
-
+    ivy.array([[-1.99999988,  1.        ],
+           [ 1.5       , -0.5       ]])
     """
     return current_backend(x).pinv(x, rtol=rtol, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1725,6 +1792,7 @@ def qr(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -1741,6 +1809,19 @@ def slogdet(
        The purpose of this function is to calculate the determinant more accurately
        when the determinant is either very small or very large, as calling ``det`` may
        overflow or underflow.
+
+    **Special cases**
+
+    For real-valued floating-point operands,
+
+    - If the determinant is zero, the ``sign`` should be ``0``and ``logabsdet``
+    should be ``infinity``.
+
+    For complex floating-point operands,
+
+    - If the detereminant is ``0 + 0j``, the ``sign`` should be ``0 + 0j``
+    and ``logabsdet`` should be ``infinity + 0j``.
+
 
     Parameters
     ----------
@@ -1760,7 +1841,10 @@ def slogdet(
         For a real matrix, the sign of the determinant must be
         either ``1``, ``0``, or ``-1``.
         Each returned array must have shape ``shape(x)[:-2]`` and a real-valued
-        floating-point data type determined by :ref:`type-promotion`.
+        floating-point data type determined by :ref:`type-promotion`. If ``x``
+        is complex, the returned array must have a real-valued floating-point data
+        type having the same precision as ``x`` (1.g., if ``x`` is ``complex64``,
+        ``logabsdet`` must have a ``float32`` data type)
         .. note::
            If a determinant is zero, then the corresponding ``sign`` should be ``0``
            and ``logabsdet`` should be ``-infinity``; however, depending on the
@@ -1787,7 +1871,7 @@ def slogdet(
     ...                [3.0, 4.0]])
     >>> y = ivy.slogdet(x)
     >>> print(y)
-    slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.609438))
+    slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.60943794))
 
     >>> x = ivy.array([[1.2, 2.0, 3.1],
     ...                [6.0, 5.2, 4.0],
@@ -1804,22 +1888,20 @@ def slogdet(
     ...                                [2.0, 1.0]]))
     >>> y = ivy.slogdet(x)
     >>> print(y)
-    {
-        a: [
-            sign = ivy.array(-1.),
-            logabsdet = ivy.array(0.6931472)
-        ],
-        b: [
-            sign = ivy.array(-1.),
-            logabsdet = ivy.array(1.0986123)
-        ]
-    }
+    [{
+        a: ivy.array(-1.),
+        b: ivy.array(-1.)
+    }, {
+        a: ivy.array(0.69314718),
+        b: ivy.array(1.09861231)
+    }]
 
     """
     return current_backend(x).slogdet(x)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -1876,6 +1958,7 @@ def solve(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @to_native_arrays_and_back
@@ -1935,14 +2018,17 @@ def svd(
             sorted in descending order by magnitude, such that ``s[..., 0]`` is the
             largest value, ``s[..., 1]`` is the second largest value, et cetera. The
             first ``x.ndim-2`` dimensions must have the same shape as those of the input
-            ``x``.
+            ``x``. Must have a real-valued floating-point data type having the same
+            precision as ``x`` (e.g., if ``x`` is ``complex64``, ``S`` must have
+            a ``float32`` data type).
         -   third element must have the field name ``Vh`` and must be an array whose
             shape depends on the value of ``full_matrices`` and contain orthonormal rows
             (i.e., the rows are the right singular vectors and the array is the
             adjoint). If ``full_matrices`` is ``True``, the array must have shape
             ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have
             shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2``
-            dimensions must have the same shape as those of the input ``x``.
+            dimensions must have the same shape as those of the input ``x``. Must
+            have the same data type as ``x``.
 
         Each returned array must have the same floating-point data type as ``x``.
 
@@ -2002,6 +2088,7 @@ def svd(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2027,7 +2114,9 @@ def svdvals(
     ret
         array with shape ``(..., K)`` that contains the vector(s) of singular values of
         length ``K``, where K = min(M, N). The values are sorted in descending order by
-        magnitude.
+        magnitude. The returned array must have a real-valued floating-point data type
+        having the same precision as ``x`` (e.g., if ``x`` is ``complex64``,
+        the returned array must have a ``float32`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -2046,17 +2135,20 @@ def svdvals(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
-    >>> S = ivy.svdvals(x)
-    >>> print(S.shape)
-    (2,)
+    >>> y = ivy.svdvals(x)
+    >>> print(y.shape)
+    ivy.Shape(2,)
 
     With comparison of the singular value S ivy.svdvals() by the result ivy.svd().
 
-    >>> _, SS, _ = ivy.svd(x)
-    >>> print(SS.shape)
-    (2,)
+    >>> x = ivy.array([[5.0, 7.0], [4.0, 3.0]])
+    >>> _, y, _ = ivy.svd(x)
+    >>> print(y.shape)
+    ivy.Shape(2,)
 
-    >>> error = (SS - S).abs()
+    >>> x = ivy.array([9.86217213, 1.31816804])
+    >>> y = ivy.array([9.86217213, 1.31816804])
+    >>> error = (x - y).abs()
     >>> print(error)
     ivy.array([0.,0.])
 
@@ -2067,8 +2159,10 @@ def svdvals(
     >>> print(x.shape)
     (4, 3)
 
-    >>> S = ivy.svdvals(x)
-    >>> print(S)
+    >>> x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],
+    ...                       [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])
+    >>> y = ivy.svdvals(x)
+    >>> print(y)
     ivy.array([10.3, 1.16, 0.615])
 
     >>> _, SS, _ = ivy.svd(x)
@@ -2077,9 +2171,11 @@ def svdvals(
 
     with comparison of singular value S ivy.svdvals() by the result ivy.svd().
 
-    >>> error = (SS - S).abs()
+    >>> x = ivy.array([10.25994301,  1.16403675,  0.61529762])
+    >>> y = ivy.array([9.86217213, 1.31816804, 0.51231241])
+    >>> error = (x - y).abs()
     >>> print(error)
-    ivy.array([0., 0., 0.])
+    ivy.array([0.39777088, 0.15413129, 0.1029852 ])
 
     With :class:`ivy.Container` input:
 
@@ -2092,11 +2188,11 @@ def svdvals(
     >>> y = ivy.svdvals(x)
     >>> print(y)
     {
-        a: ivy.array([9.01, 0.866]),
-        b: ivy.array([15.8, 5.56, 4.17, 0.864])
+        a: ivy.array([9.01383495, 0.86647356]),
+        b: ivy.array([15.7786541, 5.55970621, 4.16857576, 0.86412698])
     }
 
-    Instance Method Examples
+    # Instance Method Examples
     ------------------------
 
     Using :class:`ivy.Array` instance method:
@@ -2106,9 +2202,9 @@ def svdvals(
     ...                [4.0, 1.0], [5.0, 6.0]])
     >>> y = x.svdvals()
     >>> print(y)
-    ivy.array([13.4, 3.88])
+    ivy.array([13.37566757,  3.88477993])
 
-    Using :class:`ivy.Container` instance method:
+    With :class:`ivy.Container` instance method:
 
     >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],
     ...                                [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),
@@ -2119,8 +2215,8 @@ def svdvals(
     >>> y = x.svdvals()
     >>> print(y)
     {
-        a: ivy.array([13., 4.64, 2.55]),
-        b: ivy.array([23.2, 10.4, 4.31, 1.36])
+        a: ivy.array([12.95925522, 4.6444726, 2.54687881]),
+        b: ivy.array([23.16134834, 10.35037804, 4.31025076, 1.35769391])
     }
 
     """
@@ -2128,6 +2224,7 @@ def svdvals(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2143,6 +2240,12 @@ def tensordot(
 ) -> ivy.Array:
     """
     Return a tensor contraction of x1 and x2 over specific axes.
+
+    .. note::
+        If either ``x1`` or ``x2`` has a complex floating-point data type, neither
+        argument must be complex-conjugated or transposed. If conjugation and/or
+        transposition is desired, these operations should explicitly performed
+        prior to computing the generalized matrix product.
 
     Parameters
     ----------
@@ -2211,51 +2314,7 @@ def tensordot(
 
 
 @handle_exceptions
-@handle_nestable
-@handle_out_argument
-@to_native_arrays_and_back
-@handle_array_function
-@handle_device_shifting
-def tensorsolve(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    ndim1 = ivy.get_num_dims(x1)
-    ndim2 = ivy.get_num_dims(x2)
-
-    if axes is not None:
-        allaxes = list(range(0, ndim1))
-        for k in axes:
-            allaxes.remove(k)
-            allaxes.insert(ndim1, k)
-
-        x1 = ivy.matrix_transpose(x1, allaxes)
-
-    old_shape = x1.shape[-(ndim1 - ndim2) :]
-
-    prod = 1
-    for k in old_shape:
-        prod *= k
-
-    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
-        raise ivy.utils.exceptions.IvyException(
-            "Input arrays must satisfy the requirement "
-            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
-        )
-
-    x1 = ivy.reshape(x1, (prod, prod))
-    x2 = ivy.flatten(x2)
-    res = ivy.solve(x1, x2)
-    res = ivy.reshape(res, old_shape)
-    return res
-    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
-
-
-@handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2273,6 +2332,16 @@ def trace(
 ) -> ivy.Array:
     """Return the sum along the specified diagonals of a matrix (or a stack of
     matrices) ``x``.
+
+    **Special cases**
+
+    Let ``N`` equal the number of elements over which to compute the sum.
+
+    - If ``N`` is ``0``, the sum is ``0`` (i.e., the empty sum).
+
+    For both real-valued and complex floating-point operands,
+    special cases must be handled as if the operation is implemented
+    by successive application of :func:`ivy.add`:
 
     Parameters
     ----------
@@ -2372,6 +2441,7 @@ def trace(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -2440,6 +2510,7 @@ def vecdot(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2518,6 +2589,10 @@ def vector_norm(
         is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned
         array must have a rank which is ``n`` less than the rank of ``x``. The returned
         array must have a floating-point data type determined by :ref:`type-promotion`.
+        If ``x`` has a complex-valued data type, the returned array must have a
+        real-valued floating-point data type whose precision matches the precision
+        of ``x`` (e.g., if ``x`` is ``complex128``, then the returned array must have
+        a ``float64`` data type).
 
 
     This function conforms to the `Array API Standard
@@ -2556,18 +2631,14 @@ def vector_norm(
 
     >>> x = ivy.array([1,2,3,4], dtype = ivy.float16)
     >>> z = ivy.empty(shape = 1)
-    >>> print(z)
-    ivy.array([0.  , 2.  , 0.  , 2.25])
     >>> y = ivy.vector_norm(x, ord = 0, out = z)
-    >>> print(z)
-    ivy.array([4.])
     >>> print(y)
-    ivy.array([4.])
+    ivy.array(4.)
 
     >>> x = ivy.arange(8).reshape((2,2,2))
     >>> y = ivy.vector_norm(x, axis = (0,1), ord = float("-inf"))
     >>> print(y)
-    ivy.array([2, 4])
+    ivy.array([0, 1])
 
     >>> x = ivy.Container(a = [-1., 1., -2., 2.], b = [0., 1.2, 2.3, -3.1])
     >>> y = ivy.vector_norm(x, ord = -1)
@@ -2588,6 +2659,7 @@ def vector_norm(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2672,6 +2744,7 @@ def diag(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2745,6 +2818,7 @@ def vander(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2780,6 +2854,7 @@ def vector_to_skew_symmetric_matrix(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2811,3 +2886,49 @@ def lu_factor(
         A named tuple (LU, pivots).
     """
     return current_backend(A).lu_factor(A, pivot=pivot, out=out)
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.utils.exceptions.IvyException(
+            "Input arrays must satisfy the requirement "
+            "prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)

@@ -1,7 +1,7 @@
 # global
 import math
 import itertools
-from typing import Optional, Union, Tuple, Literal, Sequence, Callable
+from typing import Optional, Union, Tuple, List, Literal, Sequence, Callable
 from functools import reduce as _reduce
 import builtins
 
@@ -16,6 +16,7 @@ from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     handle_array_function,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.functional.ivy.experimental.general import _correct_ivy_callable
 from ivy.utils.exceptions import handle_exceptions
@@ -25,18 +26,21 @@ _slice = builtins.slice
 _max = builtins.max
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool1d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -45,17 +49,22 @@ def max_pool1d(
     Parameters
     ----------
     x
-        Input image *[batch_size, w, d_in]*.
+        Input image *[batch_size, w, d_in]* if data_format is "NWC".
     kernel
         Size of the kernel i.e., the sliding window for each
         dimension of input. *[w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list
-        indicating the per-dimension paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0)])
     data_format
-        NWC" or "NCW". Defaults to "NWC".
+        "NWC" or "NCW". Defaults to "NWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -83,25 +92,113 @@ def max_pool1d(
     ivy.array([[[ 4.,  5.,  6.,  7.]],
 
        [[16., 17., 18., 19.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.max_pool1d(x, 2, 2, [(1,0)], data_format="NCW", dilation=2, ceil_mode=True)) # noqa
+    ivy.array([[[ 1.,  3.],
+            [ 5.,  7.],
+            [ 9., 11.]],
+
+        [[13., 15.],
+            [17., 19.],
+            [21., 23.]]])
     """
     return ivy.current_backend(x).max_pool1d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
+@handle_backend_invalid
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def max_unpool1d(
+    x: ivy.Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Compute a 1-D max unpooling given the 1-D pooled input x and its indices.
+
+    Parameters
+    ----------
+    x
+        Pooled input image *[batch_size, w, d_in]*.
+    indices
+        Indices obtained from the corresponding max pooling operation.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the unpooling operation.
+
+    Both the description and the type hints above assume an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> pool_result = ivy.max_pool1d(x, 2, 2, 'SAME')
+    >>> print(pool_result)
+    ivy.array([[[ 4.,  5.,  6.,  7.],
+            [ 8.,  9., 10., 11.]],
+
+           [[16., 17., 18., 19.],
+            [20., 21., 22., 23.]]])
+    >>> unpool_result = ivy.max_unpool1d(pool_result, indices, 2, 2, 'SAME')
+    >>> print(unpool_result)
+    ivy.array([[[ 0.,  4.,  0.,  5.,  0.,  6.,  0.,  7.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  8.,  0.,  9.,  0., 10.,  0., 11.,  0.]],
+
+           [[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 16.,  0., 17.,  0.],
+            [ 0., 18.,  0., 19.,  0.,  0.,  0.,  0., 20.,  0., 21.,  0.]]])
+    """
+    return ivy.current_backend(x).max_unpool1d(
+        x, indices, kernel, strides, padding, data_format=data_format, out=out
+    )
+
+
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool2d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -122,6 +219,11 @@ def max_pool2d(
         indicating the per-dimension paddings.
     data_format
         NHWC" or "NCHW". Defaults to "NHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to.
 
@@ -139,25 +241,25 @@ def max_pool2d(
     --------
     >>> x = ivy.arange(12.).reshape((2, 1, 3, 2))
     >>> print(ivy.max_pool2d(x, (2, 2), (1, 1), 'SAME'))
-    ivy.array([[[[ 2,  3],
-             [ 4,  5],
-             [ 4,  5]]],
+    ivy.array([[[[ 2.,  3.],
+             [ 4.,  5.],
+             [ 4.,  5.]]],
 
 
-           [[[ 8,  9],
-             [10, 11],
-             [10, 11]]]])
+           [[[ 8.,  9.],
+             [10., 11.],
+             [10., 11.]]]])
 
     >>> x = ivy.arange(48.).reshape((2, 4, 3, 2))
     >>> print(ivy.max_pool2d(x, 3, 1, 'VALID'))
-    ivy.array([[[[16, 17]],
+    ivy.array([[[[16., 17.]],
 
-            [[22, 23]]],
+            [[22., 23.]]],
 
 
-           [[[40, 41]],
+           [[[40., 41.]],
 
-            [[46, 47]]]])
+            [[46., 47.]]]])
     """
     return ivy.current_backend(x).max_pool2d(
         x,
@@ -171,18 +273,21 @@ def max_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_device_shifting
 def max_pool3d(
     x: Union[ivy.Array, ivy.NativeArray],
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -191,16 +296,21 @@ def max_pool3d(
     Parameters
     ----------
     x
-        Input volume *[batch_size,d,h,w,d_in]*.
+        Input tensor *[batch_size,d,h,w,d_in]* if data_format is "NDHWC".
     kernel
         Convolution filters *[d,h,w]*.
     strides
         The stride of the sliding window for each dimension of input.
     padding
-        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-        paddings.
+        "SAME" or "VALID" indicating the algorithm; int, or list of tuple
+        indicating the per-dimension paddings. (e.g. 2, [(1, 0), (0, 1), (1, 1)])
     data_format
-        NDHWC" or "NCDHW". Defaults to "NDHWC".
+        "NDHWC" or "NCDHW". Defaults to "NDHWC".
+    dilaton
+        The stride between elements within a sliding window, must be > 0.
+    ceil_mode
+        If True, ceil is used instead of floor to compute the output shape.
+        This ensures that every element in 'x' is covered by a sliding window.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -238,10 +348,18 @@ def max_pool3d(
         [[[46., 47.]]]]])
     """
     return ivy.current_backend(x).max_pool3d(
-        x, kernel, strides, padding, data_format=data_format, out=out
+        x,
+        kernel,
+        strides,
+        padding,
+        data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
+        out=out,
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -324,6 +442,7 @@ def avg_pool1d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -411,6 +530,7 @@ def avg_pool2d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -499,6 +619,7 @@ def avg_pool3d(
     )
 
 
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -576,6 +697,7 @@ def pool(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -623,38 +745,48 @@ def dct(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
-    >>> ivy.dct(x, type=2, n=None, norm='ortho')
-    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
+    >>> y = ivy.dct(x, type=2, n=None, norm='ortho')
+    >>> print(y)
+    ivy.array([ 1.01823380e+02, -5.15385818e+01,  1.36371466e-06, -5.38763905e+00,
+            0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01])
 
     >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],
     ...                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])
-    >>> ivy.dct(x, type=1, n=None, axis=0, norm=None)
+    >>> y = ivy.dct(x, type=1, n=None, axis=0, norm=None)
+    >>> print(y)
     ivy.array([[[ 9., 18., 27., 36.],
-                [45., 54., 63., 72.]],
-               [[ 7., 14., 21., 28.],
-                [35., 42., 49., 56.]]])
+            [45., 54., 63., 72.]],
+
+           [[ 7., 14., 21., 28.],
+            [35., 42., 49., 56.]]])
 
     >>> x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],
     ...                [40.5, 48.6, 56.7, 64.8]])
     >>> y = ivy.zeros((2, 4), dtype=ivy.float32)
     >>> ivy.dct(x, type=1, n=None, norm=None, out=y)
     >>> print(y)
-    ivy.array([[ 1.22e+02, -3.24e+01,  1.91e-06, -8.10e+00],
-               [ 3.16e+02, -3.24e+01,  3.81e-06, -8.10e+00]])
+    ivy.array([[ 1.21500000e+02, -3.24000015e+01,  1.90734863e-06,
+            -8.10000420e+00],
+           [ 3.15899994e+02, -3.24000053e+01,  3.81469727e-06,
+            -8.09999847e+00]])
 
     >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
     >>> ivy.dct(x, type=4, n=None, norm=None, out=x)
     >>> print(x)
-    ivy.array([ 279. , -280. ,  128. , -115. ,   83.7,  -79.5,   69.8,  -68.7])
+    ivy.array([ 279.4135742 , -279.6779785 ,  128.3770599 , -114.8719864 ,
+             83.72109985,  -79.52869415,   69.79182434,  -68.72489166])
 
     With one :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
     ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
-    >>> ivy.dct(x, type=3, n=None, norm='ortho')
+    >>> y = ivy.dct(x, type=3, n=None, norm='ortho')
+    >>> print(y)
     {
-        a: ivy.array([79.5, -70.4, 30., -23.6, 13.9, -10.1, 5.2, -1.95]),
-        b: ivy.array([9.94, -8.8, 3.75, -2.95, 1.74, -1.26, 0.65, -0.244])
+        a: ivy.array([79.49862671, -70.37691498, 30.00390816, -23.58938599,
+                      13.92713165, -10.078475, 5.19664812, -1.95411837]),
+        b: ivy.array([9.93732834, -8.79711437, 3.75048852, -2.94867325, 1.74089146,
+                      -1.25980937, 0.64958102, -0.2442648])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -664,11 +796,13 @@ def dct(
     >>> container_n = ivy.Container(a=9, b=4)
     >>> container_type = ivy.Container(a=2, b=1)
     >>> container_norm = ivy.Container(a="ortho", b=None)
-    >>> ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> y = ivy.dct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> print(y)
     {
-        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,
-                    -5.89]),
-        b: ivy.array([15., -4., 0., -1.])
+        a: ivy.array([96., -28.1580677, -31.89422607, 22.86190414,
+                      -26.00041008, 19.75149155, -16.97056389, 10.87819386,
+                      -5.89381361]),
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
@@ -721,17 +855,20 @@ def idct(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])
-    >>> ivy.idct(x, type=2, n=None, norm='ortho')
+    >>> y = ivy.idct(x, type=2, n=None, norm='ortho')
+    >>> print(y)
     ivy.array([ 79.49862671, -70.37691498,  30.00390816, -23.58938599,
-        13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
+            13.92713165, -10.078475  ,   5.19664812,  -1.95411837])
 
     >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],
     ...                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])
-    >>> ivy.idct(x, type=1, n=None, axis=0, norm=None)
+    >>> y = ivy.idct(x, type=1, n=None, axis=0, norm=None)
+    >>> print(y)
     ivy.array([[[ 9., 18., 27., 36.],
-        [45., 54., 63., 72.]],
-       [[ 7., 14., 21., 28.],
-        [35., 42., 49., 56.]]])
+            [45., 54., 63., 72.]],
+
+           [[ 7., 14., 21., 28.],
+            [35., 42., 49., 56.]]])
 
     >>> x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],
     ...                [40.5, 48.6, 56.7, 64.8]])
@@ -753,12 +890,13 @@ def idct(
 
     >>> x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
     ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
-    >>> ivy.idct(x, type=3, n=None, norm='ortho')
+    >>> y = ivy.idct(x, type=3, n=None, norm='ortho')
+    >>> print(y)
     {
-        a: ivy.array([1.01823372e+02, -5.15385818e+01, 1.36371455e-06, -5.38763905e+00,
-                      0., -1.60722279e+00, -8.80319249e-08, -4.05617893e-01]),
-        b: ivy.array([1.27279215e+01, -6.44232273e+00, 1.70464318e-07, -6.73454881e-01,
-                      0., -2.00902849e-01, -1.10039906e-08, -5.07022366e-02])
+        a: ivy.array([1.01823380e+02, -5.15385818e+01, 1.36371466e-06, -5.38763905e+00,
+                      0.00000000e+00, -1.60722279e+00, -8.80319249e-08, -4.05617893e-01]),
+        b: ivy.array([1.27279224e+01, -6.44232273e+00, 1.70464332e-07, -6.73454881e-01,
+                      0.00000000e+00, -2.00902849e-01, -1.10039906e-08, -5.07022366e-02])
     }
 
     With multiple :class:`ivy.Container` inputs:
@@ -768,21 +906,29 @@ def idct(
     >>> container_n = ivy.Container(a=9, b=4)
     >>> container_type = ivy.Container(a=2, b=1)
     >>> container_norm = ivy.Container(a="ortho", b=None)
-    >>> ivy.idct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> y = ivy.idct(x, type=container_type, n=container_n, norm=container_norm)
+    >>> print(y)
     {
-        a: ivy.array([86.29723358, -66.6950531, 9.93914509, 2.88008738,
-                      -16.18951225, 18.06697273, -17.57439804, 11.68861485,
+        a: ivy.array([86.29723358, -66.69506073, 9.93914604, 2.88008881,
+                      -16.18951607, 18.06697273, -17.57439613, 11.68861485,
                       -4.41308832]),
-        b: ivy.array([15., -4., -2.22044605e-16, -1.])
+        b: ivy.array([1.50000000e+01, -4.00000000e+00, -2.22044605e-16, -1.00000000e+00])
     }
     """
     return ivy.current_backend(x).idct(x, type=type, n=n, axis=axis, norm=norm, out=out)
 
 
-idct.mixed_backend_wrappers = {"to_add": ("handle_device_shifting",), "to_skip": ()}
+idct.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -852,6 +998,7 @@ def fft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -927,6 +1074,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -985,16 +1133,6 @@ def dropout2d(
     >>> y = ivy.dropout2d(x, 1, training=False, data_format="NCW")
     >>> print(y)
     ivy.array([[1, 1, 1]])
-
-    With one :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
-                          b=ivy.array([[400, 500, 600]]))
-    >>> y = ivy.dropout2d(x, 0.5)
-    >>> print(y)
-    {
-        a: ivy.array([[200., 0., 600.]]),
-        b: ivy.array([[0., 0., 1200.]])
-    }
     """
     return ivy.current_backend(x).dropout2d(
         x, prob, training=training, data_format=data_format, out=out
@@ -1002,6 +1140,7 @@ def dropout2d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1053,6 +1192,7 @@ def dropout3d(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1121,6 +1261,7 @@ def ifft(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -1159,29 +1300,18 @@ def embedding(
     >>> weights = ivy.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]])
     >>> indices = ivy.array([0, 2])
     >>> print(ivy.embedding(weights, indices, max_norm=5))
-    ivy.array([[1., 2., 3.],
-                [7., 8., 9.]])
+    ivy.array([[1.        , 2.        , 3.        ],
+           [2.51285338, 2.87183261, 3.2308116 ]])
     """
     ivy.utils.assertions.check_equal(
         len(weights.shape), 2, message="weights must be 2-d", as_array=False
     )
-    if ivy.exists(out):
-        return ivy.inplace_update(
-            out,
-            ivy.current_backend(indices).embedding(
-                weights,
-                indices,
-                max_norm=max_norm,
-                out=out,
-            ),
-        )
-    else:
-        return ivy.current_backend(indices).embedding(
-            weights,
-            indices,
-            max_norm=max_norm,
-            out=out,
-        )
+    return ivy.current_backend(indices).embedding(
+        weights,
+        indices,
+        max_norm=max_norm,
+        out=out,
+    )
 
 
 @handle_exceptions
@@ -1917,7 +2047,10 @@ def interpolate(
 
 
 interpolate.mixed_backend_wrappers = {
-    "to_add": ("handle_device_shifting",),
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_device_shifting",
+    ),
     "to_skip": (),
 }
 
@@ -2011,7 +2144,7 @@ def _expand_to_dim(x, dim):
     return x
 
 
-def _mask(vals, length, range_max, dim):
+def _mask(vals, length, range_max, dim, mask_value=0.0):
     if isinstance(length, int):
         return vals, length
     else:
@@ -2019,9 +2152,102 @@ def _mask(vals, length, range_max, dim):
         mask = ivy.greater_equal(range_max, ivy.expand_dims(length, axis=-1))
         if dim == -2:
             mask = _expand_to_dim(mask, 4)
-        vals = ivy.where(mask, 0.0, vals)
+        vals = ivy.where(mask, ivy.array(mask_value, device=vals.device), vals)
         length = _expand_to_dim(length, -dim)
         return vals, length
+
+
+@handle_nestable
+@inputs_to_ivy_arrays
+def adaptive_max_pool2d(
+    input: Union[ivy.Array, ivy.NativeArray],
+    output_size: Union[Sequence[int], int],
+):
+    """
+    Apply a 2D adaptive maximum pooling over an input signal composed of several input
+    planes.
+
+    Parameters
+    ----------
+    input
+        Input array. Must have shape (N, C, H_in, W_in) or (C, H_in, W_in) where N is
+        the batch dimension, C is the feature dimension, and H_in and W_in are the 2
+        spatial dimensions.
+    output_size
+        Spatial output size.
+
+    Returns
+    -------
+        The result of the pooling operation. Will have shape (N, C, S_0, S_1) or
+        (C, S_0, S_1), where S = `output_size`
+    """
+    squeeze = False
+    if input.ndim == 3:
+        input = ivy.expand_dims(input, axis=0)
+        squeeze = True
+    elif input.ndim != 4:
+        raise ivy.utils.exceptions.IvyException(
+            f"Got {len(input.shape)}D input, but only 3D and 4D inputs are supported.",
+        )
+
+    if isinstance(output_size, int):
+        output_size = (output_size, output_size)
+
+    if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-2:], output_size)):
+        stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
+        kernel_size = stride  # Mathematically identical to the previous expression
+        pooled_output = ivy.max_pool2d(
+            input, kernel_size, stride, "VALID", data_format="NCHW"
+        )
+        if squeeze:
+            return ivy.squeeze(pooled_output, axis=0)
+        return pooled_output
+
+    idxh, length_h, range_max_h, adaptive_h = _compute_idx(
+        input.shape[-2], output_size[-2], input.device
+    )
+    idxw, length_w, range_max_w, adaptive_w = _compute_idx(
+        input.shape[-1], output_size[-1], input.device
+    )
+
+    # to numpy and back in order to bypass a slicing error in tensorflow
+    vals = ivy.array(
+        input.to_numpy()[..., _expand_to_dim(idxh, 4), idxw], device=input.device
+    )
+
+    if not adaptive_h and not adaptive_w:
+        ret = ivy.max(vals, axis=(-3, -1))
+        ret = ivy.squeeze(ret, axis=0) if squeeze else ret
+        return ret
+
+    vals, length_h = _mask(
+        vals, length_h, range_max_h, dim=-2, mask_value=float("-inf")
+    )
+    vals, length_w = _mask(
+        vals, length_w, range_max_w, dim=-1, mask_value=float("-inf")
+    )
+
+    ret = None
+    for i, j in itertools.product(range(vals.shape[-3]), range(vals.shape[-1])):
+        if ret is None:
+            ret = vals[..., i, :, j]
+        else:
+            ret = ivy.maximum(ret, vals[..., i, :, j])
+    pooled_output = ret.astype(vals.dtype)
+
+    pooled_output = ivy.squeeze(pooled_output, axis=0) if squeeze else pooled_output
+    return pooled_output
+
+
+adaptive_max_pool2d.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "inputs_to_native_arrays",
+        "outputs_to_ivy_arrays",
+        "handle_device_shifting",
+    ),
+    "to_skip": ("inputs_to_ivy_arrays",),
+}
 
 
 @handle_nestable
@@ -2095,6 +2321,7 @@ def adaptive_avg_pool1d(
 
 adaptive_avg_pool1d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2144,10 +2371,7 @@ def adaptive_avg_pool2d(
 
     if all(i_s % o_s == 0 for i_s, o_s in zip(input.shape[-2:], output_size)):
         stride = tuple(i_s // o_s for i_s, o_s in zip(input.shape[-2:], output_size))
-        kernel_size = tuple(
-            i_s - (o_s - 1) * st
-            for i_s, o_s, st in zip(input.shape[-2:], output_size, stride)
-        )
+        kernel_size = stride  # Mathematically identical to the previous expression
         pooled_output = ivy.avg_pool2d(
             input, kernel_size, stride, "VALID", data_format="NCHW"
         )
@@ -2187,6 +2411,7 @@ def adaptive_avg_pool2d(
 
 adaptive_avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2308,12 +2533,6 @@ def _get_identity(func, dtype, init):
     return init
 
 
-def _int_arg_to_tuple(arg, dims):
-    if isinstance(arg, int):
-        arg = tuple([arg] * dims)
-    return arg
-
-
 avg_pool2d.mixed_backend_wrappers = {
     "to_add": (
         "handle_out_argument",
@@ -2375,27 +2594,16 @@ def reduce_window(
     >>> x = ivy.array([[1, 2, 3, 4],
     >>>                [5, 6, 7, 8],
     >>>                [9, 10, 11, 12]])
-    >>> ivy.reduce_window(x, 0, ivy.sum, (2, 2))
-    ivy.array([[32.]])
+    >>> ivy.reduce_window(x, 0, ivy.add, (2, 2))
+    ivy.array([[14, 18, 22], [30, 34, 38]])
     """
     # ToDo: add support for window_dilation
     computation = _correct_ivy_callable(computation)
     op = operand
-
-    dims, strides, padding, base_dilation, window_dilation = ivy.map(
-        _int_arg_to_tuple,
-        unique={
-            "arg": [
-                window_dimensions,
-                window_strides,
-                padding,
-                base_dilation,
-                window_dilation,
-            ]
-        },
-        constant={"dims": len(op.shape)},
+    dims, strides, padding, base_dilation, window_dilation = map(
+        lambda x: tuple([x] * len(op.shape)) if isinstance(x, int) else x,
+        [window_dimensions, window_strides, padding, base_dilation, window_dilation],
     )
-
     init_value = _cast_init(init_value, op.dtype)
     identity = _get_identity(computation, operand.dtype, init_value)
     if isinstance(padding, str):
@@ -2413,6 +2621,7 @@ def reduce_window(
 
 reduce_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "inputs_to_native_arrays",
         "outputs_to_ivy_arrays",
         "handle_device_shifting",
@@ -2422,10 +2631,11 @@ reduce_window.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
+@handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
 @to_native_arrays_and_back
-# @outputs_to_ivy_arrays
 def fft2(
     x: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -2470,20 +2680,21 @@ def fft2(
 
     Examples
     --------
-    >>> a = ivy.array([[0, 0, 0, 0, 0],
-                       [1, 1, 1, 1, 1],
-                       [2, 2, 2, 2, 2],
-                       [3, 3, 3, 3, 3],
-                       [4, 4, 4, 4, 4]])
-    >>> ivy.fft2(a)
-    array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        , # may vary
-             0.  +0.j        ,   0.  +0.j        ],
+    >>> x = ivy.array([[0, 0, 0, 0, 0],
+    ...                [1, 1, 1, 1, 1],
+    ...                [2, 2, 2, 2, 2],
+    ...                [3, 3, 3, 3, 3],
+    ...                [4, 4, 4, 4, 4]])
+    >>> y = ivy.fft2(x)
+    >>> print(y)
+    ivy.array([[ 50.  +0.j        ,   0.  +0.j        ,   0.  +0.j        ,
+              0.  +0.j        ,   0.  +0.j        ],
            [-12.5+17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
-             0.  +0.j        ,   0.  +0.j        ],
+              0.  +0.j        ,   0.  +0.j        ],
            [-12.5 +4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
-             0.  +0.j        ,   0.  +0.j        ],
+              0.  +0.j        ,   0.  +0.j        ],
            [-12.5 -4.0614962j ,   0.  +0.j        ,   0.  +0.j        ,
-             0.  +0.j        ,   0.  +0.j        ],
+              0.  +0.j        ,   0.  +0.j        ],
            [-12.5-17.20477401j,   0.  +0.j        ,   0.  +0.j        ,
               0.  +0.j        ,   0.  +0.j        ]])
     """
@@ -2497,6 +2708,7 @@ fft2.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -2551,32 +2763,38 @@ def ifftn(
     Examples
     --------
     >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
-                        0.98193269+0.49560517j],
-                        [0.93280757+0.48075343j, 0.28526384+0.3351205j,
-                        0.2343787 +0.83528011j],
-                        [0.18791352+0.30690572j, 0.82115787+0.96195183j,
-                        0.44719226+0.72654048j]])
+    ...                 0.98193269+0.49560517j],
+    ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+    ...                 0.2343787 +0.83528011j],
+    ...                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+    ...                 0.44719226+0.72654048j]])
     >>> y = ivy.ifftn(x)
     >>> print(y)
     ivy.array([[ 0.51476765+0.66160417j, -0.04319742-0.05411636j,
             -0.015561  -0.04216015j],
-            [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
+           [ 0.06310689+0.05347854j, -0.13392983+0.16052352j,
             -0.08371392+0.17252843j],
-            [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
-            0.05344324+0.07972424j]])
+           [-0.0031429 +0.05421245j, -0.10446617-0.17747098j,
+             0.05344324+0.07972424j]])
 
+    >>> x = ivy.array([[0.24730653+0.90832391j, 0.49495562+0.9039565j,
+    ...                 0.98193269+0.49560517j],
+    ...                 [0.93280757+0.48075343j, 0.28526384+0.3351205j,
+    ...                 0.2343787 +0.83528011j],
+    ...                 [0.18791352+0.30690572j, 0.82115787+0.96195183j,
+    ...                 0.44719226+0.72654048j]])
     >>> b = ivy.ifftn(x, s=[2, 1], axes=[0, 1], norm='ortho')
     >>> print(b)
     ivy.array([[ 0.8344667 +0.98222595j],
-            [-0.48472244+0.30233797j]])
+           [-0.48472244+0.30233797j]])
     """
     return ivy.current_backend(x).ifftn(x, s=s, axes=axes, norm=norm, out=out)
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
-# @inputs_to_ivy_arrays
 @to_native_arrays_and_back
 def rfftn(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -2631,15 +2849,19 @@ def rfftn(
     Examples
     --------
     >>> x = ivy.array([1, 2, 3, 4], dtype=ivy.float32)
-    >>> result = ivy.rfftn(x)
+    >>> result = ivy.rfftn(x, s=(4,))
     >>> print(result)
-    [10.+0.j  -2.+2.j   0.+0.j  -2.-2.j]
+    ivy.array([10.+0.j, -2.+2.j, -2.+0.j])
 
     >>> x = ivy.array([[1, 2, 3], [4, 5, 6]], dtype=ivy.float32)
     >>> result = ivy.rfftn(x, s=(3, 4), axes=(0, 1))
     >>> print(result)
-    [[21. +0.j    0. +0.j    0. +0.j    0. +0.j   ]
-     [-1.5+1.299j -1.5+0.433j -1.5-0.433j -1.5-1.299j]]
+    ivy.array([[21.         +0.j        , -4.         -7.j        ,
+             7.         +0.j        ],
+           [-1.5       -12.99038106j, -5.33012702 +2.23205081j,
+            -0.5        -4.33012702j],
+           [-1.5       +12.99038106j,  3.33012702 -1.23205081j,
+            -0.5        +4.33012702j]])
     """
     if norm is None:
         norm = "backward"

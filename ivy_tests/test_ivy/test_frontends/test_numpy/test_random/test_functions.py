@@ -20,10 +20,12 @@ def test_numpy_random_sample(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -56,11 +58,13 @@ def test_numpy_dirichlet(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -87,12 +91,14 @@ def test_numpy_uniform(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     low,
     high,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -120,12 +126,14 @@ def test_numpy_normal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     loc,
     scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -155,12 +163,14 @@ def test_numpy_poisson(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -191,11 +201,13 @@ def test_numpy_geometric(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     p,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -221,11 +233,13 @@ def test_numpy_multinomial(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -249,11 +263,13 @@ def test_numpy_permutation(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -283,12 +299,14 @@ def test_numpy_beta(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     a,
     b,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -312,11 +330,13 @@ def test_numpy_shuffle(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -338,10 +358,12 @@ def test_numpy_standard_normal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -371,11 +393,13 @@ def test_numpy_standard_gamma(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     assume("float16" not in shape_dtypes)
     helpers.test_frontend_function(
         input_dtypes=shape_dtypes + size_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -403,6 +427,7 @@ def test_numpy_binomial(
     size,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
     n,
@@ -411,6 +436,7 @@ def test_numpy_binomial(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -460,6 +486,7 @@ def test_numpy_chisquare(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
 ):
     # make sure `size` is something `df` can be broadcast to
@@ -471,6 +498,7 @@ def test_numpy_chisquare(
         size = (*size, len(df))
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -502,12 +530,14 @@ def test_numpy_lognormal(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     mean,
     sigma,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -552,12 +582,14 @@ def test_numpy_negative_binomial(
     frontend,
     test_flags,
     fn_tree,
+    backend_fw,
     on_device,
     n,
     p,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -588,6 +620,7 @@ def test_numpy_weibull(
     input_dtypes,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     a,
@@ -595,6 +628,7 @@ def test_numpy_weibull(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -616,12 +650,14 @@ def test_numpy_standard_cauchy(
     input_dtypes,
     size,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -650,12 +686,14 @@ def test_numpy_rayleigh(
     size,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     scale,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -690,6 +728,7 @@ def test_numpy_gumbel(
     input_dtypes,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
     loc,
@@ -698,6 +737,7 @@ def test_numpy_gumbel(
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -705,5 +745,230 @@ def test_numpy_gumbel(
         test_values=False,
         loc=loc,
         scale=scale,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.f",
+    input_dtypes=helpers.get_dtypes("float"),
+    dfn=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    dfd=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=False),
+)
+def test_numpy_f(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    dfn,
+    dfd,
+):
+    test_flags.num_positional_args = 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        test_values=False,
+        on_device=on_device,
+        dfn=dfn,
+        dfd=dfd,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.gamma",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    shape=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    scale=st.floats(
+        allow_nan=False, allow_infinity=False, width=32, min_value=0, exclude_min=True
+    ),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+    test_with_out=st.just(False),
+)
+def test_numpy_gamma(
+    input_dtypes,
+    shape,
+    scale,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        shape=shape,
+        scale=scale,
+        size=size,
+    )
+
+
+# logistic
+@handle_frontend_test(
+    fn_tree="numpy.random.logistic",
+    input_dtypes=helpers.get_dtypes("float", full=False),
+    loc=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    scale=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_logistic(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+    loc,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        loc=loc,
+        scale=scale,
+        size=size,
+    )
+
+
+# pareto
+@handle_frontend_test(
+    fn_tree="numpy.random.pareto",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    a=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=1,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+    test_with_out=st.just(False),
+)
+def test_numpy_pareto(
+    input_dtypes,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    a,
+    size,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        a=a,
+        size=size,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.random.triangular",
+    input_dtypes=helpers.get_dtypes("float"),
+    left=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=0,
+        max_value=10,
+    ),
+    mode=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=10,
+        max_value=100,
+        exclude_min=True,
+    ),
+    right=st.floats(
+        allow_nan=False,
+        allow_infinity=False,
+        width=32,
+        min_value=100,
+        max_value=1000,
+        exclude_min=True,
+    ),
+    size=helpers.get_shape(allow_none=True),
+)
+def test_numpy_triangular(
+    input_dtypes,
+    size,
+    frontend,
+    test_flags,
+    backend_fw,
+    fn_tree,
+    on_device,
+    left,
+    mode,
+    right,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        left=left,
+        mode=mode,
+        right=right,
         size=size,
     )
