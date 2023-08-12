@@ -150,8 +150,15 @@ class Array:
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
 
-    def reshape(self, newshape, order="C"):
-        return jax_frontend.numpy.reshape(self, newshape, order)
+    def reshape(self, *args, order="C"):
+        if not isinstance(args[0], int):
+            if len(args) > 1:
+                raise TypeError(
+                    "Shapes must be 1D sequences of concrete values of integer type,"
+                    f" got {args}."
+                )
+            args = args[0]
+        return jax_frontend.numpy.reshape(self, tuple(args), order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
@@ -271,8 +278,7 @@ class Array:
         )
 
     def __iter__(self):
-        ndim = len(self.shape)
-        if ndim == 0:
+        if self.ndim == 0:
             raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]
