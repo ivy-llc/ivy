@@ -62,7 +62,7 @@ def test_log_poisson_loss(
 @handle_test(
     fn_tree="functional.ivy.experimental.l1_loss",
     dtype_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=1,
         max_value=100,
         allow_inf=False,

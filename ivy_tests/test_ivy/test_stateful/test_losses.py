@@ -255,7 +255,7 @@ def test_binary_cross_entropy_loss(
 @handle_method(
     method_tree="stateful.losses.L1Loss.__call__",
     dtype_and_true=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=3,
         allow_inf=False,
