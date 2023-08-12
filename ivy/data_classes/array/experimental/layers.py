@@ -1107,7 +1107,6 @@ class _ArrayWithLayersExperimental(abc.ABC):
         """
         return ivy.rfftn(self._data, s=s, axes=axes, norm=norm, out=out)
 
-
     def deform_conv2d(
         self: ivy.Array,
         offset: Union[ivy.Array, ivy.NativeArray],
