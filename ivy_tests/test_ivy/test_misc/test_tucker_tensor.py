@@ -73,3 +73,22 @@ def test_tucker_to_tensor(X, ranks, true_res):
     true_res = ivy.array(true_res)
     res = ivy.TuckerTensor.tucker_to_tensor((X, U))
     assert np.allclose(true_res, res)
+
+
+@pytest.mark.parametrize("shape, ranks", [((4, 3, 5, 2), (2, 2, 3, 4))])
+def test_tucker_to_unfolded(shape, ranks):
+    G = ivy.random_uniform(shape=shape)
+    U = [ivy.random_uniform(shape=(ranks[i], G.shape[i])) for i in range(4)]
+    full_tensor = ivy.TuckerTensor.tucker_to_tensor((G, U))
+    for mode in range(4):
+        assert np.allclose(
+            ivy.TuckerTensor.tucker_to_unfolded((G, U), mode),
+            ivy.unfold(full_tensor, mode),
+        )
+        assert np.allclose(
+            ivy.TuckerTensor.tucker_to_unfolded((G, U), mode),
+            ivy.dot(
+                ivy.dot(U[mode], ivy.unfold(G, mode)),
+                ivy.permute_dims(ivy.kronecker(U, skip_matrix=mode), (1, 0)),
+            ),
+        )
