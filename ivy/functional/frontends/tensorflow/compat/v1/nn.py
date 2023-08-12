@@ -169,7 +169,7 @@ def depthwise_conv2d_backprop_input(
     dilations=[1, 1, 1, 1],
     name=None
 ):
-    if input_sizes is not None:
+    if input_sizes is None:
         raise ivy.utils.exceptions.IvyException(
             "Cannot specify'input_sizes'."
         )
