@@ -378,7 +378,6 @@ def multivariate_normal(key, mean, cov, shape=None, dtype="float64", method="cho
         cov_factor = u * ivy.sqrt(s[..., None, :])
 
     rand_normal = normal(key=key, shape=shape + mean.shape[-1:], dtype=dtype)
-
     result = mean + ivy.einsum("...ij,...j->...i", cov_factor, rand_normal.ivy_array)
 
     return result

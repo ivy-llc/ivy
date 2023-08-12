@@ -3,7 +3,7 @@ import pytest
 from hypothesis import strategies as st
 import ivy
 import numpy as np
-
+import sys
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -1421,34 +1421,39 @@ def test_jax_ball(
 
 
 @st.composite
-def get_mean_cov_vector(draw):
-    batch_shape = draw(
-        helpers.get_shape(
-            min_num_dims=2, max_num_dims=2, min_dim_size=2, max_dim_size=5
+def _get_mean_cov_vector(draw):
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
         )
     )
-    preMeanShape = draw(
-        helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x]))
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    dtype = draw(helpers.array_dtypes(available_dtypes=("float32", "float64")))
-    covShape = batch_shape + (preMeanShape + preMeanShape)
-    meanShape = batch_shape + preMeanShape
-
     # Generate shape for mean vector (..., n)
     dtype_mean = draw(
-        helpers.dtype_and_values(
-            available_dtypes=dtype, min_value=0, max_value=10, shape=meanShape
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size]), min_value=2, max_value=5, 
         )
     )
-
+    
     # Generate shape for covariance matrix (..., n, n)
     dtype_cov = draw(
-        helpers.dtype_and_values(
-            available_dtypes=dtype, min_value=0, max_value=10, shape=covShape
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(
+            lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon
         )
     )
 
-    return dtype_mean, dtype_cov, batch_shape
+    batch_shape = dtype_cov.shape[:-2]
+    
+
+    return input_dtype, dtype_mean, dtype_cov, batch_shape
 
 
 # @pytest.mark.xfail
@@ -1464,8 +1469,9 @@ def get_mean_cov_vector(draw):
         max_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    mean_cov_vector=get_mean_cov_vector(),
+    mean_cov_vector=_get_mean_cov_vector(),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
+    test_with_out=st.just(False),
 )
 def test_jax_multivariate_normal(
     *,
@@ -1479,15 +1485,11 @@ def test_jax_multivariate_normal(
     fn_tree,
 ):
     input_dtype, key = dtype_key
-    mean, cov, batch_shape = mean_cov_vector
+    shared_dtype, mean, cov, shape = mean_cov_vector
 
-    mean_dtype, mean_matrix = mean
-    mean_matrix = np.asarray(mean_matrix[0], dtype=mean_dtype[0])
+    spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
 
-    cov_dtype, x = cov
-
-    x = np.asarray(x[0], dtype=cov_dtype[0])
-
+    
     def call():
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
@@ -1497,9 +1499,9 @@ def test_jax_multivariate_normal(
             fn_tree=fn_tree,
             test_values=False,
             key=key[0],
-            mean=mean_matrix,
-            cov=x,
-            shape=batch_shape,
+            mean=mean,
+            cov=spd,
+            shape=shape,
             dtype=dtype[0],
             method=method,
         )
