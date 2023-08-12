@@ -1269,6 +1269,7 @@ def test_jax_quantile(
     fn_tree="jax.numpy.nanquantile",
     dtype_array_axes_q=_get_array_axes_probs(),
     overwrite_input=st.just(False),
+    interpolation=st.just(None),
     keepdims=st.booleans(),
     method=st.sampled_from(["linear", "lower", "higher", "midpoint", "nearest"]),
 )
@@ -1297,5 +1298,6 @@ def test_jax_nanquantile(
         axis=axes,
         overwrite_input=overwrite_input,
         method=method,
+        interpolation=interpolation,
         keepdims=keepdims,
     )
