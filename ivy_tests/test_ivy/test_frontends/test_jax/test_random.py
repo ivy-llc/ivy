@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 import ivy
 import numpy as np
 import sys
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -1435,10 +1436,10 @@ def _get_mean_cov_vector(draw):
     # Generate shape for mean vector (..., n)
     dtype_mean = draw(
         helpers.array_values(
-            dtype=input_dtype, 
-            shape=tuple([shared_size]), 
-            min_value=2, 
-            max_value=5, 
+            dtype=input_dtype,
+            shape=tuple([shared_size]),
+            min_value=2,
+            max_value=5,
         )
     )
 
@@ -1489,7 +1490,7 @@ def test_jax_multivariate_normal(
     shared_dtype, mean, cov, shape = mean_cov_vector
 
     spd = np.matmul(cov.T, cov) + np.identity(cov.shape[0])
-  
+
     def call():
         helpers.test_frontend_function(
             input_dtypes=input_dtype,
