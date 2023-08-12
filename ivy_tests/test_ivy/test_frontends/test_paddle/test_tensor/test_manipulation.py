@@ -643,7 +643,7 @@ def test_paddle_take_along_axis(
 @handle_frontend_test(
     fn_tree="numpy.put_along_axis",
     dtype_x_indices_axis=helpers.array_indices_put_along_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
+        array_dtypes=helpers.get_dtypes(kind="valid"),
         indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
