@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ivy"
-version = "1.1.9"
+version = "1.1.9" # Todo - update version number based on _version.py
 description = "The unified machine learning framework, enabling framework-agnostic functions, layers and libraries."
 # Todo - add long description similar to that of setup.py
 # long_description = "file: README.md"
