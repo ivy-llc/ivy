@@ -8,7 +8,7 @@
 # import ivy_tests.test_ivy.helpers as helpers
 # from ivy_tests.test_ivy.helpers import handle_frontend_test
 #
-# 
+#
 # #dropout
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.dropout",
@@ -124,7 +124,8 @@
 #         max_value=5,
 #         min_dim_size=4,
 #     ),
-#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5), st.integers(min_value=0, max_value=5))),
+#     pad_width=st.lists(st.tuples(st.integers(min_value=0, max_value=5),
+#     st.integers(min_value=0, max_value=5))),
 #     mode=st.sampled_from(['constant', 'reflect', 'replicate', 'circular']),
 #     constant_values=st.floats(min_value=0.0, max_value=1.0),
 # )
