@@ -214,7 +214,7 @@ def test_torch_conv3d(
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     # ToDo: Enable gradient tests for dilations > 1 when tensorflow supports it.
-    _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilations)
+    _assume_tf_dilation_gt_1(backend_fw, on_device, dilations)
     helpers.test_frontend_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
