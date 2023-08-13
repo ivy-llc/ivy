@@ -433,3 +433,40 @@ def set_diag(input, diagonal, /, *, k=0, align="RIGHT_LEFT", name=None):
 
 def expm(input, name=None):
     return ivy.matrix_exp(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def tensor_diag_part(input, name=None):
+    shape = ivy.shape(input, as_array=True)
+    rank = len(shape)
+    if rank % 2 != 0:
+        raise ValueError("Wrong tensor rank, rank must be even.")
+
+    rank = len(shape)
+    rank_half = int(rank / 2)
+    half_shape = shape[:rank_half]
+    prod = 1
+    for i in range(rank_half):
+        if shape[i] != shape[i + rank_half]:
+            raise ValueError(
+                f"Invalid shape {shape}: dimensions at {i} and {i+rank_half} do not"
+                " match."
+            )
+        prod *= half_shape[i]
+
+    reshaped = ivy.reshape(input, (prod, prod))
+    diagonal = ivy.diagonal(reshaped)
+    return ivy.reshape(diagonal, tuple(half_shape))
