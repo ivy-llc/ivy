@@ -1543,8 +1543,6 @@ def test_torch_narrow(
         start=start,
         length=length,
     )
-<<<<<<< HEAD
-
 
 @st.composite
 def _dtype_input_idx_axis(draw):
@@ -1572,6 +1570,7 @@ def _dtype_input_idx_axis(draw):
     fn_tree="torch.select",
     dtype_x_idx_axis=_dtype_input_idx_axis(),
 )
+
 def test_torch_select(
     *,
     dtype_x_idx_axis,
@@ -1594,7 +1593,31 @@ def test_torch_select(
         dim=axis,
         index=idx,
     )
-=======
+
+def test_torch_select_scatter(
+        *,
+        dtype_x_idx_axis,
+        on_device,
+        fn_tree,
+        frontend,
+        test_flags,
+        backend_fw,
+):
+    input_dtype, x, idx, axis = dtype_x_idx_axis
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        dim=axis,
+        index=idx,
+    )
+
+
     
 def test_torch_select_scatter():
     return 0
