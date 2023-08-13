@@ -40,7 +40,7 @@ def dunder_wrapper(func):
     return rep_method
 
 
-# check for previously imported torch module
+# check for previously imported tensorflow modules
 modules_to_patch = []
 tensors_to_patch = []
 tmp_globals = dict(globals())
