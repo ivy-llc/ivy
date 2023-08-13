@@ -36,5 +36,5 @@ def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
 
 @to_ivy_arrays_and_back
-def stft_helper(input_signal, frame_length, frame_step, fft_length):
+def stft(input_signal, frame_length, frame_step, fft_length):
     pass
