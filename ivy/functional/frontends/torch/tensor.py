@@ -1651,6 +1651,11 @@ class Tensor:
     def logaddexp(self, other):
         return torch_frontend.logaddexp(self, other)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    def logaddexp2(self, other):
+        self.ivy_array = torch_frontend.logaddexp2(self, other).ivy_array
+        return self
+
     def angle(self):
         return torch_frontend.angle(self)
 
