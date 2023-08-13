@@ -1564,7 +1564,8 @@ class Tensor:
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log1p(self):
-        return torch_frontend.log1p(self)
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        return torch_frontend.log1p(self).to(promoted_type)
 
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.baddbmm(
