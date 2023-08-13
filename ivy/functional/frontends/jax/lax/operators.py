@@ -673,3 +673,8 @@ def cbrt(x):
 @to_ivy_arrays_and_back
 def tie_in(x, y):
     return y
+
+
+@to_ivy_arrays_and_back
+def complex(x, y):
+    return ivy.add(x, y)
