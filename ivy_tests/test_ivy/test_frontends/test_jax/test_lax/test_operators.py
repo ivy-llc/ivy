@@ -2192,7 +2192,13 @@ def test_jax_conv(
     test_with_out=st.just(False),
 )
 def test_jax_conv_transpose(
-    *, x_f_d_other, on_device, fn_tree, frontend, test_flags, backend_fw, add
+    *,
+    x_f_d_other,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
 ):
     dtype, x, filters, dilation, dim_num, stride, pad, fc, pref = x_f_d_other
     _assume_tf_dilation_gt_1(ivy.current_backend_str(), on_device, dilation)
