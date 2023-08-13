@@ -33,3 +33,11 @@ def vflip(img, data_format="CHW"):
     elif data_format.lower() == "hwc":
         axis = -3
     return ivy.flip(img, axis=axis)
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "int16", "int8", "uint8")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def crop(img, top, left, height, width):
+    array = ivy.array(img)
+    return array[top:top+height, left:left+width]
