@@ -28,7 +28,7 @@ class Tensor:
             self._ivy_array = ivy.array(
                 array, dtype=torch_frontend.float32, device=device
             )
-        self.jac_fn = None
+        self._func = None
         self.func_inputs = None
         self.out_idx = None
         self._grads = None

@@ -3,6 +3,7 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import (
     handle_gradients,
+    to_ivy_arrays_and_back,
 )
 
 
@@ -26,6 +27,70 @@ def _create_grad_outputs(tensors, outputs=None):
     return tuple(tensors)
 
 
+def _get_output(outputs, out_idx):
+    # Function might return multiple outputs
+    # We are only intersted in one of them
+    if out_idx is None:
+        return outputs
+    return ivy.index_nest(outputs, out_idx)
+
+
+def _get_wrapped_fn(output, input):
+    """Compute gradient of output w.r.t input."""
+
+    # Case #1
+    if not isinstance(output, torch_frontend.Tensor):
+        return None
+    # Case #2
+    if output is input:
+        return lambda x: x
+
+    # Get inputs of the function that returned output
+    func_inputs = output.func_inputs
+    out_func = output._func
+
+    # Case #3
+    # Reached end of graph. input & output are not connected
+    if not func_inputs:
+        return None
+
+    # Case #4
+    # Search for the input deeper in the graph
+    in_funcs = []
+    in_idxs = []
+    all_indices = ivy.all_nested_indices(func_inputs)
+    for idx in all_indices:
+        func_input = ivy.index_nest(func_inputs, idx)
+        f = _get_wrapped_fn(func_input, input)
+        if f is not None:
+            in_funcs += [f]
+            in_idxs += [idx]
+
+    if len(in_funcs) == 0:
+        return None
+
+    def wrapped_fn(x):
+        func_inputs_mutable = ivy.copy_nest(func_inputs, to_mutable=True)
+
+        for idx, in_func in zip(in_idxs, in_funcs):
+            y = in_func(x)
+            ivy.set_nest_at_index(func_inputs_mutable, idx, y)
+        return _get_output(
+            out_func(*func_inputs_mutable[0], **func_inputs_mutable[1]), output.out_idx
+        )
+
+    return wrapped_fn
+
+
+def to_frontend_array_and_back(fn):
+    def _to_frontend_array_and_back(x):
+        x_torch = torch_frontend.Tensor(x, _init_overload=True, requires_grad=True)
+        ret = fn(x_torch)
+        return ret.ivy_array
+
+    return _to_frontend_array_and_back
+
+
 def _grad_out_multiply(grad_out, jacobian_wrt_input):
     """
     return grad_out * jacobian_wrt_input after manipulating the shapes
@@ -44,53 +109,21 @@ def _grad_out_multiply(grad_out, jacobian_wrt_input):
     return new_grad_out
 
 
-def _get_grad(output, input, grad_output):
-    """Compute gradient of output w.r.t input."""
-
-    # Case #1
-    if output is input:
-        return grad_output
-
-    # Get inputs of the function that returned output
-    func_inputs = output.func_inputs
-
-    # Case #2
-    # Reached end of graph. input & output are not connected
-    if not func_inputs:
-        return None
-
-    # Case #3
-    # Search for the input deeper in the graph
-    grads = None
-
-    # Jac function returns jacobians of all outputs of the function
-    # We are only intersted in one of them
-    if output.out_idx is None:
-        jacs = handle_gradients(output.jac_fn)(func_inputs)
-    else:
-        jacs = ivy.index_nest(
-            handle_gradients(output.jac_fn)(func_inputs), output.out_idx
-        )
-
-    all_indices = ivy.all_nested_indices(func_inputs)
-    for idx in all_indices:
-        func_input = ivy.index_nest(func_inputs, idx)
-        jac_wrt_input = ivy.index_nest(jacs, idx)
-
-        new_grad_out = _grad_out_multiply(grad_output, jac_wrt_input)
-        grad = _get_grad(func_input, input, new_grad_out)
-        grads = _add_grad(grads, grad)
-
-    return grads
+def _get_grad(wrapped_fn, input, grad_output):
+    jac_fn = to_ivy_arrays_and_back(ivy.jac(to_frontend_array_and_back(wrapped_fn)))
+    jacs = jac_fn(input)
+    return _grad_out_multiply(grad_output, jacs)
 
 
-def _batched_get_grad(output, input, grad_output, batched):
+def _batched_get_grad(wrapped_fn, input, grad_output, batched):
     if batched:
-        return torch_frontend.stack([_get_grad(output, input, g) for g in grad_output])
-    return _get_grad(output, input, grad_output)
+        return torch_frontend.stack(
+            [_get_grad(wrapped_fn, input, g) for g in grad_output]
+        )
+    return _get_grad(wrapped_fn, input, grad_output)
 
 
-# @handle_gradients
+@handle_gradients
 def grad(
     outputs,
     inputs,
@@ -118,7 +151,10 @@ def grad(
             if not output.requires_grad:
                 raise RuntimeError("One of the output tensors does not require grad")
 
-            g = _batched_get_grad(output, input, grad_output, is_grads_batched)
+            wrapped_fn = _get_wrapped_fn(output, input)
+            g = None
+            if wrapped_fn is not None:
+                g = _batched_get_grad(wrapped_fn, input, grad_output, is_grads_batched)
             grad_wrt_input = _add_grad(grad_wrt_input, g)
 
         if not allow_unused and grad_wrt_input is None:

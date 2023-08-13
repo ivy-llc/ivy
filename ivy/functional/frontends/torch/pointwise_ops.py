@@ -373,6 +373,7 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
 
 
+@handle_gradients
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)

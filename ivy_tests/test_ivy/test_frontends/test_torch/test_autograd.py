@@ -230,7 +230,7 @@ def test_torch_grad(grad_args, backend_fw):
 
     grads_ivy2 = torch_frontend.autograd.grad(y_ivy2, (x_ivy1, x_ivy2))
     grads_torch2 = torch.autograd.grad(y_torch2, (x_torch1, x_torch2))
-
+    print(grads_ivy2)
     with update_backend("torch") as ivy_torch:
         for g_ivy, g_torch in zip(grads_ivy2, grads_torch2):
             grads_flat_np = helpers.flatten_frontend_to_np(
