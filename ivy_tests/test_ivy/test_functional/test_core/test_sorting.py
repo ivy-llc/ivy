@@ -24,19 +24,10 @@ from ivy_tests.test_ivy.helpers import handle_test
     test_gradients=st.just(False),
 )
 def test_argsort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -64,19 +55,10 @@ def test_argsort(
     test_gradients=st.just(False),
 )
 def test_sort(
-    *,
-    dtype_x_axis,
-    descending,
-    stable,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, descending, stable, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -103,17 +85,9 @@ def test_sort(
     ),
     test_gradients=st.just(False),
 )
-def test_msort(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_msort(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -185,8 +159,7 @@ def test_searchsorted(
     test_flags,
     backend_fw,
     fn_name,
-    on_device,
-    ground_truth_backend,
+    on_device
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
@@ -197,7 +170,6 @@ def test_searchsorted(
         sorter = None
         xs[0] = np.sort(xs[0])
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,

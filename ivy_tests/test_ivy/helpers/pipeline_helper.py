@@ -1,5 +1,6 @@
 # TODO rename file
 import ivy
+import importlib
 from typing import Callable
 
 
@@ -16,3 +17,9 @@ class WithBackendContext:
 
 update_backend: Callable = ivy.utils.backend.ContextManager
 # update_backend: Callable = WithBackendContext
+
+
+def get_frontend_config(frontend: str):
+    return importlib.import_module(
+        f"ivy_tests.test_ivy.test_frontends.config.{frontend}"
+    )

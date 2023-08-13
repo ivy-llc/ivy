@@ -53,7 +53,7 @@ def tril_indices_from(arr, k=0):
 # unravel_index
 @to_ivy_arrays_and_back
 def unravel_index(indices, shape):
-    ret = [x.astype("int64") for x in ivy.unravel_index(indices, shape)]
+    ret = [x.astype(indices.dtype) for x in ivy.unravel_index(indices, shape)]
     return tuple(ret)
 
 

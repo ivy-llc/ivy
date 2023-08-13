@@ -185,11 +185,10 @@ def test_sparse_coo(
     class_name,
     method_name,
     backend_fw,
-    ground_truth_backend,
     init_flags,
     method_flags,
     on_device,
-    backend_fw,
+    ground_truth_backend,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(

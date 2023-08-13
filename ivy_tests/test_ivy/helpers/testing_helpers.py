@@ -8,11 +8,11 @@ from typing import List
 from hypothesis import given, strategies as st
 
 # local
-import ivy
 import ivy.functional.frontends.numpy as np_frontend
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from . import test_globals as t_globals
 from .pipeline_helper import update_backend
 from ivy_tests.test_ivy.helpers.test_parameter_flags import (
     BuiltInstanceStrategy,
@@ -111,11 +111,13 @@ def num_positional_args(draw, *, fn_name: str = None):
     num_keyword_only = 0
     total = 0
     fn = None
-    for i, fn_name_key in enumerate(fn_name.split(".")):
-        if i == 0:
-            fn = ivy.__dict__[fn_name_key]
-        else:
-            fn = fn.__dict__[fn_name_key]
+    with update_backend(t_globals.CURRENT_BACKEND) as ivy_backend:
+        ivy_backend.utils.dynamic_import.import_module(fn_name.rpartition(".")[0])
+        for i, fn_name_key in enumerate(fn_name.split(".")):
+            if i == 0:
+                fn = ivy_backend.__dict__[fn_name_key]
+            else:
+                fn = fn.__dict__[fn_name_key]
     for param in inspect.signature(fn).parameters.values():
         if param.name == "self":
             continue
@@ -284,7 +286,7 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     return supported_device_dtypes
 
 
-def _partition_dtypes_into_kinds(framework, dtypes):
+def _partition_dtypes_into_kinds(framework: str, dtypes):
     partitioned_dtypes = {}
     for kind in _dtype_kind_keys:
         partitioned_dtypes[kind] = set(_get_type_dict(framework, kind)).intersection(
@@ -359,13 +361,14 @@ def handle_test(
         fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
-    possible_arguments = {"ground_truth_backend": st.just(ground_truth_backend)}
+    possible_arguments = {}
     if is_hypothesis_test and is_fn_tree_provided:
         # Use the default strategy
         if number_positional_args is None:
             number_positional_args = num_positional_args(fn_name=fn_tree)
         # Generate the test flags strategy
         possible_arguments["test_flags"] = pf.function_flags(
+            ground_truth_backend=st.just(ground_truth_backend),
             num_positional_args=number_positional_args,
             instance_method=test_instance_method,
             with_out=test_with_out,
@@ -402,6 +405,8 @@ def handle_test(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -414,8 +419,8 @@ def handle_test(
                 fn_name=fn_name,
                 supported_device_dtypes=supported_device_dtypes,
             )
-        wrapped_test.ground_truth_backend = ground_truth_backend
         wrapped_test._ivy_test = True
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
@@ -520,6 +525,8 @@ def handle_frontend_test(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -549,6 +556,7 @@ def _import_method(method_tree: str):
 
 def handle_method(
     *,
+    init_tree: str = "",
     method_tree: str = None,
     ground_truth_backend: str = "tensorflow",
     test_gradients=BuiltGradientStrategy,
@@ -591,9 +599,7 @@ def handle_method(
         )
 
         if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(
-                fn_name=class_name + ".__init__"
-            )
+            init_num_positional_args = num_positional_args(fn_name=init_tree)
 
         possible_arguments["init_flags"] = pf.init_method_flags(
             num_positional_args=init_num_positional_args,
@@ -640,6 +646,8 @@ def handle_method(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn
@@ -708,7 +716,7 @@ def handle_frontend_method(
     if is_hypothesis_test:
         callable_method = getattr(method_class, method_name)
         if init_num_positional_args is None:
-            init_num_positional_args = num_positional_args(fn_name=init_tree[4:])
+            init_num_positional_args = num_positional_args(fn_name=init_tree)
 
         if method_num_positional_args is None:
             method_num_positional_args = num_positional_args_method(
@@ -733,14 +741,8 @@ def handle_frontend_method(
                 as_variable=method_as_variable_flags,
                 native_arrays=method_native_arrays,
             )
-            try:
-                ivy_init_modules = importlib.import_module(ivy_init_module)
-            except Exception:
-                ivy_init_modules = str(ivy_init_module)
-            try:
-                framework_init_modules = importlib.import_module(framework_init_module)
-            except Exception:
-                framework_init_modules = str(framework_init_module)
+            ivy_init_modules = str(ivy_init_module)
+            framework_init_modules = str(framework_init_module)
             frontend_helper_data = FrontendMethodData(
                 ivy_init_module=ivy_init_modules,
                 framework_init_module=framework_init_modules,
@@ -770,6 +772,8 @@ def handle_frontend_method(
                     # exception object in with_backend is different from global Ivy
                     if e.__class__.__qualname__ == "IvyNotImplementedException":
                         pytest.skip("Function not implemented in backend.")
+                    else:
+                        raise e
 
         else:
             wrapped_test = test_fn

@@ -41,7 +41,7 @@ def test_layer_norm_layer(
         method_flags=method_flags,
         init_all_as_kwargs_np={
             "normalized_shape": x[0].shape,
-            "eps": ivy._MIN_BASE,
+            "eps": ivy.min_base,
             "elementwise_affine": True,
             "new_std": new_std,
             "device": on_device,
@@ -106,7 +106,7 @@ def test_batch_norm_2d_layer(
         method_flags=method_flags,
         init_all_as_kwargs_np={
             "num_features": features,
-            "eps": ivy._MIN_BASE,
+            "eps": ivy.min_base,
             "affine": True,
             "momentum": momentum,
             "track_running_stats": True,

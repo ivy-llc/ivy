@@ -90,14 +90,18 @@ def test_set_backend(backend, array_type):
     ivy.set_backend(backend)
     stack_after = ivy.backend_stack
     # check that the function id has changed as inverse=True.
-    ivy.utils.assertions.check_equal(func_address_before, id(ivy.sum), inverse=True)
+    ivy.utils.assertions.check_equal(
+        func_address_before, id(ivy.sum), inverse=True, as_array=False
+    )
     # using ivy assertions to ensure the desired backend is set
-    ivy.utils.assertions.check_less(len(stack_before), len(stack_after))
-    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
+    ivy.utils.assertions.check_less(len(stack_before), len(stack_after), as_array=False)
+    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend, as_array=False)
     backend = importlib.import_module(_backend_dict[backend])
-    ivy.utils.assertions.check_equal(stack_after[-1], backend)
+    ivy.utils.assertions.check_equal(stack_after[-1], backend, as_array=False)
     x = ivy.array([1, 2, 3])
-    ivy.utils.assertions.check_equal(str(type(ivy.to_native(x))), array_type)
+    ivy.utils.assertions.check_equal(
+        str(type(ivy.to_native(x))), array_type, as_array=False
+    )
 
 
 @pytest.mark.parametrize("backend", _available_frameworks())
@@ -114,18 +118,22 @@ def test_previous_backend(backend):
     stack_after_unset = ivy.backend_stack
     # check that the function id has changed as inverse=True.
     ivy.utils.assertions.check_equal(
-        func_address_before_unset, id(ivy.sum), inverse=True
+        func_address_before_unset, id(ivy.sum), inverse=True, as_array=False
     )
     ivy.utils.assertions.check_equal(
-        previous_backend, importlib.import_module(_backend_dict[backend])
+        previous_backend,
+        importlib.import_module(_backend_dict[backend]),
+        as_array=False,
     )
-    ivy.utils.assertions.check_greater(len(stack_before_unset), len(stack_after_unset))
+    ivy.utils.assertions.check_greater(
+        len(stack_before_unset), len(stack_after_unset), as_array=False
+    )
 
     # checking a previously set backend is still set
     ivy.set_backend(backend)
     ivy.set_backend("numpy")
     ivy.previous_backend()
-    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend)
+    ivy.utils.assertions.check_equal(ivy.current_backend_str(), backend, as_array=False)
 
 
 def test_unset_backend():
@@ -133,7 +141,7 @@ def test_unset_backend():
         ivy.set_backend(backend_str)
 
     ivy.unset_backend()
-    ivy.utils.assertions.check_equal(ivy.backend_stack, [])
+    ivy.utils.assertions.check_equal(ivy.backend_stack, [], as_array=False)
 
 
 @pytest.mark.parametrize(
@@ -153,12 +161,14 @@ def test_current_backend(backend, array_type):
         ivy.utils.assertions.check_equal(
             ivy.current_backend(array_type),
             importlib.import_module(_backend_dict["torch"]),
+            as_array=False,
         )
     else:
         ivy.set_backend("numpy")
         ivy.utils.assertions.check_equal(
             ivy.current_backend(array_type),
             importlib.import_module(_backend_dict["numpy"]),
+            as_array=False,
         )
 
 

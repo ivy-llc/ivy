@@ -40,7 +40,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
@@ -65,13 +65,13 @@ c. Comment on the ToDo list issue with a reference to this issue like so:
    Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
    No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above. 
 
-d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:
+d. Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following content to the description of the PR:
 
    :code:`Close #Issue_number`
 
-   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the 
-   first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
-   Also remember to make the PR name well described and if there are some details that can support your changes add them to the first comment of the PR.
+   This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is in the 
+   description of the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂
+   Also remember to make the PR name well described and if there are some details that can support your changes add them to the description of the PR.
 
 e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
@@ -106,24 +106,13 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
 |
 
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
-
-Ivy Experimental API
---------------------
-
-We primarily invite contributors to work on the tasks listed as :ref:`Open Tasks`, as these are on our current roadmap. As a result of this, we prompt everyone interested in contributing to our Experimental API to do so under the `Ivy Experimental API Open Task`_.
-
-However, if you would like to extend Ivy's functionality with a new function, you are invited to open an issue using the *Missing Function Suggestion* template as described in `Creating an Issue on Ivy’s GitHub using a Template <https://unify.ai/docs/ivy/overview/contributing/open_tasks.html#creating-an-issue-on-ivy-s-github-using-a-template>`_.
-
-In this template form, you'll be asked to fill in the reason you think we should implement the suggested function, as well as the links to any native implementations of the suggested function.
-
-We will review your issue as soon as possible and let you know if it's been accepted or not. In case we deem that the suggested function fits our roadmap, we will add it as a subtask to the `Ivy Experimental API Open Task`_.
 
 Managing Your Fork
 ------------------
@@ -158,7 +147,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
@@ -253,7 +242,7 @@ The code review process is explained in more detail in the following video.
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 

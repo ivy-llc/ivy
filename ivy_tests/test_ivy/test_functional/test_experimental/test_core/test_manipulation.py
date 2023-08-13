@@ -65,19 +65,10 @@ from ivy_tests.test_ivy.test_functional.test_core.test_manipulation import _get_
     test_gradients=st.just(False),
 )
 def test_moveaxis(
-    *,
-    dtype_and_a,
-    source,
-    destination,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_and_a, source, destination, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, a = dtype_and_a
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -105,18 +96,9 @@ def test_moveaxis(
     ),
     test_gradients=st.just(False),
 )
-def test_heaviside(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_heaviside(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -141,18 +123,9 @@ def test_heaviside(
     ),
     test_gradients=st.just(False),
 )
-def test_flipud(
-    *,
-    dtype_and_m,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_flipud(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -175,18 +148,9 @@ def test_flipud(
     ),
     test_gradients=st.just(False),
 )
-def test_vstack(
-    *,
-    dtype_and_m,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_vstack(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -209,17 +173,9 @@ def test_vstack(
     ),
     test_gradients=st.just(False),
 )
-def test_hstack(
-    dtype_and_m,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_hstack(dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -291,17 +247,9 @@ def _get_dtype_values_k_axes_for_rot90(
     ),
     test_gradients=st.just(False),
 )
-def test_rot90(
-    dtype_m_k_axes,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_rot90(dtype_m_k_axes, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -328,20 +276,10 @@ def test_rot90(
     test_gradients=st.just(False),
 )
 def test_top_k(
-    *,
-    dtype_x_axis,
-    k,
-    largest,
-    sorted,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, k, largest, sorted, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -364,18 +302,9 @@ def test_top_k(
     ),
     test_gradients=st.just(False),
 )
-def test_fliplr(
-    *,
-    dtype_and_m,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_fliplr(*, dtype_and_m, test_flags, backend_fw, fn_name, on_device):
     input_dtype, m = dtype_and_m
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -399,18 +328,9 @@ def test_fliplr(
     ),
     test_gradients=st.just(False),
 )
-def test_i0(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_i0(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -420,38 +340,48 @@ def test_i0(
     )
 
 
-# flatten
+@st.composite
+def _flatten_data_helper(draw):
+    mixed_fn_compos = draw(st.booleans())
+    is_torch_backend = ivy.current_backend_str() == "torch"
+
+    dtype_and_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(
+                "valid", mixed_fn_compos=mixed_fn_compos
+            ),
+            shape=st.shared(helpers.get_shape(), key="flatten_shape"),
+        )
+    )
+    axes = draw(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(), key="flatten_shape"),
+            min_size=2,
+            max_size=2,
+            unique=False,
+            force_tuple=True,
+        )
+    )
+    order = draw(st.sampled_from(["C", "F"]))
+    if not mixed_fn_compos and is_torch_backend:
+        order = "C"
+    return dtype_and_x, axes, order
+
+
 @handle_test(
     fn_tree="functional.ivy.experimental.flatten",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
-    ),
-    axes=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
-        min_size=2,
-        max_size=2,
-        unique=False,
-        force_tuple=True,
-    ),
-    order=st.sampled_from(["C", "F"]),
-    test_gradients=st.just(False),
-    number_positional_args=st.just(1),
+    data=_flatten_data_helper(),
 )
 def test_flatten(
     *,
-    dtype_and_x,
-    axes,
-    order,
+    data,
     test_flags,
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
-    input_dtypes, x = dtype_and_x
+    (input_dtypes, x), axes, order = data
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -564,7 +494,6 @@ def test_pad(
     backend_fw,
     fn_name,
     on_device,
-    ground_truth_backend,
 ):
     (
         dtype,
@@ -576,7 +505,6 @@ def test_pad(
         mode,
     ) = dtype_and_input_and_other
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -604,17 +532,10 @@ def test_pad(
     test_with_out=st.just(False),
 )
 def test_vsplit(
-    dtype_and_x,
-    indices_or_sections,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         on_device=on_device,
         test_flags=test_flags,
@@ -637,17 +558,10 @@ def test_vsplit(
     test_with_out=st.just(False),
 )
 def test_dsplit(
-    dtype_and_x,
-    indices_or_sections,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -668,21 +582,13 @@ def test_dsplit(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_atleast_1d(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_atleast_1d(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -705,18 +611,9 @@ def test_atleast_1d(
     ),
     test_gradients=st.just(False),
 )
-def test_dstack(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_dstack(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -736,22 +633,13 @@ def test_dstack(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_atleast_2d(
-    *,
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_atleast_2d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     test_flags.num_positional_args = len(kw)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -766,31 +654,24 @@ def test_atleast_2d(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
+        shared_dtype=True,
     ),
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_atleast_3d(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_atleast_3d(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     input_dtypes, arrays = dtype_and_x
-    kw = {}
+    arrys = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
-        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
-    test_flags.num_positional_args = len(kw)
+        arrys["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    test_flags.num_positional_args = len(arrys)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        **kw,
+        **arrys,
     )
 
 
@@ -808,6 +689,7 @@ def test_atleast_3d(
         valid_bounds=False,
     ),
     mode=st.sampled_from(["clip", "fill", "drop"]),
+    ground_truth_backend="jax",
     test_gradients=st.just(False),
 )
 def test_take_along_axis(
@@ -821,7 +703,6 @@ def test_take_along_axis(
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_function(
-        ground_truth_backend="jax",
         input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -835,6 +716,8 @@ def test_take_along_axis(
 
 
 # hsplit
+# TODO: there is a failure with paddle (dtype('int32')) caused by the `_get_splits`
+#  method which returns a numpy array with a numpy dtype
 @handle_test(
     fn_tree="functional.ivy.experimental.hsplit",
     dtype_and_x=helpers.dtype_and_values(
@@ -846,17 +729,16 @@ def test_take_along_axis(
     test_with_out=st.just(False),
 )
 def test_hsplit(
-    dtype_and_x,
-    indices_or_sections,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    dtype_and_x, indices_or_sections, test_flags, backend_fw, fn_name, on_device
 ):
     input_dtype, x = dtype_and_x
+    if (
+        not isinstance(indices_or_sections, int)
+        and not isinstance(indices_or_sections, list)
+        and indices_or_sections is not None
+    ):
+        input_dtype = [*input_dtype, indices_or_sections.dtype]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -877,20 +759,11 @@ def test_hsplit(
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_broadcast_shapes(
-    *,
-    shapes,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_broadcast_shapes(*, shapes, test_flags, backend_fw, fn_name, on_device):
     shape, _ = shapes
     shapes = {f"shape{i}": shape[i] for i in range(len(shape))}
     test_flags.num_positional_args = len(shapes)
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=["int64"],
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -929,19 +802,9 @@ def test_broadcast_shapes(
     test_instance_method=st.just(False),
     test_gradients=st.just(False),
 )
-def test_expand(
-    *,
-    dtype_and_x,
-    shape,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_expand(*, dtype_and_x, shape, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -977,18 +840,9 @@ def _as_strided_helper(draw):
     test_gradients=st.just(False),
     ground_truth_backend="numpy",
 )
-def test_as_strided(
-    *,
-    all_args,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_as_strided(*, all_args, test_flags, backend_fw, fn_name, on_device):
     dtype, x, shape, strides = all_args
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -1030,19 +884,11 @@ def _concat_from_sequence_helper(draw):
     test_instance_method=st.just(False),
 )
 def test_concat_from_sequence(
-    *,
-    dtypes_arrays_axis,
-    new_axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtypes_arrays_axis, new_axis, test_flags, backend_fw, fn_name, on_device
 ):
     dtypes, arrays, axis = dtypes_arrays_axis
 
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -1097,15 +943,7 @@ def _associative_scan_helper(draw):
     ground_truth_backend="jax",
 )
 def test_associative_scan(
-    *,
-    dtype_elems_axis,
-    fn,
-    reverse,
-    fn_name,
-    test_flags,
-    backend_fw,
-    on_device,
-    ground_truth_backend,
+    *, dtype_elems_axis, fn, reverse, fn_name, test_flags, backend_fw, on_device
 ):
     dtype, elems, axis = dtype_elems_axis
     helpers.test_function(
@@ -1113,7 +951,6 @@ def test_associative_scan(
         test_flags=test_flags,
         backend_to_test=backend_fw,
         on_device=on_device,
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         elems=elems,
         fn=fn,
@@ -1138,20 +975,12 @@ def test_associative_scan(
     ground_truth_backend="torch",
 )
 def test_unique_consecutive(
-    *,
-    dtype_x_axis,
-    none_axis,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
+    *, dtype_x_axis, none_axis, test_flags, backend_fw, fn_name, on_device
 ):
     dtype, x, axis = dtype_x_axis
     if none_axis:
         axis = None
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -1159,4 +988,41 @@ def test_unique_consecutive(
         fn_name=fn_name,
         x=x[0],
         axis=axis,
+    )
+
+
+# fill_diag
+@handle_test(
+    fn_tree="fill_diagonal",
+    dt_a=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=4,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    v=st.sampled_from([1, 2, 3, 10]),
+    wrap=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_fill_diagonal(
+    *,
+    dt_a,
+    v,
+    wrap,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dt, a = dt_a
+    helpers.test_function(
+        input_dtypes=dt,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        fn_name=fn_name,
+        a=a[0],
+        v=v,
+        wrap=wrap,
     )

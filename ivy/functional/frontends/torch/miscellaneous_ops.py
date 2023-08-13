@@ -21,6 +21,7 @@ def fliplr(input):
         2,
         allow_equal=True,
         message="requires tensor to be at least 2D",
+        as_array=False,
     )
     return ivy.fliplr(input)
 
@@ -32,6 +33,7 @@ def flipud(input):
         1,
         allow_equal=True,
         message="requires tensor to be at least 1D",
+        as_array=False,
     )
     return ivy.flipud(input)
 
@@ -43,6 +45,10 @@ def roll(input, shifts, dims=None):
 
 @to_ivy_arrays_and_back
 def meshgrid(*tensors, indexing=None):
+    if indexing is None:
+        indexing = "ij"
+    if len(tensors) == 1 and isinstance(tensors[0], (list, tuple)):
+        tensors = tensors[0]
     return tuple(ivy.meshgrid(*tensors, indexing=indexing))
 
 
@@ -66,9 +72,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-@with_unsupported_dtypes(
-    {"2.0.1 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
-)
+@with_unsupported_dtypes({"2.0.1 and below": ("int8", "uint8", "int16")}, "torch")
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
@@ -87,6 +91,7 @@ def cumprod(input, dim, *, dtype=None, out=None):
     return ivy.cumprod(input, axis=dim, dtype=dtype, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def diagonal(input, offset=0, dim1=0, dim2=1):
     return ivy.diagonal(input, offset=offset, axis1=dim1, axis2=dim2)
@@ -111,11 +116,15 @@ def triu_indices(row, col, offset=0, dtype="int64", device="cpu", layout=None):
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
 
+@with_supported_dtypes(
+    {"2.5.0 and below": ("float64", "float32", "int32", "int64")}, "paddle"
+)
 @to_ivy_arrays_and_back
 def triu(input, diagonal=0, *, out=None):
     return ivy.triu(input, k=diagonal, out=out)
 
 
+@with_supported_dtypes({"2.5.0 and below": ("int8", "int16", "bfloat16")}, "paddle")
 @to_ivy_arrays_and_back
 def tril(input, diagonal=0, *, out=None):
     return ivy.tril(input, k=diagonal, out=out)
@@ -126,7 +135,7 @@ def flatten(input, start_dim=0, end_dim=-1):
     return ivy.flatten(input, start_dim=start_dim, end_dim=end_dim)
 
 
-@with_supported_dtypes({"2.0.1 and below": ("float",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
@@ -220,6 +229,7 @@ def rot90(input, k, dims):
         2,
         allow_equal=True,
         message="expected total dims >= 2, but got total dims = " + str(total_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -227,6 +237,7 @@ def rot90(input, k, dims):
         2,
         message="expected total rotation dims == 2, but got dims = "
         + str(total_rot_dims),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -237,6 +248,7 @@ def rot90(input, k, dims):
         + str(dims[0])
         + " and dim1 = "
         + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_equal(
@@ -254,6 +266,7 @@ def rot90(input, k, dims):
         dims[0],
         total_dims,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -261,12 +274,14 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim0 out of range, dim0 = " + str(dims[0]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_less(
         dims[1],
         total_dims,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     ivy.utils.assertions.check_greater(
@@ -274,6 +289,7 @@ def rot90(input, k, dims):
         -total_dims,
         allow_equal=True,
         message="Rotation dim1 out of range, dim1 = " + str(dims[1]),
+        as_array=False,
     )
 
     k = (4 + (k % 4)) % 4
@@ -293,10 +309,10 @@ def rot90(input, k, dims):
 
 @to_ivy_arrays_and_back
 def vander(x, N=None, increasing=False):
-    if N == 0:
-        return ivy.array([], dtype=x.dtype)
-    else:
-        return ivy.vander(x, N=N, increasing=increasing, out=None)
+    # if N == 0:
+    #     return ivy.array([], dtype=x.dtype)
+    # else:
+    return ivy.vander(x, N=N, increasing=increasing, out=None)
 
 
 @to_ivy_arrays_and_back
@@ -308,6 +324,8 @@ def lcm(input, other, *, out=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
 def einsum(equation, *operands):
+    if len(operands) == 1 and isinstance(operands[0], (list, tuple)):
+        operands = operands[0]
     return ivy.einsum(equation, *operands)
 
 
@@ -325,6 +343,7 @@ def gcd(input, other, *, out=None):
     return ivy.gcd(input, other, out=out)
 
 
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def tensordot(a, b, dims=2, out=None):
     a, b = promote_types_of_torch_inputs(a, b)
@@ -387,3 +406,33 @@ def diag(input, diagonal=0, *, out=None):
 @to_ivy_arrays_and_back
 def clone(input):
     return ivy.copy_array(input)
+
+
+@to_ivy_arrays_and_back
+def cov(input, /, *, correction=1, fweights=None, aweights=None):
+    return ivy.cov(input, ddof=correction, fweights=fweights, aweights=aweights)
+
+
+@with_supported_dtypes(
+    {"2.0.1 and below": ("complex64", "complex128")},
+    "torch",
+)
+@to_ivy_arrays_and_back
+def view_as_real(input):
+    if not ivy.is_complex_dtype(input):
+        raise ivy.exceptions.IvyError(
+            "view_as_real is only supported for complex tensors"
+        )
+    re_part = ivy.real(input)
+    im_part = ivy.imag(input)
+    return ivy.stack((re_part, im_part), axis=-1)
+
+
+@to_ivy_arrays_and_back
+def corrcoef(input):
+    if len(ivy.shape(input)) > 2:
+        raise ivy.exceptions.IvyError(
+            "corrcoef(): expected input to have two or fewer dimensions but got an"
+            f" input with {ivy.shape(input)} dimansions"
+        )
+    return ivy.corrcoef(input, y=None, rowvar=True)

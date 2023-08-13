@@ -7,7 +7,7 @@ from typing import Optional
 
 # local
 import ivy
-from ..pipeline_helper import WithBackendContext, update_backend
+from ..pipeline_helper import update_backend, get_frontend_config
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
@@ -28,61 +28,77 @@ _dtype_kind_keys = {
 }
 
 
-def _get_fn_dtypes(framework: str, kind: str = "valid"):
-    return test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[framework][
-        test_globals.CURRENT_DEVICE_STRIPPED
-    ][kind]
+def _get_fn_dtypes(framework: str, kind="valid", mixed_fn_dtypes="compositional"):
+    all_devices_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
+        framework
+    ]
+    if mixed_fn_dtypes in all_devices_dtypes:
+        all_devices_dtypes = all_devices_dtypes[mixed_fn_dtypes]
+    return all_devices_dtypes[test_globals.CURRENT_DEVICE_STRIPPED][kind]
 
 
-def _get_type_dict(framework: str, kind: str):
-    with WithBackendContext(framework) as ivy_backend:
-        if kind == "valid":
-            return ivy_backend.valid_dtypes
-        if kind == "numeric":
-            return ivy_backend.valid_numeric_dtypes
-        if kind == "integer":
-            return ivy_backend.valid_int_dtypes
-        if kind == "float":
-            return ivy_backend.valid_float_dtypes
-        if kind == "unsigned":
-            return ivy_backend.valid_uint_dtypes
-        if kind == "signed_integer":
-            return tuple(
-                set(ivy_backend.valid_int_dtypes).difference(
-                    ivy_backend.valid_uint_dtypes
-                )
-            )
-        if kind == "complex":
-            return ivy_backend.valid_complex_dtypes
-        if kind == "real_and_complex":
-            return tuple(
-                set(ivy_backend.valid_numeric_dtypes).union(
-                    ivy_backend.valid_complex_dtypes
-                )
-            )
-        if kind == "float_and_complex":
-            return tuple(
-                set(ivy_backend.valid_float_dtypes).union(
-                    ivy_backend.valid_complex_dtypes
-                )
-            )
-        if kind == "float_and_integer":
-            return tuple(
-                set(ivy_backend.valid_float_dtypes).union(ivy_backend.valid_int_dtypes)
-            )
-        if kind == "bool":
-            return tuple(
-                set(ivy_backend.valid_dtypes).difference(
-                    ivy_backend.valid_numeric_dtypes
-                )
-            )
+def _get_type_dict(framework: str, kind: str, is_frontend_test=False):
+    if is_frontend_test:
+        framework_module = get_frontend_config(framework)
+    else:
+        framework_module = ivy.with_backend(framework, cached=True)
 
-        raise RuntimeError("{} is an unknown kind!".format(kind))
+    if kind == "valid":
+        return framework_module.valid_dtypes
+    if kind == "numeric":
+        return framework_module.valid_numeric_dtypes
+    if kind == "integer":
+        return framework_module.valid_int_dtypes
+    if kind == "float":
+        return framework_module.valid_float_dtypes
+    if kind == "unsigned":
+        return framework_module.valid_uint_dtypes
+    if kind == "signed_integer":
+        return tuple(
+            set(framework_module.valid_int_dtypes).difference(
+                framework_module.valid_uint_dtypes
+            )
+        )
+    if kind == "complex":
+        return framework_module.valid_complex_dtypes
+    if kind == "real_and_complex":
+        return tuple(
+            set(framework_module.valid_numeric_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_complex":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_complex_dtypes
+            )
+        )
+    if kind == "float_and_integer":
+        return tuple(
+            set(framework_module.valid_float_dtypes).union(
+                framework_module.valid_int_dtypes
+            )
+        )
+    if kind == "bool":
+        return tuple(
+            set(framework_module.valid_dtypes).difference(
+                framework_module.valid_numeric_dtypes
+            )
+        )
+
+    raise RuntimeError("{} is an unknown kind!".format(kind))
 
 
 @st.composite
 def get_dtypes(
-    draw, kind="valid", index=0, full=True, none=False, key=None, prune_function=True
+    draw,
+    kind="valid",
+    index=0,
+    mixed_fn_compos=True,
+    full=True,
+    none=False,
+    key=None,
+    prune_function=True,
 ):
     """
     Draws a valid dtypes for the test function. For frontend tests, it draws the data
@@ -99,6 +115,10 @@ def get_dtypes(
         real_and_complex, float_and_complex, bool, and unsigned
     index
         list indexing incase a test needs to be skipped for a particular dtype(s)
+    mixed_fn_compos
+        boolean if True, the function will return the dtypes of the compositional
+        implementation for mixed partial functions and if False, it will return
+        the dtypes of the primary implementation.
     full
         returns the complete list of valid types
     none
@@ -167,10 +187,17 @@ def get_dtypes(
     >>> get_dtypes("valid", prune_function=False)
     ['float16']
     """
+    mixed_fn_dtypes = "compositional" if mixed_fn_compos else "primary"
     if prune_function:
         retrieval_fn = _get_fn_dtypes
         if test_globals.CURRENT_RUNNING_TEST is not test_globals._Notsetval:
-            valid_dtypes = set(retrieval_fn(test_globals.CURRENT_BACKEND, kind))
+            valid_dtypes = set(
+                retrieval_fn(
+                    test_globals.CURRENT_BACKEND,
+                    mixed_fn_dtypes=mixed_fn_dtypes,
+                    kind=kind,
+                )
+            )
         else:
             raise RuntimeError(
                 "No function is set to prune, calling "
@@ -189,10 +216,8 @@ def get_dtypes(
 
     # If being called from a frontend test
 
-    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval or isinstance(
-        test_globals.CURRENT_FRONTEND_STR, list
-    ):
-        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind)
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        frontend_dtypes = retrieval_fn(test_globals.CURRENT_FRONTEND, kind, True)
         valid_dtypes = valid_dtypes.intersection(frontend_dtypes)
 
     # Make sure we return dtypes that are compatible with ground truth backend
@@ -201,7 +226,7 @@ def get_dtypes(
     )
     if ground_truth_is_set:
         valid_dtypes = valid_dtypes.intersection(
-            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind)
+            retrieval_fn(test_globals.CURRENT_GROUND_TRUTH_BACKEND, kind=kind)
         )
 
     valid_dtypes = list(valid_dtypes)
@@ -354,26 +379,35 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
         def cast_filter(d):
             if ivy_backend.is_int_dtype(d):
                 max_val = ivy_backend.iinfo(d).max
+                min_val = ivy_backend.iinfo(d).min
             elif ivy_backend.is_float_dtype(d) or ivy_backend.is_complex_dtype(d):
                 max_val = ivy_backend.finfo(d).max
+                min_val = ivy_backend.finfo(d).min
             else:
                 max_val = 1
+                min_val = -1
             if x is None:
                 if ivy_backend.is_int_dtype(dtype):
                     max_x = ivy_backend.iinfo(dtype).max
+                    min_x = ivy_backend.iinfo(dtype).min
                 elif ivy_backend.is_float_dtype(dtype) or ivy_backend.is_complex_dtype(
                     dtype
                 ):
                     max_x = ivy_backend.finfo(dtype).max
+                    min_x = ivy_backend.finfo(dtype).min
                 else:
                     max_x = 1
+                    min_x = -1
             else:
-                max_x = np.max(np.abs(np.asarray(x)))
-            return max_x <= max_val and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+                max_x = np.max(np.asarray(x))
+                min_x = np.min(np.asarray(x))
+            return (
+                max_x <= max_val
+                and min_x >= min_val
+                and bound_dtype_bits(d) >= bound_dtype_bits(dtype)
+            )
 
         cast_dtype = draw(st.sampled_from(available_dtypes).filter(cast_filter))
         if x is None:
             return dtype, cast_dtype
-        if "uint" in cast_dtype:
-            x = np.abs(np.asarray(x))
         return dtype, x, cast_dtype

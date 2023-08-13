@@ -17,6 +17,7 @@ def pixel_shuffle(input, upscale_factor):
         4,
         message="pixel_shuffle expects 4D input, but got input with sizes "
         + str(input_shape),
+        as_array=False,
     )
     b = input_shape[0]
     c = input_shape[1]
@@ -35,6 +36,7 @@ def pixel_shuffle(input, upscale_factor):
         + str(c)
         + " is not divisible by "
         + str(upscale_factor_squared),
+        as_array=False,
     )
     oc = int(c / upscale_factor_squared)
     oh = h * upscale_factor
@@ -56,6 +58,7 @@ def pixel_unshuffle(input, downscale_factor):
         message=(
             f"pixel_unshuffle expects 4D input, but got input with sizes {input_shape}"
         ),
+        as_array=False,
     ),
 
     b = input_shape[0]
@@ -75,6 +78,7 @@ def pixel_unshuffle(input, downscale_factor):
             f" or self.size(3)= {w}"
             f" is not divisible by {downscale_factor}"
         ),
+        as_array=False,
     )
     oc = c * downscale_factor_squared
     oh = int(h / downscale_factor)
@@ -191,6 +195,7 @@ def interpolate(
                     "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
                     " and output size in (o1, o2, ...,oK) format."
                 ),
+                as_array=False,
             )
             output_size = size
         else:
@@ -212,6 +217,7 @@ def interpolate(
                     "Please provide input tensor in (N, C, d1, d2, ...,dK) format"
                     " and scale_factor in (s1, s2, ...,sK) format."
                 ),
+                as_array=False,
             )
             scale_factors = scale_factor
         else:
@@ -221,6 +227,7 @@ def interpolate(
         ivy.utils.assertions.check_any(
             [ivy.exists(size), ivy.exists(scale_factor)],
             message="either size or scale_factor should be defined",
+            as_array=False,
         )
 
     if (
@@ -312,3 +319,48 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     return interpolate(
         input, size=size, scale_factor=scale_factor, mode="bilinear", align_corners=True
     )
+
+
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+@to_ivy_arrays_and_back
+def affine_grid(theta, size, align_corners=False):
+    if len(size) == 4:
+        N, C, H, W = size
+        base_grid = ivy.empty((N, H, W, 3))
+        if align_corners:
+            base_grid[:, :, :, 0] = ivy.linspace(-1, 1, W)
+            base_grid[:, :, :, 1] = ivy.expand_dims(ivy.linspace(-1, 1, H), axis=-1)
+            base_grid[:, :, :, 2] = ivy.full((H, W), 1)
+            grid = ivy.matmul(base_grid.view((N, H * W, 3)), theta.swapaxes(1, 2))
+            return grid.view((N, H, W, 2))
+        else:
+            base_grid[:, :, :, 0] = ivy.linspace(-1, 1, W) * (W - 1) / W
+            base_grid[:, :, :, 1] = ivy.expand_dims(
+                ivy.linspace(-1, 1, H) * (H - 1) / H, axis=-1
+            )
+            base_grid[:, :, :, 2] = ivy.full((H, W), 1)
+        grid = ivy.matmul(base_grid.view((N, H * W, 3)), ivy.swapaxes(theta, 1, 2))
+        return grid.view((N, H, W, 2))
+    else:
+        N, C, D, H, W = size
+        base_grid = ivy.empty((N, D, H, W, 4))
+        if align_corners:
+            base_grid[:, :, :, :, 0] = ivy.linspace(-1, 1, W)
+            base_grid[:, :, :, :, 1] = ivy.expand_dims(ivy.linspace(-1, 1, H), axis=-1)
+            base_grid[:, :, :, :, 2] = ivy.expand_dims(
+                ivy.expand_dims(ivy.linspace(-1, 1, D), axis=-1), axis=-1
+            )
+            base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
+            grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
+            return grid.view((N, D, H, W, 3))
+        else:
+            base_grid[:, :, :, :, 0] = ivy.linspace(-1, 1, W) * (W - 1) / W
+            base_grid[:, :, :, :, 1] = ivy.expand_dims(
+                ivy.linspace(-1, 1, H) * (H - 1) / H, axis=-1
+            )
+            base_grid[:, :, :, :, 2] = ivy.expand_dims(
+                ivy.expand_dims(ivy.linspace(-1, 1, D) * (D - 1) / D, axis=-1), axis=-1
+            )
+            base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
+            grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
+            return grid.view((N, D, H, W, 3))

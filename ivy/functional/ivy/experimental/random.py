@@ -8,15 +8,19 @@ from ivy.func_wrapper import (
     handle_nestable,
     infer_dtype,
     infer_device,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
 
 # dirichlet
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@handle_device_shifting
 def dirichlet(
     alpha: Union[ivy.Array, ivy.NativeArray, float, Sequence[float]],
     /,
@@ -80,10 +84,12 @@ def dirichlet(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+@handle_device_shifting
 def beta(
     a: Union[float, ivy.NativeArray, ivy.Array],
     b: Union[float, ivy.NativeArray, ivy.Array],
@@ -133,16 +139,18 @@ def beta(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
+@handle_device_shifting
 def gamma(
     alpha: Union[float, ivy.NativeArray, ivy.Array],
     beta: Union[float, ivy.NativeArray, ivy.Array],
     /,
     *,
-    shape: Union[float, ivy.NativeArray, ivy.Array],
+    shape: Optional[Union[float, ivy.NativeArray, ivy.Array]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
@@ -182,11 +190,13 @@ def gamma(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def poisson(
     lam: Union[float, ivy.Array, ivy.NativeArray],
@@ -195,6 +205,7 @@ def poisson(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     seed: Optional[int] = None,
+    fill_value: Optional[Union[int, float]] = 0,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -215,7 +226,10 @@ def poisson(
         output array data type. If ``dtype`` is ``None``, the output array data
         type will be the default floating-point data type. Default ``None``
     seed
-        A python integer. Used to create a random seed distribution
+        A python integer. Used to create a random seed distribution.
+    fill_value
+        if lam is negative, fill the output array with this value
+        on that specific dimension.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -243,16 +257,19 @@ def poisson(
         device=device,
         dtype=dtype,
         seed=seed,
+        fill_value=fill_value,
         out=out,
     )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def bernoulli(
     probs: Union[float, ivy.Array, ivy.NativeArray],
@@ -300,5 +317,11 @@ def bernoulli(
         Drawn samples from the Bernoulli distribution
     """
     return ivy.current_backend(probs).bernoulli(
-        logits, probs, shape=shape, device=device, dtype=dtype, seed=seed, out=out
+        probs,
+        logits=logits,
+        shape=shape,
+        device=device,
+        dtype=dtype,
+        seed=seed,
+        out=out,
     )

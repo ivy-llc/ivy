@@ -7,15 +7,25 @@ Should not be used inside any of the test functions.
 
 
 from dataclasses import dataclass
+from .pipeline_helper import get_frontend_config
 
 # needed for multiversion
-available_frameworks = ["numpy", "jax", "tensorflow", "torch", "paddle", "mxnet"]
+available_frameworks = [
+    "numpy",
+    "jax",
+    "tensorflow",
+    "torch",
+    "paddle",
+    "mxnet",
+    "scipy",
+]
 
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
+CURRENT_FRONTEND_CONFIG: _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
 CURRENT_DEVICE = _Notsetval
 CURRENT_DEVICE_STRIPPED = _Notsetval
@@ -38,60 +48,6 @@ class InterruptedTest(BaseException):
         super.__init__(f"{test_interruped} was interruped during execution.")
 
 
-def _get_ivy_numpy(version=None):
-    """Import Numpy module from ivy."""
-    try:
-        import ivy.functional.backends.numpy
-    except ImportError:
-        return None
-    return ivy.functional.backends.numpy
-
-
-def _get_ivy_jax(version=None):
-    """Import JAX module from ivy."""
-    try:
-        import ivy.functional.backends.jax
-    except ImportError:
-        return None
-    return ivy.functional.backends.jax
-
-
-def _get_ivy_tensorflow(version=None):
-    """Import Tensorflow module from ivy."""
-    try:
-        import ivy.functional.backends.tensorflow
-    except ImportError:
-        return None
-    return ivy.functional.backends.tensorflow
-
-
-def _get_ivy_torch(version=None):
-    """Import Torch module from ivy."""
-    try:
-        import ivy.functional.backends.torch
-    except ImportError:
-        return None
-    return ivy.functional.backends.torch
-
-
-def _get_ivy_paddle(version=None):
-    """Import Paddle module from ivy."""
-    try:
-        import ivy.functional.backends.paddle
-    except ImportError:
-        return None
-    return ivy.functional.backends.paddle
-
-
-def _get_ivy_mxnet(version=None):
-    """Import mxnet module from ivy."""
-    try:
-        import ivy.functional.backends.mxnet
-    except ImportError:
-        return None
-    return ivy.functional.backends.mxnet
-
-
 # Setup
 
 
@@ -103,20 +59,22 @@ def setup_api_test(
 ):
     if test_data is not None:
         _set_test_data(test_data)
+    if ground_truth_backend is not None:
+        _set_ground_truth_backend(ground_truth_backend)
     _set_backend(backend)
     _set_device(device)
-    _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
+    _unset_ground_truth_backend()
     _unset_backend()
     _unset_device()
-    _unset_ground_truth_backend()
 
 
-def setup_frontend_test(test_data: TestData, frontend: str, backend: str, device: str):
-    _set_test_data(test_data)
+def setup_frontend_test(frontend: str, backend: str, device: str, test_data: TestData):
+    if test_data is not None:
+        _set_test_data(test_data)
     _set_frontend(frontend)
     _set_backend(backend)
     _set_device(device)
@@ -138,10 +96,10 @@ def _set_test_data(test_data: TestData):
 
 def _set_frontend(framework: str):
     global CURRENT_FRONTEND
-    global CURRENT_FRONTEND_STR
+    global CURRENT_FRONTEND_CONFIG
     if CURRENT_FRONTEND is not _Notsetval:
         raise InterruptedTest(CURRENT_RUNNING_TEST)
-    CURRENT_FRONTEND_STR = framework
+    CURRENT_FRONTEND_CONFIG = get_frontend_config(framework)
     CURRENT_FRONTEND = framework
 
 
@@ -176,8 +134,9 @@ def _unset_test_data():
 
 
 def _unset_frontend():
-    global CURRENT_FRONTEND
+    global CURRENT_FRONTEND, CURRENT_FRONTEND_CONFIG
     CURRENT_FRONTEND = _Notsetval
+    CURRENT_FRONTEND_CONFIG = _Notsetval
 
 
 def _unset_backend():

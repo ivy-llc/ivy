@@ -1,11 +1,14 @@
 from collections import namedtuple
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from numbers import Number
+
+
 from .. import backend_version
 from ivy.func_wrapper import with_unsupported_device_and_dtypes
 import paddle
 import ivy
 import ivy.functional.backends.paddle as paddle_backend
+from ivy.func_wrapper import with_supported_device_and_dtypes
 
 # Code from cephes for i0
 
@@ -71,10 +74,6 @@ _i0B = [
 ]
 
 
-@with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}},
-    backend_version,
-)
 def moveaxis(
     a: paddle.Tensor,
     source: Union[int, Sequence[int]],
@@ -84,12 +83,18 @@ def moveaxis(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if isinstance(source, tuple):
+        source = list(source)
+    if isinstance(destination, tuple):
+        source = list(destination)
+    if a.dtype in [paddle.int8, paddle.int16, paddle.uint8]:
+        return paddle.moveaxis(a.cast("float32"), source, destination).cast(a.dtype)
     return paddle.moveaxis(a, source, destination)
 
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -128,7 +133,7 @@ def flipud(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int16", "float16")}},
+    {"2.5.1 and below": {"cpu": ("int16", "float16")}},
     backend_version,
 )
 def vstack(
@@ -174,7 +179,7 @@ def rot90(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
     backend_version,
 )
 def top_k(
@@ -370,24 +375,37 @@ def atleast_2d(
     return res
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}},
+    backend_version,
+)
 def atleast_3d(
     *arys: Union[paddle.Tensor, bool, Number], copy: Optional[bool] = None
 ) -> List[paddle.Tensor]:
     res = []
     for ary in arys:
         ary = ivy.array(ary, copy=copy).data
-        if ary.ndim < 3:
-            with ivy.ArrayMode(False):
-                res.append(ivy.expand_dims(ary, axis=list(range(3 - ary.ndim))))
+        if ary.ndim == 0:
+            result = ary.reshape((1, 1, 1))
+        elif ary.ndim == 1:
+            result = ary[None, :, None]
+        elif ary.ndim == 2:
+            result = ary[:, :, None]
         else:
-            res.append(ary)
+            result = ary
+        res.append(result)
     if len(res) == 1:
         return res[0]
-    return res
+    else:
+        return res
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8",)}},
+    {"2.5.1 and below": {"cpu": ("int8",)}},
+    backend_version,
+)
+@with_supported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int32", "int64", "float32", "float64")}},
     backend_version,
 )
 def take_along_axis(
@@ -489,7 +507,8 @@ def broadcast_shapes(*shapes: Union[List[int], List[Tuple]]) -> Tuple[int]:
     result = _broadcast_shape(shapes[0], shapes[1])
     for i in range(2, len(shapes)):
         result = _broadcast_shape(result, shapes[i])
-
+    # paddle outputs -1 if the output dimension is 0
+    result = [0 if dim == -1 else dim for dim in result]
     return tuple(result)
 
 
@@ -501,33 +520,7 @@ def expand(
     copy: Optional[bool] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    shape = list(shape)
-
-    for i, dim in enumerate(shape):
-        if dim < 0:
-            shape[i] = x.shape[i]
-    if x.ndim == 0:
-        if len(shape) == 0:
-            return x
-        else:
-            x = ivy.expand_dims(x, 0)
-    if x.ndim > len(shape):
-        x = x.reshape([-1])
-
-    if x.dtype in [
-        paddle.int8,
-        paddle.int16,
-        paddle.uint8,
-        paddle.float16,
-    ]:
-        return paddle.expand(x.cast("float32"), shape).cast(x.dtype)
-
-    elif x.dtype in [paddle.complex64, paddle.complex128]:
-        x_real = paddle.expand(ivy.real(x).data, shape)
-        x_imag = paddle.expand(ivy.imag(x).data, shape)
-        return x_real + 1j * x_imag
-    else:
-        return paddle.expand(x, shape)
+    return paddle_backend.broadcast_to(x, shape)
 
 
 def concat_from_sequence(
@@ -546,7 +539,7 @@ def concat_from_sequence(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def unique_consecutive(
     x: paddle.Tensor,
@@ -606,3 +599,37 @@ def unique_consecutive(
         inverse_indices,
         counts,
     )
+
+
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8", "float16")}}, backend_version
+)
+def fill_diagonal(
+    a: paddle.Tensor,
+    v: Union[int, float],
+    /,
+    *,
+    wrap: bool = False,
+) -> paddle.Tensor:
+    shape = a.shape
+    max_end = paddle.prod(paddle.to_tensor(shape))
+    end = max_end
+    if len(shape) == 2:
+        step = shape[1] + 1
+        if not wrap:
+            end = shape[1] * shape[1]
+    else:
+        step = 1 + (paddle.cumprod(paddle.to_tensor(shape[:-1]), dim=0)).sum()
+    end = max_end if end > max_end else end
+    a = paddle.reshape(a, (-1,))
+    w = paddle.zeros(a.shape, dtype=bool)
+    ins = paddle.arange(0, max_end)
+    steps = paddle.arange(0, end, step)
+
+    for i in steps:
+        i = ins == i
+        w = paddle.logical_or(w, i)
+    v = paddle.to_tensor(v, dtype=a.dtype)
+    a = paddle.where(w, v, a)
+    a = paddle.reshape(a, shape)
+    return a

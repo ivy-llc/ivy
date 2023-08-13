@@ -31,13 +31,13 @@ jobs:
       - name: Run Tests
         id: tests
         run: |
-          pip install pymongo
+          pip3 install pymongo
           cd ivy
           mkdir .ivy
           touch .ivy/key.pem
           echo -n ${{ secrets.USER_API_KEY }} > .ivy/key.pem
           python3 run_tests_CLI/cron_tests.py ${{ github.run_number }}
-          python3 run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} ${{ steps.jobs.outputs.html_url }}
+          python3 run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} 'false' 'true' ${{ github.run_id }} 'false' ${{ steps.jobs.outputs.html_url }}
         continue-on-error: true
 
       - name: Check on failures

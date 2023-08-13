@@ -6,6 +6,7 @@ import requests
 url = "https://ivy-dynamical-dashboards.onrender.com/api/test"
 
 modules = (
+    "test_paddle",
     "test_functional",
     "test_experimental",
     "test_stateful",
@@ -14,6 +15,7 @@ modules = (
     "test_jax",
     "test_numpy",
     "test_misc",
+    "test_scipy",
 )
 
 module_map = {
@@ -27,6 +29,8 @@ module_map = {
     "test_tensorflow": "tensorflow",
     "test_numpy": "numpy",
     "test_misc": "misc",
+    "test_paddle": "paddle",
+    "test_scipy": "scipy",
 }
 
 

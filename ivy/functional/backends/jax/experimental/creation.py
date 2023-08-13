@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Tuple
 import math
+import jax
 import jax.numpy as jnp
 import jaxlib.xla_extension
 
@@ -78,3 +79,30 @@ def tril_indices(
         jnp.tril_indices(n=n_rows, k=k, m=n_cols),
         device=device,
     )
+
+
+def unsorted_segment_min(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # added this check to keep the same behaviour as tensorflow
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_min(data, segment_ids, num_segments)
+
+
+def unsorted_segment_sum(
+    data: JaxArray,
+    segment_ids: JaxArray,
+    num_segments: int,
+) -> JaxArray:
+    # Used the same check which is used for unsorted_segment_min as
+    # the check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+    return jax.ops.segment_sum(data, segment_ids, num_segments)

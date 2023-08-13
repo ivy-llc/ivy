@@ -9,6 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     handle_array_like_without_promotion,
+    handle_backend_invalid,
 )
 from ivy.utils.exceptions import handle_exceptions
 
@@ -18,6 +19,7 @@ from ivy.utils.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -75,7 +77,8 @@ def all(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.all.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.all.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicit
@@ -103,7 +106,8 @@ def all(
     ivy.array(False)
 
     >>> x = ivy.array(False)
-    >>> y = ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
+    >>> y = ivy.all(ivy.array([[[0], [1]], [[1], [1]]]), axis=(0,1,2), out=x,
+    ...             keepdims=False)
     >>> print(y)
     ivy.array(False)
 
@@ -129,6 +133,7 @@ def all(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_array_like_without_promotion
 @handle_out_argument
@@ -186,7 +191,8 @@ def any(
 
     This method conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.utility_functions.any.html>`_ # noqa
+    `docstring <https://data-apis.org/array-api/latest/
+    API_specification/generated/array_api.any.html>`_
     in the standard.
 
     Both the description and the type hints above assumes an array input for simplicit
@@ -229,3 +235,32 @@ def any(
     }
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
+
+
+# Extra #
+# ----- #
+
+
+def save(item, filepath, format=None):
+    if isinstance(item, ivy.Container):
+        if format is not None:
+            item.cont_save(filepath, format=format)
+        else:
+            item.cont_save(filepath)
+    elif isinstance(item, ivy.Module):
+        item.save(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for saving.")
+
+
+@staticmethod
+def load(filepath, format=None, type="module"):
+    if type == "module":
+        return ivy.Module.load(filepath)
+    elif type == "container":
+        if format is not None:
+            return ivy.Container.cont_load(filepath, format=format)
+        else:
+            return ivy.Container.cont_load(filepath)
+    else:
+        raise ivy.utils.exceptions.IvyException("Unsupported item type for loading.")

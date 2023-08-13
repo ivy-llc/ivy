@@ -3,7 +3,7 @@ from typing import Optional, Union, Tuple, Literal, Sequence
 import mxnet as mx
 
 # local
-from ivy.func_wrapper import handle_mixed_function
+from ivy.func_wrapper import handle_partial_mixed_function
 from ivy.utils.exceptions import IvyNotImplementedException
 
 
@@ -24,12 +24,14 @@ def general_pool(
 
 def max_pool1d(
     x: mx.nd.NDArray,
-    kernel: Union[int, Tuple[int]],
-    strides: Union[int, Tuple[int]],
-    padding: str,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: Union[str, int, Tuple[int]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
@@ -52,12 +54,18 @@ def max_pool2d(
 
 def max_pool3d(
     x: mx.nd.NDArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    strides: Union[
+        int, Tuple[int], Tuple[int, int, int], Tuple[int, int, int, int, int]
+    ],
+    padding: Union[str, int, Tuple[int], Tuple[int, int, int]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int], Tuple[int, int, int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[mx.nd.NDArray] = None,
 ) -> mx.nd.NDArray:
     raise IvyNotImplementedException()
@@ -147,6 +155,18 @@ def dropout1d(
     raise IvyNotImplementedException()
 
 
+def dropout2d(
+    x: mx.nd.NDArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[mx.nd.NDArray] = None,
+) -> mx.nd.NDArray:
+    raise IvyNotImplementedException()
+
+
 def dropout3d(
     x: mx.nd.NDArray,
     prob: float,
@@ -170,7 +190,7 @@ def ifft(
     raise IvyNotImplementedException()
 
 
-@handle_mixed_function(
+@handle_partial_mixed_function(
     lambda *args, mode="linear", scale_factor=None, recompute_scale_factor=None, align_corners=None, **kwargs: (  # noqa: E501
         not align_corners
         and mode

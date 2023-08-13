@@ -28,17 +28,9 @@ def _invert_permutation_helper(draw):
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
-def test_invert_permutation(
-    dtype_and_x,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_invert_permutation(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         test_flags=test_flags,
         on_device=on_device,
@@ -58,6 +50,7 @@ def test_invert_permutation(
         min_num_dims=1,
         force_int_axis=True,
     ),
+    ground_truth_backend="numpy",
     test_with_out=st.just(False),
     test_gradients=st.just(False),
 )
@@ -71,7 +64,6 @@ def test_lexsort(
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
         input_dtypes=input_dtype,
-        ground_truth_backend="numpy",
         test_flags=test_flags,
         on_device=on_device,
         backend_to_test=backend_fw,

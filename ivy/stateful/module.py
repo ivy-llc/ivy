@@ -1,9 +1,11 @@
 """Base class for deriving trainable modules."""
 
 # global
+import functools
 import os
 import abc
 import copy
+import dill
 from typing import Optional, Tuple, Dict
 
 # local
@@ -16,7 +18,29 @@ from ivy.stateful.converters import ModuleConverters
 
 # Base #
 # -----#
-class Module(ModuleConverters, ModuleHelpers):
+
+
+class ModuleMeta:
+    def __new__(cls, *args, **kwargs):
+        # check the module of the class
+        # if it's stateful, it's internal
+        # we leave this untouched
+        if "stateful" in cls.__module__:
+            # we are not assigning it a variable
+            pass
+        else:
+            # first check if a var is already assigned
+            # this would mean it is a nested custom class
+            if not hasattr(Module, "_init_var"):
+                # if not , create it and add
+                Module._init_var = [cls]
+            else:
+                Module._init_var.append(cls)
+        instance = super().__new__(cls)
+        return instance
+
+
+class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
     """Module is a base class for deriving trainable modules."""
 
     def __init__(
@@ -109,11 +133,9 @@ class Module(ModuleConverters, ModuleHelpers):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy", cached=True)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._sub_mods = set()
         self._dtype = dtype
         self._args = args
@@ -121,31 +143,76 @@ class Module(ModuleConverters, ModuleHelpers):
         self._module_graph = None
         self._target = None
         self._lazy_compiled = False
+        self._dynamic_backend = dynamic_backend
         if build_mode != "on_init":
+            return
+        if hasattr(Module, "_init_var"):
+            if "stateful" in self.__module__:
+                # we know we are operating within the
+                # context of another class, and it's a
+                # stateful class internally defined
+                # so we freeze weight generation
+                # unless `v` or `with_partial_v` is passed
+
+                if v or with_partial_v:
+                    # build only if `v` or `with_partial_v`
+                    self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+                # we don't want to delete the class variable now
+                # since there could be other child modules
+                return
+            # we know this is the custom class that has triggered the
+            # class var, so we do the building, and after that delete
+            # the class variable, but before that we check if it's a
+            # nested scenario, because if it's another custom class initialised
+            # within another one, then we have to hold variable initialisation
+            # here too, unless `v` or `with_partial_v`
+            if len(Module._init_var) > 1 and not v and not with_partial_v:
+                # hold off initialisation, delete key for this class and
+                # move on
+                Module._init_var.pop()
+                return
+            self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
+            if Module._init_var[-1] == self.__class__.__name__:
+                # you delete it, only if this is the class that caused it's creation
+                Module._init_var.pop()
+
+            # do a final check if _init_var  becomes empty, then delete it all together
+            del Module._init_var
+
             return
         self.build(*args, dynamic_backend=dynamic_backend, **kwargs)
 
     # Private #
     # --------#
 
-    def _fn_with_var_arg(self, fn, v_fn, /):
+    def _fn_with_var_arg_wrapper(
+        self, *a, fn, v_fn, keychain_mappings, orig_key_chain, **kw
+    ):
+        if "v" in kw.keys():
+            del kw["v"]
+        v = v_fn(self.v, keychain_mappings, orig_key_chain)
+        return fn(*a, **kw, v=v)
+
+    def _fn_with_var_arg(self, fn, v_fn, /, keychain_mappings, orig_key_chain):
         """
         Extract variables from `v_fn` and use it as inputs for `fn`.
 
         Use `v_fn` to extract the variables and use the extracted
         variables as inputs to the call function fn of the module.
         """
-
-        def _fn_with_var_arg_wrapper(*a, **kw):
-            if "v" in kw.keys():
-                del kw["v"]
-            v = v_fn(self.v)
-            return fn(*a, **kw, v=v)
-
+        _fn_with_var_arg_wrapper = functools.partial(
+            self._fn_with_var_arg_wrapper,
+            fn=fn,
+            v_fn=v_fn,
+            keychain_mappings=keychain_mappings,
+            orig_key_chain=orig_key_chain,
+        )
         _fn_with_var_arg_wrapper.wrapped = True
         return _fn_with_var_arg_wrapper
 
-    def _find_variables(self, /, *, obj=None, _visited=None):
+    def _find_variables(
+        self, /, *, obj=None, _visited=None, without_initialisation=False
+    ):
         """
         Find all internal variables in obj. Return empty Container if obj is None.
 
@@ -170,21 +237,35 @@ class Module(ModuleConverters, ModuleHelpers):
         # ToDo: add support for finding local variables, if/when JAX supports
         #  uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(
-                depth=depth, flatten_key_chains=flatten_key_chains
-            )
-            obj.top_mod = lambda depth=None: self._top_mod_fn(depth=depth)
+            obj.top_v = self._top_v_fn
+            obj.top_mod = self._top_mod_fn
             self._sub_mods.add(obj)
-            return obj.v
+
+            if not obj.built_ and without_initialisation:
+                return lambda: obj._build_and_return_v(
+                    *obj._args, dynamic_backend=self._dynamic_backend, **obj._kwargs
+                )
+
+            return obj._build_and_return_v(
+                *obj._args, dynamic_backend=obj._dynamic_backend, **obj._kwargs
+            )
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs["v" + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
             return vs
@@ -192,10 +273,21 @@ class Module(ModuleConverters, ModuleHelpers):
             return vs
         for k, v in obj.__dict__.items():
             if v is not None and k[0:2] != "__":
-                ret = self._find_variables(obj=v, _visited=_visited)
+                ret = self._find_variables(
+                    obj=v,
+                    _visited=_visited,
+                    without_initialisation=without_initialisation,
+                )
                 if ret:
                     vs[k[1:] if k[0] == "_" else k] = ret
         return vs
+
+    def _build_and_return_v(self, *args, **kwargs):
+        self.build(*args, **kwargs)
+        return self.v
+
+    def _find_child_objects(self, /, *, obj=None, _visited=None):
+        pass
 
     @staticmethod
     def _extract_v(v, keychain_mappings: dict, orig_key_chain, /):
@@ -261,8 +353,7 @@ class Module(ModuleConverters, ModuleHelpers):
             orig_key_chain = key[1:] if key[0] == "_" else key
 
             obj.__call__ = self._fn_with_var_arg(
-                obj.__call__,
-                lambda v_: self._extract_v(v_, keychain_mappings, orig_key_chain),
+                obj.__call__, self._extract_v, keychain_mappings, orig_key_chain
             )
             return
         elif isinstance(obj, (list, tuple)):
@@ -493,11 +584,9 @@ class Module(ModuleConverters, ModuleHelpers):
             v = v if v else self.v
             return self._module_graph(*args, v=v, **kwargs)
 
-        with ivy.utils.backend.ContextManager("numpy") as backend:
-            self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
-            self.submod_call_order = ivy.Container(
-                alphabetical_keys=False, ivyh=backend
-            )
+        backend = ivy.with_backend("numpy", cached=True)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=backend)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=backend)
         self._set_submod_flags(
             track_submod_rets,
             submod_depth,
@@ -572,15 +661,30 @@ class Module(ModuleConverters, ModuleHelpers):
         # kwargs["dtype"] = dtype
 
         # build local Module, and any child modules flagged with "explicit" build mode
+        # this gets the child modules initialised at best, their weights
+        # remain un-generated
         built = ivy.default(self._build(*args, **kwargs), True)
 
-        # build variables based on locally built layers, if v not passed in constructor
-        v_from_constructor = self._v_in
+        # this creates weights for this Module only
         created = Container(
             self._create_variables(device=self._dev, dtype=dtype), dynamic_backend=False
         )
+
+        # build variables based on locally built layers, if v not passed in constructor
+        v_from_constructor = self._v_in
+
         created_n_found = Container(
-            dict(**self._find_variables(obj=self), **created),
+            dict(
+                **self._find_variables(
+                    obj=self,
+                    without_initialisation=(
+                        True
+                        if v_from_constructor and not self._with_partial_v
+                        else False
+                    ),
+                ),
+                **created,
+            ),
             dynamic_backend=dynamic_backend,
         )
         if ivy.exists(v_from_constructor):
@@ -594,10 +698,14 @@ class Module(ModuleConverters, ModuleHelpers):
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
+
                 ivy.Container.cont_assert_identical_structure(
-                    [created_n_found, v_from_constructor]
+                    [created_n_found, v_from_constructor],
+                    build_callable=True,
+                    assert_and_assign=True,
                 )
-                self.v = v_from_constructor
+
+                self.v = created_n_found
         else:
             self.v = created_n_found
         # remove duplicates
@@ -684,6 +792,15 @@ class Module(ModuleConverters, ModuleHelpers):
             fname=fname,
         )
 
+    def __getattribute__(self, name):
+        if name == "v":
+            if super().__getattribute__("v") is None and not self.built_:
+                self._build_and_return_v(
+                    self._args, dynamic_backend=self._dynamic_backend, **self._kwargs
+                )
+
+        return super().__getattribute__(name)
+
     def compile(
         self,
         args: Optional[Tuple] = None,
@@ -723,3 +840,40 @@ class Module(ModuleConverters, ModuleHelpers):
         )
 
         self._lazy_compiled = False
+
+    def save(self, filename):
+        """
+        Save the module object to disk using pickle.
+
+        Parameters
+        ----------
+        filename : str
+            The name of the file to save the module object to.
+        """
+        if ivy.current_backend_str() == "paddle":
+            self._convert_tensors_to_numpy()
+        with open(filename, "wb") as f:
+            dill.dump(self, f)
+        if ivy.current_backend_str() == "paddle":
+            self._convert_numpy_to_tensors()
+
+    @staticmethod
+    def load(filename):
+        """
+        Load a module object from disk using pickle.
+
+        Parameters
+        ----------
+        filename : str
+            The name of the file to load the module object from.
+
+        Returns
+        -------
+        Module
+            The loaded module object.
+        """
+        with open(filename, "rb") as f:
+            loaded = dill.load(f)
+        if ivy.current_backend_str() == "paddle":
+            loaded._convert_numpy_to_tensors()
+        return loaded

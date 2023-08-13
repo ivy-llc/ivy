@@ -1,10 +1,12 @@
 # global
 import numpy as np
 import hypothesis.extra.numpy as nph
-from hypothesis import strategies as st, assume
+from hypothesis import strategies as st
 from hypothesis.internal.floats import float_of
 from functools import reduce as _reduce
 from operator import mul
+import sys
+import string
 
 # local
 import ivy_tests.test_ivy.helpers.globals as test_globals
@@ -307,6 +309,7 @@ def dtype_and_values(
     ret_shape=False,
     dtype=None,
     array_api_dtypes=False,
+    shape_key="shape",
 ):
     """
     Draws a list of arrays with elements from the given corresponding data types.
@@ -487,7 +490,7 @@ def dtype_and_values(
         min_dim_size = draw(min_dim_size)
     if isinstance(max_dim_size, st._internal.SearchStrategy):
         max_dim_size = draw(max_dim_size)
-    if isinstance(available_dtypes, st._internal.SearchStrategy):
+    if isinstance(available_dtypes, st._internal.SearchStrategy) and dtype is None:
         available_dtypes = draw(available_dtypes)
     if not isinstance(num_arrays, int):
         num_arrays = draw(num_arrays)
@@ -512,7 +515,7 @@ def dtype_and_values(
                     min_dim_size=min_dim_size,
                     max_dim_size=max_dim_size,
                 ),
-                key="shape",
+                key=shape_key,
             )
         )
     values = []
@@ -643,7 +646,7 @@ def dtype_values_axis(
     force_tuple_axis
         if true, all axis will be returned as a tuple.
     force_int_axis
-        if true and only one axis is drawn, the returned axis will be an int.
+        if true, the returned axis will be an int.
     shape
         shape of the array. if None, a random shape is drawn.
     shared_dtype
@@ -1018,7 +1021,206 @@ def array_indices_axis(
     indices = indices[0]
     if disable_random_axis:
         return [x_dtype, indices_dtype], x, indices
+
     return [x_dtype, indices_dtype], x, indices, axis, batch_dims
+
+
+@st.composite
+def array_indices_put_along_axis(
+    draw,
+    *,
+    array_dtypes,
+    indices_dtypes=get_dtypes("valid"),
+    disable_random_axis=False,
+    axis_zero=False,
+    allow_inf=False,
+    min_num_dims=1,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    first_dimension_only=False,
+    indices_same_dims=False,
+    valid_bounds=True,
+    values=None,
+    values_dtypes=get_dtypes("valid"),
+):
+    """
+    Generate two arrays x & indices, the values in the indices array are indices of the
+    array x. Draws an integers randomly from the minimum and maximum number of
+    positional arguments a given function can take.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    array_dtypes
+        list of data type to draw the array dtype from.
+    indices_dtypes
+        list of data type to draw the indices dtype from.
+    disable_random_axis
+        axis is randomly generated with hypothesis if False. If True, axis is set
+        to 0 if axis_zero is True, -1 otherwise.
+    axis_zero
+        If True, axis is set to zero if disable_random_axis is True.
+    allow_inf
+        inf values are allowed to be generated in the values array when True.
+    min_num_dims
+        The minimum number of dimensions the arrays can have.
+    max_num_dims
+        The maximum number of dimensions the arrays can have.
+    min_dim_size
+        The minimum size of the dimensions of the arrays.
+    max_dim_size
+        The maximum size of the dimensions of the arrays.
+    indices_same_dims
+        Set x and indices dimensions to be the same
+    valid_bounds
+        If False, the strategy may produce out-of-bounds indices.
+    values
+        Custom values array to use instead of randomly generated values.
+    values_dtypes : Union[None, List[str]]
+        A list of dtypes for the values parameter. The function will use the dtypes
+        returned by 'get_dtypes("valid")'.
+
+    Returns
+    -------
+    ret
+        A strategy that can be used in the @given hypothesis
+        decorator which generates arrays of values and indices.
+
+    Examples
+    --------
+    @given(
+        array_indices_axis=array_indices_axis(
+            array_dtypes=helpers.get_dtypes("valid"),
+            indices_dtypes=helpers.get_dtypes("integer"),
+            min_num_dims=1,
+            max_num_dims=5,
+            min_dim_size=1,
+            max_dim_size=10
+            )
+    )
+
+    >>> array_indices_axis(
+    ...    array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ...     disable_random_axis=True,
+    ...     axis_zero=True,
+    ... )
+    (['int64', 'int64'], array([-65536]), array([0]))
+    (['bool', 'int64'], array([False, False, False, True,
+        False, False, False, False]), array([0, 0, 2, 4,
+        0, 0, 0, 1]))
+    (['int64', 'int64'], array([0]), array([0]))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=get_dtypes("integer"),
+    ...     disable_random_axis=True,
+    ...     first_dimension_only=True,
+    ... )
+    (['float64', 'uint64'], array([-2.44758124e-308]),
+        array([0], dtype=uint64))
+    (['bool', 'uint64'], array([False]), array([0], dtype=uint64))
+    (['bool', 'int8'], array([False]), array([[0, 0, 0, 0],
+       [0, 0, 0, 0],
+       [0, 0, 0, 0],
+       [0, 0, 0, 0]], dtype=int8))
+
+    >>> array_indices_axis(
+    ...     array_dtypes=get_dtypes("valid"),
+    ...     indices_dtypes=["int64"],
+    ...     max_num_dims=1,
+    ...     indices_same_dims=True,
+    ... )
+    (['float16', 'int64'], array([-256.], dtype=float16),
+        array([0]), 0, 0)
+    (['uint8', 'int64'], array([1], dtype=uint8),
+        array([0]), -1, 0)
+    (['uint64', 'int64'], array([0], dtype=uint64),
+        array([0]), 0, 0)
+    """
+    x_dtype, x, x_shape = draw(
+        dtype_and_values(
+            available_dtypes=array_dtypes,
+            allow_inf=allow_inf,
+            ret_shape=True,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+        )
+    )
+    x_dtype = x_dtype[0]
+    x = x[0]
+    if disable_random_axis:
+        if axis_zero:
+            axis = 0
+        else:
+            axis = -1
+        batch_dims = 0
+        batch_shape = x_shape[0:0]
+    else:
+        axis = draw(
+            number_helpers.ints(
+                min_value=-1 * len(x_shape),
+                max_value=len(x_shape) - 1,
+            )
+        )
+        batch_dims = draw(
+            number_helpers.ints(
+                min_value=0,
+                max_value=max(0, axis),
+            )
+        )
+        batch_shape = x_shape[0:batch_dims]
+    if indices_same_dims:
+        indices_shape = x_shape
+    else:
+        shape_var = draw(
+            gh.get_shape(
+                allow_none=False,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims - batch_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
+        )
+        indices_shape = batch_shape + shape_var
+    if first_dimension_only:
+        max_axis = max(x_shape[0] - 1, 0)
+    else:
+        max_axis = max(x_shape[axis] - 1, 0)
+    if not valid_bounds:
+        max_axis = max_axis + 10
+    indices_dtype, indices = draw(
+        dtype_and_values(
+            available_dtypes=indices_dtypes,
+            allow_inf=False,
+            min_value=0,
+            max_value=max_axis,
+            shape=indices_shape,
+        )
+    )
+    indices_dtype = indices_dtype[0]
+    indices = indices[0]
+    if disable_random_axis:
+        return [x_dtype, indices_dtype], x, indices
+
+    values_shape = indices_shape
+    values_dtype, values = draw(
+        dtype_and_values(
+            available_dtypes=values_dtypes,
+            allow_inf=False,
+            shape=values_shape,
+        )
+    )
+    values_dtype = values_dtype[0]
+    values = values[0]
+    return [x_dtype, indices_dtype, values_dtype], x, indices, axis, values, batch_dims
 
 
 @st.composite
@@ -1517,7 +1719,9 @@ def arrays_for_pooling(
     explicit_or_str_padding=False,
     only_explicit_padding=False,
     return_dilation=False,
+    mixed_fn_compos=True,
     data_format="channel_last",
+    return_data_format=False,
 ):
     in_shape = draw(
         nph.array_shapes(
@@ -1526,7 +1730,7 @@ def arrays_for_pooling(
     )
     dtype, x = draw(
         dtype_and_values(
-            available_dtypes=get_dtypes("float"),
+            available_dtypes=get_dtypes("float", mixed_fn_compos=mixed_fn_compos),
             shape=in_shape,
             num_arrays=1,
             max_value=100,
@@ -1582,27 +1786,41 @@ def arrays_for_pooling(
     else:
         padding = draw(st.sampled_from(["VALID", "SAME"]))
 
-    strides = draw(st.tuples(st.integers(1, min(kernel))))
+    # We do this to avoid this error in the tf backend
+    # ValueError: `strides > 1` not supported in conjunction with `dilation_rate > 1`
+    # TODO: Explore fully compositional implementation for pooling to bypass this in tf.
+    if return_dilation:
+        strides = (
+            draw(st.tuples(st.integers(1, min(kernel))))
+            if max(dilations) <= 1
+            else (1,)
+        )
+    else:
+        strides = draw(st.tuples(st.integers(1, min(kernel))))
 
     if data_format == "channel_first":
         dim = len(in_shape)
         x[0] = np.transpose(x[0], (0, dim - 1, *range(1, dim - 1)))
 
+    out = [dtype, x, kernel, strides, padding]
     if return_dilation:
-        return dtype, x, kernel, strides, padding, dilations
-    return dtype, x, kernel, strides, padding
+        out.append(dilations)
+    if return_data_format:
+        out.append(data_format)
+
+    return tuple(out)
 
 
 @st.composite
-def dtype_array_index(
+def dtype_array_query(
     draw,
     *,
     available_dtypes,
     min_num_dims=1,
     max_num_dims=3,
-    min_dim_size=1,
+    min_dim_size=0,
     max_dim_size=10,
-    allow_slices=True,
+    allow_mask=True,
     allow_neg_step=True,
 ):
     dtype = draw(
@@ -1611,7 +1829,6 @@ def dtype_array_index(
             available_dtypes=available_dtypes,
         )
     )
-    dtype.append("int32")
     shape = draw(
         helpers.get_shape(
             min_num_dims=min_num_dims,
@@ -1624,29 +1841,288 @@ def dtype_array_index(
         helpers.array_values(
             dtype=dtype[0],
             shape=shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
         )
     )
-    index = ()
-    for s in shape:
-        index_type = draw(st.sampled_from(["int", "ellipsis", "slice"]))
-        if not allow_slices or index_type == "int":
-            index += (draw(st.integers(min_value=-s + 1, max_value=s - 1)),)
-        if index_type == "ellipsis" and Ellipsis not in index:
-            index += (Ellipsis,)
-        elif index_type == "slice":
+    if allow_mask and draw(st.booleans()):
+        mask_shape = shape[: draw(st.integers(0, len(shape)))]
+        index = draw(
+            helpers.array_values(
+                dtype="bool",
+                shape=mask_shape,
+            ).filter(lambda x: np.sum(x) > 0)
+        )
+        return dtype + ["bool"], array, index
+    supported_index_types = ["int", "slice", "list", "array"]
+    index_types = draw(
+        st.lists(
+            st.sampled_from(supported_index_types),
+            min_size=0,
+            max_size=len(shape),
+        )
+    )
+    index_types = [v if shape[i] > 0 else "slice" for i, v in enumerate(index_types)]
+    index = []
+    for s, index_type in zip(shape, index_types):
+        if index_type == "int":
+            new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
+        elif index_type == "seq":
+            new_index = draw(
+                st.lists(
+                    st.integers(min_value=-s + 1, max_value=s - 1),
+                    min_size=1,
+                    max_size=20,
+                )
+            )
+        elif index_type == "array":
+            _, new_index = draw(
+                helpers.dtype_and_values(
+                    min_value=-s + 1,
+                    max_value=s - 1,
+                    dtype=["int64"],
+                )
+            )
+            new_index = new_index[0]
+        else:
             start = draw(
-                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
             )
             end = draw(
-                st.one_of(st.integers(min_value=-s + 1, max_value=s - 1), st.just(None))
+                st.one_of(
+                    st.integers(min_value=-2 * s, max_value=2 * s),
+                    st.just(None),
+                )
             )
-            true_start = 0 if start is None else s + start if start < 0 else start
-            true_end = s - 1 if end is None else s + end if end < 0 else end
-            if true_start < true_end:
-                step = draw(st.integers(min_value=1, max_value=s))
-            else:
-                if not allow_neg_step:
-                    assume(False)
-                step = draw(st.integers(max_value=-1, min_value=-s))
-            index += (slice(start, end, step),)
-    return dtype, array, index
+            step = draw(
+                st.one_of(
+                    (
+                        st.integers(min_value=1, max_value=1 + 2 * s)
+                        if not allow_neg_step
+                        else st.integers(
+                            min_value=-1 - 2 * s, max_value=1 + 2 * s
+                        ).filter(lambda x: x != 0)
+                    ),
+                    st.just(None),
+                )
+            )
+            new_index = slice(start, end, step)
+        index += [new_index]
+    if len(index_types) and draw(st.booleans()):
+        start = draw(st.integers(min_value=0, max_value=len(index) - 1))
+        min_ = len(index) if len(index_types) < len(shape) else start
+        max_ = len(index) if len(index_types) < len(shape) else len(index) - 1
+        end = draw(st.integers(min_value=min_, max_value=max_))
+        if start != end:
+            index = index[:start] + [Ellipsis] + index[end:]
+    for _ in range(draw(st.integers(min_value=0, max_value=3))):
+        index.insert(draw(st.integers(0, len(index))), None)
+    index = tuple(index)
+    if len(index) == 1 and draw(st.booleans()):
+        index = index[0]
+    return dtype + ["int64"] * index_types.count("array"), array, index
+
+
+@st.composite
+def dtype_array_query_val(
+    draw,
+    *,
+    available_dtypes,
+    min_num_dims=1,
+    max_num_dims=3,
+    min_dim_size=0,
+    max_dim_size=10,
+    allow_mask=True,
+    allow_neg_step=True,
+):
+    input_dtype, x, query = draw(
+        helpers.dtype_array_query(
+            available_dtypes=available_dtypes,
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            allow_mask=allow_mask,
+            allow_neg_step=allow_neg_step,
+        )
+    )
+    real_shape = x[query].shape
+    if len(real_shape):
+        val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
+    else:
+        val_shape = real_shape
+    val_dtype, val = draw(
+        helpers.dtype_and_values(
+            dtype=[input_dtype[0]],
+            shape=val_shape,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+        )
+    )
+    val_dtype = draw(
+        helpers.get_castable_dtype(
+            draw(available_dtypes), input_dtype[0], x if 0 not in x.shape else None
+        )
+    )[-1]
+    val = val[0].astype(val_dtype)
+    return input_dtype + [val_dtype], x, query, val
+
+
+@st.composite
+def create_nested_input(draw, dimensions, leaf_values):
+    if len(dimensions) != 1:
+        return [
+            draw(create_nested_input(dimensions[1:], leaf_values))
+            for _ in range(dimensions[0])
+        ]
+    value = draw(st.sampled_from(leaf_values))
+    return [value for _ in range(dimensions[0])]
+
+
+@st.composite
+def cond_data_gen_helper(draw):
+    dtype_x = helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+        max_value=10,
+        min_value=-10,
+        allow_nan=False,
+        shared_dtype=True,
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon)
+    p = draw(
+        st.sampled_from([None, 2, -2, 1, -1, "fro", "nuc", float("inf"), -float("inf")])
+    )
+    dtype, x = draw(dtype_x)
+    return dtype, (x[0], p)
+
+
+# helpers for tests (core and frontend) related to solve function
+@st.composite
+def get_first_solve_matrix(draw, adjoint=True):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+    if adjoint:
+        adjoint = draw(st.booleans())
+        if adjoint:
+            matrix = np.transpose(np.conjugate(matrix))
+    return input_dtype, matrix, adjoint
+
+
+@st.composite
+def get_second_solve_matrix(draw):
+    # batch_shape, shared, random_size
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    return input_dtype, draw(
+        helpers.array_values(
+            dtype=input_dtype, shape=tuple([shared_size, 1]), min_value=2, max_value=5
+        )
+    )
+
+
+@st.composite
+def einsum_helper(draw):
+    # Todo: generalize to n equations and arrays
+    # Generate unique dimensions for both arrays
+    dims_1 = draw(st.integers(min_value=1, max_value=5))
+    dims_2 = draw(st.integers(min_value=1, max_value=5))
+    eq_1 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_1,
+            max_size=dims_1,
+            unique=True,
+        )
+    )
+    eq_2 = draw(
+        st.lists(
+            st.sampled_from(string.ascii_lowercase),
+            min_size=dims_2,
+            max_size=dims_2,
+            unique=True,
+        )
+    )
+
+    # Decide which dimensions are common and update eq_2 accordingly
+    common_dims = min(dims_1, dims_2)
+    for i in range(common_dims):
+        change = draw(st.booleans())
+        if change:
+            eq_2[i] = eq_1[i]
+
+    # Generate shapes according to the dimensions
+    shape_1 = [draw(st.integers(min_value=1, max_value=5)) for _ in eq_1]
+    shape_2 = [
+        (
+            draw(st.integers(min_value=1, max_value=5))
+            if eq_2[i] not in eq_1
+            else shape_1[eq_1.index(eq_2[i])]
+        )
+        for i in range(len(eq_2))
+    ]
+
+    # Generate arrays and dtypes
+    dtype_1, value_1 = draw(
+        dtype_and_values(
+            available_dtypes=["float64"], shape=shape_1, min_value=-10, max_value=50
+        )
+    )
+    dtype_2, value_2 = draw(
+        dtype_and_values(
+            available_dtypes=["float64"], shape=shape_2, min_value=-10, max_value=50
+        )
+    )
+
+    # Determine output equation
+    common_symbols = set(eq_1).intersection(set(eq_2))
+    output_eq = []
+    if common_symbols:
+        output_length = draw(st.integers(min_value=1, max_value=len(common_symbols)))
+        output_eq = draw(
+            st.lists(
+                st.sampled_from(list(common_symbols)),
+                min_size=output_length,
+                max_size=output_length,
+                unique=True,
+            )
+        )
+    output_eq = "".join(output_eq)
+
+    eq = "".join(eq_1) + "," + "".join(eq_2) + "->" + output_eq
+
+    return eq, (value_1[0], value_2[0]), [dtype_1[0], dtype_2[0]]

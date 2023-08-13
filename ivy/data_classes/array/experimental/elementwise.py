@@ -8,6 +8,41 @@ import ivy
 
 
 class _ArrayWithElementWiseExperimental(abc.ABC):
+    def lgamma(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.lgamma. This method simply wraps the
+        function, and so the docstring for ivy.lgamma also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a real-valued floating-point data type.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the evaluated result for each element in ``self``.
+            The returned array must have a real-valued floating-point data
+            type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1 , 2 , 3 ])
+        >>> y = x.lgamma()
+        >>> print(y)
+        ivy.array([0., 0., 0.69314718])
+
+        >>> x = ivy.array([4.5, -4, -5.6])
+        >>> x.lgamma(out = x)
+        >>> print(x)
+        ivy.array([2.45373654, inf, -4.6477685 ])
+        """
+        return ivy.lgamma(self._data, out=out)
+
     def sinc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.sinc. This method simply wraps the
@@ -919,3 +954,69 @@ class _ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([[0.5, 0.5, 0.75], [1, 2, 2]])
         """
         return ivy.frexp(self._data, out=out)
+
+    def modf(
+        self: ivy.Array, /, *, out: Optional[Tuple[ivy.Array, ivy.Array]] = None
+    ) -> Tuple[ivy.Array, ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.modf. This method simply wraps the
+        function, and so the docstring for ivy.modf also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output arrays in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The fractional and integral parts of the input array.
+
+        Examples
+        --------
+        >>> x = ivy.array([1.5, 2.7, 3.9])
+        >>> x.modf()
+        (ivy.array([0.5, 0.7, 0.9]), ivy.array([1, 2, 3]))
+        """
+        return ivy.modf(self._data, out=out)
+
+    def digamma(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.digamma. This method simply wraps the
+        function, and so the docstring for ivy.digamma also applies to this method with
+        minimal changes.
+
+        Note
+        ----
+        The Ivy version only accepts real-valued inputs.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Array with values computed from digamma function from
+            input arrays' values, element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([.9, 3, 3.2])
+        >>> y = ivy.digamma(x)
+        ivy.array([-0.7549271   0.92278427  0.9988394])
+        """
+        return ivy.digamma(self._data, out=out)

@@ -19,19 +19,10 @@ from ivy_tests.test_ivy.helpers import handle_test
     keepdims=st.booleans(),
     test_gradients=st.just(False),
 )
-def test_all(
-    dtype_x_axis,
-    keepdims,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_all(dtype_x_axis, keepdims, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,
@@ -54,19 +45,10 @@ def test_all(
     keepdims=st.booleans(),
     test_gradients=st.just(False),
 )
-def test_any(
-    dtype_x_axis,
-    keepdims,
-    test_flags,
-    backend_fw,
-    fn_name,
-    on_device,
-    ground_truth_backend,
-):
+def test_any(dtype_x_axis, keepdims, test_flags, backend_fw, fn_name, on_device):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         test_flags=test_flags,
         backend_to_test=backend_fw,

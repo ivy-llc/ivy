@@ -13,6 +13,8 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_shapes,
     handle_nestable,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 from ivy.utils.backend import backend_stack
 from ivy.utils.exceptions import handle_exceptions
@@ -31,7 +33,7 @@ def _check_bounds_and_get_shape(low, high, shape):
             type="all",
             message="low and high bounds must be numerics when shape is specified",
         )
-        return shape
+        return ivy.Shape(shape)
 
     valid_types = (ivy.Array,)
     if len(backend_stack) == 0:
@@ -40,11 +42,13 @@ def _check_bounds_and_get_shape(low, high, shape):
         valid_types += (ivy.NativeArray,)
     if isinstance(low, valid_types):
         if isinstance(high, valid_types):
-            ivy.utils.assertions.check_equal(ivy.shape(low), ivy.shape(high))
+            ivy.utils.assertions.check_equal(
+                ivy.shape(low), ivy.shape(high), as_array=False
+            )
         return ivy.shape(low)
     if isinstance(high, valid_types):
         return ivy.shape(high)
-    return ()
+    return ivy.Shape(())
 
 
 def _randint_check_dtype_and_bound(low, high, dtype):
@@ -85,12 +89,14 @@ def _check_shapes_broadcastable(out, inp):
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def random_uniform(
     *,
@@ -200,12 +206,14 @@ def random_uniform(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
 @infer_dtype
+@handle_device_shifting
 @infer_device
 def random_normal(
     *,
@@ -312,10 +320,12 @@ def random_normal(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def multinomial(
     population_size: int,
@@ -421,11 +431,13 @@ def multinomial(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @inputs_to_native_shapes
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 @infer_device
 def randint(
     low: Union[int, ivy.NativeArray, ivy.Array],
@@ -519,10 +531,12 @@ def seed(*, seed_value: int = 0) -> None:
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_device_shifting
 def shuffle(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: Optional[int] = 0,

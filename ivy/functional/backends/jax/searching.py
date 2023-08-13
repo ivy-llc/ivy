@@ -12,7 +12,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 # ------------------ #
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
 def argmax(
     x: JaxArray,
     /,
@@ -38,7 +38,7 @@ def argmax(
     return ret
 
 
-@with_unsupported_dtypes({"0.4.11 and below": ("complex",)}, backend_version)
+@with_unsupported_dtypes({"0.4.14 and below": ("complex",)}, backend_version)
 def argmin(
     x: JaxArray,
     /,

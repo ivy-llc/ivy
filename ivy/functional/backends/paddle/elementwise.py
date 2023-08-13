@@ -27,7 +27,13 @@ def add(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.int8, paddle.uint8, paddle.float16, paddle.bool]:
+    if x1.dtype in [
+        paddle.int8,
+        paddle.uint8,
+        paddle.float16,
+        paddle.bool,
+        paddle.bfloat16,
+    ]:
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if alpha not in (1, None):
         x2 = paddle_backend.multiply(x2, alpha)
@@ -60,7 +66,7 @@ def bitwise_invert(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -150,11 +156,11 @@ def bitwise_and(
 
 
 def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
+    x_dtype = x.dtype
+    if x_dtype in [
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -163,16 +169,18 @@ def ceil(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     ]:
         if paddle.is_complex(x):
             return paddle.complex(paddle.ceil(x.real()), paddle.ceil(x.imag()))
-        return paddle.ceil(x.astype("float32")).astype(x.dtype)
+        return paddle.ceil(x.astype("float32")).astype(x_dtype)
+    elif x_dtype == paddle.int64:
+        return paddle.ceil(x.astype("float64")).astype(x_dtype)
     return paddle.ceil(x)
 
 
 def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
-    if x.dtype in [
+    x_dtype = x.dtype
+    if x_dtype in [
         paddle.int8,
         paddle.int16,
         paddle.int32,
-        paddle.int64,
         paddle.uint8,
         paddle.float16,
         paddle.complex64,
@@ -181,12 +189,14 @@ def floor(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     ]:
         if paddle.is_complex(x):
             return paddle.complex(paddle.floor(x.real()), paddle.floor(x.imag()))
-        return paddle.floor(x.astype("float32")).astype(x.dtype)
+        return paddle.floor(x.astype("float32")).astype(x_dtype)
+    elif x_dtype == paddle.int64:
+        return paddle.floor(x.astype("float64")).astype(x_dtype)
     return paddle.floor(x)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -204,7 +214,7 @@ def asin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -221,7 +231,17 @@ def asinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
     return paddle.asinh(x)
 
 
-def sign(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
+def sign(
+    x: paddle.Tensor,
+    /,
+    *,
+    np_variant: Optional[bool] = True,
+    out: Optional[paddle.Tensor] = None,
+) -> paddle.Tensor:
     if x.dtype in [
         paddle.int8,
         paddle.int16,
@@ -258,7 +278,7 @@ def sqrt(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def cosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -382,7 +402,7 @@ def multiply(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def cos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -419,7 +439,7 @@ def divide(
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    if x1.dtype in [paddle.float16]:
+    if x1.dtype in [paddle.float16, paddle.bfloat16]:
         x1, x2 = x1.astype("float32"), x2.astype("float32")
     if not (ivy.is_float_dtype(ret_dtype) or ivy.is_complex_dtype(ret_dtype)):
         ret_dtype = ivy.default_float_dtype(as_native=True)
@@ -427,7 +447,7 @@ def divide(
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32", "int64", "int64")},
+    {"2.5.1 and below": ("float64", "float32", "int64", "int64")},
     backend_version,
 )
 def fmin(
@@ -479,7 +499,7 @@ def greater_equal(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -495,30 +515,43 @@ def acos(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
     return paddle.acos(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def logical_xor(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x1):
-            return paddle.logical_xor(
-                paddle.logical_xor(x1.real(), x2.real()),
-                paddle.logical_xor(x1.imag(), x2.imag()),
-            )
+        # this logic works well when both inputs are complex but when one of them
+        # is casted from real to complex, the imaginary part is zero which messes
+        # with the XOR logic
+        # if paddle.is_complex(x1):
+        #     return paddle.logical_xor(
+        #         paddle.logical_xor(x1.real(), x2.real()),
+        #         paddle.logical_xor(x1.imag(), x2.imag()),
+        #     )
         return paddle.logical_xor(x1.astype("float32"), x2.astype("float32"))
     return paddle.logical_xor(x1, x2)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128")}},
+    backend_version,
+)
 def logical_and(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
     if ret_dtype in [paddle.uint8, paddle.float16, paddle.complex64, paddle.complex128]:
-        if paddle.is_complex(x1):
-            return paddle.logical_and(
-                paddle.logical_and(x1.real(), x2.real()),
-                paddle.logical_and(x1.imag(), x2.imag()),
-            )
+        # this logic works well when both inputs are complex but when one of them
+        # is casted from real to complex, the imaginary part is zero which messes
+        # if paddle.is_complex(x1):
+        #     return paddle.logical_and(
+        #         paddle.logical_and(x1.real(), x2.real()),
+        #         paddle.logical_and(x1.imag(), x2.imag()),
+        #     )
         return paddle.logical_and(x1.astype("float32"), x2.astype("float32"))
     return paddle.logical_and(x1, x2)
 
@@ -538,7 +571,7 @@ def logical_or(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -555,7 +588,7 @@ def acosh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def sin(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -594,7 +627,7 @@ def not_equal(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def tanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -635,7 +668,7 @@ def bitwise_or(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def sinh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -754,7 +787,7 @@ def trunc(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle
 
 
 @with_supported_dtypes(
-    {"2.4.2 and below": ("float64", "float32")},
+    {"2.5.1 and below": ("float64", "float32")},
     backend_version,
 )
 def trapz(
@@ -807,40 +840,37 @@ def abs(
     x: Union[float, paddle.Tensor],
     /,
     *,
-    where: Union[bool, paddle.Tensor] = True,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if not isinstance(where, paddle.Tensor):
-        where = paddle.to_tensor(where, dtype="bool").squeeze()
     if not isinstance(x, paddle.Tensor):
-        x = paddle.to_tensor(x).squeeze().cast(ivy.default_dtype(item=x))
+        x = paddle.to_tensor(x, dtype=ivy.default_dtype(item=x)).squeeze()
     if x.dtype in [
         paddle.int8,
         paddle.int16,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
         paddle.bool,
     ]:
-        return paddle_backend.where(
-            where, paddle.abs(x.astype("float32")).astype(x.dtype), x
-        )
-    ret = paddle_backend.where(where, paddle.abs(x), x)
-    if ivy.is_complex_dtype(x.dtype):
-        return ivy.real(ret)
-    return ret
+        return paddle.abs(x.astype("float32")).astype(x.dtype)
+    return paddle.abs(x)
 
 
+@with_unsupported_device_and_dtypes(
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
+)
 def logaddexp(
     x1: paddle.Tensor, x2: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None
 ) -> paddle.Tensor:
     x1, x2, ret_dtype = _elementwise_helper(x1, x2)
-    return paddle_backend.log(
-        paddle_backend.add(paddle_backend.exp(x1), paddle_backend.exp(x2))
+    amax = paddle_backend.maximum(x1, x2)
+    return amax + paddle_backend.log(
+        paddle_backend.exp(x1 - amax) + paddle_backend.exp(x2 - amax)
     ).astype(ret_dtype)
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("float16",)}}, backend_version
+    {"2.5.1 and below": {"cpu": ("float16",)}}, backend_version
 )
 def logaddexp2(
     x1: Union[paddle.Tensor, float, list, tuple],
@@ -855,7 +885,7 @@ def logaddexp2(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",
@@ -876,7 +906,7 @@ def real(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -894,7 +924,7 @@ def tan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.T
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -912,7 +942,7 @@ def atan(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def atan2(
@@ -976,7 +1006,7 @@ def subtract(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def remainder(
@@ -1004,7 +1034,7 @@ def remainder(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def atanh(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -1052,7 +1082,7 @@ def bitwise_left_shift(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("complex64", "complex128", "bool")}},
+    {"2.5.1 and below": {"cpu": ("complex64", "complex128", "bool")}},
     backend_version,
 )
 def erf(x: paddle.Tensor, /, *, out: Optional[paddle.Tensor] = None) -> paddle.Tensor:
@@ -1178,7 +1208,7 @@ def fmod(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "uint8")}},
+    {"2.5.1 and below": {"cpu": ("int8", "uint8")}},
     backend_version,
 )
 def lcm(
@@ -1214,7 +1244,7 @@ def angle(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.4.2 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
+    {"2.5.1 and below": {"cpu": ("int8", "int16", "uint8")}}, backend_version
 )
 def gcd(
     x1: Union[paddle.Tensor, int, list, tuple],
@@ -1229,7 +1259,7 @@ def gcd(
 
 @with_unsupported_device_and_dtypes(
     {
-        "2.4.2 and below": {
+        "2.5.1 and below": {
             "cpu": (
                 "int8",
                 "int16",

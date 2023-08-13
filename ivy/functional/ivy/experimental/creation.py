@@ -1,5 +1,4 @@
 # global
-from __future__ import annotations
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
 
 # local
@@ -15,14 +14,18 @@ from ivy.func_wrapper import (
     infer_dtype,
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
+    handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def vorbis_window(
     window_length: Union[ivy.Array, ivy.NativeArray],
     *,
@@ -59,13 +62,14 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def hann_window(
     size: int,
-    /,
     *,
     periodic: bool = True,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -94,10 +98,10 @@ def hann_window(
 
     Functional Examples
     -------------------
-    >>> ivy.hann_window(4, True)
+    >>> ivy.hann_window(4, periodic = True)
     ivy.array([0. , 0.5, 1. , 0.5])
 
-    >>> ivy.hann_window(7, False)
+    >>> ivy.hann_window(7, periodic = False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
     """
     return ivy.current_backend().hann_window(
@@ -106,10 +110,12 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
 @infer_dtype
+@handle_device_shifting
 def kaiser_window(
     window_length: int,
     periodic: bool = True,
@@ -209,11 +215,9 @@ def kaiser_bessel_derived_window(
 
 @handle_exceptions
 @handle_nestable
-@handle_out_argument
 @infer_dtype
 def hamming_window(
     window_length: int,
-    /,
     *,
     periodic: bool = True,
     alpha: float = 0.54,
@@ -261,7 +265,19 @@ def hamming_window(
     else:
         count = ivy.linspace(0, window_length, window_length)
     result = (alpha - beta * ivy.cos(2 * ivy.pi * count)).astype(dtype)
+    if ivy.exists(out):
+        result = ivy.inplace_update(out, result)
     return result
+
+
+hamming_window.mixed_backend_wrappers = {
+    "to_add": (
+        "handle_backend_invalid",
+        "handle_out_argument",
+        "handle_device_shifting",
+    ),
+    "to_skip": (),
+}
 
 
 @handle_exceptions
@@ -272,7 +288,6 @@ def tril_indices(
     n_rows: int,
     n_cols: Optional[int] = None,
     k: int = 0,
-    /,
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
@@ -368,7 +383,6 @@ def tril_indices(
 @infer_device
 def eye_like(
     x: Union[ivy.Array, ivy.NativeArray],
-    /,
     *,
     k: int = 0,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
@@ -539,7 +553,8 @@ def ndindex(
 
 @handle_exceptions
 def indices(
-    dimensions: Sequence,
+    dimensions: Sequence[int],
+    *,
     dtype: Union[ivy.Dtype, ivy.NativeDtype] = ivy.int64,
     sparse: bool = False,
 ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
@@ -587,3 +602,85 @@ def indices(
     else:
         grid = ivy.meshgrid(*[ivy.arange(dim) for dim in dimensions], indexing="ij")
         return ivy.stack(grid, axis=0).astype(dtype)
+
+
+indices.mixed_backend_wrappers = {
+    "to_add": ("handle_device_shifting",),
+    "to_skip": (),
+}
+
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_min(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the minimum along segments of an array. Segments are defined by an integer
+    array of segment IDs.
+
+    Note
+    ----
+    If the given segment ID `i` is negative, then the corresponding
+    value is dropped, and will not be included in the result.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented min operation.
+        For each segment, it computes the min value in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_sum(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the sum of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented sum operation.
+        For each segment, it computes the sum of values in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)

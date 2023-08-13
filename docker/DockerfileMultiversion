@@ -2,8 +2,7 @@ FROM debian:buster
 WORKDIR /ivy
 
 
-COPY /docker/multiversion_framework_directory.py .
-COPY /docker/requirement_mappings_multiversion.json .
+
 
 ARG fw
 ARG pycon=3.8.10
@@ -16,7 +15,7 @@ RUN apt clean && \
     apt-get install -y wget && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
      /bin/bash ~/miniconda.sh -b -p /opt/miniconda
- 
+
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN conda create --name multienv python==$pycon
 
@@ -41,6 +40,8 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
     pip3 install --no-cache-dir -r requirements.txt
 
 
+COPY /docker/multiversion_framework_directory.py .
+COPY /docker/requirement_mappings_multiversion.json .
 
 # requirement mappings directs which dependency to be installed and where
 SHELL ["/bin/bash", "-c"]
@@ -48,7 +49,6 @@ RUN python3 multiversion_framework_directory.py  $fw
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
-
 
 
 

@@ -35,7 +35,7 @@ Depending on your preferred mode of cloning, any of the below should work:
 
     gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 
-Then add Ivy original repository as upstream, to easily sync with latest changes.
+Then enter into your cloned ivy folder, for example :code:`cd ~/ivy` and add Ivy original repository as upstream, to easily sync with latest changes.
 
 .. code-block:: none
 
@@ -89,7 +89,7 @@ Virtual environments - No Docker
 Due to the rapid pace of updates in Ivy, it is strongly suggested for developers to use the latest ivy package from GitHub source, as explained below.
 This is to ensure the contributors' code and examples are as aligned and in accordance with the latest as possible.
 The stable version of Ivy from PyPI maybe used for personal projects and experiments but avoided in development, for now.
-If you want to use the stable version, you are welcome to use the docker container or pip install ivy-core.
+If you want to use the stable version, you are welcome to use the docker container or pip install ivy.
 
 Below is a guide to creating your own virtual environment.
 The benefit of creating a python environment is the ability to install certain packages for a project and then other packages (perhaps different versions) in a new environment for another project.
@@ -108,7 +108,7 @@ Using miniconda
 
    .. code-block:: none
       
-      conda create --name ivy_dev python=3.8.10
+      conda create --name ivy_dev python=3.10.0
 
 #. Activate the environment by:
 
@@ -140,11 +140,11 @@ Using miniconda
 
 #. Installing the development dependencies.
 
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
    
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
@@ -209,12 +209,21 @@ This is a builtin package and doesn't require explicit installation.
 
 #. Installing the development dependencies.
    
-   a. On Linux Or Windows, you will need to use the optional_ubuntu.txt requirements file. To install dependencies.
+   a. On Linux, Windows or Intel Mac, you will need to use the `optional.txt` requirements file. To install dependencies.
    
       .. code-block:: none
    
-         pip install -r requirements/requirements.txt
+         pip install -r requirements/optional.txt
+
+      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source. 
    
+      .. code-block:: none
+        
+         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+        
+      PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
+
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
       .. code-block:: none
@@ -274,6 +283,19 @@ Windows
    a. In the left panel select "System Interpreter".
    b. For Interpreter, select the default option which will be "/usr/bin/python3" the select "Create".
 #. Opening "Edit Run/Debug configurations" dialog -> "Edit Configurations..." and making sure that "Working directory" is empty in case of getting the "Can't run process: the working directory '\ivy' is invalid, it needs to be an absolute path" error.
+#. Everyone using PyCharm with the latest docker image and facing issues after setting up everything. All you need to do is add the paths here once, and then go to :code:`File--> Save all` for this configuration to persist. Just as shown in the image below, The paths would be:
+
+   .. code-block:: none
+
+       /opt/fw/numpy
+       /opt/fw/jax
+       /opt/fw/tensorflow
+       /opt/fw/torch
+       /opt/fw/paddle
+       /opt/fw/mxnet
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/pycharm_with_docker/docker_newimage_fix.png?raw=true
+  :width: 420
 
 Once these steps are finished, your interpreter should be set up correctly!
 If Docker's latest version causes error, try using an earlier version by visiting `Docker release note <https://docs.docker.com/desktop/release-notes/>`_.
@@ -284,7 +306,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
@@ -324,7 +346,7 @@ When setting up on an M1 Mac, you would have to update the Dockerfile to install
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
@@ -408,7 +430,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
@@ -634,10 +656,9 @@ GitHub Codespaces
 
 It can be headache to install Docker and setup the PyCharm development environment, especially on recent ARM architectures like the new M1 Macs.
 Instead, we could make use of the GitHub Codespaces feature provided; this feature creates a VM (Virtual Machine) on the Azure cloud (means no local computation) with same configuration as defined by :code:`ivy/Dockerfile`.
-Since it's a VM, we no longer have to worry about installing the right packages, modules etc., making it platform agnostic (just like ivy :P).
+Since it's a VM, we no longer have to worry about installing the right packages, modules etc.
 We can develop as we usually do on Visual Studio Code with all your favourite extensions and themes available in Codespaces too.
 With all the computations being done on cloud, we could contribute to Ivy using unsupported hardware, old/slow systems, even from your iPad as long as you have Visual Studio code or a browser installed.
-How cool is that ?!
 
 **Important Note**
 
@@ -659,18 +680,38 @@ Now we are ready to begin!
 
 Just follow the steps outlined below:
 
-1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on "create codespace on master".
+1. Go to your fork of :code:`ivy`, and then click on the green "Code" dropdown, go to Codespaces tab, and then click on three dots, then click ``new with options...``.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/fork_create_codespace.png?raw=true
    :width: 420
 
-2. This will open up a new tab, where you click on "Open this codespaces on VS code desktop".
+2. You will get the following screen, then you will select the branch.
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/select_branch.png?raw=true
+   :width: 420
+
+3. The you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
+   
+      - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
+      - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
+      - :code:`Ivy GPU Development Environment (build)` - This will set up the development environment of ivy for GPU and build image from :code:`ivy/docker/DockerfileGPU`.
+      - :code:`Ivv Development Environment for Multiver...` - This will set up the development environment of multiversion support with ivy and build image from :code:`ivy/docker/DockerfileMultiversion`.
+      - :code:`Ivy Development Environment (image)` - This will set up the development environment of ivy for CPU and build image from latest image from dockerhub.
+      - :code:`Ivy GPU Development Environment (image)` - This will set up the development environment of ivy for GPU and build image from latest image from dockerhub.
+   
+   For now, we will select :code:`Ivy Development Environment (image)`.
+   Select your region and prefered machine type, then click on "Create Codespace".
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/devcontainer_config.png?raw=true
+   :width: 420
+
+4. This will open up a new tab, where you click on "Open this codespaces on VS code desktop".
 Give the relevant permissions to the browser to open up Visual Studio Code.
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/open_vscode_desktop.png?raw=true
    :width: 420
 
-3. Once visual studio code opens up, it will start building the remote container.
+5. Once visual studio code opens up, it will start building the remote container.
 In order to view the logs while the container is being built, you may click on "Building Codespace..." on the bottom right box.
 Please be patient while container is being built, it may take upto 10-15 minutes, but it's a one-time process.
 Any subsequent connections to your ivy codespace will launch in 10-12 seconds.
@@ -683,13 +724,27 @@ Log of container being built would look like below:
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/log_codespace.png?raw=true
    :width: 420
 
-4. Once the container is built, you would see the following output log saying "Finished configuring codespace".
+6. Once the container is built, you would see the following output log saying "Finished configuring codespace".
 
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/codespace_built.png?raw=true
    :width: 420
 
-5. That's it, you have just setup GitHub codespaces and can start developing Ivy.
+7. That's it, you have just setup GitHub codespaces and can start developing Ivy.
 The configuration files install all the required packages, extensions for you to get started quickly.
+
+**Setting up Codespaces with a GPU**
+
+If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
+
+1. Point 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
+   :width: 420
+
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
+   :width: 420
 
 **Opening an existing Codespace**
 
@@ -742,7 +797,22 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
+4. Following all of this, you should refresh the test suite and you should now be able to run tests right from VS Code!
+
+5. To simply run the tests using play button in the toolbar, you will need to add the .vscode folder to your workspace. Then add the ``settings.json`` file containing the following:
+
+.. code-block:: json
+
+      {
+         "python.testing.pytestArgs": [
+            "./ivy_tests/test_ivy/",
+            "./ivy_tests/array_api_testing/test_array_api/",
+            "--continue-on-collection-errors",
+         ],
+         "python.testing.unittestEnabled": false,
+         "python.testing.pytestEnabled": true,
+         "python.testing.autoTestDiscoverOnSaveEnabled": true,
+      }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
@@ -750,7 +820,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 
 .. raw:: html
 
-    <iframe width="420" height="315"
+    <iframe width="420" height="315" allow="fullscreen;"
     src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 

@@ -44,7 +44,7 @@ if "ARRAY_API_TESTS_MODULE" not in os.environ:
     os.environ["ARRAY_API_TESTS_MODULE"] = "ivy.functional.backends.numpy"
 
 
-def default_framework_mapper(fw,fw_path='/opt/fw/', set_too=False):
+def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     # do a path search, get the latest
     # so that we can get the higest version
     # available dynamically and set that for
@@ -109,7 +109,7 @@ def pytest_configure(config):
                 # we have the process running, the framework imported within,
                 # we now pack the queue and the process and store it in dict
                 # for future access
-                fwrk,ver = fw.split("/")
+                fwrk, ver = fw.split("/")
                 mod_backend[fwrk] = (proc, input_queue, output_queue)
                 # set the latest version for the rest of the test code and move on
                 default_framework_mapper(fwrk, set_too=True)
@@ -208,12 +208,14 @@ def pytest_configure(config):
 
 @pytest.fixture(autouse=True)
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
-    if not hasattr(request.function, "_ivy_test"):
-        return
     try:
         test_globals.setup_api_test(
             backend_fw,
-            request.function.ground_truth_backend,
+            (
+                request.function.ground_truth_backend
+                if hasattr(request.function, "ground_truth_backend")
+                else None
+            ),
             on_device,
             (
                 request.function.test_data

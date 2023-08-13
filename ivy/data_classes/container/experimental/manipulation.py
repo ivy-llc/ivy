@@ -22,15 +22,15 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_moveaxis(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        source: Union[int, Sequence[int]],
-        destination: Union[int, Sequence[int]],
+        source: Union[int, Sequence[int], ivy.Container],
+        destination: Union[int, Sequence[int], ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -47,6 +47,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -80,11 +87,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def moveaxis(
         self: ivy.Container,
-        source: Union[int, Sequence[int]],
-        destination: Union[int, Sequence[int]],
+        source: Union[int, Sequence[int], ivy.Container],
+        destination: Union[int, Sequence[int], ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -101,6 +108,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         destination
             Destination positions for each of the original axes.
             These must also be unique.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -127,10 +141,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         x2: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -218,11 +232,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -234,6 +248,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -273,7 +294,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -285,6 +306,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -319,10 +347,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -363,10 +391,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -408,10 +436,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -450,10 +478,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -485,13 +513,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: bool = None,
-        k: int = 1,
-        axes: Tuple[int, int] = (0, 1),
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Union[bool, ivy.Container] = None,
+        k: Union[int, ivy.Container] = 1,
+        axes: Union[Tuple[int, int], ivy.Container] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -560,13 +588,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         /,
         *,
-        copy: bool = None,
-        k: int = 1,
-        axes: Tuple[int, int] = (0, 1),
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Union[bool, ivy.Container] = None,
+        k: Union[int, ivy.Container] = 1,
+        axes: Union[Tuple[int, int], ivy.Container] = (0, 1),
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -632,17 +660,17 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_top_k(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        k: int,
+        k: Union[int, ivy.Container],
         /,
         *,
-        axis: int = -1,
-        largest: bool = True,
-        sorted: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
+        axis: Union[int, ivy.Container] = -1,
+        largest: Union[bool, ivy.Container] = True,
+        sorted: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        out: Optional[Union[Tuple[ivy.Container, ivy.Container], ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         """
         ivy.Container static method variant of ivy.top_k. This method simply wraps the
@@ -715,16 +743,16 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def top_k(
         self: ivy.Container,
-        k: int,
+        k: Union[int, ivy.Container],
         /,
         *,
-        axis: int = -1,
-        largest: bool = True,
-        sorted: bool = True,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container] = -1,
+        largest: Union[bool, ivy.Container] = True,
+        sorted: Union[bool, ivy.Container] = True,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[Tuple[ivy.Container, ivy.Container]] = None,
     ) -> Tuple[ivy.Container, ivy.Container]:
         """
@@ -800,11 +828,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         m: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -816,6 +844,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         m
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -865,7 +900,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -877,6 +912,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with arrays to be flipped. Arrays must be at least 2-D.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         out
             optional output container, for writing the result to.
 
@@ -908,10 +950,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -995,14 +1037,14 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        copy: Optional[bool] = None,
-        start_dim: int = 0,
-        end_dim: int = -1,
-        order: str = "C",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        start_dim: Union[int, ivy.Container] = 0,
+        end_dim: Union[int, ivy.Container] = -1,
+        order: Union[str, ivy.Container] = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1014,6 +1056,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         x
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1072,10 +1121,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def flatten(
         self: ivy.Container,
         *,
-        copy: Optional[bool] = None,
-        start_dim: int = 0,
-        end_dim: int = -1,
-        order: str = "C",
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        start_dim: Union[int, ivy.Container] = 0,
+        end_dim: Union[int, ivy.Container] = -1,
+        order: Union[str, ivy.Container] = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1087,6 +1136,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             input container to flatten at leaves.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         start_dim
             first dim to flatten. If not set, defaults to 0.
         end_dim
@@ -1135,7 +1191,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_pad(
         input: ivy.Container,
-        pad_width: Union[Iterable[Tuple[int]], int],
+        pad_width: Union[Iterable[Tuple[int]], int, ivy.Container],
         /,
         *,
         mode: Union[
@@ -1154,17 +1210,18 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                 "empty",
             ],
             Callable,
+            ivy.Container,
         ] = "constant",
-        stat_length: Union[Iterable[Tuple[int]], int] = 1,
-        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
-        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
-        reflect_type: Literal["even", "odd"] = "even",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        stat_length: Union[Iterable[Tuple[int]], int, ivy.Container] = 1,
+        constant_values: Union[Iterable[Tuple[Number]], Number, ivy.Container] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number, ivy.Container] = 0,
+        reflect_type: Union[Literal["even", "odd"], ivy.Container] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **kwargs: Optional[Any],
+        **kwargs: Optional[Union[Any, ivy.Container]],
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.pad.
@@ -1191,7 +1248,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def pad(
         self: ivy.Container,
-        pad_width: Union[Iterable[Tuple[int]], int],
+        pad_width: Union[Iterable[Tuple[int]], int, ivy.Container],
         /,
         *,
         mode: Union[
@@ -1210,17 +1267,18 @@ class _ContainerWithManipulationExperimental(ContainerBase):
                 "empty",
             ],
             Callable,
+            ivy.Container,
         ] = "constant",
-        stat_length: Union[Iterable[Tuple[int]], int] = 1,
-        constant_values: Union[Iterable[Tuple[Number]], Number] = 0,
-        end_values: Union[Iterable[Tuple[Number]], Number] = 0,
-        reflect_type: Literal["even", "odd"] = "even",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        stat_length: Union[Iterable[Tuple[int]], int, ivy.Container] = 1,
+        constant_values: Union[Iterable[Tuple[Number]], Number, ivy.Container] = 0,
+        end_values: Union[Iterable[Tuple[Number]], Number, ivy.Container] = 0,
+        reflect_type: Union[Literal["even", "odd"], ivy.Container] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
-        **kwargs: Optional[Any],
+        **kwargs: Optional[Union[Any, ivy.Container]],
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.pad.
@@ -1247,14 +1305,16 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_vsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.vsplit. This method simply wraps the
@@ -1265,6 +1325,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         ary
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -1328,10 +1395,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def vsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.vsplit. This method simply wraps
@@ -1342,6 +1411,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         self
             the container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n
             equal sections, provided that n must be a divisor of the split axis.
@@ -1387,14 +1463,16 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_dsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.dsplit. This method simply wraps the
@@ -1410,6 +1488,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The key-chains to apply or not apply the method to. Default is None.
         to_apply
@@ -1466,10 +1551,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def dsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.dsplit. This method simply wraps
@@ -1485,6 +1572,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             equal sections, provided that n must be a divisor of the split axis.
             If indices_or_sections is a sequence of ints or 1-D array,
             then input is split at each of the indices.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
 
         Returns
         -------
@@ -1523,11 +1617,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_1d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.atleast_1d. This method simply wraps
@@ -1538,6 +1632,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1580,11 +1681,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_1d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.atleast_1d. This method simply
@@ -1597,6 +1698,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             the container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1650,10 +1758,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1694,10 +1802,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -1731,11 +1839,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_2d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.atleast_2d. This method simply wraps
@@ -1746,6 +1854,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1788,11 +1903,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def atleast_2d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.atleast_2d. This method simply
@@ -1805,6 +1920,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1853,11 +1975,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_atleast_3d(
         *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.atleast_3d. This method simply wraps
@@ -1868,6 +1990,13 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         arys
             one or more container with array inputs.
+        copy
+            boolean indicating whether or not to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1913,12 +2042,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def atleast_3d(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
         *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container instance method variant of ivy.atleast_3d. This method simply
@@ -1931,6 +2060,7 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             container with array inputs.
         arys
             one or more container with array inputs.
+            
         key_chains
             The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1983,12 +2113,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def static_take_along_axis(
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        axis: int,
-        mode: str = "fill",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container],
+        mode: Union[str, ivy.Container] = "fill",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2057,12 +2187,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     def take_along_axis(
         self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        axis: int,
-        mode: str = "fill",
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Union[int, ivy.Container],
+        mode: Union[str, ivy.Container] = "fill",
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2130,14 +2260,16 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_hsplit(
         ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> List[ivy.Container]:
         """
         ivy.Container static method variant of ivy.hsplit. This method simply wraps the
@@ -2210,8 +2342,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def hsplit(
         self: ivy.Container,
-        indices_or_sections: Union[int, Sequence[int], ivy.Array, ivy.NativeArray],
-        copy: Optional[bool] = None,
+        indices_or_sections: Union[
+            int, Sequence[int], ivy.Array, ivy.NativeArray, ivy.Container
+        ],
+        copy: Optional[Union[bool, ivy.Container]] = None,
         /,
     ) -> List[ivy.Container]:
         """
@@ -2268,10 +2402,10 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         shapes: Union[ivy.Container, List[Tuple[int]]],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2283,6 +2417,17 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ----------
         shapes
             the container with shapes to broadcast.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2355,14 +2500,14 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_expand(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Shape, ivy.NativeShape],
+        shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        copy: Optional[Union[bool, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2370,14 +2515,37 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         Parameters
         ----------
         x
+            input container.
         shape
-        device
-        out
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
         to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
         prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
         map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
+        Returns
+        -------
+        ret
+            An output Container with the results.
         """
         return ContainerBase.cont_multi_map_in_function(
             "expand",
@@ -2393,19 +2561,38 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def expand(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Shape, ivy.NativeShape],
+        shape: Union[ivy.Shape, ivy.NativeShape, ivy.Container],
         /,
         *,
-        copy: Optional[bool] = None,
+        copy: Optional[Union[bool, ivy.Container]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
 
         Parameters
         ----------
+        self
+            input container.
         shape
-        device
+            A 1-D Array indicates the shape you want to expand to,
+            following the broadcast rule.
+        copy
+            boolean indicating whether to copy the input array.
+            If True, the function must always copy.
+            If False, the function must never copy and must
+            raise a ValueError in case a copy would be necessary.
+            If None, the function must reuse existing memory buffer if possible
+            and copy otherwise. Default: ``None``.
+            device
         out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            An output Container with the results.
+
 
         """
         return self.static_expand(self, shape, copy=copy, out=out)
@@ -2413,14 +2600,14 @@ class _ContainerWithManipulationExperimental(ContainerBase):
     @staticmethod
     def static_as_strided(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-        strides: Sequence[int],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        strides: Union[Sequence[int], ivy.Container],
         /,
         *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.as_strided. This method simply
@@ -2465,8 +2652,8 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def as_strided(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
-        strides: Sequence[int],
+        shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int], ivy.Container],
+        strides: Union[Sequence[int], ivy.Container],
         /,
     ) -> ivy.Container:
         """
@@ -2498,12 +2685,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         ],
         /,
         *,
-        new_axis: int = 0,
-        axis: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        new_axis: Union[int, ivy.Container] = 0,
+        axis: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2602,12 +2789,12 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
         ],
         *,
-        new_axis: int = 0,
-        axis: int = 0,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        new_axis: Union[int, ivy.Container] = 0,
+        axis: Union[int, ivy.Container] = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -2685,11 +2872,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
 
     def associative_scan(
         self: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        fn: Callable,
+        fn: Union[Callable, ivy.Container],
         /,
         *,
-        reverse: bool = False,
-        axis: int = 0,
+        reverse: Union[bool, ivy.Container] = False,
+        axis: Union[int, ivy.Container] = 0,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.associative_scan. This method
@@ -2719,11 +2906,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unique_consecutive.
@@ -2746,11 +2933,11 @@ class _ContainerWithManipulationExperimental(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        axis: Optional[int] = None,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        axis: Optional[Union[int, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str], ivy.Container]] = None,
+        to_apply: Union[bool, ivy.Container] = True,
+        prune_unapplied: Union[bool, ivy.Container] = False,
+        map_sequences: Union[bool, ivy.Container] = False,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.unique_consecutive.
@@ -2766,4 +2953,46 @@ class _ContainerWithManipulationExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+        )
+
+    @staticmethod
+    def _static_fill_diagonal(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        v: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        wrap: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return ContainerBase.cont_multi_map_in_function(
+            "fill_diagonal",
+            a,
+            v,
+            wrap=wrap,
+        )
+
+    def fill_diagonal(
+        self: ivy.Container,
+        v: Union[int, float, ivy.Container],
+        /,
+        *,
+        wrap: Union[bool, ivy.Container] = False,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.fill_diagonal.
+
+        This method simply wraps the function, and so the docstring for
+        ivy.fill_diagonal also applies to this method with minimal
+        changes.
+        """
+        return self._static_fill_diagonal(
+            self,
+            v,
+            wrap=wrap,
         )

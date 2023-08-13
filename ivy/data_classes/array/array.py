@@ -156,11 +156,12 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self.backend = ivy.current_backend_str()
+        self._backend = ivy.backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
-            self._dynamic_backend = ivy.get_dynamic_backend()
+            self._dynamic_backend = ivy.dynamic_backend
+        self.weak_type = False  # to handle 0-D jax front weak typed arrays
 
     def _view_attributes(self, data):
         self._base = None
@@ -174,27 +175,27 @@ class Array(
     # ---------- #
 
     @property
+    def backend(self):
+        return self._backend
+
+    @property
     def dynamic_backend(self):
         return self._dynamic_backend
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable
+        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
-            self._backend = _determine_backend_from_args(self)
+            self._backend = _determine_backend_from_args(self).backend
 
         else:
-            is_variable = self._backend.is_variable
-            to_numpy = self._backend.to_numpy
-            variable_data = self._backend.variable_data
+            ivy_backend = ivy.with_backend(self._backend)
+            to_numpy = ivy_backend.to_numpy
 
-            if is_variable(self.data) and not (
-                str(self._backend).__contains__("jax")
-                or str(self._backend).__contains__("numpy")
-            ):
-                native_data = variable_data(self.data)
+            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+                native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
                 self._data = _variable(new_arr).data
@@ -202,6 +203,8 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
+
+            self._backend = ivy.backend
 
         self._dynamic_backend = value
 
@@ -237,7 +240,9 @@ class Array(
             ``(..., M, N)``, the returned array must have shape ``(..., N, M)``).
             The returned array must have the same data type as the original array.
         """
-        ivy.utils.assertions.check_greater(len(self._data.shape), 2, allow_equal=True)
+        ivy.utils.assertions.check_greater(
+            len(self._data.shape), 2, allow_equal=True, as_array=False
+        )
         return ivy.matrix_transpose(self._data)
 
     @property
@@ -257,7 +262,7 @@ class Array(
             self._size = (
                 functools.reduce(mul, self._data.shape)
                 if len(self._data.shape) > 0
-                else 0
+                else 1
             )
         return self._size
 
@@ -272,7 +277,9 @@ class Array(
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
         if self._strides is None:
-            self._strides = ivy.strides(self._data)
+            # for this to work consistently for non-contiguous arrays
+            # we must pass self to ivy.strides, not self.data
+            self._strides = ivy.strides(self)
         return self._strides
 
     @property
@@ -286,13 +293,41 @@ class Array(
             two-dimensional array whose first and last dimensions (axes) are
             permuted in reverse order relative to original array.
         """
-        ivy.utils.assertions.check_equal(len(self._data.shape), 2)
+        ivy.utils.assertions.check_equal(len(self._data.shape), 2, as_array=False)
         return ivy.matrix_transpose(self._data)
 
     @property
     def base(self) -> ivy.Array:
         """Original array referenced by view."""
         return self._base
+
+    @property
+    def real(self) -> ivy.Array:
+        """
+        Real part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the real part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.real(self._data)
+
+    @property
+    def imag(self) -> ivy.Array:
+        """
+        Imaginary part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the imaginary part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.imag(self._data)
 
     # Setters #
     # --------#
@@ -360,8 +395,8 @@ class Array(
                 self._post_repr = ", dev={})".format(self._dev_str)
             else:
                 self._post_repr = ")"
-        sig_fig = ivy.array_significant_figures()
-        dec_vals = ivy.array_decimal_values()
+        sig_fig = ivy.array_significant_figures
+        dec_vals = ivy.array_decimal_values
         if self.backend == "" or ivy.is_local():
             # If the array was constructed using implicit backend
             backend = ivy.current_backend()
@@ -370,7 +405,11 @@ class Array(
             # from the currently set backend
             backend = ivy.with_backend(self.backend, cached=True)
         arr_np = backend.to_numpy(self._data)
-        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self.size > 0 else np.array(arr_np)
+        rep = (
+            np.array(ivy.vec_sig_fig(arr_np, sig_fig))
+            if self.size > 0
+            else np.array(arr_np)
+        )
         with np.printoptions(precision=dec_vals):
             repr = rep.__repr__()[:-1].partition(", dtype")[0].partition(", dev")[0]
             return (
@@ -397,15 +436,7 @@ class Array(
         return ivy.get_item(self._data, query)
 
     def __setitem__(self, query, val):
-        try:
-            if ivy.current_backend_str() == "torch":
-                self._data = self._data.detach()
-            if ivy.is_ivy_array(val):
-                val = val.data
-            self._data.__setitem__(query, val)
-        except:
-            self._data = ivy.scatter_nd(query, val, reduction="replace", out=self)._data
-            self._dtype = ivy.dtype(self._data)
+        self._data = ivy.set_item(self._data, query, val)._data
 
     def __contains__(self, key):
         return self._data.__contains__(key)
@@ -728,16 +759,31 @@ class Array(
         return ivy.abs(self._data)
 
     def __float__(self):
-        res = self._data.__float__()
+        if hasattr(self._data, "__float__"):
+            if "complex" in self.dtype:
+                res = float(self.real)
+            else:
+                res = self._data.__float__()
+        else:
+            res = float(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            res = self._data.__int__()
+            if "complex" in self.dtype:
+                res = int(self.real)
+            else:
+                res = self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
@@ -1138,17 +1184,28 @@ class Array(
                 jax_array = ivy.array(np_array)
                 return to_ivy(jax_array)
             return to_ivy(copy.deepcopy(self._data))
+        except RuntimeError:
+            from ivy.functional.ivy.gradients import _is_variable
+
+            # paddle and torch don't support the deepcopy protocol on non-leaf tensors
+            if _is_variable(self):
+                return to_ivy(copy.deepcopy(ivy.stop_gradient(self)._data))
+            return to_ivy(copy.deepcopy(self._data))
 
     def __len__(self):
-        return len(self._data)
+        if not len(self._data.shape):
+            return 0
+        try:
+            return len(self._data)
+        except TypeError:
+            return self._data.shape[0]
 
     def __iter__(self):
         if self.ndim == 0:
             raise TypeError("iteration over a 0-d ivy.Array not supported")
         if ivy.current_backend_str() == "paddle":
-            if self.ndim == 1:
-                ret = [to_ivy(i).squeeze(0) for i in self._data]
-                return iter(ret)
-            elif self.dtype in ["int8", "int16", "uint8", "float16"]:
+            if self.dtype in ["int8", "int16", "uint8", "float16"]:
                 return iter([to_ivy(i) for i in ivy.unstack(self._data)])
+            elif self.ndim == 1:
+                return iter([to_ivy(i).squeeze(axis=0) for i in self._data])
         return iter([to_ivy(i) for i in self._data])

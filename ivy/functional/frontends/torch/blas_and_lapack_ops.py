@@ -129,8 +129,7 @@ def matrix_power(A, n, *, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, tol=None, symmetric=False, *, out=None):
-    # TODO: add symmetric
-    return ivy.matrix_rank(input, rtol=tol, out=out).astype("int64")
+    return ivy.matrix_rank(input, atol=tol, hermitian=symmetric, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -139,6 +138,10 @@ def mm(input, mat2, *, out=None):
         raise RuntimeError("input must be 2D matrices")
     input, mat2 = torch_frontend.promote_types_of_torch_inputs(input, mat2)
     return ivy.matmul(input, mat2, out=out)
+
+
+# alias to fix mm transpilation issue as mm() gets mapped to spmm() after transpilation
+spmm = mm
 
 
 @to_ivy_arrays_and_back

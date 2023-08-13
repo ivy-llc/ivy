@@ -50,7 +50,7 @@ def random_normal(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     _check_valid_scale(std)
-    shape = _check_bounds_and_get_shape(mean, std, shape)
+    shape = _check_bounds_and_get_shape(mean, std, shape).shape
     dtype = ivy.as_native_dtype(dtype)
     if seed:
         torch.manual_seed(seed)

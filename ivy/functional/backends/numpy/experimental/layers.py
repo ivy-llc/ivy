@@ -2,85 +2,108 @@
 
 import math
 import numpy as np
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, List, Literal, Sequence
 
 # local
 import ivy
-from ivy.functional.ivy.layers import _handle_padding, _get_num_padded_values
+from ivy.functional.ivy.layers import (
+    _handle_padding,
+    _get_num_padded_values,
+    _validate_max_pool_params,
+    _depth_max_pooling_helper,
+)
 from ivy.functional.backends.numpy.layers import _add_dilations
 from ivy.functional.ivy.experimental.layers import _padding_ceil_mode
 from ivy.func_wrapper import with_supported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-def _determine_depth_max_pooling(x, kernel, strides, dims):
-    # determine depth pooling
-    depth_pooling = False
-    if len(kernel) == dims + 2:
-        spatial_kernel = kernel[1:-1]
-        if kernel[-1] != 1:
-            depth_pooling = True
-            if any(np.array(spatial_kernel) != 1):
-                raise NotImplementedError(
-                    "MaxPooling supports exactly one of pooling across"
-                    " depth or pooling across width/height."
-                )
-            if len(strides) != dims + 2 or strides[-1] != kernel[-1]:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to equal the depth"
-                    " stride"
-                )
-            if x.shape[-1] % kernel[-1] != 0:
-                raise NotImplementedError(
-                    "Depthwise max pooling requires the depth window to evenly divide"
-                    " the input depth"
-                )
-            x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
-            kernel = [kernel[-1], *[1] * (dims - 1)]
-            strides = [strides[-1], *[1] * (dims - 1)]
-        else:
-            kernel = spatial_kernel
-            strides = strides[1:-1] if len(strides) == dims + 2 else strides
+def _determine_depth_max_pooling(x, kernel, strides, dims, data_format="channel_last"):
+    kernel, strides, depth_pooling = _depth_max_pooling_helper(
+        x.shape, kernel, strides, dims=dims, data_format=data_format
+    )
+    if depth_pooling:
+        x = np.transpose(x, (0, dims + 1, *range(1, dims + 1)))
     return x, kernel, strides, depth_pooling
 
 
 def max_pool1d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NWC",
+    dilation: Union[int, Tuple[int]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = [kernel]
-    elif len(kernel) == 1:
-        kernel = [kernel[0]]
-
-    if isinstance(strides, int):
-        strides = [strides]
-    elif len(strides) == 1:
-        strides = [strides[0]]
+    dims = 1
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
     if data_format == "NCW":
         x = np.swapaxes(x, 1, 2)
+        kernel = [kernel[i] for i in [0, 2, 1]] if len(kernel) == (dims + 2) else kernel
+        strides = (
+            [strides[i] for i in [0, 2, 1]] if len(strides) == (dims + 2) else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    pad_w = _handle_padding(x.shape[1], strides[0], kernel[0], padding)
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, dims, data_format="channel_last"
     )
+
+    x_shape = x.shape[1:2]
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+    if not depth_pooling:
+        if dilation[0] > 1:
+            filters = _add_dilations(filters, dilation[0], axis=0, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_w = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_list = [
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        if ceil_mode:
+            pad_list[0] = _padding_ceil_mode(
+                x_shape[0], kernel[0], pad_list[0], strides[0]
+            )
+
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
 
     x_shape = x.shape
     new_w = (x_shape[1] - kernel[0]) // strides[0] + 1
-    new_shape = [x_shape[0], new_w, kernel[0]] + [x_shape[-1]]
+    new_shape = [x_shape[0], new_w] + list(kernel) + [x_shape[-1]]
     new_strides = (
         x.strides[0],
         x.strides[1] * strides[0],
@@ -88,64 +111,66 @@ def max_pool1d(
         x.strides[2],
     )
 
+    # B x OW x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
     )
 
+    # B x OW x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 2 + list(kernel) + [1]), sub_matrices, -math.inf
+    )
+
     res = sub_matrices.max(axis=(2))
 
+    if depth_pooling:
+        res = np.swapaxes(res, 1, 2)
     if data_format == "NCW":
-        return res.swapaxes(1, 2)
+        res = np.swapaxes(res, 1, 2)
     return res
 
 
 def max_pool2d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: Union[str, int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NHWC",
-    dilation: Union[int, Tuple[int], Tuple[int, int]] = 1,
+    dilation: Union[int, Tuple[int, ...]] = 1,
     ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = [kernel] * 2
-    elif len(kernel) == 1:
-        kernel = [kernel[0]] * 2
-
-    if isinstance(strides, int):
-        strides = [strides] * 2
-    elif len(strides) == 1:
-        strides = [strides[0]] * 2
-
-    if isinstance(dilation, int):
-        dilation = [dilation] * 2
-    elif len(dilation) == 1:
-        dilation = [dilation[0]] * 2
-
-    if isinstance(padding, int):
-        padding = [(padding,) * 2] * 2
-    elif isinstance(padding, tuple) and len(padding) == 1:
-        padding = [(padding[0],) * 2] * 2
-    elif isinstance(padding, tuple) and len(padding) == 2:
-        padding = [(padding[0],) * 2, (padding[1],) * 2]
-
-    if isinstance(padding, (tuple, list)):
-        ivy.utils.assertions.check_kernel_padding_size(kernel, padding)
+    dims = 2
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 1]] if len(kernel) == (dims + 2) else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
     x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, 2
+        x, kernel, strides, dims, data_format="channel_last"
     )
+
     x_shape = list(x.shape[1:3])
     filters = np.ones((list(kernel)), dtype=x.dtype)
     if not depth_pooling:
-        for j in range(2):
+        for j in range(dims):
             if dilation[j] > 1:
                 filters = _add_dilations(filters, dilation[j], axis=j, values=0)
         kernel = list(filters.shape)
@@ -159,7 +184,7 @@ def max_pool2d(
             ]
         pad_list = list(pad_list)
         if ceil_mode:
-            for i in range(2):
+            for i in range(dims):
                 pad_list[i] = _padding_ceil_mode(
                     x_shape[i], kernel[i], pad_list[i], strides[i]
                 )
@@ -174,6 +199,13 @@ def max_pool2d(
             "constant",
             constant_values=-math.inf,
         )
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
 
     x_shape = x.shape
     new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
@@ -187,6 +219,7 @@ def max_pool2d(
         x.strides[2],
         x.strides[3],
     )
+
     # B x OH x OW x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
@@ -209,43 +242,84 @@ def max_pool2d(
 
 def max_pool3d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int, int]],
-    padding: str,
+    kernel: Union[int, Tuple[int, ...]],
+    strides: Union[int, Tuple[int, ...]],
+    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
     /,
     *,
     data_format: str = "NDHWC",
+    dilation: Union[int, Tuple[int, ...]] = 1,
+    ceil_mode: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = [kernel] * 3
-    elif len(kernel) == 1:
-        kernel = [kernel[0]] * 3
-
-    if isinstance(strides, int):
-        strides = [strides] * 3
-    elif len(strides) == 1:
-        strides = [strides[0]] * 3
+    dims = 3
+    kernel, strides, padding, dilation = _validate_max_pool_params(
+        kernel, strides, padding, dilation, ceil_mode, dims=dims
+    )
 
     if data_format == "NCDHW":
         x = np.transpose(x, (0, 2, 3, 4, 1))
+        kernel = (
+            [kernel[i] for i in [0, 2, 3, 4, 1]]
+            if len(kernel) == (dims + 2)
+            else kernel
+        )
+        strides = (
+            [strides[i] for i in [0, 2, 3, 4, 1]]
+            if len(strides) == (dims + 2)
+            else strides
+        )
+        padding = (
+            [padding[i] for i in [0, 2, 3, 4, 1]]
+            if isinstance(padding, list) and len(padding) == (dims + 2)
+            else padding
+        )
 
-    x_shape = list(x.shape[1:4])
-    pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
-
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
+    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
+        x, kernel, strides, dims, data_format="channel_last"
     )
+
+    x_shape = x.shape[1:4]
+    filters = np.ones((list(kernel)), dtype=x.dtype)
+    if not depth_pooling:
+        for j in range(dims):
+            if dilation[j] > 1:
+                filters = _add_dilations(filters, dilation[j], axis=j, values=0)
+        kernel = list(filters.shape)
+        pad_list = padding
+        if isinstance(padding, str):
+            pad_d = _handle_padding(x_shape[0], strides[0], kernel[0], padding)
+            pad_h = _handle_padding(x_shape[1], strides[1], kernel[1], padding)
+            pad_w = _handle_padding(x_shape[2], strides[2], kernel[2], padding)
+            pad_list = [
+                (pad_d // 2, pad_d - pad_d // 2),
+                (pad_h // 2, pad_h - pad_h // 2),
+                (pad_w // 2, pad_w - pad_w // 2),
+            ]
+        pad_list = list(pad_list)
+        if ceil_mode:
+            for i in range(dims):
+                pad_list[i] = _padding_ceil_mode(
+                    x_shape[i], kernel[i], pad_list[i], strides[i]
+                )
+
+        x = np.pad(
+            x,
+            [
+                (0, 0),
+                *pad_list,
+                (0, 0),
+            ],
+            "constant",
+            constant_values=-math.inf,
+        )
+    else:
+        if isinstance(padding, list) and any(
+            [item != 0 for sublist in padding for item in sublist]
+        ):
+            raise NotImplementedError(
+                "Nonzero explicit padding is not supported for depthwise max pooling"
+            )
 
     x_shape = x.shape
     new_d = (x_shape[1] - kernel[0]) // strides[0] + 1
@@ -262,13 +336,21 @@ def max_pool3d(
         x.strides[3],
         x.strides[4],
     )
-    # B x OH x OW x KH x KW x I
+    # B x OD x OH x OW x KD x KH x KW x I
     sub_matrices = np.lib.stride_tricks.as_strided(
         x, new_shape, new_strides, writeable=False
     )
 
-    # B x OH x OW x O
+    # B x OD x OH x OW x KD x KH x KW x I
+    sub_matrices = np.where(
+        filters.reshape([1] * 4 + list(kernel) + [1]), sub_matrices, -math.inf
+    )
+
+    # B x OD x OH x OW x O
     res = sub_matrices.max(axis=(4, 5, 6))
+
+    if depth_pooling:
+        res = np.transpose(res, (0, 2, 3, 4, 1))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
@@ -320,8 +402,9 @@ def avg_pool1d(
     elif len(strides) == 1:
         strides = [strides[0]]
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         x = np.swapaxes(x, 1, 2)
+
     x_shape = x.shape[1:-1]
     padding, pad_specific, c = _get_padded_values(
         x_shape, kernel, strides, padding, ceil_mode, 1
@@ -375,8 +458,9 @@ def avg_pool1d(
             num_padded_values[-1] = c[0]
         res = (kernel[0] * res) / (kernel[0] - num_padded_values[:, None])
 
-    if data_format == "NCW":
+    if data_format in ("NCW", "NCL"):
         return res.swapaxes(1, 2)
+
     return res
 
 
@@ -640,7 +724,7 @@ def fft(
     return np.fft.fft(x, n, dim, norm).astype(out_dtype)
 
 
-@with_supported_dtypes({"1.24.3 and below": ("float32", "float64")}, backend_version)
+@with_supported_dtypes({"1.25.2 and below": ("float32", "float64")}, backend_version)
 def dct(
     x: np.ndarray,
     /,
@@ -760,18 +844,45 @@ def dropout1d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 3
         if data_format == "NCW":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            perm = (0, 2, 1) if is_batched else (1, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-2] = 1
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCW":
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
+
+
+def dropout2d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        x_shape = x.shape
+        is_batched = len(x_shape) == 4
+        if data_format == "NCHW":
+            perm = (0, 2, 3, 1) if is_batched else (1, 2, 0)
+            x = np.transpose(x, perm)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCHW":
+            perm = (0, 3, 1, 2) if is_batched else (2, 0, 1)
+            res = np.transpose(res, perm)
+    else:
+        res = x
+    return res
 
 
 def dropout3d(
@@ -784,21 +895,20 @@ def dropout3d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
-        is_batched = len(x.shape) == 5
+        x_shape = x.shape
+        is_batched = len(x_shape) == 5
         if data_format == "NCDHW":
             perm = (0, 2, 3, 4, 1) if is_batched else (1, 2, 3, 0)
             x = np.transpose(x, perm)
-        noise_shape = list(x.shape)
-        sl = slice(1, -1) if is_batched else slice(-1)
-        noise_shape[sl] = [1] * 3
-        mask = np.random.binomial(1, 1 - prob, noise_shape)
+            x_shape = x.shape
+        mask = np.random.binomial(1, 1 - prob, x_shape)
         res = np.where(mask, x / (1 - prob), 0)
         if data_format == "NCDHW":
             perm = (0, 4, 1, 2, 3) if is_batched else (3, 0, 1, 2)
             res = np.transpose(res, perm)
-        return res
     else:
-        return x
+        res = x
+    return res
 
 
 def ifft(
@@ -831,3 +941,106 @@ def ifft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return np.asarray(np.fft.ifft(x, n, dim, norm), dtype=x.dtype)
+
+
+def fft2(
+    x: np.ndarray,
+    *,
+    s: Sequence[int] = None,
+    dim: Sequence[int] = (-2, -1),
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ivy.utils.assertions.check_elem_in_list(
+        norm,
+        ["backward", "ortho", "forward"],
+        message=f"Unrecognized normalization mode {norm}",
+    )
+    if not all(isinstance(j, int) for j in dim):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {dim} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[dim[0]], x.shape[dim[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    return np.fft.fft2(x, s, dim, norm).astype(np.complex128)
+
+
+def ifftn(
+    x: np.ndarray,
+    s: Optional[Union[int, Tuple[int]]] = None,
+    axes: Optional[Union[int, Tuple[int]]] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fft.ifftn(x, s, axes, norm).astype(x.dtype)
+
+
+@with_unsupported_dtypes({"1.25.2 and below": ("complex",)}, backend_version)
+def embedding(
+    weights: np.ndarray,
+    indices: np.ndarray,
+    /,
+    *,
+    max_norm: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ivy.utils.assertions.check_equal(
+        len(weights.shape), 2, message="weights must be 2-d", as_array=False
+    )
+
+    embeddings = np.take(weights, indices, axis=0)
+    if max_norm is not None:
+        norms = np.linalg.norm(embeddings, axis=-1, keepdims=True)
+        embeddings = np.where(
+            norms > max_norm, embeddings * max_norm / norms, embeddings
+        )
+        embeddings = np.where(
+            norms < -max_norm, embeddings * -max_norm / norms, embeddings
+        )
+    return embeddings
+
+
+def rfftn(
+    x: np.ndarray,
+    s: Sequence[int] = None,
+    axes: Sequence[int] = None,
+    *,
+    norm: str = "backward",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not all(isinstance(j, int) for j in axes):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {axes} to be a sequence of integers <class integer>"
+        )
+    if s is None:
+        s = (x.shape[axes[0]], x.shape[axes[1]])
+    if all(j < -len(x.shape) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid dim {axes}, expecting ranging"
+            f" from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not all(isinstance(j, int) for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Expecting {s} to be a sequence of integers <class integer>"
+        )
+    if all(j <= 1 for j in s):
+        raise ivy.utils.exceptions.IvyError(
+            f"Invalid data points {s}, expecting s points larger than 1"
+        )
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.utils.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.rfftn(x, s, axes, norm).astype(np.complex128)
