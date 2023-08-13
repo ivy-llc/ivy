@@ -461,15 +461,15 @@ def test_jax_numpy_indices(
         sparse=sparse,
     )
 
+
 # take
 @handle_frontend_test(
     fn_tree="jax.numpy.take",
     dtype_x_indices_axis=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"]
+        array_dtypes=helpers.get_dtypes("numeric"), indices_dtypes=["int32", "int64"]
     ),
     out=st.none(),
-    mode=st.sampled_from(['wrap', 'clip']),
+    mode=st.sampled_from(["wrap", "clip"]),
     unique_indices=st.booleans(),
     indices_are_sorted=st.booleans(),
     fill_value=st.none(),
@@ -487,7 +487,7 @@ def test_jax_take(
     frontend,
     backend_fw,
     fn_tree,
-    on_device,    
+    on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
@@ -504,18 +504,19 @@ def test_jax_take(
         mode=mode,
         unique_indices=unique_indices,
         indices_are_sorted=indices_are_sorted,
-        fill_value=fill_value
+        fill_value=fill_value,
     )
+
 
 # choose
 @handle_frontend_test(
     fn_tree="jax.numpy.choose",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],     
+        indices_dtypes=["int32", "int64"],
     ),
     out=st.none(),
-    mode=st.sampled_from(['wrap', 'clip', 'raise']),
+    mode=st.sampled_from(["wrap", "clip", "raise"]),
     test_with_out=st.just(False),
 )
 def test_jax_choose(
@@ -527,7 +528,7 @@ def test_jax_choose(
     frontend,
     backend_fw,
     fn_tree,
-    on_device,    
+    on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     choices = ivy.array(
