@@ -139,5 +139,13 @@ def rfftn(a, s=None, axes=None, norm=None):
     a = ivy.asarray(a, dtype=ivy.complex128)
     return ivy.rfftn(a, s=s, axes=axes, norm=norm)
 
+@with_unsupported_dtypes({"1.25.1 and below": ("float16",)}, "numpy")
+@to_ivy_arrays_and_back
+def ifft2(a, s=None, axis=(-2, -1), norm=None):
+    a = ivy.array(a, dtype=ivy.complex128)
+    if norm is None:
+        norm = "backward"
+    return ivy.ifft(a, axis, norm=norm, s=s)
+
 
 
