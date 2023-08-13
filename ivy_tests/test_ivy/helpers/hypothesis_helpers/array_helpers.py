@@ -2006,13 +2006,10 @@ def dtype_array_index_value_mode(
             )
         )
 
-        # making sure the bool index values are in range
         if type(index) == tuple:
             index = tuple(item for item in index if item is not None)
-
         if not type(index) is np.ndarray:
             index = np.array(index)
-
         index = index.flatten()
 
         for i in range(np.prod(np.shape(index))):
