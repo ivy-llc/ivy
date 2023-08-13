@@ -1206,6 +1206,60 @@ def _permute_dims_helper(draw):
     return permutation
 
 
+# Tile
+@st.composite
+def _multiple_shape_helper(draw):
+    input_dtype, input_array, input_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), ret_shape=True
+        )
+    )
+    input_dims = len(input_shape)
+
+    dt_n_multiples = draw(
+        helpers.dtype_and_values(
+            available_dtypes=["int32", "int64"],
+            min_value=0,
+            max_value=10,
+            shape=draw(
+                helpers.get_shape(
+                    min_num_dims=1,
+                    max_num_dims=1,
+                    min_dim_size=input_dims,
+                    max_dim_size=input_dims,
+                )
+            ),
+        )
+    )
+
+    return input_dtype, input_array, dt_n_multiples
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Tile", all_arguments=_multiple_shape_helper()
+)
+def test_tensorflow_Tile(
+    *,
+    all_arguments,
+    test_flags,
+    frontend,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    input_dtype, input_matrix, dt_and_multiples = all_arguments
+    dt_mul, multiples = dt_and_multiples
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + dt_mul,
+        input=input_matrix[0],
+        multiples=multiples[0],
+        test_flags=test_flags,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
+
+
 # Transpose
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Transpose",
