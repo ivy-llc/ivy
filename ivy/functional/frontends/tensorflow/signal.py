@@ -34,3 +34,7 @@ vorbis_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
 def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
+
+@to_ivy_arrays_and_back
+def stft_helper(input_signal, frame_length, frame_step, fft_length):
+    pass
