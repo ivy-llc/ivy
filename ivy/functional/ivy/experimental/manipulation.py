@@ -1596,7 +1596,6 @@ def take_along_axis(
         arr, indices, axis, mode=mode, out=out
     )
 
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -1614,7 +1613,7 @@ def take(
     mode: str | None = None,
     unique_indices: bool = False,
     indices_are_sorted: bool = False,
-    fill_value: Union[ivy.Array, ivy.NativeArray] | None = None,
+    fill_value: Union[ivy.Array, ivy.NativeArray] | None = None,    
 ) -> ivy.Array:
     """
     Take values from the input array by matching 1d index and data slices.
@@ -1634,9 +1633,9 @@ def take(
     out
         The output array.
     unique_indices
-        bool.
+        bool. 
     indices_are_sorted
-        bool,
+        bool, 
     fill_value
         bool
     Returns
@@ -1656,19 +1655,11 @@ def take(
     >>> z = ivy.take(arr, indices)
     >>> print(z)
     ivy.array([[4, 3],
-        [5, 7]])
+        [5, 7]])    
     """
     return ivy.current_backend(arr).take(
-        arr,
-        indices,
-        axis=axis,
-        out=out,
-        mode=mode,
-        unique_indices=unique_indices,
-        indices_are_sorted=indices_are_sorted,
-        fill_value=fill_value,
+        arr, indices, axis=axis, out=out, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value
     )
-
 
 @handle_exceptions
 @handle_backend_invalid
@@ -2249,7 +2240,6 @@ def fill_diagonal(
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
 
-
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -2263,7 +2253,7 @@ def choose(
     /,
     *,
     out: None = None,
-    mode: str | None = None,
+    mode: str | None = None,    
 ) -> ivy.Array:
     """
     Take values from the input array by matching 1d index and data slices.
@@ -2299,6 +2289,8 @@ def choose(
 
     >>> arr = ivy.array([2, 4, 1, 0])
     >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
-    ivy.array([20, 1, 12, 3])
+    ivy.array([20, 1, 12, 3])        
     """
-    return ivy.current_backend(arr).choose(arr, choices, out=out, mode=mode)
+    return ivy.current_backend(arr).choose(
+        arr, choices, out=out, mode=mode
+    )
