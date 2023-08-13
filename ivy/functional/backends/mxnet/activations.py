@@ -31,9 +31,7 @@ def sigmoid(x: None, /, *, out: Optional[None] = None) -> None:
     return mx.nd.sigmoid(x)
 
 
-def softmax(
-    x: None, /, *, axis: Optional[int] = -1, out: Optional[None] = None
-) -> None:
+def softmax(x: None, /, *, axis: int = -1, out: Optional[None] = None) -> None:
     return mx.nd.softmax(x, axis=axis)
 
 
@@ -63,7 +61,7 @@ def softplus(
     return res.astype(x.dtype)
 
 
-def log_softmax(x: None, /, *, axis: Optional[int] = -1, out: Optional[None] = None):
+def log_softmax(x: None, /, *, axis: int = -1, out: Optional[None] = None):
     raise IvyNotImplementedException()
 
 

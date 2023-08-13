@@ -95,11 +95,9 @@ def softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if axis is None:
-        axis = -1
     exp_x = paddle_backend.exp(
         paddle_backend.subtract(x, paddle_backend.max(x, axis=axis, keepdims=True))
     )
@@ -142,11 +140,9 @@ def log_softmax(
     x: paddle.Tensor,
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     out: Optional[paddle.Tensor] = None,
 ):
-    if axis is None:
-        axis = -1
     x_max = paddle_backend.max(x, axis=axis, keepdims=True)
     x_max = paddle_backend.where(
         paddle_backend.isfinite(x_max),

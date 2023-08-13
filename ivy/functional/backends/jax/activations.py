@@ -37,10 +37,8 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def softmax(
-    x: JaxArray, /, *, axis: Optional[int] = -1, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None
 ) -> JaxArray:
-    if axis is None:
-        axis = -1
     return jax.nn.softmax(x, axis)
 
 
@@ -71,11 +69,7 @@ def softplus(
     return res.astype(x.dtype)
 
 
-def log_softmax(
-    x: JaxArray, /, *, axis: Optional[int] = -1, out: Optional[JaxArray] = None
-):
-    if axis is None:
-        axis = -1
+def log_softmax(x: JaxArray, /, *, axis: int = -1, out: Optional[JaxArray] = None):
     return jax.nn.log_softmax(x, axis)
 
 

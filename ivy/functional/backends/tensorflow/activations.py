@@ -43,9 +43,7 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def softmax(
-    x: Tensor, /, *, axis: Optional[int] = -1, out: Optional[Tensor] = None
-) -> Tensor:
+def softmax(x: Tensor, /, *, axis: int = -1, out: Optional[Tensor] = None) -> Tensor:
     return tf.nn.softmax(x, axis)
 
 
@@ -72,9 +70,7 @@ def softplus(
 
 
 @with_unsupported_dtypes({"2.13.0 and below": ("complex",)}, backend_version)
-def log_softmax(
-    x: Tensor, /, *, axis: Optional[int] = -1, out: Optional[Tensor] = None
-):
+def log_softmax(x: Tensor, /, *, axis: int = -1, out: Optional[Tensor] = None):
     return tf.nn.log_softmax(x, axis)
 
 

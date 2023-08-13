@@ -155,7 +155,7 @@ def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -360,7 +360,7 @@ def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: int = -1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
