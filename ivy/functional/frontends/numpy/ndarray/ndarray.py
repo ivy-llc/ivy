@@ -164,7 +164,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self.ivy_array.dtype
+        return np_frontend.dtype(self.ivy_array.dtype)
 
     @property
     def ndim(self):
@@ -249,10 +249,20 @@ class ndarray:
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self, axis1, axis2)
 
-    def all(self, axis=None, out=None, keepdims=False, *, where=True):
+    def all(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        if not (dtype is None or ivy.is_bool_dtype(dtype)):
+            raise TypeError(
+                "No loop matching the specified signature and "
+                "casting was found for ufunc logical_or"
+            )
         return np_frontend.all(self, axis, out, keepdims, where=where)
 
-    def any(self, axis=None, out=None, keepdims=False, *, where=True):
+    def any(self, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
+        if not (dtype is None or ivy.is_bool_dtype(dtype)):
+            raise TypeError(
+                "No loop matching the specified signature and "
+                "casting was found for ufunc logical_or"
+            )
         return np_frontend.any(self, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
@@ -553,8 +563,7 @@ class ndarray:
             return self.ivy_array != 0
 
         temp = ivy.squeeze(ivy.asarray(self.ivy_array), axis=None)
-        shape = ivy.shape(temp)
-        if shape:
+        if ivy.get_num_dims(temp) > 1:
             raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
                 "Use a.any() or a.all()"
@@ -586,20 +595,29 @@ class ndarray:
     def __int__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.int64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "int() argument must be a string, a bytes-like object or a number, not"
+                " 'complex"
+            )
+        return int(self.ivy_array)
 
     def __float__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.float64))
+        if "complex" in self.dtype.name:
+            raise TypeError(
+                "float() argument must be a string or a real number, not 'complex"
+            )
+        return float(self.ivy_array)
 
     def __complex__(
         self,
     ):
-        return ivy.to_scalar(ivy.reshape(self.ivy_array, (-1,)).astype(ivy.complex128))
+        return complex(self.ivy_array)
 
     def __contains__(self, key, /):
-        return key in ivy.reshape(self.ivy_array, -1)
+        return np_frontend.any(self == key)
 
     def __iadd__(self, value, /):
         return np_frontend.add(self, value, out=self)

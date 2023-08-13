@@ -546,10 +546,10 @@ def test_random_normal(
         init_all_as_kwargs_np={
             "mean": mean,
             "stddev": stddev,
-            "shape": shape,
         },
         method_input_dtypes=[],
         method_all_as_kwargs_np={
+            "var_shape": shape,
             "device": "cpu",
             "dtype": dtype,
         },
