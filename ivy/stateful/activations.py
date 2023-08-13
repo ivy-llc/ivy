@@ -185,11 +185,22 @@ class Softmax(Module):
 
 
 class Softplus(Module):
-    def __init__(self):
+    def __init__(
+        self,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
+    ):
         """Apply the SOFTPLUS activation function."""
         Module.__init__(self)
+        self._complex_mode = complex_mode
 
-    def _forward(self, x, *, beta=None, threshold=None):
+    def _forward(
+        self,
+        x,
+        *,
+        beta=None,
+        threshold=None,
+        complex_mode=None,
+    ):
         """
 
         Parameters
@@ -201,6 +212,8 @@ class Softplus(Module):
 
         threshold
              values above this revert to a linear function. Default: ``None``.
+        complex_mode
+             optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -208,7 +221,12 @@ class Softplus(Module):
             The outputs following the SOFTPLUS activation *[batch_shape, d]*
 
         """
-        return ivy.softplus(x, beta=beta, threshold=threshold)
+        return ivy.softplus(
+            x,
+            beta=beta,
+            threshold=threshold,
+            complex_mode=ivy.default(complex_mode, self._complex_mode)
+        )
 
 
 class Mish(Module):

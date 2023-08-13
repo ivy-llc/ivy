@@ -498,6 +498,32 @@ def softmax(
     return current_backend(x).softmax(x, axis=axis, out=out)
 
 
+def _wrap_between(y, a):
+    """wrap y between [-a, a]"""
+    a = ivy.array(a, dtype=y.dtype)
+    a2 = ivy.array(2 * a, dtype=y.dtype)
+    zero = ivy.array(0, dtype=y.dtype)
+    rem = ivy.remainder(ivy.add(y, a), a2)
+    rem = ivy.where(rem < zero, rem + a2, rem) - a
+    return rem
+
+
+def _softplus_jax_like(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    fn_original=None,
+    beta: Optional[Union[int, float]] = None,
+    threshold: Optional[Union[int, float]] = None,
+    out: Optional[ivy.Array] = None,
+):
+    amax = ivy.relu(x)
+    print(amax)
+    x = ivy.subtract(x, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
+    x = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(x))))
+    x = ivy.real(x) + _wrap_between(ivy.imag(x), ivy.pi).astype(x.dtype) * ivy.astype(1j, x.dtype)
+    return x
+
 @handle_exceptions
 @handle_backend_invalid
 @handle_nestable
@@ -506,6 +532,7 @@ def softmax(
 @to_native_arrays_and_back
 @handle_array_function
 @handle_device_shifting
+@handle_complex_input
 def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -513,9 +540,15 @@ def softplus(
     beta: Optional[Union[int, float]] = None,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
 ) -> ivy.Array:
     """
     Apply the softplus function element-wise.
+
+    If the input is complex, then by default we apply the `log(1+ exp(x))` to  each element
+    and if the `threshold` is set we check whether the output is less than the threshold
+    we set it  to the original value of the input if not we leave as it is.
+    This behaviour can be changed by specifying a different `complex_mode`.
 
     Parameters
     ----------
@@ -528,6 +561,9 @@ def softplus(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
 
     Returns
     -------
@@ -555,6 +591,9 @@ def softplus(
     ivy.array([1.31, 2.13, 3.  ])
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
+
+
+softplus.jax_like = _softplus_jax_like
 
 
 @handle_exceptions

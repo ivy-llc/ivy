@@ -146,10 +146,10 @@ def test_softmax(*, dtype_and_x, axis, test_flags, backend_fw, fn_name, on_devic
 @handle_test(
     fn_tree="functional.ivy.softplus",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-        large_abs_safety_factor=8,
-        small_abs_safety_factor=8,
+        large_abs_safety_factor=4,
+        small_abs_safety_factor=4,
         safety_factor_scale="log",
     ),
     beta=st.one_of(helpers.number(min_value=0.1, max_value=10), st.none()),
