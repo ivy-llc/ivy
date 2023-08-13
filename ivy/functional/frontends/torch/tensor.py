@@ -1452,6 +1452,7 @@ class Tensor:
     def multiply(self, other, *, out=None):
         return torch_frontend.multiply(self, other, out=out)
 
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def multiply_(self, other, *, out=None):
         self.ivy_array = torch_frontend.multiply(self, other, out=out).ivy_array
         return self
