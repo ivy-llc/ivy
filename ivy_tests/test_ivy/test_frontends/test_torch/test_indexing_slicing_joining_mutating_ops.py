@@ -1616,9 +1616,3 @@ def test_torch_select_scatter(
         dim=axis,
         index=idx,
     )
-
-
-    
-def test_torch_select_scatter():
-    return 0
->>>>>>> d3e3cae21 (Co-authored-by: Aditya Gowda <sanju4725@gmail.com>)
