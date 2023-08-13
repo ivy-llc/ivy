@@ -5,6 +5,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+import ast
 from collections import OrderedDict
 
 
@@ -73,6 +74,25 @@ def _find_instance_in_args(backend: str, args, array_indices, mask):
         new_args = ivy_backend.copy_nest(args, to_mutable=False)
         ivy_backend.prune_nest_at_index(new_args, instance_idx)
     return instance, new_args
+
+
+def _get_decorators(func):
+    func_node = ast.parse(inspect.getsource(func)).body[0]
+    return [decorator.id for decorator in func_node.decorator_list]
+
+
+def _check_decorator_order(decorators: List[str]):
+    FN_DECORATORS = ivy.func_wrapper.FN_DECORATORS
+
+    # excludes the decorator if it is not in FN_DECORATORS -- this shouldn't happen --
+    for unknown in set(decorators).difference(set(FN_DECORATORS)):
+        decorators.remove(unknown)
+
+    # get the indices
+    indices = [FN_DECORATORS.index(decorator) for decorator in decorators]
+
+    # check if the sorted indices are the same as indices
+    assert sorted(indices, reverse=True) == indices
 
 
 def test_function(
@@ -359,6 +379,9 @@ def test_function(
         ret_device = None
         if isinstance(ret_from_target, ivy_backend.Array):
             ret_device = ivy_backend.dev(ret_from_target)
+    
+    decorators = _get_decorators(target_fn)
+    _check_decorator_order(decorators)  # ToDo: Now what?
 
     # compute the return with a Ground Truth backend
     with update_backend(test_flags.ground_truth_backend) as gt_backend:
