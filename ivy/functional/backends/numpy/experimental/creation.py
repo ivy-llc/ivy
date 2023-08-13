@@ -134,3 +134,33 @@ def unsorted_segment_sum(
             res[i] = np.sum(data[mask_index], axis=0)
 
     return res
+
+
+def mel_weight_matrix(
+    num_mel_bins: int,
+    dft_length: int,
+    sample_rate: int,
+    lower_edge_hertz: float = 0.0,
+    upper_edge_hertz: float = 3000.0,
+):
+    lower_edge_hertz = np.array(lower_edge_hertz)
+    upper_edge_hertz = np.array(upper_edge_hertz)
+    zero = np.array(0.0)
+    hz_to_mel = lambda f: 2595 * np.log10(1 + f / 700)
+    nyquist_hz = sample_rate / 2
+    linear_freqs = np.linspace(0, nyquist_hz, dft_length, dtype=np.float32)[1:]
+    spec_bin_mels = hz_to_mel(linear_freqs)[..., None]
+    mel_edges = np.linspace(
+        hz_to_mel(lower_edge_hertz),
+        hz_to_mel(upper_edge_hertz),
+        num_mel_bins + 2,
+        dtype=np.float32,
+    )
+    mel_edges = np.stack([mel_edges[i : i + 3] for i in range(num_mel_bins)])
+    lower_edge_mel, center_mel, upper_edge_mel = [
+        t.reshape((1, num_mel_bins)) for t in np.split(mel_edges, 3, axis=1)
+    ]
+    lower_slopes = (spec_bin_mels - lower_edge_mel) / (center_mel - lower_edge_mel)
+    upper_slopes = (upper_edge_mel - spec_bin_mels) / (upper_edge_mel - center_mel)
+    mel_weights = np.maximum(zero, np.minimum(lower_slopes, upper_slopes))
+    return np.pad(mel_weights, [[1, 0], [0, 0]])
