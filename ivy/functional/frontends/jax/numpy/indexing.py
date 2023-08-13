@@ -103,16 +103,4 @@ def take(arr, indices, axis=None, out=None, mode=None, unique_indices=False, ind
 
 @to_ivy_arrays_and_back
 def choose(arr, choices, out=None, mode='raise'):
-    if mode not in ['raise', 'wrap', 'clip']:
-        raise ValueError("mode must be 'raise', 'wrap', or 'clip'")
-    if out is None:
-        out = ivy.zeros(arr.shape, dtype=choices.dtype)
-    for i, index in enumerate(arr):
-        if mode == 'raise' and (index < 0 or index >= len(choices)):
-            raise ValueError("invalid entry in choice array")
-        if mode == 'wrap':
-            index = index % len(choices)
-        elif mode == 'clip':
-            index = min(max(index, 0), len(choices)-1)
-        out[i] = choices[index][i]
-    return out
+    return ivy.choose(arr, choices, out=out, mode=mode)
