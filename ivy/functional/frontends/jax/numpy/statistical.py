@@ -517,6 +517,10 @@ def quantile(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
 def nanquantile(
     a,
     q,
