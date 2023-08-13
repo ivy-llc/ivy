@@ -370,3 +370,16 @@ def cholesky_ex(input, *, upper=False, check_errors=False, out=None):
             matrix = input * math.nan
             info = ivy.ones(input.shape[:-2], dtype=ivy.int32)
             return matrix, info
+
+
+def lu_factor_ex(A, *, pivot=True, check_errors=False, out=None):
+    try:
+        LU, pivots = ivy.lu_factor(A, pivot=pivot, out=out)
+        info = ivy.zeros(A.shape[:2], dtype=ivy.int32)
+        return LU, pivots, info
+    except RuntimeError as e:
+        if check_errors:
+            raise RuntimeError(e)
+        else:
+            LU = A * math.nan
+            info = ivy.ones(A.shape[:2], dtype=ivy.int32)
