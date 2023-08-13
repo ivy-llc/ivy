@@ -1720,6 +1720,15 @@ class Tensor:
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
 
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("float16", "bfloat16")},
+        "torch",
+    )
+    def quantile(self, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+        return torch_frontend.quantile(
+            self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+        )
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):

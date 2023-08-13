@@ -61,8 +61,156 @@ def log_softmax(input, axis=-1):
     return ivy.log_softmax(input)
 
 
+def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
+    in_channels = input.shape[1]
+    out_channels = weight.shape[0] if not transpose else weight.shape[1] * groups
+
+    ivy.utils.assertions.check_equal(
+        in_channels % groups,
+        0,
+        message="in_channels must be divisible by groups",
+        as_array=False,
+    )
+    ivy.utils.assertions.check_equal(
+        out_channels % groups,
+        0,
+        message="out_channels must be divisible by groups",
+        as_array=False,
+    )
+
+    if bias is not None:
+        ivy.utils.assertions.check_equal(
+            bias.shape[0],
+            out_channels,
+            message="bias must be same shape as out_channels",
+            as_array=False,
+        )
+
+    if padding == "same":
+        if isinstance(stride, int):
+            ivy.utils.assertions.check_equal(
+                stride,
+                1,
+                message="padding cannot be 'same' for stride > 1",
+                as_array=False,
+            )
+        else:
+            for i in stride:
+                ivy.utils.assertions.check_equal(
+                    i,
+                    1,
+                    message="padding cannot be 'same' for stride > 1",
+                    as_array=False,
+                )
+
+    if not transpose:
+        in_channels_by_groups = weight.shape[1]
+        ivy.utils.assertions.check_equal(
+            in_channels,
+            in_channels_by_groups * groups,
+            message="in_channels must be consistent between input and weight",
+            as_array=False,
+        )
+    else:
+        ivy.utils.assertions.check_equal(
+            in_channels,
+            weight.shape[0],
+            message="in_channels must be consistent between input and weight",
+            as_array=False,
+        )
+
+
+def _conv(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+    dims = len(input.shape) - 2
+    _valid_shapes(input, weight, bias, stride, padding, groups)
+
+    if isinstance(padding, str):
+        padding = padding.upper()
+    else:
+        if isinstance(padding, int):
+            padding = [*[(padding, padding) for _ in range(dims)]]
+        else:
+            padding = [*[(p, p) for p in padding]]
+
+    ret = ivy.conv(
+        input,
+        weight,
+        stride,
+        padding,
+        dims=dims,
+        data_format="channel_first",
+        filter_format="channel_first",
+        dilations=dilation,
+        feature_group_count=groups,
+    )
+    if bias is not None:
+        return ivy.add(ret, ivy.expand_dims(bias, axis=(0, *range(2, dims + 2))))
+    return ret
+
+
 @with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
+def conv2d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode="valid",
+    padding=0,
+    dilation=1,
+    groups=1,
+):
+    if pad_mode == "valid" or pad_mode == "same":
+        padding = pad_mode
+    elif pad_mode == "pad":
+        padding = padding
+    else:
+        raise NotImplementedError(f"pad_mode {pad_mode} not implemented")
+    return _conv(input, weight, bias, stride, padding, dilation, groups)
+
+
+@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def conv1d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode="valid",
+    padding=0,
+    dilation=1,
+    groups=1,
+):
+    if pad_mode == "valid" or pad_mode == "same":
+        padding = pad_mode
+    elif pad_mode == "pad":
+        padding = padding
+    else:
+        raise NotImplementedError(f"pad_mode {pad_mode} not implemented")
+    return _conv(input, weight, bias, stride, padding, dilation, groups)
+
+
+@with_supported_dtypes({"2.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def conv3d(
+    input,
+    weight,
+    bias=None,
+    stride=1,
+    pad_mode="valid",
+    padding=0,
+    dilation=1,
+    groups=1,
+):
+    if pad_mode == "valid" or pad_mode == "same":
+        padding = pad_mode
+    elif pad_mode == "pad":
+        padding = padding
+    else:
+        raise NotImplementedError(f"pad_mode {pad_mode} not implemented")
+    return _conv(input, weight, bias, stride, padding, dilation, groups)
+
+
 def kl_div(logits, labels, reduction="mean"):
     """
     Computes the Kullback-Leibler (KL) Divergence between the logits and the labels.
@@ -267,3 +415,31 @@ def smooth_l1_loss(logits, labels, beta=1.0):
         absolute_diff - 0.5 * beta,
     )
     return loss
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def softshrink(x, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
+
+
+@with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
+@to_ivy_arrays_and_back
+def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
+    gumbels = -ivy.empty_like(logits).exponential().log()
+    gumbels = (logits + gumbels) / tau
+    y_soft = ivy.softmax(gumbels, axis=dim)
+
+    if hard:
+        indices = y_soft.max(axis=dim, keepdims=True)[1]
+        y_hard = ivy.zeros_like(logits)
+        updates = ivy.ones_like(indices)
+        y_hard = ivy.scatter_nd(indices, updates, reduction="replace", out=y_hard)
+
+        ret = y_hard - y_soft.stop_gradient(preserve_type=True) + y_soft
+    else:
+        ret = y_soft
+
+    return ret
