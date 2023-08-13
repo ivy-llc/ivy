@@ -362,9 +362,10 @@ def narrow(input, dim, start, length):
 
 @to_ivy_arrays_and_back
 def select_scatter(input, src, dim, index):
-    output = ivy.zeros_like(input)
-    output[dim, index] = src
-    return output
+    num_dims = ivy.get_num_dims(input)
+    slices = [slice(None)] * num_dims
+    slices[dim] = index
+    return ivy.scatter(input, src, slices, axis=dim)
 
 
 @to_ivy_arrays_and_back
