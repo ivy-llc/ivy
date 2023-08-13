@@ -11783,4 +11783,3 @@ def test_torch_tensor_quantile(
         method_flags=method_flags,
         on_device=on_device,
     )
-    
