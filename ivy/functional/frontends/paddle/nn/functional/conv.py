@@ -2,7 +2,7 @@
 import ivy
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from ....torch.nn.functional import convolution_functions
+from ivy.functional.frontends.torch.nn.functional import convolution_functions
 
 
 def _channel_first_input(x, data_format):
@@ -31,6 +31,9 @@ def _conv(
     x, weight, bias=None, stride=1, padding=0, dilation=1, groups=1, data_format="NLC"
 ):
     x = _channel_first_input(x, data_format)
+
+    if padding == 'same':
+        dilation = 1
     return convolution_functions._conv(
         x,
         weight,
@@ -54,6 +57,8 @@ def _conv_transpose(
     data_format="NLC",
 ):
     x = _channel_first_input(x, data_format)
+    if padding == 'same':
+        dilation = 1
     return convolution_functions._conv_transpose(
         x,
         weight,
