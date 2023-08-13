@@ -32,8 +32,6 @@ def fill_diagonal(a, val, wrap=False):
 
 @to_ivy_arrays_and_back
 def put(a, indices, values, mode="raise"):
-    print("ind: ", indices)
-    print("values: ", values)
     a_shape = ivy.shape(a)
     a_length = int(ivy.prod(a_shape))
     a = ivy.flatten(a)
@@ -67,4 +65,3 @@ def put(a, indices, values, mode="raise"):
                 a[int(min((a_length - 1), int(indices[i])))] = values[i % v_length]
 
     a.reshape(a_shape)
-    print("a: ", a)

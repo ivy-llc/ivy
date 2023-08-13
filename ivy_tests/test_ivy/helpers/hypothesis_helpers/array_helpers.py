@@ -1844,7 +1844,7 @@ def dtype_array_query(
     index_types = draw(
         st.lists(
             st.sampled_from(supported_index_types),
-            min_size=0,
+            min_size=1,
             max_size=len(shape),
         )
     )
@@ -1855,7 +1855,6 @@ def dtype_array_query(
         shape = (prod(shape),)
 
     for s, index_type in zip(shape, index_types):
-        print("going through the loop")
         if index_type == "int":
             new_index = draw(st.integers(min_value=-s + 1, max_value=s - 1))
         elif index_type == "seq":
@@ -1914,8 +1913,6 @@ def dtype_array_query(
     index = tuple(index)
     if len(index) == 1 and draw(st.booleans()):
         index = index[0]
-
-    print("index from the helper: ", index)
     return dtype + ["int64"] * index_types.count("array"), array, index
 
 
@@ -1977,7 +1974,8 @@ def dtype_array_index_value_mode(
     allow_neg_step=True,
     supported_index_types=["int", "seq", "array"],
 ):
-    mode = draw(st.sampled_from(["raise", "clip", "wrap"]))
+    mode = draw(st.sampled_from(["raise", "wrap", "clip"]))
+
     if mode == "raise":
         input_dtype, x, index = draw(
             helpers.dtype_array_query(
@@ -1992,31 +1990,38 @@ def dtype_array_index_value_mode(
                 flattened_array=True,
             )
         )
-        # making sure the bool index values are in range
-        index = np.array(index)
-        index = index.flatten()
-        for i in index:
-            if (np.prod(np.shape(x)) - 1 == 0) and (i is True):
-                i = False
 
-        real_shape = x[index].shape
-        if len(real_shape):
-            val_shape = real_shape[draw(st.integers(0, len(real_shape))) :]
-        else:
-            val_shape = real_shape
+        # making sure the bool index values are in range
+        if type(index) == tuple:
+            index = tuple(item for item in index if item is not None)
+
+        if not type(index) is np.ndarray:
+            index = np.array(index)
+
+        index = index.flatten()
+
+        for i in range(np.prod(np.shape(index))):
+            if (np.prod(np.shape(x)) - 1 == 0) and (index[i] == 1):
+                index[i] = False
+
         value_dtype, value = draw(
             helpers.dtype_and_values(
                 dtype=[input_dtype[0]],
-                shape=val_shape,
-                large_abs_safety_factor=2,
-                small_abs_safety_factor=2,
+                min_num_dims=1,
+                max_num_dims=1,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
             )
         )
+
         value_dtype = draw(
             helpers.get_castable_dtype(draw(available_dtypes), input_dtype[0], x)
         )[-1]
         value = value[0].astype(value_dtype)
-        return input_dtype + [value_dtype], x, index, value, mode
+
+        index_dtype = np.dtype(index.dtype).name
+
+        return input_dtype + [index_dtype] + [value_dtype], x, index, value, mode
 
     else:
         input_dtype, x = draw(
