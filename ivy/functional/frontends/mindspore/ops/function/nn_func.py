@@ -388,6 +388,14 @@ def fast_gelu(input_x):
     )
 
 
+@with_supported_dtypes({"2.0.0 and below": ("float32", "float64")}, "mindspore")
+@to_ivy_arrays_and_back
+def softshrink(x, lambd=0.5):
+    low = ivy.where(ivy.less(input, -lambd), ivy.add(input, lambd), 0)
+    up = ivy.where(ivy.greater(input, lambd), ivy.subtract(input, lambd), 0)
+    return ivy.add(low, up)
+
+
 @with_supported_dtypes({"2.0.0 and below": ("float16", "float32")}, "mindspore")
 @to_ivy_arrays_and_back
 def gumbel_softmax(logits, tau=1, hard=False, dim=-1):
