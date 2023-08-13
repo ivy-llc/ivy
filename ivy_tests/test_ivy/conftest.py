@@ -51,7 +51,11 @@ def default_framework_mapper(fw, fw_path="/opt/fw/", set_too=False):
     # use by the rest of the code
     # eg: torch/1.11.0 and torch/1.12.0
     # this will map to torch/1.12.0
-    versions = os.listdir(f"/opt/fw/{fw}")
+    try:
+        versions = os.listdir(f"/opt/fw/{fw}")
+    except FileNotFoundError:
+        # if no version exists return None
+        return None
     versions.sort()
     if set_too:
         sys.path.insert(1, f"{fw_path}{fw}/{versions[-1]}")
@@ -127,11 +131,15 @@ def pytest_configure(config):
                 # and set it in the path for rest of the code
                 # to access
                 version = default_framework_mapper(fw, set_too=True)
-                input_queue = mp.Queue()
-                proc = mp.Process(target=backend_proc, args=(input_queue, output_queue))
-                # start the process so that it loads the framework
-                input_queue.put(fw + "/" + version)
-                proc.start()
+                # spin up process only if a version was found else don't
+                if version:
+                    input_queue = mp.Queue()
+                    proc = mp.Process(
+                        target=backend_proc, args=(input_queue, output_queue)
+                    )
+                    # start the process so that it loads the framework
+                    input_queue.put(fw + "/" + version)
+                    proc.start()
 
                 # we have the process running, the framework imported within,
                 # we now pack the queue and the process and store it in dict
