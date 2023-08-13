@@ -435,4 +435,62 @@ def conv_general_transpose(
     bias: Optional[paddle.Tensor] = None,
     out: Optional[paddle.Tensor] = None,
 ):
-    raise IvyNotImplementedException()
+    if data_format == "channel_last":
+        x = x.transpose(x, (0, dims + 1, *range(1, dims + 1)))
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    filters = filters.transpose(dims, dims + 1, *range(dims))
+    not_valid_pad, padding_list, output_padding = _pad_before_conv_tranpose(
+        x, filters, strides, padding, dims, dilations, output_shape, filters.shape[2:]
+    )
+    if dims == 1:
+        res = paddle.nn.functional.conv1d_transpose(
+            x,
+            filters,
+            bias=bias,
+            stride=strides,
+            padding=padding_list,
+            output_padding=output_padding,
+            groups=feature_group_count,
+            dilation=dilations,
+            data_format="NCL",
+        )
+        if not_valid_pad[0]:
+            res = res[:, :, 0:-1]
+    elif dims == 2:
+        res = paddle.nn.functional.conv2d_transpose(
+            x,
+            filters,
+            bias=bias,
+            stride=strides,
+            padding=padding_list,
+            output_padding=output_padding,
+            groups=feature_group_count,
+            dilation=dilations,
+            data_format="NCHW",
+        )
+        if not_valid_pad[0]:
+            res = res[:, :, 0:-1, :]
+        if not_valid_pad[1]:
+            res = res[:, :, :, 0:-1]
+    else:
+        res = paddle.nn.functional.conv3d_transpose(
+            x,
+            filters,
+            bias=bias,
+            stride=strides,
+            padding=padding_list,
+            output_padding=output_padding,
+            groups=feature_group_count,
+            dilation=dilations,
+            data_format="NCDHW",
+        )
+        if not_valid_pad[0]:
+            res = res[:, 0:-1, :, :]
+        if not_valid_pad[1]:
+            res = res[:, :, 0:-1, :]
+        if not_valid_pad[2]:
+            res = res[:, :, :, 0:-1]
+    if data_format == "channel_last":
+        res = res.transpose(0, *range(2, dims + 2), 1)
+    return res
