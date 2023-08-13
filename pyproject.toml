@@ -7,28 +7,31 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ivy"
-version = "{__version__}"
+version = "1.1.9"
 description = "The unified machine learning framework, enabling framework-agnostic functions, layers and libraries."
-readme = "README.rst"
-authors = [{ name = "Unify", email = "hello@unify.ai" }]
+# Todo - add long description similar to that of setup.py
+# long_description = "file: README.md"
+readme = "README.md"
 license = "Apache-2.0"
-homepage = "https://unify.ai/ivy"
-documentation = "https://unify.ai/docs/ivy/"
-repository = "https://github.com/unifyai/ivy"
-classifiers = [
-    "License :: OSI Approved :: Apache Software License"
-]
+classifiers = [ "License :: OSI Approved :: Apache Software License",]
+[[project.authors]]
+name = "Unify"
+email = "hello@unify.ai"
+
+[project.urls]
+Docs = "https://unify.ai/docs/ivy/"
+Source = "https://github.com/unifyai/ivy"
 
 [project.dependencies]
-numpy = "*"
-einops = "0.6.1"
-psutil = "5.9.1"
-termcolor = "1.1.0"
-colorama = "0.4.5"
-packaging = "21.3"
-"nvidia-ml-py" = "<=11.495.46" 
-diskcache = "*"
-google-auth = "*"
-requests = "*"
-pyvis = "*"
-dill = "*"
+numpy = "numpy"
+einops = "einops==0.6.1"
+psutil = "psutil==5.9.1"
+termcolor = "termcolor==1.1.0"
+colorama = "colorama==0.4.5"
+packaging = "packaging==21.3"
+pynvml = "nvidia-ml-py<=11.495.46"
+diskcache = "diskcache"
+"google.auth" = "google-auth"
+requests = "requests"
+pyvis = "pyvis"
+dill = "dill"
