@@ -231,19 +231,15 @@ def test_linear(
     )
 
 
-def generate_dtype_x1_x2_weight_bias():
-    return st.tuples(
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.common.bilinear",
+    dtype_x1_x2_weight_bias=st.tuples(
         st.sampled_from(("float32", "float64")),
         st.floats(),
         st.floats(),
         st.floats(),
         st.floats(),
-    )
-
-
-@handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x1_x2_weight_bias=generate_dtype_x1_x2_weight_bias,
+    ),
 )
 def test_bilinear(
     *,
