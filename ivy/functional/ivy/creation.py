@@ -2160,6 +2160,8 @@ def triu_indices(
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
+@outputs_to_ivy_arrays
+@infer_device
 def complex(
     real: Union[ivy.Array, ivy.NativeArray],
     imag: Union[ivy.Array, ivy.NativeArray],

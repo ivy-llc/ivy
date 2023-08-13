@@ -646,12 +646,9 @@ def triu_indices(
 
 
 def complex(
-    a: torch.Tensor,
-    b: torch.Tensor,
+    real: torch.Tensor,
+    imag: torch.Tensor,
 ) -> torch.Tensor:
-    assert a.shape == b.shape, "a and b must be the same shape"
-    ret = torch.zeros_like(a, dtype=torch.complex64)
-    ret.real = a
-    ret.imag = b
-
+    assert real.shape == imag.shape, "a and b must be the same shape"
+    ret = torch.complex(real, imag, dtype=torch.complex)
     return ret
