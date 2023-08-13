@@ -393,8 +393,8 @@ def fast_gelu(input_x):
     "mindspore",
 )
 @to_ivy_arrays_and_back
-def smooth_l1_loss(logits, labels, beta=1.0):
-    if not isinstance(beta, (float, int)):
+def smooth_l1_loss(logits, labels, beta=1.0,redutcion="mean"):
+    if not isinstance(beta, (float)):
         raise TypeError("Beta should be a float.")
     if beta <= 0:
         raise ValueError("Beta should be greater than 0.")

@@ -432,21 +432,20 @@
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.smooth_l1_loss",
 #     dtype_and_x=helpers.dtype_and_values(
-#         available_dtypes=helpers.get_dtypes("float"),
+#         available_dtypes=helpers.get_dtypes("valid"),
 #         num_arrays=2,
 #         allow_inf=False,
 #         shared_dtype=True,
 #     ),
-#     size_average=st.booleans(),
-#     reduce=st.booleans(),
-#     beta=st.sampled_from([1.0, 0.5, 0.1]),
+#     reduction=st.sampled_from(["mean", "sum", "none"]),
+#     beta=st.sampled_from(min_value=0.1, max_value=1.0),
 #     test_with_out=st.just(False),
+
 # )
 # def test_mindspore_smooth_l1_loss(
 #     *,
 #     dtype_and_x,
-#     size_average,
-#     reduce,
+#     reduction,
 #     beta,
 #     frontend,
 #     test_flags,
@@ -466,8 +465,7 @@
 #         on_device=on_device,
 #         input=pred,
 #         target=true,
-#         size_average=size_average,
-#         reduce=reduce,
+#         reduction=reduction,
 #         beta=beta,
 #     )
 
