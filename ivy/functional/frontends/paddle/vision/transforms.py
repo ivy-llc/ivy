@@ -30,6 +30,14 @@ def _get_image_num_channels(img, data_format):
     return ivy.shape(img)[_get_image_c_axis(data_format)]
 
 
+def _blend_images(img1, img2, ratio):
+    # TODO: when int supported, use max_value = 1.0 if ivy.check_float(img1) else 255.0
+    max_value = 1.0
+    return ivy.astype(
+        ivy.lerp(img2, img1, float(ratio)).clip(0, max_value), ivy.dtype(img1)
+    )
+
+
 def _rgb_to_hsv(img):
     maxc = ivy.max(img, axis=-3)
     minc = ivy.min(img, axis=-3)
@@ -118,6 +126,19 @@ def adjust_hue(img, hue_factor):
         raise ValueError("channels of input should be either 1 or 3.")
 
     return img_adjusted
+
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def adjust_brightness(img, brightness_factor):
+    assert brightness_factor >= 0, "brightness_factor should be non-negative."
+    assert _get_image_num_channels(img, "CHW") in [
+        1,
+        3,
+    ], "channels of input should be either 1 or 3."
+
+    extreme_target = ivy.zeros_like(img)
+    return _blend_images(img, extreme_target, brightness_factor)
 
 
 @with_unsupported_device_and_dtypes(

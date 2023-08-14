@@ -70,6 +70,41 @@ def test_paddle_adjust_hue(
     )
 
 
+# adjust_brightness
+@handle_frontend_test(
+    fn_tree="paddle.vision.transforms.adjust_brightness",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=3,
+    ),
+    brightness_factor=helpers.floats(min_value=0),
+)
+def test_paddle_adjust_brightness(
+    *,
+    dtype_and_x,
+    brightness_factor,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        img=x[0],
+        brightness_factor=brightness_factor,
+    )
+
+
 @handle_frontend_test(
     fn_tree="paddle.vision.transforms.vflip",
     dtype_and_x=helpers.dtype_and_values(
