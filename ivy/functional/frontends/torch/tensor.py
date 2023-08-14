@@ -1774,13 +1774,7 @@ class Tensor:
         "torch",
     )
     def xlogy(self, *, other, out=None):
-        print("===============================================")
-        print("self.shape: ", self.shape)
-        print("other.shape: ", other.shape)
-        ret = torch_frontend.xlogy(self, other, out=out)
-        print("ret: ", ret)
-
-        return ret
+        return torch_frontend.xlogy(self, other, out=out)
 
 
 class Size(tuple):

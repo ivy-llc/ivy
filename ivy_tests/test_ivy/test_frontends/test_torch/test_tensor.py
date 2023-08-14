@@ -11972,9 +11972,7 @@ def test_torch_instance_sinc(
     init_tree="torch.tensor",
     method_name="xlogy",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        available_dtypes=helpers.get_dtypes("numeric"),
         shared_dtype=True,
         num_arrays=2,
     ),
