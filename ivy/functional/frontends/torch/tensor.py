@@ -1759,6 +1759,7 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
+
     @with_unsupported_dtypes(
         {
             "2.0.1 and below": (
