@@ -292,6 +292,61 @@ def test_torch_max_pool2d(
     )
 
 
+# max_unpool2d
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.max_unpool2d",
+    x_k_indices_k_s_p=helpers.arrays_for_pooling(
+        min_dims=4,
+        max_dims=4,
+        min_side=1,
+        max_side=4,
+        explicit_or_str_padding=True,
+        return_indices=True,
+    ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
+    test_with_out=st.just(False),
+)
+def test_torch_max_unpool2d(
+    *,
+    x_k_indices_kernel_stride_padding,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    dtype, x, indices, kernel, stride, pad = x_k_indices_kernel_stride_padding
+
+    # Reshape the input data and indices as needed
+    x[0] = x[0].reshape((x[0].shape[0], x[0].shape[-1], *x[0].shape[1:-1]))
+    indices[0] = indices[0].reshape(
+        (indices[0].shape[0], indices[0].shape[-1], *indices[0].shape[1:-1])
+    )
+
+    # Calculate the output shape based on the input shape, kernel size, stride, and
+    # padding
+    output_shape = tuple(
+        [
+            (x[0].shape[i + 2] - 1) * stride[i] - 2 * pad[i] + kernel[i]
+            for i in range(len(kernel))
+        ]
+    )
+
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        indices=indices[0],
+        output_size=output_shape,
+        kernel_size=kernel,
+        stride=stride,
+        padding=pad,
+    )
+
+
 # adaptive_avg_pool1d
 @handle_frontend_test(
     fn_tree="torch.nn.functional.adaptive_avg_pool1d",
