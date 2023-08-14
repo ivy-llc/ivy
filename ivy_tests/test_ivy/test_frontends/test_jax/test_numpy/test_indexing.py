@@ -2,6 +2,7 @@
 from hypothesis import strategies as st, assume
 import numpy as np
 from jax.numpy import tril, triu
+import ivy
 
 
 # local
@@ -458,4 +459,89 @@ def test_jax_numpy_indices(
         dimensions=dimensions,
         dtype=dtype[0],
         sparse=sparse,
+    )
+
+# take
+@handle_frontend_test(
+    fn_tree="jax.numpy.take",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"]
+    ),
+    out=st.none(),
+    mode=st.sampled_from(['wrap', 'clip']),
+    unique_indices=st.booleans(),
+    indices_are_sorted=st.booleans(),
+    fill_value=st.none(),
+    test_with_out=st.just(False),
+)
+def test_jax_take(
+    *,
+    dtype_x_indices_axis,
+    out,
+    mode,
+    unique_indices,
+    indices_are_sorted,
+    fill_value,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,    
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        indices=indices,
+        axis=axis,
+        out=out,
+        mode=mode,
+        unique_indices=unique_indices,
+        indices_are_sorted=indices_are_sorted,
+        fill_value=fill_value
+    )
+
+# choose
+@handle_frontend_test(
+    fn_tree="jax.numpy.choose",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],     
+    ),
+    out=st.none(),
+    mode=st.sampled_from(['wrap', 'clip', 'raise']),
+    test_with_out=st.just(False),
+)
+def test_jax_choose(
+    *,
+    dtype_x_indices_axis,
+    out,
+    mode,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,    
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    choices = ivy.array(
+        [np.random.randint(0, 10, size=x.shape) for _ in range(len(dtypes))]
+    )
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        choices=choices,
+        out=out,
+        mode=mode,
     )

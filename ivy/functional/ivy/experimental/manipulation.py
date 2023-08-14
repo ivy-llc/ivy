@@ -1596,6 +1596,70 @@ def take_along_axis(
         arr, indices, axis, mode=mode, out=out
     )
 
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def take(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int | None = None,
+    out: None = None,
+    mode: str | None = None,
+    unique_indices: bool = False,
+    indices_are_sorted: bool = False,
+    fill_value: Union[ivy.Array, ivy.NativeArray] | None = None,    
+) -> ivy.Array:
+    """
+    Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    indices
+        The indices of the values to extract.
+    axis
+        The axis over which to select values.
+        If axis is None, arr is treated as a flattened 1D array.
+    mode
+        One of: 'wrap', 'clip'. Parameter controlling how out-of-bounds indices
+        will be handled.
+    out
+        The output array.
+    unique_indices
+        bool. 
+    indices_are_sorted
+        bool, 
+    fill_value
+        bool
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> arr = ivy.array([4, 3, 5, 7, 6, 8])
+    >>> indices = ivy.array([0, 1, 4])
+    >>> y = ivy.take(arr, indices)
+    >>> print(y)
+    ivy.array([4, 3, 6])
+
+    >>> indices = ivy.array([[0, 1], [2, 3]])
+    >>> z = ivy.take(arr, indices)
+    >>> print(z)
+    ivy.array([[4, 3],
+        [5, 7]])    
+    """
+    return ivy.current_backend(arr).take(
+        arr, indices, axis=axis, out=out, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value
+    )
 
 @handle_exceptions
 @handle_backend_invalid
@@ -2175,3 +2239,58 @@ def fill_diagonal(
         Array with the diagonal filled.
     """
     return ivy.current_backend(a).fill_diag(a, v, wrap=wrap)
+
+@handle_exceptions
+@handle_backend_invalid
+@handle_nestable
+@handle_array_like_without_promotion
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_device_shifting
+def choose(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    choices: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: None = None,
+    mode: str | None = None,    
+) -> ivy.Array:
+    """
+    Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    choices
+        The indices of the values to extract.
+    out
+        The output array.
+    mode
+        One of: 'wrap', 'clip'. Parameter controlling how out-of-bounds indices
+        will be handled.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> choices = ivy.array([[0, 1, 2, 3], [10, 11, 12, 13],
+                        [20, 21, 22, 23], [30, 31, 32, 33]])
+
+    >>> print(choose(ivy.array([2, 3, 1, 0]), choices))
+    ivy.array([20, 31, 12, 3])
+
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='clip')) # 4 goes to 3 (4-1)
+    ivy.array([20, 31, 12, 3])
+
+    >>> arr = ivy.array([2, 4, 1, 0])
+    >>> print(choose(arr, choices, mode='wrap')) # 4 goes to (4 mod 4)
+    ivy.array([20, 1, 12, 3])        
+    """
+    return ivy.current_backend(arr).choose(
+        arr, choices, out=out, mode=mode
+    )
