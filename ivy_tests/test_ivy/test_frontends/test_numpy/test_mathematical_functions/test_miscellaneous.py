@@ -232,6 +232,9 @@ def test_numpy_reciprocal(
         arr_func=[
             lambda: helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric"),
+                large_abs_safety_factor=2,
+                small_abs_safety_factor=2,
+                safety_factor_scale="log",
             )
         ],
     ),

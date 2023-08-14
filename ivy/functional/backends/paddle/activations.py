@@ -68,6 +68,12 @@ def gelu(
     approximate: bool = False,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        return (
+            0.5
+            * x
+            * (1 + paddle_backend.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
+        )
     if x.dtype in unsupported_dtypes:
         return F.gelu(x.cast("float32"), approximate=approximate).cast(x.dtype)
     return F.gelu(x, approximate=approximate)

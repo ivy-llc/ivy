@@ -757,6 +757,11 @@ def square(
 ) -> paddle.Tensor:
     if x.dtype in [paddle.int32, paddle.int64, paddle.float32, paddle.float64]:
         return paddle.square(x)
+    if x.dtype in [paddle.complex64, paddle.complex128]:
+        return paddle.complex(
+            paddle.square(paddle.real(x)) - paddle.square(paddle.imag(x)),
+            2.0 * paddle.real(x) * paddle.imag(x),
+        )
     return paddle_backend.pow(x, 2).astype(x.dtype)
 
 

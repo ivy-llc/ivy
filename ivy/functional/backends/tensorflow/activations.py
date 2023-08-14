@@ -20,6 +20,8 @@ from . import backend_version
 def gelu(
     x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
+    if x.dtype in [tf.complex64, tf.complex128]:
+        return 0.5 * x * (1 + tf.math.tanh(0.7978845608 * (x + 0.044715 * x * x * x)))
     return tf.nn.gelu(x, approximate)
 
 

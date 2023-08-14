@@ -70,8 +70,6 @@ def test_leaky_relu(*, dtype_and_x, alpha, test_flags, backend_fw, fn_name, on_d
 )
 def test_gelu(*, dtype_and_x, approximate, test_flags, backend_fw, fn_name, on_device):
     dtype, x = dtype_and_x
-    if "complex" in str(dtype):
-        approximate = True
     helpers.test_function(
         input_dtypes=dtype,
         backend_to_test=backend_fw,
