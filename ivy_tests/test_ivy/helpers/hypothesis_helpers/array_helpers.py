@@ -15,6 +15,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.dtype_helpers import get_dtypes
 from . import general_helpers as gh
 from . import dtype_helpers, number_helpers
+from ...conftest import mod_backend
 
 
 @st.composite
@@ -1380,10 +1381,11 @@ def arrays_and_axes(
 
 
 def _clamp_value(x, dtype_info):
-    if x > dtype_info.max:
-        return dtype_info.max
-    if x < dtype_info.min:
-        return dtype_info.min
+    # 0th index is max, 1st index is min
+    if x > dtype_info[0]:
+        return dtype_info[0]
+    if x < dtype_info[1]:
+        return dtype_info[1]
     return x
 
 
@@ -1500,12 +1502,28 @@ def array_values(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
-            dtype_info = ivy_backend.finfo(dtype)
+        if mod_backend[test_globals.CURRENT_BACKEND]:
+            proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+            input_queue.put(
+                ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
+            )
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = array_helpers_dtype_info_helper(
+                backend=test_globals.CURRENT_BACKEND, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(test_globals.CURRENT_BACKEND) as ivy_backend:
-            dtype_info = ivy_backend.iinfo(dtype)
+        if mod_backend[test_globals.CURRENT_BACKEND]:
+            proc, input_queue, output_queue = mod_backend[test_globals.CURRENT_BACKEND]
+            input_queue.put(
+                ("dtype_info_helper", test_globals.CURRENT_BACKEND, kind_dtype, dtype)
+            )
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = array_helpers_dtype_info_helper(
+                backend=test_globals.CURRENT_BACKEND, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "bool" in dtype:
         kind_dtype = "bool"
     else:
@@ -1608,6 +1626,22 @@ def array_values(
     if isinstance(shape, (tuple, list)):
         return array.reshape(shape)
     return np.asarray(array)
+
+
+def array_helpers_dtype_info_helper(backend, kind_dtype, dtype):
+    with WithBackendContext(backend) as ivy_backend:
+        if kind_dtype == "float":
+            return (
+                ivy_backend.finfo(dtype).max,
+                ivy_backend.finfo(dtype).min,
+                getattr(ivy_backend.finfo(dtype), "smallest_normal", None),
+            )
+        elif kind_dtype == "int":
+            return (
+                ivy_backend.iinfo(dtype).max,
+                ivy_backend.iinfo(dtype).min,
+                getattr(ivy_backend.iinfo(dtype), "smallest_normal", None),
+            )
 
 
 #      From array-api repo     #

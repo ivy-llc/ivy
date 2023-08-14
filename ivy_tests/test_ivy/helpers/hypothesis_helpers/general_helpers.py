@@ -9,6 +9,7 @@ import ivy
 from . import array_helpers, number_helpers, dtype_helpers
 from ..pipeline_helper import WithBackendContext
 from ivy.functional.ivy.layers import _deconv_length
+from ...conftest import mod_backend
 
 
 def matrix_is_stable(x, cond_limit=30):
@@ -89,34 +90,47 @@ def apply_safety_factor(
 
     if "float" in dtype or "complex" in dtype:
         kind_dtype = "float"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.finfo(dtype)
+        if mod_backend[backend]:
+            proc, input_queue, output_queue = mod_backend[backend]
+            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = general_helpers_dtype_info_helper(
+                backend=backend, kind_dtype=kind_dtype, dtype=dtype
+            )
     elif "int" in dtype:
         kind_dtype = "int"
-        with WithBackendContext(backend) as ivy_backend:
-            dtype_info = ivy_backend.iinfo(dtype)
+        if mod_backend[backend]:
+            proc, input_queue, output_queue = mod_backend[backend]
+            input_queue.put(("dtype_info_helper", backend, kind_dtype, dtype))
+            dtype_info = output_queue.get()
+        else:
+            dtype_info = general_helpers_dtype_info_helper(
+                backend=backend, kind_dtype=kind_dtype, dtype=dtype
+            )
     else:
         raise TypeError(
             f"{dtype} is not a valid numeric data type only integers and floats"
         )
 
     if min_value is None:
-        min_value = dtype_info.min
+        # 0th index is max, 1st is min, 2nd is smallest_normal
+        min_value = dtype_info[1]
     if max_value is None:
-        max_value = dtype_info.max
+        max_value = dtype_info[0]
 
     if safety_factor_scale == "linear":
         min_value = min_value / large_abs_safety_factor
         max_value = max_value / large_abs_safety_factor
         if kind_dtype == "float" and not abs_smallest_val:
-            abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+            abs_smallest_val = dtype_info[2] * small_abs_safety_factor
     elif safety_factor_scale == "log":
         min_sign = math.copysign(1, min_value)
         min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
         max_sign = math.copysign(1, max_value)
         max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
         if kind_dtype == "float" and not abs_smallest_val:
-            m, e = math.frexp(dtype_info.smallest_normal)
+            m, e = math.frexp(dtype_info[2])
             abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
     else:
         raise ValueError(
@@ -126,6 +140,22 @@ def apply_safety_factor(
     if kind_dtype == "int":
         return int(min_value), int(max_value), None
     return min_value, max_value, abs_smallest_val
+
+
+def general_helpers_dtype_info_helper(backend, kind_dtype, dtype):
+    with WithBackendContext(backend) as ivy_backend:
+        if kind_dtype == "float":
+            return (
+                ivy_backend.finfo(dtype).max,
+                ivy_backend.finfo(dtype).min,
+                getattr(ivy_backend.finfo(dtype), "smallest_normal", None),
+            )
+        elif kind_dtype == "int":
+            return (
+                ivy_backend.iinfo(dtype).max,
+                ivy_backend.iinfo(dtype).min,
+                getattr(ivy_backend.iinfo(dtype), "smallest_normal", None),
+            )
 
 
 # Hypothesis #

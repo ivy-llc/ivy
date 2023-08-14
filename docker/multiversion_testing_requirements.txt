@@ -6,10 +6,7 @@ pymongo==4.3.3
 redis==4.3.4
 matplotlib==3.5.2
 opencv-python==4.6.0.66 # mod_name=cv2
-tensorflow-probability==0.17.0 # mod_name=tensorflow_probability
-functorch==0.1.1
 scipy==1.8.1
-dm-haiku==0.0.6 # mod_name=haiku
 pydriller
 tqdm
 coverage
@@ -22,4 +19,14 @@ nvidia-ml-py<=11.495.46 # mod_name=pynvml
 paddle-bfloat
 jsonpickle
 ml_dtypes
-redis
+diskcache
+google-auth # mod_name=google.auth
+requests
+pyvis
+dill
+scikit-learn # mod_name=sklearn
+pandas
+pyspark
+autoflake # for backend generation
+snakeviz # for profiling
+cryptography

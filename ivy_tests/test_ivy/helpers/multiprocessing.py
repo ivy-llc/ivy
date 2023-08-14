@@ -2,6 +2,10 @@
 import sys
 import importlib
 
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import (
+    array_helpers_dtype_info_helper,
+)
+
 # local
 from .testing_helpers import (
     _get_supported_devices_dtypes_helper,
@@ -51,6 +55,11 @@ def backend_proc(input_queue, output_queue):
                 method_name, class_module, class_name, backend_str
             )
             output_queue.put(organized_dtypes)
+
+        elif data[0] == "dtype_info_helper":
+            _, backend, kind_dtype, dtype = data
+            dtype_info = array_helpers_dtype_info_helper(backend, kind_dtype, dtype)
+            output_queue.put(dtype_info)
 
         elif data[0] == "function_backend_computation":
             # it's the backend return computation

@@ -29,6 +29,7 @@ RUN apt-get update && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
     apt-get install -y libglib2.0-0 && \
+    pip3 install pip-autoremove && \
     pip3 install --upgrade pip && \
     pip3 install setuptools==58.5.3
 
@@ -42,10 +43,15 @@ RUN git clone --progress --recurse-submodules https://github.com/unifyai/ivy --d
 
 COPY /docker/multiversion_framework_directory.py .
 COPY /docker/requirement_mappings_multiversion.json .
+COPY /docker/multiversion_testing_requirements.txt .
 
 # requirement mappings directs which dependency to be installed and where
 SHELL ["/bin/bash", "-c"]
-RUN python3 multiversion_framework_directory.py  $fw
+RUN python3 multiversion_framework_directory.py  $fw && \
+    pip install -r multiversion_testing_requirements.txt
+    pip-autoremove torch -y && \
+    pip-autoremove tensorflow && \
+    pip-autoremove jax
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
