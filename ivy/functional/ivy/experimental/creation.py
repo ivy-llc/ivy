@@ -1,5 +1,6 @@
 # global
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
+import warnings
 
 # local
 import ivy
@@ -15,10 +16,12 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -60,6 +63,7 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -107,6 +111,7 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -268,6 +273,7 @@ def hamming_window(
 
 hamming_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "handle_device_shifting",
     ),
@@ -421,13 +427,13 @@ def eye_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> x1 = ivy.array([[0, 1],[2, 3]])
     >>> y1 = ivy.eye_like(x1)
     >>> print(y1)
     ivy.array([[1., 0.],
                [0., 1.]])
 
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> x1 = ivy.array([[0, 1, 2],[3, 4, 5],[6, 7, 8]])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
@@ -437,7 +443,7 @@ def eye_like(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
-    >>> y = ivy.eye_like(x)
+    >>> y = x.eye_like()
     >>> print(y)
     {
         a: ivy.array([[1., 0.],
@@ -606,6 +612,7 @@ indices.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def unsorted_segment_min(
@@ -678,3 +685,73 @@ def unsorted_segment_sum(
         equals to segment ID.
     """
     return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@infer_dtype
+def random_tucker(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    orthogonal: Optional[bool] = False,
+    seed: Optional[int] = None,
+    non_negative: Optional[bool] = False,
+) -> ivy.TuckerTensor:
+    """
+    Generate a random Tucker tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the Tucker decomposition
+        if int, the same rank is used for each mode
+        otherwise, dimension of each mode
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    orthogonal
+        if True, creates a tensor with orthogonal components
+    seed
+        seed for generating random numbers
+    non_negative
+
+
+    Returns
+    -------
+        ivy.TuckerTensor
+    """
+    rank = ivy.TuckerTensor.validate_tucker_rank(shape, rank)
+
+    if orthogonal:
+        for i, (s, r) in enumerate(zip(shape, rank)):
+            if r > s:
+                warnings.warn(
+                    "Selected orthogonal=True, but selected a rank larger than the"
+                    f" tensor size for mode {{0}}: rank[{i}]={r} > shape[{i}]={s}."
+                )
+
+    factors = []
+    for s, r in zip(shape, rank):
+        if orthogonal:
+            factor = ivy.random_uniform(shape=(s, s), seed=seed, dtype=dtype)
+            Q, _ = ivy.qr(factor)
+            factors.append(ivy.array(Q[:, :r]))
+        else:
+            factors.append(ivy.random_uniform(shape=(s, r), seed=seed, dtype=dtype))
+
+    core = ivy.random_uniform(shape=rank, seed=seed, dtype=dtype)
+
+    if non_negative:
+        factors = [ivy.abs(f) for f in factors]
+        core = ivy.abs(core)
+
+    if full:
+        return ivy.TuckerTensor.tucker_to_tensor((core, factors))
+    else:
+        return ivy.TuckerTensor((core, factors))
