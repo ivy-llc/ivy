@@ -7,7 +7,20 @@ from ivy_tests.test_ivy.helpers import handle_test
     fn_tree="functional.ivy.experimental.optional_get_element",
     dtype_and_x=helpers.dtype_and_values(
         dtype=[
-            'int8', 'int16', 'int32', 'complex64', 'complex128', 'bool', 'float16', 'float32', 'float64', 'string', 'uint8'
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+            "bool",
+            "float16",
+            "float32",
+            "float64",
+            "string",
+            "uint8",
+            "uint16",
+            "uint32"
         ],
         min_value=-100,
         max_value=100,
