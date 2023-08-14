@@ -637,3 +637,47 @@ def test_paddle_take_along_axis(
         indices=indices,
         axis=axis,
     )
+    
+@st.composite
+def _moveaxis_helper(draw):
+    dtypes, values, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            max_num_dims=6,
+        )
+    )
+
+    input_shape = shape
+    source_axis = draw(st.sampled_from(range(len(input_shape))))
+    destination_axis = draw(st.sampled_from(range(len(input_shape))))
+
+    return dtypes, values, source_axis, destination_axis
+
+
+@handle_frontend_test(
+    fn_tree="paddle.moveaxis",
+    dt_x_source_destination=_moveaxis_helper(),
+    test_with_out=st.just(False),
+)
+def test_paddle_moveaxis(
+    *,
+    dt_x_source_destination,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, source_axis, destination_axis = dt_x_source_destination
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        source=source_axis,
+        destination=destination_axis,
+    )
