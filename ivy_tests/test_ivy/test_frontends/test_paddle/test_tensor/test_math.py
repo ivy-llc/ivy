@@ -1753,7 +1753,7 @@ def test_paddle_rsqrt(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_paddle_rsqrt(
+def test_paddle_rsqrt_(
     *,
     dtype_and_x,
     frontend,
