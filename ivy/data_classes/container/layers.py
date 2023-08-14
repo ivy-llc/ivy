@@ -157,21 +157,22 @@ class _ContainerWithLayers(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3], \
-                                           [11., 22., 33.]]), \
-                              b=ivy.array([[1.245, 0.278, 4.105], \
-                                           [7., 13., 17.]]))
-        >>> w = ivy.array([[1., 2., 3.], \
-                           [4., 5., 6.], \
-                           [7., 8., 9.]])
-        >>> b = ivy.array([1, 0, -1])
-        >>> y = x.linear(w, bias=b)
+        >>> x = ivy.Container(a=ivy.array([[1.1, 2.2, 3.3],
+        ...                                [11., 22., 33.]]),
+        ...                   b=ivy.array([[1.245, 0.278, 4.105],
+        ...                                [7., 13., 17.]]))
+        >>> w = ivy.array([[1., 2., 3.],
+        ...                [4., 5., 6.],
+        ...                [7., 8., 9.]])
+        >>> b = ivy.Container(a=ivy.array([1., 0., -1.]),
+        ...                   b=ivy.array([1., 1., 0.]))
+        >>> y = x.linear(w, bias=b, out=x)
         >>> print(y)
         {
-            a: ivy.array([[16.4, 35.2, 54.], \
-                          [155., 352., 549.]]), \
-            b: ivy.array([[15.1, 31., 46.9], \
-                          [85., 195., 305.]])
+            a: ivy.array([[16.39999962, 35.19999695, 54.],
+                          [155., 352., 549.]]),
+            b: ivy.array([[15.11600018, 32., 47.88399887],
+                          [85., 196., 306.]])
         }
         """
         return self._static_linear(
@@ -614,6 +615,17 @@ class _ContainerWithLayers(ContainerBase):
         -------
         ret
             Result container of the output after dropout is performed.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[100, 200, 300]]),
+        ...                   b=ivy.array([[400, 500, 600]]))
+        >>> y = x.dropout2d(0.5)
+        >>> print(y)
+        {
+            a: ivy.array([[200., 0., 600.]]),
+            b: ivy.array([[0., 0., 0.]])
+        }
         """
         return self._static_dropout2d(
             self,
@@ -841,10 +853,10 @@ class _ContainerWithLayers(ContainerBase):
         ...                             [1.0, 1.0, 1.0],
         ...                             [1.0, 1.0,1.0]]]))
         >>> result = ivy.Container.static_scaled_dot_product_attention(q,
-                                                                       k,
-                                                                       v,
-                                                                       1,
-                                                                       mask=mask)
+        ...                                                            k,
+        ...                                                            v,
+        ...                                                            1,
+        ...                                                            mask=mask)
         >>> print(result)
         {
             a: ivy.array([[[4.27, 5.4],
@@ -953,6 +965,7 @@ class _ContainerWithLayers(ContainerBase):
         ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
         >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+
         >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.], [4.4, 5.6]]]),
         ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
         >>> result = ivy.scaled_dot_product_attention(q,k,v,scale=1,dropout_p=0.1,is_causal=True,training=True)
@@ -976,6 +989,7 @@ class _ContainerWithLayers(ContainerBase):
         {
             a: ivy.array([[[4.26894283, 5.40236187], [4.39999437, 5.59999037], [4.4000001, 5.5999999]]]),
             b: ivy.array([[[4.35046196, 5.54282808], [4.39989519, 5.5998764], [4.4000001, 5.5999999]]])
+
         }
         """
         return self._static_scaled_dot_product_attention(
@@ -1668,8 +1682,8 @@ class _ContainerWithLayers(ContainerBase):
         >>> y = x.conv1d_transpose(filters, 2, 'SAME')
         >>> print(y.shape)
         {
-            a: [1,56,6],
-            b: [1,112,6]
+            a: ivy.Shape(1, 56, 6),
+            b: ivy.Shape(1, 112, 6)
         }
         """
         return self._static_conv1d_transpose(
@@ -1853,20 +1867,28 @@ class _ContainerWithLayers(ContainerBase):
         --------
         >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 14, 14, 3])
         >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 28, 28, 3])
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 6])
+        >>> c = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
+        >>> d = ivy.random_normal(mean=0, std=1, shape=[6, 3, 3, 3])
         >>> x = ivy.Container(a=a, b=b)
         >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv2d_transpose(x,filters,2,'SAME')
+        >>> y = x.conv2d_transpose(filters,2,'SAME')
         >>> print(y.shape)
         {
             a: {
-                c: [1,28,28,6],
-                d: [1,28,28,6]
+                c: ivy.Shape(1, 28, 28, 3),
+                d: ivy.Shape(1, 28, 28, 3)
             },
             b: {
-                c: [1,56,56,6],
-                d: [1,56,56,6]
+                c: ivy.Shape(1, 56, 56, 3),
+                d: ivy.Shape(1, 56, 56, 3)
+            },
+            c: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
+            },
+            d: {
+                c: ivy.Shape(6, 6, 6, 3),
+                d: ivy.Shape(6, 6, 6, 3)
             }
         }
         """
@@ -2349,23 +2371,21 @@ class _ContainerWithLayers(ContainerBase):
         ret
             The result of the transpose convolution operation in a container.
 
-        >>> a = ivy.random_normal(mean=0, std=1, shape=[1, 3, 14, 14, 3])
-        >>> b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-        >>> c = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-        >>> d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
-        >>> x = ivy.Container(a=a, b=b)
-        >>> filters = ivy.Container(c=c, d=d)
-        >>> y = x.conv3d_transpose(filters, 2, 'SAME')
-        >>> print(y.shape)
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
+        >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
+        >>> result = x.conv3d(filters, 2, 'SAME')
+        >>> print(result)
         {
-            a: {
-                c: [1, 6, 28, 28, 6],
-                d: [1, 6, 28, 28, 6]
-            },
-            b: {
-                c: [1, 6, 56, 56, 6],
-                d: [1, 6, 56, 56, 6]
-            }
+            a: ivy.array([[[[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]],
+                          [[[8.],
+                             [8.]],
+                            [[8.],
+                             [8.]]]]])
         }
         """
         return self._static_conv3d_transpose(
