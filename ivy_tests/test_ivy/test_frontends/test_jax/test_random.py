@@ -1422,7 +1422,7 @@ def test_jax_ball(
 
 
 @st.composite
-def _get_mean_cov_vector(draw):
+def get_mean_cov_vector(draw):
     input_dtype = draw(
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("float"))),
@@ -1471,7 +1471,7 @@ def _get_mean_cov_vector(draw):
         max_dim_size=2,
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    mean_cov_vector=_get_mean_cov_vector(),
+    mean_cov_vector=get_mean_cov_vector(),
     method=st.sampled_from(["cholesky", "eigh", "svd"]),
     test_with_out=st.just(False),
 )
