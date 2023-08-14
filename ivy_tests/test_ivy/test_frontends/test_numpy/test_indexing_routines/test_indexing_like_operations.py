@@ -195,4 +195,4 @@ def test_numpy_compress(
 )
 def test_numpy_ravel_multi_index():
     """test_numpy_ravel_multi_index"""
-    return None
+    pass
