@@ -93,7 +93,7 @@ You can as well add options described in the :ref:`The convenience script` secti
 How Ivy's docs is structured
 -----------------------------
 
-Looking at `Ivy docs <https://github.com/unifyai/ivy/tree/master/docs>`_, we can see 
+Looking at `Ivy docs <https://github.com/unifyai/ivy/tree/main/docs>`_, we can see
 that it structured like this:
 
 .. code-block:: bash
