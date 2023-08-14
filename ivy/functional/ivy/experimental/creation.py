@@ -693,5 +693,21 @@ def complex(
     real: Union[ivy.Array, ivy.NativeArray],
     imag: Union[ivy.Array, ivy.NativeArray],
 ) -> ivy.Array:
-    """Docstring pending ~"""
+    """
+    Construct a complex tensor with its real part equal to real and its imaginary part
+    equal to imag.
+
+    Parameters
+    ----------
+    real
+        The real part of the complex tensor.
+
+    imag
+        The imaginary part of the complex tensor. Must be same dtype as real.
+
+    Returns
+    -------
+    ret
+        The output array, consisting of complex numbers real + imag*j.
+    """
     return ivy.current_backend(real, imag).complex(real, imag)
