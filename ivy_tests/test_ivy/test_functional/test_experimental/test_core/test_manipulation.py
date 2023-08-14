@@ -1386,7 +1386,7 @@ def put_along_axis_helper(draw):
 
 # put_along_axis
 @handle_test(
-    fn_tree="put_along_axis",
+    fn_tree="functional.ivy.experimental.put_along_axis",
     args=put_along_axis_helper(),
     mode=st.sampled_from(["assign", "add", "mul", "mean", "amax", "amin"]),
     test_with_out=st.just(False),
