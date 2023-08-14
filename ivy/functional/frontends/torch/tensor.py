@@ -249,6 +249,11 @@ class Tensor:
         return torch_frontend.arcsinh(self)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def arcsinh_(self):
+        self.ivy_array = torch_frontend.arcsinh(self).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arcsin(self):
         return torch_frontend.arcsin(self)
 
@@ -360,6 +365,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def log(self):
         return torch_frontend.log(self)
+
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def log2_(self):
+        self.ivy_array = self.log2().ivy_array
+        return self
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arccosh(self):
@@ -1741,6 +1751,18 @@ class Tensor:
         return torch_frontend.quantile(
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
+
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc(self):
+        return torch_frontend.sinc(self)
 
 
 class Size(tuple):
