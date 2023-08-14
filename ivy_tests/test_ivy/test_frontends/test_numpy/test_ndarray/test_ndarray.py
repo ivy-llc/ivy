@@ -688,26 +688,22 @@ def test_numpy_ndarray_prod(
     on_device,
 ):
     input_dtypes, x, axis, dtype, where = dtype_x_axis_dtype
-    if ivy.current_backend_str() == "torch":
+    if backend_fw == "torch":
         assume(not method_flags.as_variable[0])
-
-    (
-        where,
-        input_dtypes,
-        method_flags,
-    ) = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=input_dtypes,
-        test_flags=method_flags,
+    where, method_input_dtypes, method_flags = (
+        np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtypes,
+            test_flags=method_flags,
+        )
     )
-    where = ivy.array(where, dtype="bool")
     helpers.test_frontend_method(
         init_input_dtypes=input_dtypes,
         backend_to_test=backend_fw,
         init_all_as_kwargs_np={
             "object": x[0],
         },
-        method_input_dtypes=input_dtypes,
+        method_input_dtypes=["bool"],
         method_all_as_kwargs_np={
             "axis": axis,
             "dtype": dtype,
