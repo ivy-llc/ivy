@@ -47,8 +47,8 @@ SHELL ["/bin/bash", "-c"]
 RUN python3 multiversion_framework_directory.py  $fw && \
     pip install -r multiversion_testing_requirements.txt && \
     pip-autoremove torch -y && \
-    pip-autoremove tensorflow && \
-    pip-autoremove jax
+    pip-autoremove tensorflow -y && \
+    pip-autoremove jax -y
 
 
 ENV PATH=/opt/miniconda/envs/multienv/bin:$PATH
