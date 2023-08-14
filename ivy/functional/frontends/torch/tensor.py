@@ -473,9 +473,8 @@ class Tensor:
     def erf(self, *, out=None):
         return torch_frontend.erf(self, out=out)
 
-    # remove "bfloat16" from the below decorator after fixing ivy.Array.__repr__ method
     @with_unsupported_dtypes(
-        {"2.0.1 and below": ("float16", "complex", "bfloat16")}, "torch"
+        {"2.0.1 and below": ("float16", "complex")}, "torch"
     )
     def erf_(self, *, out=None):
         self.ivy_array = torch_frontend.erf(self, out=out).ivy_array
