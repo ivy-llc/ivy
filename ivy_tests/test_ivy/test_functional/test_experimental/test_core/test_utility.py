@@ -20,7 +20,7 @@ from ivy_tests.test_ivy.helpers import handle_test
             "string",
             "uint8",
             "uint16",
-            "uint32"
+            "uint32",
         ],
         min_value=-100,
         max_value=100,
