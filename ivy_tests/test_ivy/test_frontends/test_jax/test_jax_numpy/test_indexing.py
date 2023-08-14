@@ -408,38 +408,6 @@ def test_jax_diag_indices_from(
     )
 
 
-@handle_frontend_test(
-    fn_tree="jax.numpy.apply_over_axes",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    test_with_out=st.just(False),
-    func=st.just(lambda x, axis: ivy.sum(x, axis=axis)),  # example function to apply
-    axes=st.just([1]),  # example axes
-)
-def test_jax_numpy_apply_over_axes(
-    *,
-    dtype_and_x,
-    on_device,
-    fn_tree,
-    frontend,
-    test_flags,
-    func,
-    axes,
-):
-    input_dtype, a = dtype_and_x
-    if max(axes) >= len(a):
-        numpy_array = ivy.to_numpy(a)
-        a = np.expand_dims(numpy_array, axis=0)
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        frontend=frontend,
-        test_flags=test_flags,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        a=a,
-        func=func,
-        axes=axes,
-    )
-
 
 @handle_frontend_test(
     fn_tree="jax.numpy.apply_over_axes",
