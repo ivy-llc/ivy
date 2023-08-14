@@ -110,24 +110,17 @@ def softplus(
     x: paddle.Tensor,
     /,
     *,
-    beta: Optional[Union[int, float]] = 1,
+    beta: Union[int, float] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[paddle.Tensor] = None,
 ) -> paddle.Tensor:
-    if beta is not None and beta != 1:
-        x_beta = x * beta
-        res = (
-            ivy.add(
-                ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
-                ivy.maximum(x_beta, 0),
-            )
-        ) / beta
-    else:
-        x_beta = x
-        res = ivy.add(
+    x_beta = x * beta
+    res = (
+        ivy.add(
             ivy.log1p(ivy.exp(-ivy.abs(x_beta))),
             ivy.maximum(x_beta, 0),
         )
+    ) / beta
     if threshold is not None:
         return ivy.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)

@@ -39,23 +39,18 @@ def softplus(
     x: Union[(int, float, mx.nd.NDArray)],
     /,
     *,
-    beta: Optional[Union[(int, float)]] = 1,
+    beta: Union[(int, float)] = 1,
     threshold: Optional[Union[(int, float)]] = None,
     out: Optional[None] = None,
 ) -> None:
-    if beta is not None and beta != 1:
-        x_beta = x * beta
-        res = (
-            mx.nd.add(
-                mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
-                mx.nd.maximum(x_beta, 0),
-            )
-        ) / beta
-    else:
-        x_beta = x
-        res = mx.nd.add(
-            mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))), mx.nd.maximum(x_beta, 0)
+    x_beta = x * beta
+    res = (
+        mx.nd.add(
+            mx.nd.log1p(mx.nd.exp(-mx.nd.abs(x_beta))),
+            mx.nd.maximum(x_beta, 0),
         )
+    ) / beta
+
     if threshold is not None:
         return mx.nd.where(x_beta > threshold, x, res).astype(x.dtype)
     return res.astype(x.dtype)

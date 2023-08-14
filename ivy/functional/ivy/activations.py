@@ -411,7 +411,7 @@ def softplus(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    beta: Optional[Union[int, float]] = 1,
+    beta: Union[int, float] = 1,
     threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
