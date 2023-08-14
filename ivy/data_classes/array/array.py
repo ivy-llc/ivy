@@ -156,7 +156,7 @@ class Array(
         self._dev_str = None
         self._pre_repr = None
         self._post_repr = None
-        self.backend = ivy.current_backend_str()
+        self._backend = ivy.backend
         if dynamic_backend is not None:
             self._dynamic_backend = dynamic_backend
         else:
@@ -175,27 +175,27 @@ class Array(
     # ---------- #
 
     @property
+    def backend(self):
+        return self._backend
+
+    @property
     def dynamic_backend(self):
         return self._dynamic_backend
 
     @dynamic_backend.setter
     def dynamic_backend(self, value):
-        from ivy.functional.ivy.gradients import _variable
+        from ivy.functional.ivy.gradients import _variable, _is_variable, _variable_data
         from ivy.utils.backend.handler import _determine_backend_from_args
 
         if value == False:
-            self._backend = _determine_backend_from_args(self)
+            self._backend = _determine_backend_from_args(self).backend
 
         else:
-            is_variable = self._backend.is_variable
-            to_numpy = self._backend.to_numpy
-            variable_data = self._backend.variable_data
+            ivy_backend = ivy.with_backend(self._backend)
+            to_numpy = ivy_backend.to_numpy
 
-            if is_variable(self.data) and not (
-                str(self._backend).__contains__("jax")
-                or str(self._backend).__contains__("numpy")
-            ):
-                native_data = variable_data(self.data)
+            if _is_variable(self.data) and not self._backend in ["jax", "numpy"]:
+                native_data = _variable_data(self.data)
                 np_data = to_numpy(native_data)
                 new_arr = ivy.array(np_data)
                 self._data = _variable(new_arr).data
@@ -203,6 +203,8 @@ class Array(
             else:
                 np_data = to_numpy(self.data)
                 self._data = ivy.array(np_data).data
+
+            self._backend = ivy.backend
 
         self._dynamic_backend = value
 
@@ -275,7 +277,9 @@ class Array(
     def strides(self) -> Optional[int]:
         """Get strides across each dimension."""
         if self._strides is None:
-            self._strides = ivy.strides(self._data)
+            # for this to work consistently for non-contiguous arrays
+            # we must pass self to ivy.strides, not self.data
+            self._strides = ivy.strides(self)
         return self._strides
 
     @property
@@ -296,6 +300,34 @@ class Array(
     def base(self) -> ivy.Array:
         """Original array referenced by view."""
         return self._base
+
+    @property
+    def real(self) -> ivy.Array:
+        """
+        Real part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the real part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.real(self._data)
+
+    @property
+    def imag(self) -> ivy.Array:
+        """
+        Imaginary part of the array.
+
+        Returns
+        -------
+        ret
+            array containing the imaginary part of each element in the array.
+            The returned array must have the same shape and data type as
+            the original array.
+        """
+        return ivy.imag(self._data)
 
     # Setters #
     # --------#
@@ -727,16 +759,31 @@ class Array(
         return ivy.abs(self._data)
 
     def __float__(self):
-        res = self._data.__float__()
+        if hasattr(self._data, "__float__"):
+            if "complex" in self.dtype:
+                res = float(self.real)
+            else:
+                res = self._data.__float__()
+        else:
+            res = float(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
 
     def __int__(self):
         if hasattr(self._data, "__int__"):
-            res = self._data.__int__()
+            if "complex" in self.dtype:
+                res = int(self.real)
+            else:
+                res = self._data.__int__()
         else:
             res = int(ivy.to_scalar(self._data))
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    def __complex__(self):
+        res = complex(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)

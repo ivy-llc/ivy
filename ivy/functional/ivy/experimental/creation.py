@@ -15,10 +15,12 @@ from ivy.func_wrapper import (
     handle_array_like_without_promotion,
     inputs_to_ivy_arrays,
     handle_device_shifting,
+    handle_backend_invalid,
 )
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -60,6 +62,7 @@ def vorbis_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -107,6 +110,7 @@ def hann_window(
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
@@ -268,6 +272,7 @@ def hamming_window(
 
 hamming_window.mixed_backend_wrappers = {
     "to_add": (
+        "handle_backend_invalid",
         "handle_out_argument",
         "handle_device_shifting",
     ),
@@ -421,13 +426,13 @@ def eye_like(
 
     With :class:`ivy.Array` input:
 
-    >>> x1 = ivy.array([0, 1],[2, 3])
+    >>> x1 = ivy.array([[0, 1],[2, 3]])
     >>> y1 = ivy.eye_like(x1)
     >>> print(y1)
     ivy.array([[1., 0.],
                [0., 1.]])
 
-    >>> x1 = ivy.array([0, 1, 2],[3, 4, 5],[6, 7, 8])
+    >>> x1 = ivy.array([[0, 1, 2],[3, 4, 5],[6, 7, 8]])
     >>> y1 = ivy.eye_like(x1, k=1)
     >>> print(y1)
     ivy.array([[0., 1., 0.],
@@ -437,7 +442,7 @@ def eye_like(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([[3, 8],[0, 2]]), b=ivy.array([[0, 2], [8, 5]]))
-    >>> y = ivy.eye_like(x)
+    >>> y = x.eye_like()
     >>> print(y)
     {
         a: ivy.array([[1., 0.],
@@ -606,6 +611,7 @@ indices.mixed_backend_wrappers = {
 
 
 @handle_exceptions
+@handle_backend_invalid
 @handle_nestable
 @to_native_arrays_and_back
 def unsorted_segment_min(
@@ -643,3 +649,38 @@ def unsorted_segment_min(
         equals to segment ID.
     """
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
+
+
+@handle_exceptions
+@handle_nestable
+@to_native_arrays_and_back
+def unsorted_segment_sum(
+    data: Union[ivy.Array, ivy.NativeArray],
+    segment_ids: Union[ivy.Array, ivy.NativeArray],
+    num_segments: Union[int, ivy.Array, ivy.NativeArray],
+) -> ivy.Array:
+    """
+    Compute the sum of elements along segments of an array. Segments are defined by an
+    integer array of segment IDs.
+
+    Parameters
+    ----------
+    data
+        The array from which to gather values.
+
+    segment_ids
+        Must be in the same size with the first dimension of `data`. Has to be
+        of integer data type. The index-th element of `segment_ids` array is
+        the segment identifier for the index-th element of `data`.
+
+    num_segments
+        An integer or array representing the total number of distinct segment IDs.
+
+    Returns
+    -------
+    ret
+        The output array, representing the result of a segmented sum operation.
+        For each segment, it computes the sum of values in `data` where `segment_ids`
+        equals to segment ID.
+    """
+    return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)

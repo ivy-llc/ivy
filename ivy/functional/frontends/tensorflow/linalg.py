@@ -362,3 +362,111 @@ def tensor_diag(diagonal, /, *, name=None):
     if rank > 1:
         raise ValueError("wrong tensor rank, at most 1")
     return ivy.diag(diagonal)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "bfloat16",
+            "half",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "float16",
+            "float32",
+            "float64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def set_diag(input, diagonal, /, *, k=0, align="RIGHT_LEFT", name=None):
+    # TODO:
+    #  1. Add support for different k values and align options
+    #  2. Add support for input tensors with ranks larger than 3
+
+    # Convert input and diagonal to Ivy array format
+    input, diagonal = map(ivy.array, (input, diagonal))
+
+    # Check if the input tensor has a rank larger than 3
+    if input.ndim > 3:
+        raise ivy.utils.exceptions.IvyNotImplementedException(
+            "Input tensor must have rank less than or equal to 3.\nInput shape:"
+            f" {input.shape}"
+        )
+
+    # Check if the first dimension of the input and diagonal match
+    if input.shape[0] != diagonal.shape[0]:
+        raise ivy.utils.exceptions.IvyValueError(
+            "Number of diagonal vectors must match the number of matrices in the"
+            f" input.\nInput shape: {input.shape}, Diagonal shape: {diagonal.shape}"
+        )
+
+    # Handle the case where input is a 2D matrix
+    if input.ndim < 3:
+        # Check the diagonal length matches the first dimension of the matrix
+        if input.shape[0] != diagonal.shape[0]:
+            raise ivy.utils.exceptions.IvyValueError(
+                "Length of the diagonal vector must match the first dimension of the"
+                f" matrix.\nMatrix shape: {input.shape}, Diagonal shape:"
+                f" {diagonal.shape}"
+            )
+
+        input[range(input.shape[0]), range(input.shape[0])] = diagonal
+    else:
+        for matrix, new_diagonal in zip(input, diagonal):
+            # Check the diagonal length matches the first dimension of the matrix
+            if matrix.shape[0] != new_diagonal.shape[0]:
+                raise ivy.utils.exceptions.IvyValueError(
+                    "Length of the diagonal vector must match the first dimension of"
+                    f" the matrix.\nMatrix shape: {matrix.shape}, Diagonal shape:"
+                    f" {new_diagonal.shape}"
+                )
+
+            matrix[range(matrix.shape[0]), range(matrix.shape[0])] = new_diagonal
+
+    return input
+
+
+def expm(input, name=None):
+    return ivy.matrix_exp(input)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {
+        "2.13.0 and below": (
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+            "complex64",
+            "complex128",
+        )
+    },
+    "tensorflow",
+)
+def tensor_diag_part(input, name=None):
+    shape = ivy.shape(input, as_array=True)
+    rank = len(shape)
+    if rank % 2 != 0:
+        raise ValueError("Wrong tensor rank, rank must be even.")
+
+    rank = len(shape)
+    rank_half = int(rank / 2)
+    half_shape = shape[:rank_half]
+    prod = 1
+    for i in range(rank_half):
+        if shape[i] != shape[i + rank_half]:
+            raise ValueError(
+                f"Invalid shape {shape}: dimensions at {i} and {i+rank_half} do not"
+                " match."
+            )
+        prod *= half_shape[i]
+
+    reshaped = ivy.reshape(input, (prod, prod))
+    diagonal = ivy.diagonal(reshaped)
+    return ivy.reshape(diagonal, tuple(half_shape))

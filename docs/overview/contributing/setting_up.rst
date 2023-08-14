@@ -214,7 +214,16 @@ This is a builtin package and doesn't require explicit installation.
       .. code-block:: none
    
          pip install -r requirements/optional.txt
+
+      Note: In case you are using Ubuntu 22.04, PaddlePaddle won't install properly. You have to download it from the source. 
    
+      .. code-block:: none
+        
+         wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+         sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
+        
+      PS: If the link gets expired at some point in the future, check http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/?C=M;O=D for a valid one.
+
    b. On M1 Mac, you will need to use the optional_m1_1 and optional_m1_2 requirements files. To install dependencies.
    
       .. code-block:: none
@@ -681,7 +690,7 @@ Just follow the steps outlined below:
 .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/select_branch.png?raw=true
    :width: 420
 
-3. The you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
+3. Then you will head to the dropdown of "Dev container configuration", then select an image to set up with. As there are six options available as of now
    
       - :code:`Default project configuration` - This is the default option, it will set up with the default codespaces environment.
       - :code:`Ivy Development Environment (build)` - This will set up the development environment of ivy for CPU and build image from :code:`ivy/docker/Dockerfile`.
@@ -722,6 +731,20 @@ Log of container being built would look like below:
 
 7. That's it, you have just setup GitHub codespaces and can start developing Ivy.
 The configuration files install all the required packages, extensions for you to get started quickly.
+
+**Setting up Codespaces with a GPU**
+
+If you want to setup a GPU instance on codespaces and also have access to it, kindly follow the guidelines below:
+
+1. Point 1 and 2 are the same from ref:`Setting up Codespaces` section above. You will be on a screen shown below. Just select the Machine Type to be "6-Core (1 GPU)". 
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Selecting_the_GPU.png?raw=true
+   :width: 420
+
+2. Refer to the ref:`Setting up Codespaces` section for the other configurations such as the "Dev conatiner configuration". Your Machine Type section will look like the following image shown below. Feel free to click on the green button to create the instance.
+
+.. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/github_codespaces/Interface_after_selecting_the_GPU_1.png?raw=true
+   :width: 420
 
 **Opening an existing Codespace**
 
@@ -784,9 +807,11 @@ The steps are as following to setup testing on VS Code when using a new Codespac
          "python.testing.pytestArgs": [
             "./ivy_tests/test_ivy/",
             "./ivy_tests/array_api_testing/test_array_api/",
+            "--continue-on-collection-errors",
          ],
          "python.testing.unittestEnabled": false,
-         "python.testing.pytestEnabled": true
+         "python.testing.pytestEnabled": true,
+         "python.testing.autoTestDiscoverOnSaveEnabled": true,
       }
 
 Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.

@@ -40,6 +40,7 @@ def test_tensorflow_det(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -49,6 +50,7 @@ def test_tensorflow_det(
         input_dtypes=input_dtype,
         frontend=frontend,
         test_flags=test_flags,
+        backend_to_test=backend_fw,
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
@@ -64,6 +66,7 @@ def test_tensorflow_eigh(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -73,6 +76,7 @@ def test_tensorflow_eigh(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -92,6 +96,7 @@ def test_tensorflow_eigvals(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_input
     assume(matrix_is_stable(x[0]))
@@ -100,6 +105,7 @@ def test_tensorflow_eigvals(
         input_dtype = [ivy.float64]
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -133,6 +139,7 @@ def test_tensorflow_eigvalsh(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -141,6 +148,7 @@ def test_tensorflow_eigvalsh(
     assume(matrix_is_stable(x[0]))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -154,11 +162,12 @@ def test_tensorflow_eigvalsh(
     dtype_x_hermitian_atol_rtol=_matrix_rank_helper(),
     test_with_out=st.just(False),
 )
-def test_matrix_rank(
+def test_tensorflow_matrix_rank(
     *,
     dtype_x_hermitian_atol_rtol,
     frontend,
     test_flags,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -167,6 +176,7 @@ def test_matrix_rank(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -195,6 +205,7 @@ def test_tensorflow_matmul(
     transpose_a,
     transpose_b,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -202,6 +213,7 @@ def test_tensorflow_matmul(
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -266,6 +278,7 @@ def test_tensorflow_solve(
     x,
     y,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -274,6 +287,7 @@ def test_tensorflow_solve(
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -318,6 +332,7 @@ def test_tensorflow_logdet(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -326,6 +341,7 @@ def test_tensorflow_logdet(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -343,6 +359,7 @@ def test_tensorflow_slogdet(
     *,
     dtype_and_x,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -350,6 +367,7 @@ def test_tensorflow_slogdet(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -414,6 +432,7 @@ def test_tensorflow_cholesky_solve(
     x,
     y,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -423,6 +442,7 @@ def test_tensorflow_cholesky_solve(
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -442,6 +462,7 @@ def test_tensorflow_pinv(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -449,6 +470,7 @@ def test_tensorflow_pinv(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -470,6 +492,7 @@ def test_tensorflow_pinv(
 def test_tensorflow_tensordot(
     *,
     dtype_x_y_axes,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -484,6 +507,7 @@ def test_tensorflow_tensordot(
     helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -514,6 +538,7 @@ def test_tensorflow_norm(
     dtype_values_axis,
     ord,
     keepdims,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -523,6 +548,7 @@ def test_tensorflow_norm(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -555,6 +581,7 @@ def test_tensorflow_normalize(
     *,
     dtype_values_axis,
     ord,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -563,6 +590,7 @@ def test_tensorflow_normalize(
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -590,6 +618,7 @@ def test_tensorflow_normalize(
 def test_tensorflow_l2_normalize(
     *,
     dtype_values_axis,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -598,6 +627,7 @@ def test_tensorflow_l2_normalize(
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -615,6 +645,7 @@ def test_tensorflow_l2_normalize(
 )
 def test_tensorflow_trace(
     dtype_and_input,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -622,6 +653,7 @@ def test_tensorflow_trace(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -642,6 +674,7 @@ def test_tensorflow_trace(
 def test_tensorflow_matrix_transpose(
     dtype_and_input,
     conjugate,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -650,6 +683,7 @@ def test_tensorflow_matrix_transpose(
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         a=x[0],
@@ -681,6 +715,7 @@ def _get_dtype_and_sequence_of_arrays(draw):
 def test_tensorflow_global_norm(
     *,
     dtype_and_input,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -689,6 +724,7 @@ def test_tensorflow_global_norm(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -716,6 +752,7 @@ def test_tensorflow_global_norm(
 def test_tensorflow_linalg_cholesky(
     *,
     dtype_and_x,
+    backend_fw,
     on_device,
     fn_tree,
     frontend,
@@ -727,6 +764,7 @@ def test_tensorflow_linalg_cholesky(
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -749,11 +787,18 @@ def test_tensorflow_linalg_cholesky(
     ),
 )
 def test_tensorflow_linalg_cross(
-    frontend, on_device, dtype_and_x, *, fn_tree, test_flags
+    frontend,
+    on_device,
+    dtype_and_x,
+    *,
+    fn_tree,
+    test_flags,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -777,6 +822,7 @@ def test_tensorflow_linalg_cross(
 def test_tensorflow_svd(
     *,
     dtype_and_x,
+    backend_fw,
     full_matrices,
     compute_uv,
     frontend,
@@ -791,6 +837,7 @@ def test_tensorflow_svd(
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -819,14 +866,8 @@ def test_tensorflow_svd(
 # einsum
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.einsum",
-    eq_n_op_n_shp=st.sampled_from(
-        [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-        ]
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_tensorflow_linalg_einsum(
     *,
@@ -834,19 +875,19 @@ def test_tensorflow_linalg_einsum(
     dtype,
     on_device,
     fn_tree,
+    backend_fw,
     frontend,
     test_flags,
 ):
-    eq, operands, _ = eq_n_op_n_shp
+    eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
-    i = 0
-    for x_ in operands:
-        kw["x{}".format(i)] = x_
-        i += 1
-    # len(operands) + 1 because of the equation
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -867,6 +908,7 @@ def test_tensorflow_linalg_einsum(
 def test_tensorflow_adjoint(
     *,
     dtype_and_x,
+    backend_fw,
     frontend,
     test_flags,
     fn_tree,
@@ -875,6 +917,7 @@ def test_tensorflow_adjoint(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -901,6 +944,7 @@ def test_tensorflow_diag(
     dtype_and_x,
     k,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -908,6 +952,7 @@ def test_tensorflow_diag(
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -945,6 +990,7 @@ def test_tensorflow_band_part(
     *,
     dtype_and_input,
     frontend,
+    backend_fw,
     test_flags,
     fn_tree,
     on_device,
@@ -952,6 +998,7 @@ def test_tensorflow_band_part(
     input_dtype, x, num_lower, num_upper = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -984,6 +1031,7 @@ def test_tensorflow_inv(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
     test_flags,
     adjoint,
 ):
@@ -993,6 +1041,7 @@ def test_tensorflow_inv(
         rtol=1e-01,
         atol=1e-01,
         frontend=frontend,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
@@ -1018,12 +1067,14 @@ def test_qr(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -1066,13 +1117,125 @@ def test_tensorflow_tensor_diag(
     test_flags,
     fn_tree,
     on_device,
+    backend_fw,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
         on_device=on_device,
         diagonal=x[0],
+    )
+
+
+# Tests for tensorflow.linalg.set_diag function's frontend
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.set_diag",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=3,
+        max_dim_size=6,
+        min_value=-10.0,
+        max_value=10.0,
+    ),
+)
+def test_tensorflow_set_diag(
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    test_flags,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    x = ivy.squeeze(x)
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        diagonal=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.expm",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_value=1,
+        max_value=10,
+        shape=helpers.ints(min_value=3, max_value=3).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: "float16" not in x[0]),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_expm(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        atol=1,
+        rtol=1e-01,
+    )
+
+
+@st.composite
+def _get_dtype_and_rank_2k_tensors(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    shape = arbitrary_dims + arbitrary_dims
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+
+# Tests for tensorflow.linalg.tensor_diag_part function's frontend
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.tensor_diag_part",
+    dtype_and_input=_get_dtype_and_rank_2k_tensors(),
+    test_with_out=st.just(False),
+)
+def test_tensorflow_tensor_diag_part(
+    *,
+    dtype_and_input,
+    frontend,
+    test_flags,
+    fn_tree,
+    on_device,
+    backend_fw,
+):
+    dtype, input = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
     )
