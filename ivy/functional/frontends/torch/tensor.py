@@ -248,8 +248,8 @@ class Tensor:
     def arcsinh(self):
         return torch_frontend.arcsinh(self)
 
-    # remove "bfloat16" from the below decorator after fixing ivy.Array.__repr__ method
-    @with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+    # Add "bfloat16" before running the tests since ivy.Array.__repr__ method needs to be fixed
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arcsinh_(self):
         self.ivy_array = torch_frontend.arcsinh(self).ivy_array
         return self
