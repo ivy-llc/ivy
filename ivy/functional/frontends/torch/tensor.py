@@ -140,7 +140,7 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
-    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    #@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def divide(self, other, *, out=None):
         return torch_frontend.divide(self, other, out=out)
 
