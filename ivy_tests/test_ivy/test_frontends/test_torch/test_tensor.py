@@ -11795,7 +11795,7 @@ def test_torch_tensor_quantile(
     ),
     offset=st.integers(min_value=-100, max_value=100),
 )
-def test_torch_instance_diag(
+def test_torch_instance_diagflat(
     dtype_and_values,
     offset,
     frontend_method_data,
