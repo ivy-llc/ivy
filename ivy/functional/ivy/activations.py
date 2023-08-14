@@ -517,11 +517,14 @@ def _softplus_jax_like(
     threshold: Optional[Union[int, float]] = None,
     out: Optional[ivy.Array] = None,
 ):
+    if beta is not None:
+        x = ivy.multiply(x, ivy.array(beta, dtype=x.dtype))
     amax = ivy.relu(x)
-    print(amax)
     x = ivy.subtract(x, ivy.multiply(amax, ivy.array(2, dtype=x.dtype)))
     x = ivy.add(amax, ivy.log(ivy.add(1, ivy.exp(x))))
     x = ivy.real(x) + _wrap_between(ivy.imag(x), ivy.pi).astype(x.dtype) * ivy.astype(1j, x.dtype)
+    if beta is not None:
+        x = ivy.divide(x, ivy.array(beta, dtype=x.dtype))
     return x
 
 @handle_exceptions
@@ -545,9 +548,7 @@ def softplus(
     """
     Apply the softplus function element-wise.
 
-    If the input is complex, then by default we apply the `log(1+ exp(x))` to  each element
-    and if the `threshold` is set we check whether the output is less than the threshold
-    we set it  to the original value of the input if not we leave as it is.
+    If the input is complex, then by default we apply the `log(1+ exp(x))` to  each element0
     This behaviour can be changed by specifying a different `complex_mode`.
 
     Parameters
