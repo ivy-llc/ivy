@@ -722,7 +722,7 @@ It basically checks if the output upon execution of the examples that are docume
 Therefore each time you make a commit, you must ensure that the :code:`test-docstrings / run-docstring-tests` are working correctly at least for the function you are making changes to.
 To check whether the docstring tests are passing you need to check the logs for :code:`test-docstrings / run-docstring-tests`:
 
-    .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
+    .. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true
            :width: 420
 
 You will need to go through the logs and see if the list of functions for which the docstring tests are failing also has the function you are working with.
@@ -732,7 +732,7 @@ If the docstring tests are failing the  logs show a list of functions having iss
 :code:`output in docs: ........`
 as shown below:
 
-    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
+    .. image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/deep_dive/docstring_examples/docstring_log.png
            :width: 420
 
 It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like `text compare <https://text-compare.com/>`_ to spot the minutest of differences.

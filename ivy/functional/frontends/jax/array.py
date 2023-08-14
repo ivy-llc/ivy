@@ -304,3 +304,8 @@ class Array:
             keepdims=keepdims,
             where=where,
         )
+
+
+# Jax supports DeviceArray from 0.4.13 and below
+# Hence aliasing it here
+DeviceArray = Array
