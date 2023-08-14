@@ -278,6 +278,7 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         /,
         *,
         alpha: float = 1.0,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -291,6 +292,8 @@ class _ArrayWithActivationsExperimental(abc.ABC):
             input array.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        complex_mode
+            optional specifier for how to handle complex data types.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -307,4 +310,4 @@ class _ArrayWithActivationsExperimental(abc.ABC):
         >>> print(y)
         ivy.array([ 0.39, -0.57])
         """
-        return ivy.elu(self._data, alpha=alpha, out=out)
+        return ivy.elu(self._data, alpha=alpha, complex_mode=complex_mode, out=out)

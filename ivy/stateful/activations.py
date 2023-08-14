@@ -445,11 +445,19 @@ class SeLU(Module):
 
 
 class ELU(Module):
-    def __init__(self):
-        """Apply the ELU activation function."""
+    def __init__(self, complex_mode: Literal["split", "magnitude", "jax"] = "jax"):
+        """
+        Apply the ELU activation function.
+
+        Parameter
+        ----------
+        complex_mode
+             Specifies how to handle complex input.
+        """
+        self._complex_mode = complex_mode
         Module.__init__(self)
 
-    def _forward(self, x, alpha=1.0):
+    def _forward(self, x, alpha=1.0, complex_mode=None):
         """
         Parameters
         ----------
@@ -457,12 +465,17 @@ class ELU(Module):
             Inputs to process *[batch_shape, d]*.
         alpha
             scaler for controlling the slope of the function for x <= 0 Default: 1.0
+        complex_mode
+              Specifies how to handle complex input.
+
         Returns
         -------
         ret
             The outputs following the ELU activation *[batch_shape, d]*
         """
-        return ivy.elu(x, alpha=alpha)
+        return ivy.elu(
+            x, alpha=alpha, complex_mode=ivy.default(complex_mode, self._complex_mode)
+        )
 
 
 class LogSigmoid(Module):

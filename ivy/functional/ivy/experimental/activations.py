@@ -324,11 +324,6 @@ def selu(
     """
     Apply the scaled exponential linear unit function element-wise.
 
-    If the input is complex, then by default each element is scaled by `alpha` if
-    either its real part is strictly negative or if its real part is zero and its
-    imaginary part is negative. This behaviour can be changed by specifying a different
-    `complex_mode`.
-
     Parameters
     ----------
     x
@@ -397,11 +392,6 @@ def silu(
     """
     Apply the silu function element-wise.
 
-    If the input is complex, then by default each element is scaled by `alpha` if
-    either its real part is strictly negative or if its real part is zero and its
-    imaginary part is negative. This behaviour can be changed by specifying a different
-    `complex_mode`.
-
     Parameters
     ----------
     x
@@ -448,11 +438,13 @@ def silu(
 @handle_out_argument
 @to_native_arrays_and_back
 @handle_array_function
+@handle_complex_input
 def elu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     alpha: float = 1.0,
+    complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """
@@ -464,6 +456,9 @@ def elu(
         Input array.
     alpha
         scaler for controlling the slope of the function for x <= 0 Default: 1.0
+    complex_mode
+        optional specifier for how to handle complex data types. See
+        `ivy.func_wrapper.handle_complex_input` for more detail.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
