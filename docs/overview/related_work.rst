@@ -7,7 +7,7 @@ Firstly, we need to look at the overall ML stack, and understand how the high le
 
 In order to conceptualize this rather complex hierarchy, we have broken the ML stack into 9 groups, which are: :ref:`RWorks API Standards`, :ref:`RWorks Wrapper Frameworks`, :ref:`RWorks Frameworks`, :ref:`RWorks Graph Tracers`, :ref:`RWorks Exchange Formats`, :ref:`RWorks Compiler Infrastructure`, :ref:`RWorks Multi-Vendor Compiler Frameworks`, :ref:`RWorks Vendor-Specific APIs` and :ref:`RWorks Vendor-Specific Compilers`, going from high level to low level respectively.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/ml_stack.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/related_work/ml_stack.png?raw=true
    :width: 100%
 
 Each of these groups within the ML stack has it's own sub-section, linked below, within which we discuss various related projects which operate at that particular level within the stack.

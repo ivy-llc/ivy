@@ -23,15 +23,15 @@ Wrapper Frameworks
 .. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
 .. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |eagerpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/eagerpy.png
+.. |eagerpy| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/wrapper_frameworks/eagerpy.png
     :height: 15pt
     :class: dark-light
-.. |keras| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/keras.png
+.. |keras| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/wrapper_frameworks/keras.png
     :height: 20pt
     :class: dark-light
-.. |thinc| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/thinc.png
+.. |thinc| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/wrapper_frameworks/thinc.png
     :height: 15pt
-.. |tensorly| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/wrapper_frameworks/tensorly.png
+.. |tensorly| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/wrapper_frameworks/tensorly.png
     :height: 20pt
 
 There are a variety of wrapper frameworks which wrap around other ML frameworks, enabling these ML frameworks to be switched in and out very easily in the backend, and enabling framework-agnostic code to be written, both for deployment and for training.

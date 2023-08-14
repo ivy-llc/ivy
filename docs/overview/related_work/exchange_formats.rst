@@ -13,13 +13,13 @@ Exchange Formats
 .. _`related work channel`: https://discord.com/channels/799879767196958751/1034436036371157083
 .. _`related work forum`: https://discord.com/channels/799879767196958751/1034436085587120149
 
-.. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/onnx.png
+.. |onnx| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/onnx.png
     :height: 20pt
     :class: dark-light
-.. |nnef| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/nnef.png
+.. |nnef| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/nnef.png
     :height: 15pt
     :class: dark-light
-.. |coreml| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/coreml.png
+.. |coreml| image:: https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/related_work/exchange_formats/coreml.png
     :height: 20pt
     :class: dark-light
 
