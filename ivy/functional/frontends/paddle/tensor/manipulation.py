@@ -6,6 +6,7 @@ from ivy.functional.frontends.paddle.func_wrapper import (
 from ivy.func_wrapper import (
     with_unsupported_dtypes,
     with_supported_dtypes,
+    with_supported_device_and_dtypes,
 )
 
 
@@ -150,15 +151,18 @@ def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
 
 
-@with_supported_dtypes(
+@with_supported_device_and_dtypes(
     {
-        "2.5.1 and below": (
-            "bool",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
-        )
+        "2.5.1 and above": {
+            "cpu": (
+                "bool",
+                "int32",
+                "int64",
+                "float32",
+                "float64",
+            ),
+            "gpu": ("float16",),
+        },
     },
     "paddle",
 )

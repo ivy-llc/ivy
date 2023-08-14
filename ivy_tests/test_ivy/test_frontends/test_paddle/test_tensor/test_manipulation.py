@@ -646,13 +646,12 @@ def test_paddle_take_along_axis(
 @handle_frontend_test(
     fn_tree="paddle.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes(kind="valid"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
     ),
-    test_with_out=st.just(False),
 )
 def test_paddle_rot90(
     *,
