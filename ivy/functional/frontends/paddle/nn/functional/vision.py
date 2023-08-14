@@ -7,6 +7,8 @@ from ivy.functional.frontends.paddle.func_wrapper import (
     to_ivy_arrays_and_back,
 )
 from ivy.utils.assertions import check_equal
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.5.1 and below": ("float16", "bfloat16")}, "paddle")
 def channel_shuffle(x, groups, data_format="NCHW", name=None):
@@ -35,7 +37,7 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
     if data_format == "NCHW":
         n, c, h, w = x.shape
         if c % groups != 0:
-            raise ValueError('channels must be divisible by groups')
+            raise ValueError("channels must be divisible by groups")
         new_shape = (n, groups, c // groups, h, w)
         reshaped_result = ivy.reshape(x, ivy.Shape(new_shape))
         permuted_result = ivy.permute_dims(reshaped_result, (0, 2, 1, 3, 4))
@@ -45,14 +47,13 @@ def channel_shuffle(x, groups, data_format="NCHW", name=None):
     else:
         n, h, w, c = x.shape
         if c % groups != 0:
-            raise ValueError('channels must be divisible by groups')
+            raise ValueError("channels must be divisible by groups")
         new_shape = (n, h, w, groups, c // groups)
         reshaped_input = ivy.reshape(x, ivy.Shape(new_shape))
-        permuted_result = ivy.permute_dims(reshaped_input,(0, 1, 2, 4, 3))
+        permuted_result = ivy.permute_dims(reshaped_input, (0, 1, 2, 4, 3))
         original_shape = [n, h, w, c]
         result = ivy.reshape(permuted_result, ivy.Shape(original_shape))
         return result
-
 
 
 @to_ivy_arrays_and_back
@@ -182,4 +183,3 @@ def affine_grid(theta, out_shape, align_corners=True):
             base_grid[:, :, :, :, 3] = ivy.full((D, H, W), 1)
             grid = ivy.matmul(base_grid.view((N, D * H * W, 4)), theta.swapaxes(1, 2))
             return grid.view((N, D, H, W, 3))
-

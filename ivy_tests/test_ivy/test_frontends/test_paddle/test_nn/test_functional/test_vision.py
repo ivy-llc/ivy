@@ -10,25 +10,26 @@ import math
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.channel_shuffle",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=["float32", "float64"],
-         min_num_dims=4,
-         max_num_dims=4,
-         ret_shape=True,
-         ),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=["float32", "float64"],
+        min_num_dims=4,
+        max_num_dims=4,
+        ret_shape=True,
+    ),
     groups=helpers.number_helpers.ints(min_value=1),
     data_format=st.sampled_from(["NCHW", "NHWC"]),
-    test_with_out=st.just(False)
+    test_with_out=st.just(False),
 )
 def test_paddle_channel_shuffle(
-        *,
-        dtype_and_x,
-        groups,
-        data_format,
-        on_device,
-        fn_tree,
-        frontend,
-        backend_fw,
-        test_flags,
+    *,
+    dtype_and_x,
+    groups,
+    data_format,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
 ):
     input_dtype, x, shape = dtype_and_x
     if data_format == "NHWC":
@@ -44,7 +45,7 @@ def test_paddle_channel_shuffle(
         on_device=on_device,
         x=x[0],
         groups=groups,
-        data_format=data_format
+        data_format=data_format,
     )
 
 
