@@ -448,6 +448,11 @@ def _random_tucker_data(draw):
 def test_random_tucker(
     *,
     data,
+    test_flags,
+    backend_fw,
+    fn_name,
+    on_device,
+):
     shape, rank, dtype, full, orthogonal, seed, non_negative = data
     results = helpers.test_function(
         input_dtypes=[],
