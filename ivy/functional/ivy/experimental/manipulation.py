@@ -14,6 +14,8 @@ from numbers import Number
 from functools import partial
 import math
 
+import numpy as np
+
 # local
 import ivy
 from ivy.func_wrapper import (
@@ -2562,8 +2564,7 @@ def soft_thresholding(
 @handle_device_shifting
 def ravel_multi_index(
     arr: Union[
-        Tuple[Union[ivy.Array, ivy.NativeArray]],
-        Union[ivy.Array, ivy.NativeArray],
+        Tuple[Union[ivy.Array, ivy.NativeArray]], Union[ivy.Array, ivy.NativeArray]
     ],
     dims: Tuple[int],
     /,
@@ -2571,7 +2572,7 @@ def ravel_multi_index(
     mode: str | None = None,
     order: str | None = None,
     out: Optional[ivy.Array] = None,
-) -> ivy.Array:
+) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Converts a tuple of index arrays into an array of flat indices,
     applying boundary modes to the multi-index.
@@ -2609,7 +2610,8 @@ def ravel_multi_index(
         of an array of dimensions dims
     Examples
     --------
-    >>> arr = np.array([[3,6,6],[4,5,1]])
+    >>> arr = ivy.array([[3,6,6],[4,5,1]])
+    >>> arr = tuple(arr)
     >>> ivy.ravel_multi_index(arr, (7,6))
     array([22, 41, 37])
 
@@ -2621,6 +2623,45 @@ def ravel_multi_index(
 
     >>> ivy.ravel_multi_index(arr, (4,4), mode=('clip','wrap'))
     array([12, 13, 13])
-
     """
-    return current_backend(arr).ravel_multi_index(arr, dims, mode=mode, order=order)
+    if not isinstance(arr, tuple):
+        raise TypeError("multi_index must be a tuple")
+    if not isinstance(dims, tuple):
+        raise TypeError("dims must be a tuple")
+    if not all(isinstance(i, int) for i in dims):
+        raise TypeError("all elements of dims must be integers")
+    if not all(i >= 0 for i in dims):
+        raise ValueError("all elements of dims must be non-negative")
+    if not all(isinstance(i, ivy.Array) for i in arr):
+        raise TypeError("all elements of multi_index must be numpy arrays")
+    if len(arr) != len(dims):
+        raise ValueError("multi_index and dims must have the same length")
+    if isinstance(mode, str):
+        mode = (mode,) * len(dims)
+    if not isinstance(mode, tuple):
+        raise TypeError("mode must be a string or a tuple of strings")
+    if not all(isinstance(i, str) for i in mode):
+        raise TypeError("all elements of mode must be strings")
+    if not all(i in ["raise", "wrap", "clip"] for i in mode):
+        raise ValueError("invalid mode specified")
+    if order not in ["C", "F"]:
+        raise ValueError("order must be either 'C' or 'F'")
+
+    raveled_indices = ivy.zeros(arr[0].shape, dtype=int)
+    for dim, index, m in zip(dims, arr, mode):
+        if m == "raise":
+            if (index < 0).any() or (index >= dim).any():
+                raise ValueError("invalid entry in coordinates array")
+        elif m == "wrap":
+            index = index % dim
+        elif m == "clip":
+            index = ivy.clip(index, 0, dim - 1)
+
+        if order == "C":
+            raveled_indices = raveled_indices * dim + index
+        else:
+            prod = ivy.prod(dims[: dims.index(dim)])
+            raveled_indices = raveled_indices + index * prod
+
+    return raveled_indices
+
