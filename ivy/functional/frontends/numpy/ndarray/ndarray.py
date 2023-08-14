@@ -703,3 +703,14 @@ class ndarray:
 
     def __lshift__(self, value, /):
         return ivy.bitwise_left_shift(self.ivy_array, value)
+        
+    def std(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True, ddof=0):
+        return np_frontend.std(
+            self,
+            axis=axis,
+            ddof=ddof,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where,
+        )
