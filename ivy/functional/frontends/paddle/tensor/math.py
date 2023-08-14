@@ -399,10 +399,12 @@ def lerp(x, y, weight, name=None):
 def rsqrt(x, name=None):
     return 1 / ivy.sqrt(x)
 
+
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 @to_ivy_arrays_and_back
 def rsqrt_(x, name=None):
     return ivy.reciprocal(ivy.sqrt(x))
+
 
 @with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
