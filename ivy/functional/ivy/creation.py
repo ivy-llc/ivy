@@ -175,7 +175,7 @@ def asarray_infer_dtype(fn: Callable) -> Callable:
         """
 
         def _infer_dtype(obj):
-            if isinstance(obj, ivy.NativeShape):
+            if isinstance(obj, (ivy.NativeShape, range)):
                 obj = list(obj)
             if hasattr(obj, "dtype"):
                 return obj.dtype.name if isinstance(obj, np.ndarray) else obj.dtype
