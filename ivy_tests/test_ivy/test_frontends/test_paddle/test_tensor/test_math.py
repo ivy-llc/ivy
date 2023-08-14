@@ -1822,7 +1822,7 @@ def test_paddle_any(
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.floor_divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
