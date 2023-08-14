@@ -148,3 +148,19 @@ def roll(x, shifts, axis=None, name=None):
 @to_ivy_arrays_and_back
 def take_along_axis(arr, indices, axis):
     return ivy.take_along_axis(arr, indices, axis)
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "bool",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def moveaxis(x, source, destination, name=None):
+    return ivy.moveaxis(x, source, destination)
