@@ -1263,6 +1263,7 @@ def test_torch_where(
             condition=cond,
             input=xs[0],
             other=xs[1],
+            backend_to_test=backend_fw,
         )
 
 
