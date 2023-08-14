@@ -637,3 +637,39 @@ def test_paddle_take_along_axis(
         indices=indices,
         axis=axis,
     )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.movexis", # This is the function we are testing against
+    dtype_and_x_and_source_and_destination_and_name=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes('valid'), # Assigning available datatypes
+        num_arrays=2,
+    ),
+)
+
+def test_paddle_moveaxis(
+    *,
+    # Parameters for the test
+    dtype_and_x_and_source_and_destination_and_name, 
+    frontend,
+    test_flags,
+    fn_tree,
+    backend_fw,
+):
+    input_dtypes , x_and_source_and_destination_and_name = dtype_and_x_and_source_and_destination_and_name
+    x , source , destination , name = x_and_source_and_destination_and_name
+    helpers.test_frontend_function(
+        input_dtypes= input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        x = x,
+        source = source,
+        destination = destination,
+        name = name,
+    )
+
+
+
+    
