@@ -10,5 +10,5 @@ permissions:
 jobs:
   fix-linting:
     name: PR Lint Bot
-    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@master
+    uses: unifyai/workflows/.github/workflows/pr-lint-bot.yml@main
     secrets: inherit
