@@ -100,7 +100,3 @@ def indices(dimensions, dtype=int, sparse=False):
 @to_ivy_arrays_and_back
 def take(arr, indices, axis=None, out=None, mode=None, unique_indices=False, indices_are_sorted=False, fill_value=None):
     return ivy.take(arr, indices, axis=axis, out=out, mode=mode, unique_indices=unique_indices, indices_are_sorted=indices_are_sorted, fill_value=fill_value)
-
-@to_ivy_arrays_and_back
-def choose(arr, choices, out=None, mode='raise'):
-    return ivy.choose(arr, choices, out=out, mode=mode)
