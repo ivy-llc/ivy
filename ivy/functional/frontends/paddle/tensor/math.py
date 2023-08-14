@@ -323,6 +323,14 @@ def minimum(x, y, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float16", "float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def kron(x, y, name=None):
+    return ivy.kron(x, y)
+
+
+@with_supported_dtypes(
     {"2.4.2 and below": ("float32", "float64", "int32", "int64")}, "paddle"
 )
 @to_ivy_arrays_and_back
@@ -420,3 +428,54 @@ def diff(x, n=1, axis=-1, prepend=None, append=None, name=None):
 @to_ivy_arrays_and_back
 def mm(input, mat2, name=None):
     return ivy.matmul(input, mat2)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
+    value = alpha * ivy.matmul(x, y) + (beta * input)
+    return value
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def take(
+    x,
+    index,
+    mode="raise",
+    name=None,
+):
+    if mode not in ["raise", "wrap", "clip"]:
+        raise ValueError(
+            "'mode' in 'take' should be 'raise', 'wrap', 'clip', but received {}."
+            .format(mode)
+        )
+    x = ivy.reshape(x, (-1,))
+    if mode == "clip":
+        index = ivy.clip(index, 0, x.shape[-1] - 1)
+    elif mode == "wrap":
+        index = ivy.where(index < 0, index % x.shape[-1], index)
+        index = ivy.where(index >= x.shape[-1], index % x.shape[-1], index)
+    return ivy.gather(x, index, axis=0)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amax(x, axis=None, keepdims=False):
+    if axis is None:
+        return ivy.max(x)
+    if isinstance(axis, int):
+        axis = [axis]
+    for i in range(len(axis)):
+        if axis[i] < 0:
+            axis[i] += x.ndim
+    for i in axis:
+        if i < 0 or i >= x.ndim:
+            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+    return ivy.max(x, axis=axis, keepdims=keepdims)
