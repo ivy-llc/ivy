@@ -77,7 +77,7 @@ e. Wait for us to review your PR.
    Once we have reviewed your PR we will either merge or request changes.
    Every time you respond to our requested changes you must re-request a review in order for us to re-engage with the PR.
 
-f. Once the PR is in good shape, we will merge into master, and then you become an Ivy contributor!
+f. Once the PR is in good shape, we will merge into main, and then you become an Ivy contributor!
 
 In order to keep our ToDo lists moving quickly, if your PR is not created within 7 days of creating the issue, then a warning message will appear on the issue.
 If another 7 days pass without any changes, the issue will be closed and the task will be made free for others in the community.
@@ -125,20 +125,20 @@ This can be done using:
 
    git checkout -b name_of_your_branch
 
-The master branch then simply has the role of being kept up to date with upstream.
-You *can* create PRs based on the master branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
+The main branch then simply has the role of being kept up to date with upstream.
+You *can* create PRs based on the main branch of your fork, but this will make things more complicated if you would then like to create additional PRs in future.
 
 For keeping any branch on your fork up to date, there is a script in the root folder of the repo `merge_with_upstream.sh <https://github.com/unifyai/ivy/blob/2994da4f7347b0b3fdd81b91c83bcbaa5580e7fb/merge_with_upstream.sh>`_.
-To update your fork's branch to the upstream master branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
-To update the master branch, this would then be: :code:`./merge_with_upstream.sh master`.
+To update your fork's branch to the upstream main branch, simply run :code:`./merge_with_upstream.sh name_of_your_branch`.
+To update the main branch, this would then be: :code:`./merge_with_upstream.sh main`.
 
 When making a PR (explained in the next sub-section), sometimes you will see that changes to upstream have caused conflicts with your PR.
 In this case, you will need to either resolve these conflicts in the browser, or clone your fork and make changes locally in the terminal and push once resolved.
 Both of these cases are explained in the following video.
 
-You may find that once you have made changes locally and try pulling from master, the pull request is aborted as there are merge conflicts.
-In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes, then pulling from master.
-Once your branch is up-to-date with master, you can reinstate the most recently stashed changes, commit and push to master with no conflicts.
+You may find that once you have made changes locally and try pulling from main, the pull request is aborted as there are merge conflicts.
+In order to avoid tedious merge conflict resolution, you can try 'stashing' your local changes, then pulling from main.
+Once your branch is up-to-date with main, you can reinstate the most recently stashed changes, commit and push to main with no conflicts.
 The corresponding commands are :code:`git stash` -> :code:`git fetch` -> :code:`git pull` -> :code:`git stash apply stash@{0}`.
 Note that this only works for uncommitted changes (staged and unstaged) and untracked files won't be stashed.
 For a comprehensive explanation of git stashing, check out this `Atlassian tutorial`_.
@@ -267,11 +267,11 @@ This is for a few reasons:
 #. It means you avoid the mountain of conflicts to resolve when you do get around to merging.
 
 This is also why we advocate using individual pull-requests per issue in the ToDo list issues.
-This keeps each of the commits on master very contained and incremental, which is the style we're going for.
+This keeps each of the commits on main very contained and incremental, which is the style we're going for.
 
 Sometimes, you've already dived very deep into some substantial changes in your fork, and it might be that only some of the problems you were trying to fix are actually fixed by your local changes.
 
-In this hypothetical situation, you should aim to get the working parts merged into master **as soon as possible**.
+In this hypothetical situation, you should aim to get the working parts merged into main **as soon as possible**.
 Adding subsections of your local changes with :code:`git` is easy.
 You can add individual files using:
 

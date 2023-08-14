@@ -101,7 +101,7 @@ Ivy Functional API ✅
 
 Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend.
 Instead, we allow these backends to be bound to the single shared namespace ivy.
-The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
+The backend can then be changed by calling :code:`ivy.set_backend('torch')` for example.
 
 :mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
 For example, the function :func:`prod`  is shown below:
@@ -224,7 +224,7 @@ The contents of this function are as follows:
             verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
-If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend('tensorflow')`, then this globally set backend is returned.
 Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
 The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace.
