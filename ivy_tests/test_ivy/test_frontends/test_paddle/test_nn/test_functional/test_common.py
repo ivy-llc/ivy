@@ -231,15 +231,14 @@ def test_linear(
     )
 
 
+# bilinear
+def get_supported_dtypes():
+    return x_and_linear(dtypes=helpers.get_dtypes("valid", full=False))
+
+
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.bilinear",
-    dtype_x1_x2_weight_bias=st.tuples(
-        st.sampled_from(("float32", "float64")),
-        st.floats(),
-        st.floats(),
-        st.floats(),
-        st.floats(),
-    ),
+    dtype_x1_x2_weight_bias=get_supported_dtypes,
 )
 def test_bilinear(
     *,
