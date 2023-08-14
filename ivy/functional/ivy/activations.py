@@ -414,42 +414,42 @@ def sigmoid(
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
+    ivy.array([0.2689414 , 0.7310586 , 0.88079703])
 
     >>> x = ivy.array([-1.0, 1.0, 2.0])
     >>> y = ivy.zeros(3)
-    >>> ivy.sigmoid(x,out=y)
+    >>> ivy.sigmoid(x, out=y)
     >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
+    ivy.array([0.2689414 , 0.7310586 , 0.88079703])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([1.]),
-                                          d=ivy.array([2.])))
+    ...                   b=ivy.Container(c=ivy.array([1.]),
+    ...                                   d=ivy.array([2.])))
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     {
-        a: ivy.array([0.]),
+        a: ivy.array([0.5]),
         b: {
-            c: ivy.array([1.]),
-            d: ivy.array([2.])
+            c: ivy.array([0.7310586]),
+            d: ivy.array([0.88079703])
         }
     }
 
     >>> x = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([1.]),
-                                          d=ivy.array([2.]))))
+    ...                   b=ivy.Container(c=ivy.array([1.]),
+    ...                                   d=ivy.array([2.])))
     >>> y = ivy.Container(a=ivy.array([0.]),
-                          b=ivy.Container(c=ivy.array([0.]),
-                                          d=ivy.array([0.]))))
-    >>> ivy.sigmoid(x,out=y)
+    ...                   b=ivy.Container(c=ivy.array([0.]),
+    ...                                   d=ivy.array([0.])))
+    >>> ivy.sigmoid(x, out=y)
     >>> print(y)
     {
-        a: ivy.array([0.]),
+        a: ivy.array([0.5]),
         b: {
-            c: ivy.array([1.]),
-            d: ivy.array([2.])
+            c: ivy.array([0.7310586]),
+            d: ivy.array([0.88079703])
         }
     }
     """
