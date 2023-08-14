@@ -677,3 +677,8 @@ def cbrt(x):
 @to_ivy_arrays_and_back
 def cummin(operand, axis=0, reverse=False):
     return ivy.cummin(operand, axis=axis, reverse=reverse, dtype=operand.dtype)
+
+
+@to_ivy_arrays_and_back
+def tie_in(x, y):
+    return y
