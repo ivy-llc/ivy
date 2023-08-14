@@ -431,6 +431,15 @@ def mm(input, mat2, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
+    value = alpha * ivy.matmul(x, y) + (beta * input)
+    return value
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
