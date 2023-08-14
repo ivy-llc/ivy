@@ -281,7 +281,8 @@ def test_function(
         )
 
         assert ivy_backend.nested_map(
-            ret_from_target, lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True
+            ret_from_target,
+            lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
         ), "Ivy function returned non-ivy arrays: {}".format(ret_from_target)
 
         # Assert indices of return if the indices of the out array provided
@@ -387,7 +388,8 @@ def test_function(
             **kwargs,
         )
         assert gt_backend.nested_map(
-            ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
+            ret_from_gt,
+            lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
         ), "Ground-truth function returned non-ivy arrays: {}".format(ret_from_gt)
         if test_flags.with_out and not test_flags.test_compile:
             test_ret_from_gt = (
@@ -1231,7 +1233,8 @@ def test_method(
             ret_device = None
 
         assert ivy_backend.nested_map(
-            ret, lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True
+            ret,
+            lambda x: ivy_backend.is_ivy_array(x) if ivy_backend.is_array(x) else True,
         ), "Ivy method returned non-ivy arrays: {}".format(ret)
 
     # Compute the return with a Ground Truth backend
@@ -1278,9 +1281,10 @@ def test_method(
             **kwargs_gt_method,
         )
         assert gt_backend.nested_map(
-            ret_from_gt, lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True
+            ret_from_gt,
+            lambda x: gt_backend.is_ivy_array(x) if gt_backend.is_array(x) else True,
         ), "Ground-truth method returned non-ivy arrays: {}".format(ret_from_gt)
-        
+
         # TODO optimize or cache
         # Exhuastive replication for all examples
         fw_list = gradient_unsupported_dtypes(fn=ins.__getattribute__(method_name))
@@ -1681,7 +1685,11 @@ def test_frontend_method(
         rtol_ = _get_framework_rtol(rtol_, backend_to_test)
     if isinstance(atol_, dict):
         atol_ = _get_framework_atol(atol_, backend_to_test)
-
+    print("-----------------------------------------------")
+    print("from ground truth backend: ", frontend_ret_np_flat)
+    print("from ivy backend: ", ret_np_flat)
+    print("===============================================")
+    print("")
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,

@@ -1764,6 +1764,24 @@ class Tensor:
     def sinc(self):
         return torch_frontend.sinc(self)
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def xlogy(self, *, other, out=None):
+        print("===============================================")
+        print("self.shape: ", self.shape)
+        print("other.shape: ", other.shape)
+        ret = torch_frontend.xlogy(self, other, out=out)
+        print("ret: ", ret)
+
+        return ret
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
