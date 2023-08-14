@@ -93,7 +93,7 @@ def _hsv_to_rgb(img):
     return ivy.einsum("...ijk, ...xijk -> ...xjk", mask, matrix)
 
 
-@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64", "uint8")}, "paddle")
 @to_ivy_arrays_and_back
 def adjust_hue(img, hue_factor):
     assert -0.5 <= hue_factor <= 0.5, "hue_factor should be in range [-0.5, 0.5]"
@@ -103,6 +103,9 @@ def adjust_hue(img, hue_factor):
     if channels == 1:
         return img
     elif channels == 3:
+        if ivy.dtype(img) == "uint8":
+            img = ivy.astype(img, "float32") / 255.0
+
         img_hsv = _rgb_to_hsv(img)
         h, s, v = img_hsv[0], img_hsv[1], img_hsv[2]
 
