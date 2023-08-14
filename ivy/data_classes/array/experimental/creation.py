@@ -123,3 +123,27 @@ class _ArrayWithCreationExperimental(abc.ABC):
             `segment_ids` equals to segment ID.
         """
         return ivy.unsorted_segment_sum(self._data, segment_ids, num_segments)
+
+    def complex(
+        self: ivy.Array,
+        imag: ivy.Array,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.complex. This method simply wraps the
+        function, and so the docstring for ivy.complex also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array consisting of real component.
+
+        imag
+            The array consisting of the imaginary component.
+
+        Returns
+        -------
+        ret
+            The output array, which consists of the complex numbers self + imag*j.
+        """
+        return ivy.complex(self._data, imag)
