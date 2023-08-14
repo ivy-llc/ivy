@@ -109,3 +109,9 @@ def interpolate(
 def linear(x, weight, bias=None, name=None):
     weight = ivy.swapaxes(weight, -1, -2)
     return ivy.linear(x, weight, bias=bias)
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+def dropout3d(x, p=0.5, training=True, data_format="NCDHW", name=None):
+    return ivy.dropout3d(x, p, training=training, data_format=data_format)
