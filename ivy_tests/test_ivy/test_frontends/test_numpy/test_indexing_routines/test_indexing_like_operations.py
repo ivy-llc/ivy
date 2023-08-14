@@ -189,9 +189,45 @@ def test_numpy_compress(
         axis=ax,
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.ravel_multi_index",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"), indices_dtypes=["int32", "int64"]
+    ),
+    dims=helpers.get_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+    ),
+    mode=st.sampled_from(["raise", "wrap", "clip"]),
+    order=st.sampled_from(["C", "F"]),
+    test_with_out=st.just(False),
 )
-def test_numpy_ravel_multi_index():
+def test_numpy_ravel_multi_index(
+    *,
+    dtype_x_indices_axis,
+    dims,
+    mode,
+    order,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
     """test_numpy_ravel_multi_index"""
-    pass
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=x,
+        dims=dims,
+        mode=mode,
+        order=order,
+    )
