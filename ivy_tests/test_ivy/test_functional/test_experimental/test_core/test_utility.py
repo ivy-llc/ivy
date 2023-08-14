@@ -5,7 +5,6 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.ivy.experimental.optional_get_element",
-
     dtype_and_x=helpers.dtype_and_values(
         min_value=-100,
         max_value=100,

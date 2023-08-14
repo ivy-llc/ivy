@@ -33,7 +33,6 @@ def optional_get_element(
     -------
     ret
         Input array if it is not None
-
     """
     if x is None:
         raise ivy.utils.exceptions.IvyError(

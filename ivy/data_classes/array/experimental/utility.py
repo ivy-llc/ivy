@@ -30,6 +30,5 @@ class _ArrayWithUtilityExperimental(abc.ABC):
         -------
         ret
             Input array if it is not None
-
         """
         return ivy.optional_get_element(self._data, out=out)
