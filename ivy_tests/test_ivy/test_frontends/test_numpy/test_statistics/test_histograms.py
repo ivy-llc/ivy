@@ -2,12 +2,9 @@
 from hypothesis import strategies as st
 import numpy as np
 
-import ivy
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy.functional.frontends.numpy as np_frontend
 
 
 @st.composite
@@ -85,7 +82,7 @@ def _histogram_helper(draw):
         weights = None
     weights = draw(st.sampled_from([weights, None]))
     density = draw(st.booleans())
-    return (a, bins, range, weights, density)
+    return (dtype_input, a, bins, range, weights, density)
 
 
 # bincount
@@ -129,29 +126,50 @@ def test_numpy_bincount(
 
 
 @handle_frontend_test(fn_tree="numpy.histogram_bin_edges", data=_histogram_helper())
-def test_numpy_histogram_bin_edges(data):
-    a, bins, range, weights, density = data
-    ret = np_frontend.histogram_bin_edges(
+def test_numpy_histogram_bin_edges(
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, a, bins, range, weights, density = data
+    print(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=a,
         bins=bins,
         range=range,
         weights=weights,
     )
-    ret_gt = np.histogram_bin_edges(
-        a=a,
-        bins=bins,
-        range=range,
-        weights=weights,
-    )
-    assert np.allclose(ret.ivy_array, ret_gt)
 
 
 @handle_frontend_test(fn_tree="numpy.histogram", data=_histogram_helper())
-def test_numpy_histogram(data):
-    a, bins, range, weights, density = data
-    ret = np_frontend.histogram(
-        a=a, bins=bins, range=range, weights=weights, density=density
+def test_numpy_histogram(
+    data,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, a, bins, range, weights, density = data
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density,
     )
-    ret_gt = np.histogram(a=a, bins=bins, range=range, weights=weights, density=density)
-    assert np.allclose(ret[0].ivy_array, ret_gt[0])
-    assert np.allclose(ret[1].ivy_array, ret_gt[1])
