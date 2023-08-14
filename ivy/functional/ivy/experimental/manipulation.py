@@ -1843,7 +1843,7 @@ def put_along_axis(
             a = _handle_reduction_op(mode, arr_1d, indices_1d, values_1d)
             ret.append(a)
 
-    ret = ivy.asarray(ret)
+    ret = ivy.vstack(ret).T
     ret = ivy.reshape(ret, arr.shape)
 
     return ivy.inplace_update(out, ret) if ivy.exists(out) else ret
