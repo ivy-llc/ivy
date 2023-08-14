@@ -19,6 +19,10 @@ kaiser_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
 def dct(input, type=2, n=None, axis=-1, norm=None, name=None):
     return ivy.dct(input, type=type, n=n, axis=axis, norm=norm)
 
+#overlap_and_add
+@to_ivy_arrays_and_back
+def overlap_and_add(signal, frame_step, name=None):
+    return ivy.overlap_and_add(signal, frame_step)
 
 # vorbis_window
 @to_ivy_arrays_and_back
