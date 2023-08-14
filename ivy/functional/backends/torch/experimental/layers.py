@@ -173,69 +173,6 @@ def max_pool2d(
     return res
 
 
-def max_unpool2d(
-    x: torch.Tensor,
-    indices: torch.Tensor,
-    kernel: Union[int, Tuple[int, ...]],
-    strides: Union[int, Tuple[int, ...]],
-    padding: Union[str, int, Tuple[int], List[Tuple[int, int]]],
-    /,
-    *,
-    data_format: str = "NHWC",
-    output_size: Optional[Tuple[int, ...]] = None,
-) -> torch.Tensor:
-    dims = 2
-
-    if data_format == "NHWC":
-        x = x.permute(0, 3, 1, 2)
-        indices = indices.permute(0, 3, 1, 2)
-        kernel = (
-            [kernel[i] for i in [0, 3, 1, 2]] if len(kernel) == (dims + 2) else kernel
-        )
-        strides = (
-            [strides[i] for i in [0, 3, 1, 2]]
-            if len(strides) == (dims + 2)
-            else strides
-        )
-        padding = (
-            [padding[i] for i in [0, 3, 1, 2]]
-            if isinstance(padding, list) and len(padding) == (dims + 2)
-            else padding
-        )
-
-    x, kernel, strides, depth_pooling = _determine_depth_max_pooling(
-        x, kernel, strides, dims, data_format="channel_first"
-    )
-    x_shape = list(x.shape[2:])
-    if not depth_pooling:
-        new_kernel = [kernel[i] + (kernel[i] - 1) * (1 - 1) for i in range(2)]
-
-        if isinstance(padding, str):
-            pad_h = _handle_padding(x_shape[0], strides[0], new_kernel[0], padding)
-            pad_w = _handle_padding(x_shape[1], strides[1], new_kernel[1], padding)
-            pad_list = [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2]
-        else:
-            padding = (padding[1], padding[0])
-            pad_list = [item for sublist in padding for item in sublist]
-
-        unpooled_tensor = torch.nn.functional.max_unpool2d(
-            x,
-            indices,
-            kernel_size=kernel,
-            stride=strides,
-            padding=pad_list,
-            output_size=output_size,
-        )
-    else:
-        raise NotImplementedError(
-            "Unpooling for depthwise max pooling is not supported."
-        )
-
-    if data_format == "NHWC":
-        return unpooled_tensor.permute(0, 2, 3, 1)
-    return unpooled_tensor
-
-
 @with_unsupported_dtypes(
     {
         "2.0.1 and below": (
