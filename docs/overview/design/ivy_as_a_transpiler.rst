@@ -10,7 +10,7 @@ This part is labelled as (b) in the image below.
 The code conversion tools described on this page are works in progress, as indicated by the construction signs 🚧.
 This is in keeping with the rest of the documentation.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 
@@ -50,7 +50,7 @@ Let’s take a look at the how the implementation of :code:`clip` method would s
 
 combined, we have the following situation:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/clip_backends_n_frontends.png?raw=true
    :align: center
    :width: 100%
 
@@ -58,7 +58,7 @@ Importantly, we can select the backend and frontend **independently** from one a
 For example, this means we can select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch functional API.
 In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/design/clip_conversion.png?raw=true
    :align: center
    :width: 100%
 |

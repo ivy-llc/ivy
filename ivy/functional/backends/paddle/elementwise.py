@@ -249,6 +249,7 @@ def sign(
         paddle.int64,
         paddle.uint8,
         paddle.float16,
+        paddle.bfloat16,
         paddle.bool,
     ]:
         return paddle.sgn(x.astype("float32")).astype(x.dtype)

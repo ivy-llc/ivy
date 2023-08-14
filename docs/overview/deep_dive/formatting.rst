@@ -31,7 +31,7 @@ We use the following linters:
 * `pydocstyle <https://github.com/pycqa/pydocstyle>`_
 * `ivy-lint <https://github.com/unifyai/lint-hook>`_ (WIP 🚧)
 
-You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/master/setup.cfg>`_
+You can also take a look at our configuration for linting in `setup.cfg <https://github.com/unifyai/ivy/blob/main/setup.cfg>`_
 file.
 
 Setup Formatting Locally
@@ -41,7 +41,7 @@ Pre-commit
 ~~~~~~~~~~
 
 To centralize the formatting process, we use `pre-commit <https://pre-commit.com/>`_. This tool allows us to run all
-the checks written in the `.pre-commit-config.yaml <https://github.com/unifyai/ivy/blob/master/.pre-commit-config.yaml>`_
+the checks written in the `.pre-commit-config.yaml <https://github.com/unifyai/ivy/blob/main/.pre-commit-config.yaml>`_
 file.
 
 Pre-commit can run alone or as a git hook. To install it, you can run the following command:
@@ -128,10 +128,10 @@ Common Issues with Pre-Commit
 As pre-commit hook runs before each commit, when it fails it provides an error message that's readable on terminals
 but not on IDE GUIs. So you might see a cryptic error message like one of the following:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/formatting/vscode_error.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/formatting/vscode_error.png?raw=true
    :alt: git commit error in VS Code
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/formatting/pycharm_error.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/formatting/pycharm_error.png?raw=true
    :alt: git commit error in PyCharm
 
 We recommend you commit your code from the terminal when you contribute to Ivy. But if you want to commit from your IDE,
