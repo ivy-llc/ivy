@@ -1730,10 +1730,6 @@ class Tensor:
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
 
-    @with_unsupported_dtypes(
-        {"2.0.1 and below": ("float16",)},
-        "torch",
-    )
     def diagflat(self, offset=0):
         return torch_frontend.diagflat(self, offset=offset)
 
