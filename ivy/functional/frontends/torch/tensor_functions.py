@@ -39,5 +39,5 @@ def scatter_add(input, dim, index, src):
 
 
 @to_ivy_arrays_and_back
-def scatter_reduce(input, dim, index, src, reduce=None):
+def scatter_reduce(input, dim, index, src, reduce, *, include_self=True):
     return ivy.put_along_axis(input, index, src, dim, mode=reduce)
