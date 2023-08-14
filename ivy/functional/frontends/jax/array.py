@@ -273,6 +273,9 @@ class Array:
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
 
+    def repeat(self, repeats, axis=None, *, total_repeat_length=None):
+        return jax_frontend.numpy.repeat(self, repeats, axis=axis)
+
     def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
         return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
 
