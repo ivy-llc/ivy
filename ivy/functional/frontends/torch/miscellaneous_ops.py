@@ -330,7 +330,7 @@ def einsum(equation, *operands):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
 def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
