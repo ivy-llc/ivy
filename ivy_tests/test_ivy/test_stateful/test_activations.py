@@ -500,7 +500,7 @@ def test_tanh(
 @handle_method(
     method_tree="stateful.activations.ReLU6.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         large_abs_safety_factor=8,
         small_abs_safety_factor=8,
         safety_factor_scale="log",
@@ -630,7 +630,7 @@ def test_logit(
 @handle_method(
     method_tree="stateful.activations.PReLU.__call__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
         num_arrays=2,
         shared_dtype=True,
         min_num_dims=2,
