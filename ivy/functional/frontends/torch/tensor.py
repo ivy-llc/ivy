@@ -1309,6 +1309,14 @@ class Tensor:
     def expm1(self):
         return torch_frontend.expm1(self)
 
+    # remove "bfloat16" from the below decorator after fixing ivy.Array.__repr__ method
+    @with_unsupported_dtypes(
+        {"2.0.1 and below": ("bfloat16", "float16", "complex")}, "torch"
+    )
+    def expm1_(self):
+        self.ivy_array = torch_frontend.expm1(self).ivy_array
+        return self
+
     # fmt: off
     @with_unsupported_dtypes({"2.0.1 and below": ("int8", "int16", "int32", "int64", "uint8", "bool", "float16",)},"torch",)  # noqa
     def exp_(self):
@@ -1451,6 +1459,11 @@ class Tensor:
     @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
     def multiply(self, other, *, out=None):
         return torch_frontend.multiply(self, other, out=out)
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
+    def multiply_(self, other, *, out=None):
+        self.ivy_array = torch_frontend.multiply(self, other, out=out).ivy_array
+        return self
 
     @numpy_to_torch_style_args
     @with_unsupported_dtypes({"2.0.1 and below": ("float16", "complex")}, "torch")
@@ -1719,7 +1732,6 @@ class Tensor:
     )
     def lcm(self, other, *, out=None):
         return torch_frontend.lcm(self, other, out=out)
-
 
     @with_unsupported_dtypes(
         {"2.0.1 and below": ("float16", "bfloat16")},
