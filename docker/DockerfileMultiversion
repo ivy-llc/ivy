@@ -1,9 +1,6 @@
 FROM debian:buster
 WORKDIR /ivy
 
-
-
-
 ARG fw
 ARG pycon=3.8.10
 # Install miniconda
@@ -48,7 +45,7 @@ COPY /docker/multiversion_testing_requirements.txt .
 # requirement mappings directs which dependency to be installed and where
 SHELL ["/bin/bash", "-c"]
 RUN python3 multiversion_framework_directory.py  $fw && \
-    pip install -r multiversion_testing_requirements.txt
+    pip install -r multiversion_testing_requirements.txt && \
     pip-autoremove torch -y && \
     pip-autoremove tensorflow && \
     pip-autoremove jax
