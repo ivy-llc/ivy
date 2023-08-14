@@ -1,5 +1,6 @@
 # global
 from typing import Union, Tuple, Optional, Sequence, Iterable, Generator
+import warnings
 
 # local
 import ivy
@@ -711,3 +712,71 @@ def complex(
         The output array, consisting of complex numbers real + imag*j.
     """
     return ivy.current_backend(real, imag).complex(real, imag)
+
+
+@infer_dtype
+def random_tucker(
+    shape: Sequence[int],
+    rank: Sequence[int],
+    /,
+    *,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    full: Optional[bool] = False,
+    orthogonal: Optional[bool] = False,
+    seed: Optional[int] = None,
+    non_negative: Optional[bool] = False,
+) -> ivy.TuckerTensor:
+    """
+    Generate a random Tucker tensor.
+
+    Parameters
+    ----------
+    shape
+        shape of the tensor to generate
+    rank
+        rank of the Tucker decomposition
+        if int, the same rank is used for each mode
+        otherwise, dimension of each mode
+    full
+        if True, a full tensor is returned
+        otherwise, the decomposed tensor is returned
+    orthogonal
+        if True, creates a tensor with orthogonal components
+    seed
+        seed for generating random numbers
+    non_negative
+
+
+    Returns
+    -------
+        ivy.TuckerTensor
+    """
+    rank = ivy.TuckerTensor.validate_tucker_rank(shape, rank)
+
+    if orthogonal:
+        for i, (s, r) in enumerate(zip(shape, rank)):
+            if r > s:
+                warnings.warn(
+                    "Selected orthogonal=True, but selected a rank larger than the"
+                    f" tensor size for mode {{0}}: rank[{i}]={r} > shape[{i}]={s}."
+                )
+
+    factors = []
+    for s, r in zip(shape, rank):
+        if orthogonal:
+            factor = ivy.random_uniform(shape=(s, s), seed=seed, dtype=dtype)
+            Q, _ = ivy.qr(factor)
+            factors.append(ivy.array(Q[:, :r]))
+        else:
+            factors.append(ivy.random_uniform(shape=(s, r), seed=seed, dtype=dtype))
+
+    core = ivy.random_uniform(shape=rank, seed=seed, dtype=dtype)
+
+    if non_negative:
+        factors = [ivy.abs(f) for f in factors]
+        core = ivy.abs(core)
+
+    if full:
+        return ivy.TuckerTensor.tucker_to_tensor((core, factors))
+    else:
+        return ivy.TuckerTensor((core, factors))
