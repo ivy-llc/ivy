@@ -74,6 +74,16 @@ def mse_loss(input, label, reduction="mean", name=None):
 
 @handle_exceptions
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.4.2 and below": ("float32", "float64")}, "paddle")
+def square_error_cost(input, label, name=None):
+    ret = ivy.square(input - label)
+    if ret.shape == ():
+        ret = ret.expand_dims()
+    return ret
+
+
+@handle_exceptions
+@to_ivy_arrays_and_back
 @with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
 def cosine_embedding_loss(
     input1, input2, label, margin=0.0, reduction="mean", name=None

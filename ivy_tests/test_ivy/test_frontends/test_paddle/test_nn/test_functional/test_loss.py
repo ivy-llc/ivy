@@ -91,6 +91,42 @@ def test_paddle_mse_loss(
     )
 
 
+# square error cost
+@handle_frontend_test(
+    fn_tree="paddle.nn.functional.square_error_cost",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    )
+    
+)
+def test_square_error_cost(
+    *,
+    dtype_and_x,
+    on_device,
+    backend_fw,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        label=x[1],
+    )
+
+
 # cosine embedding loss
 @st.composite
 def _cos_embd_loss_helper(draw):
