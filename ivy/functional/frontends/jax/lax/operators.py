@@ -671,8 +671,8 @@ def cbrt(x):
 
 
 @with_unsupported_dtypes(
-    {"9.5.1 and below": ("float16", "bfloat16")},
-    "paddle",
+    {"0.4.14 and below": ("bfloat16", "bool", "complex64", "complex128")},
+    "jax",
 )
 @to_ivy_arrays_and_back
 def cummin(operand, axis=0, reverse=False):
@@ -682,3 +682,20 @@ def cummin(operand, axis=0, reverse=False):
 @to_ivy_arrays_and_back
 def tie_in(x, y):
     return y
+
+
+@with_supported_dtypes(
+    {
+        "0.4.14 and below": (
+            "float16",
+            "float32",
+            "float64",
+        )
+    },
+    "jax",
+)
+@to_ivy_arrays_and_back
+def erfc(x):
+    value = ivy.erf(x)
+    value = (1.0 - value) if value is not None else None
+    return value
