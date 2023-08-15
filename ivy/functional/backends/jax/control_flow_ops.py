@@ -2,7 +2,6 @@ import jax
 
 
 def if_else(cond, body_fn, orelse_fn, vars):
-    cond = bool(cond)
     with jax.disable_jit():
         final_vars = jax.lax.cond(cond, body_fn, orelse_fn, *vars)
     return final_vars
