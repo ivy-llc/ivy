@@ -85,6 +85,6 @@ if __name__ == "__main__":
     # uninstall requests when done
     # install requests only for build, and uninstall it later
     subprocess.run(
-        f"yes |pip3 uninstall -y requests",
+        f"yes |pip3 uninstall requests",
         shell=True,
     )
