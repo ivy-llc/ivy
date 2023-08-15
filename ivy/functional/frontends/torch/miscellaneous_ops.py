@@ -454,3 +454,8 @@ def corrcoef(input):
             f" input with {ivy.shape(input)} dimansions"
         )
     return ivy.corrcoef(input, y=None, rowvar=True)
+
+
+@to_ivy_arrays_and_back
+def kron(input, other, *, out=None):
+    return ivy.kron(input, other)
