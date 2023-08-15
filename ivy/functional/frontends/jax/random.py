@@ -1,5 +1,6 @@
 # global
 import operator
+import numpy as np
 
 # local
 import ivy
@@ -352,3 +353,23 @@ def ball(key, d, p=2.0, shape=(), dtype="float64"):
     exp = -ivy.log(1 - uniform)
 
     return gn / (((ivy.abs(gn) ** p).sum(axis=-1) + exp) ** (1 / p))[..., None]
+
+
+
+def categorical(key,logits,axis = -1, shape = None):
+    seed = _get_seed(key)
+    logits_arr = ivy.asarray(logits)
+    if axis >= 0:
+        axis -= len(logits_arr.shape)
+    batch_shape = tuple(np.delete(logits_arr.shape, axis))
+    if shape is None:
+        shape = batch_shape
+    else:
+        shape = tuple(shape)
+    shape_prefix = shape[:len(shape)-len(batch_shape)]
+    logits_shape = list(shape[len(shape) - len(batch_shape):])
+    logits_shape.insert(axis % len(logits_arr.shape), logits_arr.shape[axis])
+    return ivy.argmax(
+      gumbel(key, (*shape_prefix, *logits_shape), logits_arr.dtype) +
+      ivy.expand_dims(logits_arr),
+      axis=axis)

@@ -1417,3 +1417,60 @@ def test_jax_ball(
     for u, v in zip(ret_np, ret_from_np):
         assert u.dtype == v.dtype
         assert u.shape == v.shape
+
+
+
+@pytest.mark.xfail
+@handle_frontend_test(
+    fn_tree="jax.random.categorical",
+    dtype_key=helpers.dtype_and_values(
+        available_dtypes=["uint32"],
+        min_value=0,
+        max_value=2000,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
+        max_dim_size=2,
+    ),
+    shape=helpers.get_shape(),
+    dtype=helpers.get_dtypes("float", full=False),
+)
+def test_jax_categorical(
+    *,
+    dtype_key,
+    shape,
+    dtype,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, key = dtype_key
+
+    def call():
+        return helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            test_flags=test_flags,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            test_values=False,
+            key=key[0],
+            shape=shape,
+            dtype=dtype[0],
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
+        return
+
+    ret_np, ret_from_np = ret
+    ret_np = helpers.flatten_and_to_np(ret=ret_np, backend=backend_fw)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np, backend=backend_fw)
+    for u, v in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+        assert u.shape == v.shape
+
