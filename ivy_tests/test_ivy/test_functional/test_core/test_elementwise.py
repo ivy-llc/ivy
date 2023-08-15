@@ -59,8 +59,9 @@ def test_abs(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=1,
-        large_abs_safety_factor=4,
-        small_abs_safety_factor=4,
+        large_abs_safety_factor=2.1,
+        small_abs_safety_factor=2.1,
+        safety_factor_scale="log",
     ),
 )
 def test_acosh(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -887,7 +888,8 @@ def test_log1p(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.log2",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
     ),
 )
 def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
