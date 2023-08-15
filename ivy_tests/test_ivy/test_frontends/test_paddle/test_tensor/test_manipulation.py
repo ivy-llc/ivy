@@ -674,34 +674,77 @@ def test_paddle_rot90(
         k=k,
         axes=tuple(axes),
     )
+
  
 @handle_frontend_test(
-    fn_tree="paddle.movexis", # This is the function we are testing against
-    dtype_and_x_and_source_and_destination_and_name=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes('valid'), # Assigning available datatypes
-        num_arrays=2,
+    fn_tree="paddle.moveaxis", # This is the function we are testing against
+    dtype_and_x=helpers.dtype_and_values(
+    available_dtypes=helpers.get_dtypes('valid'), # Assigning available datatypes
+        min_value=-100,
+        max_value=100,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    source=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
+    ),
+        destination=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
     ),
 )
 
 def test_paddle_moveaxis(
-    *,
+
     # Parameters for the test
-    dtype_and_x_and_source_and_destination_and_name, 
+    dtype_and_x, 
+    source,
+    destination,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
+    on_device,
 ):
-    input_dtypes , x_and_source_and_destination_and_name = dtype_and_x_and_source_and_destination_and_name
-    x , source , destination , name = x_and_source_and_destination_and_name
+    input_dtype , x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes= input_dtypes,
+        input_dtypes= input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x = x,
+        x = x[0],
         source = source,
         destination = destination,
-        name = name,
+        on_device=on_device,
     )
