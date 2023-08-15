@@ -75,3 +75,22 @@ class DataFrame(NDFrame):
             f"frontends.pandas.DataFrame ({self.array.to_list()}, "
             f"index={self.index}), columns={self.columns})"
         )
+
+    def sum(self, axis=None, skipna=True, level=None, numeric_only=None, min_count=0):
+        _array = self.array
+        if axis is None or axis == "index":
+            axis = 0
+        elif axis == "columns":
+            axis = 1
+        if min_count > 0:
+            if ivy.has_nans(_array):
+                number_values = _array.size - ivy.sum(ivy.isnan(_array))
+            else:
+                number_values = _array.size
+            if min_count > number_values:
+                return ivy.nan
+        if skipna:
+            ret = ivy.nansum(_array, axis=axis)
+        else:
+            ret = _array.sum(axis=axis)
+        return Series(ret, index=self.columns if axis in (0, "index") else self.index)
