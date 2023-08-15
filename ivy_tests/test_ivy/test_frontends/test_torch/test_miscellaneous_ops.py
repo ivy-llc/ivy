@@ -1655,3 +1655,36 @@ def test_torch_corrcoef(
         backend_to_test=backend_fw,
         input=x[0],
     )
+
+# corrcoef
+@handle_frontend_test(
+    fn_tree="torch.cdist",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_cdist(
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=["float64"],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x[0],
+    )
