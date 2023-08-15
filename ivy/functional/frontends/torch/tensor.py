@@ -249,6 +249,11 @@ class Tensor:
         return torch_frontend.arcsinh(self)
 
     @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+    def arcsinh_(self):
+        self.ivy_array = torch_frontend.arcsinh(self).ivy_array
+        return self
+
+    @with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
     def arcsin(self):
         return torch_frontend.arcsin(self)
 
@@ -1747,6 +1752,18 @@ class Tensor:
             self, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
         )
 
+    @with_unsupported_dtypes(
+        {
+            "2.0.1 and below": (
+                "float16",
+                "bfloat16",
+            )
+        },
+        "torch",
+    )
+    def sinc(self):
+        return torch_frontend.sinc(self)
+
 
 class Size(tuple):
     def __new__(cls, iterable=()):
@@ -1759,7 +1776,16 @@ class Size(tuple):
                 new_iterable.append(int(item))
             except Exception:
                 raise TypeError(f"Expected int, but got {type(item)} at index {i}")
-        return super().__new__(cls, new_iterable)
+        return super(Size, cls).__new__(cls, tuple(new_iterable))
+
+    def __init__(self, shape) -> None:
+        self._ivy_shape = (
+            ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        )
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
+
+    @property
+    def ivy_shape(self):
+        return self._ivy_shape
