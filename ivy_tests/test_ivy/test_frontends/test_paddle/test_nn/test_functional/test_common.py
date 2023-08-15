@@ -462,9 +462,10 @@ def paddle_unfold_handler(draw, dtype):
     h_size = draw(helpers.ints(min_value=10, max_value=30))
     w_size = draw(helpers.ints(min_value=10, max_value=30))
     channels = draw(helpers.ints(min_value=1, max_value=3))
+    batch = draw(helpers.ints(min_value=1, max_value=10))
 
     x = draw(
-        helpers.array_values(dtype=dtype[0], shape=[1, channels, h_size, w_size], min_value=0, max_value=1)
+        helpers.array_values(dtype=dtype[0], shape=[batch, channels, h_size, w_size], min_value=0, max_value=1)
     )
 
     kernel_sizes = draw(helpers.ints(min_value=1, max_value=3))
