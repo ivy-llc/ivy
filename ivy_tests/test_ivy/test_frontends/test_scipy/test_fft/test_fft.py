@@ -8,7 +8,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# # Helpers
+# Helpers
 
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
@@ -142,7 +142,7 @@ def x_and_ifftn(draw):
     return x_and_ifftn + (workers,)
 
 
-# # Tests
+# Tests
 
 
 @pytest.mark.skip("Testing pipeline not yet implemented")
