@@ -963,14 +963,14 @@ def gradient_test(
                 kwargs=kwargs,
             )(*args, **kwargs)
             return gt_backend.nested_map(ret, gt_backend.mean, include_derived=True)
-        ivy.set_precise_mode(test_flags.precision_mode)
+        gt_backend.set_precise_mode(test_flags.precision_mode)
         _, grads_from_gt = gt_backend.execute_with_gradients(
             _gt_grad_fn,
             [args, kwargs, 1],
             xs_grad_idxs=xs_grad_idxs,
             ret_grad_idxs=ret_grad_idxs,
         )
-        ivy.unset_precise_mode()
+        gt_backend.unset_precise_mode()
         grads_np_from_gt_flat = flatten_and_to_np(
             backend=backend_to_test, ret=grads_from_gt
         )
@@ -1921,9 +1921,9 @@ def get_ret_and_flattened_np_array(
         backend_to_test, fn, test_compile=test_compile, args=args, kwargs=kwargs
     )
     with update_backend(backend_to_test) as ivy_backend:
-        ivy.set_precise_mode(precision_mode)
+        ivy_backend.set_precise_mode(precision_mode)
         ret = fn(*args, **kwargs)
-        ivy.unset_precise_mode()
+        ivy_backend.unset_precise_mode()
 
         def map_fn(x):
             if _is_frontend_array(x):
@@ -1945,9 +1945,9 @@ def get_frontend_ret(
     **kwargs,
 ):
     with update_backend(backend) as ivy_backend:
-        ivy.set_precise_mode(precision_mode)
+        ivy_backend.set_precise_mode(precision_mode)
         ret = frontend_fn(*args, **kwargs)
-        ivy.unset_precise_mode()
+        ivy_backend.unset_precise_mode()
         if as_ivy_arrays:
             ret = ivy_backend.nested_map(
                 ret, _frontend_array_to_ivy, include_derived={tuple: True}
