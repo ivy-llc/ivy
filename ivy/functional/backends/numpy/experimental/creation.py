@@ -113,6 +113,29 @@ def unsorted_segment_min(
     return res
 
 
+def blackman_window(
+    size: int,
+    /,
+    *,
+    periodic: bool = True,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if size < 2:
+        return np.ones([size], dtype=dtype)
+    if periodic:
+        count = np.arange(size) / size
+    else:
+        count = np.linspace(start=0, stop=size, num=size)
+
+    return (
+        (0.42 - 0.5 * np.cos(2 * np.pi * count))
+        + (0.08 * np.cos(2 * np.pi * 2 * count))
+    ).astype(dtype)
+
+
+blackman_window.support_native_out = False
+
 def unsorted_segment_sum(
     data: np.ndarray,
     segment_ids: np.ndarray,
@@ -134,3 +157,4 @@ def unsorted_segment_sum(
             res[i] = np.sum(data[mask_index], axis=0)
 
     return res
+

@@ -652,6 +652,7 @@ def unsorted_segment_min(
     return ivy.current_backend().unsorted_segment_min(data, segment_ids, num_segments)
 
 
+
 @handle_exceptions
 @handle_nestable
 @to_native_arrays_and_back
@@ -685,6 +686,53 @@ def unsorted_segment_sum(
         equals to segment ID.
     """
     return ivy.current_backend().unsorted_segment_sum(data, segment_ids, num_segments)
+
+
+
+@handle_exceptions
+@handle_nestable
+@handle_out_argument
+@to_native_arrays_and_back
+@infer_dtype
+@handle_device_shifting
+def blackman_window(
+    size: int,
+    *,
+    periodic: bool = True,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Generate a Blackman window. The Blackman window is a taper formed by using the first
+    three terms of a summation of cosines. It was designed to have close to the minimal
+    leakage possible. It is close to optimal, only slightly worse than a Kaiser window.
+    Parameters
+    ----------
+    window_length
+        the window_length of the returned window.
+    periodic
+        If True, returns a window to be used as periodic function.
+        If False, return a symmetric window.
+    dtype
+        The data type to produce. Must be a floating point type.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        The array containing the window.
+    Functional Examples
+    -------------------
+    >>> ivy.blackman_window(4, periodic = True)
+    ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+    >>> ivy.blackman_window(7, periodic = False)
+    ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
+        6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
+    """
+    return ivy.current_backend().blackman_window(
+        size, periodic=periodic, dtype=dtype, out=out
+    )
+
 
 
 @handle_exceptions
@@ -755,3 +803,4 @@ def random_tucker(
         return ivy.TuckerTensor.tucker_to_tensor((core, factors))
     else:
         return ivy.TuckerTensor((core, factors))
+
