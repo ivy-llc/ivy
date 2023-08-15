@@ -491,17 +491,6 @@ class Module(ModuleHelpers, ModuleConverters, ModuleMeta):
         """
         return {}
 
-    def _create_buffers(self):
-        """
-        Create buffers for this class.
-
-        Returns
-        -------
-        ret
-            An empty set.
-        """
-        return {}
-
     def _build(self, *args, **kwargs) -> bool:
         """
         Build the internal layers and variables for this module. Overridable.
