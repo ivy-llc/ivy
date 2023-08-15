@@ -200,8 +200,7 @@ def test_torch_avg_pool3d(
         max_dims=3,
         min_side=1,
         max_side=3,
-        explicit_or_str_padding=False,
-        only_explicit_padding=False,
+        only_explicit_padding=True,
         data_format="channel_first",
     ),
     test_with_out=st.just(False),
@@ -216,13 +215,7 @@ def test_torch_max_pool1d(
     on_device,
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
-    x_shape = [x[0].shape[2]]
-    # Torch ground truth func also takes padding input as an integer
-    # or a tuple of integers, not a string
-    if padding == "SAME":
-        padding = calculate_same_padding(kernel_size, stride, x_shape)
-    elif padding == "VALID":
-        padding = (0,)
+    padding = (padding[0][0], )
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -245,10 +238,10 @@ def test_torch_max_pool1d(
         max_dims=4,
         min_side=1,
         max_side=4,
-        explicit_or_str_padding=True,
+        only_explicit_padding=True,
         return_dilation=True,
         data_format="channel_first",
-    ).filter(lambda x: x[4] != "VALID" and x[4] != "SAME"),
+    ),
     test_with_out=st.just(False),
     ceil_mode=st.just(True),
 )

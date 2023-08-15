@@ -114,30 +114,15 @@ def max_pool1d(
 ):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "1d", name="stride")
-    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
-    kernel_pads = zip(kernel_size, padding)
-
     data_format = "NCW"
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-    # figure out whether to apply padding
-    if sum(padding) == 0:
-        padding_str = "VALID"
-    elif all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        padding_str = "SAME"
-    else:
-        padding_str = "VALID"
     return ivy.max_pool1d(
         input,
         kernel_size,
         stride,
-        padding_str,
+        padding,
         data_format=data_format,
+        dilation=dilation,
+        ceil_mode=ceil_mode,
     )
 
 
@@ -152,14 +137,9 @@ def max_pool2d(
     ceil_mode=False,
     return_indices=False,
 ):
-    # ToDo: Add return_indices once superset in implemented
-    dim_check = False
-    if input.ndim == 3:
-        input = input.expand_dims()
-        dim_check = True
     if stride is None:
         stride = kernel_size
-    ret = ivy.max_pool2d(
+    return ivy.max_pool2d(
         input,
         kernel_size,
         stride,
@@ -168,9 +148,6 @@ def max_pool2d(
         dilation=dilation,
         ceil_mode=ceil_mode,
     )
-    if dim_check:
-        return ret.squeeze(0)
-    return ret
 
 
 @to_ivy_arrays_and_back
