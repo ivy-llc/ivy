@@ -172,6 +172,7 @@ def test_jax_leaky_relu(
         available_dtypes=helpers.get_dtypes("float_and_complex"),
         min_value=-1e4,
         max_value=1e4,
+        abs_smallest_val=1e-3,
     ),
     approximate=st.booleans(),
     test_with_out=st.just(False),

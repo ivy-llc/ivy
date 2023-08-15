@@ -304,6 +304,10 @@ def log10(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def log1p(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    if x.dtype in ["complex64", "complex128"]:
+        # For certain complex numbers, jnp.log1p(z) != jnp.log(1+z)
+        # I don't know why
+        return jnp.log(1 + x)
     return jnp.log1p(x)
 
 

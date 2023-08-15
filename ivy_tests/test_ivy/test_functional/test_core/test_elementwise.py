@@ -565,7 +565,11 @@ def test_exp2(dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.expm1",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        # Can't use linear or log safety factor, since the function is exponential,
+        # next best option is a hardcoded maximum that won't break any data type.
+        # expm1 is designed for very small values anyway
+        max_value=20.0,
     ),
 )
 def test_expm1(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -838,7 +842,8 @@ def test_less_equal(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.log",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
     ),
 )
 def test_log(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
@@ -904,7 +909,8 @@ def test_log2(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.log10",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex")
+        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        safety_factor_scale="log",
     ),
 )
 def test_log10(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
