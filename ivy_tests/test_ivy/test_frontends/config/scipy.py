@@ -3,6 +3,10 @@ import scipy
 import numpy as np
 
 
+def get_config():
+    return ScipyFrontendConfig()
+
+
 class ScipyFrontendConfig(FrontendConfig):
     Dtype = scipy.dtype
     Device = str

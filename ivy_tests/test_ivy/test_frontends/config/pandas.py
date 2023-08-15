@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 
 
+def get_config():
+    return PandasFrontendConfig()
+
+
 class PandasFrontendConfig(FrontendConfig):
     PandasArray = pd.core.arrays.numpy_.PandasArray
     Dtype = np.dtype

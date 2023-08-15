@@ -4,6 +4,10 @@ from .base import FrontendConfig, SupportedDeviecs, SupportedDtypes
 # import onnxruntime as ort
 
 
+def get_config():
+    return ONNXFrontendConfig()
+
+
 class ONNXFrontendConfig(FrontendConfig):
     # Dtype = mx.numpy.dtype
     # Device = mx.Context
