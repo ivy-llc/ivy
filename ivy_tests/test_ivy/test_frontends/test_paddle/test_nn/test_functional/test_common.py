@@ -474,7 +474,7 @@ def paddle_unfold_handler(draw, dtype):
     return dtype, x, kernel_sizes, strides, paddings, dilations
 
 @handle_frontend_test(
-    fn_tree="paddle.nn.functional.common.unfold",
+    fn_tree = "paddle.nn.functional.common.unfold",
     dtype_inputs = paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
 )
 def test_unfold(

@@ -176,7 +176,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
                         :,
                         i:i + dilations[0] * (kernel_sizes[0] - 1) + 1: dilations[0],
                         j:j + dilations[1] * (kernel_sizes[1] - 1) + 1: dilations[1]]
-            window = ivy.flatten(window, start_dim = 1)
+            window = ivy.flatten(window, start_dim=1)
             folder.append(window)
 
-    return ivy.stack(folder, axis = 2)
+    return ivy.stack(folder, axis=2)
