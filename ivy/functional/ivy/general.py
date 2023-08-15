@@ -2824,8 +2824,6 @@ def set_item(
     else:
         query, target_shape = _parse_query(query, x.shape, scatter=True)
     val = _broadcast_to(val, target_shape).astype(x.dtype)
-    if copy:
-        x = ivy.copy_array(x)
     return ivy.scatter_nd(query, val, reduction="replace", out=x)
 
 
