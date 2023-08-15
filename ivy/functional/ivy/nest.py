@@ -62,7 +62,6 @@ def index_nest(
     >>> y = [1]
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
-    >>> z
     {
         a: ivy.array([3., 4.]),
         b: 60
@@ -432,14 +431,11 @@ def prune_nest_at_indices(nest: Iterable, indices: Tuple, /) -> None:
         A tuple of tuples of indices for the indices at which to prune.
     """
     # Delete first deeper elements and elements with larger index
-    indices_split_by_len = _split_list_by_length(indices)
-    indices_sorted = []
-    for index_list in indices_split_by_len:
-        indices_sorted += sorted(
-            index_list,
-            key=str,
-            reverse=True,
-        )
+    indices_sorted = sorted(
+        indices,
+        key=str,
+        reverse=True,
+    )
     [prune_nest_at_index(nest, index) for index in indices_sorted]
 
 
@@ -614,7 +610,8 @@ def map_nest_at_indices(
     >>> function = lambda x : x ** 2
     >>> ivy.map_nest_at_indices(nest, indices, function)
     >>> print(nest)
-    ivy.array([[-9., 8., -17.], [11., -3., 5.]])
+    ivy.array([[ -9.,  64., -17.],
+           [ 11.,   9.,  25.]])
     """
     is_tuple = isinstance(nest, tuple)
     nest_type = type(nest) if is_tuple else lambda x: x

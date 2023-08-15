@@ -5,7 +5,7 @@ import sys
 
 # install requests only for build, and uninstall it later
 subprocess.run(
-    (f"pip3 install requests"),
+    f"pip3 install requests",
     shell=True,
 )
 
@@ -57,8 +57,10 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             (
-                f"pip install  paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117 --target {path} "
-                " -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+                "pip install "
+                f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117"
+                f" --target {path}  -f"
+                " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
                 " --no-cache-dir"
             ),
             shell=True,
@@ -83,6 +85,6 @@ if __name__ == "__main__":
     # uninstall requests when done
     # install requests only for build, and uninstall it later
     subprocess.run(
-        (f"pip3 uninstall requests"),
+        f"pip3 uninstall requests",
         shell=True,
     )

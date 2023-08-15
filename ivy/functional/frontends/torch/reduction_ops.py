@@ -268,6 +268,15 @@ quantile.unsupported_dtypes = {
 
 @numpy_to_torch_style_args
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.0.1 and below": ("float16", "bfloat16")}, "torch")
+def nanquantile(input, q, dim=None, keepdim=False, *, interpolation="linear", out=None):
+    return ivy.nanquantile(
+        input, q, axis=dim, keepdims=keepdim, interpolation=interpolation, out=out
+    )
+
+
+@numpy_to_torch_style_args
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"2.0.1 and below": ("uint8", "int8")},
     "torch",

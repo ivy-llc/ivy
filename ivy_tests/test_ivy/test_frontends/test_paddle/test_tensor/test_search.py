@@ -206,3 +206,92 @@ def test_paddle_searchsorted(
         out_int32=out_int32,
         right=right,
     )
+
+
+# masked_select
+@st.composite
+def _dtypes_input_mask(draw):
+    _shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    _mask = draw(helpers.array_values(dtype="bool", shape=_shape))
+    _dtype, _x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=1,
+            shape=_shape,
+        )
+    )
+
+    return _dtype, _x, _mask
+
+
+@handle_frontend_test(
+    fn_tree="paddle.masked_select",
+    dtype_input_mask=_dtypes_input_mask(),
+)
+def test_paddle_masked_select(
+    *,
+    dtype_input_mask,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    (
+        input_dtype,
+        x,
+        mask,
+    ) = dtype_input_mask
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype + ["bool"],
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        mask=mask,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="paddle.topk",
+    dtype_x_and_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    k=st.data(),
+    sorted=st.booleans(),
+    largest=st.booleans(),
+)
+def test_paddle_topk(
+    *,
+    dtype_x_and_axis,
+    k,
+    sorted,
+    largest,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtypes, x, axis = dtype_x_and_axis
+    k = k.draw(st.integers(min_value=1, max_value=x[0].shape[axis]))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        k=k,
+        axis=axis,
+        largest=largest,
+        sorted=sorted,
+        test_values=False,
+    )
