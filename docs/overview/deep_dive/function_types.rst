@@ -136,7 +136,7 @@ One example of this is :code:`ivy.linear` for which the torch native function :c
 to be a 2 dimensional tensor while as ivy also allows the :code:`weight` argument to be 3 dimensional. While achieving the objective of having superset
 behaviour across the backends, native functionality of frameworks should be made use of as much as possible. Even if a framework-specific function
 doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides and then add more logic for the
-remaining part. This is explained in detail in the :ref:`Superset Behavior` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
+remaining part. This is explained in detail in the :ref:`Maximizing Usage of Native Functionality` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
 attribute which should be added to the backend implementation with a boolean function that specifies some condition on the inputs to switch between the compositional
 and primary implementations. For example, the :code:`torch` backend implementation of :code:`linear`` looks like:
 
