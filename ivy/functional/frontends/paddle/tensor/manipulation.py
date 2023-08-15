@@ -132,3 +132,20 @@ def gather(params, indices, axis=-1, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def roll(x, shifts, axis=None, name=None):
     return ivy.roll(x, shifts, axis=axis)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("bool", "float32", "float64", "int32", "int64")},
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def unique(
+    x, return_inverse=False, return_counts=False, axis=None, dtype=None, name=None
+):
+    return ivy.unique(
+        x,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        axis=axis,
+        dtype=dtype,
+    )
