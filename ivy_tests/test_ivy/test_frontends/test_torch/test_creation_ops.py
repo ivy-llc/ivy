@@ -739,22 +739,21 @@ def test_torch_frombuffer(
 # complex
 @handle_frontend_test(
     fn_tree="torch.complex",
-    dtypes=helpers.get_dtypes("float"),
+    dtypes=helpers.get_dtypes("float", full=False),
+    real=ivy.array,
+    imag=ivy.array,
 )
 def test_torch_complex(
-    *,
     real,
     imag,
-    out,
     dtypes,
+    out=None,
 ):
     helpers.test_frontend_function(
         input_dtypes=[],
         as_variable_flags=[False],
         with_out=False,
         native_array_flags=[False],
-        frontend="torch",
-        fn_tree="torch.complex",
         real=real,
         imag=imag,
         out=out,
