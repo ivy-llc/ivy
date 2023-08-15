@@ -315,3 +315,41 @@ def nll_loss(
     if ignore_index >= 0 and ignore_index < ivy.shape(input)[1]:
         output = output - loss[ignore_index] / den
     return output
+
+@with_supported_dtypes({"2.5.1 and below": ("float32", "float64")}, "paddle")
+@to_ivy_arrays_and_back
+def dice_loss(input,
+                      label, 
+                      epsilon=0.00001, 
+                      name=None):
+    ivy.assertions.check_true(
+        len(input.shape) >= 2 ,message="The rank of input should be greater than or equal to 2."
+    )
+    ivy.assertions.check_true(
+        len(input.shape) == len(label.shape), message= str(
+           "The rank of input and label should be equal, "
+        "but received input: %d, label: %d."
+        % (len(input.shape), len(label.shape))
+       )
+    )
+    ivy.assertions.check_true(
+        label.shape[-1] == 1, message= str(
+        "The last dimension of label should be 1, "
+        "but received %d." % label.shape[-1]
+       )
+    )
+    ivy.assertions.check_true(
+         input.shape[:-1] == label.shape[:-1], message="All dimensions should be equal except the last one."
+    )
+    ivy.assertions.check_true(
+        input.numel() > 0 and label.numel() > 0,message= "Any dimension of input and label cannot be equal to 0."
+
+    )
+    label = ivy.squeeze(label,axis=-1)
+    label=ivy.one_hot(label,input.shape[-1])
+    reduce_dim =list(range(1,len(input.shape)))
+    intersect = ivy.multiply(input,label)
+    inse = ivy.sum(intersect,axis=reduce_dim)
+    dice_denominator = ivy.sum(input,axis=reduce_dim) + ivy.sum(label,axis=reduce_dim)
+    dice_score =1-inse*2/(dice_denominator+epsilon)
+    return ivy.mean(dice_score)
