@@ -333,7 +333,6 @@ def decorate(decorator_lookup):
             nonlocal fn
             decorators = get_decorators(fn.__name__, decorator_lookup=decorator_lookup)
             for decorator in reversed(decorators):
-                print("Now applying decorator: " + decorator.__name__)
                 fn = decorator(fn)
             return fn(*args, **kwargs)
         return wrap
