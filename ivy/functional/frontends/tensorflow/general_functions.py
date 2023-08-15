@@ -114,6 +114,7 @@ def foldl(
 
     return result
 
+
 @to_ivy_arrays_and_back
 def foldr(
     fn,
@@ -147,6 +148,7 @@ def foldr(
         result = ivy.to_scalar(result)
     result = ivy.flip(result)
     return result
+
 
 @with_unsupported_dtypes({"2.13.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
