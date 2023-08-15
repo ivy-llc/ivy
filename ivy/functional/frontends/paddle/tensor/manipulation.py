@@ -187,5 +187,5 @@ def rot90(x, k=1, axes=(0, 1), name=None):
     "paddle",
 )
 @to_ivy_arrays_and_back
-def moveaxis(x , source , destination):
+def moveaxis(x , source , destination , name=None):
     return ivy.moveaxis(x , source , destination)
