@@ -174,11 +174,14 @@ def rot90(x, k=1, axes=(0, 1), name=None):
 @with_supported_dtypes(
     {
         "2.5.1 and below": (
-            "bool",
-            "int32",
-            "int64",
-            "float32",
-            "float64",
+            'bool',
+            'float16',
+            'float32',
+            'float64',
+            'int32',
+            'int64',
+            'complex64',
+            'complex128',
         )
     },
     "paddle",

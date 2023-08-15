@@ -679,9 +679,10 @@ def test_paddle_rot90(
 @handle_frontend_test(
     fn_tree="paddle.moveaxis", # This is the function we are testing against
     dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes('float'), # Assigning available datatypes
+    available_dtypes=helpers.get_dtypes('valid'), # Assigning available datatypes
         min_value=-100,
         max_value=100,
+        num_arrays=1,
         shape=st.shared(
             helpers.get_shape(
                 min_num_dims=1,
@@ -734,7 +735,6 @@ def test_paddle_moveaxis(
     test_flags,
     fn_tree,
     backend_fw,
-    on_device,
 ):
     input_dtype , x = dtype_and_x
     helpers.test_frontend_function(
@@ -746,5 +746,4 @@ def test_paddle_moveaxis(
         x = x[0],
         source = source,
         destination = destination,
-        on_device=on_device,
     )
