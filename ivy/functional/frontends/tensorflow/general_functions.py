@@ -123,7 +123,7 @@ def foldr(
     parallel_iterations=10,
     back_prop=True,
     swap_memory=False,
-    name=None
+    name=None,
 ):
     ivy.utils.assertions.check_isinstance(
         elems, (list, ivy.Array), "elems must be an iterable object"
