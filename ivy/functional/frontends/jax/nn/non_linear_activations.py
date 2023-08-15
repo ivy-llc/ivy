@@ -253,7 +253,7 @@ def relu(x):
 
 @to_ivy_arrays_and_back
 def relu6(x):
-    res = ivy.relu6(x)
+    res = ivy.relu6(x, complex_mode="jax")
     return _type_conversion_64(res)
 
 

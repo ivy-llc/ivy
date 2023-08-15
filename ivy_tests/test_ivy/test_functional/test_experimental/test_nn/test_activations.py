@@ -88,7 +88,7 @@ def test_prelu(*, dtype_and_x, slope, test_flags, backend_fw, fn_name, on_device
 @handle_test(
     fn_tree="functional.ivy.experimental.relu6",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="log",
@@ -110,7 +110,7 @@ def test_relu6(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.logsigmoid",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
         large_abs_safety_factor=120,
     ),
@@ -133,7 +133,7 @@ def test_logsigmoid(*, dtype_and_x, test_flags, backend_fw, fn_name, on_device):
 @handle_test(
     fn_tree="functional.ivy.experimental.selu",
     dtype_and_input=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float_and_complex"),
+        available_dtypes=helpers.get_dtypes("valid"),
         safety_factor_scale="log",
         small_abs_safety_factor=20,
     ),
