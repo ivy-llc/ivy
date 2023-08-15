@@ -85,7 +85,7 @@ def _check_decorator_order(decorators: List[str]):
     FN_DECORATORS = ivy.func_wrapper.FN_DECORATORS
 
     # excludes the decorator if it is not in FN_DECORATORS -- this shouldn't happen --
-    for unknown in set(decorators).difference(set(FN_DECORATORS)):
+    for unknown in set(decorators).difference(FN_DECORATORS):
         decorators.remove(unknown)
 
     # get the indices
