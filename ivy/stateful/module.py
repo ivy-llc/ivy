@@ -5,7 +5,7 @@ import functools
 import os
 import abc
 import copy
-#import dill
+import dill
 from typing import Optional, Tuple, Dict
 
 # local
