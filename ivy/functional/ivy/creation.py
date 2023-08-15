@@ -2162,6 +2162,7 @@ def triu_indices(
 @to_native_arrays_and_back
 @outputs_to_ivy_arrays
 @infer_device
+@infer_dtype
 def complex(
     real: Union[ivy.Array, ivy.NativeArray],
     imag: Union[ivy.Array, ivy.NativeArray],

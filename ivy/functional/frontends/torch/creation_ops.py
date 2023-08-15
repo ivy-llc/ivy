@@ -246,7 +246,6 @@ def complex(
     if requires_grad:
         return ivy.variable(ret)
     return ret
-    # return ivy.complex(real, imag, out=out)
 
 
 @to_ivy_arrays_and_back
