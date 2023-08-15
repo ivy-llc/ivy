@@ -157,7 +157,7 @@ def conv1d(
 
 
 @with_unsupported_device_and_dtypes(
-    {"2.5.0 and below": {"cpu": ("float16", "bfloat16")}},
+    {"2.5.1 and below": {"cpu": ("float16", "bfloat16")}},
     backend_version,
 )
 def conv1d_transpose(

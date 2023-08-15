@@ -1,12 +1,17 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
-from jax.numpy import tril, triu
+from jax.numpy import tril, triu, r_, c_
 
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
+    _helper_r_,
+    _helper_c_,
+)
+import ivy.functional.frontends.jax.numpy as jnp_frontend
 
 
 # diagonal
@@ -459,3 +464,20 @@ def test_jax_numpy_indices(
         dtype=dtype[0],
         sparse=sparse,
     )
+
+
+@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_r_())  # dummy fn_tree
+def test_jax_numpy_r_(inputs, backend_fw):
+    inputs, *_ = inputs
+    ret_gt = r_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = jnp_frontend.r_.__getitem__(tuple(inputs))
+    assert np.allclose(ret.ivy_array, ret_gt)
+
+
+@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
+def test_jax_numpy_c_(inputs, backend_fw):
+    ret_gt = c_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = jnp_frontend.c_.__getitem__(tuple(inputs))
+    assert np.allclose(ret.ivy_array, ret_gt)
