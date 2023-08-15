@@ -327,12 +327,15 @@ def decorate(decorator_lookup):
     decorator_lookup : dict
         The lookup table of frozen sets of function names to decorators list
     """
+
     def _decorate(fn):
+        decorators = get_decorators(fn.__name__, decorator_lookup=decorator_lookup)
+
         @functools.wraps(fn)
         def wrap(*args, **kwargs):
             nonlocal fn
-            decorators = get_decorators(fn.__name__, decorator_lookup=decorator_lookup)
             for decorator in reversed(decorators):
+                # print("decorating with {}".format(decorator.__name__))
                 fn = decorator(fn)
             return fn(*args, **kwargs)
         return wrap
