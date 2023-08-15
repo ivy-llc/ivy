@@ -133,8 +133,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
         strides = [strides, strides]
     elif not (isinstance(strides, list) or isinstance(strides, tuple)):
         raise ivy.exceptions.IvyError(
-            "Expected strides input as type int, tuple or list but got"
-            f" {type(strides)}"
+            f"Expected strides input as type int, tuple or list but got {type(strides)}"
         )
 
     if isinstance(dilations, int):
@@ -149,7 +148,8 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
         paddings = [paddings, paddings]
     elif not (isinstance(paddings, list) or isinstance(paddings, tuple)):
         raise ivy.exceptions.IvyError(
-            f"Expected paddings, input as type int, tuple or list but got {type(paddings)}"
+            "Expected paddings, input as type int, tuple or list but got"
+            f" {type(paddings)}"
         )
 
     n, c, h, w = x.shape
@@ -157,7 +157,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
     if paddings[0] >= 0 or paddings[1] >= 0:
         padding_tup = [(0, 0) for i in range(2)] + [
             (paddings[0], paddings[0]),
-            (paddings[1], paddings[1])
+            (paddings[1], paddings[1]),
         ]
         x = ivy.pad(x, padding_tup, mode="constant", constant_values=0.0)
     else:
@@ -178,7 +178,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
 
     if h_steps < 1 or w_steps < 1:
         raise ivy.exceptions.IvyError(
-            f"Expected at least one for height and width, but got expected output shape"
+            "Expected at least one for height and width, but got expected output shape"
             f" H:{h_steps} W:{w_steps}]"
         )
 
@@ -190,7 +190,7 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
                 :,
                 :,
                 i : i + dilations[0] * (kernel_sizes[0] - 1) + 1 : dilations[0],
-                j : j + dilations[1] * (kernel_sizes[1] - 1) + 1 : dilations[1]
+                j : j + dilations[1] * (kernel_sizes[1] - 1) + 1 : dilations[1],
             ]
             window = ivy.flatten(window, start_dim=1)
             folder.append(window)

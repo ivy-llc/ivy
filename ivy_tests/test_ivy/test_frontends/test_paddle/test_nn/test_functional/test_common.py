@@ -456,6 +456,7 @@ def test_paddle_dropout3d(
         data_format=data_format,
     )
 
+
 @st.composite
 def paddle_unfold_handler(draw, dtype):
     dtype = draw(dtype)
@@ -478,6 +479,7 @@ def paddle_unfold_handler(draw, dtype):
     paddings = draw(helpers.ints(min_value=1, max_value=3))
     dilations = draw(helpers.ints(min_value=1, max_value=3))
     return dtype, x, kernel_sizes, strides, paddings, dilations
+
 
 @handle_frontend_test(
     fn_tree="paddle.nn.functional.common.unfold",
