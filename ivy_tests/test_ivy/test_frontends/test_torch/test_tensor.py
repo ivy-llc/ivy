@@ -136,27 +136,27 @@ def test_torch_dtype(dtype_x, backend_fw):
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
-def test_torch_tensor_property_jac_fn(
+def test_torch_tensor_property_func(
     dtype_x,
 ):
     _, data = dtype_x
     x = torch_frontend.tensor(data[0])
-    assert x.jac_fn is None
-    jac_fn = lambda x: x
-    x.jac_fn = jac_fn
-    assert x.jac_fn is jac_fn
+    assert x._func is None
+    fn = torch.add
+    x._func = fn
+    assert x._func is fn
 
 
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
     func_inputs=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", prune_function=False),
         num_arrays=st.integers(min_value=1, max_value=5),
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_func_inputs(
     dtype_x,

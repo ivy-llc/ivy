@@ -126,7 +126,7 @@ def _store_data(out_tensors, fn, xs):
             o = ivy.index_nest(out_tensors, idx)
             if isinstance(o, torch_frontend.Tensor):
                 o.func_inputs = xs
-                o._func = fn
+                o._func = torch_frontend.__dict__[fn.__name__]
                 o.requires_grad = True
                 o.out_idx = idx
 
@@ -134,7 +134,7 @@ def _store_data(out_tensors, fn, xs):
 
 
 def handle_gradients(fn: Callable) -> Callable:
-    """Store gradients and fn inputs."""
+    """Store fn and inputs."""
 
     @functools.wraps(fn)
     def _handle_gradients(*args, **kwargs):

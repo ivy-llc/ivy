@@ -5,7 +5,6 @@ import pytest
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import update_backend
 from ivy.functional.frontends.torch.func_wrapper import (
     inputs_to_ivy_arrays,
     outputs_to_frontend_arrays,
@@ -47,16 +46,16 @@ def test_handle_gradients(dtype_and_xs, backend_fw):
     ivy.set_backend(backend=backend_fw)
 
     dtypes, xs = dtype_and_xs
-    fn = lambda x: 2 * x
+    fn = torch_frontend.add
 
     # Test when requires_grad = False
     x = torch_frontend.tensor(xs[0], dtype=dtypes[0])
 
-    output_fn = fn(x)
-    output_wrapped = handle_gradients(fn)(x)
+    output_fn = fn(x, x)
+    output_wrapped = handle_gradients(fn)(x, x)
 
     assert ivy.all(output_fn.ivy_array == output_wrapped.ivy_array)
-    assert output_wrapped.jac_fn is None
+    assert output_wrapped._func is None
     assert output_wrapped.func_inputs is None
     assert not output_wrapped.requires_grad
 
@@ -65,27 +64,12 @@ def test_handle_gradients(dtype_and_xs, backend_fw):
     x = torch_frontend.tensor(xs[0], requires_grad=True)
     assert x.requires_grad
 
-    output_wrapped = handle_gradients(fn)(x)
+    output_wrapped = handle_gradients(fn)(x, x)
     assert output_wrapped.requires_grad
 
     # Test function inputs are stored
-    for stored, gt in zip(output_wrapped.func_inputs, [x]):
-        assert ivy.all(stored[0].ivy_array == gt.ivy_array)
-
-    # Test jac_fn
-    jacobians = output_wrapped.jac_fn([[x], {}])[0][0]
-    with update_backend(backend_fw) as ivy_backend:
-        jacobians_gt = ivy_backend.jac(fn)(ivy_backend.array(x.ivy_array.data))
-    grads_flat_np_gt = helpers.flatten_and_to_np(backend=backend_fw, ret=jacobians_gt)
-
-    grads_flat_np = helpers.flatten_frontend_to_np(backend=backend_fw, ret=jacobians)
-    for grads_flat, grads_flat_gt in zip(grads_flat_np, grads_flat_np_gt):
-        assert grads_flat.shape == grads_flat_gt.shape
-        helpers.value_test(
-            ret_np_flat=grads_flat,
-            ret_np_from_gt_flat=grads_flat_gt,
-            backend=backend_fw,
-        )
+    for stored, gt in zip(output_wrapped.func_inputs[0], [x, x]):
+        assert ivy.all(stored.ivy_array == gt.ivy_array)
 
 
 @given(

@@ -16,15 +16,15 @@ def _add_grad(g_total, g):
     return g_total + g
 
 
-def _create_grad_outputs(tensors, outputs=None):
-    if tensors is None:
+def _create_grad_outputs(grad_outs, outputs=None):
+    if grad_outs is None:
         ret = tuple()
         for out in outputs:
             ret += (torch_frontend.ones_like(out),)
         return ret
-    elif isinstance(tensors, torch_frontend.Tensor):
-        return (tensors,)
-    return tuple(tensors)
+    elif isinstance(grad_outs, torch_frontend.Tensor):
+        return (grad_outs,)
+    return tuple(grad_outs)
 
 
 def _get_output(outputs, out_idx):
@@ -41,6 +41,7 @@ def _get_wrapped_fn(output, input):
     # Case #1
     if not isinstance(output, torch_frontend.Tensor):
         return None
+
     # Case #2
     if output is input:
         return lambda x: x
@@ -69,9 +70,9 @@ def _get_wrapped_fn(output, input):
     if len(in_funcs) == 0:
         return None
 
-    def wrapped_fn(x):
-        func_inputs_mutable = ivy.copy_nest(func_inputs, to_mutable=True)
+    func_inputs_mutable = ivy.copy_nest(func_inputs, to_mutable=True)
 
+    def wrapped_fn(x):
         for idx, in_func in zip(in_idxs, in_funcs):
             y = in_func(x)
             ivy.set_nest_at_index(func_inputs_mutable, idx, y)
