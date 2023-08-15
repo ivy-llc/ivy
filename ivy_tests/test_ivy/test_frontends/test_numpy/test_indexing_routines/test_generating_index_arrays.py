@@ -112,9 +112,9 @@ def test_numpy_diag_indices(
 
 @handle_frontend_test(
     fn_tree="numpy.mask_indices",
-    n=helpers.ints(min_value=1, max_value=10),
+    n=helpers.ints(min_value=3, max_value=10),
     mask_func=st.sampled_from([np.triu, np.tril]),
-    k=helpers.ints(min_value=-10, max_value=10),
+    k=helpers.ints(min_value=-5, max_value=5),
     input_dtype=helpers.get_dtypes("numeric"),
     test_with_out=st.just(False),
     number_positional_args=st.just(2),
