@@ -1,4 +1,7 @@
 # local
+import random
+
+
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
@@ -233,3 +236,27 @@ def triangular(left, mode, right, size=None):
         right - (right - mode) * ((1 - u) * (right - mode) / (right - left)) ** 0.5
     )
     return ivy.where(condition, values1, values2)
+
+
+def hyper_helper(ngood, nbad, nsample):
+    u = []
+    for i in range(nsample):
+        choice = random.choices(
+            [1, 0], weights=(ngood / (ngood + nbad), nbad / (ngood + nbad)), k=1
+        )
+        u += choice
+        if choice == [1] and ngood > 0:
+            ngood -= 1
+        elif nbad > 0:
+            nbad -= 1
+    return sum(u)
+
+
+@to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_scalar
+def hypergeometric(ngood, nbad, nsample, size=None):
+    u = ivy.empty(size, dtype=int)
+    for index, s in ivy.ndenumerate(u):
+        u[index] = hyper_helper(ngood, nbad, nsample)
+    return u
+    # return u.squeeze() if size == 1 else u
