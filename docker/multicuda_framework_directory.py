@@ -39,10 +39,9 @@ def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
             (
-                f"yes |pip3 install --upgrade {pkg} --target {path} --default-timeout=100"
-                " --extra-index-url https://download.pytorch.org/whl/cu118 "
-                " --no-cache-dir"
-                " -y"
+                f"yes |pip3 install --upgrade {pkg} --target"
+                f" {path} --default-timeout=100 --extra-index-url"
+                " https://download.pytorch.org/whl/cu118  --no-cache-dir -y"
             ),
             shell=True,
         )
@@ -70,8 +69,8 @@ def install_pkg(path, pkg, base="fw/"):
     else:
         subprocess.run(
             (
-                f"yes |pip3 install --upgrade {pkg} --target {path} --default-timeout=100  "
-                " --no-cache-dir"
+                f"yes |pip3 install --upgrade {pkg} --target"
+                f" {path} --default-timeout=100   --no-cache-dir"
             ),
             shell=True,
         )
