@@ -26,7 +26,6 @@ def _broadcast_pooling_helper(x, pool_dims: str = "2d", name: str = "padding"):
 
 
 @to_ivy_arrays_and_back
-@to_ivy_arrays_and_back
 def avg_pool1d(
     input,
     kernel_size,
@@ -37,29 +36,18 @@ def avg_pool1d(
 ):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "1d", name="stride")
-    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
-    kernel_pads = list(zip(kernel_size, padding))
-
     data_format = "NCW"
-
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-    # figure out whether to apply padding
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        padding_str = "SAME"
+    kernel_size = _broadcast_pooling_helper(kernel_size, "1d", name="kernel_size")
+    padding = _broadcast_pooling_helper(padding, "1d", name="padding")
+    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
+        padding = "SAME"
     else:
-        padding_str = "VALID"
-
+        padding = "VALID"
     return ivy.avg_pool1d(
         input,
         kernel_size,
         stride,
-        padding_str,
+        padding,
         data_format=data_format,
         count_include_pad=count_include_pad,
         ceil_mode=ceil_mode,
@@ -79,28 +67,16 @@ def avg_pool2d(
         stride = kernel_size
     data_format = "NCHW"
     kernel_size = _broadcast_pooling_helper(kernel_size, "2d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "2d", name="stride")
     padding = _broadcast_pooling_helper(padding, "2d", name="padding")
-    kernel_pads = list(zip(kernel_size, padding))
-
-    # Padding should be less than or equal to half of kernel size
-    if not all([pad <= kernel / 2 for kernel, pad in kernel_pads]):
-        raise ValueError(
-            "pad should be smaller than or equal to half of kernel size, "
-            f"but got padding={padding}, kernel_size={kernel_size}. "
-        )
-
-    # Figure out padding string
-    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in kernel_pads]):
-        padding_str = "SAME"
+    if all([pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]):
+        padding = "SAME"
     else:
-        padding_str = "VALID"
-
+        padding = "VALID"
     return ivy.avg_pool2d(
         input,
         kernel_size,
         stride,
-        padding_str,
+        padding,
         data_format=data_format,
         ceil_mode=ceil_mode,
         count_include_pad=count_include_pad,
@@ -277,15 +253,6 @@ def avg_pool3d(
 ):
     if stride is None:
         stride = kernel_size
-    kernel_size = _broadcast_pooling_helper(kernel_size, "3d", name="kernel_size")
-    stride = _broadcast_pooling_helper(stride, "3d", name="stride")
-    padding = _broadcast_pooling_helper(padding, "3d", name="padding")
-    if all(
-        [pad == ivy.ceil((kernel - 1) / 2) for kernel, pad in zip(kernel_size, padding)]
-    ):
-        padding = "SAME"
-    else:
-        padding = "VALID"
     return ivy.avg_pool3d(
         input,
         kernel_size,

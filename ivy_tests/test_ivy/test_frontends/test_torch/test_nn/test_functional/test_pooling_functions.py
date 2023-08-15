@@ -48,6 +48,7 @@ def calculate_same_padding(kernel_size, stride, shape):
         min_side=1,
         max_side=3,
         data_format="channel_first",
+        only_explicit_padding=True,
     ),
     count_include_pad=st.just(False),
     ceil_mode=st.booleans(),
@@ -66,13 +67,11 @@ def test_torch_avg_pool1d(
 ):
     input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
     x_shape = [x[0].shape[2]]
-
-    # Torch ground truth func also takes padding input as an integer
-    # or a tuple of integers, not a string
-    if padding == "SAME":
+    padding = (padding[0][0], )
+    # figuring out the exact kernel_size for SAME and VALID padding
+    # As ivy.avg_pool1d doesn't support explicit padding scheme
+    if not sum(padding) == 0:
         padding = calculate_same_padding(kernel_size, stride, x_shape)
-    else:
-        padding = (0,)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -97,6 +96,7 @@ def test_torch_avg_pool1d(
         max_dims=4,
         min_side=1,
         max_side=4,
+        only_explicit_padding=True,
         data_format="channel_first",
     ),
     ceil_mode=st.booleans(),
@@ -114,16 +114,11 @@ def test_torch_avg_pool2d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, kernel_size, stride, pad_name = dtype_x_k_s
-
-    if len(stride) == 1:
-        stride = (stride[0], stride[0])
-
-    if pad_name == "SAME":
-        padding = calculate_same_padding(kernel_size, stride, x[0].shape[2:])
-    else:
-        padding = (0, 0)
-
+    input_dtype, x, kernel_size, stride, padding = dtype_x_k_s
+    padding = (pad[i] for i, pad in enumerate(padding))
+    x_shape = x[0].shape[2:]
+    if not sum(padding) == 0:
+        padding = calculate_same_padding(kernel_size, [stride[0]] * 2, x_shape)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -149,7 +144,7 @@ def test_torch_avg_pool2d(
         max_dims=5,
         min_side=2,
         max_side=4,
-        only_explicit_padding=False,
+        only_explicit_padding=True,
         data_format="channel_first",
     ),
     count_include_pad=st.booleans(),
@@ -173,11 +168,10 @@ def test_torch_avg_pool3d(
 
     if len(stride) == 1:
         stride = [stride[0]] * 3
-    if padding == "SAME":
-        padding = calculate_same_padding(kernel_size, stride, x[0].shape[2:])
-    elif padding == "VALID":
-        padding = (0, 0, 0)
-
+    x_shape = x[0].shape[2:]
+    padding = (pad[i] for i, pad in enumerate(padding))
+    if not sum(padding) == 0:
+        padding = calculate_same_padding(kernel_size, [stride[0]] * 3, x_shape)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
