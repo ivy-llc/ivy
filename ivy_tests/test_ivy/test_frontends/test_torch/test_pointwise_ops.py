@@ -2901,4 +2901,3 @@ def test_torch_gradient(
         spacing=spacing,
         axis=axis,
     )
-    
