@@ -4,6 +4,8 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     handle_tf_dtype,
 )
 
+import tensorflow as tf
+
 
 @handle_tf_dtype
 @to_ivy_arrays_and_back
@@ -34,3 +36,10 @@ vorbis_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")
 def idct(input, type=2, n=None, axis=-1, norm=None, name=None):
     inverse_type = {1: 1, 2: 3, 3: 2, 4: 4}[type]
     return ivy.dct(input, type=inverse_type, n=n, axis=axis, norm=norm)
+
+@to_ivy_arrays_and_back
+def inverse_stft_window_fn(frame_step, forward_window_fn=tf.signal.hann_window,name=None):
+    return lambda frame_length: tf.signal.inverse_stft_window_fn(frame_length, forward_window_fn, frame_step)
+
+
+
