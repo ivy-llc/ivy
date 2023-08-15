@@ -571,7 +571,7 @@ def lgamma(input, *, out=None):
     return ivy.lgamma(input, out=out)
 
 
-@with_unsupported_dtypes({"2.0.1 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes({"2.0.1 and below": ("bfloat16",)}, "torch")
 @to_ivy_arrays_and_back
 def gradient(input, *, spacing=1, dim=None, edge_order=1):
     return ivy.gradient(input, spacing=spacing, edge_order=edge_order, axis=dim)
