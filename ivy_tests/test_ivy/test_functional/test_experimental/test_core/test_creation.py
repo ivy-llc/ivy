@@ -390,7 +390,7 @@ def test_blackman_window(
         input_dtypes=input_dtype,
         test_flags=test_flags,
         atol_=0.015,
-        fw=backend_fw,
+        backend_to_test=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
         size=int(x[0]),
