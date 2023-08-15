@@ -2362,6 +2362,7 @@ def test_jax_array_searchsorted(
     )
 
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
@@ -2403,3 +2404,100 @@ def test_jax_array_reshape(
         method_flags=method_flags,
         on_device=on_device,
     )
+
+    
+# repeat
+@st.composite
+def _repeat_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
+    axis = draw(
+        st.shared(
+            st.one_of(st.none(), helpers.get_axis(shape=shape, max_size=1)), key="axis"
+        )
+    )
+
+    if not isinstance(axis, int) and axis is not None:
+        axis = axis[0]
+
+    repeat_shape = (
+        (draw(st.one_of(st.just(1), st.just(shape[axis]))),)
+        if axis is not None
+        else (1,)
+    )
+    repeat = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            shape=repeat_shape,
+            min_value=0,
+            max_value=10,
+        )
+    )
+    return repeat
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="repeat",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        st.one_of(
+            st.none(),
+            helpers.get_axis(
+                shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+                max_size=1,
+            ),
+        ),
+        key="axis",
+    ),
+    repeat=st.one_of(st.integers(1, 10), _repeat_helper()),
+    # test_with_out=st.just(False),
+)
+def test_jax_repeat(
+    *,
+    dtype_value,
+    axis,
+    repeat,
+    on_device,
+    frontend,
+    frontend_method_data,
+    backend_fw,
+    init_flags,
+    method_flags,
+):
+    input_dtype, x = dtype_value
+
+    if not isinstance(repeat, int):
+        repeat_dtype, repeat_list = repeat
+        repeat = repeat_list[0]
+        input_dtype += repeat_dtype
+
+    # Skip the test if the backend is torch and the input data type is 'Float' or 'bool'
+    if backend_fw == "torch" and ("float" in input_dtype or "bool" in input_dtype):
+        return
+    if backend_fw == "jax":
+        return
+    if backend_fw == "paddle" and "bool" in input_dtype:
+        return
+
+    if not isinstance(axis, int) and axis is not None:
+        axis = axis[0]
+
+        helpers.test_frontend_method(
+            init_input_dtypes=[input_dtype[0]],
+            init_all_as_kwargs_np={
+                "object": x[0],
+            },
+            method_input_dtypes=[input_dtype[0]],
+            method_all_as_kwargs_np={"repeats": repeat, "axis": axis},
+            frontend=frontend,
+            backend_to_test=backend_fw,
+            frontend_method_data=frontend_method_data,
+            init_flags=init_flags,
+            method_flags=method_flags,
+            on_device=on_device,
+        )
+
