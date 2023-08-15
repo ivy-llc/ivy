@@ -153,11 +153,13 @@ def test_paddle_layer_norm(
     test_flags,
     frontend,
     on_device,
+    backend_fw,
     fn_tree,
 ):
     (dtype, x, normalized_shape, scale, offset) = values_tuple
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         on_device=on_device,
