@@ -428,48 +428,37 @@
 #         divisor_override=None,
 #     )
 
-
-# @st.composite
-# def _generate_bias_data(draw):
-#     data_format = draw(st.sampled_from(["NC...", "N...C", None]))
-#     channel_dim = 1 if data_format == "NC..." else -1
-#     dtype, value, shape = draw(
-#         helpers.dtype_and_values(
-#             available_dtypes=helpers.get_dtypes("numeric"),
-#             min_num_dims=3,
-#             ret_shape=True,
-#         )
-#     )
-#     channel_size = shape[channel_dim]
-#     bias = draw(helpers.array_values(dtype=dtype[0], shape=(channel_size,)))
-#     return data_format, dtype, value, bias
-
-
+# bias_add
 # @handle_frontend_test(
 #     fn_tree="mindspore.ops.function.nn_func.bias_add",
-#     data=_generate_bias_data(),
-#     test_with_out=st.just(False),
+#     dtype_and_x=helpers.dtype_and_values(
+#         available_dtypes=helpers.get_dtypes("valid"),
+#         num_arrays=1,
+#         shared_dtype=True,
+#         min_value=2,
+#         max_value=5,
+#         min_dim_size=4,
+#     ),
+#     bias=st.floats(min_value=-1.0, max_value=1.0),
 # )
-# def test_bias_add(
+# def test_mindspore_bias_add(
 #     *,
-#     data,
+#     dtype_and_x,
+#     bias,
+#     on_device,
+#     fn_tree,
 #     frontend,
 #     test_flags,
-#     fn_tree,
-#     backend_fw,
-#     on_device,
 # ):
-#     data_format, dtype, value, bias = data
+#     dtype, x = dtype_and_x
 #     helpers.test_frontend_function(
-#         input_dtypes=dtype * 2,
-#         backend_to_test=backend_fw,
+#         input_dtypes=dtype,
 #         frontend=frontend,
 #         test_flags=test_flags,
 #         fn_tree=fn_tree,
 #         on_device=on_device,
-#         value=value[0],
+#         input=x[0],
 #         bias=bias,
-#         data_format=data_format,
 #     )
 
 
