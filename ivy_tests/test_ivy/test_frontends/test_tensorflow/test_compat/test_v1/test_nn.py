@@ -203,9 +203,9 @@ def test_tensorflow_depthwise_conv2d_backprop_input(
     backend_fw,
     on_device
 ):
-    input_dtype, x, filters, dilations, data_format, stride, padding,output_shape  = x_f_d_df
+    dtype, x, filters, dilations, data_format, stride, padding,output_shape  = x_f_d_df
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        dtype=dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -217,5 +217,5 @@ def test_tensorflow_depthwise_conv2d_backprop_input(
         padding=padding,
         dilations=dilations,
         data_format=data_format,
-        output_shape =output_shape 
+        output_shape =output_shape
     )
