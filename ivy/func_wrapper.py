@@ -302,6 +302,44 @@ def _check_in_nested_sequence(sequence, value=None, _type=None):
 # ---------------#
 
 
+def get_decorators(fn_name, decorator_lookup):
+    """Gets the decorators from the lookup table
+    
+    Parameters
+    ----------
+    fn_name : str
+        The name of the function to get the decorators for
+    
+    decorator_lookup : dict
+        The lookup table of frozen sets of function names to decorators list
+    """
+    for funcs, decorators in decorator_lookup.items():
+        if fn_name in funcs:
+            return decorators
+    return []
+
+
+def decorate(decorator_lookup):
+    """Decorates a function with the decorators from the lookup table
+
+    Parameters
+    ----------
+    decorator_lookup : dict
+        The lookup table of frozen sets of function names to decorators list
+    """
+    def _decorate(fn):
+        @functools.wraps(fn)
+        def wrap(*args, **kwargs):
+            nonlocal fn
+            decorators = get_decorators(fn.__name__, decorator_lookup=decorator_lookup)
+            for decorator in reversed(decorators):
+                print("Now applying decorator: " + decorator.__name__)
+                fn = decorator(fn)
+            return fn(*args, **kwargs)
+        return wrap
+    return _decorate
+
+
 def handle_array_function(fn):
     """
     Wrap a function `fn` to be passed to array_function method.
