@@ -1942,14 +1942,14 @@ def test_tensorflow_rsqrt(
 
 #segment_sum
 @handle_frontend_test(
-    fn_tree="tensorflow.math.unsorted_segment_sum",
+    fn_tree="tensorflow.math.segment_sum",
     data=helpers.array_values(dtype=ivy.int32, shape=(5, 6), min_value=1, max_value=9),
     segment_ids=helpers.array_values(
         dtype=ivy.int32, shape=(5,), min_value=0, max_value=4
     ),
     test_with_out=st.just(False),
 )
-def test_tensorflow_unsorted_segment_sum(
+def test_tensorflow_segment_sum(
     *,
     data,
     segment_ids,
