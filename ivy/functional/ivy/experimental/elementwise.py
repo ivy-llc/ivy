@@ -50,19 +50,15 @@ def lgamma(
 
     Examples
     --------
-    >>> x = ivy.Container(a=ivy.array([1.6, 2.6, 3.5]),
-    ...                   b=ivy.array([4.5, 5.3, 2.3]))
+    >>> x = ivy.array([1.6, 2.6, 3.5])
     >>> y = x.lgamma()
     >>> print(y)
-    {
-        a: ivy.array([-0.11259222, 0.3574121, 1.20097375]),
-        b: ivy.array([2.45373821, 3.63963795, 0.15418935])
-    }
+    ivy.array([-0.11259177,  0.3574118 ,  1.20097363])
 
-    >>> x = ivy.array([1 , 2 , 3 ])
+    >>> x = ivy.array([1., 2., 3. ])
     >>> y = x.lgamma()
     >>> print(y)
-    ivy.array([0., 0., 0.69314718])
+    ivy.array([0. ,0. ,0.69314718])
 
     >>> x = ivy.array([4.5, -4, -5.6])
     >>> x.lgamma(out = x)
@@ -244,11 +240,11 @@ def float_power(
     return ivy.current_backend().float_power(x1, x2, out=out)
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_device_shifting
 def copysign(
     x1: Union[ivy.Array, ivy.NativeArray, Number],
@@ -884,11 +880,11 @@ def gradient(
     )
 
 
+@handle_exceptions
 @handle_backend_invalid
 @handle_nestable
 @handle_out_argument
 @to_native_arrays_and_back
-@handle_exceptions
 @handle_device_shifting
 def xlogy(
     x: Union[ivy.Array, ivy.NativeArray],
@@ -991,9 +987,9 @@ def conj(
 
     .. math::
         a + bj
-    
+
     the complex conjugate is defined as
-    
+
     .. math::
         a - bj
 
@@ -1039,16 +1035,16 @@ def conj(
     >>> x = ivy.array([4.2-0j, 3j, 7+5j])
     >>> z = ivy.conj(x)
     >>> print(z)
-    ivy.array([4.2+0j, -3j, 7+5j])
+    ivy.array([4.2-0.j, 0. -3.j, 7. -5.j])
 
     With :class:`ivy.Container` input:
-    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),\
-                          b=ivy.array([5j, 5.32-6.55j, 3.001]))
+    >>> x = ivy.Container(a=ivy.array([-6.7-7j, 0.314+0.355j, 1.23]),
+    ...                   b=ivy.array([5j, 5.32-6.55j, 3.001]))
     >>> z = ivy.conj(x)
     >>> print(z)
     {
-        a: ivy.array([-6.7+7j, 0.314-0.355j, 1.23]),
-        b: ivy.array([-5j, 5.32+6.55j, 3.001])
+        a: ivy.array([-6.7+7.j, 0.314-0.355j, 1.23-0.j]),
+        b: ivy.array([0.-5.j, 5.32+6.55j, 3.001-0.j])
     }
     """
     return ivy.current_backend(x).conj(x, out=out)
@@ -1140,20 +1136,26 @@ def lerp(
     >>> input = ivy.array([1, 2, 3])
     >>> end = ivy.array([10, 10, 10])
     >>> weight = 0.5
-    >>> ivy.lerp(input, end, weight)
+    >>> y = ivy.lerp(input, end, weight)
+    >>> print(y)
     ivy.array([5.5, 6. , 6.5])
+
     >>> input = ivy.array([1.1, 1.2, 1.3])
     >>> end = ivy.array([20])
     >>> weight = ivy.array([0.4, 0.5, 0.6])
     >>> y = ivy.zeros(3)
     >>> ivy.lerp(input, end, weight, out=y)
-    ivy.array([ 8.65999985, 10.59999943, 12.52000141])
+    >>> print(y)
+    ivy.array([ 8.65999985, 10.60000038, 12.52000046])
+
     >>> input = ivy.array([[4, 5, 6],[4.1, 4.2, 4.3]])
     >>> end = ivy.array([10])
     >>> weight = ivy.array([0.5])
     >>> ivy.lerp(input, end, weight, out=input)
+    >>> print(input)
     ivy.array([[7.        , 7.5       , 8.        ],
-    ...       [7.05000019, 7.0999999 , 7.1500001 ]])
+           [7.05000019, 7.0999999 , 7.1500001 ]])
+
     With :class:`ivy.Container` input:
     >>> input = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> end = ivy.array([10.])
@@ -1164,16 +1166,15 @@ def lerp(
         a: ivy.array([11., 10.90000057, 10.80000019]),
         b: ivy.array([10.70000076, 10.60000038, 10.5])
     }
+
     >>> input = ivy.Container(a=ivy.array([10.1, 11.1]), b=ivy.array([10, 11]))
     >>> end = ivy.Container(a=ivy.array([5]), b=ivy.array([0]))
-    >>> weight = ivy.Container(a=0.5)
+    >>> weight = 0.5
     >>> y = input.lerp(end, weight)
     >>> print(y)
     {
         a: ivy.array([7.55000019, 8.05000019]),
-        b: {
-            a: ivy.array([5., 5.5])
-        }
+        b: ivy.array([5., 5.5])
     }
     """
     input_end_allowed_types = [

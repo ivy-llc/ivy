@@ -71,7 +71,7 @@ The Docker image
 The Docker image `unifyai/doc-builder <https://hub.docker.com/r/unifyai/doc-builder>`_
 works as a wrapper around the ``make_docs_without_docker.sh`` script. It runs the script
 on the ``/project`` directory, located in the container `as shown here 
-<https://github.com/unifyai/doc-builder/blob/master/Dockerfile#L21>`_:
+<https://github.com/unifyai/doc-builder/blob/main/Dockerfile#L21>`_:
 
 .. code-block:: bash
 
@@ -92,7 +92,7 @@ You can as well add options described in the :ref:`The convenience script` secti
 How Ivy's docs is structured
 -----------------------------
 
-Looking at `Ivy docs <https://github.com/unifyai/ivy/tree/master/docs>`_, we can see 
+Looking at `Ivy docs <https://github.com/unifyai/ivy/tree/main/docs>`_, we can see
 that it structured like this:
 
 .. code-block:: bash
@@ -172,7 +172,7 @@ extension. We will explain in details how did we change it, in :ref:`Custom Exte
 ~~~~~~~~~~~~~~~~~~~
 
 This is a partial `Sphinx configuration file`_. Which is being imported in the 
-`conf.py <https://github.com/unifyai/doc-builder/blob/master/docs/conf.py#L150>`_,
+`conf.py <https://github.com/unifyai/doc-builder/blob/main/docs/conf.py#L150>`_,
 it's used to customize options that are specific to the project being documented.
 While importing common configuration such as the theme, the extensions, etc in the 
 original ``conf.py``

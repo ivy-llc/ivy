@@ -1,6 +1,5 @@
 import ivy
 
-# import ivy.functional.frontends.onnx as onnx_frontend
 from ivy.functional.frontends.onnx.func_wrapper import to_ivy_arrays_and_back
 
 
