@@ -2018,6 +2018,7 @@ def test_paddle_take(
         mode=modes,
     )
 
+
 # amax
 @handle_frontend_test(
     fn_tree="paddle.tensor.math.amax",
@@ -2047,4 +2048,3 @@ def test_paddle_amax(
         on_device=on_device,
         x=x[0],
     )
-

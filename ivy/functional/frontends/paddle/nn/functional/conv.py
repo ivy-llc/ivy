@@ -32,7 +32,7 @@ def _conv(
 ):
     x = _channel_first_input(x, data_format)
 
-    if padding == 'same':
+    if padding == "same":
         dilation = 1
     return convolution_functions._conv(
         x,
@@ -57,7 +57,7 @@ def _conv_transpose(
     data_format="NLC",
 ):
     x = _channel_first_input(x, data_format)
-    if padding == 'same':
+    if padding == "same":
         dilation = 1
     return convolution_functions._conv_transpose(
         x,

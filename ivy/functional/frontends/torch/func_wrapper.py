@@ -251,9 +251,7 @@ def to_ivy_shape(fn: Callable) -> Callable:
         new_args = ivy.nested_map(
             args,
             lambda x: (
-                x.ivy_shape
-                if isinstance(x, ivy.functional.frontends.torch.Size)
-                else x
+                x.ivy_shape if isinstance(x, ivy.functional.frontends.torch.Size) else x
             ),
             shallow=False,
         )

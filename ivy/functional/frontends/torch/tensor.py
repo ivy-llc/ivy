@@ -1589,6 +1589,12 @@ class Tensor:
     def log1p(self):
         return torch_frontend.log1p(self)
 
+    @with_supported_dtypes({"2.0.1 and below": ("float32", "float64")}, "torch")
+    def log1p_(self):
+        promoted_type = ivy.promote_types(self.dtype, "float32")
+        self.ivy_array = torch_frontend.log1p(self).to(promoted_type).ivy_array
+        return self
+
     def baddbmm(self, batch1, batch2, *, beta=1, alpha=1):
         return torch_frontend.baddbmm(
             self, batch1=batch1, batch2=batch2, beta=beta, alpha=alpha
@@ -1779,7 +1785,9 @@ class Size(tuple):
         return super(Size, cls).__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
-        self._ivy_shape = ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        self._ivy_shape = (
+            ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        )
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
