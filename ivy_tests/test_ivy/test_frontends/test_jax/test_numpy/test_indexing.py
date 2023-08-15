@@ -1,12 +1,17 @@
 # global
 from hypothesis import strategies as st, assume
 import numpy as np
-from jax.numpy import tril, triu
+from jax.numpy import tril, triu, r_, c_
 
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, update_backend
+from ...test_numpy.test_indexing_routines.test_inserting_data_into_arrays import (
+    _helper_r_,
+    _helper_c_,
+)
+import ivy.functional.frontends.jax.numpy as jnp_frontend
 
 
 # diagonal
@@ -39,6 +44,7 @@ def test_jax_diagonal(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     input_dtype, value = dtype_and_values
     axis1, axis2, offset = dims_and_offset
@@ -51,6 +57,7 @@ def test_jax_diagonal(
         assume(axis1 != axis2 + num_of_dims)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -97,10 +104,12 @@ def test_jax_diag(
     on_device,
     fn_tree,
     frontend,
+    backend_fw,
 ):
     dtype, x, k = dtype_x_k
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -123,11 +132,13 @@ def test_jax_diag_indices(
     dtype,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -159,12 +170,14 @@ def test_jax_take_along_axis(
     mode,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     dtypes, x, indices, axis, _ = dtype_x_indices_axis
     helpers.test_frontend_function(
         input_dtypes=dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -190,11 +203,13 @@ def test_jax_tril_indices(
     dtype,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -218,6 +233,7 @@ def test_jax_triu_indices(
     input_dtypes,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -225,6 +241,7 @@ def test_jax_triu_indices(
         n=n,
         k=k,
         input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -249,12 +266,14 @@ def test_jax_triu_indices_from(
     k,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -281,12 +300,14 @@ def test_jax_tril_indices_from(
     k,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -327,6 +348,7 @@ def test_jax_unravel_index(
     dtype_x_shape,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
@@ -334,6 +356,7 @@ def test_jax_unravel_index(
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -359,11 +382,13 @@ def test_jax_mask_indices(
     input_dtype,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -394,15 +419,65 @@ def test_jax_diag_indices_from(
     dtype_x,
     test_flags,
     frontend,
+    backend_fw,
     fn_tree,
     on_device,
 ):
     dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        backend_to_test=backend_fw,
         test_flags=test_flags,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
         arr=x[0],
     )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.indices",
+    dimensions=helpers.get_shape(min_num_dims=1),
+    dtype=helpers.get_dtypes("numeric"),
+    sparse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_numpy_indices(
+    *,
+    dimensions,
+    dtype,
+    sparse,
+    test_flags,
+    frontend,
+    backend_fw,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dimensions=dimensions,
+        dtype=dtype[0],
+        sparse=sparse,
+    )
+
+
+@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_r_())  # dummy fn_tree
+def test_jax_numpy_r_(inputs, backend_fw):
+    inputs, *_ = inputs
+    ret_gt = r_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = jnp_frontend.r_.__getitem__(tuple(inputs))
+    assert np.allclose(ret.ivy_array, ret_gt)
+
+
+@handle_frontend_test(fn_tree="jax.numpy.add", inputs=_helper_c_())  # dummy fn_tree
+def test_jax_numpy_c_(inputs, backend_fw):
+    ret_gt = c_.__getitem__(tuple(inputs))
+    with update_backend(backend_fw):
+        ret = jnp_frontend.c_.__getitem__(tuple(inputs))
+    assert np.allclose(ret.ivy_array, ret_gt)

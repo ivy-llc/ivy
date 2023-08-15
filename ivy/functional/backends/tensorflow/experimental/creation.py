@@ -121,3 +121,11 @@ def blackman_window(
     return (0.42 - 0.5 * tnp.cos(2 * tnp.pi * count)) + (
         0.08 * tnp.cos(2 * tnp.pi * 2 * count)
     )
+
+def unsorted_segment_sum(
+    data: tf.Tensor,
+    segment_ids: tf.Tensor,
+    num_segments: Union[int, tf.Tensor],
+) -> tf.Tensor:
+    return tf.math.unsorted_segment_sum(data, segment_ids, num_segments)
+

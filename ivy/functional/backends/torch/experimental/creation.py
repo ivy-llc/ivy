@@ -169,3 +169,29 @@ def blackman_window(
 
 
 blackman_window.support_native_out = False
+
+def unsorted_segment_sum(
+    data: torch.Tensor,
+    segment_ids: torch.Tensor,
+    num_segments: Union[int, torch.Tensor],
+) -> torch.Tensor:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    res = torch.zeros(
+        (num_segments,) + data.shape[1:], dtype=data.dtype, device=data.device
+    )
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if torch.any(mask_index):
+            res[i] = torch.sum(data[mask_index], dim=0)
+
+    return res
+
+

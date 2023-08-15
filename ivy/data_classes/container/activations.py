@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.data_classes.container.base import ContainerBase
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Literal
 
 
 # ToDo: implement all methods here as public instance methods
@@ -19,6 +19,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.relu. This method simply wraps the
@@ -43,6 +44,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -68,6 +71,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     def relu(
@@ -79,6 +83,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.relu. This method simply wraps the
@@ -103,6 +108,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -127,6 +134,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     @staticmethod
@@ -140,6 +148,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.leaky_relu. This method simply wraps
@@ -166,6 +175,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -191,6 +202,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     def leaky_relu(
@@ -203,6 +215,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.leaky_relu. This method simply
@@ -229,6 +242,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -253,6 +268,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     @staticmethod
@@ -266,6 +282,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.gelu. This method simply wraps the
@@ -292,6 +309,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -316,6 +335,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     def gelu(
@@ -328,6 +348,7 @@ class _ContainerWithActivations(ContainerBase):
         prune_unapplied: Union[bool, ivy.Container] = False,
         map_sequences: Union[bool, ivy.Container] = False,
         out: Optional[ivy.Container] = None,
+        complex_mode: Literal["split", "magnitude", "jax"] = "jax",
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.gelu. This method simply wraps the
@@ -354,6 +375,8 @@ class _ContainerWithActivations(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        complex_mode
+            optional specifier for how to handle complex data types.
 
         Returns
         -------
@@ -378,6 +401,7 @@ class _ContainerWithActivations(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+            complex_mode=complex_mode,
         )
 
     @staticmethod
@@ -481,7 +505,7 @@ class _ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
+        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {

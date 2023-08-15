@@ -133,6 +133,8 @@ def unsorted_segment_min(
     return res
 
 
+
+
 def blackman_window(
     size: int,
     /,
@@ -151,3 +153,37 @@ def blackman_window(
         (0.42 - 0.5 * paddle.cos(2 * math.pi * count))
         + (0.08 * paddle.cos(2 * math.pi * 2 * count))
     ).cast(dtype)
+
+def unsorted_segment_sum(
+    data: paddle.Tensor,
+    segment_ids: paddle.Tensor,
+    num_segments: Union[int, paddle.Tensor],
+) -> paddle.Tensor:
+    # Used the same check which is used for unsorted_segment_min as the
+    # check should be same
+    # Might require to change the assertion function name to
+    # check_unsorted_segment_valid_params
+    ivy.utils.assertions.check_unsorted_segment_min_valid_params(
+        data, segment_ids, num_segments
+    )
+
+    # Sum computation in paddle does not support int32, so needs to
+    # be converted to float32
+    needs_conv = False
+    if data.dtype == paddle.int32:
+        data = paddle.cast(data, "float32")
+        needs_conv = True
+
+    res = paddle.zeros((num_segments,) + tuple(data.shape[1:]), dtype=data.dtype)
+
+    for i in range(num_segments):
+        mask_index = segment_ids == i
+        if paddle.any(mask_index):
+            res[i] = paddle.sum(data[mask_index], axis=0)
+
+    # condition for converting float32 back to int32
+    if needs_conv is True:
+        res = paddle.cast(res, "int32")
+
+    return res
+
