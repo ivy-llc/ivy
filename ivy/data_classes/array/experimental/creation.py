@@ -91,3 +91,81 @@ class _ArrayWithCreationExperimental(abc.ABC):
             equals to segment ID.
         """
         return ivy.unsorted_segment_min(self._data, segment_ids, num_segments)
+
+    def unsorted_segment_sum(
+        self: ivy.Array,
+        segment_ids: ivy.Array,
+        num_segments: Union[int, ivy.Array],
+    ) -> ivy.Array:
+        r"""
+        ivy.Array instance method variant of ivy.unsorted_segment_sum. This method
+        simply wraps the function, and so the docstring for ivy.unsorted_segment_sum
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array from which to gather values.
+
+        segment_ids
+            Must be in the same size with the first dimension of `self`. Has to be
+            of integer data type. The index-th element of `segment_ids` array is
+            the segment identifier for the index-th element of `self`.
+
+        num_segments
+            An integer or array representing the total number of distinct segment IDs.
+
+        Returns
+        -------
+        ret
+            The output array, representing the result of a segmented sum operation.
+            For each segment, it computes the sum of values in `self` where
+            `segment_ids` equals to segment ID.
+        """
+        return ivy.unsorted_segment_sum(self._data, segment_ids, num_segments)
+
+    def blackman_window(
+        self: ivy.Array,
+        /,
+        *,
+        periodic: bool = True,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.blackman_window. This method simply wraps the
+        function, and so the docstring for ivy.blackman_window also applies to this method with
+        minimal changes.
+        Parameters
+        ----------
+        self
+            int.
+        periodic
+            If True, returns a window to be used as periodic function.
+            If False, return a symmetric window.
+            Default: ``True``.
+        dtype
+            output array data type. If ``dtype`` is ``None``, the output array data type
+            must be inferred from ``self``. Default: ``None``.
+        device
+            device on which to place the created array. If ``device`` is ``None``, the
+            output array device must be inferred from ``self``. Default: ``None``.
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+        Returns
+        -------
+        ret
+            The array containing the window.
+        Examples
+        --------
+        >>> ivy.blackman_window(4, periodic = True)
+        ivy.array([-1.38777878e-17,  3.40000000e-01,  1.00000000e+00,  3.40000000e-01])
+        >>> ivy.blackman_window(7, periodic = False)
+        ivy.array([-1.38777878e-17,  1.30000000e-01,  6.30000000e-01,  1.00000000e+00,
+        6.30000000e-01,  1.30000000e-01, -1.38777878e-17])
+        """
+        return ivy.blackman_window(
+            self._data, periodic=periodic, dtype=dtype, device=device, out=out
+        )

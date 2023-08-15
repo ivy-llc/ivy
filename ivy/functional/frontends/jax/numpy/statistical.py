@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union, Tuple
+
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -489,11 +489,37 @@ def cov(m, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=N
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("complex64", "complex128", "bfloat16", "bool", "float16")},
+    "jax",
+)
+def quantile(
+    a,
+    q,
+    /,
+    *,
+    axis=None,
+    out=None,
+    overwrite_input=False,
+    method="linear",
+    keepdims=False,
+    interpolation=None,
+):
+    if method == "nearest":
+        return ivy.quantile(
+            a, q, axis=axis, keepdims=keepdims, interpolation="nearest_jax", out=out
+        )
+    return ivy.quantile(
+        a, q, axis=axis, keepdims=keepdims, interpolation=method, out=out
+    )
+
+
+@to_ivy_arrays_and_back
 def histogram(
-    a: Union[ivy.Array, ivy.NativeArray],
-    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = 10,
-    range: Optional[Tuple[float]] = None,
-    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    density: Optional[bool] = False,
+    a,
+    bins=10,
+    range=None,
+    weights=None,
+    density=False,
 ) -> ivy.Array:
     return ivy.histogram(a, bins=bins, range=range, weights=weights, density=density)

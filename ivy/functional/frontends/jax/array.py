@@ -5,7 +5,7 @@ import ivy
 import ivy.functional.frontends.jax as jax_frontend
 
 
-class DeviceArray:
+class Array:
     def __init__(self, array, weak_type=False):
         self._ivy_array = array if isinstance(array, ivy.Array) else ivy.array(array)
         self.weak_type = weak_type
@@ -13,7 +13,7 @@ class DeviceArray:
     def __repr__(self):
         main = (
             str(self.ivy_array.__repr__())
-            .replace("ivy.array", "ivy.frontends.jax.DeviceArray")
+            .replace("ivy.array", "ivy.frontends.jax.Array")
             .replace(")", "")
             + ", dtype="
             + str(self.ivy_array.dtype)
@@ -44,6 +44,10 @@ class DeviceArray:
     @property
     def T(self):
         return self.ivy_array.T
+
+    @property
+    def ndim(self):
+        return self.ivy_array.ndim
 
     # Instance Methods #
     # ---------------- #
@@ -145,6 +149,16 @@ class DeviceArray:
         return jax_frontend.numpy.any(
             self._ivy_array, axis=axis, keepdims=keepdims, out=out, where=where
         )
+
+    def reshape(self, *args, order="C"):
+        if not isinstance(args[0], int):
+            if len(args) > 1:
+                raise TypeError(
+                    "Shapes must be 1D sequences of concrete values of integer type,"
+                    f" got {args}."
+                )
+            args = args[0]
+        return jax_frontend.numpy.reshape(self, tuple(args), order)
 
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
@@ -260,18 +274,26 @@ class DeviceArray:
 
     def __setitem__(self, idx, val):
         raise ivy.utils.exceptions.IvyException(
-            "ivy.functional.frontends.jax.DeviceArray object doesn't support assignment"
+            "ivy.functional.frontends.jax.Array object doesn't support assignment"
         )
 
     def __iter__(self):
-        ndim = len(self.shape)
-        if ndim == 0:
-            raise TypeError("iteration over a 0-d devicearray not supported")
+        if self.ndim == 0:
+            raise TypeError("iteration over a 0-d Array not supported")
         for i in range(self.shape[0]):
             yield self[i]
 
     def round(self, decimals=0):
         return jax_frontend.numpy.round(self, decimals)
+
+    def repeat(self, repeats, axis=None, *, total_repeat_length=None):
+        return jax_frontend.numpy.repeat(self, repeats, axis=axis)
+
+    def searchsorted(self, v, side="left", sorter=None, *, method="scan"):
+        return jax_frontend.numpy.searchsorted(self, v, side=side, sorter=sorter)
+
+    def ptp(self, *, axis=None, out=None, keepdims=False):
+        return jax_frontend.numpy.ptp(self, axis=axis, keepdims=keepdims)
 
     def min(
         self,
@@ -298,3 +320,8 @@ class DeviceArray:
             keepdims=keepdims,
             where=where,
         )
+
+
+# Jax supports DeviceArray from 0.4.13 and below
+# Hence aliasing it here
+DeviceArray = Array

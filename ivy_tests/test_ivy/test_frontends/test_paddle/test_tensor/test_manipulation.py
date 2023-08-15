@@ -5,6 +5,9 @@ import math
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_experimental.test_core.test_manipulation import (  # noqa
+    _get_dtype_values_k_axes_for_rot90,
+)
 
 
 # Helpers #
@@ -551,10 +554,12 @@ def test_paddle_flip(
     fn_tree,
     frontend,
     test_flags,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
@@ -598,4 +603,74 @@ def test_paddle_roll(
         x=x[0],
         shifts=shift,
         axis=axis,
+    )
+
+
+# take_along_axis
+@handle_frontend_test(
+    fn_tree="paddle.take_along_axis",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes(kind="valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_paddle_take_along_axis(
+    *,
+    dtype_indices_axis,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        arr=value,
+        indices=indices,
+        axis=axis,
+    )
+
+
+# rot90
+@handle_frontend_test(
+    fn_tree="paddle.rot90",
+    dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
+        available_dtypes=helpers.get_dtypes(kind="valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+)
+def test_paddle_rot90(
+    *,
+    dtype_m_k_axes,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dtype, m, k, axes = dtype_m_k_axes
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=m,
+        k=k,
+        axes=tuple(axes),
     )

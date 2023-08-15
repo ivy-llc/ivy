@@ -2960,3 +2960,163 @@ def test_jax_is_finite(
         on_device=on_device,
         x=x[0],
     )
+
+
+# cbrt
+@handle_frontend_test(
+    fn_tree="jax.lax.cbrt",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"), min_value=0.0
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_cbrt(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# cummin
+@handle_frontend_test(
+    fn_tree="jax.lax.cummin",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        max_num_dims=5,
+        valid_axis=True,
+        allow_neg_axes=False,
+        max_axes_size=1,
+        force_int_axis=True,
+    ),
+    reverse=st.booleans(),
+    test_with_out=st.just(False),
+)
+def test_jax_cummin(
+    *,
+    dtype_x_axis,
+    reverse,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        operand=x[0],
+        axis=axis,
+        reverse=reverse,
+    )
+
+
+# tie_in
+@handle_frontend_test(
+    fn_tree="jax.lax.tie_in",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    test_with_out=st.just(False),
+)
+def test_jax_tie_in(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        y=x[1],
+    )
+
+
+# erfc
+@handle_frontend_test(
+    fn_tree="jax.lax.erfc",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    test_with_out=st.just(False),
+)
+def test_jax_erfc(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
+        x=x[0],
+    )
+
+
+# iota
+@handle_frontend_test(
+    fn_tree="jax.lax.iota",
+    dtypes=helpers.get_dtypes("valid", full=False),
+    size=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_iota(
+    *,
+    dtypes,
+    size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtypes[0],
+        size=size,
+    )
