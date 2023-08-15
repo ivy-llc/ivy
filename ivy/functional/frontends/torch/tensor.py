@@ -1779,7 +1779,9 @@ class Size(tuple):
         return super(Size, cls).__new__(cls, tuple(new_iterable))
 
     def __init__(self, shape) -> None:
-        self._ivy_shape = ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        self._ivy_shape = (
+            ivy.shape(shape) if not isinstance(shape, ivy.Shape) else shape
+        )
 
     def __repr__(self):
         return f'ivy.frontends.torch.Size([{", ".join(str(d) for d in self)}])'
