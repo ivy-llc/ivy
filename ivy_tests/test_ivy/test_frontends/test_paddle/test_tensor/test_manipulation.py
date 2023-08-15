@@ -728,6 +728,7 @@ def test_paddle_rot90(
 def test_paddle_moveaxis(
 
     # Parameters for the test
+    *,
     dtype_and_x, 
     source,
     destination,
