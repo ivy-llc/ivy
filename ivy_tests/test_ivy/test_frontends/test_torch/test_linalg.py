@@ -1289,3 +1289,59 @@ def test_torch_cholesky_ex(
         input=x,
         upper=upper,
     )
+
+
+@st.composite
+def _get_axis_and_p(draw):
+    p = draw(st.sampled_from(["fro", "nuc", 1, 2, -1, -2, float("inf"), -float("inf")]))
+    if p == "fro" or p == "nuc":
+        max_axes_size = 2
+        min_axes_size = 2
+    else:
+        min_axes_size = 1
+        max_axes_size = 5
+    x_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            valid_axis=True,
+            min_value=-1e04,
+            max_value=1e04,
+            min_axes_size=min_axes_size,
+            max_axes_size=max_axes_size,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+        )
+    )
+    axis = axis[0] if isinstance(axis, tuple) and len(axis) == 1 else axis
+    return p, x_dtype, values, axis
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.norm",
+    p_dtype_x_axis=_get_axis_and_p(),
+    keepdim=st.booleans(),
+)
+def test_torch_norm(
+    *,
+    p_dtype_x_axis,
+    keepdim,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    p, dtype, x, axis = p_dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=x,
+        ord=p,
+        dim=axis,
+        keepdim=keepdim,
+    )
