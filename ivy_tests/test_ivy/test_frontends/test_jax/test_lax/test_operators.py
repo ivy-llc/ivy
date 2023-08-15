@@ -3091,3 +3091,32 @@ def test_jax_erfc(
         atol=1e-2,
         x=x[0],
     )
+
+
+# iota
+@handle_frontend_test(
+    fn_tree="jax.lax.iota",
+    dtypes=helpers.get_dtypes("valid", full=False),
+    size=helpers.ints(min_value=0, max_value=10),
+    test_with_out=st.just(False),
+)
+def test_jax_iota(
+    *,
+    dtypes,
+    size,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        dtype=dtypes[0],
+        size=size,
+    )

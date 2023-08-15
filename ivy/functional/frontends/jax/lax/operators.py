@@ -699,3 +699,12 @@ def erfc(x):
     value = ivy.erf(x)
     value = (1.0 - value) if value is not None else None
     return value
+
+
+@with_unsupported_dtypes(
+    {"0.4.14 and below": ("bool", "bfloat16")},
+    "jax",
+)
+@to_ivy_arrays_and_back
+def iota(dtype, size):
+    return ivy.arange(0, size, dtype=dtype)
