@@ -469,7 +469,7 @@ def paddle_unfold_handler(draw, dtype):
             dtype=dtype[0],
             shape=[batch, channels, h_size, w_size],
             min_value=0,
-            max_value=1
+            max_value=1,
         )
     )
 
