@@ -1,3 +1,4 @@
+import ivy
 from .generic import NDFrame
 
 
@@ -32,3 +33,41 @@ class Series(NDFrame):
             f"frontends.pandas.Series {series_name}({self.array.to_list()},"
             f" index={self.index})"
         )
+
+    def __getitem__(self, index_val):
+        if isinstance(index_val, slice):
+            return Series(
+                self.array[index_val],
+                index=self.index[index_val],
+                name=self.name,
+                dtype=self.dtype,
+                copy=self.copy,
+            )
+        return self.array[self.index.index(index_val)].item()
+
+    def __getattr__(self, item):
+        if item in self.index:
+            return self[item]
+        else:
+            return super().__getattr__(item)
+
+    def __len__(self):
+        return len(self.array)
+
+    def sum(self, axis=None, skipna=True, numeric_only=False, min_count=0, **kwargs):
+        _array = self.array
+        if min_count > 0:
+            if ivy.has_nans(_array):
+                number_values = _array.size - ivy.sum(ivy.isnan(_array))
+            else:
+                number_values = _array.size
+            if min_count > number_values:
+                return ivy.nan
+        if skipna:
+            return ivy.nansum(_array)
+        return _array.sum()
+
+    def mean(self, axis=None, skipna=True, numeric_only=False, **kwargs):
+        if skipna:
+            return ivy.nanmean(self.array)
+        return self.array.mean()

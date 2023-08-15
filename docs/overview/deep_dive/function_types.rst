@@ -37,7 +37,7 @@ Function Types
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
 These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/four_function_types.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/function_types/four_function_types.png?raw=true
    :align: center
    :width: 50%
    :class: dark-light
@@ -189,7 +189,7 @@ In this case, the function will return an :class:`ivy.Container` in the output.
 *Primary*, *compositional*, *mixed*, and *standalone* functions can all *also* be nestable.
 This categorization is **not** mutually exclusive, as outlined by the Venn diagram below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/nestable.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/function_types/nestable.png?raw=true
    :align: center
    :width: 50%
    :class: dark-light
@@ -203,8 +203,6 @@ This added support for handling :class:`ivy.Container` instances is all handled 
 This will add the `handle_nestable`_ wrapping to the function if it has the :code:`@handle_nestable` decorator.
 This function wrapping process is covered in a bit more detail in the :ref:`Function Wrapping` section.
 
-Under the hood, the :class:`ivy.Container` API static methods are called when :class:`ivy.Container` instances are passed in as inputs to functions in the functional API.
-
 Nestable functions are explained in more detail in the :ref:`Containers` section.
 
 Convenience Functions
@@ -217,7 +215,7 @@ Convenience functions can be *primary*, *compositional*, *mixed* or *standalone*
 Many are also *nestable*.
 This is another categorization which is **not** mutually exclusive, as outlined by the Venn diagram below:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/convenience.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/deep_dive/function_types/convenience.png?raw=true
    :align: center
    :width: 50%
    :class: dark-light
