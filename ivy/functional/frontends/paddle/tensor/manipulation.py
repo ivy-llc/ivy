@@ -169,3 +169,19 @@ def take_along_axis(arr, indices, axis):
 @to_ivy_arrays_and_back
 def rot90(x, k=1, axes=(0, 1), name=None):
     return ivy.rot90(x, k=k, axes=axes)
+
+
+@with_supported_dtypes(
+    {
+        "2.5.1 and below": (
+            "int32",
+            "int64",
+            "float32",
+            "float64",
+        )
+    },
+    "paddle",
+)
+@to_ivy_arrays_and_back
+def put_along_axis(arr, indices, values, axis, reduce="assign"):
+    return ivy.put_along_axis(arr, indices, values, axis)
