@@ -2935,33 +2935,47 @@ def _parse_query(query, x_shape, scatter=False):
             for arr in new_arrays
         ]
     if len(array_inds) and to_front:
-        indices = ivy.array(
-            [
-                (*k, *i)
-                for k in zip(*new_arrays)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i not in array_inds]
-                )
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    elif len(array_inds):
-        indices = ivy.array(
-            [
-                (*i, *k, *j)
-                for i in itertools.product(
-                    *[v for i, v in enumerate(query) if i < array_inds[0]]
-                )
-                for k in zip(*new_arrays)
-                for j in itertools.product(
-                    *[v for i, v in enumerate(query) if i > array_inds[-1]]
-                )
-            ]
-        ).reshape((*target_shape, len(x_shape)))
-    else:
-        indices = ivy.array([(*i,) for i in itertools.product(*query)]).reshape(
-            (*target_shape, len(x_shape))
+        i = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i not in array_inds],
+                    indexing="ij",
+                ),
+                axis=-1,
+            )
+            if len(array_inds) < len(query)
+            else []
         )
-
+        k = [k for k in zip(*new_arrays)]
+        indices = ivy.array([(*k, *i)]).reshape((*target_shape, len(x_shape)))
+    elif len(array_inds):
+        i = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i < array_inds[0]],
+                    indexing="ij",
+                ),
+                axis=-1,
+            )
+            if array_inds[0] > 0
+            else []
+        )
+        j = (
+            ivy.stack(
+                ivy.meshgrid(
+                    *[v for i, v in enumerate(query) if i > array_inds[-1]],
+                    indexing="ij",
+                ),
+                axis=-1,
+            )
+            if array_inds[-1] < len(query) - 1
+            else []
+        )
+        k = [k for k in zip(*new_arrays)]
+        indices = ivy.array([(*i, *k, *j)]).reshape((*target_shape, len(x_shape)))
+    else:
+        grid = ivy.meshgrid(*query, indexing="ij")
+        indices = ivy.stack(grid, axis=-1)
     if scatter:
         return indices.astype(ivy.int64), target_shape
     else:
