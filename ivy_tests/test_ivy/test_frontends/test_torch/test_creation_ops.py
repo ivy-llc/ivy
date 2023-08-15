@@ -754,7 +754,7 @@ def test_torch_complex(
         with_out=False,
         native_array_flags=[False],
         frontend="torch",
-        fn_tree="complex",
+        fn_tree="torch.complex",
         real=real,
         imag=imag,
         out=out,
