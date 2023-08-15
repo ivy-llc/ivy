@@ -125,34 +125,41 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
         kernel_sizes = [kernel_sizes, kernel_sizes]
     elif not (isinstance(kernel_sizes, list) or isinstance(kernel_sizes, tuple)):
         raise ivy.exceptions.IvyError(
-            f"Expected kernel size input as type int, tuple or list but got {type(kernel_sizes)}"
+            f"Expected kernel size input as type int, tuple or list but got"
+            f" {type(kernel_sizes)}"
         )
 
     if isinstance(strides, int):
         strides = [strides, strides]
     elif not (isinstance(strides, list) or isinstance(strides, tuple)):
         raise ivy.exceptions.IvyError(
-            f"Expected strides input as type int, tuple or list but got {type(strides)}"
+            f"Expected strides input as type int, tuple or list but got"
+            f" {type(strides)}"
         )
 
     if isinstance(dilations, int):
         dilations = [dilations, dilations]
     elif not (isinstance(dilations, list) or isinstance(dilations, tuple)):
         raise ivy.exceptions.IvyError(
-            f"Expected dilations input as type int, tuple or list but got {type(dilations)}"
+            f"Expected dilations input as type int, tuple or list but got"
+            f" {type(dilations)}"
         )
 
     if isinstance(paddings, int):
         paddings = [paddings, paddings]
     elif not (isinstance(paddings, list) or isinstance(paddings, tuple)):
         raise ivy.exceptions.IvyError(
-            f"Expected paddings, input as type int, tuple or list but got {type(paddings)}"
+            f"Expected paddings, input as type int, tuple or list but got"
+            f" {type(paddings)}"
         )
 
     n, c, h, w = x.shape
     # Padding
     if paddings[0] >= 0 or paddings[1] >= 0:
-        padding_tup = [(0,0) for i in range(2)] + [(paddings[0], paddings[0]), (paddings[1], paddings[1])]
+        padding_tup = [(0,0) for i in range(2)] + [
+            (paddings[0], paddings[0]),
+            (paddings[1], paddings[1])
+        ]
         x = ivy.pad(x, padding_tup, mode="constant", constant_values=0.0)
     else:
         raise ivy.exceptions.IvyError(
@@ -160,22 +167,31 @@ def unfold(x, kernel_sizes, strides=1, paddings=0, dilations=1, name=None):
         )
 
     # Expected input shape
-    h_steps = int((h + (paddings[0] * 2) - dilations[0] * (kernel_sizes[0] - 1) - 1) / strides[0] + 1)
-    w_steps = int((w + (paddings[1] * 2) - dilations[1] * (kernel_sizes[1] - 1) - 1) / strides[1] + 1)
+    h_steps = int(
+        (h + (paddings[0] * 2) - dilations[0] * (kernel_sizes[0] - 1) - 1) / strides[0] + 1
+    )
+
+    w_steps = int(
+        (w + (paddings[1] * 2) - dilations[1] * (kernel_sizes[1] - 1) - 1) / strides[1] + 1
+    )
 
     if h_steps < 1 or w_steps < 1:
         raise ivy.exceptions.IvyError(
-            f"Expected at least one for height and width, but got expected output shape H:{h_steps} W:{w_steps}]"
+            f"Expected at least one for height and width, but got expected output shape"
+            f" H:{h_steps} W:{w_steps}]"
         )
 
     # sliding windows
     folder = []
     for i in range(0, h_steps * strides[0], strides[0]):
         for j in range(0, w_steps * strides[1], strides[1]):
-            window = x[ :,
-                        :,
-                        i:i + dilations[0] * (kernel_sizes[0] - 1) + 1: dilations[0],
-                        j:j + dilations[1] * (kernel_sizes[1] - 1) + 1: dilations[1]]
+            window = x[
+                     :,
+                     :,
+                     i : i + dilations[0] * (kernel_sizes[0] - 1) + 1 : dilations[0],
+                     j : j + dilations[1] * (kernel_sizes[1] - 1) + 1 : dilations[1]
+            ]
+
             window = ivy.flatten(window, start_dim=1)
             folder.append(window)
 

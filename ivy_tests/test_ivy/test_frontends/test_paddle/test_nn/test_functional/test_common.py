@@ -465,7 +465,12 @@ def paddle_unfold_handler(draw, dtype):
     batch = draw(helpers.ints(min_value=1, max_value=10))
 
     x = draw(
-        helpers.array_values(dtype=dtype[0], shape=[batch, channels, h_size, w_size], min_value=0, max_value=1)
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=[batch, channels, h_size, w_size],
+            min_value=0,
+            max_value=1
+        )
     )
 
     kernel_sizes = draw(helpers.ints(min_value=1, max_value=3))
@@ -475,8 +480,8 @@ def paddle_unfold_handler(draw, dtype):
     return dtype, x, kernel_sizes, strides, paddings, dilations
 
 @handle_frontend_test(
-    fn_tree = "paddle.nn.functional.common.unfold",
-    dtype_inputs = paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
+    fn_tree="paddle.nn.functional.common.unfold",
+    dtype_inputs=paddle_unfold_handler(dtype=helpers.get_dtypes("valid", full=False)),
 )
 def test_unfold(
     *,
