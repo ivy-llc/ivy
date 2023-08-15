@@ -10610,7 +10610,7 @@ def test_torch_tensor_log1p(
     init_tree="torch.tensor",
     method_name="log1p_",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         max_value=1e37,
     ),
 )
