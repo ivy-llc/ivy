@@ -2071,6 +2071,47 @@ def associative_scan(
     return ivy.reshape(ivy.asarray(scans), elems[0].shape)
 
 
+# unique
+@handle_exceptions
+@handle_nestable
+@handle_array_like_without_promotion
+@to_native_arrays_and_back
+@handle_array_function
+@handle_device_shifting
+def unique(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[int] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
+    """Finds the unique elements of an array.
+
+    Parameters
+    ----------
+    x
+        input array.
+
+    axis
+        the axis to apply unique on. If None, unique is applied on flattened ``x``.
+
+    Returns
+    -------
+    ret
+        a namedtuple ``(output, inverse_indices)`` whose
+        - first element has the field name ``output`` and is an array
+          of the same type as ``x`` containing the unique elements of ``x``.
+        - second element has the field name ``inverse_indices`` and is an
+          array containing the indices of ``output`` that reconstruct ``x``.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 1, 2, 2, 3, 1, 1, 2])
+    >>> ivy.unique(x)
+    Results(output=ivy.array([1, 2, 3]), inverse_indices=ivy.array([0, 0, 1, 1, 2, 0, 0, 1]))
+    """
+    return ivy.current_backend(x).unique(x, axis=axis)
+
 @handle_exceptions
 @handle_nestable
 @handle_array_like_without_promotion
