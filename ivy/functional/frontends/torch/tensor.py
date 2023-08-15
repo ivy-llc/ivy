@@ -1411,6 +1411,7 @@ class Tensor:
         self.ivy_array = self.div(other, rounding_mode=rounding_mode).ivy_array
         return self
 
+    @with_supported_dtypes({"2.0.1 and below": ("float16","float32","float64")}, "torch")
     def true_divide_(self, other, *, rounding_mode=None):
         self.ivy_array = torch_frontend.div(self, other).ivy_array
         return self
