@@ -100,22 +100,31 @@ def test_paddle_vflip(
 
 @handle_frontend_test(
     fn_tree="paddle.vision.transforms.crop",
-    dtype_and_x_and_top_and_left_height_width=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=1
+        num_arrays=1,
+        min_dim_size=2,
+        max_dim_size=100
     ),
+    top=st.integers(min_value=0, max_value=50),
+    left=st.integers(min_value=0, max_value=50),
+    height=st.integers(min_value=0, max_value=50),
+    width=st.integers(min_value=0, max_value=50),
 )
 def test_paddle_crop(
     *,
-    dtype_and_x_and_top_and_left_and_height_and_width,
+    dtype_and_x,
+    top,
+    left,
+    height,
+    width,
     on_device,
     fn_tree,
     frontend,
     test_flags,
     backend_fw,
 ):
-    input_dtype, x_and_top_and_left_height_width = dtype_and_x_and_top_and_left_and_height_and_width
-    x, top, left, height, width = x_and_top_and_left_height_width
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         frontend=frontend,

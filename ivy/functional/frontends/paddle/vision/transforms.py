@@ -141,5 +141,4 @@ def vflip(img, data_format="CHW"):
 )
 @to_ivy_arrays_and_back
 def crop(img, top, left, height, width):
-    array = ivy.array(img)
-    return array[top:top+height, left:left+width]
+    return img[top:top+height, left:left+width]
