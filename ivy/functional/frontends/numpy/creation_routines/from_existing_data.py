@@ -32,5 +32,6 @@ def copy(a, order="K", subok=False):
 
 
 @handle_numpy_dtype
+@to_ivy_arrays_and_back
 def frombuffer(buffer, dtype=float, count=-1, offset=0, *, like=None):
-    return ivy.frombuffer(buffer)
+    return ivy.frombuffer(buffer, dtype=dtype, count=count, offset=offset)
