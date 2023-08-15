@@ -84,11 +84,7 @@ def eigvalsh(
 
 @_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray,
-    x2: np.ndarray,
-    /,
-    *,
-    out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
@@ -392,9 +388,20 @@ def vector_norm(
     elif ord == -inf:
         return np.min(abs_x, axis=axis, keepdims=keepdims, out=out)
     else:
-        return (
+        # There is a rounding error whenever the input is a 0-dim
+        # The solution at the moment is to convert the 0-dim array to 1-dim
+        # and then convert it back to 0-dim in case of keepdims=True
+        if x.ndim == 0:
+            abs_x = np.expand_dims(abs_x, axis=0)
+
+        res = (
             np.sum(abs_x**ord, axis=axis, keepdims=keepdims) ** (1.0 / ord)
         ).astype(abs_x.dtype)
+
+        if keepdims and x.ndim == 0:
+            res = np.squeeze(res)
+
+        return res
 
 
 # Extra #

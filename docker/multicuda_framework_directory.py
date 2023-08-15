@@ -5,7 +5,7 @@ import sys
 
 # install requests only for build, and uninstall it later
 subprocess.run(
-    (f"pip3 install requests"),
+    f"pip3 install requests",
     shell=True,
 )
 
@@ -39,16 +39,16 @@ def install_pkg(path, pkg, base="fw/"):
     if pkg.split("==")[0] if "==" in pkg else pkg == "torch":
         subprocess.run(
             (
-                f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100"
-                " --extra-index-url https://download.pytorch.org/whl/cu118 "
-                " --no-cache-dir"
+                f"yes |pip3 install --upgrade {pkg} --target"
+                f" {path} --default-timeout=100 --extra-index-url"
+                " https://download.pytorch.org/whl/cu118  --no-cache-dir"
             ),
             shell=True,
         )
     elif pkg.split("==")[0] if "==" in pkg else pkg == "jax":
         subprocess.run(
             (
-                f"pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
+                f"yes |pip install --upgrade --target {path} 'jax[cuda11_local]' -f"
                 " https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  "
                 " --no-cache-dir"
             ),
@@ -57,8 +57,10 @@ def install_pkg(path, pkg, base="fw/"):
     elif pkg.split("==")[0] if "==" in pkg else pkg == "paddle":
         subprocess.run(
             (
-                f"pip install  paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117 --target {path} "
-                " -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
+                "yes |pip install "
+                f" paddlepaddle-gpu=={get_latest_package_version('paddlepaddle')}.post117"
+                f" --target {path}  -f"
+                " https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html  "
                 " --no-cache-dir"
             ),
             shell=True,
@@ -66,8 +68,8 @@ def install_pkg(path, pkg, base="fw/"):
     else:
         subprocess.run(
             (
-                f"pip3 install --upgrade {pkg} --target {path} --default-timeout=100  "
-                " --no-cache-dir"
+                f"yes |pip3 install --upgrade {pkg} --target"
+                f" {path} --default-timeout=100   --no-cache-dir"
             ),
             shell=True,
         )
@@ -83,6 +85,6 @@ if __name__ == "__main__":
     # uninstall requests when done
     # install requests only for build, and uninstall it later
     subprocess.run(
-        (f"pip3 uninstall requests"),
+        f"yes |pip3 uninstall requests",
         shell=True,
     )

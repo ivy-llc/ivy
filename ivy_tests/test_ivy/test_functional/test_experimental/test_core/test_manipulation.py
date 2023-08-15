@@ -1056,3 +1056,325 @@ def test_fill_diagonal(
         v=v,
         wrap=wrap,
     )
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.unfold",
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        valid_axis=True,
+        allow_neg_axes=False,
+        force_int_axis=True,
+    ),
+)
+def test_unfold(*, dtype_values_axis, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, axis = dtype_values_axis
+    if axis is None:
+        axis = 0
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        x=input[0],
+        mode=axis,
+    )
+
+
+@st.composite
+def _fold_data(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=3
+        )
+    )
+    mode = draw(helpers.ints(min_value=0, max_value=len(shape) - 1))
+    reduced_dims = int(ivy.prod(shape[0:mode]) * ivy.prod(shape[mode + 1 :]))
+    unfolded_shape = (shape[mode], reduced_dims)
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), shape=unfolded_shape
+        )
+    )
+    return dtype, input, shape, mode
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.fold",
+    data=_fold_data(),
+)
+def test_fold(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, shape, mode = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        x=input[0],
+        mode=mode,
+        shape=shape,
+    )
+
+
+@st.composite
+def _partial_unfold_data(draw):
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+        )
+    )
+    ndims = len(input[0].shape)
+    mode_and_skip_begin = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=ndims - 1), min_size=2, max_size=2
+        ).filter(lambda nums: np.sum(nums) <= ndims - 1)
+    )
+    skip_begin, mode = sorted(mode_and_skip_begin)
+    skip_end = draw(
+        helpers.ints(min_value=0, max_value=ndims - (skip_begin + mode) - 1)
+    )
+    ravel_tensors = draw(st.booleans())
+    return dtype, input, mode, skip_begin, skip_end, ravel_tensors
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_unfold",
+    data=_partial_unfold_data(),
+)
+def test_partial_unfold(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, axis, skip_begin, skip_end, ravel_tensors = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input[0],
+        mode=axis,
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+        ravel_tensors=ravel_tensors,
+    )
+
+
+@st.composite
+def _partial_fold_data(draw):
+    shape = draw(
+        helpers.get_shape(
+            min_num_dims=2, max_num_dims=5, min_dim_size=2, max_dim_size=3
+        )
+    )
+    ndims = len(shape)
+    mode_and_skip_begin = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=ndims - 1), min_size=2, max_size=2
+        ).filter(lambda nums: np.sum(nums) <= ndims - 1)
+    )
+    skip_begin, mode = sorted(mode_and_skip_begin)
+    skip_end = draw(
+        helpers.ints(min_value=0, max_value=ndims - (skip_begin + mode) - 1)
+    )
+    if skip_end != 0:
+        reduced_dims = int(
+            ivy.prod(shape[skip_begin : skip_begin + mode])
+            * ivy.prod(shape[skip_begin + mode + 1 : -skip_end])
+        )
+        unfolded_shape = (
+            *shape[:skip_begin],
+            shape[skip_begin + mode],
+            reduced_dims,
+            *shape[-skip_end:],
+        )
+    else:
+        reduced_dims = int(
+            ivy.prod(shape[skip_begin : skip_begin + mode])
+            * ivy.prod(shape[skip_begin + mode + 1 :])
+        )
+        unfolded_shape = (*shape[:skip_begin], shape[skip_begin + mode], reduced_dims)
+
+    dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), shape=unfolded_shape
+        )
+    )
+    return dtype, input, skip_begin, shape, mode
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_fold",
+    data=_partial_fold_data(),
+)
+def test_partial_fold(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, skip_begin, shape, mode = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        x=input[0],
+        mode=mode,
+        shape=shape,
+        skip_begin=skip_begin,
+    )
+
+
+@st.composite
+def _partial_tensor_to_vec_data(draw):
+    input_dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"), min_num_dims=1, ret_shape=True
+        )
+    )
+    ndims = len(shape)
+    skip_begin = draw(helpers.ints(min_value=0, max_value=ndims - 1))
+    skip_end = draw(helpers.ints(min_value=0, max_value=ndims - 1 - skip_begin))
+    return input_dtype, input, skip_begin, skip_end
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_tensor_to_vec",
+    data=_partial_tensor_to_vec_data(),
+)
+def test_partial_tensor_to_vec(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, skip_begin, skip_end = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        x=input[0],
+        skip_begin=skip_begin,
+        skip_end=skip_end,
+    )
+
+
+@st.composite
+def _partial_vec_to_tensor(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, max_num_dims=5))
+    numel = int(ivy.prod(shape))
+    input_dtype, input = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"), shape=(numel,)
+        )
+    )
+    ndims = len(shape)
+    skip_begin = draw(helpers.ints(min_value=0, max_value=ndims - 1))
+    return input_dtype, input, shape, skip_begin
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.partial_vec_to_tensor",
+    data=_partial_vec_to_tensor(),
+)
+def test_partial_vec_to_tensor(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, shape, skip_begin = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        input=input[0],
+        shape=shape,
+        skip_begin=skip_begin,
+    )
+
+
+@st.composite
+def _matricize_data(draw):
+    input_dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            ret_shape=True,
+            min_num_dims=2,
+            max_num_dims=5,
+        )
+    )
+    ndims = len(shape)
+    dims = set([*range(ndims)])
+    row_modes = set(
+        draw(st.lists(helpers.ints(min_value=0, max_value=ndims - 1), min_size=1))
+    )
+    col_modes = dims - row_modes
+    return input_dtype, input, row_modes, col_modes
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.matricize",
+    data=_matricize_data(),
+)
+def test_matricize(*, data, test_flags, backend_fw, fn_name, on_device):
+    input_dtype, input, row_modes, column_modes = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=input_dtype,
+        x=input[0],
+        row_modes=row_modes,
+        column_modes=column_modes,
+    )
+
+
+@st.composite
+def _soft_thresholding_data(draw):
+    x_min, x_max = 1e-2, 1e2
+    x_dtype, x, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            ret_shape=True,
+            min_value=x_min,
+            max_value=x_max,
+        )
+    )
+    threshold_choice_1 = draw(helpers.floats(min_value=x_min, max_value=x_max))
+    t_dtype, threshold_choice_2 = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            shape=shape,
+            min_value=x_min,
+            max_value=x_max,
+        )
+    )
+    threshold = draw(st.sampled_from([threshold_choice_1, threshold_choice_2]))
+    return x_dtype + t_dtype, x, threshold
+
+
+@handle_test(
+    fn_tree="functional.ivy.experimental.soft_thresholding",
+    data=_soft_thresholding_data(),
+)
+def test_soft_thresholding(*, data, test_flags, backend_fw, fn_name, on_device):
+    x_dtype, x, threshold = data
+    helpers.test_function(
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        input_dtypes=x_dtype,
+        x=x[0],
+        threshold=threshold,
+    )
