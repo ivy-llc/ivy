@@ -671,7 +671,7 @@ def cbrt(x):
 
 
 @with_unsupported_dtypes(
-    {"0.4.14 and below": ("bfloat16", "bool", "complex64", "complex128")},
+    {"0.4.14 and below": ("bfloat16", "float16", "bool", "complex64", "complex128")},
     "jax",
 )
 @to_ivy_arrays_and_back
