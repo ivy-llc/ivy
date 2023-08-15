@@ -138,7 +138,7 @@ behaviour across the backends, native functionality of frameworks should be made
 doesn't provide complete superset behaviour, we should still make use of the partial behaviour that it provides and then add more logic for the
 remaining part. This is explained in detail in the :ref:`Superset Behavior` section. Ivy allows this partial support with the help of the `partial_mixed_handler`_
 attribute which should be added to the backend implementation with a boolean function that specifies some condition on the inputs to switch between the compositional
-and primary implementations. So, the :code:`torch` backend implementation of :code:`linear` would look like:
+and primary implementations. For example, the :code:`torch` backend implementation of :code:`linear`` looks like:
 
 .. code-block:: python
 
@@ -155,7 +155,7 @@ and primary implementations. So, the :code:`torch` backend implementation of :co
    linear.partial_mixed_handler = lambda x, weight, **kwargs: weight.ndim == 2
 
 And to the compositional implementation, we must add the `handle_partial_mixed_function`_ decorator. When the backend is set, the :code:`handle_partial_mixed_function`
-decorator is added to the primary implementation `inside the wrap_function`_  according to the order in the `FN_DECORATORS`_ list. When the function is executed,
+decorator is added to the primary implementation `inside the _wrap_function`_  according to the order in the `FN_DECORATORS`_ list. When the function is executed,
 the :code:`handle_partial_mixed_function` decorator first evaluates the boolean function using the given inputs, and we use the backend-specific implementation if the result
 is `True` and the compositional implementation otherwise.
 
