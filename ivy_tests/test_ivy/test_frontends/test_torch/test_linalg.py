@@ -888,6 +888,39 @@ def test_torch_solve(
     )
 
 
+#solve_triangular
+@handle_frontend_test(
+    fn_tree="torch.linalg.solve_triangular",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_solve_triangular(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    backend_fw,
+    test_flags,
+):
+    input_dytpe, x = dtype_and_x
+    A = np.triu(np.random.randn(3,3))
+    B = np.random.randn(3,1)
+    upper = True
+    helpers.test_frontend_function(
+        input_dtypes=input_dytpe,
+        frontend=frontend,
+        backend_to_test=backend_fw,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        A=A,
+        B=B,
+        upper=upper
+    )
+
+
 # tensorinv
 @st.composite
 def _tensorinv_helper(draw):
