@@ -737,27 +737,40 @@ def test_torch_frombuffer(
 
 
 # complex
+@st.composite
+def _complex_helper(draw):
+    input_dtype, data = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("complex"),
+        )
+    )
+    _, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=input_dtype,
+        ),
+    )
+    return input_dtype, data, values
+
+
 @handle_frontend_test(
     fn_tree="torch.complex",
-    real=ivy.complex,
-    imag=ivy.complex,
-    dtypes=helpers.get_dtypes("float", "complex", full=False),
+    dtype_and_input=_complex_helper(),
 )
 def test_torch_complex(
-    real,
-    imag,
-    out,
-    dtypes,
+    *,
+    dtype_and_input,
+    test_flags,
+    fn_tree,
+    on_device,
+    frontend,
 ):
+    input_dtype, data, values = dtype_and_input
     helpers.test_frontend_function(
-        input_dtypes=[],
-        as_variable_flags=[False],
-        with_out=False,
-        native_array_flags=[False],
+        input_dtypes=input_dtype,
+        test_flags=test_flags,
+        input=data,
+        values=values[0],
+        on_device=on_device,
         frontend="torch",
         fn_tree="complex",
-        real=real,
-        imag=imag,
-        out=out,
-        dtype=dtypes,
     )

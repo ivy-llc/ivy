@@ -649,6 +649,6 @@ def complex(
     real: torch.Tensor,
     imag: torch.Tensor,
 ) -> torch.Tensor:
-    assert real.shape == imag.shape, "a and b must be the same shape"
+    assert real.shape == imag.shape, "real and imag must be the same shape"
     ret = torch.complex(real, imag, dtype=torch.complex)
     return ret
