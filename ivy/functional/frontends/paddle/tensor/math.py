@@ -431,6 +431,15 @@ def mm(input, mat2, name=None):
 
 
 @with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def addmm(input, x, y, beta=1.0, alpha=1.0, name=None):
+    value = alpha * ivy.matmul(x, y) + (beta * input)
+    return value
+
+
+@with_supported_dtypes(
     {"2.5.1 and below": ("float32", "float64", "int32", "int6")}, "paddle"
 )
 @to_ivy_arrays_and_back
@@ -452,3 +461,21 @@ def take(
         index = ivy.where(index < 0, index % x.shape[-1], index)
         index = ivy.where(index >= x.shape[-1], index % x.shape[-1], index)
     return ivy.gather(x, index, axis=0)
+
+
+@with_supported_dtypes(
+    {"2.5.1 and below": ("float32", "float64", "int32", "int64")}, "paddle"
+)
+@to_ivy_arrays_and_back
+def amax(x, axis=None, keepdims=False):
+    if axis is None:
+        return ivy.max(x)
+    if isinstance(axis, int):
+        axis = [axis]
+    for i in range(len(axis)):
+        if axis[i] < 0:
+            axis[i] += x.ndim
+    for i in axis:
+        if i < 0 or i >= x.ndim:
+            raise ValueError("axis {} is out of range [-{}:{}]".format(i, 0, x.ndim))
+    return ivy.max(x, axis=axis, keepdims=keepdims)

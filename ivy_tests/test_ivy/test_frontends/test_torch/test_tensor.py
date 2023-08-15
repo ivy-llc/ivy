@@ -2085,6 +2085,42 @@ def test_torch_tensor_log(
     )
 
 
+# log2_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log2_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        allow_inf=False,
+    ),
+)
+def test_torch_tensor_log2_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # log_
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -2247,6 +2283,43 @@ def test_torch___add__(
     ),
 )
 def test_torch_tensor_arcsinh(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[],
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
+# arcsinh_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arcsinh_",
+    dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_tensor_arcsinh_(
     dtype_and_x,
     frontend_method_data,
     init_flags,
@@ -8148,6 +8221,41 @@ def test_torch_tensor_expm1(
     )
 
 
+# expm1_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="expm1_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_tensor_expm1_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # mul
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -9519,6 +9627,44 @@ def test_torch_tensor_multiply(
     )
 
 
+# multiply_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="multiply_",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_torch_tensor_multiply_(
+    dtype_and_x,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    frontend,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        on_device=on_device,
+    )
+
+
 # norm
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -10581,6 +10727,40 @@ def test_torch_tensor_stride(
     ),
 )
 def test_torch_tensor_log1p(
+    dtype_x,
+    frontend,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+    backend_fw,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        backend_to_test=backend_fw,
+        init_all_as_kwargs_np={"data": x[0]},
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+# log1p_
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log1p_",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_value=1e37,
+    ),
+)
+def test_torch_tensor_log1p_(
     dtype_x,
     frontend,
     frontend_method_data,
@@ -11781,5 +11961,40 @@ def test_torch_tensor_quantile(
         frontend_method_data=frontend_method_data,
         init_flags=init_flags,
         method_flags=method_flags,
+        on_device=on_device,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sinc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_sinc(
+    *,
+    dtype_and_x,
+    frontend,
+    backend_fw,
+    frontend_method_data,
+    init_flags,
+    method_flags,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        init_flags=init_flags,
+        method_flags=method_flags,
+        frontend=frontend,
+        backend_to_test=backend_fw,
         on_device=on_device,
     )
