@@ -418,7 +418,6 @@ def test_linear(
     )
 
 
-
 # bilinear
 def get_supported_dtypes():
     return x_and_linear(dtypes=helpers.get_dtypes("valid", full=False))
@@ -433,7 +432,7 @@ def get_supported_dtypes():
         st.floats(),
         st.floats(),
     ),
-    dtype_x1_x2_weight_bias=get_supported_dtypes,
+    dtype_x1_x2_weight_bias=get_supported_dtypes(),
 )
 def test_bilinear(
     *,
@@ -463,4 +462,4 @@ def test_bilinear(
         weight=weight,
         bias=bias,
         expected_output=expected_output,
-
+    )
