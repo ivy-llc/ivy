@@ -675,76 +675,57 @@ def test_paddle_rot90(
         axes=tuple(axes),
     )
 
- 
+
+@st.composite
+def _moveaxis_helper(draw , **kwargs):
+    dtypes, a , shape= draw(helpers.dtype_and_values(**kwargs , ret_shape=True))
+
+    source = draw(
+        st.lists(
+            helpers.ints(min_value=0 , max_value=len(shape) - 1),
+            min_size = len(shape),
+            max_size = len(shape),
+            unique=True,
+        )
+    )
+    destination = draw(
+        st.lists(
+            helpers.ints(min_value=0 , max_value=len(shape) - 1),
+            min_size = len(shape),
+            max_size = len(shape),
+            unique=True,
+        )
+    )
+
+    return dtypes, a , source, destination
+
+
 @handle_frontend_test(
     fn_tree="paddle.moveaxis", # This is the function we are testing against
-    dtype_and_x=helpers.dtype_and_values(
-    available_dtypes=helpers.get_dtypes(kind="valid"), # Assigning available datatypes
-        min_value=-100,
-        max_value=100,
-        num_arrays=1,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
-    ),
-    source=helpers.get_axis(
-        allow_none=False,
-        unique=True,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
-        min_size=1,
-        force_int=True,
-    ),
-        destination=helpers.get_axis(
-        allow_none=False,
-        unique=True,
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=3,
-                min_dim_size=1,
-                max_dim_size=3,
-            ),
-            key="a_s_d",
-        ),
-        min_size=1,
-        force_int=True,
-    ),
+    dtype_and_params = _moveaxis_helper(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=1,
+        min_dim_size=1,
+        )
+
 )
-
 def test_paddle_moveaxis(
-
     # Parameters for the test
     *,
-    dtype_and_x, 
-    source,
-    destination,
+    dtype_and_params,
     frontend,
     test_flags,
     fn_tree,
     backend_fw,
 ):
-    input_dtype , x = dtype_and_x
+    input_dtype , a , source , destination = dtype_and_params
     helpers.test_frontend_function(
         input_dtypes= input_dtype,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
         fn_tree=fn_tree,
-        x = x[0],
+        x = a[0],
         source = source,
         destination = destination,
     )
