@@ -2863,7 +2863,7 @@ def test_torch_lgamma(
 
 # gradient
 @handle_frontend_test(
-    fn_tree="torch.pointwise_ops.gradient",
+    fn_tree="torch.gradient",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         force_int_axis=True,
