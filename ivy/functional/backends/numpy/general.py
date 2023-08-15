@@ -33,7 +33,7 @@ def current_backend_str() -> str:
 def get_item(
     x: np.ndarray,
     /,
-    query: np.ndarray,
+    query: Union[np.ndarray, Tuple],
     *,
     copy: bool = None,
 ) -> np.ndarray:
@@ -435,7 +435,7 @@ def vmap(
     return _vmap
 
 
-@with_unsupported_dtypes({"1.25.1 and below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"1.25.2 and below": ("bfloat16",)}, backend_version)
 def isin(
     elements: np.ndarray,
     test_elements: np.ndarray,

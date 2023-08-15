@@ -5,7 +5,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-
+from ivy.functional.backends.tensorflow.general import _check_query
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
@@ -21,7 +21,7 @@ CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_ivy_array(
+def test_tensorflow_tensor_ivy_array(
     dtype_x,
     backend_fw,
 ):
@@ -43,7 +43,7 @@ def test_tensorflow_ivy_array(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False)
     ),
 )
-def test_tensorflow_device(
+def test_tensorflow_tensor_device(
     dtype_x,
     backend_fw,
 ):
@@ -60,7 +60,7 @@ def test_tensorflow_device(
         available_dtypes=helpers.get_dtypes("valid", prune_function=False),
     ),
 )
-def test_tensorflow_dtype(
+def test_tensorflow_tensor_dtype(
     dtype_x,
     backend_fw,
 ):
@@ -77,7 +77,7 @@ def test_tensorflow_dtype(
         ret_shape=True,
     ),
 )
-def test_tensorflow_shape(
+def test_tensorflow_tensor_shape(
     dtype_x,
     backend_fw,
 ):
@@ -101,7 +101,7 @@ def test_tensorflow_shape(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_add(
+def test_tensorflow__add__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -142,7 +142,7 @@ def test_tensorflow_add(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_div(
+def test_tensorflow__div__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -182,7 +182,7 @@ def test_tensorflow_div(
         min_dim_size=1,
     ),
 )
-def test_tensorflow_get_shape(
+def test_tensorflow_tensor_get_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -217,7 +217,7 @@ def test_tensorflow_get_shape(
         num_arrays=2,
     ),
 )
-def test_tensorflow_eq(
+def test_tensorflow__eq__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -258,7 +258,7 @@ def test_tensorflow_eq(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_floordiv(
+def test_tensorflow__floordiv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -297,7 +297,7 @@ def test_tensorflow_floordiv(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_ge(
+def test_tensorflow__ge__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -336,7 +336,7 @@ def test_tensorflow_ge(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_gt(
+def test_tensorflow__gt__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -375,7 +375,7 @@ def test_tensorflow_gt(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_le(
+def test_tensorflow__le__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -414,7 +414,7 @@ def test_tensorflow_le(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_lt(
+def test_tensorflow__lt__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -452,7 +452,7 @@ def test_tensorflow_lt(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_mul(
+def test_tensorflow__mul__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -491,7 +491,7 @@ def test_tensorflow_mul(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_mod(
+def test_tensorflow__mod__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -532,7 +532,7 @@ def test_tensorflow_mod(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_sub(
+def test_tensorflow__sub__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -571,7 +571,7 @@ def test_tensorflow_sub(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_ne(
+def test_tensorflow__ne__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -610,7 +610,7 @@ def test_tensorflow_ne(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_radd(
+def test_tensorflow__radd__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -652,7 +652,7 @@ def test_tensorflow_radd(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_rfloordiv(
+def test_tensorflow__rfloordiv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -691,7 +691,7 @@ def test_tensorflow_rfloordiv(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_rsub(
+def test_tensorflow__rsub__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -730,7 +730,7 @@ def test_tensorflow_rsub(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_and(
+def test_tensorflow__and__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -769,7 +769,7 @@ def test_tensorflow_and(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_rand(
+def test_tensorflow__rand__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -808,7 +808,7 @@ def test_tensorflow_rand(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_or(
+def test_tensorflow__or__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -847,7 +847,7 @@ def test_tensorflow_or(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_ror(
+def test_tensorflow__ror__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -889,7 +889,7 @@ def test_tensorflow_ror(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_truediv(
+def test_tensorflow__truediv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -932,7 +932,7 @@ def test_tensorflow_truediv(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_rtruediv(
+def test_tensorflow__rtruediv__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -970,7 +970,7 @@ def test_tensorflow_rtruediv(
         max_dim_size=1,
     ),
 )
-def test_tensorflow_bool(
+def test_tensorflow__bool__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1006,7 +1006,7 @@ def test_tensorflow_bool(
         max_dim_size=1,
     ),
 )
-def test_tensorflow_nonzero(
+def test_tensorflow__nonzero__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1048,7 +1048,7 @@ def test_tensorflow_nonzero(
         ],
     ),
 )
-def test_tensorflow_neg(
+def test_tensorflow__neg__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1085,7 +1085,7 @@ def test_tensorflow_neg(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_rxor(
+def test_tensorflow__rxor__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1124,7 +1124,7 @@ def test_tensorflow_rxor(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_xor(
+def test_tensorflow__xor__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1172,7 +1172,7 @@ def test_tensorflow_xor(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_matmul(
+def test_tensorflow__matmul__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1220,7 +1220,7 @@ def test_tensorflow_matmul(
         safety_factor_scale="log",
     ),
 )
-def test_tensorflow_rmatmul(
+def test_tensorflow__rmatmul__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1258,7 +1258,7 @@ def test_tensorflow_rmatmul(
     ),
     dtype=helpers.get_dtypes("float", full=False),
 )
-def test_tensorflow_array(
+def test_tensorflow__array__(
     dtype_and_x,
     dtype,
     frontend,
@@ -1296,7 +1296,7 @@ def test_tensorflow_array(
         available_dtypes=helpers.get_dtypes("integer")
     ),
 )
-def test_tensorflow_invert(
+def test_tensorflow__invert__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1335,7 +1335,7 @@ def test_tensorflow_invert(
         max_value=100,
     ),
 )
-def test_tensorflow_rmul(
+def test_tensorflow__rmul__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1370,7 +1370,7 @@ def test_tensorflow_rmul(
     method_name="__rpow__",
     dtype_and_x=_pow_helper_shared_dtype(),
 )
-def test_tensorflow_rpow(
+def test_tensorflow__rpow__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1415,7 +1415,7 @@ def test_tensorflow_rpow(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_pow(
+def test_tensorflow__pow__(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1450,14 +1450,6 @@ def test_tensorflow_pow(
     )
 
 
-def _check_query(query):
-    # True if tensorflow supports this type
-    return not isinstance(query, list) and not (
-        isinstance(query, np.ndarray)
-        and (bool(query.dtype == np.bool_) ^ bool(query.ndim > 0))
-    )
-
-
 # __getitem__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -1473,7 +1465,7 @@ def _check_query(query):
         )
     ),
 )
-def test_tensorflow_getitem(
+def test_tensorflow__getitem__(
     dtype_x_index,
     frontend,
     frontend_method_data,
@@ -1550,7 +1542,7 @@ def _array_and_shape(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_set_shape(
+def test_tensorflow_tensor_set_shape(
     dtype_and_x,
     frontend,
     frontend_method_data,
@@ -1584,7 +1576,7 @@ def test_tensorflow_set_shape(
         max_num_dims=5,
     ),
 )
-def test_tensorflow_len(
+def test_tensorflow__len__(
     dtype_and_x,
     frontend,
     frontend_method_data,

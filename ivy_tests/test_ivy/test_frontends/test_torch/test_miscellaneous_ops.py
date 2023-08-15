@@ -969,14 +969,8 @@ def test_torch_lcm(
 # einsum
 @handle_frontend_test(
     fn_tree="torch.einsum",
-    eq_n_op_n_shp=st.sampled_from(
-        [
-            ("ii", (np.arange(25).reshape(5, 5),), ()),
-            ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
-            ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,)),
-        ]
-    ),
-    dtype=helpers.get_dtypes("float", full=False),
+    eq_n_op_n_shp=helpers.einsum_helper(),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_torch_einsum(
     *,
@@ -988,16 +982,14 @@ def test_torch_einsum(
     test_flags,
     backend_fw,
 ):
-    eq, operands, _ = eq_n_op_n_shp
+    eq, operands, dtypes = eq_n_op_n_shp
     kw = {}
-    i = 0
-    for x_ in operands:
-        kw["x{}".format(i)] = x_
-        i += 1
-    # len(operands) + 1 because of the equation
+    for i, x_ in enumerate(operands):
+        dtype = dtypes[i][0]
+        kw["x{}".format(i)] = np.array(x_).astype(dtype)
     test_flags.num_positional_args = len(operands) + 1
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtypes,
         backend_to_test=backend_fw,
         frontend=frontend,
         test_flags=test_flags,
@@ -1556,4 +1548,110 @@ def test_torch_cov(
         correction=correction,
         fweights=fweights,
         aweights=aweights,
+    )
+
+
+# view_as_real
+@handle_frontend_test(
+    fn_tree="torch.view_as_real",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=1,
+    ),
+)
+def test_torch_view_as_real(
+    *,
+    dtype_and_x,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+@st.composite
+def complex_strategy(
+    draw, min_num_dims=0, max_num_dims=5, min_dim_size=1, max_dim_size=10
+):
+    shape = draw(
+        st.lists(
+            helpers.ints(min_value=min_dim_size, max_value=max_dim_size),
+            min_size=min_num_dims,
+            max_size=max_num_dims,
+        )
+    )
+    shape = list(shape)
+    shape.append(2)
+    return tuple(shape)
+
+
+# view_as_complex
+@handle_frontend_test(
+    fn_tree="torch.view_as_complex",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(complex_strategy()),
+    ),
+)
+def test_torch_view_as_complex(
+    *,
+    dtype_and_values,
+    on_device,
+    fn_tree,
+    frontend,
+    test_flags,
+    backend_fw,
+):
+    dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        backend_to_test=backend_fw,
+        frontend=frontend,
+        test_flags=test_flags,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
+
+
+# corrcoef
+@handle_frontend_test(
+    fn_tree="torch.corrcoef",
+    dtypes_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=1,
+        min_num_dims=2,
+        max_num_dims=2,
+        min_dim_size=2,
+        max_dim_size=2,
+        min_value=1,
+    ),
+    test_with_out=st.just(False),
+)
+def test_torch_corrcoef(
+    dtypes_and_x,
+    frontend,
+    fn_tree,
+    on_device,
+    test_flags,
+    backend_fw,
+):
+    input_dtypes, x = dtypes_and_x
+    helpers.test_frontend_function(
+        input_dtypes=["float64"],
+        frontend=frontend,
+        fn_tree=fn_tree,
+        test_flags=test_flags,
+        on_device=on_device,
+        backend_to_test=backend_fw,
+        input=x[0],
     )

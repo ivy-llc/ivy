@@ -3,7 +3,7 @@
 from functools import reduce as _reduce
 from numbers import Number
 from operator import mul
-from typing import Optional, Union, Sequence, Callable, List
+from typing import Optional, Union, Sequence, Callable, List, Tuple
 
 try:
     import functorch
@@ -64,6 +64,61 @@ def container_types():
 
 def current_backend_str() -> str:
     return "torch"
+
+
+def neg_step(query):
+    return (
+        not isinstance(query, (int, bool))
+        and not ivy.is_array(query)
+        and query is not None
+        and query is not Ellipsis
+        and (
+            (isinstance(query, slice) and query.step is not None and query.step < 0)
+            or (
+                not isinstance(query, slice)
+                and any(
+                    isinstance(q, slice) and q.step is not None and q.step < 0
+                    for q in query
+                )
+            )
+        )
+    )
+
+
+def get_item(
+    x: torch.Tensor,
+    /,
+    query: Union[torch.Tensor, Tuple],
+    *,
+    copy: bool = None,
+) -> torch.Tensor:
+    if copy:
+        return x.__getitem__(query).clone()
+    return x.__getitem__(query)
+
+
+get_item.partial_mixed_handler = lambda x, query, **kwargs: not neg_step(query)
+
+
+def set_item(
+    x: torch.Tensor,
+    query: Union[torch.Tensor, Tuple],
+    val: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = False,
+) -> torch.Tensor:
+    if hasattr(x, "dtype") and hasattr(val, "dtype") and x.dtype != val.dtype:
+        val = val.to(x.dtype)
+    if copy:
+        x = x.clone()
+    x.__setitem__(query, val)
+    return x
+
+
+set_item.partial_mixed_handler = (
+    lambda x, query, val, **kwargs: not neg_step(query) and not x.requires_grad
+)
 
 
 def to_numpy(
