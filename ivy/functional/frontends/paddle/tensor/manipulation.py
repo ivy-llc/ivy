@@ -67,7 +67,10 @@ def split(x, num_or_sections, axis=0, name=None):
 )
 @to_ivy_arrays_and_back
 def tolist(x):
-    return ivy.tolist(x)
+    print("-------------------")
+    print(x)
+    print("-------------------")
+    return ivy.to_list(x)
 
 
 @with_unsupported_dtypes(
