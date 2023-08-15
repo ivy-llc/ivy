@@ -621,7 +621,12 @@ def test_frontend_function(
         )
 
         assert ivy_backend.nested_map(
-            ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
+            ret,
+            lambda x: (
+                _is_frontend_array(x)
+                if ivy_backend.is_array(x) and test_flags.generate_frontend_arrays
+                else True
+            ),
         ), "Frontend function returned non-frontend arrays: {}".format(ret)
 
         if test_flags.with_out:
@@ -1602,9 +1607,12 @@ def test_frontend_method(
             **kwargs_method,
         )
 
-        assert ivy_backend.nested_map(
-            ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
-        ), "Frontend method returned non-frontend arrays: {}".format(ret)
+        # ToDo: uncomment once test_frontend_method has been updated to test for
+        #  frontend array arguments like test_frontend_function where
+        #  test_flags.generate_frontend_arrays is being used
+        # assert ivy_backend.nested_map(
+        #     ret, lambda x: _is_frontend_array(x) if ivy_backend.is_array(x) else True
+        # ), "Frontend method returned non-frontend arrays: {}".format(ret)
 
     # Compute the return with the native frontend framework
     frontend_config = get_frontend_config(frontend)
