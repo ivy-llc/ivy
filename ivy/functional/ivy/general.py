@@ -1566,7 +1566,10 @@ def to_native_shape(
      ret
         the input in its native framework form
     """
-    if len(backend_stack) != 0 and isinstance(shape, ivy.NativeShape):
+    native_shape_type = (ivy.NativeShape,)
+    if ivy.current_backend_str() == "torch":
+        native_shape_type += (tuple,)
+    if len(backend_stack) != 0 and isinstance(shape, native_shape_type):
         return shape
     ivy.utils.assertions.check_isinstance(
         shape, (int, list, tuple, ivy.Array, ivy.NativeArray, ivy.Shape)

@@ -1,4 +1,5 @@
 import paddle
+from paddle.device import core
 import numpy as np
 
 valid_devices = ("cpu", "gpu")
@@ -86,7 +87,7 @@ invalid_complex_dtypes = []
 
 
 Dtype = paddle.dtype
-Device = paddle.device
+Device = core.Place
 
 
 def native_array(x):
@@ -106,7 +107,19 @@ def as_native_dtype(dtype: str):
 
 
 def as_native_dev(device: str):
-    return paddle.device(device)
+    if isinstance(device, core.Place):
+        return device
+    native_dev = core.Place()
+    if "cpu" in device:
+        native_dev.set_place(paddle.device.core.CPUPlace())
+
+    elif "gpu" in device:
+        if ":" in device:
+            gpu_idx = int(device.split(":")[-1])
+        else:
+            gpu_idx = 0
+        native_dev.set_place(paddle.device.core.CUDAPlace(gpu_idx))
+    return native_dev
 
 
 def isscalar(x):

@@ -2843,8 +2843,6 @@ def test_torch_igamma(
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-        min_dim_size=1,
-        min_num_dims=1,
     ),
 )
 def test_torch_ldexp(
