@@ -176,18 +176,13 @@ def rot90(x, k=1, axes=(0, 1), name=None):
         "2.5.1 and below": (
             "bool",
             "int32",
+            "int64",
             "float32",
             "float64",
-            "complex64",
-            "complex128",
-            "int",
-            "tuple",
-            "list",
-            "str",
         )
     },
     "paddle",
 )
 @to_ivy_arrays_and_back
-def moveaxis(x , source , destination , name=None):
+def moveaxis(x , source , destination):
     return ivy.moveaxis(x , source , destination)
