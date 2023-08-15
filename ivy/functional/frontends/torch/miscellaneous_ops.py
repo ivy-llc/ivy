@@ -458,4 +458,4 @@ def corrcoef(input):
 
 @to_ivy_arrays_and_back
 def kron(input, other, *, out=None):
-    return ivy.kron(input, other)
+    return ivy.kron(input, other, out=out)
