@@ -2889,7 +2889,7 @@ def test_torch_gradient(
     backend_fw,
     frontend,
 ):
-    input_dtype, x, axis = dtype_input_axis
+    input_dtype, x, dim = dtype_input_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         backend_to_test=backend_fw,
@@ -2899,5 +2899,5 @@ def test_torch_gradient(
         on_device=on_device,
         input=x[0],
         spacing=spacing,
-        axis=axis,
+        dim=dim,
     )
